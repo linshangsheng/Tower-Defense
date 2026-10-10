@@ -1,0 +1,16 @@
+{
+  "name": "守城英雄",
+  "short_name": "守城英雄",
+  "description": "小卫兵铛铛的守城日记：2D 横版自动战斗塔防",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#2d3a24",
+  "theme_color": "#2d3a24",
+  "lang": "zh-CN",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

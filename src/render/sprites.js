@@ -2661,7 +2661,7 @@
     c.width = px;
     c.height = px;
     const ctx = c.getContext('2d');
-    const k = px / 84;
+    const k = px / 94; // 留出红缨 / 铃铛的高度
     ctx.translate(px * 0.56, px * 0.97);
     ctx.scale(k, k);
     S.hero(ctx, 0, 0, { t: 0.3, weapon: 'bow', aimAngle: 0, shotAge: 9, mood: mood || 'idle', critAge: 9, outfit: outfit !== undefined ? outfit : TD.game && TD.game.save && TD.game.save.outfit, hero: hero || 'dang' });
