@@ -1892,3 +1892,19 @@ body {
 .slot.hero-slot .slot-sub {
   font-size: 12px;
 }
+
+/* ---------- 技能协同（设计书 45） ---------- */
+.synergy-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin: 4px 0 8px;
+  font-size: 13px;
+}
+.synergy {
+  color: #9a8a74;
+}
+.synergy.on {
+  color: #2a7ab8;
+  font-weight: 700;
+}

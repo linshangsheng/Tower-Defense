@@ -1218,3 +1218,40 @@ test('每日挑战新规则：夜战变暗夜、急袭变速攻、巨人减数�
   normal.countdown = 10;
   assert.strictEqual(g.callNextWave(), normal.callNextWave() * 3);
 });
+
+test('技能协同：碎冰（冰冻领域里雷霆 ×1.5）、鼓点箭雨（战鼓期间箭数 +50%）', () => {
+  const s = P.newSave();
+  for (const k of ['frost', 'thunder', 'drum', 'arrowRain']) s.activeOwned[k] = true;
+  s.loadout.active = ['frost', 'thunder', 'drum'];
+  clearUpTo(s, 25);
+  const mk = () => {
+    const b = new TD.Battle({ level: 21, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 1 });
+    b.waveState = 'running';
+    return b;
+  };
+  // 碎冰
+  const a = mk();
+  const m1 = a.spawnMonster('snowman', 1, 600);
+  m1.hp = m1.maxHp = 1e6;
+  a.castSkill(1);
+  const plain = 1e6 - m1.hp;
+  const b = mk();
+  const m2 = b.spawnMonster('snowman', 1, 600);
+  m2.hp = m2.maxHp = 1e6;
+  b.castSkill(0, 1);
+  b.castSkill(1);
+  const frozen = 1e6 - m2.hp;
+  assert.ok(Math.abs(frozen / plain - 1.5) < 0.01, `碎冰倍率 ${frozen / plain}`);
+  assert.strictEqual(b.combos.shatter, 1);
+  // 鼓点箭雨
+  s.activeOwned.arrowRain = true;
+  s.loadout.active = ['drum', 'arrowRain', null];
+  const c = mk();
+  c.castSkill(1);
+  const n0 = c.rain.left;
+  const d = mk();
+  d.castSkill(0);
+  d.castSkill(1);
+  assert.strictEqual(d.rain.left, Math.round(n0 * 1.5));
+  assert.strictEqual(d.combos.drumRain, 1);
+});

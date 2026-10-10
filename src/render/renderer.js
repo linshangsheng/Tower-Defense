@@ -160,6 +160,11 @@
         this.text(e.m.x, e.m.y - 140, '本体现身！伤害 +50%', '#ffd23f', 28, 1.5);
       });
       on('inkSlam', () => (this.shake = Math.max(this.shake, 20)));
+      // 技能协同（设计书 45）
+      on('combo', (e) => {
+        this.text(e.x, e.y, e.name, '#7ad0ff', 26, 1.1);
+        this.burst(e.x, e.y + 20, '#bfe8ff', 18, 260);
+      });
       // 叮叮的铃声（设计书 42.2）
       on('bell', (e) => {
         this.fx.push({ kind: 'ring', x: e.x, y: e.y, r0: 10, r1: e.radius, color: 'rgba(255,210,63,', life: 0.45, age: 0 });

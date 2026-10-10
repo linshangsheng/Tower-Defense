@@ -79,6 +79,12 @@
     },
   };
 
+  // 技能协同（设计书 45）：两个技能前后释放时的额外效果
+  TD.data.synergies = {
+    shatter: { name: '碎冰', skills: ['frost', 'thunder'], mult: 1.5, desc: '雷霆一击打在冰冻领域里（减速或冰冻）的怪物身上，伤害 ×1.5' },
+    drumRain: { name: '鼓点箭雨', skills: ['drum', 'arrowRain'], mult: 1.5, desc: '战鼓生效期间释放箭雨，箭数 +50%' },
+  };
+
   TD.data.weaponAscend = { minLv: 5, cost: { silver: 8 } };
 
   TD.data.weaponUpgrade = {

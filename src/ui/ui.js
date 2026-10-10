@@ -1018,6 +1018,19 @@
       );
     };
     slotGroup('active', '主动技能', D.activeSkills, s.activeOwned);
+    // 技能协同提示（设计书 45）：带齐一对技能时点亮
+    const act = lo.active.slice(0, P.slotCount(s, 'active')).filter(Boolean);
+    el.append(
+      h(
+        'div',
+        { class: 'synergy-row' },
+        Object.keys(D.synergies).map((id) => {
+          const sy = D.synergies[id];
+          const on = sy.skills.every((k) => act.includes(k));
+          return h('span', { class: 'synergy' + (on ? ' on' : ''), title: sy.desc }, `${on ? '✨' : '·'} 协同「${sy.name}」：${sy.skills.map((k) => D.activeSkills[k].name).join(' + ')}${on ? '（已带齐）' : ''}`);
+        })
+      )
+    );
     slotGroup('passive', '被动技能', D.passiveSkills, s.passiveOwned);
 
     // 装备：装备页开放前只显示一行说明

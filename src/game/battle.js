@@ -7,6 +7,10 @@
 
   let nextId = 1;
 
+  // 技能协同（设计书 45）
+  const SYNERGY = { shatter: D.synergies.shatter.mult, drumRain: D.synergies.drumRain.mult };
+  const AUTO_ORDER = { drum: 1, frost: 2, repair: 3, arrowRain: 4, thunder: 5 };
+
   // 连击提示（设计书 38.2）
   const STREAK_CALLS = { 10: '10 连击！', 20: '横扫千军！', 30: '势不可挡！', 50: '无人能挡！' };
 
@@ -101,6 +105,7 @@
       this.interrupts = 0;
       this.earlyCalls = 0;
       this.skillsCast = 0; // 关卡任务（设计书 36）
+      this.combos = {}; // 技能协同触发次数（设计书 45）
       this.streak = 0; // 连击（设计书 38.2）
       this.bestStreak = 0;
       this.lastKillAt = -99;
@@ -1054,9 +1059,14 @@
           this.healWall(this.wall.max * def.healRatio, 'repair');
           if (def.drBonus) this.tempDr = { amt: def.drBonus, until: this.time + def.drDuration };
           break;
-        case 'arrowRain':
-          this.rain = { left: def.arrows, every: def.duration / def.arrows, timer: 0, dmg: atk * def.atkMult, ignite: !!def.ignite };
+        case 'arrowRain': {
+          // 协同"鼓点箭雨"（设计书 45）：战鼓生效期间箭数 +50%
+          const drum = this.buffs.some((b) => b.src === 'drum' && this.time < b.until);
+          const arrows = drum ? Math.round(def.arrows * SYNERGY.drumRain) : def.arrows;
+          this.rain = { left: arrows, every: def.duration / arrows, timer: 0, dmg: atk * def.atkMult, ignite: !!def.ignite };
+          if (drum) this.emitCombo('drumRain', C.heroX + 60, this.heroY - 120);
           break;
+        }
         case 'frost':
           this.laneEffects.push({ lane, type: 'frost', slow: def.slow, until: this.time + def.duration, start: this.time, freezeEnd: def.freezeEnd || 0 });
           break;
@@ -1067,7 +1077,10 @@
           this.emit('thunder', { x: best.x, y: best.y + best.yOffset });
           const bx = best.x;
           const by = best.y;
-          this.damage(best, atk * def.atkMult, { type: 'magic', fromFront: false, source: 'thunder' });
+          // 协同"碎冰"（设计书 45）：打在被冰冻领域减速 / 冰冻的怪身上伤害 ×1.5
+          const shatter = (m) => (this.inFrost(m) ? SYNERGY.shatter : 1);
+          if (this.inFrost(best)) this.emitCombo('shatter', best.x, best.y + best.yOffset - 40);
+          this.damage(best, atk * def.atkMult * shatter(best), { type: 'magic', fromFront: false, source: 'thunder' });
           if (def.chain) {
             const near = this.monsters
               .filter((m) => m !== best && this.isTargetable(m) && Math.hypot(m.x - bx, m.y - by) <= def.chainRange)
@@ -1075,7 +1088,7 @@
               .slice(0, def.chain);
             for (const m of near) {
               this.emit('thunderChain', { x0: bx, y0: by + best.yOffset, x: m.x, y: m.y + m.yOffset });
-              this.damage(m, atk * def.atkMult * def.chainMult, { type: 'magic', fromFront: false, source: 'thunder' });
+              this.damage(m, atk * def.atkMult * def.chainMult * shatter(m), { type: 'magic', fromFront: false, source: 'thunder' });
             }
           }
           break;
@@ -1086,6 +1099,17 @@
       this.skillsCast++;
       this.emit('skill', { id: s.id, lane });
       return true;
+    }
+
+    // 怪物是否处在冰冻领域（减速或冰冻）中
+    inFrost(m) {
+      if (this.time < m.frozenUntil) return true;
+      return this.laneEffects.some((e) => e.lane === m.lane && this.time < e.until && (e.type === 'frost' || e.type === 'freeze'));
+    }
+
+    emitCombo(id, x, y) {
+      this.combos[id] = (this.combos[id] || 0) + 1;
+      this.emit('combo', { id, name: D.synergies[id].name + '！', x, y });
     }
 
     useItem(i, lane) {
@@ -1142,7 +1166,10 @@
       const hasBoss = all.some((m) => m.def.boss);
       const wallRatio = this.wall.hp / this.wall.max;
       if (this.autoCast) {
-        this.skills.forEach((s, i) => {
+        // 先放战鼓和冰冻领域，再放箭雨和雷霆，这样同一时刻都能放时会触发协同（设计书 45）
+        const order = this.skills.map((s, i) => i).sort((a, b) => (AUTO_ORDER[this.skills[a].id] || 9) - (AUTO_ORDER[this.skills[b].id] || 9));
+        order.forEach((i) => {
+          const s = this.skills[i];
           if (!this.skillReady(i)) return;
           let go = false;
           switch (s.id) {
@@ -1248,6 +1275,7 @@
         earlyCalls: this.earlyCalls,
         skillsCast: this.skillsCast,
         bestStreak: this.bestStreak,
+        combos: Object.assign({}, this.combos),
         minWallRatio: this.minWallRatio,
         skillsCarried: this.skills.length,
         itemsUsed: this.itemsUsed.slice(),
