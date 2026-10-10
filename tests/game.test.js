@@ -1219,7 +1219,7 @@ test('每日挑战新规则：夜战变暗夜、急袭变速攻、巨人减数�
   assert.strictEqual(g.callNextWave(), normal.callNextWave() * 3);
 });
 
-test('技能协同：碎冰（冰冻领域里雷霆 ×1.5）、鼓点箭雨（战鼓期间箭数 +50%）', () => {
+test('技能协同：碎冰（冰冻领域里雷霆加伤）、鼓点箭雨（战鼓期间箭数增加）', () => {
   const s = P.newSave();
   for (const k of ['frost', 'thunder', 'drum', 'arrowRain']) s.activeOwned[k] = true;
   s.loadout.active = ['frost', 'thunder', 'drum'];
@@ -1241,7 +1241,7 @@ test('技能协同：碎冰（冰冻领域里雷霆 ×1.5）、鼓点箭雨（�
   b.castSkill(0, 1);
   b.castSkill(1);
   const frozen = 1e6 - m2.hp;
-  assert.ok(Math.abs(frozen / plain - 1.5) < 0.01, `碎冰倍率 ${frozen / plain}`);
+  assert.ok(Math.abs(frozen / plain - D.synergies.shatter.mult) < 0.01, `碎冰倍率 ${frozen / plain}`);
   assert.strictEqual(b.combos.shatter, 1);
   // 鼓点箭雨
   s.activeOwned.arrowRain = true;
@@ -1252,6 +1252,6 @@ test('技能协同：碎冰（冰冻领域里雷霆 ×1.5）、鼓点箭雨（�
   const d = mk();
   d.castSkill(0);
   d.castSkill(1);
-  assert.strictEqual(d.rain.left, Math.round(n0 * 1.5));
+  assert.strictEqual(d.rain.left, Math.round(n0 * D.synergies.drumRain.mult));
   assert.strictEqual(d.combos.drumRain, 1);
 });
