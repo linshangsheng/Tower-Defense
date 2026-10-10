@@ -15,7 +15,7 @@
   // ================= 守城日记（设计书 28） =================
   function speakerInfo(id) {
     const sp = D.speakers[id];
-    if (sp) return { name: sp.name, img: () => (sp.emoji ? h('div', { class: 'story-emoji' }, sp.emoji) : TD.sprites.heroPortrait(96)) };
+    if (sp) return { name: sp.name, img: () => (sp.emoji ? h('div', { class: 'story-emoji' }, sp.emoji) : TD.sprites.heroPortrait(96, undefined, undefined, sp.hero || 'dang')) };
     const def = D.monsters[id];
     return { name: def ? def.name : id, img: () => TD.sprites.portrait(id, 96) };
   }
@@ -47,7 +47,7 @@
       const sp = speakerInfo(who);
       avatar.innerHTML = '';
       avatar.appendChild(sp.img());
-      avatar.className = 'story-avatar' + (who === 'dang' ? ' hero' : '');
+      avatar.className = 'story-avatar' + (who === 'dang' || who === 'ding' ? ' hero' : '');
       nameEl.textContent = sp.name;
       shown = 0;
       textEl.textContent = '';
@@ -129,7 +129,7 @@
     const cards = D.outfits.map((o) => {
       const open = P.outfitUnlocked(s, o.id);
       const on = (s.outfit || 'classic') === o.id;
-      const img = TD.sprites.heroPortrait(110, on ? 'win' : 'idle', o.id);
+      const img = TD.sprites.heroPortrait(110, on ? 'win' : 'idle', o.id, P.heroId(s));
       return h(
         'button',
         {

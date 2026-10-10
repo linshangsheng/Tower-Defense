@@ -40,6 +40,7 @@
       seenTabs: { loadout: true, attrs: true },
       achievements: {},
       settings: { sound: true, speed: 1, difficulty: 'normal', restMinutes: 30 },
+      hero: 'dang', // 当前英雄（设计书 42）
       outfit: 'classic', // 铛铛的衣柜（设计书 30）
       outfitsSeen: { classic: true },
       story: {}, // 守城日记（设计书 28）：段落 id → 'read' 读完 / 'skipped' 跳过
@@ -76,6 +77,15 @@
   P.levelRecord = (save, n) => save.levels[n] || { stars: 0, clears: 0 };
 
   P.crowns = (save, levels) => (levels || Object.keys(save.levels)).filter((n) => (save.levels[n] || {}).crown).length;
+
+  // ---------- 英雄（设计书 42） ----------
+  P.heroUnlocked = (save, id) => !!C.heroes[id] && (!C.heroes[id].unlock || P.isCleared(save, C.heroes[id].unlock));
+  P.heroId = (save) => (save.hero && P.heroUnlocked(save, save.hero) ? save.hero : 'dang');
+  P.setHero = function (save, id) {
+    if (!P.heroUnlocked(save, id)) return false;
+    save.hero = id;
+    return true;
+  };
 
   // ---------- 铛铛的衣柜（设计书 30） ----------
   P.outfitUnlocked = (save, id) => {
@@ -222,9 +232,10 @@
     }
     const passives = P.passiveSet(save);
     const h = C.hero;
+    const hd = C.heroes[P.heroId(save)];
 
-    const atk = (h.atk + a.atk * A.atk.per + eq.atkFlat) * (1 + eq.atkPct);
-    const aspdBase = (h.aspd + a.aspd * A.aspd.per) * (1 + eq.aspdPct);
+    const atk = (h.atk + a.atk * A.atk.per + eq.atkFlat) * (1 + eq.atkPct) * hd.atkMult;
+    const aspdBase = (h.aspd + a.aspd * A.aspd.per) * (1 + eq.aspdPct) * hd.aspdMult;
     let crit = h.crit + a.crit * A.crit.per + eq.crit + (w.bonusCrit || 0);
     if (passives.precision) crit += D.passiveSkills.precision.crit;
     const critDmg = h.critDmg + a.critDmg * A.critDmg.per + eq.critDmg;
@@ -237,6 +248,8 @@
     const wallDr = Math.min(0.6, wl.fortify * WU.fortify.per + eq.wallDr);
 
     return {
+      heroId: P.heroId(save),
+      bell: hd.bell || null,
       weapon: weaponId,
       weaponDef: w,
       atk,

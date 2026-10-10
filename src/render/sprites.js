@@ -1977,7 +1977,27 @@
     const headTilt = st.critAge !== undefined && st.critAge < 0.25 ? Math.sin(st.critAge * 60) * 0.12 : 0;
     ctx.translate(0, -s * 1.45);
     ctx.rotate(headTilt);
+    const ding = st.hero === 'ding';
+    if (ding) {
+      // 叮叮的两条小辫子（设计书 42.1）
+      const sway = Math.sin(t * 5) * 0.12;
+      for (const d of [-1, 1]) {
+        ctx.save();
+        ctx.translate(d * s * 0.62, s * 0.18);
+        ctx.rotate(d * (0.5 + sway));
+        ellipse(ctx, d * s * 0.12, s * 0.12, s * 0.13, s * 0.24, '#6a4a3a', OUTLINE, 1.5);
+        ellipse(ctx, 0, -s * 0.04, s * 0.07, s * 0.06, '#ff8ab4');
+        ctx.restore();
+      }
+    }
     ellipse(ctx, 0, s * 0.12, s * 0.62, s * 0.55, '#ffd9b8', OUTLINE, 2);
+    if (ding) {
+      // 刘海
+      ctx.fillStyle = '#6a4a3a';
+      ctx.beginPath();
+      ctx.ellipse(-s * 0.12, -s * 0.02, s * 0.42, s * 0.14, 0.15, 0, Math.PI);
+      ctx.fill();
+    }
     // 表情
     if (st.mood === 'lose') {
       squintEyes(ctx, s * 0.05, s * 0.2, s * 0.5, s * 0.12);
@@ -2033,8 +2053,28 @@
     ctx.save();
     ctx.translate(0, -s * 0.58);
     ctx.rotate(tuft);
-    ellipse(ctx, 0, -s * 0.14, s * 0.17, s * 0.17, col.plume, OUTLINE, 1.8);
-    ellipse(ctx, -s * 0.05, -s * 0.2, s * 0.05, s * 0.04, col.plumeHi);
+    if (ding) {
+      // 小金铃铛代替红缨
+      ctx.strokeStyle = OUTLINE;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(0, -s * 0.08);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.16, -s * 0.06);
+      ctx.quadraticCurveTo(-s * 0.16, -s * 0.34, 0, -s * 0.34);
+      ctx.quadraticCurveTo(s * 0.16, -s * 0.34, s * 0.16, -s * 0.06);
+      ctx.closePath();
+      ctx.fillStyle = '#ffd23f';
+      ctx.fill();
+      ctx.stroke();
+      ellipse(ctx, 0, -s * 0.05, s * 0.05, s * 0.05, '#c48a10');
+      ellipse(ctx, -s * 0.06, -s * 0.24, s * 0.04, s * 0.03, '#fff6c8');
+    } else {
+      ellipse(ctx, 0, -s * 0.14, s * 0.17, s * 0.17, col.plume, OUTLINE, 1.8);
+      ellipse(ctx, -s * 0.05, -s * 0.2, s * 0.05, s * 0.04, col.plumeHi);
+    }
     ctx.restore();
     if (st.critAge !== undefined && st.critAge < 0.4) {
       ctx.fillStyle = '#ffd23f';
@@ -2615,7 +2655,7 @@
   };
 
   // 铛铛的头像（守城日记的对话框）
-  S.heroPortrait = function (size, mood, outfit) {
+  S.heroPortrait = function (size, mood, outfit, hero) {
     const c = document.createElement('canvas');
     const px = size || 96;
     c.width = px;
@@ -2624,7 +2664,7 @@
     const k = px / 84;
     ctx.translate(px * 0.56, px * 0.97);
     ctx.scale(k, k);
-    S.hero(ctx, 0, 0, { t: 0.3, weapon: 'bow', aimAngle: 0, shotAge: 9, mood: mood || 'idle', critAge: 9, outfit: outfit !== undefined ? outfit : TD.game && TD.game.save && TD.game.save.outfit });
+    S.hero(ctx, 0, 0, { t: 0.3, weapon: 'bow', aimAngle: 0, shotAge: 9, mood: mood || 'idle', critAge: 9, outfit: outfit !== undefined ? outfit : TD.game && TD.game.save && TD.game.save.outfit, hero: hero || 'dang' });
     return c;
   };
 

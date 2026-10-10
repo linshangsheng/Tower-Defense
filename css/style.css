@@ -1496,7 +1496,7 @@ body {
 .story-overlay {
   position: absolute;
   inset: 0;
-  z-index: 35;
+  z-index: 45;
   background: linear-gradient(to bottom, rgba(20, 12, 6, 0.15), rgba(20, 12, 6, 0.55));
   display: flex;
   flex-direction: column;
@@ -1872,4 +1872,23 @@ body {
 .slot-note {
   align-self: center;
   padding: 6px 4px;
+}
+
+/* ---------- 英雄选择（设计书 42） ---------- */
+.slot.hero-slot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 330px;
+  text-align: left;
+}
+.slot.hero-slot canvas {
+  flex: none;
+}
+.slot.hero-slot.on {
+  border-color: var(--primary);
+  background: #fff6e6;
+}
+.slot.hero-slot .slot-sub {
+  font-size: 12px;
 }

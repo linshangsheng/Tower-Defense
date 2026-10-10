@@ -160,6 +160,11 @@
         this.text(e.m.x, e.m.y - 140, '本体现身！伤害 +50%', '#ffd23f', 28, 1.5);
       });
       on('inkSlam', () => (this.shake = Math.max(this.shake, 20)));
+      // 叮叮的铃声（设计书 42.2）
+      on('bell', (e) => {
+        this.fx.push({ kind: 'ring', x: e.x, y: e.y, r0: 10, r1: e.radius, color: 'rgba(255,210,63,', life: 0.45, age: 0 });
+        this.text(e.x, e.y - 40, '叮！', '#ffd23f', 20, 0.6);
+      });
       // 连击（设计书 38.2）
       on('streak', (e) => {
         this.text(C.heroX + 60, battle.heroY - 130, e.text, e.count >= 30 ? '#ff5a4f' : '#ffd23f', 22 + Math.min(14, e.count / 4), 1.1);
@@ -1130,7 +1135,7 @@
       }
       // 英雄脚下的城墙平台
       const ascended = !!(b && b.stats.weaponDef && b.stats.weaponDef.ascended);
-      S.hero(this.ctx, C.heroX, heroY, { t: this.t, weapon, aimAngle: aim, shotAge, mood, critAge: this.critAge, ascended, outfit: TD.game && TD.game.save && TD.game.save.outfit });
+      S.hero(this.ctx, C.heroX, heroY, { t: this.t, weapon, aimAngle: aim, shotAge, mood, critAge: this.critAge, ascended, outfit: TD.game && TD.game.save && TD.game.save.outfit, hero: b ? b.stats.heroId : TD.game && TD.game.save && TD.progression.heroId(TD.game.save) });
       // 战鼓等增益光环
       if (b && b.buffs.some((x) => b.time < x.until)) {
         const ctx = this.ctx;

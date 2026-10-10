@@ -36,6 +36,12 @@
       luck: 0,
     },
 
+    // 英雄（设计书 42）：在 hero 基础值上乘以倍率；所有升级共用
+    heroes: {
+      dang: { name: '铛铛', atkMult: 1, aspdMult: 1, desc: '王国最小的守城卫兵，攻击稳定。' },
+      ding: { name: '叮叮', atkMult: 0.82, aspdMult: 1.2, unlock: 20, bell: { every: 10, radius: 100, stun: 0.5 }, desc: '铛铛的妹妹。攻击力 ×0.82、攻速 ×1.2；每第 10 次攻击敲响铃铛，眩晕目标周围的小怪 0.5 秒。' },
+    },
+
     wall: {
       baseHp: 1000,
       hpGrowth: 1.1,

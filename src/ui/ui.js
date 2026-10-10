@@ -185,7 +185,7 @@
       h(
         'div',
         { class: 'rest' },
-        h('div', { class: 'rest-avatar' }, TD.sprites.heroPortrait(110, 'win')),
+        h('div', { class: 'rest-avatar' }, TD.sprites.heroPortrait(110, 'win', undefined, P.heroId(game.save))),
         h('h2', null, `已经守城 ${min} 分钟啦！`),
         h('p', null, '眨眨眼睛、看看远处，喝口水吧。城墙交给国王爷爷看一会儿。'),
         h(
@@ -719,7 +719,7 @@
     return h(
       'div',
       { class: 'stat-panel' },
-      h('h3', null, '铛铛的属性'),
+      h('h3', null, `${C.heroes[P.heroId(game.save)].name}的属性`),
       rows.map(([k, v]) => h('div', { class: 'stat-row' }, h('span', null, k), h('b', null, v)))
     );
   }
@@ -945,6 +945,29 @@
           h('span', { class: 'hint' }, '根据本关的怪物自动选择武器、技能和道具。')
         )
       );
+
+    // 英雄（设计书 42）：叮叮通关第 20 关后解锁
+    if (Object.keys(C.heroes).some((id) => id !== 'dang' && P.heroUnlocked(s, id))) {
+      el.append(h('div', { class: 'section-title' }, '英雄'));
+      el.append(
+        h(
+          'div',
+          { class: 'slot-row' },
+          Object.keys(C.heroes).map((id) => {
+            const hd = C.heroes[id];
+            const open = P.heroUnlocked(s, id);
+            const on = P.heroId(s) === id;
+            const img = TD.sprites.heroPortrait(56, on ? 'win' : 'idle', undefined, id);
+            return h(
+              'button',
+              { class: 'slot hero-slot' + (on ? ' on' : '') + (open ? '' : ' locked'), title: hd.desc, onclick: () => (open && P.setHero(s, id) ? (sfx('click'), game.persist(), renderShop()) : sfx('error')) },
+              img,
+              h('div', null, h('div', { class: 'slot-content' }, hd.name + (on ? ' ✔' : '')), h('div', { class: 'slot-sub' }, open ? hd.desc : `通关第 ${hd.unlock} 关解锁`))
+            );
+          })
+        )
+      );
+    }
 
     // 武器：武器页还没开放时只显示已拥有的，并说明什么时候开放（设计书 6.5、41）
     el.append(h('div', { class: 'section-title' }, '武器'));

@@ -1167,3 +1167,24 @@ test('首次通关第 10 关提示解锁 3 倍速，重复通关不再提示', (
   assert.ok(P.applyResult(s, 10, win).unlocks.some((x) => x.includes('3 倍速')));
   assert.ok(!P.applyResult(s, 10, win).unlocks.some((x) => x.includes('3 倍速')));
 });
+
+test('叮叮：通关第 20 关解锁；攻击 ×0.82、攻速 ×1.2；铃声每 10 次攻击眩晕周围小怪，不眩晕 Boss', () => {
+  const s = P.newSave();
+  assert.ok(!P.setHero(s, 'ding'));
+  clearUpTo(s, 20);
+  const a = P.heroStats(s);
+  assert.ok(P.setHero(s, 'ding'));
+  const b = P.heroStats(s);
+  assert.ok(Math.abs(b.atk / a.atk - 0.82) < 1e-9);
+  assert.ok(Math.abs(b.aspd / a.aspd - 1.2) < 1e-9);
+  assert.ok(Math.abs(P.estimateDps(b) / P.estimateDps(a) - 0.984) < 0.01);
+  const battle = new TD.Battle({ level: 21, stats: b, loadout: P.battleLoadout(s), seed: 1 });
+  const target = battle.spawnMonster('slime', 0, 500);
+  const near = battle.spawnMonster('slime', 0, 560);
+  const far = battle.spawnMonster('slime', 0, 800);
+  const boss = battle.spawnMonster('boarKing', 0, 520);
+  for (let i = 0; i < 10; i++) battle.fire([target]);
+  assert.ok(near.stunUntil > 0 && target.stunUntil > 0);
+  assert.strictEqual(far.stunUntil, 0);
+  assert.strictEqual(boss.stunUntil, 0);
+});

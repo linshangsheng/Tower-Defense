@@ -71,6 +71,7 @@
     });
     battle.on('bossInterrupt', () => TD.audio.play('interrupt'));
     battle.on('streak', () => TD.audio.play('streak'));
+    battle.on('bell', () => TD.audio.play('bell'));
     // 第六章（设计书 34.1）
     battle.on('dodge', () => TD.audio.play('dodge'));
     battle.on('shear', () => TD.audio.play('shear'));

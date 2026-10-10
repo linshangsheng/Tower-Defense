@@ -840,6 +840,20 @@
       const sx = C.heroX + 26;
       const sy = this.heroY - 46;
       const t0 = targets[0];
+      // 叮叮的铃声（设计书 42.2）：每第 N 次攻击眩晕目标周围的普通怪物
+      const bell = this.stats.bell;
+      if (bell) {
+        this.attackCount = (this.attackCount || 0) + 1;
+        if (this.attackCount % bell.every === 0) {
+          for (const o of this.monsters) {
+            if (o.dead || o.def.boss) continue;
+            const dx = o.x - t0.x;
+            const dy = o.y + o.yOffset - (t0.y + t0.yOffset);
+            if (dx * dx + dy * dy <= bell.radius * bell.radius) o.stunUntil = Math.max(o.stunUntil, this.time + bell.stun);
+          }
+          this.emit('bell', { x: t0.x, y: t0.y + t0.yOffset, radius: bell.radius });
+        }
+      }
       this.hero.aimX = t0.x;
       this.hero.aimY = t0.y + t0.yOffset;
       this.hero.shotAt = this.time;
