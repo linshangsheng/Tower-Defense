@@ -1088,3 +1088,44 @@ test('无尽模式：通关第 60 关后才出现云端怪物', () => {
   clearUpTo(b, 60);
   assert.ok([...types(b)].some((t) => ch6.has(t)));
 });
+
+test('关卡任务：分配规则', () => {
+  assert.strictEqual(D.missionFor(1), null);
+  assert.strictEqual(D.missionFor(2), null);
+  for (const n of [10, 50, 55, 60]) assert.strictEqual(D.missionFor(n), 'interrupt2', `第 ${n} 关`);
+  assert.strictEqual(D.missionFor(20), 'noItems');
+  assert.strictEqual(D.missionFor(49), 'noItems');
+  const ids = new Set(Object.keys(D.levels).map((n) => D.missionFor(+n)).filter(Boolean));
+  for (const id of Object.keys(D.missions)) assert.ok(ids.has(id), `任务 ${id} 至少出现一次`);
+});
+
+test('关卡任务：首次完成给 2 银，只给一次；失败不算', () => {
+  const s = P.newSave();
+  const n = 3;
+  const id = D.missionFor(n);
+  const ok = { win: true, wallRatio: 1, minWallRatio: 1, killCopper: 0, earlyCalls: 5, skillsCast: 0, itemsUsed: [], interrupts: 3 };
+  assert.ok(D.missions[id].check(ok));
+  P.applyResult(s, n, Object.assign({}, ok, { win: false }));
+  assert.ok(!s.levels[n].mission);
+  const silver0 = s.silver;
+  const r = P.applyResult(s, n, ok);
+  assert.ok(s.levels[n].mission);
+  assert.ok(r.notes.some((x) => x.includes('关卡任务')));
+  assert.ok(s.silver >= silver0 + 2);
+  const r2 = P.applyResult(s, n, ok);
+  assert.ok(!r2.notes.some((x) => x.includes('关卡任务')));
+});
+
+test('关卡任务：战斗统计技能释放次数和城墙最低血量', () => {
+  const s = P.newSave();
+  s.activeOwned.drum = true;
+  s.loadout.active[0] = 'drum';
+  const b = new TD.Battle({ level: 5, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 1 });
+  b.waveState = 'running';
+  b.castSkill(0);
+  assert.strictEqual(b.skillsCast, 1);
+  b.hitWall(b.wall.max * 0.4, null);
+  assert.ok(b.minWallRatio <= 0.61);
+  b.healWall(b.wall.max);
+  assert.ok(b.minWallRatio <= 0.61, '回血不影响最低值');
+});

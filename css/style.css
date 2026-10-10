@@ -1809,3 +1809,25 @@ body {
 .map-screen.sky6 {
   background: radial-gradient(ellipse at 50% 60%, rgba(255, 255, 255, 0.55), rgba(190, 220, 255, 0.85));
 }
+
+/* ---------- 关卡任务（设计书 36） ---------- */
+.advice.mission {
+  background: #eef4ff;
+  border-color: #7ab8ff;
+}
+.advice.mission span:first-child {
+  flex: 1;
+}
+.advice.mission.done {
+  opacity: 0.75;
+}
+.node-mission {
+  position: absolute;
+  top: -8px;
+  left: -10px;
+  font-size: 18px;
+  pointer-events: none;
+}
+.advice.mission span:nth-child(2) {
+  flex: none;
+}

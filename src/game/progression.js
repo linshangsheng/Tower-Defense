@@ -529,6 +529,13 @@
       }
       rec.clears++;
       rec.streak = 0;
+      // 关卡任务（设计书 36）
+      const mid = D.missionFor && D.missionFor(n);
+      if (mid && !rec.mission && D.missions[mid].check(result)) {
+        rec.mission = true;
+        out.silver += D.missionReward.silver;
+        out.notes.push(`🎯 完成关卡任务「${D.missions[mid].name}」：+${D.missionReward.silver} 银`);
+      }
       // 挑战王冠（设计书 31）
       if (diffId === 'hard' && !rec.crown) {
         rec.crown = true;

@@ -425,6 +425,7 @@
         h('span', { class: 'node-index' }, n),
         rec.clears ? starsEl(rec.stars) : null,
         rec.crown ? h('span', { class: 'node-crown', title: '已在挑战难度通关' }, '👑') : null,
+        rec.mission ? h('span', { class: 'node-mission', title: '关卡任务已完成' }, '🎯') : null,
         h('span', { class: 'node-name' }, `${n}. ${lvl.name}`)
       );
     });
@@ -699,6 +700,9 @@
       ),
       h('div', { class: 'mon-list' }, mons),
       weaponAdvice(n),
+      D.missionFor(n)
+        ? h('div', { class: 'advice mission' + (rec.mission ? ' done' : '') }, h('span', null, h('b', null, `🎯 关卡任务：${D.missions[D.missionFor(n)].name}`), `（${D.missions[D.missionFor(n)].desc}）`), h('span', { class: 'equipped' }, rec.mission ? '✔ 已完成' : `首次完成 +${D.missionReward.silver} 银`))
+        : null,
       P.rally(s, n) > 0 ? h('div', { class: 'advice rally' }, h('span', null, h('b', null, `🎺 援军鼓舞 +${Math.round(P.rally(s, n) * 100)}%`), `：已连续失败 ${rec.streak} 次，本次攻击和城墙血量提高，通关后清零`)) : null,
       h('div', { class: 'tip' }, '💡 ', lvl.tip),
       h(

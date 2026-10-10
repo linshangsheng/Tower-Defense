@@ -9,6 +9,7 @@ const FILES = [
   'src/data/levels.js',
   'src/data/story.js',
   'src/data/outfits.js',
+  'src/data/missions.js',
   'src/data/achievements.js',
   'src/game/progression.js',
   'src/game/battle.js',

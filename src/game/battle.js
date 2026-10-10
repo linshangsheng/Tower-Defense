@@ -82,6 +82,8 @@
       this.killsByType = {};
       this.interrupts = 0;
       this.earlyCalls = 0;
+      this.skillsCast = 0; // 关卡任务（设计书 36）
+      this.minWallRatio = 1;
       this.on('bossInterrupt', () => this.interrupts++);
 
       this.killCopper = 0;
@@ -1173,6 +1175,7 @@
       const temp = this.time < this.tempDr.until ? this.tempDr.amt : 0;
       const dmg = amount * (1 - Math.min(0.8, this.stats.wallDr + this.mods.wallDr + temp));
       this.wall.hp = Math.max(0, this.wall.hp - dmg);
+      this.minWallRatio = Math.min(this.minWallRatio, this.wall.hp / this.wall.max);
       this.wallDamageTaken += dmg;
       const by = who || (m && m.type) || 'boss';
       this.report.wallBy[by] = (this.report.wallBy[by] || 0) + dmg;
@@ -1673,6 +1676,7 @@
       }
       s.cd = def.cd * Math.max(0.3, 1 + this.mods.cdMult);
       this.castCount++;
+      this.skillsCast++;
       this.emit('skill', { id: s.id, lane });
       return true;
     }
@@ -1835,6 +1839,8 @@
         report: TD.util.deepClone(this.report),
         interrupts: this.interrupts,
         earlyCalls: this.earlyCalls,
+        skillsCast: this.skillsCast,
+        minWallRatio: this.minWallRatio,
         skillsCarried: this.skills.length,
         itemsUsed: this.itemsUsed.slice(),
         wave: this.waveIndex + 1,
