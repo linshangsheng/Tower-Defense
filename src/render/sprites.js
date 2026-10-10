@@ -113,9 +113,13 @@
     ctx.save();
     ctx.translate(x, y);
     if (opts.scale) ctx.scale(opts.scale, opts.scale);
-    // 受击闪白：只提亮怪物本身（不支持 canvas 滤镜的浏览器上没有闪白，不影响游戏）
-    if (opts.flash > 0 && S.filterSupported) ctx.filter = `brightness(${1 + Math.min(1, opts.flash * 7) * 0.9})`;
     fn(ctx, size, t, opts);
+    // 受击闪白：用"叠加"混合再画一遍，只提亮怪物本身（不用 canvas 滤镜，滤镜在没有显卡加速时非常慢）
+    if (opts.flash > 0) {
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.globalAlpha = Math.min(1, opts.flash * 7) * 0.55;
+      fn(ctx, size, t, opts);
+    }
     ctx.restore();
   };
 
@@ -2172,6 +2176,27 @@
       ctx.restore();
       ellipse(ctx, -6, 10, 7, 7, '#8a5a3c', OUTLINE, 2);
     },
+  };
+
+  // 剪影缓存：每种怪物生成一次纯色剪影，之后直接贴图（用于暗夜远处的怪、墨墨召唤的墨影）
+  const silhouetteCache = {};
+  S.silhouette = function (type, size, color) {
+    const key = type + '|' + size + '|' + color;
+    if (silhouetteCache[key]) return silhouetteCache[key];
+    if (typeof document === 'undefined') return null;
+    const w = Math.ceil(size * 7);
+    const h = Math.ceil(size * 7);
+    const c = document.createElement('canvas');
+    c.width = w;
+    c.height = h;
+    const cx = c.getContext('2d');
+    const ox = w / 2;
+    const oy = h * 0.72;
+    S.monster(cx, type, ox, oy, size, 0.3, { attack: false });
+    cx.globalCompositeOperation = 'source-in';
+    cx.fillStyle = color;
+    cx.fillRect(0, 0, w, h);
+    return (silhouetteCache[key] = { canvas: c, ox, oy });
   };
 
   S.iconCanvas = function (id, px) {

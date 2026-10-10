@@ -846,17 +846,25 @@
       const dark = b.level.dark && x > C.wallX + 450;
       if (m.hidden) ctx.globalAlpha = 0.18;
       if (m.stealthed) ctx.globalAlpha = 0.22 + Math.sin(this.t * 6 + m.id) * 0.06;
-      if (dark && S.filterSupported) ctx.filter = 'brightness(0) opacity(0.55)';
-      else if (m.shade && S.filterSupported) ctx.filter = 'brightness(0.25) saturate(0.4)';
-      S.monster(ctx, m.type, x, y, def.size, t, { flash: dark ? 0 : m.hitFlash, attack: m.state === 'attack' || m.state === 'hold', seed: m.id, ai: m.ai, shield: m.shield, regen, scale: scale * DRAW_SCALE });
+      if (dark || m.shade) {
+        // 剪影：暗夜远处的怪（黑色）和墨影（深紫色）
+        const sil = S.silhouette(m.type, def.size, dark ? '#0c0a1a' : '#231a33');
+        if (sil) {
+          const sc = scale * DRAW_SCALE;
+          const bob = Math.sin(this.t * 6 + m.id) * 1.5;
+          if (dark) ctx.globalAlpha *= 0.6;
+          ctx.drawImage(sil.canvas, x - sil.ox * sc, y - sil.oy * sc + bob, sil.canvas.width * sc, sil.canvas.height * sc);
+          ctx.globalAlpha = 1;
+        }
+      } else {
+        S.monster(ctx, m.type, x, y, def.size, t, { flash: m.hitFlash, attack: m.state === 'attack' || m.state === 'hold', seed: m.id, ai: m.ai, shield: m.shield, regen, scale: scale * DRAW_SCALE });
+      }
       if (m.shade && !dark) {
-        ctx.filter = 'none';
         // 墨影：紫色的眼睛
         S.ellipse(ctx, x - def.size * 0.35, y - def.size * 1.05, 2.5, 2.5, '#c58cff');
         S.ellipse(ctx, x, y - def.size * 1.05, 2.5, 2.5, '#c58cff');
       }
       if (dark) {
-        ctx.filter = 'none';
         // 黑暗中只看得见一双发光的眼睛
         S.ellipse(ctx, x - def.size * 0.3, y - def.size * 1.0, 2.5, 2.5, '#ffeb6b');
         S.ellipse(ctx, x + def.size * 0.05, y - def.size * 1.0, 2.5, 2.5, '#ffeb6b');
