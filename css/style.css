@@ -1942,3 +1942,37 @@ body {
   font-size: 13px;
   color: #6a5440;
 }
+
+/* ---------- 大字模式（设计书 47）：手机横屏时画面缩到约一半，放大弹窗、对话和提示 ---------- */
+#ui.large-text .modal {
+  zoom: 1.22;
+  max-height: 540px;
+}
+#ui.large-text .modal.lose-wide,
+#ui.large-text .modal.town-modal {
+  zoom: 1;
+  max-height: 660px;
+}
+#ui.large-text .toast {
+  font-size: 24px;
+}
+#ui.large-text .story-name {
+  font-size: 24px;
+}
+#ui.large-text .story-text {
+  font-size: 28px;
+}
+#ui.large-text .hud-bottom {
+  zoom: 1.15;
+}
+#ui.large-text .topbar .chapter-title {
+  font-size: 22px;
+}
+/* 弹窗内容太高需要滚动时，底部按钮行始终可见 */
+.modal .modal-buttons {
+  position: sticky;
+  bottom: -22px;
+  background: var(--paper);
+  padding: 8px 0 4px;
+  z-index: 2;
+}

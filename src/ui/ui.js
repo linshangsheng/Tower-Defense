@@ -252,6 +252,26 @@
       h(
         'label',
         { class: 'row' },
+        '大字模式 ',
+        h(
+          'select',
+          {
+            onchange: (e) => {
+              s.largeText = e.target.value;
+              game.persist();
+              game.refit && game.refit();
+            },
+          },
+          [
+            ['auto', '自动（手机上开启）'],
+            ['on', '开启'],
+            ['off', '关闭'],
+          ].map(([v, t]) => h('option', { value: v, selected: (s.largeText || 'auto') === v ? true : null }, t))
+        )
+      ),
+      h(
+        'label',
+        { class: 'row' },
         '休息提醒 ',
         h(
           'select',

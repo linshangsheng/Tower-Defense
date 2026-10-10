@@ -173,6 +173,8 @@
     else TD.ui.closeModal();
   };
 
+  game.refit = () => fit();
+
   game.toggleSpeed = function () {
     // 通关第 10 关后解锁 3 倍速（设计书 38.1）
     const max = P.isCleared(game.save, 10) ? 3 : 2;
@@ -262,6 +264,10 @@
     const s = Math.min(window.innerWidth / C.width, window.innerHeight / C.height);
     stage.style.transform = `translate(-50%, -50%) scale(${s})`;
     game.scale = s;
+    // 大字模式（设计书 47）：自动 = 缩放小于 0.75（手机横屏）时开启
+    const lt = (game.save && game.save.settings.largeText) || 'auto';
+    const large = lt === 'on' || (lt === 'auto' && s < 0.75);
+    document.getElementById('ui').classList.toggle('large-text', large);
   }
 
   function canvasPoint(e) {
