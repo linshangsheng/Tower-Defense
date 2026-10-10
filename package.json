@@ -6,6 +6,7 @@
   "scripts": {
     "test": "node --test tests/*.test.js",
     "sim": "node tools/sim.js --seeds 6",
-    "smoke": "NODE_PATH=${NODE_PATH:-/opt/node22/lib/node_modules} node tools/smoke.js screenshots"
+    "smoke": "NODE_PATH=${NODE_PATH:-/opt/node22/lib/node_modules} node tools/smoke.js screenshots",
+    "perf": "NODE_PATH=${NODE_PATH:-/opt/node22/lib/node_modules} node tools/perf.js"
   }
 }
