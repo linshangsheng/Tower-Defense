@@ -2001,3 +2001,15 @@ body {
   font-size: 13px;
   color: #6a5440;
 }
+/* 地图顶栏按钮越来越多（v0.42）：章节页签和图标按钮再收窄一点，给章节标题留位置 */
+.map-screen .topbar .chapter-tab {
+  min-width: 38px;
+  padding: 4px 6px;
+}
+.map-screen .topbar .btn.small.icon-btn {
+  min-width: 40px;
+  padding: 4px 6px;
+}
+.map-screen .topbar .power {
+  font-size: 14px;
+}
