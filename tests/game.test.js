@@ -1188,3 +1188,13 @@ test('叮叮：通关第 20 关解锁；攻击 ×0.82、攻速 ×1.2；铃声每
   assert.strictEqual(far.stunUntil, 0);
   assert.strictEqual(boss.stunUntil, 0);
 });
+
+test('版本号：config、设计书、离线缓存名一致', () => {
+  const fs = require('fs');
+  const path = require('path');
+  const v = TD.config.version;
+  const doc = fs.readFileSync(path.join(__dirname, '..', 'tower-defense-design.md'), 'utf8');
+  assert.ok(doc.includes(`> 版本：${v}`), `设计书版本应为 ${v}`);
+  const sw = fs.readFileSync(path.join(__dirname, '..', 'sw.js'), 'utf8');
+  assert.ok(sw.includes(`'scyx-${v}'`), `sw.js 的 VERSION 应为 scyx-${v}`);
+});

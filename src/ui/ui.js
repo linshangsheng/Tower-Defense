@@ -144,7 +144,7 @@
         h('button', { class: 'btn', onclick: () => (sfx('click'), UI.showSettings()) }, '设置'),
         h('button', { class: 'btn', onclick: () => (sfx('click'), UI.showHelp()) }, '玩法说明')
       ),
-      h('div', { class: 'title-foot' }, `网页原型 v0.24 · ${D.chapters.length} 章 ${Object.keys(D.levels).length} 关`)
+      h('div', { class: 'title-foot' }, `网页原型 ${C.version} · ${D.chapters.length} 章 ${Object.keys(D.levels).length} 关`)
     );
     root.appendChild(screenEl);
   };
