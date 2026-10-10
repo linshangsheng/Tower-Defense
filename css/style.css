@@ -1375,3 +1375,38 @@ body {
   gap: 12px;
   font-size: 17px;
 }
+
+/* ---------- 商店引导 ---------- */
+.tab {
+  position: relative;
+}
+.new-badge {
+  position: absolute;
+  right: -6px;
+  top: -8px;
+  background: #e04848;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 900;
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+  padding: 0 5px;
+  animation: bob 1s ease-in-out infinite;
+}
+.guide {
+  background: #fff3c4;
+  border: 3px dashed #e6a34a;
+  border-radius: 12px;
+  padding: 8px 12px;
+  font-weight: 700;
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+.card.glow {
+  border-color: #e6a34a;
+  box-shadow: 0 0 0 4px rgba(255, 192, 77, 0.6);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+.btn.pulse {
+  animation: nudge 0.8s ease-in-out infinite;
+}

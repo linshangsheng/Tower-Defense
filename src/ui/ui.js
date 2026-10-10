@@ -495,8 +495,13 @@
     ['exchange', '汇兑所'],
   ];
 
+  // 商店页签随进度解锁（设计书 6.5）：通关第 N 关后出现
+  const TAB_UNLOCK = { loadout: 0, attrs: 0, wall: 1, items: 2, skills: 2, equip: 3, weapons: 4, exchange: 5 };
+  UI.tabUnlocked = (save, id) => P.highestCleared(save) >= (TAB_UNLOCK[id] || 0);
+
   UI.showShop = function (levelNo, tab) {
     clear();
+    if (tab && !UI.tabUnlocked(game.save, tab)) tab = 'attrs';
     const state = { levelNo, tab: tab || 'loadout' };
     UI.shopState = state;
     screenEl = h('div', { class: 'screen shop-screen' });
@@ -508,7 +513,9 @@
     const st = UI.shopState;
     const s = game.save;
     screenEl.innerHTML = '';
-    const tabs = TABS.map(([id, name]) =>
+    s.seenTabs = s.seenTabs || {};
+    s.seenTabs[st.tab] = true;
+    const tabs = TABS.filter(([id]) => UI.tabUnlocked(s, id)).map(([id, name]) =>
       h(
         'button',
         {
@@ -519,7 +526,8 @@
             renderShop();
           },
         },
-        name
+        name,
+        s.seenTabs[id] ? null : h('span', { class: 'new-badge' }, '新')
       )
     );
     const content = h('div', { class: 'shop-content' });
@@ -602,6 +610,8 @@
   function shopAttrs(el) {
     const s = game.save;
     const st = P.heroStats(s);
+    const firstVisit = !s.stats.shopGuided;
+    if (firstVisit) el.append(h('div', { class: 'guide' }, '👉 升级「攻击力」，铛铛就能更快消灭怪物！'));
     el.append(h('div', { class: 'section-title' }, '属性升级（永久）'));
     for (const key of Object.keys(D.attributes)) {
       const a = D.attributes[key];
@@ -613,7 +623,12 @@
           a.name,
           `Lv.${lv}/${a.max}`,
           lv < a.max ? h('span', null, `${a.fmt(cur)} → `, h('b', { class: 'up' }, a.fmt(next))) : a.fmt(cur),
-          buyBtn(P.attrCost(s, key), () => P.buyAttr(s, key), '升级')
+          buyBtn(P.attrCost(s, key), () => {
+            const ok = P.buyAttr(s, key);
+            if (ok) s.stats.shopGuided = true;
+            return ok;
+          }, '升级'),
+          { cls: firstVisit && key === 'atk' ? 'glow' : '' }
         )
       );
     }
@@ -1411,7 +1426,7 @@
         'div',
         { class: 'modal-buttons' },
         h('button', { class: 'btn', onclick: () => (UI.closeModal(), UI.showMap(D.chapterOf(n).id)) }, '地图'),
-        h('button', { class: 'btn', onclick: () => (UI.closeModal(), UI.showShop(win && hasNext ? n + 1 : n, win ? 'loadout' : 'attrs')) }, '去商店'),
+        h('button', { class: 'btn' + (!win && game.save.stats.wins < 3 ? ' primary pulse' : ''), onclick: () => (UI.closeModal(), UI.showShop(win && hasNext ? n + 1 : n, win ? 'loadout' : 'attrs')) }, '去商店'),
         !win || !hasNext ? h('button', { class: 'btn' + (win ? '' : ' primary'), onclick: () => (UI.closeModal(), game.startBattle(n)) }, '再来一次') : null,
         hasNext ? h('button', { class: 'btn primary', onclick: () => (UI.closeModal(), UI.showMap(D.chapterOf(n + 1).id), UI.showPreview(n + 1)) }, '下一关 ›') : null
       )

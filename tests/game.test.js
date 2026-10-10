@@ -758,3 +758,12 @@ test('无尽模式：Boss 活着时下一波不来', () => {
   for (let i = 0; i < 120; i++) b.step(1 / 60);
   assert.strictEqual(b.waveIndex, 0);
 });
+
+test('老存档迁移：已通关的玩家不显示商店"新"角标', () => {
+  const old = { version: 1, copper: 0, levels: { 1: { stars: 3, clears: 1 }, 2: { stars: 2, clears: 1 } }, loadout: { active: ['drum'] }, stats: { battles: 2 } };
+  const s = P.migrate(old);
+  assert.ok(s.seenTabs.skills && s.seenTabs.exchange);
+  assert.ok(s.stats.shopGuided);
+  const fresh = P.migrate(P.newSave());
+  assert.ok(!fresh.seenTabs.skills, '新存档的技能页是"新"的');
+});

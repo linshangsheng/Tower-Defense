@@ -37,6 +37,7 @@
       chapterStarGold: {},
       stats: { battles: 0, wins: 0, kills: 0, interrupts: 0, earlyCalls: 0, supplies: 0, killsByType: {} },
       seenMonsters: {},
+      seenTabs: { loadout: true, attrs: true },
       achievements: {},
       settings: { sound: true, speed: 1 },
     };
@@ -45,6 +46,13 @@
   // 旧版本存档迁移：补齐缺失字段
   P.migrate = function (save) {
     const fresh = P.newSave();
+    // v0.17 之前的老存档：已经解锁的商店页签视为看过，不显示"新"角标
+    if (!save.seenTabs) {
+      save.seenTabs = { loadout: true, attrs: true };
+      const h = Object.keys(save.levels || {}).filter((k) => save.levels[k].clears > 0).reduce((a, k) => Math.max(a, +k), 0);
+      if (h >= 1) for (const id of ['wall', 'items', 'skills', 'equip', 'weapons', 'exchange']) save.seenTabs[id] = true;
+      if (h >= 1) save.stats = Object.assign({ shopGuided: true }, save.stats || {});
+    }
     const merge = (target, src) => {
       for (const k of Object.keys(src)) {
         if (target[k] === undefined) target[k] = TD.util.deepClone(src[k]);
