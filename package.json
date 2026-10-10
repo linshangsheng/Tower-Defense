@@ -8,6 +8,7 @@
     "sim": "node tools/sim.js --seeds 6",
     "smoke": "NODE_PATH=${NODE_PATH:-/opt/node22/lib/node_modules} node tools/smoke.js screenshots",
     "perf": "NODE_PATH=${NODE_PATH:-/opt/node22/lib/node_modules} node tools/perf.js",
-    "pwa": "NODE_PATH=${NODE_PATH:-/opt/node22/lib/node_modules} node tools/pwa.js"
+    "pwa": "NODE_PATH=${NODE_PATH:-/opt/node22/lib/node_modules} node tools/pwa.js",
+    "screens": "NODE_PATH=${NODE_PATH:-/opt/node22/lib/node_modules} node tools/screens.js"
   }
 }

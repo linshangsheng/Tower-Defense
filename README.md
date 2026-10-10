@@ -11,7 +11,7 @@
 - 存档保存在浏览器本地，"设置"里可以导出 / 导入。
 - 部署到 https 网站（如 GitHub Pages）后，手机 / 平板可以"添加到主屏幕"，断网也能玩。
 
-## 当前内容（原型 v0.41，六章 60 关）
+## 当前内容（原型 v0.42，六章 60 关）
 
 - **六章 60 关**：翠绿草原、黄金沙漠、迷雾沼泽、冰霜雪原、熔岩裂隙（最终 Boss 墨墨与结局演出），以及通关后的第六章「云端王国」。
 - **12 个 Boss**，各有阶段与可以"打断"的机制；第 49 关精英挑战小 Boss 两两出场。
@@ -35,6 +35,7 @@ npm run sim     # 强机器人模拟，检验各章的验收目标（--campaign 
 node tools/casual.js --seeds 6        # 休闲玩家模拟，估计真人难度（--easy / --no-rally）
 node tools/tune.js 51 60 --only 55,60 # 自动平衡：按关卡类型的目标难度调整怪物数量倍率
 npm run smoke   # 浏览器冒烟测试（需要 Playwright），截图输出到 screenshots/
+npm run screens # 全界面检查：逐一打开 42 个界面（node tools/screens.js 目录 可截图）
 npm run perf    # 渲染性能（真实帧循环下的帧间隔）
 npm run pwa     # 离线功能检查（本地服务器 + 断网刷新）
 node tools/icons.js                   # 重新生成 PWA 图标

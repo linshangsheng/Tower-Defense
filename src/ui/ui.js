@@ -79,6 +79,8 @@
 
   function modal(content, opts) {
     UI.closeModal();
+    // 战斗开场的关卡提示不要盖在弹窗上（设计书 50）
+    for (const t of root.querySelectorAll('.toast.tip')) t.remove();
     opts = opts || {};
     modalEl = h('div', { class: 'modal-back' + (opts.dim === false ? ' clear' : '') }, h('div', { class: 'modal ' + (opts.cls || '') }, content));
     if (opts.closeOnBack)
