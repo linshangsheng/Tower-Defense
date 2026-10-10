@@ -597,15 +597,7 @@
     save.copper += out.copper;
     save.silver += out.silver;
     save.gold += out.gold;
-    save.stats.battles++;
-    if (result.win) save.stats.wins++;
-    save.stats.kills += result.kills || 0;
-    save.stats.bestStreak = Math.max(save.stats.bestStreak || 0, result.bestStreak || 0);
-    for (const v of Object.values(result.combos || {})) save.stats.combos = (save.stats.combos || 0) + v;
-    save.stats.interrupts += result.interrupts || 0;
-    save.stats.earlyCalls += result.earlyCalls || 0;
-    save.stats.supplies += (result.supplies || []).length;
-    for (const k of Object.keys(result.killsByType || {})) save.stats.killsByType[k] = (save.stats.killsByType[k] || 0) + result.killsByType[k];
+    P.recordStats(save, result, result.win);
 
     out.achievements = P.checkAchievements(save, Object.assign({ level: n }, result));
     for (const o of P.newOutfits(save)) out.unlocks.push(`衣柜里多了一套新衣服：「${o.name}」（地图上的 👕）`);
@@ -620,6 +612,20 @@
       if (FEATURE[n]) out.unlocks.push(FEATURE[n]);
     }
     return out;
+  };
+
+  // 一场战斗结束后累计统计（普通关卡、无尽、每日、Boss 连战共用）
+  P.recordStats = function (save, result, win) {
+    const st = save.stats;
+    st.battles++;
+    if (win) st.wins++;
+    st.kills += result.kills || 0;
+    st.bestStreak = Math.max(st.bestStreak || 0, result.bestStreak || 0);
+    for (const v of Object.values(result.combos || {})) st.combos = (st.combos || 0) + v;
+    st.interrupts += result.interrupts || 0;
+    st.earlyCalls += result.earlyCalls || 0;
+    st.supplies += (result.supplies || []).length;
+    for (const k of Object.keys(result.killsByType || {})) st.killsByType[k] = (st.killsByType[k] || 0) + result.killsByType[k];
   };
 
   // 成就（设计书 24.1）：检查并发放奖励，返回新达成的成就

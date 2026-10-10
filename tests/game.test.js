@@ -1296,3 +1296,17 @@ test('助战伙伴：打败对应 Boss 后才能带；属性类加成生效；�
   P.setBuddy(s, null);
   assert.strictEqual(P.battleLoadout(s).buddy, null);
 });
+
+test('统计：普通关卡、无尽、每日、Boss 连战都用同一套累计（含提前召唤）', () => {
+  const s = P.newSave();
+  clearUpTo(s, 60);
+  const r = { kills: 5, earlyCalls: 2, interrupts: 1, supplies: ['sharp'], killsByType: { slime: 5 }, bestStreak: 7, combos: { shatter: 1 }, time: 100 };
+  TD.modes.applyBossRushResult(s, r);
+  TD.modes.applyEndlessResult(s, Object.assign({ wavesCleared: 3 }, r));
+  assert.strictEqual(s.stats.battles, 2);
+  assert.strictEqual(s.stats.earlyCalls, 4);
+  assert.strictEqual(s.stats.kills, 10);
+  assert.strictEqual(s.stats.combos, 2);
+  assert.strictEqual(s.stats.killsByType.slime, 10);
+  assert.strictEqual(s.stats.wins, 0);
+});
