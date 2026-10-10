@@ -21,6 +21,9 @@ body {
   margin: 0;
   height: 100%;
   overflow: hidden;
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
   background: #2d3a24;
   color: var(--ink);
   user-select: none;
@@ -1202,4 +1205,70 @@ body {
   position: absolute;
   right: 16px;
   top: 14px;
+}
+
+/* ---------- 新敌人登场 ---------- */
+.intro-modal {
+  width: 600px;
+}
+.intro-head {
+  font-size: 20px;
+  font-weight: 900;
+  color: #c0392b;
+  letter-spacing: 2px;
+}
+.intro-body {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  margin-top: 8px;
+}
+.intro-body h2 {
+  margin: 0 0 6px !important;
+}
+.intro-body p {
+  font-size: 17px;
+  margin: 8px 0 0;
+}
+.intro-portrait {
+  background: radial-gradient(circle, #fff 30%, #fbecc8 100%);
+  border: 3px solid var(--ink);
+  border-radius: 20px;
+  flex: none;
+}
+.intro-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+/* ---------- 竖屏提示 ---------- */
+#rotate-hint {
+  display: none;
+}
+@media (orientation: portrait) and (max-width: 900px) {
+  #rotate-hint {
+    display: flex;
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: #2d3a24;
+    color: #fff8e8;
+    font-size: 22px;
+    font-weight: 700;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 30px;
+    flex-direction: column;
+    gap: 16px;
+  }
+  #rotate-hint .phone {
+    font-size: 64px;
+    animation: rot 2s ease-in-out infinite;
+  }
+}
+@keyframes rot {
+  50% {
+    transform: rotate(-90deg);
+  }
 }

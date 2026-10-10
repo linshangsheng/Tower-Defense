@@ -509,6 +509,34 @@
     },
   };
 
+  // 怪物类型标签（用于新敌人登场卡片、关卡预览）
+  TD.data.monsterTags = function (def) {
+    const t = [];
+    if (def.boss) t.push(def.boss === 'major' ? '大 Boss' : '小 Boss');
+    if (def.flying) t.push('飞行');
+    if (def.speed >= 95) t.push('高速');
+    if ((def.armor || 0) >= 60) t.push('重甲');
+    if (def.frontArmor) t.push('盾牌');
+    if (def.mres) t.push('魔抗');
+    if (def.physResist) t.push('灵体');
+    if (def.ranged) t.push('远程');
+    if (def.healer) t.push('治疗');
+    if (def.chill) t.push('光环');
+    if (def.burrow) t.push('钻地');
+    if (def.stealth) t.push('隐身');
+    if (def.explode) t.push('自爆');
+    if (def.split || def.deathSpawn) t.push('分裂');
+    if (def.regen) t.push('再生');
+    if (def.laneHop) t.push('换道');
+    if (def.slam) t.push('冲撞');
+    if (def.pack) t.push('狼群');
+    if (def.fireZone) t.push('火焰');
+    if (def.onDeath) t.push('孢子');
+    return t;
+  };
+  // 不单独介绍的怪物：分裂产物和 Boss 召唤物
+  TD.data.noIntro = { minijelly: true, minipumpkin: true, snowball: true, inkClone: true, iceDragon: true };
+
   TD.data.rockGolem = { stompEvery: 12, stompFirst: 6, stompWarn: 1, stunDuration: 1, boomRange: 300, boomDamage: 200, lavaDuration: 8, lavaHaste: 0.5 };
 
   TD.data.inkBoss = {

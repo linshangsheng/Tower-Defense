@@ -34,6 +34,7 @@
     const battle = new TD.Battle({ level: n, stats: P.heroStats(s), loadout: lo, seed: (Date.now() & 0xffffff) + n });
     game.battle = battle;
     game.paused = false;
+    game.introPaused = false;
     game.pendingLane = null;
     game.acc = 0;
     game.speed = s.settings.speed || 1;
@@ -46,6 +47,15 @@
     battle.on('skill', (e) => TD.audio.play({ drum: 'drum', thunder: 'thunder', frost: 'frost', repair: 'heal' }[e.id] || 'skill'));
     battle.on('item', (e) => TD.audio.play({ bomb: 'boom', patch: 'heal', freeze: 'frost' }[e.id] || 'skill'));
     battle.on('bossWarn', () => TD.audio.play('warn'));
+    // 新敌人登场卡片：每种怪物只介绍一次
+    game.introQueue = [];
+    battle.on('spawn', (m) => {
+      const seen = (s.seenMonsters = s.seenMonsters || {});
+      if (seen[m.type] || m.shade || D.noIntro[m.type] || game.introQueue.includes(m.type)) return;
+      seen[m.type] = true;
+      game.introQueue.push(m.type);
+      if (game.introQueue.length === 1) game.nextIntro();
+    });
     battle.on('supply', (e) => {
       setPending(null);
       TD.audio.play('skill');
@@ -91,6 +101,18 @@
     TD.ui.showMap(TD.data.chapterOf(n).id);
   };
 
+  game.nextIntro = function () {
+    const type = game.introQueue[0];
+    if (!type) return;
+    game.introPaused = true;
+    game.persist();
+    TD.ui.showIntro(type, () => {
+      game.introQueue.shift();
+      if (game.introQueue.length) game.nextIntro();
+      else game.introPaused = false;
+    });
+  };
+
   game.pickSupply = function (id) {
     const b = game.battle;
     if (!b || !b.pendingSupply) return;
@@ -104,7 +126,7 @@
 
   game.togglePause = function () {
     const b = game.battle;
-    if (!b || b.over || b.pendingSupply) return;
+    if (!b || b.over || b.pendingSupply || game.introPaused) return;
     game.paused = !game.paused;
     if (game.paused) TD.ui.showPause();
     else TD.ui.closeModal();
@@ -212,7 +234,7 @@
     last = ts;
     const b = game.battle;
     let renderDt = dt;
-    if (b && !game.paused) {
+    if (b && !game.paused && !game.introPaused) {
       const step = 1 / C.tickRate;
       game.acc += dt * game.speed;
       let n = 0;
@@ -222,7 +244,7 @@
         n++;
       }
       renderDt = dt * game.speed;
-    } else if (game.paused) renderDt = 0;
+    } else if (game.paused || game.introPaused) renderDt = 0;
     game.renderer.render(renderDt);
     if (b) TD.ui.updateHud();
     requestAnimationFrame(frame);
@@ -258,6 +280,13 @@
       if (!b || b.over) return;
       if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT')) return;
       const k = e.key.toLowerCase();
+      if (game.introPaused) {
+        if (k === ' ' || k === 'enter' || k === 'escape') {
+          e.preventDefault();
+          if (TD.ui.introClose) TD.ui.introClose();
+        }
+        return;
+      }
       if (b.pendingSupply) {
         if (k >= '1' && k <= '3' && b.pendingSupply[+k - 1]) game.pickSupply(b.pendingSupply[+k - 1]);
         return;

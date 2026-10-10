@@ -27,7 +27,11 @@ try {
   await page.screenshot({ path: `${out}/3-preview.png` });
   await page.click('text=开始战斗');
   await page.evaluate(() => (TD.game.speed = 2));
-  await page.waitForTimeout(9000);
+  // 第一只怪出场时会弹出"新敌人登场"卡片
+  await page.waitForSelector('#intro-ok', { timeout: 8000 });
+  await page.screenshot({ path: `${out}/4-intro.png` });
+  await page.click('#intro-ok');
+  await page.waitForTimeout(8000);
   await page.screenshot({ path: `${out}/4-battle.png` });
   // 快进到结束
   await page.evaluate(() => {

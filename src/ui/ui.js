@@ -1017,6 +1017,29 @@
     if (nudgeIdx >= 0) hud.nudge.style.left = 10 + nudgeIdx * 102 + 'px';
   };
 
+  // ================= 新敌人登场（设计书 12.6） =================
+  UI.showIntro = function (type, onClose) {
+    const def = D.monsters[type];
+    const img = TD.sprites.portrait(type, 120);
+    img.className = 'intro-portrait';
+    const tags = D.monsterTags(def).map((x) => h('span', { class: 'tag' + (def.boss ? ' boss' : '') }, x));
+    const close = () => {
+      UI.closeModal();
+      onClose();
+    };
+    modal(
+      h(
+        'div',
+        { class: 'intro' },
+        h('div', { class: 'intro-head' }, def.boss ? '⚠ Boss 登场！' : '新敌人登场！'),
+        h('div', { class: 'intro-body' }, img, h('div', null, h('h2', null, def.name), h('div', { class: 'intro-tags' }, tags), h('p', null, def.desc))),
+        h('div', { class: 'modal-buttons' }, h('button', { class: 'btn primary', onclick: close, id: 'intro-ok' }, '知道了（空格）'))
+      ),
+      { cls: 'intro-modal' }
+    );
+    UI.introClose = close;
+  };
+
   // ================= 战场补给（设计书 2.7） =================
   UI.showSupply = function (battle, choices) {
     const first = !game.save.stats.seenSupply;

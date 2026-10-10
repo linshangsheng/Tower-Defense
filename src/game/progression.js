@@ -36,6 +36,7 @@
       levels: {},
       chapterStarGold: {},
       stats: { battles: 0, wins: 0, kills: 0 },
+      seenMonsters: {},
       settings: { sound: true, speed: 1 },
     };
   };
