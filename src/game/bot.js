@@ -54,7 +54,7 @@
     }
     // 剩余银币：武器进阶、技能 Lv2；金币：技能 Lv3（传说头盔优先）
     if (!saveForStaff) {
-      for (const id of ['staff', 'bow', 'cannon', 'crossbow']) {
+      for (const id of ['staff', 'orb', 'bow', 'cannon', 'crossbow']) {
         if (P.canAscend(save, id) && P.canAfford(save, D.weaponAscend.cost)) {
           P.ascendWeapon(save, id);
           bought.push('ascend:' + id);
@@ -67,7 +67,13 @@
         }
       }
     }
-    if (save.equipOwned.lionCrown)
+    // 第三章：攒金币买雷电法球
+    if (P.highestCleared(save) >= 20 && !save.weapons.orb.owned && P.canAfford(save, D.weapons.orb.cost)) {
+      P.buyWeapon(save, 'orb');
+      bought.push('orb');
+    }
+    const saveForOrb = P.highestCleared(save) >= 20 && !save.weapons.orb.owned;
+    if (save.equipOwned.lionCrown && !saveForOrb)
       for (const id of ['thunder', 'arrowRain', 'drum']) {
         if (P.skillLevel(save, id) === 2 && P.canAfford(save, D.skillUpgradeCost[3])) {
           P.upgradeSkill(save, id);

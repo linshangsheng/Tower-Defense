@@ -72,19 +72,24 @@
     // 武器
     let weapon = 'bow';
     const armored = share('mummy') + (counts.pharaoh ? 0.3 : 0);
-    const flying = share('bee') + share('vulture');
-    if (armored > 0.25 && owned('staff')) weapon = 'staff';
+    const flying = share('bee') + share('vulture') + share('bat');
+    const spirit = share('ghost') + (counts.boneMage ? 0.3 : 0);
+    const magicPick = owned('orb') ? 'orb' : owned('staff') ? 'staff' : null;
+    if ((spirit > 0.2 || lvl.type === 'union') && magicPick) weapon = magicPick;
+    else if (armored > 0.25 && owned('staff')) weapon = 'staff';
     else if (armored > 0.25 && owned('cannon')) weapon = 'cannon';
     else if (flying > 0.35 && owned('crossbow')) weapon = 'crossbow';
     else if (share('goblin') > 0.15 && owned('boomerang')) weapon = 'boomerang';
     else if (lvl.type === 'rush' && owned('crossbow')) weapon = 'crossbow';
+    else if (n > 20 && magicPick) weapon = magicPick;
     else if (n > 10 && owned('staff')) weapon = 'staff';
     lo.weapon = weapon;
     notes.push(`武器：${D.weapons[weapon].name}`);
 
     // 主动技能
     let pref;
-    if (lvl.type === 'boss' || lvl.type === 'miniboss') pref = ['thunder', 'arrowRain', 'drum', 'repair', 'frost'];
+    if (counts.witch) pref = ['repair', 'arrowRain', 'thunder', 'drum', 'frost'];
+    else if (lvl.type === 'boss' || lvl.type === 'miniboss') pref = ['thunder', 'arrowRain', 'drum', 'repair', 'frost'];
     else if (lvl.type === 'raid') pref = ['arrowRain', 'drum', 'frost', 'thunder', 'repair'];
     else if (lvl.type === 'rush') pref = ['frost', 'arrowRain', 'drum', 'repair', 'thunder'];
     else pref = ['arrowRain', 'drum', 'thunder', 'frost', 'repair'];
@@ -95,7 +100,7 @@
     // 被动技能
     let prefP = ['precision', 'burn', 'combo', 'pierceArmor'];
     if (share('goblin') > 0.15 || (armored > 0.25 && weapon !== 'staff')) prefP = ['pierceArmor', 'precision', 'burn', 'combo'];
-    else if (armored > 0.25) prefP = ['burn', 'precision', 'combo', 'pierceArmor'];
+    else if (armored > 0.25 || spirit > 0.2) prefP = ['burn', 'precision', 'combo', 'pierceArmor'];
     const nP = P.slotCount(save, 'passive');
     const pas = prefP.filter((id) => save.passiveOwned[id]).slice(0, nP);
     for (let i = 0; i < 3; i++) lo.passive[i] = pas[i] || null;

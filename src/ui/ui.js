@@ -121,7 +121,7 @@
         h('button', { class: 'btn', onclick: () => (sfx('click'), UI.showSettings()) }, '设置'),
         h('button', { class: 'btn', onclick: () => (sfx('click'), UI.showHelp()) }, '玩法说明')
       ),
-      h('div', { class: 'title-foot' }, '网页原型 v0.2 · 第一章 翠绿草原 · 第二章 黄金沙漠')
+      h('div', { class: 'title-foot' }, '网页原型 v0.3 · 三章 30 关')
     );
     root.appendChild(screenEl);
   };
@@ -388,7 +388,7 @@
         : h('div', { class: 'map-note' }, `恭喜通关「${ch.name}」！下一章正在建设中……可以回头挑战三星，或者收集金币购买传说装备。`);
     screenEl = h(
       'div',
-      { class: 'screen map-screen' + (ch.theme.desert ? ' desert' : '') },
+      { class: 'screen map-screen' + (ch.theme.desert ? ' desert' : ch.theme.swamp ? ' swamp' : '') },
       path,
       h(
         'div',

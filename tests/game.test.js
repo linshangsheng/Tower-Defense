@@ -377,3 +377,120 @@ test('存档导出再导入，内容一致（含中文）', () => {
   assert.strictEqual(TD.saveStore.importCode('乱写的'), null);
   assert.strictEqual(TD.saveStore.importCode('SCYX1:@@@'), null);
 });
+
+// ---------- 第三章机制 ----------
+test('小幽灵：物理伤害只有 30%，驱魔之箭提升到 70%', () => {
+  const b = newBattle(21);
+  const g1 = b.spawnMonster('ghost', 0, 800);
+  const g2 = b.spawnMonster('ghost', 0, 800);
+  const g3 = b.spawnMonster('ghost', 0, 800);
+  assert.ok(Math.abs(b.damage(g1, 100, { type: 'phys' }) - 30) < 0.01);
+  assert.strictEqual(b.damage(g2, 100, { type: 'magic' }), 100);
+  b.mods.spiritPierce = 0.4;
+  assert.ok(Math.abs(b.damage(g3, 100, { type: 'phys' }) - 70) < 0.01);
+});
+
+test('毒蛙停在远处吐毒，城墙持续中毒；解毒剂减免持续伤害', () => {
+  const run = (antidote) => {
+    const b = newBattle(22);
+    b.hero.cooldown = 1e9;
+    if (antidote) b.mods.dotReduce = 0.6;
+    const f = b.spawnMonster('frog', 0, 490);
+    for (let i = 0; i < 60 * 6; i++) b.step(1 / 60);
+    assert.ok(Math.abs(f.x - 480) < 1, '停在 x=480');
+    return b.wall.max - b.wall.hp;
+  };
+  const plain = run(false);
+  const cured = run(true);
+  assert.ok(plain > 0);
+  assert.ok(cured < plain, `解毒后 ${cured} < ${plain}`);
+});
+
+test('树桩怪 2 秒没挨打就回血', () => {
+  const b = newBattle(26);
+  b.hero.cooldown = 1e9;
+  const m = b.spawnMonster('stump', 0, 1200);
+  b.damage(m, m.maxHp * 0.5, { type: 'magic' });
+  const hp0 = m.hp;
+  for (let i = 0; i < 60; i++) b.step(1 / 60);
+  assert.ok(Math.abs(m.hp - hp0) < 1e-6, '2 秒内不回血');
+  for (let i = 0; i < 120; i++) b.step(1 / 60);
+  assert.ok(m.hp > hp0, '之后开始回血');
+});
+
+test('蝙蝠会换车道', () => {
+  const b = newBattle(24);
+  b.hero.cooldown = 1e9;
+  const m = b.spawnMonster('bat', 2, 1250);
+  const lanes = new Set([m.lane]);
+  for (let i = 0; i < 60 * 8; i++) {
+    b.step(1 / 60);
+    lanes.add(m.lane);
+  }
+  assert.ok(lanes.size >= 2);
+});
+
+test('南瓜头死后裂成 3 只小南瓜', () => {
+  const b = newBattle(28);
+  const m = b.spawnMonster('pumpkin', 1, 700);
+  const n0 = b.monsters.length;
+  b.damage(m, 1e6, { type: 'magic' });
+  assert.strictEqual(b.monsters.filter((x) => x.type === 'minipumpkin').length, 3);
+  assert.strictEqual(b.monsters.length, n0 + 3);
+});
+
+test('骨头先生第一次倒下会复活，第二次才死', () => {
+  const b = newBattle(25);
+  b.hero.cooldown = 1e9;
+  const m = b.spawnMonster('boneMage', 2, 760);
+  b.damage(m, 1e7, { type: 'magic' });
+  assert.ok(!m.dead && m.bones && !b.isTargetable(m), '化成骨头，无法被攻击');
+  for (let i = 0; i < 60 * 3.2; i++) b.step(1 / 60);
+  assert.ok(!m.bones && b.isTargetable(m));
+  assert.ok(Math.abs(m.hp - m.maxHp * 0.5) < 1);
+  b.damage(m, 1e7, { type: 'magic' });
+  assert.ok(m.dead);
+});
+
+test('毒汤婆婆煮汤：小怪血量 +50%', () => {
+  const b = newBattle(30);
+  b.hero.cooldown = 1e9;
+  const w = b.spawnMonster('witch', 2, 760);
+  const slime = b.spawnMonster('slime', 0, 1200);
+  const hp0 = slime.maxHp;
+  w.hp = w.maxHp * 0.6;
+  for (let i = 0; i < 60 * 4; i++) b.step(1 / 60);
+  assert.ok(slime.cooked);
+  assert.ok(Math.abs(slime.maxHp - hp0 * 1.5) < 1e-6);
+});
+
+test('联合关：所有车道同时出怪', () => {
+  const s = P.newSave();
+  const b = new TD.Battle({ level: 29, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 1 });
+  const spawned = [];
+  b.on('spawn', (m) => spawned.push(m));
+  while (!spawned.length) b.step(1 / 60);
+  assert.strictEqual(spawned.length, 5);
+  assert.deepStrictEqual(spawned.map((m) => m.lane).sort(), [0, 1, 2, 3, 4]);
+});
+
+test('暗夜关射程降低 30%', () => {
+  const s = P.newSave();
+  const a = new TD.Battle({ level: 22, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 1 });
+  const d = new TD.Battle({ level: 23, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 1 });
+  assert.ok(Math.abs(d.range - a.range * 0.7) < 1e-6);
+});
+
+test('雷电法球：闪电在怪之间跳跃', () => {
+  const b = newBattle(21, (s) => {
+    s.weapons.orb.owned = true;
+    s.loadout.weapon = 'orb';
+  });
+  const ms = [b.spawnMonster('slime', 1, 700), b.spawnMonster('slime', 1, 760), b.spawnMonster('slime', 1, 820), b.spawnMonster('slime', 2, 740)];
+  let chains = 0;
+  b.on('thunderChain', () => chains++);
+  b.hero.cooldown = 0;
+  for (let i = 0; i < 30; i++) b.step(1 / 60);
+  assert.ok(chains >= 3, `跳跃 ${chains} 次`);
+  assert.ok(ms.every((m) => m.hp < m.maxHp));
+});

@@ -1128,3 +1128,7 @@ body {
   user-select: text;
   -webkit-user-select: text;
 }
+
+.map-screen.swamp {
+  background: radial-gradient(ellipse at 50% 60%, rgba(120, 150, 110, 0.6), rgba(60, 60, 85, 0.85));
+}

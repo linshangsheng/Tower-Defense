@@ -136,3 +136,28 @@ if (LAST >= 20) {
   }
   console.log(`第 20 关：有魔法输出胜 ${magic}/${total}，无魔法输出胜 ${noMagic}/${total}`);
 }
+
+if (LAST >= 30) {
+  console.log('\n=== 目标 5：第 25 关，有无魔法输出对比 ===');
+  let magic = 0;
+  let noMagic = 0;
+  let total = 0;
+  for (let s = 1; s <= seeds; s++) {
+    const { before } = campaign(s);
+    if (!before[25]) continue;
+    for (let k = 0; k < 3; k++) {
+      total++;
+      const a = TD.util.deepClone(before[25]);
+      const b = TD.util.deepClone(before[25]);
+      TD.bot.shop(a);
+      TD.bot.shop(b);
+      if (TD.bot.playLevel(a, 25, { seed: 500 + s * 7 + k }).res.win) magic++;
+      b.weapons.staff.owned = false;
+      b.weapons.orb.owned = false;
+      b.activeOwned.thunder = false;
+      b.passiveOwned.burn = false;
+      if (TD.bot.playLevel(b, 25, { seed: 500 + s * 7 + k }).res.win) noMagic++;
+    }
+  }
+  console.log(`第 25 关：有魔法输出胜 ${magic}/${total}，无魔法输出胜 ${noMagic}/${total}`);
+}

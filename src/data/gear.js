@@ -65,6 +65,18 @@
       good: '重甲怪、成团的怪、Boss',
       ascend: { name: '攻城火炮', desc: '无视护甲 40% → 70%，溅射伤害 70% → 85%', weapon: { armorIgnore: 0.7, splash: { radius: 80, mult: 0.85 } } },
     },
+    orb: {
+      name: '雷电法球',
+      cost: { gold: 4 },
+      dmgMult: 0.8,
+      aspdMult: 0.9,
+      projSpeed: 1500,
+      dmgType: 'magic',
+      chain: { count: 3, range: 200, falloff: 0.75 },
+      desc: '闪电命中后在附近的怪之间跳跃 3 次，每跳伤害为上一跳的 75%。魔法伤害。',
+      good: '密集怪群、小幽灵、魔法抗性低的怪',
+      ascend: { name: '雷神之球', desc: '跳跃 3 → 5 次', weapon: { chain: { count: 5, range: 200, falloff: 0.75 } } },
+    },
   };
 
   TD.data.weaponAscend = { minLv: 5, cost: { silver: 8 } };
@@ -254,8 +266,11 @@
     farsight: { name: '远望', desc: '射程 +12%', mods: { range: 0.12 }, icon: 'eye' },
     arcane: { name: '奥术涌动', desc: '魔法伤害 +20%', mods: { magicMult: 0.2 }, icon: 'staff', minLevel: 11 },
     breaker: { name: '破甲箭头', desc: '无视目标 25% 护甲', mods: { armorIgnore: 0.25 }, icon: 'cannon', minLevel: 11 },
+    flare: { name: '照明弹', desc: '射程 +20%（暗夜关里正好抵消黑暗）', mods: { range: 0.2 }, icon: 'eye', minLevel: 21 },
+    antidote: { name: '解毒剂', desc: '城墙受到的持续伤害（中毒、毒雾）−60%', mods: { dotReduce: 0.6 }, icon: 'patch', minLevel: 21 },
+    exorcism: { name: '驱魔之箭', desc: '物理伤害对灵体的效果 30% → 70%', mods: { spiritPierce: 0.4 }, icon: 'arrowUp', minLevel: 21 },
   };
-  TD.data.supplyBotOrder = ['sharp', 'quick', 'master', 'arcane', 'breaker', 'eagle', 'fury', 'frostTip', 'farsight', 'bricks', 'purse'];
+  TD.data.supplyBotOrder = ['sharp', 'quick', 'master', 'arcane', 'breaker', 'exorcism', 'antidote', 'flare', 'eagle', 'fury', 'frostTip', 'farsight', 'bricks', 'purse'];
 
   TD.data.targetModes = {
     nearest: '最近优先',

@@ -6,6 +6,8 @@
   TD.data = TD.data || {};
 
   const W = (gap, ...groups) => ({ gap, groups });
+  // 联合关：每次出怪时所有车道同时各出一只（设计书 21.4）
+  const B = (gap, ...groups) => ({ gap, groups, burst: true });
 
   TD.data.chapters = [
     {
@@ -19,6 +21,12 @@
       name: '黄金沙漠',
       theme: { sky: '#ffe2a8', ground: '#f2d38b', ground2: '#e9c677', lane: '#f5dc9c', accent: '#d9822b', desert: true },
       levels: [11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+    },
+    {
+      id: 3,
+      name: '迷雾沼泽',
+      theme: { sky: '#b9b3cf', ground: '#6f8f6a', ground2: '#668564', lane: '#7f9a74', accent: '#7a5aa8', swamp: true },
+      levels: [21, 22, 23, 24, 25, 26, 27, 28, 29, 30],
     },
   ];
 
@@ -305,6 +313,160 @@
       ],
       tip: '胖法老残血时会展开金字塔护盾——物理攻击几乎打不动，一定要带魔法输出！',
     },
+
+    // ---------- 第三章 · 迷雾沼泽（设计书 21.6） ----------
+    21: {
+      name: '雾中的眼睛',
+      type: 'normal',
+      lanes: 4,
+      waves: [
+        W(0.77, ['slime', 14], ['ghost', 6]),
+        W(0.72, ['ghost', 12], ['bunny', 12]),
+        W(0.68, ['scorpion', 12], ['ghost', 12]),
+        W(0.68, ['mummy', 6], ['ghost', 14]),
+        W(0.64, ['ghost', 17], ['vulture', 12]),
+        W(0.59, ['ghost', 17], ['scorpion', 12], ['mummy', 6]),
+        W(0.59, ['ghost', 23], ['cactus', 12]),
+      ],
+      tip: '小幽灵几乎不怕物理攻击。魔法杖、雷电法球、雷霆一击和灼烧才是它的克星！',
+    },
+    22: {
+      name: '呱呱毒蛙',
+      type: 'normal',
+      lanes: 4,
+      waves: [
+        W(0.77, ['ghost', 9], ['frog', 3]),
+        W(0.72, ['slime', 14], ['frog', 4]),
+        W(0.68, ['scorpion', 12], ['frog', 4], ['ghost', 6]),
+        W(0.68, ['mummy', 7], ['frog', 6]),
+        W(0.64, ['ghost', 14], ['frog', 6], ['bunny', 9]),
+        W(0.59, ['cactus', 12], ['frog', 7], ['ghost', 9]),
+        W(0.59, ['mummy', 9], ['frog', 9], ['ghost', 14]),
+      ],
+      tip: '毒蛙停在远处向城墙吐毒液。试试「最强优先」或「最弱优先」，别让它们一直吐。',
+    },
+    23: {
+      name: '无月之夜',
+      type: 'dark',
+      dark: true,
+      lanes: 4,
+      waves: [
+        W(0.77, ['ghost', 12], ['slime', 12]),
+        W(0.72, ['scorpion', 14], ['frog', 3]),
+        W(0.68, ['ghost', 14], ['bunny', 12]),
+        W(0.68, ['mummy', 9], ['cactus', 9]),
+        W(0.64, ['ghost', 17], ['frog', 4]),
+        W(0.59, ['scorpion', 14], ['ghost', 14]),
+        W(0.59, ['ghost', 20], ['mummy', 9], ['frog', 4]),
+      ],
+      tip: '暗夜关：看不远，射程降低 30%。补给里的「照明弹」和「远望」很有用。',
+    },
+    24: {
+      name: '第五条路',
+      type: 'normal',
+      lanes: 5,
+      waves: [
+        W(0.72, ['bat', 9], ['slime', 14]),
+        W(0.68, ['bat', 14], ['ghost', 9]),
+        W(0.68, ['scorpion', 14], ['bat', 12]),
+        W(0.64, ['mummy', 9], ['bat', 14], ['frog', 3]),
+        W(0.59, ['ghost', 14], ['bat', 17]),
+        W(0.59, ['cactus', 12], ['bat', 17], ['frog', 4]),
+        W(0.55, ['ghost', 17], ['bat', 20]),
+        W(0.51, ['bat', 26], ['mummy', 9], ['frog', 4]),
+      ],
+      tip: '5 条车道全开！蝙蝠会在车道之间乱窜。',
+    },
+    25: {
+      name: '骨头先生',
+      type: 'miniboss',
+      lanes: 5,
+      waves: [
+        W(0.72, ['ghost', 14], ['slime', 12]),
+        W(0.68, ['bat', 14], ['frog', 4]),
+        W(0.68, ['ghost', 17], ['scorpion', 12]),
+        W(0.64, ['mummy', 9], ['bat', 14]),
+        W(0.59, ['ghost', 20], ['frog', 6]),
+        W(0.59, ['cactus', 14], ['ghost', 14]),
+        W(1.27, ['boneMage', 1], ['ghost', 12]),
+      ],
+      tip: '骨头先生被打倒后会复活一次。留一个技能给他站起来的时候！',
+    },
+    26: {
+      name: '会走路的树桩',
+      type: 'normal',
+      lanes: 5,
+      waves: [
+        W(0.77, ['stump', 2], ['slime', 14]),
+        W(0.72, ['stump', 3], ['ghost', 12]),
+        W(0.68, ['stump', 4], ['bat', 12]),
+        W(0.68, ['stump', 4], ['frog', 4], ['scorpion', 12]),
+        W(0.64, ['stump', 5], ['ghost', 14]),
+        W(0.59, ['stump', 5], ['mummy', 7], ['bat', 12]),
+        W(0.59, ['stump', 6], ['ghost', 14], ['frog', 4]),
+        W(0.55, ['stump', 8], ['cactus', 14]),
+      ],
+      tip: '树桩怪不挨打就会回血。别分散火力，一只一只打掉。',
+    },
+    27: {
+      name: '蝙蝠洞',
+      type: 'raid',
+      lanes: 5,
+      waves: [
+        W(0.51, ['bat', 17]),
+        W(0.47, ['bat', 20], ['vulture', 9]),
+        W(0.47, ['bat', 23], ['ghost', 9]),
+        W(0.42, ['bat', 26], ['vulture', 12]),
+        W(0.42, ['bat', 29], ['frog', 4]),
+        W(0.38, ['bat', 32], ['vulture', 14]),
+        W(0.38, ['bat', 35], ['ghost', 12]),
+        W(0.34, ['bat', 44]),
+      ],
+      tip: '空袭关！蝙蝠会换道，范围攻击比瞄准更可靠。',
+    },
+    28: {
+      name: '南瓜田',
+      type: 'normal',
+      lanes: 5,
+      waves: [
+        W(0.77, ['pumpkin', 6], ['slime', 12]),
+        W(0.72, ['pumpkin', 9], ['ghost', 9]),
+        W(0.68, ['pumpkin', 9], ['bat', 12]),
+        W(0.68, ['pumpkin', 12], ['stump', 3]),
+        W(0.64, ['pumpkin', 12], ['frog', 4], ['ghost', 9]),
+        W(0.59, ['pumpkin', 14], ['scorpion', 12]),
+        W(0.59, ['pumpkin', 14], ['stump', 4], ['bat', 12]),
+        W(0.55, ['pumpkin', 17], ['ghost', 14]),
+      ],
+      tip: '南瓜头死后会裂成 3 只小南瓜。在远处打掉它，给自己留出清理的时间。',
+    },
+    29: {
+      name: '百鬼夜行',
+      type: 'union',
+      lanes: 5,
+      waves: [
+        B(2.2, ['slime', 8], ['ghost', 4]),
+        B(2.0, ['pumpkin', 4], ['bat', 8]),
+        B(2.0, ['ghost', 8], ['scorpion', 8]),
+        B(1.8, ['stump', 4], ['frog', 4], ['bat', 4]),
+        B(1.8, ['ghost', 12], ['pumpkin', 4]),
+        B(1.6, ['mummy', 4], ['bat', 8], ['cactus', 8]),
+        B(1.6, ['ghost', 12], ['stump', 4], ['frog', 4]),
+        B(1.5, ['bat', 12], ['pumpkin', 8], ['ghost', 8]),
+      ],
+      tip: '联合关：所有车道同时出怪！箭雨、雷电法球这种全场打击最管用。',
+    },
+    30: {
+      name: '毒汤婆婆',
+      type: 'boss',
+      lanes: 5,
+      waves: [
+        W(0.9, ['ghost', 10], ['pumpkin', 4], ['frog', 2]),
+        W(0.85, ['stump', 4], ['bat', 10], ['ghost', 8]),
+        W(2.0, ['witch', 1], ['ghost', 6], ['pumpkin', 3]),
+      ],
+      tip: '毒汤婆婆会把小怪煮成强化版。尽快清场，带上城墙修复应对毒雾！',
+    },
   };
 
   TD.data.levelTypeNames = {
@@ -315,5 +477,7 @@
     miniboss: '小 Boss',
     boss: '大 Boss',
     armored: '重甲突击',
+    dark: '暗夜',
+    union: '联合',
   };
 })((globalThis.TD = globalThis.TD || {}));

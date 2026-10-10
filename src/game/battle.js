@@ -55,7 +55,9 @@
       this.waveStartTime = 0;
 
       // 战场补给（设计书 2.7）
-      this.mods = { atkMult: 0, aspdMult: 0, crit: 0, critDmg: 0, cdMult: 0, copperBonus: 0, wallDr: 0, range: 0, slowOnHit: 0, magicMult: 0, armorIgnore: 0 };
+      this.mods = { atkMult: 0, aspdMult: 0, crit: 0, critDmg: 0, cdMult: 0, copperBonus: 0, wallDr: 0, range: 0, slowOnHit: 0, magicMult: 0, armorIgnore: 0, dotReduce: 0, spiritPierce: 0 };
+      this.wallDots = []; // 城墙持续伤害：{ dps, until, src }
+      this.dotTick = 0.5;
       this.supplyWaves = this.computeSupplyWaves();
       this.supplyOffered = {};
       this.supplyPicked = [];
@@ -83,7 +85,7 @@
     }
 
     get range() {
-      return this.stats.range * (1 + this.mods.range);
+      return this.stats.range * (1 + this.mods.range) * (this.level.dark ? 0.7 : 1);
     }
 
     offerSupply() {
@@ -178,7 +180,10 @@
       if (this.waveState === 'spawning') {
         this.spawnTimer -= dt;
         while (this.spawnTimer <= 0 && this.spawnQueue.length) {
-          this.spawnMonster(this.spawnQueue.shift());
+          if (this.level.waves[this.waveIndex].burst) {
+            // 联合关：所有车道同时各出一只
+            for (let lane = 0; lane < this.lanes && this.spawnQueue.length; lane++) this.spawnMonster(this.spawnQueue.shift(), lane);
+          } else this.spawnMonster(this.spawnQueue.shift());
           this.spawnTimer += this.spawnGap;
         }
         if (!this.spawnQueue.length) {
@@ -263,13 +268,18 @@
         m.shieldMax = 0;
       }
       if (def.healer) m.healTimer = 1;
+      if (def.ranged) m.rangedTimer = 0.8;
+      if (def.laneHop) m.hopTimer = def.laneHop.every * (0.6 + this.rng() * 0.6);
+      if (def.regen) m.lastHit = -99;
+      if (def.ai === 'boneMage') m.ai = { phase: 1, mode: 'walk', summonTimer: D.boneMage.summonFirst, revived: false };
+      else if (def.ai === 'witch') m.ai = { phase: 1, mode: 'walk', fogTimer: D.witch.fogFirst, cookTimer: 3, pourTimer: 2 };
       this.monsters.push(m);
       this.emit('spawn', m);
       return m;
     }
 
     isTargetable(m) {
-      return !m.dead && !m.burrowed && m.x <= C.width + 5;
+      return !m.dead && !m.burrowed && !m.bones && m.x <= C.width + 5;
     }
 
     monsterSpeed(m) {
@@ -278,12 +288,14 @@
       if (m.def.ai === 'boarKing' && m.ai.phase === 3) s *= D.boarKing.enrageSpeedMult;
       if (m.burrowed && m.def.burrow) s *= m.def.burrow.speedMult;
       if (m.def.ai === 'pharaoh' && m.ai.phase === 3) s *= D.pharaoh.phase3SpeedMult;
+      if (m.cooked) s *= 1 + D.witch.cookSpeed;
       if (this.time < m.hasteUntil) s *= 1 + m.hasteAmt;
       let slow = this.time < m.slowUntil ? m.slowAmt : 0;
       for (const e of this.laneEffects) {
         if (e.lane === m.lane && this.time < e.until) {
           if (e.type === 'freeze') return 0;
           if (e.type === 'frost') slow = Math.max(slow, e.slow);
+          if (e.type === 'poison') s *= 1 + e.haste;
         }
       }
       return s * (1 - slow);
@@ -310,8 +322,25 @@
           if (m.def.ai === 'boarKing') this.updateBoarKing(m, dt);
           else if (m.def.ai === 'kingScorpion') this.updateKingScorpion(m, dt);
           else if (m.def.ai === 'pharaoh') this.updatePharaoh(m, dt);
+          else if (m.def.ai === 'boneMage') this.updateBoneMage(m, dt);
+          else if (m.def.ai === 'witch') this.updateWitch(m, dt);
           if (m.dead) continue;
           if (m.ai.mode !== 'walk') continue;
+        }
+        // 再生（树桩怪）
+        if (m.def.regen && this.time - m.lastHit >= m.def.regen.delay && m.hp < m.maxHp) {
+          m.hp = Math.min(m.maxHp, m.hp + m.maxHp * m.def.regen.pct * dt);
+        }
+        // 换道（蝙蝠）
+        if (m.def.laneHop && this.lanes > 1) {
+          m.hopTimer -= dt;
+          if (m.hopTimer <= 0) {
+            m.hopTimer = m.def.laneHop.every;
+            const dir = m.lane === 0 ? 1 : m.lane === this.lanes - 1 ? -1 : this.rng() < 0.5 ? -1 : 1;
+            m.lane += dir;
+          }
+          const ty = this.laneY(m.lane);
+          if (m.y !== ty) m.y += Math.sign(ty - m.y) * Math.min(Math.abs(ty - m.y), 160 * dt);
         }
         // 钻地（设计书 19.2）
         const bur = m.def.burrow;
@@ -334,12 +363,25 @@
             this.healAround(m, heal.radius, heal.pct);
           }
         }
-        const stopX = heal ? heal.holdX : this.wallStopX(m);
+        const ranged = m.def.ranged;
+        const stopX = heal ? heal.holdX : ranged ? ranged.holdX : this.wallStopX(m);
         if (m.x > stopX) {
           m.state = 'walk';
           m.x = Math.max(stopX, m.x - this.monsterSpeed(m) * dt);
         } else if (heal) {
           m.state = 'hold';
+        } else if (ranged) {
+          // 远程型：停在远处向城墙吐毒液
+          m.state = 'hold';
+          if (this.time >= m.frozenUntil && this.time >= m.stunUntil) {
+            m.rangedTimer -= dt;
+            if (m.rangedTimer <= 0) {
+              m.rangedTimer = ranged.every;
+              this.emit('spit', { m, x: m.x, y: m.y });
+              this.hitWall(ranged.damage * this.D, m);
+              if (ranged.poison) this.addWallDot(ranged.poison.dps * this.D, ranged.poison.duration, 'poison', true);
+            }
+          }
         } else if (m.def.explode) {
           // 自爆型：到达城墙立即爆炸，不掉铜币
           this.hitWall(m.def.explode.damage * this.D, m, true);
@@ -547,6 +589,105 @@
       if (ai.mode === 'hold' && ai.phase === 3) ai.mode = 'walk';
     }
 
+    // 骨头先生：中段召唤小幽灵，第一次倒下后复活（设计书 21.3）
+    updateBoneMage(m, dt) {
+      const B = D.boneMage;
+      const ai = m.ai;
+      if (ai.mode === 'bones') {
+        ai.reviveTimer -= dt;
+        if (ai.reviveTimer <= 0) {
+          m.bones = false;
+          m.hp = m.maxHp * B.reviveHp;
+          ai.mode = 'walk';
+          ai.summonTimer = 0;
+          this.emit('bossPhase', { m, phase: 2, text: '骨头先生复活了！' });
+        }
+        return;
+      }
+      ai.summonTimer -= dt;
+      if (ai.summonTimer <= 0 && m.x < C.width - 30) {
+        ai.summonTimer = B.summonEvery;
+        const lanes = [];
+        for (let i = 0; i < this.lanes; i++) lanes.push(i);
+        for (let k = 0; k < Math.min(B.summonLanes, this.lanes); k++) {
+          const lane = lanes.splice(this.rng.int(lanes.length), 1)[0];
+          const g = this.spawnMonster(B.summonType, lane, Math.min(C.spawnX, m.x + 30));
+          g.splitFrom = { x: m.x, y: m.y };
+        }
+        this.emit('bossSummon', { m });
+      }
+      if (ai.mode === 'walk' && !ai.revived && m.x <= B.holdX) {
+        m.x = B.holdX;
+        ai.mode = 'hold';
+      }
+    }
+
+    boneDown(m) {
+      m.hp = 1;
+      m.bones = true;
+      m.ai.revived = true;
+      m.ai.mode = 'bones';
+      m.ai.reviveTimer = D.boneMage.reviveTime;
+      m.burnUntil = 0;
+      this.emit('boneDown', { m });
+    }
+
+    // 毒汤婆婆：毒雾、煮汤、大锅倾倒（设计书 21.3）
+    updateWitch(m, dt) {
+      const W2 = D.witch;
+      const ai = m.ai;
+      const ratio = m.hp / m.maxHp;
+      if (ai.phase === 1 && ratio < W2.phase2Below) {
+        ai.phase = 2;
+        this.emit('bossPhase', { m, phase: 2, text: '毒汤婆婆开始煮汤了！' });
+      }
+      if (ai.phase === 2 && ratio < W2.phase3Below) {
+        ai.phase = 3;
+        ai.pourTimer = 0.5;
+        this.emit('bossPhase', { m, phase: 3, text: '大锅倾倒！毒池让怪物加速！' });
+      }
+      ai.fogTimer -= dt;
+      if (ai.fogTimer <= 0) {
+        ai.fogTimer = ai.phase === 3 ? W2.fogEveryP3 : W2.fogEvery;
+        this.addWallDot(W2.fogDps * this.D, W2.fogDuration, 'fog', false);
+        this.emit('poisonFog', { duration: W2.fogDuration });
+      }
+      if (ai.phase >= 2) {
+        ai.cookTimer -= dt;
+        if (ai.cookTimer <= 0) {
+          ai.cookTimer = W2.cookEvery;
+          let n = 0;
+          for (const o of this.monsters) {
+            if (o.dead || o.def.boss || o.cooked) continue;
+            o.cooked = true;
+            o.maxHp *= 1 + W2.cookHp;
+            o.hp *= 1 + W2.cookHp;
+            n++;
+          }
+          for (let i = 0; i < W2.summonCount; i++) this.spawnMonster(W2.summonType, this.rng.int(this.lanes), Math.min(C.spawnX, m.x + 40 + this.rng() * 40));
+          this.emit('cook', { m, count: n });
+        }
+      }
+      if (ai.phase === 3) {
+        ai.pourTimer -= dt;
+        if (ai.pourTimer <= 0) {
+          ai.pourTimer = W2.pourEvery;
+          const lanes = [];
+          for (let i = 0; i < this.lanes; i++) lanes.push(i);
+          for (let k = 0; k < Math.min(W2.pourLanes, this.lanes); k++) {
+            const lane = lanes.splice(this.rng.int(lanes.length), 1)[0];
+            this.laneEffects.push({ lane, type: 'poison', haste: W2.poolSpeed, until: this.time + W2.poolDuration, start: this.time });
+          }
+          this.emit('pour', { m });
+        }
+      }
+      if (ai.mode === 'walk' && ai.phase < 3 && m.x <= W2.holdX) {
+        m.x = W2.holdX;
+        ai.mode = 'hold';
+      }
+      if (ai.mode === 'hold' && ai.phase === 3) ai.mode = 'walk';
+    }
+
     raiseShield(m) {
       m.shieldMax = m.maxHp * D.pharaoh.shieldRatio;
       m.shield = m.shieldMax;
@@ -568,12 +709,36 @@
       }
     }
 
-    hitWall(amount, m, big) {
+    // 城墙持续伤害（毒液、毒雾）。refresh=true 时同来源只刷新时间不叠加
+    addWallDot(dps, duration, src, refresh) {
+      if (refresh) {
+        const e = this.wallDots.find((d) => d.src === src && d.until > this.time);
+        if (e) {
+          e.until = this.time + duration;
+          e.dps = Math.max(e.dps, dps);
+          return;
+        }
+      }
+      this.wallDots.push({ dps, until: this.time + duration, src });
+    }
+
+    updateWallDots(dt) {
+      if (!this.wallDots.length) return;
+      this.dotTick -= dt;
+      if (this.dotTick > 0) return;
+      this.dotTick += 0.5;
+      let total = 0;
+      for (const d of this.wallDots) if (this.time < d.until) total += d.dps * 0.5;
+      this.wallDots = this.wallDots.filter((d) => this.time < d.until);
+      if (total > 0) this.hitWall(total * (1 - Math.min(0.9, this.mods.dotReduce)), null, false, 'dot');
+    }
+
+    hitWall(amount, m, big, kind) {
       const temp = this.time < this.tempDr.until ? this.tempDr.amt : 0;
       const dmg = amount * (1 - Math.min(0.8, this.stats.wallDr + this.mods.wallDr + temp));
       this.wall.hp = Math.max(0, this.wall.hp - dmg);
       this.wallDamageTaken += dmg;
-      this.emit('wallHit', { amount: dmg, m, big: !!big });
+      this.emit('wallHit', { amount: dmg, m, big: !!big, kind });
       if (this.wall.hp <= 0) this.finish(false);
     }
 
@@ -623,12 +788,15 @@
       if (opts.type !== 'magic') {
         armor = (m.def.armor || 0) + (opts.fromFront ? m.def.frontArmor || 0 : 0);
         armor *= 1 - this.armorIgnore(opts);
+        // 灵体：物理伤害大打折扣（设计书 21.2）
+        if (m.def.physResist) amount *= Math.min(1, 1 - m.def.physResist + this.mods.spiritPierce);
       } else {
         armor = m.def.mres || 0;
       }
       const dmg = Math.max(1, amount * (1 - armor / (armor + 100)));
       m.hp -= dmg;
       m.hitFlash = 0.12;
+      m.lastHit = this.time;
       this.damageDealt += dmg;
       this.emit('hit', {
         m,
@@ -646,7 +814,10 @@
           this.split(m, m.def.split.count);
         }
       }
-      if (m.hp <= 0) this.kill(m);
+      if (m.hp <= 0) {
+        if (m.def.ai === 'boneMage' && !m.ai.revived) this.boneDown(m);
+        else this.kill(m);
+      }
       return dmg;
     }
 
@@ -687,6 +858,14 @@
         this.emit('spore', { x: m.x, y: m.y + m.yOffset, radius: od.radius });
       }
       if (m.def.split) this.split(m, m.def.split.deathCount);
+      const ds = m.def.deathSpawn;
+      if (ds) {
+        for (let i = 0; i < ds.count; i++) {
+          const c = this.spawnMonster(ds.type, m.lane, m.x + (i - 1) * 22);
+          c.splitFrom = { x: m.x, y: m.y };
+        }
+        this.emit('split', { m, count: ds.count });
+      }
     }
 
     // ---------- 英雄 ----------
@@ -791,7 +970,7 @@
         if (w.flyingMult && s.m.def.flying) mult *= w.flyingMult;
         const roll = this.rollHit(mult);
         if (!w.splash) s.m.pending += roll.dmg * this.armorFactor(s.m, true, w.dmgType, w.armorIgnore);
-        const kind = { crossbow: 'bolt', staff: 'orb', cannon: 'shell' }[this.stats.weapon] || 'arrow';
+        const kind = { crossbow: 'bolt', staff: 'orb', cannon: 'shell', orb: 'zap' }[this.stats.weapon] || 'arrow';
         this.projectiles.push({
           kind,
           x: sx,
@@ -811,6 +990,7 @@
           arc: !!w.arc,
           travel: 0,
           dist0: Math.hypot(s.m.x - sx, s.m.y + s.m.yOffset - sy),
+          chain: w.chain,
         });
       }
       this.emit('shoot', { weapon: this.stats.weapon });
@@ -836,6 +1016,31 @@
         const prev = this.time < m.slowUntil ? m.slowAmt : 0;
         m.slowAmt = Math.max(prev, this.mods.slowOnHit);
         m.slowUntil = Math.max(m.slowUntil, this.time + 1.5);
+      }
+    }
+
+    // 链式闪电：从命中的目标跳向附近没被打过的怪
+    chainFrom(first, p) {
+      const hit = new Set([first.id]);
+      let cur = first;
+      let dmg = p.dmg;
+      for (let i = 0; i < p.chain.count; i++) {
+        let best = null;
+        let bd = p.chain.range;
+        for (const o of this.monsters) {
+          if (hit.has(o.id) || !this.isTargetable(o)) continue;
+          const d = Math.hypot(o.x - cur.x, o.y + o.yOffset - (cur.y + cur.yOffset));
+          if (d <= bd) {
+            bd = d;
+            best = o;
+          }
+        }
+        if (!best) break;
+        dmg *= p.chain.falloff;
+        hit.add(best.id);
+        this.emit('thunderChain', { x0: cur.x, y0: cur.y + cur.yOffset, x: best.x, y: best.y + best.yOffset, small: true });
+        this.damage(best, dmg, { type: 'magic', fromFront: false, source: 'chain' });
+        cur = best;
       }
     }
 
@@ -888,6 +1093,7 @@
           if (this.isTargetable(m)) this.applyWeaponHit(m, p.dmg, p.crit, true, p);
           else if (!m.dead) this.emit('miss', { x: p.tx, y: p.ty });
           if (p.splash) this.splashAt(p.tx, p.ty, p, m);
+          if (p.chain && this.isTargetable(m)) this.chainFrom(m, p);
         } else {
           p.x += (dx / dist) * step;
           p.y += (dy / dist) * step;
@@ -1090,6 +1296,8 @@
       this.updateWaves(dt);
       if (this.over) return;
       this.updateMonsters(dt);
+      if (this.over) return;
+      this.updateWallDots(dt);
       if (this.over) return;
       this.updateHero(dt);
       this.updateRain(dt);
