@@ -37,6 +37,29 @@
       desc: '沿车道飞出再飞回，往返各命中每只怪一次。返程从背后命中，无视盾牌。',
       good: '排成长队的车道、木盾哥布林',
     },
+    staff: {
+      name: '魔法杖',
+      cost: { silver: 8 },
+      dmgMult: 0.9,
+      aspdMult: 0.85,
+      projSpeed: 700,
+      dmgType: 'magic',
+      splash: { radius: 60, mult: 0.6 },
+      desc: '发射魔法弹，命中后小范围爆炸。魔法伤害无视物理护甲。',
+      good: '绷带球、护盾、成堆的小怪',
+    },
+    cannon: {
+      name: '火炮',
+      cost: { silver: 10 },
+      dmgMult: 2.6,
+      aspdMult: 0.35,
+      projSpeed: 600,
+      arc: true,
+      splash: { radius: 80, mult: 0.7 },
+      armorIgnore: 0.4,
+      desc: '慢速重炮，落地大范围爆炸，无视目标 40% 护甲。',
+      good: '重甲怪、成团的怪、Boss',
+    },
   };
 
   TD.data.weaponUpgrade = {
@@ -208,8 +231,10 @@
     purse: { name: '铜币袋', desc: '本关铜币收益 +25%', mods: { copperBonus: 0.25 }, icon: 'purse' },
     frostTip: { name: '寒霜箭头', desc: '普通攻击使目标减速 20%，持续 1.5 秒', mods: { slowOnHit: 0.2 }, icon: 'frost' },
     farsight: { name: '远望', desc: '射程 +12%', mods: { range: 0.12 }, icon: 'eye' },
+    arcane: { name: '奥术涌动', desc: '魔法伤害 +20%', mods: { magicMult: 0.2 }, icon: 'staff', minLevel: 11 },
+    breaker: { name: '破甲箭头', desc: '无视目标 25% 护甲', mods: { armorIgnore: 0.25 }, icon: 'cannon', minLevel: 11 },
   };
-  TD.data.supplyBotOrder = ['sharp', 'quick', 'master', 'eagle', 'fury', 'frostTip', 'farsight', 'bricks', 'purse'];
+  TD.data.supplyBotOrder = ['sharp', 'quick', 'master', 'arcane', 'breaker', 'eagle', 'fury', 'frostTip', 'farsight', 'bricks', 'purse'];
 
   TD.data.targetModes = {
     nearest: '最近优先',

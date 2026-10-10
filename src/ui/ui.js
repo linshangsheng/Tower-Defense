@@ -121,7 +121,7 @@
         h('button', { class: 'btn', onclick: () => (sfx('click'), UI.showSettings()) }, '设置'),
         h('button', { class: 'btn', onclick: () => (sfx('click'), UI.showHelp()) }, '玩法说明')
       ),
-      h('div', { class: 'title-foot' }, '网页原型 v0.1 · 第一章 翠绿草原')
+      h('div', { class: 'title-foot' }, '网页原型 v0.2 · 第一章 翠绿草原 · 第二章 黄金沙漠')
     );
     root.appendChild(screenEl);
   };
@@ -230,11 +230,32 @@
     [1120, 175],
   ];
 
-  UI.showMap = function () {
+  UI.showMap = function (chapterId) {
     clear();
     game.renderer.mood = 'idle';
     const s = game.save;
-    const ch = D.chapters[0];
+    // 默认显示最新解锁关卡所在的章节
+    if (!chapterId) {
+      const all = Object.keys(D.levels).map(Number).sort((a, b) => a - b);
+      const latest = all.filter((n) => P.isUnlocked(s, n)).pop() || 1;
+      chapterId = D.chapterOf(latest).id;
+    }
+    const ch = D.chapters.find((c) => c.id === chapterId) || D.chapters[0];
+    UI.mapChapter = ch.id;
+    game.renderer.setChapter(ch);
+    const chapterTabs = D.chapters.map((c) => {
+      const open = P.isUnlocked(s, c.levels[0]);
+      return h(
+        'button',
+        {
+          class: 'btn small chapter-tab' + (c.id === ch.id ? ' primary' : ''),
+          disabled: open ? null : true,
+          title: open ? c.name : `通关第 ${c.levels[0] - 1} 关后开放`,
+          onclick: () => (sfx('click'), UI.showMap(c.id)),
+        },
+        open ? `第${'一二三四五'[c.id - 1]}章` : '🔒'
+      );
+    });
     const nodes = ch.levels.map((n, i) => {
       const lvl = D.levels[n];
       const rec = P.levelRecord(s, n);
@@ -256,6 +277,7 @@
           },
         },
         h('span', { class: 'node-num' }, lvl.type === 'boss' ? '👑' : lvl.type === 'miniboss' ? '♛' : n),
+        h('span', { class: 'node-index' }, n),
         rec.clears ? starsEl(rec.stars) : null,
         h('span', { class: 'node-name' }, `${n}. ${lvl.name}`)
       );
@@ -272,23 +294,29 @@
     pctx.stroke();
 
     const totalStars = ch.levels.reduce((a, n) => a + P.levelRecord(s, n).stars, 0);
+    const lastLevel = ch.levels[ch.levels.length - 1];
+    const nextCh = D.chapters.find((c) => c.id === ch.id + 1);
+    let note = null;
+    if (P.isCleared(s, lastLevel))
+      note = nextCh
+        ? h('div', { class: 'map-note' }, `恭喜通关「${ch.name}」！新的章节「${nextCh.name}」已经开放。`, h('button', { class: 'btn small primary', onclick: () => UI.showMap(nextCh.id) }, '前往 ›'))
+        : h('div', { class: 'map-note' }, `恭喜通关「${ch.name}」！下一章正在建设中……可以回头挑战三星，或者收集金币购买传说装备。`);
     screenEl = h(
       'div',
-      { class: 'screen map-screen' },
+      { class: 'screen map-screen' + (ch.theme.desert ? ' desert' : '') },
       path,
       h(
         'div',
         { class: 'topbar' },
         h('button', { class: 'btn small', onclick: () => (sfx('click'), UI.showTitle()) }, '‹ 标题'),
-        h('div', { class: 'chapter-title' }, `第一章 · ${ch.name}`, h('span', { class: 'chapter-stars' }, ` ★ ${totalStars}/30`)),
+        h('div', { class: 'chapter-tabs' }, chapterTabs),
+        h('div', { class: 'chapter-title' }, `第${'一二三四五'[ch.id - 1]}章 · ${ch.name}`, h('span', { class: 'chapter-stars' }, ` ★ ${totalStars}/${ch.levels.length * 3}`)),
         h('div', { class: 'power' }, '战力 ', h('b', null, P.power(s))),
         currencyBar(),
         h('button', { class: 'btn small primary', onclick: () => (sfx('click'), UI.showShop(null, 'loadout')) }, '商店 / 配装')
       ),
       nodes,
-      P.highestCleared(s) >= 10
-        ? h('div', { class: 'map-note' }, '恭喜通关第一章！第二章「黄金沙漠」正在建设中……可以回头挑战三星，或者收集金币购买传说装备。')
-        : null
+      note
     );
     root.appendChild(screenEl);
   };
@@ -401,7 +429,7 @@
       h(
         'div',
         { class: 'topbar' },
-        h('button', { class: 'btn small', onclick: () => (sfx('click'), UI.showMap(), st.levelNo && UI.showPreview(st.levelNo)) }, '‹ 返回'),
+        h('button', { class: 'btn small', onclick: () => (sfx('click'), UI.showMap(st.levelNo ? D.chapterOf(st.levelNo).id : UI.mapChapter), st.levelNo && UI.showPreview(st.levelNo)) }, '‹ 返回'),
         h('div', { class: 'chapter-title' }, st.levelNo ? `战前准备 · 第 ${st.levelNo} 关` : '商店'),
         h('div', { class: 'power' }, '战力 ', h('b', null, P.power(s))),
         currencyBar(),
@@ -960,10 +988,10 @@
       h(
         'div',
         { class: 'modal-buttons' },
-        h('button', { class: 'btn', onclick: () => (UI.closeModal(), UI.showMap()) }, '地图'),
+        h('button', { class: 'btn', onclick: () => (UI.closeModal(), UI.showMap(D.chapterOf(n).id)) }, '地图'),
         h('button', { class: 'btn', onclick: () => (UI.closeModal(), UI.showShop(win && hasNext ? n + 1 : n, win ? 'loadout' : 'attrs')) }, '去商店'),
         !win || !hasNext ? h('button', { class: 'btn' + (win ? '' : ' primary'), onclick: () => (UI.closeModal(), game.startBattle(n)) }, '再来一次') : null,
-        hasNext ? h('button', { class: 'btn primary', onclick: () => (UI.closeModal(), UI.showMap(), UI.showPreview(n + 1)) }, '下一关 ›') : null
+        hasNext ? h('button', { class: 'btn primary', onclick: () => (UI.closeModal(), UI.showMap(D.chapterOf(n + 1).id), UI.showPreview(n + 1)) }, '下一关 ›') : null
       )
     );
     modal(body, { cls: 'result-modal' });

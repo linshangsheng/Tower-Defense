@@ -48,7 +48,7 @@
       this.waveStartTime = 0;
 
       // 战场补给（设计书 2.7）
-      this.mods = { atkMult: 0, aspdMult: 0, crit: 0, critDmg: 0, cdMult: 0, copperBonus: 0, wallDr: 0, range: 0, slowOnHit: 0 };
+      this.mods = { atkMult: 0, aspdMult: 0, crit: 0, critDmg: 0, cdMult: 0, copperBonus: 0, wallDr: 0, range: 0, slowOnHit: 0, magicMult: 0, armorIgnore: 0 };
       this.supplyWaves = this.computeSupplyWaves();
       this.supplyOffered = {};
       this.supplyPicked = [];
@@ -83,6 +83,7 @@
       const all = Object.keys(D.supplies).filter((id) => {
         if (this.supplyPicked.includes(id)) return false;
         if (D.supplies[id].needSkills && !this.skills.length) return false;
+        if (D.supplies[id].minLevel && this.levelNo < D.supplies[id].minLevel) return false;
         return true;
       });
       const choices = [];
@@ -247,20 +248,29 @@
       if (def.split) m.nextSplit = 1 - def.split.every;
       if (def.ai === 'boarKing') {
         m.ai = { phase: 1, summonTimer: 3, chargeTimer: 2, mode: 'walk', chargeDmg: 0, warnTimer: 0, laneTimer: D.boarKing.laneSwitchEvery };
+      } else if (def.ai === 'kingScorpion') {
+        m.ai = { phase: 1, mode: 'walk', burrowTimer: D.kingScorpion.firstBurrow, clawTimer: D.kingScorpion.clawEvery };
+      } else if (def.ai === 'pharaoh') {
+        m.ai = { phase: 1, mode: 'walk', stormTimer: D.pharaoh.stormFirst, summonTimer: 4, healTimer: 1, shieldTimer: -1 };
+        m.shield = 0;
+        m.shieldMax = 0;
       }
+      if (def.healer) m.healTimer = 1;
       this.monsters.push(m);
       this.emit('spawn', m);
       return m;
     }
 
     isTargetable(m) {
-      return !m.dead && m.x <= C.width + 5;
+      return !m.dead && !m.burrowed && m.x <= C.width + 5;
     }
 
     monsterSpeed(m) {
       if (this.time < m.frozenUntil || this.time < m.stunUntil) return 0;
       let s = m.def.speed;
-      if (m.ai && m.ai.phase === 3) s *= D.boarKing.enrageSpeedMult;
+      if (m.def.ai === 'boarKing' && m.ai.phase === 3) s *= D.boarKing.enrageSpeedMult;
+      if (m.burrowed && m.def.burrow) s *= m.def.burrow.speedMult;
+      if (m.def.ai === 'pharaoh' && m.ai.phase === 3) s *= D.pharaoh.phase3SpeedMult;
       if (this.time < m.hasteUntil) s *= 1 + m.hasteAmt;
       let slow = this.time < m.slowUntil ? m.slowAmt : 0;
       for (const e of this.laneEffects) {
@@ -290,14 +300,44 @@
           }
         }
         if (m.ai) {
-          this.updateBoarKing(m, dt);
+          if (m.def.ai === 'boarKing') this.updateBoarKing(m, dt);
+          else if (m.def.ai === 'kingScorpion') this.updateKingScorpion(m, dt);
+          else if (m.def.ai === 'pharaoh') this.updatePharaoh(m, dt);
           if (m.dead) continue;
           if (m.ai.mode !== 'walk') continue;
         }
-        const stopX = this.wallStopX(m);
+        // 钻地（设计书 19.2）
+        const bur = m.def.burrow;
+        if (bur && !m.burrowDone) {
+          if (!m.burrowed && m.x <= bur.at) {
+            m.burrowed = true;
+            this.emit('burrow', { m });
+          } else if (m.burrowed && m.x <= bur.until) {
+            m.burrowed = false;
+            m.burrowDone = true;
+            this.emit('surface', { m });
+          }
+        }
+        // 治疗型：停在后排，给周围的怪回血
+        const heal = m.def.healer;
+        if (heal) {
+          m.healTimer -= dt;
+          if (m.healTimer <= 0) {
+            m.healTimer += 1;
+            this.healAround(m, heal.radius, heal.pct);
+          }
+        }
+        const stopX = heal ? heal.holdX : this.wallStopX(m);
         if (m.x > stopX) {
           m.state = 'walk';
           m.x = Math.max(stopX, m.x - this.monsterSpeed(m) * dt);
+        } else if (heal) {
+          m.state = 'hold';
+        } else if (m.def.explode) {
+          // 自爆型：到达城墙立即爆炸，不掉铜币
+          this.hitWall(m.def.explode.damage * this.D, m, true);
+          this.emit('explode', { m });
+          this.kill(m, true);
         } else {
           m.state = 'attack';
           if (this.time >= m.frozenUntil && this.time >= m.stunUntil) {
@@ -396,6 +436,117 @@
       }
     }
 
+    healAround(src, radius, pct) {
+      let any = false;
+      for (const o of this.monsters) {
+        if (o.dead || o === src || o.hp >= o.maxHp) continue;
+        const dx = o.x - src.x;
+        const dy = o.y - src.y;
+        if (dx * dx + dy * dy > radius * radius) continue;
+        o.hp = Math.min(o.maxHp, o.hp + o.maxHp * pct);
+        any = true;
+      }
+      this.emit('healPulse', { m: src, radius, any });
+    }
+
+    // 钳钳：钻地换道突袭，贴墙后钳击（设计书 19.3）
+    updateKingScorpion(m, dt) {
+      const K = D.kingScorpion;
+      const ai = m.ai;
+      const atWall = m.x <= this.wallStopX(m) + 1;
+      if (ai.mode === 'walk') {
+        if (atWall) {
+          ai.clawTimer -= dt;
+          if (ai.clawTimer <= 0 && this.time >= m.frozenUntil && this.time >= m.stunUntil) {
+            ai.clawTimer = K.clawEvery;
+            this.hitWall(K.clawDamage * this.D, m, true);
+            this.emit('claw', { m });
+          }
+          return;
+        }
+        ai.burrowTimer -= dt;
+        if (ai.burrowTimer <= 0 && m.x < C.width - 40) {
+          ai.mode = 'under';
+          ai.underTimer = K.underTime;
+          m.burrowed = true;
+          let lane = this.lanes > 1 ? this.rng.int(this.lanes - 1) : m.lane;
+          if (this.lanes > 1 && lane >= m.lane) lane++;
+          ai.toLane = lane;
+          ai.toX = Math.max(this.wallStopX(m), m.x - K.jump);
+          ai.warned = false;
+          this.emit('burrow', { m, boss: true });
+        }
+      } else if (ai.mode === 'under') {
+        ai.underTimer -= dt;
+        if (!ai.warned && ai.underTimer <= 1) {
+          ai.warned = true;
+          this.emit('surfaceWarn', { lane: ai.toLane, x: ai.toX, y: this.laneY(ai.toLane), duration: 1 });
+        }
+        if (ai.underTimer <= 0) {
+          m.lane = ai.toLane;
+          m.y = this.laneY(m.lane);
+          m.x = ai.toX;
+          m.burrowed = false;
+          ai.mode = 'walk';
+          ai.burrowTimer = K.burrowEvery;
+          this.emit('surface', { m, boss: true });
+        }
+      }
+    }
+
+    // 胖法老：沙暴、召唤与治疗、金字塔护盾（设计书 19.3）
+    updatePharaoh(m, dt) {
+      const F = D.pharaoh;
+      const ai = m.ai;
+      const ratio = m.hp / m.maxHp;
+      if (ai.phase === 1 && ratio < F.phase2Below) {
+        ai.phase = 2;
+        this.emit('bossPhase', { m, phase: 2, text: '胖法老召唤了木乃伊！' });
+      }
+      if (ai.phase === 2 && ratio < F.phase3Below) {
+        ai.phase = 3;
+        this.raiseShield(m);
+        this.emit('bossPhase', { m, phase: 3, text: '金字塔护盾！用魔法击破它！' });
+      }
+      // 沙暴
+      ai.stormTimer -= dt;
+      if (ai.stormTimer <= 0) {
+        ai.stormTimer = F.stormEvery;
+        this.buffs.push({ aspd: F.stormAspd, until: this.time + F.stormDuration, src: 'sandstorm' });
+        this.emit('sandstorm', { duration: F.stormDuration });
+      }
+      if (ai.phase >= 2) {
+        ai.summonTimer -= dt;
+        if (ai.summonTimer <= 0) {
+          ai.summonTimer = F.summonEvery;
+          for (let i = 0; i < F.summonCount; i++) this.spawnMonster(F.summonType, this.rng.int(this.lanes), Math.min(C.spawnX, m.x + 40 + this.rng() * 40));
+          this.emit('bossSummon', { m });
+        }
+        ai.healTimer -= dt;
+        if (ai.healTimer <= 0) {
+          ai.healTimer = 1;
+          this.healAround(m, F.healRadius, F.healPct);
+        }
+      }
+      if (ai.phase === 3 && m.shield <= 0 && ai.shieldTimer > 0) {
+        ai.shieldTimer -= dt;
+        if (ai.shieldTimer <= 0) this.raiseShield(m);
+      }
+      // 第一、二阶段停在中段
+      if (ai.mode === 'walk' && ai.phase < 3 && m.x <= F.holdX) {
+        m.x = F.holdX;
+        ai.mode = 'hold';
+      }
+      if (ai.mode === 'hold' && ai.phase === 3) ai.mode = 'walk';
+    }
+
+    raiseShield(m) {
+      m.shieldMax = m.maxHp * D.pharaoh.shieldRatio;
+      m.shield = m.shieldMax;
+      m.ai.shieldTimer = -1;
+      this.emit('shieldUp', { m });
+    }
+
     // 冲锋期间累计伤害，达到阈值就打断
     onBossDamaged(m, dmg) {
       const ai = m.ai;
@@ -425,19 +576,45 @@
     }
 
     // ---------- 伤害 ----------
-    armorFactor(m, fromFront) {
+    // 无视护甲比例：穿甲被动 + 补给 + 武器自带，最多 80%
+    armorIgnore(opts) {
+      if (opts && opts.source === 'thorns') return 0;
+      let ig = this.mods.armorIgnore || 0;
+      if (this.stats.passives.pierceArmor) ig += D.passiveSkills.pierceArmor.ignore;
+      if (opts && opts.armorIgnore) ig += opts.armorIgnore;
+      return Math.min(0.8, ig);
+    }
+
+    armorFactor(m, fromFront, type, weaponIgnore) {
+      if (m.shield > 0) return type === 'magic' ? 0.5 : 0.1;
+      if (type === 'magic') return 1;
       let armor = (m.def.armor || 0) + (fromFront ? m.def.frontArmor || 0 : 0);
-      if (this.stats.passives.pierceArmor) armor *= 1 - D.passiveSkills.pierceArmor.ignore;
+      armor *= 1 - this.armorIgnore({ armorIgnore: weaponIgnore });
       return 1 - armor / (armor + 100);
     }
 
     // opts: { type: 'phys'|'magic', fromFront, crit, source }
     damage(m, amount, opts) {
       if (m.dead) return 0;
+      if (opts.type === 'magic' && opts.source !== 'thorns') amount *= 1 + this.mods.magicMult;
+      // 护盾：先吸收伤害，魔法效果更好（设计书 19.3）
+      if (m.shield > 0) {
+        const P2 = D.pharaoh;
+        const eff = amount * (opts.type === 'magic' ? P2.shieldMagicMult : P2.shieldPhysMult);
+        m.shield -= eff;
+        m.hitFlash = 0.08;
+        this.emit('shieldHit', { m, x: m.x, y: m.y + m.yOffset, dmg: eff, magic: opts.type === 'magic' });
+        if (m.shield <= 0) {
+          m.shield = 0;
+          m.ai.shieldTimer = P2.shieldRegen;
+          this.emit('shieldBreak', { m });
+        }
+        return 0;
+      }
       let armor = 0;
       if (opts.type !== 'magic') {
         armor = (m.def.armor || 0) + (opts.fromFront ? m.def.frontArmor || 0 : 0);
-        if (this.stats.passives.pierceArmor && opts.source !== 'thorns') armor *= 1 - D.passiveSkills.pierceArmor.ignore;
+        armor *= 1 - this.armorIgnore(opts);
       } else {
         armor = m.def.mres || 0;
       }
@@ -480,13 +657,14 @@
       this.emit('split', { m, count });
     }
 
-    kill(m) {
+    kill(m, noReward) {
       m.dead = true;
       m.hp = 0;
       m.diedAt = this.time;
-      this.kills++;
-      this.killCopper += m.def.copper;
-      this.emit('death', { m, copper: m.def.copper });
+      const copper = noReward ? 0 : m.def.copper;
+      if (!noReward) this.kills++;
+      this.killCopper += copper;
+      this.emit('death', { m, copper, noReward: !!noReward });
       const od = m.def.onDeath;
       if (od && od.type === 'spore') {
         for (const o of this.monsters) {
@@ -507,7 +685,7 @@
     currentAspd() {
       let bonus = 0;
       for (const b of this.buffs) if (this.time < b.until) bonus += b.aspd;
-      return this.stats.aspd * (1 + this.mods.aspdMult) * (1 + bonus);
+      return this.stats.aspd * (1 + this.mods.aspdMult) * Math.max(0.3, 1 + bonus);
     }
 
     inRange(m) {
@@ -595,11 +773,14 @@
         let mult = s.mult;
         if (w.flyingMult && s.m.def.flying) mult *= w.flyingMult;
         const roll = this.rollHit(mult);
-        s.m.pending += roll.dmg * this.armorFactor(s.m, true);
+        if (!w.splash) s.m.pending += roll.dmg * this.armorFactor(s.m, true, w.dmgType, w.armorIgnore);
+        const kind = { crossbow: 'bolt', staff: 'orb', cannon: 'shell' }[this.stats.weapon] || 'arrow';
         this.projectiles.push({
-          kind: this.stats.weapon === 'crossbow' ? 'bolt' : 'arrow',
+          kind,
           x: sx,
           y: sy,
+          sx,
+          sy,
           target: s.m,
           tx: s.m.x,
           ty: s.m.y + s.m.yOffset,
@@ -607,13 +788,20 @@
           dmg: roll.dmg,
           crit: roll.crit,
           angle: 0,
+          dmgType: w.dmgType || 'phys',
+          splash: w.splash,
+          armorIgnore: w.armorIgnore || 0,
+          arc: !!w.arc,
+          travel: 0,
+          dist0: Math.hypot(s.m.x - sx, s.m.y + s.m.yOffset - sy),
         });
       }
       this.emit('shoot', { weapon: this.stats.weapon });
     }
 
-    applyWeaponHit(m, dmg, crit, fromFront) {
-      this.damage(m, dmg, { type: 'phys', fromFront, crit, source: 'weapon' });
+    applyWeaponHit(m, dmg, crit, fromFront, p) {
+      const type = p && p.dmgType === 'magic' ? 'magic' : 'phys';
+      this.damage(m, dmg, { type, fromFront, crit, source: 'weapon', armorIgnore: p ? p.armorIgnore : 0 });
       if (this.stats.passives.burn && !m.dead) {
         const b = D.passiveSkills.burn;
         if (this.time >= m.burnUntil) m.burnTick = 0.5;
@@ -625,6 +813,19 @@
         m.slowAmt = Math.max(prev, this.mods.slowOnHit);
         m.slowUntil = Math.max(m.slowUntil, this.time + 1.5);
       }
+    }
+
+    // 范围爆炸：主目标以外的怪受到部分伤害
+    splashAt(x, y, p, primary) {
+      const r = p.splash.radius;
+      for (const o of this.monsters.slice()) {
+        if (o === primary || !this.isTargetable(o)) continue;
+        const dx = o.x - x;
+        const dy = o.y + o.yOffset - y;
+        if (dx * dx + dy * dy > r * r) continue;
+        this.damage(o, p.dmg * p.splash.mult, { type: p.dmgType === 'magic' ? 'magic' : 'phys', fromFront: false, source: 'splash', armorIgnore: p.armorIgnore });
+      }
+      this.emit('splash', { x, y, radius: r, magic: p.dmgType === 'magic' });
     }
 
     updateProjectiles(dt) {
@@ -647,7 +848,7 @@
           continue;
         }
         const m = p.target;
-        if (!m.dead) {
+        if (!m.dead && !m.burrowed) {
           p.tx = m.x;
           p.ty = m.y + m.yOffset;
         }
@@ -656,10 +857,13 @@
         const dist = Math.hypot(dx, dy);
         const step = p.speed * dt;
         p.angle = Math.atan2(dy, dx);
+        p.travel += step;
         if (dist <= step + 4) {
           p.done = true;
-          m.pending = Math.max(0, m.pending - p.dmg);
-          if (!m.dead) this.applyWeaponHit(m, p.dmg, p.crit, true);
+          if (!p.splash) m.pending = Math.max(0, m.pending - p.dmg * this.armorFactor(m, true, p.dmgType, p.armorIgnore));
+          if (this.isTargetable(m)) this.applyWeaponHit(m, p.dmg, p.crit, true, p);
+          else if (!m.dead) this.emit('miss', { x: p.tx, y: p.ty });
+          if (p.splash) this.splashAt(p.tx, p.ty, p, m);
         } else {
           p.x += (dx / dist) * step;
           p.y += (dy / dist) * step;

@@ -52,9 +52,14 @@
 
     // 武器
     let weapon = 'bow';
-    if (share('bee') > 0.35 && owned('crossbow')) weapon = 'crossbow';
+    const armored = share('mummy') + (counts.pharaoh ? 0.3 : 0);
+    const flying = share('bee') + share('vulture');
+    if (armored > 0.25 && owned('staff')) weapon = 'staff';
+    else if (armored > 0.25 && owned('cannon')) weapon = 'cannon';
+    else if (flying > 0.35 && owned('crossbow')) weapon = 'crossbow';
     else if (share('goblin') > 0.15 && owned('boomerang')) weapon = 'boomerang';
     else if (lvl.type === 'rush' && owned('crossbow')) weapon = 'crossbow';
+    else if (n > 10 && owned('staff')) weapon = 'staff';
     lo.weapon = weapon;
     notes.push(`武器：${D.weapons[weapon].name}`);
 
@@ -69,7 +74,9 @@
     for (let i = 0; i < 3; i++) lo.active[i] = act[i] || null;
 
     // 被动技能
-    const prefP = share('goblin') > 0.15 ? ['pierceArmor', 'precision', 'burn', 'combo'] : ['precision', 'burn', 'combo', 'pierceArmor'];
+    let prefP = ['precision', 'burn', 'combo', 'pierceArmor'];
+    if (share('goblin') > 0.15 || (armored > 0.25 && weapon !== 'staff')) prefP = ['pierceArmor', 'precision', 'burn', 'combo'];
+    else if (armored > 0.25) prefP = ['burn', 'precision', 'combo', 'pierceArmor'];
     const nP = P.slotCount(save, 'passive');
     const pas = prefP.filter((id) => save.passiveOwned[id]).slice(0, nP);
     for (let i = 0; i < 3; i++) lo.passive[i] = pas[i] || null;
@@ -103,7 +110,7 @@
       slots[kind].forEach((k, i) => (lo.equip[k] = scored[i] ? scored[i].id : null));
     }
 
-    lo.target = lvl.type === 'raid' ? 'flying' : 'nearest';
+    lo.target = lvl.type === 'raid' ? 'flying' : share('priest') > 0.05 ? 'weakest' : 'nearest';
     if (lvl.type === 'raid') notes.push('目标：飞行优先');
     return notes;
   };

@@ -1075,3 +1075,21 @@ body {
 .suggest h3 {
   margin: 0 0 4px;
 }
+
+/* ---------- 章节 ---------- */
+.chapter-tabs {
+  display: flex;
+  gap: 6px;
+}
+.chapter-tab {
+  min-width: 70px;
+}
+.map-screen.desert {
+  background: radial-gradient(ellipse at 50% 60%, rgba(250, 215, 140, 0.6), rgba(205, 150, 70, 0.85));
+}
+.node-index {
+  display: none;
+}
+.map-note .btn {
+  margin-left: 10px;
+}

@@ -34,9 +34,11 @@ function campaign(seed, opts) {
   opts = opts || {};
   const save = P.newSave();
   const log = [];
+  const before = {};
   let retries = 0;
   for (let n = 1; n <= LAST; n++) {
     let attempts = 0;
+    before[n] = TD.util.deepClone(save);
     let res;
     let battle;
     do {
@@ -56,7 +58,7 @@ function campaign(seed, opts) {
     retries += attempts - 1;
     log.push({ n, attempts, win: true, stars: res.stars, time: res.time, wall: res.wallRatio, power: P.power(save) });
   }
-  return { log, retries, save };
+  return { log, retries, save, before };
 }
 
 console.log('=== 目标 1：不做任何购买时的通过率 ===');
@@ -92,16 +94,45 @@ for (const [n, p] of Object.entries(perLevel)) {
 console.log(`全部通关的种子：${allClear}/${seeds}，平均重试次数：${(totalRetries / seeds).toFixed(1)}`);
 
 console.log('\n=== 目标 3：第 10 关，有无主动技能对比 ===');
+const BOSS1 = 10;
 let withSk = 0;
 let noSk = 0;
 for (let s = 1; s <= seeds; s++) {
-  const { save } = campaign(s);
-  // 回到第 10 关之前的战力再打一次第 10 关
+  const { before } = campaign(s);
+  // 用第一次挑战第 10 关之前的存档
   for (let k = 0; k < 3; k++) {
-    const a = TD.util.deepClone(save);
-    const b = TD.util.deepClone(save);
-    if (TD.bot.playLevel(a, LAST, { seed: 900 + s * 7 + k }).res.win) withSk++;
-    if (TD.bot.playLevel(b, LAST, { seed: 900 + s * 7 + k, noSkills: true }).res.win) noSk++;
+    const a = TD.util.deepClone(before[BOSS1]);
+    const b = TD.util.deepClone(before[BOSS1]);
+    TD.bot.shop(a);
+    TD.bot.shop(b);
+    if (TD.bot.playLevel(a, BOSS1, { seed: 900 + s * 7 + k }).res.win) withSk++;
+    if (TD.bot.playLevel(b, BOSS1, { seed: 900 + s * 7 + k, noSkills: true }).res.win) noSk++;
   }
 }
-console.log(`通关后的存档重打第${LAST}关：有技能胜 ${withSk}/${seeds * 3}，无技能胜 ${noSk}/${seeds * 3}`);
+console.log(`通关后的存档重打第${BOSS1}关：有技能胜 ${withSk}/${seeds * 3}，无技能胜 ${noSk}/${seeds * 3}`);
+
+if (LAST >= 20) {
+  console.log('\n=== 目标 4：第 20 关，有无魔法输出对比 ===');
+  let magic = 0;
+  let noMagic = 0;
+  let total = 0;
+  for (let s = 1; s <= seeds; s++) {
+    const { before } = campaign(s);
+    if (!before[20]) continue;
+    // 用第一次挑战第 20 关之前的存档
+    for (let k = 0; k < 3; k++) {
+      total++;
+      const a = TD.util.deepClone(before[20]);
+      const b = TD.util.deepClone(before[20]);
+      TD.bot.shop(a);
+      TD.bot.shop(b);
+      if (TD.bot.playLevel(a, 20, { seed: 700 + s * 7 + k }).res.win) magic++;
+      // 无魔法：换成木弓/火炮，卸下雷霆一击和灼烧
+      b.weapons.staff.owned = false;
+      b.activeOwned.thunder = false;
+      b.passiveOwned.burn = false;
+      if (TD.bot.playLevel(b, 20, { seed: 700 + s * 7 + k }).res.win) noMagic++;
+    }
+  }
+  console.log(`第 20 关：有魔法输出胜 ${magic}/${total}，无魔法输出胜 ${noMagic}/${total}`);
+}

@@ -201,3 +201,105 @@ test('补给的铜币加成计入结算', () => {
   const r = P.applyResult(s, 1, { win: true, wallRatio: 1, killCopper: 0, earlyCopper: 0, copperBonus: 0.25 });
   assert.strictEqual(r.copper, Math.round(TD.config.rewards.baseCopper(1) * 1.5 * 1.25));
 });
+
+// ---------- 第二章机制 ----------
+function newBattle(level, mutate) {
+  const s = P.newSave();
+  if (mutate) mutate(s);
+  const b = new TD.Battle({ level, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 9 });
+  b.waveState = 'final';
+  return b;
+}
+
+test('沙沙蝎钻地后无法被选中，到 x=450 后钻出', () => {
+  const b = newBattle(11);
+  const m = b.spawnMonster('scorpion', 0, 1060);
+  for (let i = 0; i < 60 && !m.burrowed; i++) b.step(1 / 60);
+  assert.ok(m.burrowed, '越过 x=1050 后钻地');
+  assert.ok(!b.isTargetable(m));
+  while (m.burrowed && b.time < 60) b.step(1 / 60);
+  assert.ok(m.x <= 450 && b.isTargetable(m), '钻出后可以被攻击');
+});
+
+test('仙人掌球撞墙爆炸，不掉铜币', () => {
+  const b = newBattle(14);
+  const m = b.spawnMonster('cactus', 0, 200);
+  const hp0 = b.wall.hp;
+  for (let i = 0; i < 120 && !m.dead; i++) b.step(1 / 60);
+  assert.ok(m.dead);
+  assert.ok(hp0 - b.wall.hp >= 60 * b.D * 0.99, '一次造成 60×D 伤害');
+  assert.strictEqual(b.killCopper, 0);
+});
+
+test('小祭司给周围的怪回血', () => {
+  const b = newBattle(17);
+  const pr = b.spawnMonster('priest', 0, 560);
+  const mu = b.spawnMonster('mummy', 0, 600);
+  mu.hp = mu.maxHp * 0.5;
+  b.hero.cooldown = 999;
+  for (let i = 0; i < 70; i++) b.step(1 / 60);
+  assert.ok(mu.hp > mu.maxHp * 0.5, '一秒后回血');
+  assert.ok(!pr.dead);
+});
+
+test('魔法伤害无视绷带球的物理护甲', () => {
+  const b = newBattle(12);
+  const a = b.spawnMonster('mummy', 0, 800);
+  const c = b.spawnMonster('mummy', 0, 800);
+  const phys = b.damage(a, 50, { type: 'phys' });
+  const magic = b.damage(c, 50, { type: 'magic' });
+  assert.ok(phys < 25 && magic === 50, `物理 ${phys}，魔法 ${magic}`);
+});
+
+test('魔法杖命中后范围爆炸', () => {
+  const b = newBattle(12, (s) => {
+    s.weapons.staff.owned = true;
+    s.loadout.weapon = 'staff';
+  });
+  const m1 = b.spawnMonster('slime', 1, 700);
+  const m2 = b.spawnMonster('slime', 1, 730);
+  for (let i = 0; i < 120; i++) b.step(1 / 60);
+  assert.ok(m1.hp < m1.maxHp && m2.hp < m2.maxHp, '两只都受到伤害');
+});
+
+test('胖法老的金字塔护盾：物理效果很差，魔法效果好', () => {
+  const b = newBattle(20);
+  const f = b.spawnMonster('pharaoh', 1, 820);
+  b.raiseShield(f);
+  const sh = f.shield;
+  const hp = f.hp;
+  b.damage(f, 100, { type: 'phys' });
+  assert.strictEqual(f.hp, hp, '护盾存在时本体不掉血');
+  const physLoss = sh - f.shield;
+  const before = f.shield;
+  b.damage(f, 100, { type: 'magic' });
+  const magicLoss = before - f.shield;
+  assert.ok(magicLoss >= physLoss * 5, `魔法 ${magicLoss} 远高于物理 ${physLoss}`);
+});
+
+test('胖法老的沙暴降低英雄攻速', () => {
+  const b = newBattle(20);
+  b.spawnMonster('pharaoh', 1, 820);
+  const a0 = b.currentAspd();
+  let storm = false;
+  b.on('sandstorm', () => (storm = true));
+  for (let i = 0; i < 60 * 8 && !storm; i++) b.step(1 / 60);
+  assert.ok(storm);
+  assert.ok(b.currentAspd() < a0 * 0.8);
+});
+
+test('补给卡池按章节扩充', () => {
+  const b1 = newBattle(5);
+  const b2 = newBattle(15);
+  const pool = (b) => {
+    const seen = new Set();
+    for (let i = 0; i < 40; i++) {
+      b.supplyPicked = [];
+      b.offerSupply();
+      b.pendingSupply.forEach((x) => seen.add(x));
+    }
+    return seen;
+  };
+  assert.ok(!pool(b1).has('arcane'), '第一章没有奥术涌动');
+  assert.ok(pool(b2).has('arcane'), '第二章有奥术涌动');
+});

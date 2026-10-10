@@ -317,6 +317,299 @@
       ctx.restore();
       ctx.restore();
     },
+
+    // ---------- 第二章 · 黄金沙漠 ----------
+    scorpion(ctx, s, t, o) {
+      const step = Math.sin(t * 14 + (o.seed || 0));
+      shadow(ctx, 0, 2, s * 0.95);
+      // 小腿
+      ctx.strokeStyle = OUTLINE;
+      ctx.lineWidth = 2;
+      for (let i = 0; i < 3; i++) {
+        const lx = -s * 0.4 + i * s * 0.4;
+        ctx.beginPath();
+        ctx.moveTo(lx, -s * 0.25);
+        ctx.lineTo(lx - 4 + step * 2 * (i % 2 ? 1 : -1), 0);
+        ctx.stroke();
+      }
+      ellipse(ctx, 0, -s * 0.4, s * 0.85, s * 0.5, '#e0a050', OUTLINE, 2);
+      // 尾巴与小球
+      ctx.strokeStyle = OUTLINE;
+      ctx.lineWidth = 2;
+      ctx.fillStyle = '#e0a050';
+      const wag = Math.sin(t * 6) * 0.15;
+      ctx.save();
+      ctx.translate(s * 0.7, -s * 0.5);
+      ctx.rotate(-0.9 + wag);
+      for (let i = 0; i < 3; i++) ellipse(ctx, i * s * 0.32, 0, s * 0.2, s * 0.17, '#e7ad5c', OUTLINE, 1.8);
+      ellipse(ctx, s * 1.0, -s * 0.05, s * 0.2, s * 0.2, '#c96f2e', OUTLINE, 1.8);
+      ctx.restore();
+      // 钳子
+      for (const dy of [-0.15, 0.15]) {
+        ellipse(ctx, -s * 0.95, -s * 0.4 + dy * s * 2, s * 0.25, s * 0.17, '#e7ad5c', OUTLINE, 1.8);
+      }
+      eyes(ctx, -s * 0.35, -s * 0.55, s * 0.36, s * 0.15);
+    },
+    kingScorpion(ctx, s, t, o) {
+      const step = Math.sin(t * 9 + (o.seed || 0));
+      shadow(ctx, 0, 2, s * 1.1);
+      ctx.strokeStyle = OUTLINE;
+      ctx.lineWidth = 3;
+      for (let i = 0; i < 4; i++) {
+        const lx = -s * 0.5 + i * s * 0.35;
+        ctx.beginPath();
+        ctx.moveTo(lx, -s * 0.25);
+        ctx.lineTo(lx - 6 + step * 3 * (i % 2 ? 1 : -1), 0);
+        ctx.stroke();
+      }
+      ellipse(ctx, 0, -s * 0.45, s * 0.95, s * 0.52, '#d9822b', OUTLINE, 2.5);
+      ellipse(ctx, -s * 0.2, -s * 0.62, s * 0.4, s * 0.16, 'rgba(255,255,255,0.35)');
+      const wag = Math.sin(t * 4) * 0.12;
+      ctx.save();
+      ctx.translate(s * 0.75, -s * 0.55);
+      ctx.rotate(-1.0 + wag);
+      for (let i = 0; i < 4; i++) ellipse(ctx, i * s * 0.28, 0, s * 0.17, s * 0.15, '#e48f38', OUTLINE, 2);
+      ctx.fillStyle = '#7a2f12';
+      ctx.beginPath();
+      ctx.moveTo(s * 1.05, -s * 0.12);
+      ctx.lineTo(s * 1.4, -s * 0.02);
+      ctx.lineTo(s * 1.05, s * 0.12);
+      ctx.fill();
+      ctx.restore();
+      // 巨大的钳子（比身体还大）
+      const snap = o.attack ? Math.abs(Math.sin(t * 6)) * 0.4 : 0.15;
+      for (const dir of [-1, 1]) {
+        ctx.save();
+        ctx.translate(-s * 1.0, -s * 0.45 + dir * s * 0.3);
+        ellipse(ctx, -s * 0.3, 0, s * 0.42, s * 0.3, '#e48f38', OUTLINE, 2.5);
+        ctx.rotate(dir * snap);
+        ctx.beginPath();
+        ctx.moveTo(-s * 0.5, 0);
+        ctx.quadraticCurveTo(-s * 1.0, -dir * s * 0.35, -s * 1.1, -dir * s * 0.05);
+        ctx.lineTo(-s * 0.6, 0);
+        ctx.fillStyle = '#e48f38';
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+      }
+      eyes(ctx, -s * 0.35, -s * 0.62, s * 0.36, s * 0.12);
+      ctx.save();
+      ctx.translate(-s * 0.1, -s * 0.95);
+      crown(ctx, s * 0.36, '#ffd23f');
+      ctx.restore();
+    },
+    mummy(ctx, s, t, o) {
+      const roll = Math.sin(t * 5 + (o.seed || 0)) * 0.06;
+      shadow(ctx, 0, 2, s * 0.85);
+      ctx.save();
+      ctx.translate(0, -s * 0.85);
+      ctx.rotate(roll);
+      ellipse(ctx, 0, 0, s * 0.9, s * 0.85, '#efe4c8', OUTLINE, 2);
+      ctx.save();
+      ellipse(ctx, 0, 0, s * 0.9, s * 0.85, null);
+      ctx.clip();
+      ctx.strokeStyle = '#c9b993';
+      ctx.lineWidth = 2;
+      for (let i = -4; i <= 4; i++) {
+        ctx.beginPath();
+        ctx.moveTo(-s, i * s * 0.22 - s * 0.2);
+        ctx.lineTo(s, i * s * 0.22 + s * 0.15);
+        ctx.stroke();
+      }
+      ctx.restore();
+      // 眼缝
+      ctx.fillStyle = '#2a1d14';
+      ctx.fillRect(-s * 0.62, -s * 0.28, s * 0.8, s * 0.32);
+      ellipse(ctx, -s * 0.42, -s * 0.12, s * 0.12, s * 0.12, '#ffeb6b');
+      ellipse(ctx, -s * 0.05, -s * 0.12, s * 0.12, s * 0.12, '#ffeb6b');
+      // 飘带
+      ctx.strokeStyle = '#efe4c8';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(s * 0.6, s * 0.2);
+      ctx.quadraticCurveTo(s * 1.0, s * 0.3 + Math.sin(t * 6) * 4, s * 1.2, s * 0.1);
+      ctx.stroke();
+      ctx.restore();
+    },
+    cactus(ctx, s, t, o) {
+      const spin = -t * 4 - (o.seed || 0);
+      shadow(ctx, 0, 2, s * 0.85);
+      ctx.save();
+      ctx.translate(0, -s * 0.85);
+      ellipse(ctx, 0, 0, s * 0.85, s * 0.85, '#5fb85a', OUTLINE, 2);
+      ctx.save();
+      ctx.rotate(spin);
+      ctx.strokeStyle = '#3d7a2f';
+      ctx.lineWidth = 1.5;
+      for (let i = 0; i < 4; i++) {
+        ctx.beginPath();
+        ctx.ellipse(0, 0, s * 0.85, s * (0.25 + i * 0.2), 0, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      ctx.strokeStyle = '#fff8e0';
+      ctx.lineWidth = 1.5;
+      for (let i = 0; i < 10; i++) {
+        const a = (i / 10) * Math.PI * 2;
+        ctx.beginPath();
+        ctx.moveTo(Math.cos(a) * s * 0.85, Math.sin(a) * s * 0.85);
+        ctx.lineTo(Math.cos(a) * s * 1.05, Math.sin(a) * s * 1.05);
+        ctx.stroke();
+      }
+      ctx.restore();
+      eyes(ctx, -s * 0.2, -s * 0.05, s * 0.45, s * 0.16);
+      // 抱着的小花
+      ellipse(ctx, s * 0.1, -s * 0.85, s * 0.18, s * 0.18, '#ff7bb0', OUTLINE, 1.5);
+      ellipse(ctx, s * 0.1, -s * 0.85, s * 0.07, s * 0.07, '#ffd23f');
+      ctx.restore();
+    },
+    vulture(ctx, s, t, o) {
+      const flap = Math.sin(t * 14 + (o.seed || 0));
+      ctx.save();
+      ctx.globalAlpha = 0.12;
+      ellipse(ctx, 0, 34, s * 0.9, s * 0.22, '#000');
+      ctx.restore();
+      ctx.translate(0, Math.sin(t * 6) * 3);
+      // 翅膀
+      ctx.fillStyle = '#6b4f3a';
+      ctx.strokeStyle = OUTLINE;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.1, -s * 0.5);
+      ctx.quadraticCurveTo(s * 0.6, -s * (1.3 + flap * 0.5), s * 1.3, -s * (0.8 + flap * 0.6));
+      ctx.quadraticCurveTo(s * 0.7, -s * 0.4, s * 0.3, -s * 0.2);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ellipse(ctx, s * 0.2, -s * 0.35, s * 0.75, s * 0.45, '#8a6a50', OUTLINE, 2);
+      // 白色毛领与光头
+      ellipse(ctx, -s * 0.45, -s * 0.5, s * 0.32, s * 0.26, '#f3ead8', OUTLINE, 1.8);
+      ellipse(ctx, -s * 0.8, -s * 0.72, s * 0.36, s * 0.32, '#f2a6a0', OUTLINE, 2);
+      ctx.fillStyle = '#ffcf4a';
+      ctx.beginPath();
+      ctx.moveTo(-s * 1.1, -s * 0.72);
+      ctx.lineTo(-s * 1.38, -s * 0.6);
+      ctx.lineTo(-s * 1.08, -s * 0.55);
+      ctx.fill();
+      ctx.stroke();
+      eyes(ctx, -s * 0.85, -s * 0.8, s * 0.26, s * 0.13);
+    },
+    priest(ctx, s, t, o) {
+      const sway = Math.sin(t * 4 + (o.seed || 0)) * 0.08;
+      shadow(ctx, 0, 2, s * 0.75);
+      ctx.save();
+      ctx.rotate(sway);
+      // 袍子
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.7, 0);
+      ctx.quadraticCurveTo(-s * 0.6, -s * 1.0, 0, -s * 1.05);
+      ctx.quadraticCurveTo(s * 0.6, -s * 1.0, s * 0.7, 0);
+      ctx.closePath();
+      ctx.fillStyle = '#9a6bd5';
+      ctx.fill();
+      ctx.strokeStyle = OUTLINE;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      // 猫头
+      ellipse(ctx, 0, -s * 1.3, s * 0.55, s * 0.48, '#f7d9a8', OUTLINE, 2);
+      for (const d of [-1, 1]) {
+        ctx.beginPath();
+        ctx.moveTo(d * s * 0.2, -s * 1.7);
+        ctx.lineTo(d * s * 0.45, -s * 1.95);
+        ctx.lineTo(d * s * 0.5, -s * 1.55);
+        ctx.fillStyle = '#f7d9a8';
+        ctx.fill();
+        ctx.stroke();
+      }
+      // 头巾
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.58, -s * 1.38);
+      ctx.quadraticCurveTo(0, -s * 1.95, s * 0.58, -s * 1.38);
+      ctx.quadraticCurveTo(0, -s * 1.6, -s * 0.58, -s * 1.38);
+      ctx.fillStyle = '#fff2dc';
+      ctx.fill();
+      ctx.stroke();
+      squintEyes(ctx, -s * 0.05, -s * 1.25, s * 0.4, s * 0.1);
+      ctx.restore();
+      // 法杖与光球
+      ctx.strokeStyle = '#8a5a3c';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.7, -s * 0.1);
+      ctx.lineTo(-s * 0.7, -s * 1.5);
+      ctx.stroke();
+      const glow = 0.6 + Math.sin(t * 6) * 0.3;
+      ctx.globalAlpha = glow;
+      ellipse(ctx, -s * 0.7, -s * 1.6, s * 0.22, s * 0.22, '#7dff9a', '#3d7a2f', 1.5);
+      ctx.globalAlpha = 1;
+    },
+    pharaoh(ctx, s, t, o) {
+      const ai = o.ai || {};
+      const float = Math.sin(t * 2.5) * 5;
+      shadow(ctx, 0, 2, s * 1.1);
+      ctx.save();
+      ctx.translate(0, -s * 0.35 + float);
+      // 金棺材
+      roundRect(ctx, -s * 1.1, -s * 0.35, s * 2.2, s * 0.6, s * 0.2);
+      ctx.fillStyle = '#e8b830';
+      ctx.fill();
+      ctx.strokeStyle = OUTLINE;
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+      ctx.fillStyle = '#5b8fd5';
+      for (let i = 0; i < 5; i++) ctx.fillRect(-s * 0.9 + i * s * 0.42, -s * 0.2, s * 0.18, s * 0.3);
+      // 圆滚滚的身体
+      ellipse(ctx, 0, -s * 0.85, s * 0.75, s * 0.62, '#fff2dc', OUTLINE, 2.5);
+      ctx.fillStyle = '#5b8fd5';
+      ctx.fillRect(-s * 0.6, -s * 0.65, s * 1.2, s * 0.12);
+      // 脸
+      ellipse(ctx, 0, -s * 1.5, s * 0.5, s * 0.45, '#e8c49a', OUTLINE, 2);
+      // 法老头巾（条纹）
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.55, -s * 1.55);
+      ctx.quadraticCurveTo(-s * 0.6, -s * 2.15, 0, -s * 2.2);
+      ctx.quadraticCurveTo(s * 0.6, -s * 2.15, s * 0.55, -s * 1.55);
+      ctx.lineTo(s * 0.75, -s * 0.95);
+      ctx.lineTo(s * 0.45, -s * 1.0);
+      ctx.lineTo(s * 0.38, -s * 1.45);
+      ctx.lineTo(-s * 0.38, -s * 1.45);
+      ctx.lineTo(-s * 0.45, -s * 1.0);
+      ctx.lineTo(-s * 0.75, -s * 0.95);
+      ctx.closePath();
+      ctx.fillStyle = '#ffd23f';
+      ctx.fill();
+      ctx.stroke();
+      ctx.strokeStyle = '#5b8fd5';
+      ctx.lineWidth = 3;
+      for (let i = 0; i < 3; i++) {
+        ctx.beginPath();
+        ctx.moveTo(-s * 0.55, -s * (1.75 + i * 0.13));
+        ctx.quadraticCurveTo(0, -s * (1.95 + i * 0.13), s * 0.55, -s * (1.75 + i * 0.13));
+        ctx.stroke();
+      }
+      eyes(ctx, -s * 0.08, -s * 1.5, s * 0.38, s * 0.13);
+      // 胡子
+      ctx.fillStyle = '#5b8fd5';
+      ctx.fillRect(-s * 0.08, -s * 1.15, s * 0.16, s * 0.22);
+      ctx.restore();
+      if (ai.phase === 3 && o.shield > 0) {
+        // 金字塔护盾
+        const a = 0.35 + Math.sin(t * 5) * 0.1;
+        ctx.save();
+        ctx.globalAlpha = a;
+        ctx.fillStyle = '#ffe58a';
+        ctx.strokeStyle = '#c99a12';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.moveTo(0, -s * 2.9);
+        ctx.lineTo(s * 1.6, s * 0.15);
+        ctx.lineTo(-s * 1.6, s * 0.15);
+        ctx.closePath();
+        ctx.fill();
+        ctx.globalAlpha = Math.min(1, a + 0.4);
+        ctx.stroke();
+        ctx.restore();
+      }
+    },
   };
 
   function goblinBody(ctx, s, t, o, color, shield) {
@@ -546,6 +839,27 @@
       ctx.lineTo(s * 0.35 - pull * 4, 0);
       ctx.lineTo(s * 0.6, s * 0.45);
       ctx.stroke();
+    } else if (weapon === 'staff') {
+      ctx.strokeStyle = '#8a5a3c';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.1, s * 0.15);
+      ctx.lineTo(s * 0.75, -s * 0.05);
+      ctx.stroke();
+      const glow = shotAge !== undefined && shotAge < 0.2 ? 1.6 : 1;
+      ellipse(ctx, s * 0.82, -s * 0.06, s * 0.17 * glow, s * 0.17 * glow, '#c58cff', OUTLINE, 1.8);
+      ellipse(ctx, s * 0.78, -s * 0.1, s * 0.05, s * 0.05, '#fff');
+      ellipse(ctx, s * 0.15, 0, s * 0.13, s * 0.13, '#ffd9b8', OUTLINE, 1.5);
+    } else if (weapon === 'cannon') {
+      const kick = shotAge !== undefined && shotAge < 0.15 ? (1 - shotAge / 0.15) * 6 : 0;
+      roundRect(ctx, -s * 0.2 - kick, -s * 0.2, s * 1.1, s * 0.4, s * 0.15);
+      ctx.fillStyle = '#4a4a58';
+      ctx.fill();
+      ctx.strokeStyle = OUTLINE;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ellipse(ctx, s * 0.9 - kick, 0, s * 0.08, s * 0.2, '#2a2a33');
+      ellipse(ctx, s * 0.05, s * 0.05, s * 0.13, s * 0.13, '#ffd9b8', OUTLINE, 1.5);
     } else if (weapon === 'boomerang') {
       if (shotAge === undefined || shotAge > 0.5) {
         ctx.save();
@@ -895,6 +1209,31 @@
     },
     boomerang(ctx) {
       S.boomerang(ctx, 17, 0.4);
+    },
+    staff(ctx) {
+      ctx.save();
+      ctx.rotate(0.6);
+      ctx.strokeStyle = '#8a5a3c';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(0, 18);
+      ctx.lineTo(0, -8);
+      ctx.stroke();
+      ellipse(ctx, 0, -12, 7, 7, '#c58cff', OUTLINE, 2);
+      ellipse(ctx, -2, -14, 2.5, 2, '#fff');
+      ctx.restore();
+    },
+    cannon(ctx) {
+      ctx.save();
+      ctx.rotate(-0.35);
+      roundRect(ctx, -14, -7, 30, 14, 6);
+      ctx.fillStyle = '#4a4a58';
+      ctx.fill();
+      ctx.strokeStyle = OUTLINE;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.restore();
+      ellipse(ctx, -6, 10, 7, 7, '#8a5a3c', OUTLINE, 2);
     },
   };
 

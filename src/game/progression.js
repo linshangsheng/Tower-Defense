@@ -18,7 +18,7 @@
       gold: 0,
       attrs: { atk: 0, aspd: 0, crit: 0, critDmg: 0, luck: 0 },
       wall: { level: 1, fortify: 0, mend: 0, thorns: 0 },
-      weapons: { bow: { owned: true, lv: 0 }, crossbow: { owned: false, lv: 0 }, boomerang: { owned: false, lv: 0 } },
+      weapons: Object.fromEntries(Object.keys(D.weapons).map((id) => [id, { owned: id === 'bow', lv: 0 }])),
       activeOwned: { drum: true },
       passiveOwned: {},
       equipOwned: {},

@@ -72,12 +72,13 @@
   };
 
   game.quitBattle = function () {
+    const n = game.battle ? game.battle.levelNo : 1;
     TD.ui.closeModal();
     game.battle = null;
     game.renderer.battle = null;
     game.paused = false;
     game.persist();
-    TD.ui.showMap();
+    TD.ui.showMap(TD.data.chapterOf(n).id);
   };
 
   game.pickSupply = function (id) {

@@ -39,9 +39,11 @@
   Bot.shop = function (save, opts) {
     opts = opts || {};
     const bought = [];
-    // 银币：技能优先
+    // 银币：技能优先；第一章打完后先攒钱买魔法杖
     const silverOrder = opts.silverOrder || ['arrowRain', 'precision', 'thunder', 'burn', 'repair', 'frost', 'combo', 'pierceArmor'];
+    const saveForStaff = P.highestCleared(save) >= 10 && !save.weapons.staff.owned;
     for (const id of silverOrder) {
+      if (saveForStaff && save.silver - 8 < 3) break;
       if (D.activeSkills[id] && !save.activeOwned[id] && P.canAfford(save, D.activeSkills[id].cost)) {
         P.buyActive(save, id);
         bought.push(id);
@@ -50,10 +52,28 @@
         bought.push(id);
       }
     }
+    // 武器：随进度解锁
+    const h = P.highestCleared(save);
+    const wantWeapon = (id, minCleared) => {
+      if (h >= minCleared && !save.weapons[id].owned && P.canAfford(save, D.weapons[id].cost)) {
+        P.buyWeapon(save, id);
+        bought.push(id);
+      }
+    };
+    wantWeapon('staff', 10);
+    wantWeapon('cannon', 14);
     // 金币
     if (!save.equipOwned.lionCrown && P.canAfford(save, D.equipment.lionCrown.cost)) {
       P.buyEquip(save, 'lionCrown');
       P.setEquip(save, 'helm', 'lionCrown');
+    }
+    if (h >= 5 && !save.weapons.crossbow.owned && save.copper >= 600) {
+      P.buyWeapon(save, 'crossbow');
+      bought.push('crossbow');
+    }
+    if (h >= 7 && !save.weapons.boomerang.owned && save.copper >= 900) {
+      P.buyWeapon(save, 'boomerang');
+      bought.push('boomerang');
     }
     // 铜币装备（性价比高，优先）
     for (const id of ['ironHelm', 'redCape', 'fang']) {
@@ -100,6 +120,8 @@
   // 跑一局
   Bot.playLevel = function (save, n, opts) {
     opts = opts || {};
+    if (!opts.keepLoadout) P.recommend(save, n);
+    if (opts.forceWeapon) save.loadout.weapon = opts.forceWeapon;
     const lo = P.battleLoadout(save);
     if (opts.noSkills) lo.active = [];
     lo.autoCast = !opts.noSkills;
