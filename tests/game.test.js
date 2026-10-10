@@ -834,3 +834,51 @@ test('失败提示：没开自动释放时建议开启；标准难度连败 3 �
   assert.ok(t.includes('自动释放'));
   assert.ok(t.includes('轻松'));
 });
+
+test('守城日记：每个段落都有台词，说话人都存在', () => {
+  for (const key of D.storyOrder) {
+    const sc = D.story[key];
+    assert.ok(sc && sc.lines.length >= 2, key);
+    for (const [who, text] of sc.lines) {
+      assert.ok(D.speakers[who] || D.monsters[who], `${key} 的说话人 ${who}`);
+      assert.ok(text.length > 0);
+    }
+    if (key.startsWith('ch') || key.startsWith('post')) assert.ok(sc.diary, `${key} 缺日记`);
+  }
+  // 每章的小 Boss 和大 Boss 都有战前、战后
+  for (const n of Object.keys(D.levels).map(Number)) {
+    const t = D.levels[n].type;
+    if (t === 'boss' || t === 'miniboss') assert.ok(D.story['pre' + n] && D.story['post' + n], `第 ${n} 关缺对话`);
+  }
+});
+
+test('守城日记：解锁、自动播放一次、读完全部得成就', () => {
+  const s = P.newSave();
+  assert.ok(P.storyDue(s, 'ch1'));
+  assert.ok(!P.storyUnlocked(s, 'ch2'));
+  assert.ok(!P.storyDue(s, 'pre5'), '第 5 关还没开放');
+  P.markStory(s, 'ch1', false);
+  assert.strictEqual(s.story.ch1, 'skipped');
+  assert.ok(!P.storyDue(s, 'ch1'), '跳过后不再自动播放');
+  P.markStory(s, 'ch1', true);
+  assert.strictEqual(s.story.ch1, 'read');
+  P.markStory(s, 'ch1', false);
+  assert.strictEqual(s.story.ch1, 'read', '读过的不会被跳过覆盖');
+  clearUpTo(s, 50);
+  for (const k of D.storyOrder) assert.ok(P.storyUnlocked(s, k), k);
+  let got = [];
+  for (const k of D.storyOrder) got = got.concat(P.markStory(s, k, true));
+  assert.ok(got.some((a) => a.id === 'diary'));
+});
+
+test('守城日记：老存档迁移时已过去的段落记为跳过', () => {
+  const s = P.newSave();
+  clearUpTo(s, 12);
+  delete s.story;
+  P.migrate(s);
+  assert.strictEqual(s.story.ch1, 'skipped');
+  assert.strictEqual(s.story.post10, 'skipped');
+  assert.strictEqual(s.story.ch2, 'skipped');
+  assert.ok(!s.story.pre15);
+  assert.ok(P.storyDue(s, 'pre15') === false, '第 15 关还没开放');
+});

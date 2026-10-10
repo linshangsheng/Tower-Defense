@@ -36,6 +36,7 @@
     { id: 'ascend', name: '神兵出世', desc: '任意武器进阶', reward: { silver: 2 }, check: (s) => Object.values(s.weapons).some((w) => w.asc) },
     { id: 'dex30', name: '图鉴学者', desc: '遇见 30 种怪物', reward: { silver: 3 }, check: (s) => Object.keys(s.seenMonsters || {}).length >= 30 },
     { id: 'dexAll', name: '图鉴大师', desc: '遇见全部怪物', reward: { gold: 1 }, check: (s) => introTypes().every((k) => (s.seenMonsters || {})[k]) },
+    { id: 'diary', name: '日记写满了', desc: '读完全部守城日记（跳过的段落可以在日记本里重看）', reward: { silver: 3 }, check: (s) => (TD.data.storyOrder || []).every((k) => (s.story || {})[k] === 'read') },
     { id: 'kill1k', name: '百怪斩', desc: '累计击败 1000 只怪物', reward: { silver: 2 }, check: (s) => s.stats.kills >= 1000 },
     { id: 'kill10k', name: '万怪敌', desc: '累计击败 10000 只怪物', reward: { gold: 1 }, check: (s) => s.stats.kills >= 10000 },
     { id: 'bosses', name: 'Boss 克星', desc: '击败全部 10 个 Boss（含小 Boss）', reward: { gold: 1 }, check: (s) => bossTypes().every((k) => (s.stats.killsByType || {})[k] > 0) },

@@ -40,6 +40,7 @@
       seenTabs: { loadout: true, attrs: true },
       achievements: {},
       settings: { sound: true, speed: 1, difficulty: 'normal' },
+      story: {}, // 守城日记（设计书 28）：段落 id → 'read' 读完 / 'skipped' 跳过
     };
   };
 
@@ -52,6 +53,11 @@
       const h = Object.keys(save.levels || {}).filter((k) => save.levels[k].clears > 0).reduce((a, k) => Math.max(a, +k), 0);
       if (h >= 1) for (const id of ['wall', 'items', 'skills', 'equip', 'weapons', 'exchange']) save.seenTabs[id] = true;
       if (h >= 1) save.stats = Object.assign({ shopGuided: true }, save.stats || {});
+    }
+    // v0.19 之前的老存档：已经过去的剧情段落不补播（记为跳过），但会出现在日记本里
+    if (!save.story) {
+      save.story = {};
+      for (const key of D.storyOrder || []) if (P.storyPassed(save, key)) save.story[key] = 'skipped';
     }
     const merge = (target, src) => {
       for (const k of Object.keys(src)) {
@@ -66,6 +72,40 @@
   };
 
   P.levelRecord = (save, n) => save.levels[n] || { stars: 0, clears: 0 };
+
+  // ---------- 守城日记（设计书 28） ----------
+  // 段落是否已解锁（日记本里可以看）：章节开场 = 章节开放；战前 = Boss 关开放；战后 = Boss 关已通关
+  P.storyUnlocked = function (save, key) {
+    const m = /^(ch|pre|post)(\d+)$/.exec(key);
+    if (!m) return false;
+    const k = +m[2];
+    if (m[1] === 'ch') {
+      const ch = D.chapters.find((c) => c.id === k);
+      return !!ch && P.isUnlocked(save, ch.levels[0]);
+    }
+    return m[1] === 'pre' ? P.isUnlocked(save, k) : P.isCleared(save, k);
+  };
+  // 段落的时机是否已经过去（老存档迁移用）：章节开场 = 该章第一关已通关；战前 / 战后 = 该关已通关
+  P.storyPassed = function (save, key) {
+    const m = /^(ch|pre|post)(\d+)$/.exec(key);
+    if (!m) return false;
+    const k = +m[2];
+    if (m[1] === 'ch') {
+      const ch = D.chapters.find((c) => c.id === k);
+      return !!ch && P.isCleared(save, ch.levels[0]);
+    }
+    return P.isCleared(save, k);
+  };
+  // 现在该自动播放的段落（没播过才播）
+  P.storyDue = function (save, key) {
+    return !!(D.story && D.story[key]) && !(save.story || {})[key] && P.storyUnlocked(save, key);
+  };
+  P.markStory = function (save, key, read) {
+    save.story = save.story || {};
+    if (read) save.story[key] = 'read';
+    else if (!save.story[key]) save.story[key] = 'skipped';
+    return P.checkAchievements(save);
+  };
   P.isCleared = (save, n) => P.levelRecord(save, n).clears > 0;
   P.isUnlocked = (save, n) => n === 1 || P.isCleared(save, n - 1);
   P.highestCleared = function (save) {

@@ -458,6 +458,7 @@
         h('div', { class: 'chapter-title' }, `第${'一二三四五'[ch.id - 1]}章 · ${ch.name}`, h('span', { class: 'chapter-stars' }, ` ★ ${totalStars}/${ch.levels.length * 3}`)),
         h('div', { class: 'power' }, '战力 ', h('b', null, P.power(s))),
         currencyBar(),
+        h('button', { class: 'btn small', title: '守城日记', onclick: () => (sfx('click'), UI.showDiary()) }, '📔'),
         h('button', { class: 'btn small', title: '怪物图鉴', onclick: () => (sfx('click'), UI.showBestiary()) }, '📖'),
         h('button', { class: 'btn small', title: '成就', onclick: () => (sfx('click'), UI.showAchievements()) }, '🏆'),
         h('button', { class: 'btn small primary', onclick: () => (sfx('click'), UI.showShop(null, 'loadout')) }, '商店 / 配装')
@@ -472,6 +473,125 @@
       )
     );
     root.appendChild(screenEl);
+    // 章节开场（设计书 28.3）：第一次打开、且该章第一关还没通关
+    if (!P.isCleared(s, ch.levels[0])) UI.maybeStory('ch' + ch.id);
+  };
+
+  // ================= 守城日记（设计书 28） =================
+  function speakerInfo(id) {
+    const sp = D.speakers[id];
+    if (sp) return { name: sp.name, img: () => (sp.emoji ? h('div', { class: 'story-emoji' }, sp.emoji) : TD.sprites.heroPortrait(96)) };
+    const def = D.monsters[id];
+    return { name: def ? def.name : id, img: () => TD.sprites.portrait(id, 96) };
+  }
+
+  // 播放一段对话：点击推进（打字中点击 = 显示整句），"跳过"直接结束
+  UI.playStory = function (key, onDone, opts) {
+    opts = opts || {};
+    const sc = D.story[key];
+    if (!sc) return onDone && onDone();
+    let i = 0;
+    let shown = 0;
+    let timer = null;
+    let finished = false;
+    const avatar = h('div', { class: 'story-avatar' });
+    const nameEl = h('div', { class: 'story-name' });
+    const textEl = h('div', { class: 'story-text' });
+    const nextEl = h('div', { class: 'story-next' }, '▼');
+    const end = (read) => {
+      if (finished) return;
+      finished = true;
+      clearInterval(timer);
+      el.remove();
+      if (!opts.replay || read) UI.announce(P.markStory(game.save, key, read));
+      game.persist();
+      onDone && onDone();
+    };
+    const show = () => {
+      const [who, text] = sc.lines[i];
+      const sp = speakerInfo(who);
+      avatar.innerHTML = '';
+      avatar.appendChild(sp.img());
+      avatar.className = 'story-avatar' + (who === 'dang' ? ' hero' : '');
+      nameEl.textContent = sp.name;
+      shown = 0;
+      textEl.textContent = '';
+      nextEl.classList.add('hidden');
+      clearInterval(timer);
+      timer = setInterval(() => {
+        shown++;
+        textEl.textContent = text.slice(0, shown);
+        if (shown >= text.length) {
+          clearInterval(timer);
+          nextEl.classList.remove('hidden');
+        }
+      }, 38);
+      sfx('click');
+    };
+    const advance = () => {
+      const text = sc.lines[i][1];
+      if (shown < text.length) {
+        shown = text.length;
+        clearInterval(timer);
+        textEl.textContent = text;
+        nextEl.classList.remove('hidden');
+        return;
+      }
+      i++;
+      if (i >= sc.lines.length) end(true);
+      else show();
+    };
+    const el = h(
+      'div',
+      { class: 'story-overlay', onclick: advance },
+      h('div', { class: 'story-title' }, key.startsWith('ch') ? `第${'一二三四五'[+key.slice(2) - 1]}章 · ${sc.title}` : sc.title),
+      h('div', { class: 'story-box' }, avatar, h('div', { class: 'story-main' }, nameEl, textEl), nextEl),
+      h('button', { class: 'btn small story-skip', onclick: (e) => (e.stopPropagation(), sfx('click'), end(false)) }, '跳过 ›')
+    );
+    root.appendChild(el);
+    show();
+  };
+
+  // 没播过的段落才播；否则直接继续
+  UI.maybeStory = function (key, onDone) {
+    if (P.storyDue(game.save, key)) UI.playStory(key, onDone);
+    else onDone && onDone();
+  };
+
+  // 日记本：按顺序列出所有段落，已解锁的可以重看
+  UI.showDiary = function () {
+    const s = game.save;
+    const order = D.storyOrder;
+    const read = order.filter((k) => (s.story || {})[k] === 'read').length;
+    const items = order.map((key) => {
+      const sc = D.story[key];
+      const open = P.storyUnlocked(s, key);
+      const kind = key.startsWith('ch') ? '章节' : key.startsWith('pre') ? '战前' : '战后';
+      const state = (s.story || {})[key];
+      return h(
+        'div',
+        { class: 'diary-item' + (open ? '' : ' locked') + (key.startsWith('ch') ? ' chapter' : '') },
+        h('span', { class: 'diary-kind' }, kind),
+        h('div', { class: 'diary-main' }, h('b', null, open ? sc.title : '？？？'), open && sc.diary ? h('p', null, '✎ ' + sc.diary) : null),
+        open
+          ? h(
+              'button',
+              { class: 'btn small' + (state === 'read' ? '' : ' primary'), onclick: () => (sfx('click'), UI.closeModal(), UI.playStory(key, () => UI.showDiary(), { replay: true })) },
+              state === 'read' ? '重看' : '阅读'
+            )
+          : null
+      );
+    });
+    modal(
+      h('div', { class: 'diary' }, h('div', { class: 'preview-head' }, h('h2', null, '📔 铛铛的守城日记'), h('span', { class: 'tag' }, `已读 ${read} / ${order.length}`)), h('div', { class: 'diary-list' }, items), h('div', { class: 'modal-buttons' }, h('button', { class: 'btn primary', onclick: UI.closeModal }, '合上日记'))),
+      { closeOnBack: true, cls: 'wide' }
+    );
+  };
+
+  // 进入关卡：Boss 关第一次挑战前先播战前对话
+  UI.beginLevel = function (n) {
+    UI.closeModal();
+    UI.maybeStory('pre' + n, () => game.startBattle(n));
   };
 
   // ================= 关卡预览 =================
@@ -551,7 +671,7 @@
         { class: 'modal-buttons' },
         h('button', { class: 'btn', onclick: UI.closeModal }, '返回'),
         h('button', { class: 'btn', onclick: () => (sfx('click'), UI.showShop(n, 'loadout')) }, '商店 / 配装'),
-        h('button', { class: 'btn primary big', onclick: () => (sfx('click'), game.startBattle(n)) }, '开始战斗')
+        h('button', { class: 'btn primary big', onclick: () => (sfx('click'), UI.beginLevel(n)) }, '开始战斗')
       )
     );
     modal(body, { closeOnBack: true, cls: 'wide' });

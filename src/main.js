@@ -97,17 +97,22 @@
     }
     const reward = P.applyResult(game.save, battle.levelNo, battle.result);
     game.persist();
-    // 第一次打败最终 Boss：先播结局演出
-    if (battle.level.final && battle.result.win && reward.firstClear) {
-      game.battle = null;
-      game.renderer.battle = null;
-      TD.ui.showEnding(() => {
-        TD.ui.showMap(TD.data.chapterOf(battle.levelNo).id);
-        TD.ui.showResult(battle, reward);
-      });
-      return;
-    }
-    TD.ui.showResult(battle, reward);
+    const after = () => {
+      // 第一次打败最终 Boss：先播结局演出
+      if (battle.level.final && battle.result.win && reward.firstClear) {
+        game.battle = null;
+        game.renderer.battle = null;
+        TD.ui.showEnding(() => {
+          TD.ui.showMap(TD.data.chapterOf(battle.levelNo).id);
+          TD.ui.showResult(battle, reward);
+        });
+        return;
+      }
+      TD.ui.showResult(battle, reward);
+    };
+    // 首次打败 Boss：先播战后对话（设计书 28.3）
+    if (battle.result.win && reward.firstClear) TD.ui.maybeStory('post' + battle.levelNo, after);
+    else after();
   };
 
   game.restartBattle = function () {

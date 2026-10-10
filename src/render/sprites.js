@@ -2208,6 +2208,20 @@
     return c;
   };
 
+  // 铛铛的头像（守城日记的对话框）
+  S.heroPortrait = function (size, mood) {
+    const c = document.createElement('canvas');
+    const px = size || 96;
+    c.width = px;
+    c.height = px;
+    const ctx = c.getContext('2d');
+    const k = px / 84;
+    ctx.translate(px * 0.56, px * 0.97);
+    ctx.scale(k, k);
+    S.hero(ctx, 0, 0, { t: 0.3, weapon: 'bow', aimAngle: 0, shotAge: 9, mood: mood || 'idle', critAge: 9 });
+    return c;
+  };
+
   // 把怪物画成头像（用于关卡预览、图鉴）
   S.portrait = function (type, size) {
     const c = document.createElement('canvas');

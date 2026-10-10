@@ -25,6 +25,11 @@ try {
   await page.waitForTimeout(500);
   await page.screenshot({ path: `${out}/2-difficulty.png` });
   await page.click('.diff-card.rec');
+  // 第一章开场对话（设计书 28.3）
+  await page.waitForSelector('.story-overlay', { timeout: 3000 });
+  await page.waitForTimeout(1500);
+  await page.screenshot({ path: `${out}/2-story.png` });
+  await page.click('.story-skip');
   await page.waitForTimeout(300);
   await page.screenshot({ path: `${out}/2-map.png` });
   await page.click('.map-node.current');

@@ -1485,3 +1485,159 @@ body {
   font-size: 14px;
   max-width: 420px;
 }
+
+/* ---------- 守城日记（设计书 28） ---------- */
+.story-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 35;
+  background: linear-gradient(to bottom, rgba(20, 12, 6, 0.15), rgba(20, 12, 6, 0.55));
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  padding-bottom: 28px;
+  cursor: pointer;
+  animation: popIn 0.25s;
+}
+.story-title {
+  position: absolute;
+  top: 26px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 14px;
+  padding: 6px 22px;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--ink);
+  box-shadow: 0 4px 0 var(--shadow);
+}
+.story-box {
+  position: relative;
+  width: min(980px, calc(100% - 32px));
+  min-height: 150px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  background: var(--paper);
+  border: 4px solid var(--ink);
+  border-radius: 20px;
+  padding: 14px 22px;
+  box-shadow: 0 6px 0 var(--shadow);
+}
+.story-avatar {
+  flex: none;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: var(--paper-2);
+  border: 3px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.story-avatar.hero {
+  background: #dce9ff;
+}
+.story-emoji {
+  font-size: 64px;
+}
+.story-main {
+  flex: 1;
+  min-width: 0;
+}
+.story-name {
+  font-weight: 800;
+  font-size: 20px;
+  color: var(--primary-dark);
+  margin-bottom: 6px;
+}
+.story-text {
+  font-size: 21px;
+  line-height: 1.55;
+  color: var(--ink);
+  min-height: 66px;
+}
+.story-next {
+  position: absolute;
+  right: 18px;
+  bottom: 10px;
+  color: var(--primary-dark);
+  animation: storyBlink 0.8s infinite alternate;
+}
+.story-next.hidden {
+  visibility: hidden;
+}
+@keyframes storyBlink {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(4px);
+  }
+}
+.story-skip {
+  position: absolute;
+  top: 84px;
+  right: 20px;
+}
+
+.diary-list {
+  max-height: 440px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+  padding-right: 4px;
+}
+.diary-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fff;
+  border: 2px solid var(--paper-2);
+  border-radius: 12px;
+  padding: 8px 12px;
+}
+.diary-item.chapter {
+  border-color: var(--primary);
+  background: #fff6e6;
+}
+.diary-item.locked {
+  opacity: 0.5;
+}
+.diary-kind {
+  flex: none;
+  font-size: 13px;
+  font-weight: 700;
+  background: var(--paper-2);
+  border-radius: 8px;
+  padding: 2px 8px;
+}
+.diary-main {
+  flex: 1;
+  min-width: 0;
+}
+.diary-main p {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: #6a5440;
+}
+
+@media (max-width: 760px) {
+  .story-avatar {
+    width: 72px;
+    height: 72px;
+  }
+  .story-avatar canvas {
+    width: 68px;
+    height: 68px;
+  }
+  .story-text {
+    font-size: 17px;
+  }
+}
