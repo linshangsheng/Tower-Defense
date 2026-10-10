@@ -92,6 +92,23 @@
       ],
       chords: [['C3', 'Eb3', 'G3'], ['Ab2', 'C3', 'Eb3'], ['Bb2', 'D3', 'F3'], ['G2', 'B2', 'D3'], ['C3', 'Eb3', 'G3'], ['Ab2', 'C3', 'Eb3'], ['F2', 'Ab2', 'C3'], ['G2', 'B2', 'D3']],
     },
+    // 第六章（设计书 33.6）：F 大调，轻快的长笛
+    6: {
+      name: '云端王国',
+      bpm: 120,
+      lead: 'woodwind',
+      melody: [
+        'F5 . A5 . C6 . A5 .',
+        'Bb5 . A5 G5 F5 . G5 .',
+        'A5 . C6 . F6 . E6 .',
+        'D6 . . C6 Bb5 . - -',
+        'A5 . G5 . F5 A5 C6 .',
+        'D6 . C6 . Bb5 A5 G5 .',
+        'A5 . F5 . G5 . E5 .',
+        'F5 . . . - - - -',
+      ],
+      chords: [['F3', 'A3', 'C4'], ['Bb2', 'D4', 'F4'], ['F3', 'A3', 'C4'], ['C3', 'E4', 'G4'], ['D3', 'F3', 'A3'], ['Bb2', 'D4', 'F4'], ['C3', 'E4', 'G4'], ['F3', 'A3', 'C4']],
+    },
   };
 
   const M = (TD.music = { enabled: true, theme: null, mode: 'calm', tension: 0, playing: false });

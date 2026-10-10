@@ -864,7 +864,7 @@ test('守城日记：解锁、自动播放一次、读完全部得成就', () =>
   assert.strictEqual(s.story.ch1, 'read');
   P.markStory(s, 'ch1', false);
   assert.strictEqual(s.story.ch1, 'read', '读过的不会被跳过覆盖');
-  clearUpTo(s, 50);
+  clearUpTo(s, Math.max(...Object.keys(D.levels).map(Number)));
   for (const k of D.storyOrder) assert.ok(P.storyUnlocked(s, k), k);
   let got = [];
   for (const k of D.storyOrder) got = got.concat(P.markStory(s, k, true));
@@ -959,4 +959,117 @@ test('战斗报告：统计伤害来源、被挡比例、城墙伤害来源', ()
   assert.ok(rp.wallBy.goblin > 0 && rp.wallBy.frog > 0);
   const res = b.runToEnd();
   assert.ok(res.report && res.report.bySource);
+});
+
+// ---------- 第六章（设计书 33） ----------
+function ch6Battle(level, seed) {
+  const s = P.newSave();
+  return new TD.Battle({ level, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: seed || 1 });
+}
+
+test('云朵羊：先扣羊毛，剃光后加速；羊毛剪减少羊毛', () => {
+  const b = ch6Battle(51);
+  const m = b.spawnMonster('cloudSheep', 0);
+  assert.ok(Math.abs(m.wool - m.maxHp * 0.6) < 1e-6);
+  const v0 = b.monsterSpeed(m);
+  b.damage(m, m.wool * 0.5, { type: 'phys', source: 'weapon' });
+  assert.strictEqual(m.hp, m.maxHp, '羊毛没剃光前不掉血');
+  b.damage(m, m.wool + 1, { type: 'phys', source: 'weapon' });
+  assert.ok(m.sheared && m.hp < m.maxHp);
+  assert.ok(Math.abs(b.monsterSpeed(m) / v0 - 2.2) < 1e-9);
+  const b2 = ch6Battle(51);
+  b2.mods.woolCut = 0.6;
+  const m2 = b2.spawnMonster('cloudSheep', 0);
+  assert.ok(Math.abs(m2.wool - m2.maxHp * 0.6 * 0.4) < 1e-6);
+});
+
+test('风筝怪：只闪避武器的物理普通攻击，顺风旗降低闪避', () => {
+  const b = ch6Battle(52, 7);
+  let miss = 0;
+  for (let i = 0; i < 400; i++) {
+    const m = b.spawnMonster('kite', 0);
+    if (b.damage(m, 1, { type: 'phys', source: 'weapon' }) === 0) miss++;
+    m.dead = true;
+  }
+  assert.ok(miss > 100 && miss < 180, `闪避约 35%：${miss}/400`);
+  const m = b.spawnMonster('kite', 0);
+  for (let i = 0; i < 30; i++) assert.ok(b.damage(m, 0.01, { type: 'magic', source: 'chain' }) > 0, '魔法不会被躲开');
+  b.mods.dodgeCut = 0.35;
+  for (let i = 0; i < 30; i++) assert.ok(b.damage(m, 0.01, { type: 'phys', source: 'weapon' }) > 0);
+});
+
+test('雷团子：城墙附近被打死电麻英雄，之后 1.5 秒内不会再被电；避雷针免疫', () => {
+  const b = ch6Battle(53);
+  const far = b.spawnMonster('thunderBall', 0, 900);
+  b.kill(far);
+  assert.strictEqual(b.heroStunUntil, 0, '远处打死不会电');
+  const near = b.spawnMonster('thunderBall', 0, 300);
+  b.kill(near);
+  assert.ok(Math.abs(b.heroStunUntil - 0.8) < 1e-9);
+  b.time = 1;
+  b.kill(b.spawnMonster('thunderBall', 0, 300));
+  assert.ok(Math.abs(b.heroStunUntil - 0.8) < 1e-9, '冷却中不再电麻');
+  const b2 = ch6Battle(53);
+  b2.mods.stunImmune = 1;
+  b2.kill(b2.spawnMonster('thunderBall', 0, 300));
+  assert.strictEqual(b2.heroStunUntil, 0);
+});
+
+test('呼呼：大风把怪物吹向城墙，预警期间打够伤害就打断', () => {
+  const G = D.windGiant;
+  const b = ch6Battle(55);
+  const boss = b.spawnMonster('windGiant', 2, G.holdX);
+  const sheep = b.spawnMonster('cloudSheep', 0, 1000);
+  b.updateWindGiant(boss, 0.01);
+  assert.strictEqual(boss.ai.mode, 'hold');
+  boss.ai.gustTimer = 0.001;
+  b.updateWindGiant(boss, 0.01);
+  assert.strictEqual(boss.ai.mode, 'warn');
+  for (let i = 0; i < 250; i++) b.updateWindGiant(boss, 0.01);
+  assert.ok(Math.abs(sheep.x - (1000 - G.gustPush)) < 1e-6, '被吹近 140');
+  // 打断
+  boss.ai.gustTimer = 0.001;
+  b.updateWindGiant(boss, 0.01);
+  b.damage(boss, boss.maxHp * 0.05, { type: 'magic', source: 'thunder' });
+  assert.strictEqual(boss.ai.mode, 'hold');
+  assert.ok(b.interrupts >= 1);
+});
+
+test('雷雷：三个阶段——召唤、落雷蓄力可打断、暴风雨全场加速', () => {
+  const T = D.thunderKing;
+  const b = ch6Battle(60);
+  const boss = b.spawnMonster('thunderKing', 2, T.holdX);
+  for (let i = 0; i < 300; i++) b.updateThunderKing(boss, 0.01);
+  assert.ok(b.monsters.some((m) => m.type === 'thunderBall'), '召唤雷团子');
+  boss.hp = boss.maxHp * 0.6;
+  b.updateThunderKing(boss, 0.01);
+  assert.strictEqual(boss.ai.phase, 2);
+  boss.ai.chargeTimer = 0.001;
+  b.updateThunderKing(boss, 0.01);
+  assert.strictEqual(boss.ai.mode, 'warn');
+  const wall0 = b.wall.hp;
+  for (let i = 0; i < 300; i++) b.updateThunderKing(boss, 0.01);
+  assert.ok(b.wall.hp < wall0, '没打断：落雷打城墙');
+  assert.ok(b.heroStunUntil > 0, '没打断：英雄被电麻');
+  boss.ai.chargeTimer = 0.001;
+  b.time = 50;
+  b.updateThunderKing(boss, 0.01);
+  b.damage(boss, boss.maxHp * 0.03, { type: 'magic', source: 'thunder' });
+  assert.notStrictEqual(boss.ai.mode, 'warn', '打断');
+  const sheep = b.spawnMonster('cloudSheep', 0, 900);
+  const v0 = b.monsterSpeed(sheep);
+  boss.hp = boss.maxHp * 0.2;
+  boss.stunUntil = 0;
+  b.updateThunderKing(boss, 0.01);
+  assert.strictEqual(boss.ai.phase, 3);
+  assert.ok(Math.abs(b.monsterSpeed(sheep) / v0 - 1.3) < 1e-9, '暴风雨加速');
+});
+
+test('第六章：通关第 50 关后开放，章节、关卡、补给齐全', () => {
+  const s = P.newSave();
+  clearUpTo(s, 50);
+  assert.ok(P.isUnlocked(s, 51));
+  assert.strictEqual(D.chapterOf(55).id, 6);
+  for (let n = 51; n <= 60; n++) assert.ok(D.levels[n] && D.levels[n].waves.length >= 3, `第 ${n} 关`);
+  for (const id of ['shears', 'lightningRod', 'windFlag']) assert.strictEqual(D.supplies[id].minLevel, 51);
 });

@@ -63,7 +63,8 @@
       this.waveStartTime = 0;
 
       // 战场补给（设计书 2.7）
-      this.mods = { atkMult: 0, aspdMult: 0, crit: 0, critDmg: 0, cdMult: 0, copperBonus: 0, wallDr: 0, range: 0, slowOnHit: 0, magicMult: 0, armorIgnore: 0, dotReduce: 0, spiritPierce: 0, chillResist: 0, igniteOnHit: 0, fireproof: 0, reveal: 0 };
+      this.mods = { atkMult: 0, aspdMult: 0, crit: 0, critDmg: 0, cdMult: 0, copperBonus: 0, wallDr: 0, range: 0, slowOnHit: 0, magicMult: 0, armorIgnore: 0, dotReduce: 0, spiritPierce: 0, chillResist: 0, igniteOnHit: 0, fireproof: 0, reveal: 0, woolCut: 0, stunImmune: 0, dodgeCut: 0 };
+      this.storm = false; // 雷雷第三阶段的暴风雨：全场怪物加速（设计书 33.3）
       this.zones = []; // 地面区域：{ x, y, r, until, haste }
       this.heroStunUntil = 0;
       this.chillStacks = 0;
@@ -315,6 +316,15 @@
         m.shieldMax = 0;
       }
       if (def.healer) m.healTimer = 1;
+      // 云朵羊：先扣羊毛（设计书 33.2）
+      if (def.wool) m.wool = m.woolMax = hp * def.wool.ratio * (1 - Math.min(1, this.mods.woolCut));
+      if (def.ai === 'windGiant') {
+        const G = D.windGiant;
+        m.ai = { phase: 1, mode: 'walk', kiteTimer: G.kiteFirst, gustTimer: G.gustFirst, warnTimer: 0, chargeDmg: 0 };
+      } else if (def.ai === 'thunderKing') {
+        const T = D.thunderKing;
+        m.ai = { phase: 1, mode: 'walk', summonTimer: T.summonFirst, summons: 0, chargeTimer: T.chargeFirst, warnTimer: 0, chargeDmg: 0 };
+      }
       if (def.ranged) m.rangedTimer = 0.8;
       if (def.laneHop) m.hopTimer = def.laneHop.every * (0.6 + this.rng() * 0.6);
       if (def.regen) m.lastHit = -99;
@@ -347,6 +357,8 @@
       if (m.burrowed && m.def.burrow) s *= m.def.burrow.speedMult;
       if (m.def.ai === 'pharaoh' && m.ai.phase === 3) s *= D.pharaoh.phase3SpeedMult;
       if (m.cooked) s *= 1 + D.witch.cookSpeed;
+      if (m.sheared) s *= m.def.wool.speedMult;
+      if (this.storm && !m.def.boss) s *= 1 + D.thunderKing.stormSpeed;
       if (this.zones.length && !this.mods.fireproof) {
         for (const z of this.zones) {
           if (this.time < z.until && Math.abs(m.x - z.x) <= z.r && Math.abs(m.y - z.y) <= z.r) {
@@ -398,6 +410,8 @@
           else if (m.def.ai === 'frostQueen') this.updateFrostQueen(m, dt);
           else if (m.def.ai === 'rockGolem') this.updateRockGolem(m, dt);
           else if (m.def.ai === 'inkBoss') this.updateInkBoss(m, dt);
+          else if (m.def.ai === 'windGiant') this.updateWindGiant(m, dt);
+          else if (m.def.ai === 'thunderKing') this.updateThunderKing(m, dt);
           if (m.dead) continue;
           if (m.ai.mode !== 'walk') continue;
         }
@@ -867,7 +881,7 @@
       if (ai.warn > 0) {
         ai.warn -= dt;
         if (ai.warn <= 0) {
-          this.heroStunUntil = this.time + R.stunDuration;
+          this.stunHero(R.stunDuration);
           this.emit('stomp', { m, duration: R.stunDuration });
         }
         return;
@@ -949,6 +963,113 @@
       }
     }
 
+    // 英雄被震晕 / 电麻；"避雷针"补给免疫（设计书 33.4）
+    stunHero(duration) {
+      if (this.mods.stunImmune) {
+        this.emit('stunBlocked', {});
+        return;
+      }
+      this.heroStunUntil = Math.max(this.heroStunUntil, this.time + duration);
+    }
+
+    // 呼呼：放风筝 + 大风（设计书 33.3）
+    updateWindGiant(m, dt) {
+      const G = D.windGiant;
+      const ai = m.ai;
+      if (ai.phase === 1 && m.hp / m.maxHp < G.lowBelow) {
+        ai.phase = 2;
+        this.emit('bossPhase', { m, phase: 2, text: '呼呼转得更快了！' });
+      }
+      if (ai.mode === 'walk') {
+        if (m.x <= G.holdX) {
+          m.x = G.holdX;
+          ai.mode = 'hold';
+        }
+        return;
+      }
+      if (this.time < m.stunUntil) return;
+      ai.kiteTimer -= dt;
+      if (ai.kiteTimer <= 0) {
+        ai.kiteTimer = G.kiteEvery;
+        for (let i = 0; i < G.kiteCount; i++) this.spawnMonster('kite', this.rng.int(this.lanes), Math.min(C.spawnX, m.x + 30 + this.rng() * 40));
+        this.emit('bossSummon', { m });
+      }
+      if (ai.mode === 'warn') {
+        ai.warnTimer -= dt;
+        if (ai.warnTimer <= 0) {
+          ai.mode = 'hold';
+          ai.gustTimer = ai.phase === 2 ? G.gustEveryLow : G.gustEvery;
+          for (const o of this.monsters) {
+            if (o.dead || o.def.boss) continue;
+            o.x = Math.max(this.wallStopX(o), o.x - G.gustPush);
+          }
+          this.emit('gust', { m });
+        }
+        return;
+      }
+      ai.gustTimer -= dt;
+      if (ai.gustTimer <= 0) {
+        ai.mode = 'warn';
+        ai.warnTimer = G.gustWarn;
+        ai.chargeDmg = 0;
+        this.emit('bossWarn', { m, lane: m.lane, duration: G.gustWarn });
+        this.emit('gustWarn', { m });
+      }
+    }
+
+    // 雷雷：召唤 → 雷暴蓄力 → 暴风雨（设计书 33.3）
+    updateThunderKing(m, dt) {
+      const T = D.thunderKing;
+      const ai = m.ai;
+      const ratio = m.hp / m.maxHp;
+      if (ai.phase === 1 && ratio < T.phase2Below) {
+        ai.phase = 2;
+        ai.chargeTimer = 2;
+        this.emit('bossPhase', { m, phase: 2, text: '雷雷开始蓄电了！蓄力时集中火力打断！' });
+      }
+      if (ai.phase === 2 && ratio < T.phase3Below) {
+        ai.phase = 3;
+        this.storm = true;
+        if (ai.mode === 'hold') ai.mode = 'walk';
+        this.emit('bossPhase', { m, phase: 3, text: '暴风雨来了！所有怪物都变快了！' });
+      }
+      if (ai.mode === 'walk' && ai.phase < 3 && m.x <= T.holdX) {
+        m.x = T.holdX;
+        ai.mode = 'hold';
+      }
+      if (this.time < m.stunUntil) return;
+      // 召唤雷团子（每隔一次再加一只彩虹鸟）
+      if (m.x <= C.spawnX) {
+        ai.summonTimer -= dt;
+        if (ai.summonTimer <= 0) {
+          ai.summonTimer = ai.phase === 1 ? T.summonEvery : T.summonEvery2;
+          ai.summons++;
+          for (let i = 0; i < T.ballCount; i++) this.spawnMonster('thunderBall', this.rng.int(this.lanes), Math.min(C.spawnX, m.x + 30 + this.rng() * 40));
+          if (ai.summons % 2 === 0) this.spawnMonster('rainbowBird', this.rng.int(this.lanes), Math.min(C.spawnX, m.x + 50));
+          this.emit('bossSummon', { m });
+        }
+      }
+      if (ai.phase < 2) return;
+      if (ai.mode === 'warn') {
+        ai.warnTimer -= dt;
+        if (ai.warnTimer <= 0) {
+          ai.mode = ai.phase === 3 ? 'walk' : 'hold';
+          ai.chargeTimer = ai.phase === 3 ? T.chargeEvery3 : T.chargeEvery;
+          this.hitWall(T.boltDamage * this.D, m, true);
+          this.stunHero(T.stunDuration);
+          this.emit('thunderBolt', { m });
+        }
+        return;
+      }
+      ai.chargeTimer -= dt;
+      if (ai.chargeTimer <= 0) {
+        ai.mode = 'warn';
+        ai.warnTimer = T.chargeWarn;
+        ai.chargeDmg = 0;
+        this.emit('bossWarn', { m, lane: m.lane, duration: T.chargeWarn });
+      }
+    }
+
     splitInk(m) {
       const K = D.inkBoss;
       m.hidden = true;
@@ -983,6 +1104,19 @@
     // 冲锋期间累计伤害，达到阈值就打断
     onBossDamaged(m, dmg) {
       const ai = m.ai;
+      if (m.def.ai === 'windGiant' || m.def.ai === 'thunderKing') {
+        if (ai.mode !== 'warn') return;
+        ai.chargeDmg += dmg;
+        const def = m.def.ai === 'windGiant' ? D.windGiant : D.thunderKing;
+        if (ai.chargeDmg >= m.maxHp * def.interruptRatio) {
+          ai.mode = m.def.ai === 'thunderKing' && ai.phase === 3 ? 'walk' : 'hold';
+          if (m.def.ai === 'windGiant') ai.gustTimer = ai.phase === 2 ? def.gustEveryLow : def.gustEvery;
+          else ai.chargeTimer = ai.phase === 3 ? def.chargeEvery3 : def.chargeEvery;
+          m.stunUntil = this.time + 1.2;
+          this.emit('bossInterrupt', { m });
+        }
+        return;
+      }
       if (m.def.ai === 'inkBoss') {
         if (ai.mode !== 'warn') return;
         ai.chargeDmg += dmg;
@@ -1077,6 +1211,11 @@
     // opts: { type: 'phys'|'magic', fromFront, crit, source }
     damage(m, amount, opts) {
       if (m.dead) return 0;
+      // 闪避（风筝怪）：只躲武器的物理普通攻击（设计书 33.2）
+      if (m.def.dodge && opts.source === 'weapon' && opts.type !== 'magic' && this.rng() < Math.max(0, m.def.dodge - this.mods.dodgeCut)) {
+        this.emit('dodge', { m, x: m.x, y: m.y + m.yOffset });
+        return 0;
+      }
       if (opts.type === 'magic' && opts.source !== 'thorns') amount *= 1 + this.mods.magicMult;
       if (m.vulnUntil && this.time < m.vulnUntil) amount *= D.inkBoss.vulnMult;
       // 护盾：先吸收伤害，魔法效果更好（设计书 19.3）
@@ -1092,6 +1231,20 @@
           this.emit('shieldBreak', { m });
         }
         return 0;
+      }
+      // 羊毛（云朵羊）：先扣羊毛，剃光后加速
+      if (m.wool > 0) {
+        const take = Math.min(m.wool, amount);
+        m.wool -= take;
+        amount -= take;
+        m.hitFlash = 0.08;
+        this.report.bySource[opts.source || 'weapon'] = (this.report.bySource[opts.source || 'weapon'] || 0) + take;
+        this.emit('woolHit', { m, x: m.x, y: m.y + m.yOffset, dmg: take });
+        if (m.wool <= 0) {
+          m.sheared = true;
+          this.emit('shear', { m });
+        }
+        if (amount <= 0) return 0;
       }
       const raw = amount;
       let armor = 0;
@@ -1176,6 +1329,14 @@
         this.emit('spore', { x: m.x, y: m.y + m.yOffset, radius: od.radius });
       }
       if (m.def.split) this.split(m, m.def.split.deathCount);
+      if (m.def.ai === 'thunderKing') this.storm = false; // 雷雷被打败，雨停了
+      // 静电：电麻后 1.5 秒内不会再被电麻，避免一群雷团子把英雄电到动不了
+      const ss = m.def.staticShock;
+      if (ss && m.x < C.wallX + ss.range && this.time >= (this.staticImmuneUntil || 0)) {
+        this.stunHero(ss.stun);
+        this.staticImmuneUntil = this.time + ss.stun + 1.5;
+        this.emit('staticShock', { m, duration: ss.stun });
+      }
       if (m.def.fireZone) {
         const fz = m.def.fireZone;
         this.zones.push({ x: m.x, y: m.y, r: fz.radius, until: this.time + fz.duration, haste: fz.haste });

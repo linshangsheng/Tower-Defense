@@ -1435,6 +1435,307 @@
         ctx.fillText('!', 0, -s * 1.9);
       }
     },
+    // ---------- 第六章 · 云端王国（设计书 33.6） ----------
+    cloudSheep(ctx, s, t, o) {
+      const woolLeft = o.wool === null || o.wool === undefined ? 1 : o.wool;
+      const sheared = woolLeft <= 0;
+      const step = Math.sin(t * (sheared ? 20 : 8) + (o.seed || 0));
+      shadow(ctx, 0, 2, s * 0.9);
+      // 小腿
+      ctx.strokeStyle = '#3a3040';
+      ctx.lineWidth = 3;
+      for (const [lx, ph] of [[-0.45, 1], [-0.15, -1], [0.2, 1], [0.45, -1]]) {
+        ctx.beginPath();
+        ctx.moveTo(s * lx, -s * 0.35);
+        ctx.lineTo(s * lx + step * ph * 3, 0);
+        ctx.stroke();
+      }
+      if (sheared) {
+        // 剃光毛：粉色瘦羊
+        ellipse(ctx, 0, -s * 0.55, s * 0.62, s * 0.36, '#ffc4d6', OUTLINE, 2);
+      } else {
+        // 一团一团的羊毛，越少越小
+        const k = 0.55 + woolLeft * 0.45;
+        for (const [bx, by, br] of [[-0.45, -0.55, 0.38], [0, -0.75, 0.45], [0.42, -0.55, 0.36], [-0.15, -0.45, 0.4], [0.2, -0.42, 0.38]]) {
+          ellipse(ctx, s * bx * k, s * by, s * br * k, s * br * k * 0.9, '#f4f6fb', '#b8c4d6', 1.6);
+        }
+      }
+      // 小黑脸
+      ctx.save();
+      ctx.translate(-s * 0.72, -s * 0.66);
+      ellipse(ctx, 0, 0, s * 0.26, s * 0.3, '#3a3040', OUTLINE, 1.5);
+      ellipse(ctx, -s * 0.06, -s * 0.04, s * 0.06, s * 0.07, '#fff');
+      ellipse(ctx, -s * 0.07, -s * 0.03, s * 0.03, s * 0.035, '#000');
+      ellipse(ctx, s * 0.18, -s * 0.2, s * 0.12, s * 0.06, '#3a3040');
+      ctx.restore();
+    },
+    kite(ctx, s, t, o) {
+      const sway = Math.sin(t * 4 + (o.seed || 0));
+      ctx.save();
+      ctx.globalAlpha = 0.12;
+      ellipse(ctx, 0, 34, s * 0.7, s * 0.18, '#000');
+      ctx.restore();
+      ctx.translate(0, Math.sin(t * 5) * 4 - s * 0.4);
+      ctx.rotate(sway * 0.15);
+      // 尾巴
+      ctx.strokeStyle = '#7a5aa8';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, s * 0.9);
+      for (let i = 1; i <= 4; i++) ctx.quadraticCurveTo(s * 0.4 * (i % 2 ? 1 : -1) + sway * 4, s * (0.9 + i * 0.25), s * 0.25 * i, s * (0.9 + i * 0.35));
+      ctx.stroke();
+      for (let i = 1; i <= 3; i++) {
+        ctx.fillStyle = ['#ffd23f', '#7ab8ff', '#7fd67a'][i - 1];
+        ctx.beginPath();
+        ctx.arc(s * 0.25 * i, s * (0.9 + i * 0.35), s * 0.09, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      // 菱形风筝
+      ctx.beginPath();
+      ctx.moveTo(0, -s * 0.95);
+      ctx.lineTo(s * 0.7, 0);
+      ctx.lineTo(0, s * 0.95);
+      ctx.lineTo(-s * 0.7, 0);
+      ctx.closePath();
+      ctx.fillStyle = '#ff7a9a';
+      ctx.fill();
+      ctx.strokeStyle = OUTLINE;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.fillStyle = '#ffc4d6';
+      ctx.beginPath();
+      ctx.moveTo(0, -s * 0.95);
+      ctx.lineTo(s * 0.7, 0);
+      ctx.lineTo(0, 0);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(60,40,30,0.5)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(0, -s * 0.95);
+      ctx.lineTo(0, s * 0.95);
+      ctx.moveTo(-s * 0.7, 0);
+      ctx.lineTo(s * 0.7, 0);
+      ctx.stroke();
+      eyes(ctx, -s * 0.05, -s * 0.18, s * 0.34, s * 0.11);
+    },
+    thunderBall(ctx, s, t, o) {
+      const roll = t * 6 + (o.seed || 0);
+      shadow(ctx, 0, 2, s * 0.8);
+      ctx.translate(0, -s * 0.8 - Math.abs(Math.sin(roll)) * 3);
+      // 小闪电
+      ctx.strokeStyle = '#fff6b0';
+      ctx.lineWidth = 2;
+      for (let i = 0; i < 3; i++) {
+        const a = roll * 0.7 + (i * Math.PI * 2) / 3;
+        ctx.beginPath();
+        ctx.moveTo(Math.cos(a) * s * 0.9, Math.sin(a) * s * 0.9);
+        ctx.lineTo(Math.cos(a + 0.2) * s * 1.15, Math.sin(a + 0.2) * s * 1.15);
+        ctx.lineTo(Math.cos(a + 0.1) * s * 1.3, Math.sin(a + 0.1) * s * 1.3);
+        ctx.stroke();
+      }
+      const g = ctx.createRadialGradient(-s * 0.3, -s * 0.3, s * 0.1, 0, 0, s);
+      g.addColorStop(0, '#fff6b0');
+      g.addColorStop(1, '#ffc21f');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(0, 0, s * 0.85, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = OUTLINE;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      // 皱眉
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.45, -s * 0.35);
+      ctx.lineTo(-s * 0.12, -s * 0.22);
+      ctx.moveTo(s * 0.35, -s * 0.35);
+      ctx.lineTo(s * 0.05, -s * 0.22);
+      ctx.stroke();
+      eyes(ctx, -s * 0.05, -s * 0.05, s * 0.4, s * 0.12);
+    },
+    rainbowBird(ctx, s, t, o) {
+      const flap = Math.sin(t * 16 + (o.seed || 0));
+      ctx.save();
+      ctx.globalAlpha = 0.12;
+      ellipse(ctx, 0, 34, s * 0.7, s * 0.18, '#000');
+      ctx.restore();
+      ctx.translate(0, Math.sin(t * 6) * 3 - s * 0.4);
+      // 彩虹尾巴
+      const cols = ['#ff7a7a', '#ffb347', '#ffe066', '#7fd67a', '#7ab8ff'];
+      cols.forEach((c, i) => {
+        ctx.fillStyle = c;
+        ctx.beginPath();
+        ctx.ellipse(s * (0.7 + i * 0.05), s * (-0.2 + i * 0.12), s * 0.55, s * 0.12, 0.35 + i * 0.12, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ellipse(ctx, 0, 0, s * 0.62, s * 0.5, '#7ad0ff', OUTLINE, 2);
+      // 翅膀
+      ctx.fillStyle = '#b8e6ff';
+      ctx.beginPath();
+      ctx.ellipse(s * 0.1, -s * 0.2, s * 0.5, s * 0.2, -0.6 - flap * 0.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = OUTLINE;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      // 嘴和眼睛
+      ctx.fillStyle = '#ffb347';
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.58, -s * 0.05);
+      ctx.lineTo(-s * 0.85, s * 0.03);
+      ctx.lineTo(-s * 0.58, s * 0.12);
+      ctx.fill();
+      eyes(ctx, -s * 0.28, -s * 0.12, s * 0.22, s * 0.1);
+      // 治疗光点
+      ctx.fillStyle = 'rgba(120,255,160,0.8)';
+      ctx.fillRect(-s * 0.06, -s * 0.95 - (t * 20) % 8, s * 0.12, s * 0.36);
+      ctx.fillRect(-s * 0.18, -s * 0.83 - (t * 20) % 8, s * 0.36, s * 0.12);
+    },
+    balloon(ctx, s, t, o) {
+      ctx.save();
+      ctx.globalAlpha = 0.12;
+      ellipse(ctx, 0, 34, s * 0.7, s * 0.18, '#000');
+      ctx.restore();
+      ctx.translate(0, Math.sin(t * 2 + (o.seed || 0)) * 3 - s * 0.2);
+      // 吊篮和绳子
+      ctx.strokeStyle = '#5b3c2a';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.4, -s * 0.5);
+      ctx.lineTo(-s * 0.25, s * 0.1);
+      ctx.moveTo(s * 0.4, -s * 0.5);
+      ctx.lineTo(s * 0.25, s * 0.1);
+      ctx.stroke();
+      // 篮子里探出哥布林的头
+      ellipse(ctx, 0, s * 0.05, s * 0.2, s * 0.16, '#7cae5b', OUTLINE, 1.5);
+      ellipse(ctx, -s * 0.06, s * 0.02, s * 0.04, s * 0.05, '#fff');
+      roundRect(ctx, -s * 0.3, s * 0.1, s * 0.6, s * 0.3, 4);
+      ctx.fillStyle = '#a07a52';
+      ctx.fill();
+      ctx.strokeStyle = OUTLINE;
+      ctx.stroke();
+      // 条纹气球
+      ctx.save();
+      ctx.translate(0, -s * 1.05);
+      ctx.beginPath();
+      ctx.ellipse(0, 0, s * 0.8, s * 0.75, 0, 0, Math.PI * 2);
+      ctx.clip();
+      const cols = ['#ff9f2e', '#fff3dc', '#e04848', '#fff3dc', '#ff9f2e'];
+      cols.forEach((c, i) => {
+        ctx.fillStyle = c;
+        ctx.fillRect(-s * 0.8 + i * s * 0.32, -s * 0.8, s * 0.33, s * 1.6);
+      });
+      ctx.restore();
+      ctx.beginPath();
+      ctx.ellipse(0, -s * 1.05, s * 0.8, s * 0.75, 0, 0, Math.PI * 2);
+      ctx.strokeStyle = OUTLINE;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ellipse(ctx, -s * 0.35, -s * 1.35, s * 0.14, s * 0.1, 'rgba(255,255,255,0.7)');
+    },
+    windGiant(ctx, s, t, o) {
+      const ai = o.ai || {};
+      const spin = t * (ai.mode === 'warn' ? 14 : ai.phase === 2 ? 6 : 3);
+      const step = Math.sin(t * 4 + (o.seed || 0));
+      shadow(ctx, 0, 2, s * 1.1);
+      // 石头身体
+      ctx.fillStyle = '#9aa8b8';
+      ctx.strokeStyle = OUTLINE;
+      ctx.lineWidth = 2.5;
+      for (const d of [-1, 1]) {
+        roundRect(ctx, d * s * 0.35 - s * 0.18, -s * 0.45 + (d * step * s) / 30, s * 0.36, s * 0.45, 6);
+        ctx.fill();
+        ctx.stroke();
+      }
+      roundRect(ctx, -s * 0.7, -s * 1.45, s * 1.4, s * 1.05, s * 0.3);
+      ctx.fill();
+      ctx.stroke();
+      ellipse(ctx, -s * 0.3, -s * 1.1, s * 0.12, s * 0.08, '#7a8898');
+      ellipse(ctx, s * 0.32, -s * 0.75, s * 0.1, s * 0.07, '#7a8898');
+      // 脸
+      eyes(ctx, -s * 0.05, -s * 1.0, s * 0.42, s * 0.12);
+      ctx.beginPath();
+      ctx.arc(-s * 0.05, -s * 0.75, s * 0.14, 0, Math.PI);
+      ctx.stroke();
+      // 风车脑袋
+      ctx.save();
+      ctx.translate(0, -s * 1.6);
+      ctx.rotate(spin);
+      for (let i = 0; i < 4; i++) {
+        ctx.rotate(Math.PI / 2);
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(s * 0.18, -s * 0.15);
+        ctx.lineTo(s * 0.95, -s * 0.22);
+        ctx.lineTo(s * 0.95, s * 0.05);
+        ctx.closePath();
+        ctx.fillStyle = i % 2 ? '#fff3dc' : '#ff8ab4';
+        ctx.fill();
+        ctx.stroke();
+      }
+      ellipse(ctx, 0, 0, s * 0.14, s * 0.14, '#ffd23f', OUTLINE, 2);
+      ctx.restore();
+      if (ai.mode === 'warn') {
+        // 风的线条
+        ctx.strokeStyle = 'rgba(122,184,255,0.8)';
+        ctx.lineWidth = 3;
+        for (let i = 0; i < 4; i++) {
+          const y = -s * (0.4 + i * 0.4);
+          const x0 = -s * 1.2 - ((t * 300 + i * 40) % 120);
+          ctx.beginPath();
+          ctx.moveTo(x0, y);
+          ctx.lineTo(x0 - s * 0.8, y);
+          ctx.stroke();
+        }
+      }
+    },
+    thunderKing(ctx, s, t, o) {
+      const ai = o.ai || {};
+      const angry = ai.phase >= 2;
+      const pulse = 1 + Math.sin(t * 3) * 0.03;
+      ctx.save();
+      ctx.globalAlpha = 0.15;
+      ellipse(ctx, 0, 6, s * 1.4, s * 0.25, '#000');
+      ctx.restore();
+      ctx.translate(0, -s * 1.3 + Math.sin(t * 2) * 4);
+      ctx.scale(pulse, pulse);
+      // 闪电（蓄力时更多）
+      const n = ai.mode === 'warn' ? 5 : 2;
+      ctx.strokeStyle = '#fff36b';
+      ctx.lineWidth = 3;
+      for (let i = 0; i < n; i++) {
+        const bx = -s + ((i * 0.53 + Math.floor(t * 8) * 0.37) % 1) * s * 2;
+        ctx.beginPath();
+        ctx.moveTo(bx, s * 0.4);
+        ctx.lineTo(bx - 8, s * 0.8);
+        ctx.lineTo(bx + 4, s * 0.85);
+        ctx.lineTo(bx - 6, s * 1.25);
+        ctx.stroke();
+      }
+      // 云团
+      const body = angry ? '#4a5266' : '#6a7488';
+      for (const [cx, cy, r] of [[-0.7, 0.05, 0.55], [-0.2, -0.35, 0.7], [0.45, -0.25, 0.62], [0.85, 0.12, 0.45], [0, 0.2, 0.65]]) {
+        ellipse(ctx, s * cx, s * cy, s * r, s * r * 0.8, body, OUTLINE, 2.5);
+      }
+      for (const [cx, cy, r] of [[-0.7, 0.05, 0.45], [-0.2, -0.35, 0.6], [0.45, -0.25, 0.52], [0.85, 0.12, 0.35], [0, 0.2, 0.55]]) {
+        ellipse(ctx, s * cx, s * cy, s * r, s * r * 0.8, body);
+      }
+      // 生气的眉毛和眼睛
+      ctx.strokeStyle = '#1a1a24';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.5, -s * 0.3);
+      ctx.lineTo(-s * 0.12, -s * 0.15);
+      ctx.moveTo(s * 0.4, -s * 0.3);
+      ctx.lineTo(s * 0.02, -s * 0.15);
+      ctx.stroke();
+      ellipse(ctx, -s * 0.28, -s * 0.02, s * 0.11, s * 0.13, '#fff');
+      ellipse(ctx, s * 0.18, -s * 0.02, s * 0.11, s * 0.13, '#fff');
+      ellipse(ctx, -s * 0.26, 0, s * 0.05, s * 0.06, '#000');
+      ellipse(ctx, s * 0.2, 0, s * 0.05, s * 0.06, '#000');
+      ctx.beginPath();
+      ctx.arc(-s * 0.05, s * 0.32, s * 0.14, Math.PI * 1.15, Math.PI * 1.85);
+      ctx.stroke();
+    },
     inkBoss(ctx, s, t, o) {
       const ai = o.ai || {};
       const big = ai.big ? 1.6 : 1;

@@ -19,8 +19,8 @@
     O('snow', '雪原斥候', '暖和的蓝白斗篷，还有一条长长的红围巾。', '通关第四章', (s) => cleared(s, 40), { cape: '#5aa8e0', body: '#eef6fc', helmTop: '#ffffff', helmBottom: '#b8d6ee', brim: '#8ab4d6', plume: '#ffffff', plumeHi: '#dff1ff' }, 'scarf'),
     O('ink', '墨墨的好朋友', '黑斗篷上溅满了墨点，墨墨就趴在头盔上。', '击败墨墨', (s) => cleared(s, 50), { cape: '#2a2438', body: '#4a3a5e', helmTop: '#e8e4f0', helmBottom: '#8f86a6', brim: '#6a6080', plume: '#2a2438', plumeHi: '#6a5a8a' }, 'ink'),
     O('star', '星光铛铛', '用 100 颗星星缝成的披风，晚上会发光。', '累计获得 100 颗星', (s) => totalStars(s) >= 100, { cape: '#3a4a9a', body: '#2a3a7a', plume: '#ffd23f', plumeHi: '#fff2b0', shield: '#ffd23f', shieldHi: '#fff8d0' }, 'stars'),
-    O('royal', '国王的近卫', '国王爷爷亲手给的小王冠。只给守住全部 150 颗星的卫兵。', '获得全部 150 颗星', (s) => totalStars(s) >= 150, { cape: '#b0283c', body: '#f2f2f2', helmTop: '#fff6c8', helmBottom: '#e0b030', brim: '#c09020', plume: '#b0283c', plumeHi: '#ff8a9a', shield: '#e0b030', shieldHi: '#fff2a0' }, 'crown'),
-    O('gold', '金甲勇士', '在挑战难度守住了每一关。金色盔甲，金色羽毛。', '获得全部 50 顶王冠', (s) => Object.values(s.levels).filter((r) => r.crown).length >= 50, { cape: '#d9a640', body: '#e8c060', helmTop: '#fff6c8', helmBottom: '#d9a640', brim: '#b8862e', plume: '#ffd23f', plumeHi: '#fff8d0', shield: '#ffd23f', shieldHi: '#fff8d0' }, 'crown'),
+    O('royal', '国王的近卫', '国王爷爷亲手给的小王冠。只给拿到 150 颗星的卫兵。', '累计获得 150 颗星', (s) => totalStars(s) >= 150, { cape: '#b0283c', body: '#f2f2f2', helmTop: '#fff6c8', helmBottom: '#e0b030', brim: '#c09020', plume: '#b0283c', plumeHi: '#ff8a9a', shield: '#e0b030', shieldHi: '#fff2a0' }, 'crown'),
+    O('gold', '金甲勇士', '在挑战难度守住了每一关。金色盔甲，金色羽毛。', '获得 50 顶王冠', (s) => Object.values(s.levels).filter((r) => r.crown).length >= 50, { cape: '#d9a640', body: '#e8c060', helmTop: '#fff6c8', helmBottom: '#d9a640', brim: '#b8862e', plume: '#ffd23f', plumeHi: '#fff8d0', shield: '#ffd23f', shieldHi: '#fff8d0' }, 'crown'),
   ];
 
   TD.data.outfitById = (id) => TD.data.outfits.find((o) => o.id === id) || TD.data.outfits[0];

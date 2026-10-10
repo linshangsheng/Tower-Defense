@@ -83,6 +83,8 @@
         e = (1 - ar / (ar + 100)) * (def.physResist ? 1 - def.physResist : 1);
       }
       if (def.flying && w.flyingMult) e *= w.flyingMult;
+      // 闪避（风筝怪）只躲物理普通攻击（设计书 33.2）
+      if (def.dodge && w.dmgType !== 'magic') e *= 1 - def.dodge;
       eff += (counts[type] / total) * e;
     }
     // 范围伤害对成群的小怪更有价值
@@ -111,7 +113,9 @@
     const armored = share('mummy') + share('yeti') * 2 + (counts.pharaoh ? 0.3 : 0);
     const spirit = share('ghost') + (counts.boneMage ? 0.3 : 0);
     const flying = share('bee') + share('vulture') + share('bat') + share('iceSprite');
+    const dodgy = share('kite');
     if (magicProof > 0.25) return { id: 'cannon', reason: '熔岩怪物不怕魔法，用物理重炮' };
+    if (dodgy > 0.3) return { id: 'orb', reason: '风筝怪躲不开闪电，跳跃还能连着打好几只' };
     if (spirit > 0.2) return { id: 'staff', reason: '小幽灵几乎不怕物理攻击' };
     if (armored > 0.25) return { id: 'staff', reason: '魔法伤害无视物理护甲' };
     if (flying > 0.35) return { id: 'crossbow', reason: '一次射 3 支，对飞行怪伤害 +50%' };
@@ -143,6 +147,7 @@
     const spirit = share('ghost') + (counts.boneMage ? 0.3 : 0);
     const magicPick = owned('orb') ? 'orb' : owned('staff') ? 'staff' : null;
     const magicProof = share('lavaGolem') * 2 + (counts.rockGolem ? 0.3 : 0);
+    const dodgy = share('kite');
     if (magicProof > 0.25) {
       // 魔抗关：按有效输出在已拥有的武器里挑（物理武器等级太低时，魔法武器可能仍然更好）
       let best = -1;
@@ -154,7 +159,7 @@
           weapon = id;
         }
       }
-    } else if ((spirit > 0.2 || lvl.type === 'union') && magicPick) weapon = magicPick;
+    } else if ((spirit > 0.2 || dodgy > 0.3 || lvl.type === 'union') && magicPick) weapon = magicPick;
     else if (armored > 0.25 && owned('staff')) weapon = 'staff';
     else if (armored > 0.25 && owned('cannon')) weapon = 'cannon';
     else if (flying > 0.35 && owned('crossbow')) weapon = 'crossbow';
@@ -164,7 +169,7 @@
     else if (n > 10 && owned('staff')) weapon = 'staff';
     // 克制武器等级太低（有效输出不到最强武器的 75%）时，不硬切，继续用最强的（设计书 27.2）
     // 联合关、灵体关的法球 / 法杖例外：估分低估了法球的弹幕（模拟：第 39 关改用估分最高武器后 12 次全负）
-    if (magicProof <= 0.25 && lvl.type !== 'union' && !(spirit > 0.2 && magicPick)) {
+    if (magicProof <= 0.25 && lvl.type !== 'union' && !((spirit > 0.2 || dodgy > 0.3) && magicPick)) {
       let bestId = weapon;
       let bestScore = -1;
       for (const id of Object.keys(D.weapons)) {
@@ -234,7 +239,7 @@
 
     // 有治疗、光环、远程等辅助型怪物时用"威胁优先"（模拟验证：第 22 关城墙剩余 76% → 95%）
     // 只有毒蛙这种远程持续伤害的怪，"威胁优先"才明显更好（设计书 22.7）
-    const supports = share('frog') + share('imp');
+    const supports = share('frog') + share('imp') + share('rainbowBird');
     lo.target = lvl.type === 'raid' ? 'flying' : supports > 0.03 ? 'smart' : 'nearest';
     if (lo.target !== 'nearest') notes.push('目标：' + D.targetModes[lo.target]);
     return notes;

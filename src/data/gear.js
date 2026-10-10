@@ -274,8 +274,11 @@
     extinguisher: { name: '灭火器', desc: '火焰地带和熔岩车道对怪物无效', mods: { fireproof: 1 }, icon: 'freeze', minLevel: 41 },
     lens: { name: '透视镜', desc: '暗影刺客在更远处（x < 800）就会现身', mods: { reveal: 1 }, icon: 'eye', minLevel: 41 },
     obsidian: { name: '黑曜石砖', desc: '城墙受到伤害 −12%', mods: { wallDr: 0.12 }, icon: 'repair', minLevel: 41 },
+    shears: { name: '羊毛剪', desc: '云朵羊的羊毛 −60%', mods: { woolCut: 0.6 }, icon: 'fury', minLevel: 51 },
+    lightningRod: { name: '避雷针', desc: '英雄不会被电麻或震晕', mods: { stunImmune: 1 }, icon: 'eye', minLevel: 51 },
+    windFlag: { name: '顺风旗', desc: '风筝怪的闪避率 −25%', mods: { dodgeCut: 0.25 }, icon: 'arrowUp', minLevel: 51 },
   };
-  TD.data.supplyBotOrder = ['sharp', 'quick', 'master', 'handWarmer', 'fireTip', 'obsidian', 'lens', 'extinguisher', 'arcane', 'breaker', 'exorcism', 'antidote', 'flare', 'eagle', 'fury', 'frostTip', 'farsight', 'bricks', 'purse'];
+  TD.data.supplyBotOrder = ['sharp', 'quick', 'master', 'handWarmer', 'fireTip', 'obsidian', 'lens', 'extinguisher', 'lightningRod', 'windFlag', 'shears', 'arcane', 'breaker', 'exorcism', 'antidote', 'flare', 'eagle', 'fury', 'frostTip', 'farsight', 'bricks', 'purse'];
 
   TD.data.targetModes = {
     nearest: '最近优先',

@@ -123,7 +123,7 @@
         h('button', { class: 'btn', onclick: () => (sfx('click'), UI.showSettings()) }, '设置'),
         h('button', { class: 'btn', onclick: () => (sfx('click'), UI.showHelp()) }, '玩法说明')
       ),
-      h('div', { class: 'title-foot' }, '网页原型 v0.5 · 五章 50 关')
+      h('div', { class: 'title-foot' }, `网页原型 v0.24 · ${D.chapters.length} 章 ${Object.keys(D.levels).length} 关`)
     );
     root.appendChild(screenEl);
   };
@@ -398,7 +398,7 @@
           title: open ? c.name : `通关第 ${c.levels[0] - 1} 关后开放`,
           onclick: () => (sfx('click'), UI.showMap(c.id)),
         },
-        open ? '一二三四五'[c.id - 1] : '🔒'
+        open ? '一二三四五六'[c.id - 1] : '🔒'
       );
     });
     const nodes = ch.levels.map((n, i) => {
@@ -446,17 +446,17 @@
     if (P.isCleared(s, lastLevel))
       note = nextCh
         ? h('div', { class: 'map-note' }, `恭喜通关「${ch.name}」！新的章节「${nextCh.name}」已经开放。`, h('button', { class: 'btn small primary', onclick: () => UI.showMap(nextCh.id) }, '前往 ›'))
-        : h('div', { class: 'map-note' }, `恭喜通关「${ch.name}」！下一章正在建设中……可以回头挑战三星，或者收集金币购买传说装备。`);
+        : h('div', { class: 'map-note' }, `恭喜通关「${ch.name}」！全部 ${D.chapters.length} 章都守住了。可以回头挑战三星和王冠，或者去无尽模式刷新纪录。`);
     screenEl = h(
       'div',
-      { class: 'screen map-screen' + (ch.theme.desert ? ' desert' : ch.theme.swamp ? ' swamp' : ch.theme.snow ? ' snow' : ch.theme.lava ? ' lava' : '') },
+      { class: 'screen map-screen' + (ch.theme.desert ? ' desert' : ch.theme.swamp ? ' swamp' : ch.theme.snow ? ' snow' : ch.theme.lava ? ' lava' : ch.theme.sky6 ? ' sky6' : '') },
       path,
       h(
         'div',
         { class: 'topbar' },
         h('button', { class: 'btn small', onclick: () => (sfx('click'), UI.showTitle()) }, '‹ 标题'),
         h('div', { class: 'chapter-tabs' }, chapterTabs),
-        h('div', { class: 'chapter-title' }, `第${'一二三四五'[ch.id - 1]}章 · ${ch.name}`, h('span', { class: 'chapter-stars' }, ` ★ ${totalStars}/${ch.levels.length * 3}`), P.crowns(s, ch.levels) ? h('span', { class: 'chapter-crowns', title: '本章王冠（挑战难度通关）' }, `👑${P.crowns(s, ch.levels)}`) : null),
+        h('div', { class: 'chapter-title' }, `第${'一二三四五六'[ch.id - 1]}章 · ${ch.name}`, h('span', { class: 'chapter-stars' }, ` ★ ${totalStars}/${ch.levels.length * 3}`), P.crowns(s, ch.levels) ? h('span', { class: 'chapter-crowns', title: '本章王冠（挑战难度通关）' }, `👑${P.crowns(s, ch.levels)}`) : null),
         h('div', { class: 'power' }, '战力 ', h('b', null, P.power(s))),
         currencyBar(),
         h('button', { class: 'btn small icon-btn', title: '铛铛的衣柜', onclick: () => (sfx('click'), UI.showWardrobe()) }, '👕'),
@@ -546,7 +546,7 @@
     const el = h(
       'div',
       { class: 'story-overlay', onclick: advance },
-      h('div', { class: 'story-title' }, key.startsWith('ch') ? `第${'一二三四五'[+key.slice(2) - 1]}章 · ${sc.title}` : sc.title),
+      h('div', { class: 'story-title' }, key.startsWith('ch') ? `第${'一二三四五六'[+key.slice(2) - 1]}章 · ${sc.title}` : sc.title),
       h('div', { class: 'story-box' }, avatar, h('div', { class: 'story-main' }, nameEl, textEl), nextEl),
       h('button', { class: 'btn small story-skip', onclick: (e) => (e.stopPropagation(), sfx('click'), end(false)) }, '跳过 ›')
     );
@@ -1575,7 +1575,7 @@
       h('p', null, 'linshangsheng'),
       h('h3', null, '你的守城记录'),
       h('p', null, `战斗 ${game.save.stats.battles} 次 · 胜利 ${game.save.stats.wins} 次 · 击败怪物 ${game.save.stats.kills} 只`),
-      h('p', null, `获得星星 ${Object.values(game.save.levels).reduce((a, r) => a + (r.stars || 0), 0)} / 150`),
+      h('p', null, `获得星星 ${Object.values(game.save.levels).reduce((a, r) => a + (r.stars || 0), 0)} / ${Object.keys(D.levels).length * 3}`),
       h('p', { class: 'thanks' }, '谢谢你守住了王国！'),
       h('button', { class: 'btn primary big', onclick: () => (stop(), onDone && onDone()) }, '回到地图')
     );

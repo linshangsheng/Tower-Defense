@@ -507,6 +507,97 @@
       ai: 'inkBoss',
       desc: '最终 Boss。一团会变大的墨色小团子：召唤墨影、分身、魔王形态、裂隙狂暴。',
     },
+
+    // ---------- 第六章 · 云端王国（设计书 33） ----------
+    cloudSheep: {
+      name: '云朵羊',
+      hp: 60,
+      speed: 30,
+      dps: 10,
+      armor: 0,
+      copper: 3,
+      size: 24,
+      color: '#f4f6fb',
+      wool: { ratio: 0.6, speedMult: 2.2 },
+      desc: '身上裹着厚厚的羊毛，要先把羊毛打掉。剃光毛以后跑得飞快！',
+    },
+    kite: {
+      name: '风筝怪',
+      hp: 32,
+      speed: 66,
+      dps: 6,
+      armor: 0,
+      copper: 2,
+      size: 20,
+      color: '#ff7a9a',
+      flying: true,
+      dodge: 0.35,
+      desc: '飞行，随风飘来飘去：武器的物理普通攻击有 35% 会被躲开。魔法和范围伤害躲不开。',
+    },
+    thunderBall: {
+      name: '雷团子',
+      hp: 46,
+      speed: 44,
+      dps: 10,
+      armor: 0,
+      copper: 3,
+      size: 20,
+      color: '#ffd23f',
+      staticShock: { range: 320, stun: 0.8 },
+      desc: '浑身是电。在城墙附近被打死会放电，把英雄电麻一小会儿——尽量在远处解决它。',
+    },
+    rainbowBird: {
+      name: '彩虹鸟',
+      hp: 44,
+      speed: 48,
+      dps: 4,
+      armor: 0,
+      copper: 3,
+      size: 20,
+      color: '#7ad0ff',
+      flying: true,
+      healer: { radius: 140, pct: 0.04, holdX: 600 },
+      desc: '会飞的治疗者，停在远处给周围的怪回血。用"威胁优先"或飞行优先先打它。',
+    },
+    balloon: {
+      name: '热气球',
+      hp: 90,
+      speed: 26,
+      dps: 8,
+      armor: 20,
+      copper: 4,
+      size: 28,
+      color: '#ff9f2e',
+      flying: true,
+      deathSpawn: { type: 'gobling', count: 3 },
+      desc: '慢悠悠地飘过来，被打爆时会放下 3 只哥布林小兵。',
+    },
+    windGiant: {
+      name: '呼呼',
+      hp: 1100,
+      speed: 18,
+      dps: 30,
+      armor: 0,
+      copper: 80,
+      size: 46,
+      color: '#9aa8b8',
+      boss: 'mini',
+      ai: 'windGiant',
+      desc: '小 Boss。风车脑袋的石头巨人：放风筝，还会刮大风把怪物吹向城墙——预警时集中火力打断！',
+    },
+    thunderKing: {
+      name: '雷雷',
+      hp: 4200,
+      speed: 16,
+      dps: 35,
+      armor: 0,
+      copper: 350,
+      size: 50,
+      color: '#5a6478',
+      boss: 'major',
+      ai: 'thunderKing',
+      desc: '第六章 Boss。爱生气的大雷云：召唤雷团子和彩虹鸟、蓄力落雷、最后掀起暴风雨。',
+    },
   };
 
   // 怪物类型标签（用于新敌人登场卡片、关卡预览）
@@ -531,11 +622,35 @@
     if (def.slam) t.push('冲撞');
     if (def.pack) t.push('狼群');
     if (def.fireZone) t.push('火焰');
+    if (def.wool) t.push('羊毛');
+    if (def.dodge) t.push('闪避');
+    if (def.staticShock) t.push('静电');
     if (def.onDeath) t.push('孢子');
     return t;
   };
   // 不单独介绍的怪物：分裂产物和 Boss 召唤物
   TD.data.noIntro = { minijelly: true, minipumpkin: true, snowball: true, inkClone: true, iceDragon: true };
+
+  // 呼呼的参数（设计书 33.3）
+  TD.data.windGiant = { holdX: 760, kiteFirst: 3, kiteEvery: 8, kiteCount: 2, gustFirst: 6, gustEvery: 10, gustEveryLow: 7, lowBelow: 0.3, gustWarn: 2, gustPush: 140, interruptRatio: 0.04 };
+  // 雷雷的参数（设计书 33.3）
+  TD.data.thunderKing = {
+    holdX: 780,
+    phase2Below: 0.65,
+    phase3Below: 0.3,
+    summonFirst: 2,
+    summonEvery: 6,
+    summonEvery2: 8,
+    ballCount: 2,
+    chargeFirst: 3,
+    chargeEvery: 9,
+    chargeEvery3: 7,
+    chargeWarn: 2.5,
+    interruptRatio: 0.025,
+    boltDamage: 110,
+    stunDuration: 1.2,
+    stormSpeed: 0.3,
+  };
 
   TD.data.rockGolem = { stompEvery: 12, stompFirst: 6, stompWarn: 1, stunDuration: 1, boomRange: 300, boomDamage: 200, lavaDuration: 8, lavaHaste: 0.5 };
 

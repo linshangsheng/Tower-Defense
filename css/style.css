@@ -1804,3 +1804,8 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+/* ---------- 第六章 · 云端王国（设计书 33） ---------- */
+.map-screen.sky6 {
+  background: radial-gradient(ellipse at 50% 60%, rgba(255, 255, 255, 0.55), rgba(190, 220, 255, 0.85));
+}
