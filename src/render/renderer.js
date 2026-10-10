@@ -33,7 +33,7 @@
 
     attach(battle) {
       this.battle = battle;
-      this.setChapter(TD.data.chapterOf(battle.levelNo));
+      this.setChapter(TD.data.chapterOf(battle.stage));
       this.sandUntil = 0;
       this.fogUntil = 0;
       this.blizzardUntil = 0;
@@ -82,7 +82,10 @@
       on('chargeHit', () => (this.shake = Math.max(this.shake, 18)));
       on('bossPhase', (e) => this.banner(e.text));
       on('split', (e) => this.burst(e.m.x, e.m.y - 20, '#7fd0ff', 14, 200));
-      on('waveStart', (e) => this.banner(e.index === battle.totalWaves - 1 ? '最后一波！' : `第 ${e.index + 1} 波`));
+      on('waveStart', (e) => {
+        if (e.chapter) this.setChapter(TD.data.chapters.find((c) => c.id === e.chapter));
+        this.banner(battle.level.endless ? `第 ${e.index + 1} 波` : e.index === battle.totalWaves - 1 ? '最后一波！' : `第 ${e.index + 1} 波`);
+      });
       on('earlyCall', (e) => {
         if (e.bonus > 0) this.text(C.width - 160, 90, `提前召唤 +${e.bonus} 铜`, '#ffb347', 24, 1.4);
       });

@@ -40,5 +40,6 @@
     { id: 'kill10k', name: '万怪敌', desc: '累计击败 10000 只怪物', reward: { gold: 1 }, check: (s) => s.stats.kills >= 10000 },
     { id: 'bosses', name: 'Boss 克星', desc: '击败全部 10 个 Boss（含小 Boss）', reward: { gold: 1 }, check: (s) => bossTypes().every((k) => (s.stats.killsByType || {})[k] > 0) },
     { id: 'rich', name: '小金库', desc: '同时持有 5000 铜币', reward: { silver: 2 }, check: (s) => s.copper >= 5000 },
+    { id: 'endless30', name: '永不陷落', desc: '无尽模式到达第 30 波', reward: { gold: 1 }, check: (s) => ((s.endless || {}).best || 0) >= 30 },
   ];
 })((globalThis.TD = globalThis.TD || {}));

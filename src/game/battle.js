@@ -11,9 +11,12 @@
     // opts: { level, stats, loadout: {active, items, target, autoCast}, seed, autoItems }
     constructor(opts) {
       super();
+      // opts.levelDef：自定义关卡（无尽模式、每日挑战）；stage：用于补给卡池、场景的"等效关卡号"
       this.levelNo = opts.level;
-      this.level = D.levels[opts.level];
-      this.D = C.difficulty(opts.level);
+      this.level = opts.levelDef || D.levels[opts.level];
+      this.stage = opts.stage || (typeof opts.level === 'number' ? opts.level : 1);
+      this.D = C.difficulty(this.stage);
+      this.rules = this.level.rules || {};
       this.stats = opts.stats;
       this.rng = TD.util.rng(opts.seed || Date.now());
       this.lanes = this.level.lanes;
@@ -21,7 +24,8 @@
       this.over = false;
       this.result = null;
 
-      this.wall = { hp: this.stats.wallMax, max: this.stats.wallMax };
+      const wallMult = (1 + (this.rules.wallHp || 0)) * (this.rules.wallHalf ? 0.5 : 1);
+      this.wall = { hp: Math.round(this.stats.wallMax * wallMult), max: Math.round(this.stats.wallMax * wallMult) };
       this.monsters = [];
       this.projectiles = [];
       this.laneEffects = []; // {lane, type:'frost'|'freeze', until}
@@ -85,6 +89,11 @@
     // 补给出现在哪几波之后（波序号从 0 开始）
     computeSupplyWaves() {
       const n = this.level.waves.length;
+      if (this.level.supplyEvery) {
+        const out = [];
+        for (let i = this.level.supplyEvery - 1; i < n - 1; i += this.level.supplyEvery) out.push(i);
+        return out;
+      }
       if (this.level.noSupply || n < 3) return [];
       if (this.level.type === 'boss' || n < 5) return [1];
       return [1, n - 2];
@@ -102,7 +111,7 @@
       const all = Object.keys(D.supplies).filter((id) => {
         if (this.supplyPicked.includes(id)) return false;
         if (D.supplies[id].needSkills && !this.skills.length) return false;
-        if (D.supplies[id].minLevel && this.levelNo < D.supplies[id].minLevel) return false;
+        if (D.supplies[id].minLevel && this.stage < D.supplies[id].minLevel) return false;
         return true;
       });
       const choices = [];
@@ -146,8 +155,9 @@
     startWave(i) {
       this.waveIndex = i;
       const wave = this.level.waves[i];
+      if (wave.D) this.D = wave.D; // 无尽模式：每波有自己的难度
       // countMult：自动平衡工具（tools/tune.js）写入的每关数量倍率，Boss 不受影响
-      const cm = this.level.countMult || 1;
+      const cm = (this.level.countMult || 1) * (1 + (this.rules.countBonus || 0));
       const groups = wave.groups.map(([type, count]) => ({ type, left: D.monsters[type].boss ? count : Math.max(1, Math.round(count * cm)) }));
       const queue = [];
       let any = true;
@@ -168,7 +178,7 @@
       this.waveState = 'spawning';
       this.waveStartTime = this.time;
       this.clearedOnce = false;
-      this.emit('waveStart', { index: i, total: this.totalWaves });
+      this.emit('waveStart', { index: i, total: this.totalWaves, chapter: wave.chapter });
     }
 
     endWaveHeal() {
@@ -217,7 +227,9 @@
           this.clearedOnce = true;
           this.countdown = Math.min(this.countdown, C.waveClearDelay);
         }
-        this.countdown -= dt;
+        // 无尽模式：Boss 还活着时下一波不来（普通关卡的 Boss 都在最后一波）
+        const bossHold = this.level.endless && this.monsters.some((m) => m.def.boss && !m.dead);
+        if (!bossHold) this.countdown -= dt;
         if (this.countdown <= 0) {
           if (this.supplyWaves.includes(this.waveIndex) && !this.supplyOffered[this.waveIndex]) {
             this.offerSupply();
@@ -249,7 +261,7 @@
         this.pack.left--;
       }
       if (lane === undefined) lane = def.boss ? Math.floor(this.lanes / 2) : this.rng.int(this.lanes);
-      const hp = Math.round(def.hp * this.D);
+      const hp = Math.round(def.hp * this.D * (1 + (this.rules.monsterHp || 0)));
       const m = {
         id: nextId++,
         type,
@@ -315,7 +327,7 @@
 
     monsterSpeed(m) {
       if (this.time < m.frozenUntil || this.time < m.stunUntil) return 0;
-      let s = m.def.speed;
+      let s = m.def.speed * (1 + (this.rules.monsterSpeed || 0));
       if (m.def.ai === 'boarKing' && m.ai.phase === 3) s *= D.boarKing.enrageSpeedMult;
       if (m.burrowed && m.def.burrow) s *= m.def.burrow.speedMult;
       if (m.def.ai === 'pharaoh' && m.ai.phase === 3) s *= D.pharaoh.phase3SpeedMult;
@@ -1636,6 +1648,8 @@
         skillsCarried: this.skills.length,
         itemsUsed: this.itemsUsed.slice(),
         wave: this.waveIndex + 1,
+        // 无尽模式：清完的波数（最后一波没打完不算）
+        wavesCleared: win ? this.waveIndex + 1 : Math.max(0, this.waveIndex + (this.waveState === 'waiting' && this.aliveCount() === 0 ? 1 : 0)),
       };
       this.emit(win ? 'win' : 'lose', this.result);
       this.emit('end', this.result);

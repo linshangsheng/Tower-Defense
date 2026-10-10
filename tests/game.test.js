@@ -690,3 +690,71 @@ test('战斗统计击败数和提前召唤次数', () => {
   const r = b.runToEnd();
   assert.strictEqual(Object.values(r.killsByType).reduce((a, c) => a + c, 0), r.kills);
 });
+
+// ---------- 无尽模式与每日挑战 ----------
+test('无尽模式：生成 300 波，难度递增，每 5 / 10 波有 Boss，每 3 波补给', () => {
+  const s = P.newSave();
+  for (let k = 1; k <= 20; k++) s.levels[k] = { stars: 1, clears: 1 };
+  assert.ok(TD.modes.endlessUnlocked(s));
+  const lv = TD.modes.buildEndless(s, 1);
+  assert.strictEqual(lv.waves.length, 300);
+  assert.ok(lv.waves[20].D > lv.waves[0].D);
+  assert.ok(lv.waves[4].groups.some(([t]) => D.monsters[t].boss === 'mini'));
+  assert.ok(lv.waves[9].groups.some(([t]) => D.monsters[t].boss === 'major'));
+  assert.ok(!lv.waves.some((w) => w.groups.some(([t]) => t === 'inkBoss')), '墨墨不进无尽模式');
+  const b = new TD.Battle({ level: 'endless', levelDef: lv, stage: lv.stage, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 1 });
+  assert.deepStrictEqual(b.supplyWaves.slice(0, 3), [2, 5, 8]);
+});
+
+test('无尽模式：只按刷新纪录发银币', () => {
+  const s = P.newSave();
+  const r1 = TD.modes.applyEndlessResult(s, { wavesCleared: 12, kills: 0 });
+  assert.strictEqual(r1.silver, 2);
+  assert.strictEqual(s.endless.best, 12);
+  const r2 = TD.modes.applyEndlessResult(s, { wavesCleared: 14, kills: 0 });
+  assert.strictEqual(r2.silver, 0, '12 → 14 没跨过 15');
+  const r3 = TD.modes.applyEndlessResult(s, { wavesCleared: 30, kills: 0 });
+  assert.strictEqual(r3.silver, 4);
+  assert.ok(r3.achievements.some((a) => a.id === 'endless30'));
+});
+
+test('每日挑战：同一天同一进度结果相同，奖励每天一次', () => {
+  const s = P.newSave();
+  for (let k = 1; k <= 12; k++) s.levels[k] = { stars: 1, clears: 1 };
+  const day = new Date(2026, 9, 11);
+  const a = TD.modes.dailyInfo(s, day);
+  const b = TD.modes.dailyInfo(s, day);
+  assert.deepStrictEqual(a, b);
+  assert.ok(a.level >= 1 && a.level <= 12);
+  const r1 = TD.modes.applyDailyResult(s, a, { win: true, killCopper: 10 });
+  assert.strictEqual(r1.silver, 3);
+  const r2 = TD.modes.applyDailyResult(s, a, { win: true, killCopper: 10 });
+  assert.strictEqual(r2.silver, 0);
+  assert.strictEqual(s.levels[a.level].clears, 1, '不影响关卡记录');
+});
+
+test('每日规则生效：危墙、疾风', () => {
+  const s = P.newSave();
+  const info = { level: 3, rule: 'fragile', seed: 1, key: 'x' };
+  const b = new TD.Battle({ level: 3, levelDef: TD.modes.buildDaily(info), stage: 3, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 1 });
+  assert.strictEqual(b.wall.max, 500);
+  const info2 = { level: 3, rule: 'swift', seed: 1, key: 'x' };
+  const b2 = new TD.Battle({ level: 3, levelDef: TD.modes.buildDaily(info2), stage: 3, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 1 });
+  const m = b2.spawnMonster('slime', 0, 900);
+  assert.ok(Math.abs(b2.monsterSpeed(m) - D.monsters.slime.speed * 1.3) < 1e-9);
+});
+
+test('无尽模式：Boss 活着时下一波不来', () => {
+  const s = P.newSave();
+  for (let k = 1; k <= 20; k++) s.levels[k] = { stars: 1, clears: 1 };
+  const lv = TD.modes.buildEndless(s, 1);
+  const b = new TD.Battle({ level: 'endless', levelDef: lv, stage: lv.stage, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 1 });
+  b.hero.cooldown = 1e9;
+  b.startWave(0);
+  b.spawnQueue = [];
+  b.waveState = 'waiting';
+  b.countdown = 1;
+  b.spawnMonster('boneMage', 2, 1200);
+  for (let i = 0; i < 120; i++) b.step(1 / 60);
+  assert.strictEqual(b.waveIndex, 0);
+});

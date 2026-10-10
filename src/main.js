@@ -26,12 +26,20 @@
     game.persist();
   };
 
-  game.startBattle = function (n) {
+  // mode：{ kind: 'endless' | 'daily', levelDef, stage, info }（普通关卡不传）
+  game.startBattle = function (n, mode) {
     const s = game.save;
+    game.mode = mode || null;
     const lo = P.battleLoadout(s);
+    const rules = (mode && mode.levelDef.rules) || {};
+    if (rules.noSkills) lo.active = [];
+    if (rules.noItems) lo.items = [];
     // 幸运符在战斗开始时生效并消耗
     if (lo.items.includes('charm')) P.consumeItem(s, 'charm');
-    const battle = new TD.Battle({ level: n, stats: P.heroStats(s), loadout: lo, seed: (Date.now() & 0xffffff) + n });
+    const stats = P.heroStats(s, rules.forceBow ? { weapon: 'bow' } : undefined);
+    const seed = mode && mode.kind === 'daily' ? mode.info.seed : (Date.now() & 0xffffff) + (typeof n === 'number' ? n : 7);
+    const battle = new TD.Battle({ level: n, levelDef: mode && mode.levelDef, stage: mode && mode.stage, stats, loadout: lo, seed });
+    battle.mode = mode || null;
     game.battle = battle;
     game.paused = false;
     game.introPaused = false;
@@ -76,6 +84,13 @@
 
   game.onBattleEnd = function (battle) {
     if (game.battle !== battle) return;
+    if (battle.mode) {
+      const m = battle.mode;
+      const reward = m.kind === 'endless' ? TD.modes.applyEndlessResult(game.save, battle.result) : TD.modes.applyDailyResult(game.save, m.info, battle.result);
+      game.persist();
+      TD.ui.showModeResult(battle, reward);
+      return;
+    }
     const reward = P.applyResult(game.save, battle.levelNo, battle.result);
     game.persist();
     // 第一次打败最终 Boss：先播结局演出
@@ -91,8 +106,15 @@
     TD.ui.showResult(battle, reward);
   };
 
+  game.restartBattle = function () {
+    const b = game.battle;
+    if (!b) return;
+    if (b.mode && b.mode.kind === 'endless') TD.ui.startEndless();
+    else game.startBattle(b.levelNo, b.mode || undefined);
+  };
+
   game.quitBattle = function () {
-    const n = game.battle ? game.battle.levelNo : 1;
+    const n = game.battle ? game.battle.stage : 1;
     TD.ui.closeModal();
     game.battle = null;
     game.renderer.battle = null;

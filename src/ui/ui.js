@@ -404,7 +404,13 @@
         h('button', { class: 'btn small primary', onclick: () => (sfx('click'), UI.showShop(null, 'loadout')) }, '商店 / 配装')
       ),
       nodes,
-      note
+      note,
+      h(
+        'div',
+        { class: 'mode-buttons' },
+        TD.modes.dailyUnlocked(s) ? h('button', { class: 'btn small', onclick: () => (sfx('click'), UI.showDaily()) }, TD.modes.dailyInfo(s).done ? '📅 每日挑战 ✔' : '📅 每日挑战') : null,
+        TD.modes.endlessUnlocked(s) ? h('button', { class: 'btn small', onclick: () => (sfx('click'), UI.showEndless()) }, `♾ 无尽模式${(s.endless || {}).best ? ' · 纪录 ' + s.endless.best : ''}`) : null
+      )
     );
     root.appendChild(screenEl);
   };
@@ -974,6 +980,7 @@
     hud.wallText.textContent = `${Math.ceil(b.wall.hp)} / ${b.wall.max}`;
     let waveText;
     if (b.waveState === 'prepare') waveText = `准备… ${Math.ceil(b.countdown)}`;
+    else if (b.level.endless) waveText = `第 ${b.waveIndex + 1} 波 · 纪录 ${(game.save.endless || {}).best || 0}`;
     else waveText = `第 ${b.waveIndex + 1} / ${b.totalWaves} 波`;
     if (b.pendingSupply) waveText += ' · 补给中';
     else if (b.waveState === 'waiting') waveText += ` · 下一波 ${Math.max(0, Math.ceil(b.countdown))} 秒`;
@@ -1019,6 +1026,87 @@
     hud.skillBtns.forEach((btn, i) => btn.classList.toggle('nudge', i === nudgeIdx));
     hud.nudge.classList.toggle('hidden', nudgeIdx < 0);
     if (nudgeIdx >= 0) hud.nudge.style.left = 10 + nudgeIdx * 102 + 'px';
+  };
+
+  // ================= 无尽模式与每日挑战（设计书 25 章） =================
+  UI.startEndless = function () {
+    const s = game.save;
+    const levelDef = TD.modes.buildEndless(s, (Date.now() & 0xffffff) + 99);
+    game.startBattle('endless', { kind: 'endless', levelDef, stage: levelDef.stage });
+  };
+
+  UI.showEndless = function () {
+    const s = game.save;
+    const e = s.endless || { best: 0, runs: 0 };
+    modal(
+      h(
+        'div',
+        { class: 'preview' },
+        h('div', { class: 'preview-head' }, h('h2', null, '♾ 无尽模式'), h('span', { class: 'tag' }, `纪录 ${e.best} 波`)),
+        h(
+          'ul',
+          { class: 'mode-rules' },
+          h('li', null, '怪物从已解锁的章节里随机出现，一波比一波强。'),
+          h('li', null, '每 5 波一个小 Boss，每 10 波一个大 Boss；每 3 波一次战场补给。'),
+          h('li', null, '城墙被攻破时结束。每清完一波 15 铜；刷新纪录时，每多 5 波奖励 1 银。'),
+          h('li', null, '到达第 30 波可以解锁成就「永不陷落」（1 金）。')
+        ),
+        h('div', { class: 'modal-buttons' }, h('button', { class: 'btn', onclick: UI.closeModal }, '返回'), h('button', { class: 'btn', onclick: () => UI.showShop(null, 'loadout') }, '配装'), h('button', { class: 'btn primary big', onclick: () => (UI.closeModal(), UI.startEndless()) }, '开始'))
+      ),
+      { closeOnBack: true, cls: 'wide' }
+    );
+  };
+
+  UI.showDaily = function () {
+    const s = game.save;
+    const info = TD.modes.dailyInfo(s);
+    const r = TD.modes.dailyRules[info.rule];
+    const lvl = D.levels[info.level];
+    modal(
+      h(
+        'div',
+        { class: 'preview' },
+        h('div', { class: 'preview-head' }, h('h2', null, `📅 每日挑战 · ${info.key}`), info.done ? h('span', { class: 'tag' }, '今日已完成') : null),
+        h('p', { class: 'daily-level' }, `第 ${info.level} 关 · ${lvl.name}（${D.levelTypeNames[lvl.type]}）`),
+        h('div', { class: 'daily-rule' }, h('b', null, `今日规则「${r.name}」`), h('span', null, r.desc)),
+        h('p', { class: 'hint' }, '每天第一次通过奖励 3 银，可以反复挑战。不影响关卡的星级记录。'),
+        h(
+          'div',
+          { class: 'modal-buttons' },
+          h('button', { class: 'btn', onclick: UI.closeModal }, '返回'),
+          h('button', { class: 'btn', onclick: () => UI.showShop(null, 'loadout') }, '配装'),
+          h('button', { class: 'btn primary big', onclick: () => (UI.closeModal(), game.startBattle(info.level, { kind: 'daily', levelDef: TD.modes.buildDaily(info), stage: info.level, info })) }, '开始挑战')
+        )
+      ),
+      { closeOnBack: true, cls: 'wide' }
+    );
+  };
+
+  UI.showModeResult = function (battle, reward) {
+    const res = battle.result;
+    const endless = battle.mode.kind === 'endless';
+    const title = endless ? (reward.waves > 0 ? `坚持了 ${reward.waves} 波！` : '城墙被攻破了…') : res.win ? '挑战成功！' : '挑战失败…';
+    const rows = [h('div', { class: 'reward-row total' }, h('span', null, '获得'), h('b', null, reward.copper, ' ', coinIcon('copper'), reward.silver ? [' ', reward.silver, ' ', coinIcon('silver')] : null))];
+    const notes = reward.notes.map((x) => h('div', { class: 'note' }, '✦ ' + x));
+    for (const a of reward.achievements || []) notes.push(h('div', { class: 'note achieve' }, `🏆 达成成就「${a.name}」：${a.desc}（+${P.costText(a.reward)}）`));
+    modal(
+      h(
+        'div',
+        { class: 'result ' + (endless || res.win ? 'win' : 'lose') },
+        h('h2', { class: 'result-title' }, title),
+        endless ? h('div', { class: 'hint' }, `个人纪录：${(game.save.endless || {}).best} 波 · 击败 ${res.kills} 只`) : h('div', { class: 'hint' }, `击败 ${res.kills} 只`),
+        h('div', { class: 'reward-box' }, rows),
+        notes,
+        h(
+          'div',
+          { class: 'modal-buttons' },
+          h('button', { class: 'btn', onclick: () => (UI.closeModal(), game.battle = null, game.renderer.battle = null, UI.showMap()) }, '地图'),
+          h('button', { class: 'btn', onclick: () => (UI.closeModal(), game.battle = null, game.renderer.battle = null, UI.showShop(null, 'attrs')) }, '去商店'),
+          h('button', { class: 'btn primary', onclick: () => (UI.closeModal(), endless ? UI.startEndless() : game.startBattle(battle.levelNo, battle.mode)) }, '再来一次')
+        )
+      ),
+      { cls: 'result-modal' }
+    );
   };
 
   // ================= 成就与图鉴（设计书 24 章） =================
@@ -1156,12 +1244,12 @@
         'div',
         { class: 'pause' },
         h('h2', null, '暂停'),
-        h('p', null, `第 ${b.levelNo} 关 · ${b.level.name}`),
+        h('p', null, b.mode ? b.level.name : `第 ${b.levelNo} 关 · ${b.level.name}`),
         h(
           'div',
           { class: 'modal-buttons col' },
           h('button', { class: 'btn primary', onclick: () => game.togglePause() }, '继续战斗'),
-          h('button', { class: 'btn', onclick: () => (UI.closeModal(), game.startBattle(b.levelNo)) }, '重新开始'),
+          h('button', { class: 'btn', onclick: () => (UI.closeModal(), game.restartBattle()) }, '重新开始'),
           h('button', { class: 'btn', onclick: () => UI.showHelp() }, '玩法说明'),
           h('button', { class: 'btn danger', onclick: () => game.quitBattle() }, '放弃本关')
         )
