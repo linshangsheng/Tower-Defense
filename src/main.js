@@ -100,7 +100,12 @@
     if (game.battle !== battle) return;
     if (battle.mode) {
       const m = battle.mode;
-      const reward = m.kind === 'endless' ? TD.modes.applyEndlessResult(game.save, battle.result) : TD.modes.applyDailyResult(game.save, m.info, battle.result);
+      const reward =
+        m.kind === 'endless'
+          ? TD.modes.applyEndlessResult(game.save, battle.result)
+          : m.kind === 'bossrush'
+          ? TD.modes.applyBossRushResult(game.save, battle.result)
+          : TD.modes.applyDailyResult(game.save, m.info, battle.result);
       game.persist();
       TD.ui.showModeResult(battle, reward);
       return;
@@ -129,6 +134,7 @@
     const b = game.battle;
     if (!b) return;
     if (b.mode && b.mode.kind === 'endless') TD.ui.startEndless();
+    else if (b.mode && b.mode.kind === 'bossrush') TD.ui.startBossRush();
     else game.startBattle(b.levelNo, b.mode || undefined);
   };
 

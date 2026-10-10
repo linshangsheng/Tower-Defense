@@ -1976,3 +1976,16 @@ body {
   padding: 8px 0 4px;
   z-index: 2;
 }
+
+/* ---------- Boss 连战（设计书 48） ---------- */
+.rush-faces {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 8px 0;
+}
+.rush-faces canvas {
+  background: #fff;
+  border: 2px solid var(--paper-2);
+  border-radius: 10px;
+}

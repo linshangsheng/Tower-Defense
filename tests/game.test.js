@@ -1255,3 +1255,23 @@ test('技能协同：碎冰（冰冻领域里雷霆加伤）、鼓点箭雨（�
   assert.strictEqual(d.rain.left, Math.round(n0 * D.synergies.drumRain.mult));
   assert.strictEqual(d.combos.drumRain, 1);
 });
+
+test('Boss 连战：通关第 60 关解锁，12 波各一个 Boss，打败当前 Boss 才来下一波；结算记录打败数', () => {
+  const s = P.newSave();
+  assert.ok(!TD.modes.bossRushUnlocked(s));
+  clearUpTo(s, 60);
+  assert.ok(TD.modes.bossRushUnlocked(s));
+  const def = TD.modes.buildBossRush();
+  assert.strictEqual(def.waves.length, 12);
+  for (const w of def.waves) assert.strictEqual(w.groups.filter(([t]) => D.monsters[t].boss).length, 1);
+  const b = new TD.Battle({ level: 'bossrush', levelDef: def, stage: def.stage, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 1 });
+  for (let i = 0; i < 60 * 60 && !b.over; i++) {
+    if (b.pendingSupply) b.chooseSupply(b.pendingSupply[0]);
+    b.step(1 / 60);
+  }
+  assert.strictEqual(b.waveIndex, 0, '第一个 Boss 没打败时不会来第二波');
+  const r = TD.modes.applyBossRushResult(s, { killsByType: { jellyPrince: 1, boarKing: 1, slime: 9 }, killCopper: 10, time: 300 });
+  assert.strictEqual(r.beaten, 2);
+  assert.strictEqual(r.silver, 2);
+  assert.strictEqual(s.bossRush.best, 2);
+});

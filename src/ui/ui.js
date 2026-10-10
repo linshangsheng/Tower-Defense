@@ -552,7 +552,8 @@
         'div',
         { class: 'mode-buttons' },
         TD.modes.dailyUnlocked(s) ? h('button', { class: 'btn small', onclick: () => (sfx('click'), UI.showDaily()) }, TD.modes.dailyInfo(s).done ? '📅 每日挑战 ✔' : '📅 每日挑战') : null,
-        TD.modes.endlessUnlocked(s) ? h('button', { class: 'btn small', onclick: () => (sfx('click'), UI.showEndless()) }, `♾ 无尽模式${(s.endless || {}).best ? ' · 纪录 ' + s.endless.best : ''}`) : null
+        TD.modes.endlessUnlocked(s) ? h('button', { class: 'btn small', onclick: () => (sfx('click'), UI.showEndless()) }, `♾ 无尽模式${(s.endless || {}).best ? ' · 纪录 ' + s.endless.best : ''}`) : null,
+        TD.modes.bossRushUnlocked(s) ? h('button', { class: 'btn small', onclick: () => (sfx('click'), UI.showBossRush()) }, `👑 Boss 连战${(s.bossRush || {}).best ? ` · ${s.bossRush.best}/12` : ''}`) : null
       )
     );
     root.appendChild(screenEl);
@@ -1220,6 +1221,7 @@
     let waveText;
     if (b.waveState === 'prepare') waveText = `准备… ${Math.ceil(b.countdown)}`;
     else if (b.level.endless) waveText = `第 ${b.waveIndex + 1} 波 · 纪录 ${(game.save.endless || {}).best || 0}`;
+    else if (b.level.bossRush) waveText = `Boss ${b.waveIndex + 1} / ${b.totalWaves} · ${TD.modes.fmtTime(b.time)}`;
     else waveText = `第 ${b.waveIndex + 1} / ${b.totalWaves} 波`;
     if (b.pendingSupply) waveText += ' · 补给中';
     else if (b.waveState === 'waiting') waveText += ` · 下一波 ${Math.max(0, Math.ceil(b.countdown))} 秒`;

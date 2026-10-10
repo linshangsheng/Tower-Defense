@@ -40,6 +40,39 @@
     );
   };
 
+  // ================= Boss 连战（设计书 48） =================
+  UI.startBossRush = function () {
+    const levelDef = TD.modes.buildBossRush();
+    G().startBattle('bossrush', { kind: 'bossrush', levelDef, stage: levelDef.stage });
+  };
+
+  UI.showBossRush = function () {
+    const s = G().save;
+    const r = s.bossRush || { best: 0, bestTime: 0 };
+    const faces = D.town.map((f) => {
+      const img = TD.sprites.portrait(f.boss, 44);
+      img.title = D.monsters[f.boss].name;
+      return img;
+    });
+    modal(
+      h(
+        'div',
+        { class: 'preview' },
+        h('div', { class: 'preview-head' }, h('h2', null, '👑 Boss 连战'), h('span', { class: 'tag' }, `最多 ${r.best} / 12${r.bestTime ? ' · 最快 ' + TD.modes.fmtTime(r.bestTime) : ''}`)),
+        h('div', { class: 'rush-faces' }, faces),
+        h(
+          'ul',
+          { class: 'mode-rules' },
+          h('li', null, '12 个 Boss 按故事顺序出场，每个带 6 只它那一章的小怪；打败当前 Boss 才会来下一个。'),
+          h('li', null, '全部按第 60 关的难度计算；每 3 波一次战场补给；城墙被攻破时结束。'),
+          h('li', null, '刷新"打败 Boss 数"纪录时，每多 1 个奖励 1 银；全部打败解锁成就「Boss 克星」（1 金）。')
+        ),
+        h('div', { class: 'modal-buttons' }, h('button', { class: 'btn', onclick: UI.closeModal }, '返回'), h('button', { class: 'btn', onclick: () => UI.showShop(null, 'loadout') }, '配装'), h('button', { class: 'btn primary big', onclick: () => (UI.closeModal(), UI.startBossRush()) }, '开始'))
+      ),
+      { closeOnBack: true, cls: 'wide' }
+    );
+  };
+
   UI.showDaily = function () {
     const s = G().save;
     const info = TD.modes.dailyInfo(s);
@@ -106,7 +139,18 @@
   UI.showModeResult = function (battle, reward) {
     const res = battle.result;
     const endless = battle.mode.kind === 'endless';
-    const title = endless ? (reward.waves > 0 ? `坚持了 ${reward.waves} 波！` : '城墙被攻破了…') : res.win ? '挑战成功！' : '挑战失败…';
+    const rush = battle.mode.kind === 'bossrush';
+    const title = endless
+      ? reward.waves > 0
+        ? `坚持了 ${reward.waves} 波！`
+        : '城墙被攻破了…'
+      : rush
+      ? reward.beaten >= D.town.length
+        ? `全部打败！用时 ${TD.modes.fmtTime(res.time)}`
+        : `打败了 ${reward.beaten} / ${D.town.length} 个 Boss`
+      : res.win
+      ? '挑战成功！'
+      : '挑战失败…';
     const rows = [h('div', { class: 'reward-row total' }, h('span', null, '获得'), h('b', null, reward.copper, ' ', coinIcon('copper'), reward.silver ? [' ', reward.silver, ' ', coinIcon('silver')] : null))];
     const notes = reward.notes.map((x) => h('div', { class: 'note' }, '✦ ' + x));
     for (const a of reward.achievements || []) notes.push(h('div', { class: 'note achieve' }, `🏆 达成成就「${a.name}」：${a.desc}（+${P.costText(a.reward)}）`));

@@ -1001,6 +1001,7 @@
 
   TD.data.levelTypeNames = {
     tutorial: '教学',
+    bossrush: 'Boss 连战',
     normal: '普通',
     raid: '空袭',
     rush: '速攻',

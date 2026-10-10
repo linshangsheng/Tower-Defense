@@ -107,6 +107,67 @@
     return out;
   };
 
+  // ---------- Boss 连战（设计书 48） ----------
+  M.bossRushUnlocked = (save) => P.isCleared(save, 60);
+
+  M.buildBossRush = function () {
+    const stage = 60;
+    const waves = D.town.map((f) => {
+      // 护卫：Boss 原来那一关里的第一种小怪
+      const lvl = D.levels[f.level];
+      let escort = 'slime';
+      for (const w of lvl.waves)
+        for (const [t] of w.groups)
+          if (escort === 'slime' && !D.monsters[t].boss && !D.noIntro[t]) escort = t;
+      return { gap: 0.8, groups: [[escort, 6], [f.boss, 1]], D: C.difficulty(stage), chapter: D.chapterOf(f.level).id };
+    });
+    return {
+      name: 'Boss 连战',
+      type: 'bossrush',
+      bossRush: true,
+      lanes: 5,
+      waves,
+      supplyEvery: 3,
+      stage,
+      tip: 'Boss 连战：12 个 Boss 按顺序出场，打败当前 Boss 才会来下一个！',
+    };
+  };
+
+  M.applyBossRushResult = function (save, result) {
+    const r = (save.bossRush = save.bossRush || { best: 0, bestTime: 0, runs: 0 });
+    const bossTypes = new Set(D.town.map((f) => f.boss));
+    let beaten = 0;
+    for (const [t, c] of Object.entries(result.killsByType || {})) if (bossTypes.has(t)) beaten += c;
+    beaten = Math.min(beaten, D.town.length);
+    const all = beaten === D.town.length;
+    const out = { copper: 0, silver: 0, gold: 0, notes: [], unlocks: [], beaten, oldBest: r.best };
+    out.copper = result.killCopper || 0;
+    if (beaten > r.best) {
+      out.silver = beaten - r.best;
+      out.notes.push(`新纪录！打败 ${r.best} → ${beaten} 个 Boss`);
+      r.best = beaten;
+    }
+    if (all && (!r.bestTime || result.time < r.bestTime)) {
+      if (r.bestTime) out.notes.push(`最快纪录！${M.fmtTime(r.bestTime)} → ${M.fmtTime(result.time)}`);
+      r.bestTime = result.time;
+    }
+    r.runs++;
+    save.copper += out.copper;
+    save.silver += out.silver;
+    save.stats.battles++;
+    if (all) save.stats.wins++;
+    save.stats.kills += result.kills || 0;
+    save.stats.bestStreak = Math.max(save.stats.bestStreak || 0, result.bestStreak || 0);
+    for (const v of Object.values(result.combos || {})) save.stats.combos = (save.stats.combos || 0) + v;
+    save.stats.interrupts += result.interrupts || 0;
+    save.stats.supplies += (result.supplies || []).length;
+    for (const k of Object.keys(result.killsByType || {})) save.stats.killsByType[k] = (save.stats.killsByType[k] || 0) + result.killsByType[k];
+    out.achievements = P.checkAchievements(save, Object.assign({ bossRushAll: all }, result, { win: all }));
+    return out;
+  };
+
+  M.fmtTime = (sec) => `${Math.floor(sec / 60)} 分 ${Math.round(sec % 60)} 秒`;
+
   // ---------- 每日挑战 ----------
   M.dailyRules = {
     swift: { name: '疾风', desc: '怪物速度 +30%', rules: { monsterSpeed: 0.3 } },

@@ -263,7 +263,7 @@
           this.countdown = Math.min(this.countdown, C.waveClearDelay);
         }
         // 无尽模式：Boss 还活着时下一波不来（普通关卡的 Boss 都在最后一波）
-        const bossHold = this.level.endless && this.monsters.some((m) => m.def.boss && !m.dead);
+        const bossHold = (this.level.endless || this.level.bossRush) && this.monsters.some((m) => m.def.boss && !m.dead);
         if (!bossHold) this.countdown -= dt;
         if (this.countdown <= 0) {
           if (this.supplyWaves.includes(this.waveIndex) && !this.supplyOffered[this.waveIndex]) {
