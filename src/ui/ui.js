@@ -149,6 +149,12 @@
       h(
         'div',
         { class: 'row' },
+        h('button', { class: 'btn small', onclick: () => UI.showExport() }, '导出存档'),
+        h('button', { class: 'btn small', onclick: () => UI.showImport() }, '导入存档')
+      ),
+      h(
+        'div',
+        { class: 'row' },
         h(
           'button',
           {
@@ -166,6 +172,85 @@
       h('div', { class: 'modal-buttons' }, h('button', { class: 'btn', onclick: UI.closeModal }, '关闭'))
     );
     modal(body, { closeOnBack: true });
+  };
+
+  // 存档导出 / 导入（设计书 13.3）
+  UI.showExport = function () {
+    const code = TD.saveStore.exportCode(game.save);
+    const ta = h('textarea', { class: 'save-code', readonly: true }, code);
+    modal(
+      h(
+        'div',
+        null,
+        h('h2', null, '导出存档'),
+        h('p', { class: 'hint' }, '把下面这段文字复制保存好。换电脑或清除浏览器数据后，用「导入存档」粘贴回来即可恢复进度。'),
+        ta,
+        h(
+          'div',
+          { class: 'modal-buttons' },
+          h(
+            'button',
+            {
+              class: 'btn primary',
+              onclick: () => {
+                ta.select();
+                let ok = false;
+                try {
+                  ok = document.execCommand('copy');
+                } catch (e) {
+                  ok = false;
+                }
+                if (navigator.clipboard) navigator.clipboard.writeText(code).then(() => UI.toast('已复制到剪贴板'), () => {});
+                else if (ok) UI.toast('已复制到剪贴板');
+              },
+            },
+            '复制'
+          ),
+          h('button', { class: 'btn', onclick: UI.closeModal }, '关闭')
+        )
+      ),
+      { cls: 'wide' }
+    );
+    setTimeout(() => ta.select(), 50);
+  };
+
+  UI.showImport = function () {
+    const ta = h('textarea', { class: 'save-code', placeholder: '把导出的存档文字粘贴到这里' });
+    modal(
+      h(
+        'div',
+        null,
+        h('h2', null, '导入存档'),
+        h('p', { class: 'hint warn' }, '导入会覆盖当前的进度。'),
+        ta,
+        h(
+          'div',
+          { class: 'modal-buttons' },
+          h('button', { class: 'btn', onclick: UI.closeModal }, '取消'),
+          h(
+            'button',
+            {
+              class: 'btn primary',
+              onclick: () => {
+                const save = TD.saveStore.importCode(ta.value);
+                if (!save) {
+                  sfx('error');
+                  UI.toast('存档文字不正确，请检查是否完整复制');
+                  return;
+                }
+                game.save = save;
+                game.persist();
+                UI.closeModal();
+                UI.toast('存档已导入');
+                UI.showTitle();
+              },
+            },
+            '导入'
+          )
+        )
+      ),
+      { cls: 'wide' }
+    );
   };
 
   UI.showHelp = function () {
@@ -521,6 +606,11 @@
           'div',
           { class: 'btn-col' },
           buyBtn(P.weaponUpgradeCost(s, id), () => P.upgradeWeapon(s, id), '升级'),
+          w.ascend && !ws.asc
+            ? P.canAscend(s, id)
+              ? buyBtn(D.weaponAscend.cost, () => P.ascendWeapon(s, id), '进阶')
+              : h('span', { class: 'hint' }, `Lv${D.weaponAscend.minLv} 可进阶`)
+            : null,
           s.loadout.weapon === id
             ? h('span', { class: 'equipped' }, '使用中')
             : h(
@@ -537,7 +627,8 @@
                 '装备'
               )
         );
-      el.append(card(h('span', { class: 'with-icon' }, TD.sprites.iconCanvas(id, 30), w.name), ws.owned ? `Lv.${ws.lv}/${D.weaponUpgrade.max}` : '未解锁', h('span', null, w.desc, h('span', { class: 'good' }, ' 擅长：' + w.good)), right));
+      const ascLine = w.ascend ? h('div', { class: ws.asc ? 'asc on' : 'asc' }, `${ws.asc ? '✦ 已进阶' : '进阶后'}「${w.ascend.name}」：${w.ascend.desc}`) : null;
+      el.append(card(h('span', { class: 'with-icon' }, TD.sprites.iconCanvas(id, 30), ws.asc ? w.ascend.name : w.name), ws.owned ? `Lv.${ws.lv}/${D.weaponUpgrade.max}` : '未解锁', h('span', null, w.desc, h('span', { class: 'good' }, ' 擅长：' + w.good), ascLine), right));
     }
   }
 
@@ -546,8 +637,20 @@
     el.append(h('div', { class: 'section-title' }, '主动技能（战斗中点击释放）'));
     for (const id of Object.keys(D.activeSkills)) {
       const k = D.activeSkills[id];
-      el.append(card(h('span', { class: 'with-icon' }, TD.sprites.iconCanvas(id, 30), k.name), `冷却 ${k.cd} 秒`, k.desc, s.activeOwned[id] ? h('span', { class: 'equipped' }, '已拥有') : buyBtn(k.cost, () => P.buyActive(s, id), '解锁')));
+      const lv = P.skillLevel(s, id);
+      let desc = k.desc;
+      let right;
+      if (!lv) right = buyBtn(k.cost, () => P.buyActive(s, id), '解锁');
+      else if (lv < D.skillMaxLv) {
+        desc = h('span', null, `当前：${k.tierDesc[lv - 1]} → `, h('b', { class: 'up' }, `Lv${lv + 1}：${k.tierDesc[lv]}`));
+        right = buyBtn(P.skillUpgradeCost(s, id), () => P.upgradeSkill(s, id), '升阶');
+      } else {
+        desc = `满级：${k.tierDesc[lv - 1]}`;
+        right = h('span', { class: 'equipped' }, '★ 满级');
+      }
+      el.append(card(h('span', { class: 'with-icon' }, TD.sprites.iconCanvas(id, 30), k.name), lv ? `Lv${lv} · 冷却 ${k.cd} 秒` : `冷却 ${k.cd} 秒`, desc, right));
     }
+    el.append(h('div', { class: 'hint' }, '技能 Lv2 用银币升阶，Lv3 用金币升阶并带来质变效果。'));
     el.append(h('div', { class: 'section-title' }, '被动技能（自动生效）'));
     for (const id of Object.keys(D.passiveSkills)) {
       const k = D.passiveSkills[id];
@@ -665,7 +768,7 @@
         { class: 'slot-row' },
         Object.keys(D.weapons).map((id) =>
           slotBox(
-            D.weapons[id].name,
+            P.weaponDef(s, id).name,
             s.weapons[id].owned ? (lo.weapon === id ? '✔ 使用中' : '点击装备') : null,
             () => {
               if (P.setWeapon(s, id)) {
@@ -810,6 +913,7 @@
         'button',
         { class: 'skill-btn', title: sk.def.desc, onclick: () => game.trySkill(i) },
         h('span', { class: 'key' }, i + 1),
+        sk.lv > 1 ? h('span', { class: 'lv-badge' }, 'Lv' + sk.lv) : null,
         TD.sprites.iconCanvas(sk.id, 40),
         h('span', { class: 'skill-name' }, sk.def.name),
         h('span', { class: 'cd' })

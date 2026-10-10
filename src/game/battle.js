@@ -30,7 +30,14 @@
       this.autoCast = !!opts.loadout.autoCast;
       this.autoItems = !!opts.autoItems;
 
-      this.skills = (opts.loadout.active || []).map((id) => ({ id, def: D.activeSkills[id], cd: 0 }));
+      const lvs = opts.loadout.activeLv || {};
+      this.skills = (opts.loadout.active || []).map((id) => {
+        const base = D.activeSkills[id];
+        const lv = lvs[id] || 1;
+        const def = Object.assign({}, base, (base.tiers || [])[lv - 1] || {}, { lv });
+        return { id, lv, def, cd: 0 };
+      });
+      this.tempDr = { amt: 0, until: 0 };
       this.items = (opts.loadout.items || []).filter((id) => !D.items[id].passive).map((id) => ({ id, def: D.items[id], used: false }));
       this.charm = (opts.loadout.items || []).includes('charm');
       this.itemsUsed = [];
@@ -562,7 +569,8 @@
     }
 
     hitWall(amount, m, big) {
-      const dmg = amount * (1 - Math.min(0.75, this.stats.wallDr + this.mods.wallDr));
+      const temp = this.time < this.tempDr.until ? this.tempDr.amt : 0;
+      const dmg = amount * (1 - Math.min(0.8, this.stats.wallDr + this.mods.wallDr + temp));
       this.wall.hp = Math.max(0, this.wall.hp - dmg);
       this.wallDamageTaken += dmg;
       this.emit('wallHit', { amount: dmg, m, big: !!big });
@@ -712,7 +720,9 @@
 
     rollHit(mult) {
       let dmg = this.atk * this.stats.weaponMult * mult;
-      const crit = this.rng() < this.stats.crit + this.mods.crit;
+      let buffCrit = 0;
+      for (const b of this.buffs) if (b.crit && this.time < b.until) buffCrit += b.crit;
+      const crit = this.rng() < this.stats.crit + this.mods.crit + buffCrit;
       if (crit) dmg *= this.stats.critDmg + this.mods.critDmg;
       return { dmg, crit };
     }
@@ -737,8 +747,12 @@
       this.hero.cooldown += 1 / this.currentAspd();
     }
 
+    weaponDef() {
+      return this.stats.weaponDef || D.weapons[this.stats.weapon];
+    }
+
     fire(targets) {
-      const w = D.weapons[this.stats.weapon];
+      const w = this.weaponDef();
       const sx = C.heroX + 26;
       const sy = this.heroY - 46;
       const t0 = targets[0];
@@ -746,19 +760,22 @@
       this.hero.aimY = t0.y + t0.yOffset;
       this.hero.shotAt = this.time;
       if (w.boomerang) {
-        const lane = t0.lane;
-        this.projectiles.push({
-          kind: 'boomerang',
-          lane,
-          x: C.wallX,
-          y: this.laneY(lane),
-          dir: 1,
-          speed: w.projSpeed,
-          maxX: C.wallX + this.range,
-          hitOut: new Set(),
-          hitBack: new Set(),
-          spin: 0,
-        });
+        const lanes = [t0.lane];
+        if (w.twin && this.lanes > 1) lanes.push(t0.lane + 1 < this.lanes ? t0.lane + 1 : t0.lane - 1);
+        for (const lane of lanes) {
+          this.projectiles.push({
+            kind: 'boomerang',
+            lane,
+            x: C.wallX,
+            y: this.laneY(lane),
+            dir: 1,
+            speed: w.projSpeed,
+            maxX: C.wallX + this.range,
+            hitOut: new Set(),
+            hitBack: new Set(),
+            spin: 0,
+          });
+        }
         this.emit('shoot', { weapon: 'boomerang' });
         return;
       }
@@ -797,6 +814,13 @@
         });
       }
       this.emit('shoot', { weapon: this.stats.weapon });
+    }
+
+    ignite(m) {
+      const b = D.passiveSkills.burn;
+      if (this.time >= m.burnUntil) m.burnTick = 0.5;
+      m.burnUntil = this.time + b.duration;
+      m.burnDps = Math.max(m.burnDps || 0, (this.atk * b.atkMult) / b.duration);
     }
 
     applyWeaponHit(m, dmg, crit, fromFront, p) {
@@ -898,23 +922,36 @@
       const atk = this.atk;
       switch (s.id) {
         case 'drum':
-          this.buffs.push({ aspd: def.aspdBonus, until: this.time + def.duration, src: 'drum' });
+          this.buffs.push({ aspd: def.aspdBonus, crit: def.critBonus || 0, until: this.time + def.duration, src: 'drum' });
           break;
         case 'repair':
           this.healWall(this.wall.max * def.healRatio, 'repair');
+          if (def.drBonus) this.tempDr = { amt: def.drBonus, until: this.time + def.drDuration };
           break;
         case 'arrowRain':
-          this.rain = { left: def.arrows, every: def.duration / def.arrows, timer: 0, dmg: atk * def.atkMult };
+          this.rain = { left: def.arrows, every: def.duration / def.arrows, timer: 0, dmg: atk * def.atkMult, ignite: !!def.ignite };
           break;
         case 'frost':
-          this.laneEffects.push({ lane, type: 'frost', slow: def.slow, until: this.time + def.duration, start: this.time });
+          this.laneEffects.push({ lane, type: 'frost', slow: def.slow, until: this.time + def.duration, start: this.time, freezeEnd: def.freezeEnd || 0 });
           break;
         case 'thunder': {
           let best = null;
           for (const m of this.monsters) if (this.isTargetable(m) && (!best || m.hp > best.hp)) best = m;
           if (!best) return false;
           this.emit('thunder', { x: best.x, y: best.y + best.yOffset });
+          const bx = best.x;
+          const by = best.y;
           this.damage(best, atk * def.atkMult, { type: 'magic', fromFront: false, source: 'thunder' });
+          if (def.chain) {
+            const near = this.monsters
+              .filter((m) => m !== best && this.isTargetable(m) && Math.hypot(m.x - bx, m.y - by) <= def.chainRange)
+              .sort((a, b) => Math.hypot(a.x - bx, a.y - by) - Math.hypot(b.x - bx, b.y - by))
+              .slice(0, def.chain);
+            for (const m of near) {
+              this.emit('thunderChain', { x0: bx, y0: by + best.yOffset, x: m.x, y: m.y + m.yOffset });
+              this.damage(m, atk * def.atkMult * def.chainMult, { type: 'magic', fromFront: false, source: 'thunder' });
+            }
+          }
           break;
         }
       }
@@ -966,6 +1003,7 @@
         const m = this.rng.pick(pool);
         this.emit('rainArrow', { x: m.x, y: m.y + m.yOffset });
         this.damage(m, r.dmg, { type: 'phys', fromFront: false, source: 'arrowRain' });
+        if (r.ignite && !m.dead) this.ignite(m);
       }
       if (r.left <= 0) this.rain = null;
     }
@@ -1036,7 +1074,19 @@
       this.time += dt;
       for (const s of this.skills) if (s.cd > 0) s.cd = Math.max(0, s.cd - dt);
       if (this.buffs.length && this.buffs[0].until < this.time) this.buffs = this.buffs.filter((b) => b.until >= this.time);
-      if (this.laneEffects.length) this.laneEffects = this.laneEffects.filter((e) => e.until >= this.time);
+      if (this.laneEffects.length) {
+        const keep = [];
+        for (const e of this.laneEffects) {
+          if (e.until >= this.time) keep.push(e);
+          else if (e.freezeEnd) {
+            // 冰冻领域 Lv3：结束时冻结整条车道
+            keep.push({ lane: e.lane, type: 'freeze', until: this.time + e.freezeEnd, start: this.time });
+            for (const m of this.monsters) if (m.lane === e.lane && !m.dead) m.frozenUntil = this.time + e.freezeEnd;
+            this.emit('laneFreeze', { lane: e.lane });
+          }
+        }
+        this.laneEffects = keep;
+      }
       this.updateWaves(dt);
       if (this.over) return;
       this.updateMonsters(dt);

@@ -13,8 +13,8 @@
     heroX: 110,
     heroY: 0, // 运行时根据车道计算
     // 波次节奏（设计书 2.3）
-    waveClearDelay: 5,
-    waveMaxDelay: 25,
+    waveClearDelay: 4,
+    waveMaxDelay: 18,
     earlyCallCopperPerSec: 1,
     // 每秒模拟步数
     tickRate: 60,

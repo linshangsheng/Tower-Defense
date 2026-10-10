@@ -50,6 +50,8 @@
       });
       on('spore', (e) => this.fx.push({ kind: 'ring', x: e.x, y: e.y, r0: 10, r1: e.radius, color: 'rgba(196,90,210,', life: 0.6, age: 0 }));
       on('rainArrow', (e) => this.fx.push({ kind: 'fallArrow', x: e.x, y: e.y, life: 0.18, age: 0 }));
+      on('thunderChain', (e) => this.fx.push({ kind: 'chain', x0: e.x0, y0: e.y0, x: e.x, y: e.y, life: 0.3, age: 0 }));
+      on('laneFreeze', () => (this.shake = Math.max(this.shake, 3)));
       on('thunder', (e) => {
         this.fx.push({ kind: 'bolt', x: e.x, y: e.y, life: 0.35, age: 0, seed: Math.random() });
         this.shake = Math.max(this.shake, 8);
@@ -687,7 +689,8 @@
         shotAge = b.time - b.hero.shotAt;
       }
       // 英雄脚下的城墙平台
-      S.hero(this.ctx, C.heroX, heroY, { t: this.t, weapon, aimAngle: aim, shotAge, mood, critAge: this.critAge });
+      const ascended = !!(b && b.stats.weaponDef && b.stats.weaponDef.ascended);
+      S.hero(this.ctx, C.heroX, heroY, { t: this.t, weapon, aimAngle: aim, shotAge, mood, critAge: this.critAge, ascended });
       // 战鼓等增益光环
       if (b && b.buffs.some((x) => b.time < x.until)) {
         const ctx = this.ctx;
@@ -883,6 +886,23 @@
             S.ellipse(ctx, f.x, f.y - 10, 20 + k * 40, 16 + k * 30, '#ffb347');
             S.ellipse(ctx, f.x, f.y - 10, 10 + k * 26, 8 + k * 20, '#fff3c4');
             break;
+          case 'chain': {
+            ctx.globalAlpha = 1 - k;
+            ctx.strokeStyle = '#e2c8ff';
+            ctx.lineWidth = 4;
+            ctx.shadowColor = '#b07aff';
+            ctx.shadowBlur = 12;
+            ctx.beginPath();
+            ctx.moveTo(f.x0, f.y0);
+            const segs = 5;
+            for (let i = 1; i < segs; i++) {
+              const tt = i / segs;
+              ctx.lineTo(f.x0 + (f.x - f.x0) * tt + (Math.random() - 0.5) * 18, f.y0 + (f.y - f.y0) * tt + (Math.random() - 0.5) * 18);
+            }
+            ctx.lineTo(f.x, f.y);
+            ctx.stroke();
+            break;
+          }
           case 'splash':
             ctx.globalAlpha = 1 - k;
             if (f.magic) {

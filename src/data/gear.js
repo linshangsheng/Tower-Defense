@@ -14,6 +14,7 @@
       bonusCrit: 0.05,
       desc: '单发，稳定，自带额外暴击率。打 Boss 好用。',
       good: '通用、Boss',
+      ascend: { name: '雕花长弓', desc: '射程 +10%，暴击伤害 +30%', stats: { rangePct: 0.1, critDmg: 0.3 } },
     },
     crossbow: {
       name: '连发弩',
@@ -26,6 +27,7 @@
       flyingMult: 1.5,
       desc: '一次射 3 支弩箭，分别射向 3 个不同目标，对飞行怪伤害 +50%。目标少时威力下降。',
       good: '群怪、飞行怪',
+      ascend: { name: '连环弩', desc: '每次射 4 支弩箭', weapon: { bolts: 4 } },
     },
     boomerang: {
       name: '回旋镖',
@@ -36,6 +38,7 @@
       boomerang: true,
       desc: '沿车道飞出再飞回，往返各命中每只怪一次。返程从背后命中，无视盾牌。',
       good: '排成长队的车道、木盾哥布林',
+      ascend: { name: '双刃回旋镖', desc: '同时扔出 2 支：目标车道和相邻车道各一支', weapon: { twin: true } },
     },
     staff: {
       name: '魔法杖',
@@ -47,6 +50,7 @@
       splash: { radius: 60, mult: 0.6 },
       desc: '发射魔法弹，命中后小范围爆炸。魔法伤害无视物理护甲。',
       good: '绷带球、护盾、成堆的小怪',
+      ascend: { name: '星辰法杖', desc: '爆炸半径 60 → 85，溅射伤害 60% → 75%', weapon: { splash: { radius: 85, mult: 0.75 } } },
     },
     cannon: {
       name: '火炮',
@@ -59,8 +63,11 @@
       armorIgnore: 0.4,
       desc: '慢速重炮，落地大范围爆炸，无视目标 40% 护甲。',
       good: '重甲怪、成团的怪、Boss',
+      ascend: { name: '攻城火炮', desc: '无视护甲 40% → 70%，溅射伤害 70% → 85%', weapon: { armorIgnore: 0.7, splash: { radius: 80, mult: 0.85 } } },
     },
   };
+
+  TD.data.weaponAscend = { minLv: 5, cost: { silver: 8 } };
 
   TD.data.weaponUpgrade = {
     perLevel: 0.08,
@@ -77,6 +84,8 @@
       aspdBonus: 0.5,
       key: 'drum',
       desc: '攻击速度 +50%，持续 8 秒。',
+      tiers: [{}, { aspdBonus: 0.65, duration: 10 }, { aspdBonus: 0.8, duration: 10, critBonus: 0.1 }],
+      tierDesc: ['攻速 +50%，8 秒', '攻速 +65%，10 秒', '攻速 +80%，10 秒，期间暴击率 +10%'],
     },
     repair: {
       name: '城墙修复',
@@ -84,6 +93,8 @@
       cd: 40,
       healRatio: 0.2,
       desc: '回复城墙 20% 最大血量。',
+      tiers: [{}, { healRatio: 0.25 }, { healRatio: 0.3, drBonus: 0.3, drDuration: 6 }],
+      tierDesc: ['回复 20%', '回复 25%', '回复 30%，之后 6 秒城墙受到伤害 −30%'],
     },
     arrowRain: {
       name: '箭雨',
@@ -93,6 +104,8 @@
       duration: 2,
       atkMult: 1.6,
       desc: '2 秒内落下 16 支箭，每支随机命中射程内的一只怪，造成攻击力 ×1.6 的伤害，无视盾牌。',
+      tiers: [{}, { arrows: 20, atkMult: 1.7 }, { arrows: 24, atkMult: 1.8, ignite: true }],
+      tierDesc: ['16 支 × 攻击力 1.6', '20 支 × 1.7', '24 支 × 1.8，命中的怪被点燃'],
     },
     frost: {
       name: '冰冻领域',
@@ -102,6 +115,8 @@
       slow: 0.6,
       targetLane: true,
       desc: '选定一条车道，车道上的怪减速 60%，持续 6 秒。',
+      tiers: [{}, { slow: 0.7, duration: 7 }, { slow: 0.75, duration: 8, freezeEnd: 1.5 }],
+      tierDesc: ['减速 60%，6 秒', '减速 70%，7 秒', '减速 75%，8 秒，结束时冻结整条车道 1.5 秒'],
     },
     thunder: {
       name: '雷霆一击',
@@ -109,8 +124,14 @@
       cd: 15,
       atkMult: 5,
       desc: '对当前血量最高的怪造成攻击力 ×5 的魔法伤害。',
+      tiers: [{}, { atkMult: 6 }, { atkMult: 7, chain: 3, chainMult: 0.5, chainRange: 240 }],
+      tierDesc: ['攻击力 ×5', '攻击力 ×6', '攻击力 ×7，并连锁附近 3 只怪（每只 50%）'],
     },
   };
+
+  // 技能升阶费用（设计书 20.1）：下标为目标等级
+  TD.data.skillUpgradeCost = [null, null, { silver: 6 }, { gold: 2 }];
+  TD.data.skillMaxLv = 3;
 
   TD.data.passiveSkills = {
     precision: { name: '精准', cost: { silver: 3 }, crit: 0.1, desc: '暴击率 +10%。' },

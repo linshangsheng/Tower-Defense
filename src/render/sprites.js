@@ -739,6 +739,15 @@
       ctx.translate(s * 0.4, -s * 0.7);
       ctx.rotate(st.aimAngle || 0);
       S.weaponInHand(ctx, st.weapon, s, st.shotAge);
+      if (st.ascended) {
+        // 进阶武器：金色光点
+        ctx.fillStyle = '#ffd23f';
+        const tw = 0.6 + Math.sin(t * 8) * 0.4;
+        ctx.globalAlpha = tw;
+        star(ctx, s * 0.7, -s * 0.35, 5);
+        star(ctx, s * 0.3, s * 0.4, 3.5);
+        ctx.globalAlpha = 1;
+      }
       ctx.restore();
     }
 

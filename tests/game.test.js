@@ -303,3 +303,77 @@ test('补给卡池按章节扩充', () => {
   assert.ok(!pool(b1).has('arcane'), '第一章没有奥术涌动');
   assert.ok(pool(b2).has('arcane'), '第二章有奥术涌动');
 });
+
+// ---------- v0.8 成长深度 ----------
+test('技能升阶：Lv2 银币、Lv3 金币，效果随等级提升', () => {
+  const s = P.newSave();
+  s.silver = 10;
+  s.gold = 5;
+  s.activeOwned.thunder = true;
+  assert.deepStrictEqual(P.skillUpgradeCost(s, 'thunder'), { silver: 6 });
+  assert.ok(P.upgradeSkill(s, 'thunder'));
+  assert.strictEqual(P.skillLevel(s, 'thunder'), 2);
+  assert.deepStrictEqual(P.skillUpgradeCost(s, 'thunder'), { gold: 2 });
+  assert.ok(P.upgradeSkill(s, 'thunder'));
+  assert.strictEqual(P.skillUpgradeCost(s, 'thunder'), null, '满级');
+  assert.strictEqual(P.skillDef('thunder', 3).atkMult, 7);
+  assert.strictEqual(P.skillDef('thunder', 1).atkMult, 5);
+});
+
+test('雷霆一击 Lv3 会连锁', () => {
+  const s = P.newSave();
+  s.activeOwned.thunder = true;
+  s.skillLv.thunder = 3;
+  s.loadout.active = ['thunder', null, null];
+  const b = new TD.Battle({ level: 1, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 1 });
+  b.waveState = 'final';
+  const big = b.spawnMonster('goblin', 0, 600);
+  const others = [b.spawnMonster('slime', 0, 640), b.spawnMonster('slime', 0, 680)];
+  b.time = 1;
+  let chains = 0;
+  b.on('thunderChain', () => chains++);
+  assert.ok(b.castSkill(0));
+  assert.strictEqual(chains, 2);
+  assert.ok(others.every((m) => m.hp < m.maxHp));
+  assert.ok(big.hp < big.maxHp);
+});
+
+test('武器进阶：需要 Lv5，连环弩射 4 支', () => {
+  const s = P.newSave();
+  s.silver = 20;
+  s.weapons.crossbow.owned = true;
+  assert.ok(!P.canAscend(s, 'crossbow'), 'Lv0 不能进阶');
+  s.weapons.crossbow.lv = 5;
+  assert.ok(P.ascendWeapon(s, 'crossbow'));
+  assert.strictEqual(s.silver, 12);
+  s.loadout.weapon = 'crossbow';
+  const st = P.heroStats(s);
+  assert.strictEqual(st.weaponDef.bolts, 4);
+  assert.strictEqual(st.weaponDef.name, '连环弩');
+});
+
+test('木弓进阶后射程和暴击伤害提升', () => {
+  const s = P.newSave();
+  const st0 = P.heroStats(s);
+  s.weapons.bow.lv = 5;
+  s.silver = 8;
+  assert.ok(P.ascendWeapon(s, 'bow'));
+  const st1 = P.heroStats(s);
+  assert.ok(st1.range > st0.range);
+  assert.ok(Math.abs(st1.critDmg - st0.critDmg - 0.3) < 1e-9);
+});
+
+test('存档导出再导入，内容一致（含中文）', () => {
+  const s = P.newSave();
+  s.copper = 1234;
+  s.levels[3] = { stars: 2, clears: 4 };
+  s.note = '守城英雄';
+  const code = TD.saveStore.exportCode(s);
+  assert.ok(code.startsWith('SCYX1:'));
+  const back = TD.saveStore.importCode('  ' + code + '\n');
+  assert.strictEqual(back.copper, 1234);
+  assert.strictEqual(back.levels[3].clears, 4);
+  assert.strictEqual(back.note, '守城英雄');
+  assert.strictEqual(TD.saveStore.importCode('乱写的'), null);
+  assert.strictEqual(TD.saveStore.importCode('SCYX1:@@@'), null);
+});

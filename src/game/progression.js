@@ -20,6 +20,7 @@
       wall: { level: 1, fortify: 0, mend: 0, thorns: 0 },
       weapons: Object.fromEntries(Object.keys(D.weapons).map((id) => [id, { owned: id === 'bow', lv: 0 }])),
       activeOwned: { drum: true },
+      skillLv: {},
       passiveOwned: {},
       equipOwned: {},
       inventory: {},
@@ -74,6 +75,39 @@
     return req === undefined ? null : req;
   };
 
+  // ---------- 技能升阶与武器进阶（设计书 20 章） ----------
+  P.skillLevel = (save, id) => (save.activeOwned[id] ? save.skillLv[id] || 1 : 0);
+  P.skillDef = function (id, lv) {
+    const base = D.activeSkills[id];
+    return Object.assign({}, base, (base.tiers || [])[Math.max(0, (lv || 1) - 1)] || {}, { lv: lv || 1 });
+  };
+  P.skillUpgradeCost = function (save, id) {
+    const lv = P.skillLevel(save, id);
+    if (!lv || lv >= D.skillMaxLv) return null;
+    return D.skillUpgradeCost[lv + 1];
+  };
+  P.upgradeSkill = function (save, id) {
+    const cost = P.skillUpgradeCost(save, id);
+    if (!cost || !P.pay(save, cost)) return false;
+    save.skillLv[id] = P.skillLevel(save, id) + 1;
+    return true;
+  };
+  P.weaponDef = function (save, id) {
+    const base = D.weapons[id];
+    const w = save.weapons[id];
+    if (!w || !w.asc || !base.ascend) return base;
+    return Object.assign({}, base, base.ascend.weapon || {}, { name: base.ascend.name, ascended: true });
+  };
+  P.canAscend = (save, id) => {
+    const w = save.weapons[id];
+    return !!(w && w.owned && !w.asc && D.weapons[id].ascend && w.lv >= D.weaponAscend.minLv);
+  };
+  P.ascendWeapon = function (save, id) {
+    if (!P.canAscend(save, id) || !P.pay(save, D.weaponAscend.cost)) return false;
+    save.weapons[id].asc = true;
+    return true;
+  };
+
   // ---------- 属性计算 ----------
   P.equipStats = function (save) {
     const s = { atkFlat: 0, atkPct: 0, aspdPct: 0, crit: 0, critDmg: 0, luck: 0, rangePct: 0, wallDr: 0 };
@@ -102,8 +136,13 @@
     const A = D.attributes;
     const eq = P.equipStats(save);
     const weaponId = save.weapons[lo.weapon] && save.weapons[lo.weapon].owned ? lo.weapon : 'bow';
-    const w = D.weapons[weaponId];
+    const w = P.weaponDef(save, weaponId);
     const wlv = save.weapons[weaponId].lv;
+    // 进阶带来的属性加成
+    if (w.ascended && D.weapons[weaponId].ascend.stats) {
+      const as = D.weapons[weaponId].ascend.stats;
+      for (const k of Object.keys(as)) eq[k] = (eq[k] || 0) + as[k];
+    }
     const passives = P.passiveSet(save);
     const h = C.hero;
 
@@ -122,6 +161,7 @@
 
     return {
       weapon: weaponId,
+      weaponDef: w,
       atk,
       weaponMult: w.dmgMult * (1 + wlv * D.weaponUpgrade.perLevel),
       aspd: aspdBase * w.aspdMult,
@@ -140,7 +180,7 @@
 
   // 估算单体 DPS（用于界面"战力"显示和推荐）
   P.estimateDps = function (st) {
-    const w = D.weapons[st.weapon];
+    const w = st.weaponDef || D.weapons[st.weapon];
     let perHit = st.atk * st.weaponMult * (1 + st.crit * (st.critDmg - 1));
     let hits = st.aspd;
     if (st.passives.combo) hits *= 1.2;
@@ -336,6 +376,8 @@
     const nA = P.slotCount(save, 'active');
     const nI = P.slotCount(save, 'item');
     const active = lo.active.slice(0, nA).filter((id) => id && save.activeOwned[id]);
+    const activeLv = {};
+    for (const id of active) activeLv[id] = P.skillLevel(save, id);
     const counts = {};
     const items = [];
     lo.items.slice(0, nI).forEach((id) => {
@@ -343,7 +385,7 @@
       counts[id] = (counts[id] || 0) + 1;
       if (counts[id] <= (save.inventory[id] || 0)) items.push(id);
     });
-    return { active, items, target: lo.target, autoCast: lo.autoCast };
+    return { active, activeLv, items, target: lo.target, autoCast: lo.autoCast };
   };
 
   // 消耗品使用后从背包扣除

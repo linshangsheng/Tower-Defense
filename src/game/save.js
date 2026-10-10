@@ -24,6 +24,25 @@
         return false;
       }
     },
+    // 导出为一段文字：前缀 + base64(UTF-8 JSON)
+    exportCode(save) {
+      const json = JSON.stringify(save);
+      const b64 = typeof btoa === 'function' ? btoa(unescape(encodeURIComponent(json))) : Buffer.from(json, 'utf8').toString('base64');
+      return 'SCYX1:' + b64;
+    },
+    importCode(code) {
+      try {
+        code = String(code || '').trim();
+        if (!code.startsWith('SCYX1:')) return null;
+        const b64 = code.slice(6).replace(/\s+/g, '');
+        const json = typeof atob === 'function' ? decodeURIComponent(escape(atob(b64))) : Buffer.from(b64, 'base64').toString('utf8');
+        const save = JSON.parse(json);
+        if (!save || typeof save !== 'object' || !save.levels || !save.loadout) return null;
+        return TD.progression.migrate(save);
+      } catch (e) {
+        return null;
+      }
+    },
     clear() {
       try {
         if (globalThis.localStorage) localStorage.removeItem(KEY);

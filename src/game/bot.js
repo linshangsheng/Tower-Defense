@@ -52,6 +52,28 @@
         bought.push(id);
       }
     }
+    // 剩余银币：武器进阶、技能 Lv2；金币：技能 Lv3（传说头盔优先）
+    if (!saveForStaff) {
+      for (const id of ['staff', 'bow', 'cannon', 'crossbow']) {
+        if (P.canAscend(save, id) && P.canAfford(save, D.weaponAscend.cost)) {
+          P.ascendWeapon(save, id);
+          bought.push('ascend:' + id);
+        }
+      }
+      for (const id of ['arrowRain', 'thunder', 'drum', 'repair', 'frost']) {
+        if (P.skillLevel(save, id) === 1 && P.canAfford(save, D.skillUpgradeCost[2])) {
+          P.upgradeSkill(save, id);
+          bought.push('skill2:' + id);
+        }
+      }
+    }
+    if (save.equipOwned.lionCrown)
+      for (const id of ['thunder', 'arrowRain', 'drum']) {
+        if (P.skillLevel(save, id) === 2 && P.canAfford(save, D.skillUpgradeCost[3])) {
+          P.upgradeSkill(save, id);
+          bought.push('skill3:' + id);
+        }
+      }
     // 武器：随进度解锁
     const h = P.highestCleared(save);
     const wantWeapon = (id, minCleared) => {
