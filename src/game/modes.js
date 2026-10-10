@@ -110,11 +110,17 @@
   M.dailyRules = {
     swift: { name: '疾风', desc: '怪物速度 +30%', rules: { monsterSpeed: 0.3 } },
     iron: { name: '铁壁', desc: '怪物血量 +40%，城墙血量 +40%', rules: { monsterHp: 0.4, wallHp: 0.4 } },
-    plain: { name: '朴素', desc: '不能使用主动技能和道具', rules: { noSkills: true, noItems: true } },
+    // 原"朴素"（不能用技能和道具）：模拟显示中后期不放技能几乎必输（设计书 36.5），改为只禁道具（设计书 44）
+    plain: { name: '轻装', desc: '不能使用道具', rules: { noItems: true } },
     feast: { name: '补给狂欢', desc: '每 2 波一次补给', supplyEvery: 2 },
     fragile: { name: '危墙', desc: '城墙只有一半血量', rules: { wallHalf: true } },
     horde: { name: '怪物大潮', desc: '怪物数量 +50%', rules: { countBonus: 0.5 } },
     primitive: { name: '原始武器', desc: '只能使用木弓', rules: { forceBow: true } },
+    // v0.36 新增（设计书 44）
+    night: { name: '夜战', desc: '整关都是暗夜：射程 −30%', dark: true },
+    giants: { name: '巨人', desc: '怪物数量 −40%，但血量 +80%', rules: { countBonus: -0.4, monsterHp: 0.8 } },
+    rush: { name: '急袭', desc: '不等清场，每 14 秒来一波', rush: 14 },
+    gold: { name: '抢时间', desc: '提前召唤的铜币 ×3', rules: { earlyMult: 2 } },
   };
 
   M.dailyUnlocked = (save) => P.isCleared(save, 5);
@@ -142,6 +148,11 @@
     const r = M.dailyRules[info.rule];
     const def = Object.assign({}, base, { rules: Object.assign({}, r.rules || {}), daily: true });
     if (r.supplyEvery) def.supplyEvery = r.supplyEvery;
+    if (r.dark) def.dark = true;
+    if (r.rush) {
+      def.type = 'rush';
+      def.rushInterval = r.rush;
+    }
     def.tip = `每日挑战「${r.name}」：${r.desc}`;
     return def;
   };

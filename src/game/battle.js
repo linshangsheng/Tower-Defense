@@ -217,7 +217,7 @@
 
     callNextWave() {
       if (this.waveState !== 'waiting' || this.waveIndex >= this.totalWaves - 1) return -1;
-      const bonus = Math.floor(this.countdown) * C.earlyCallCopperPerSec;
+      const bonus = Math.floor(this.countdown) * C.earlyCallCopperPerSec * (1 + (this.rules.earlyMult || 0));
       this.earlyCopper += bonus;
       this.earlyCalls++;
       this.countdown = 0;

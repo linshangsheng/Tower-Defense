@@ -1198,3 +1198,23 @@ test('版本号：config、设计书、离线缓存名一致', () => {
   const sw = fs.readFileSync(path.join(__dirname, '..', 'sw.js'), 'utf8');
   assert.ok(sw.includes(`'scyx-${v}'`), `sw.js 的 VERSION 应为 scyx-${v}`);
 });
+
+test('每日挑战新规则：夜战变暗夜、急袭变速攻、巨人减数量加血、抢时间提前召唤铜币 ×3', () => {
+  const night = TD.modes.buildDaily({ level: 12, rule: 'night' });
+  assert.ok(night.dark);
+  const rush = TD.modes.buildDaily({ level: 12, rule: 'rush' });
+  assert.strictEqual(rush.type, 'rush');
+  assert.strictEqual(rush.rushInterval, 14);
+  assert.ok(!TD.data.levels[12].dark && TD.data.levels[12].type !== 'rush', '不改动原关卡');
+  const s = P.newSave();
+  const mk = (rule) => new TD.Battle({ level: 12, levelDef: TD.modes.buildDaily({ level: 12, rule }), stage: 12, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 1 });
+  const g = mk('gold');
+  g.waveState = 'waiting';
+  g.waveIndex = 0;
+  g.countdown = 10;
+  const normal = mk('swift');
+  normal.waveState = 'waiting';
+  normal.waveIndex = 0;
+  normal.countdown = 10;
+  assert.strictEqual(g.callNextWave(), normal.callNextWave() * 3);
+});
