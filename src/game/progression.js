@@ -587,6 +587,11 @@
       const now = P.slotCount(save, k);
       if (now > before[k]) out.unlocks.push(`解锁第 ${now} 个${names[k]}`);
     }
+    // 首次通关时的功能解锁提示（设计书 38、39）
+    if (firstClear) {
+      const FEATURE = { 5: '解锁「王国小镇」（地图上的 🏘）和「每日挑战」（地图右下角）', 10: '解锁 3 倍速：战斗右下角的速度按钮', 20: '解锁「无尽模式」（地图右下角）', 50: '解锁第六章「云端王国」' };
+      if (FEATURE[n]) out.unlocks.push(FEATURE[n]);
+    }
     return out;
   };
 

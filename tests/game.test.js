@@ -1159,3 +1159,11 @@ test('王国小镇：每个 Boss 都有房子和 3 句台词，关卡号对得�
     assert.ok(D.levels[f.level].waves.some((w) => w.groups.some(([t]) => t === f.boss)), `${f.boss} 不在第 ${f.level} 关`);
   }
 });
+
+test('首次通关第 10 关提示解锁 3 倍速，重复通关不再提示', () => {
+  const s = P.newSave();
+  clearUpTo(s, 9);
+  const win = { win: true, wallRatio: 1, killCopper: 0 };
+  assert.ok(P.applyResult(s, 10, win).unlocks.some((x) => x.includes('3 倍速')));
+  assert.ok(!P.applyResult(s, 10, win).unlocks.some((x) => x.includes('3 倍速')));
+});
