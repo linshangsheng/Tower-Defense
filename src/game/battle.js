@@ -85,7 +85,14 @@
       this.waveStartTime = 0;
 
       // 战场补给（设计书 2.7）
-      this.mods = { atkMult: 0, aspdMult: 0, crit: 0, critDmg: 0, cdMult: 0, copperBonus: 0, wallDr: 0, range: 0, slowOnHit: 0, magicMult: 0, armorIgnore: 0, dotReduce: 0, spiritPierce: 0, chillResist: 0, igniteOnHit: 0, fireproof: 0, reveal: 0, woolCut: 0, stunImmune: 0, dodgeCut: 0 };
+      this.mods = { atkMult: 0, aspdMult: 0, crit: 0, critDmg: 0, cdMult: 0, copperBonus: 0, wallDr: 0, range: 0, slowOnHit: 0, magicMult: 0, armorIgnore: 0, dotReduce: 0, spiritPierce: 0, chillResist: 0, igniteOnHit: 0, fireproof: 0, reveal: 0, woolCut: 0, stunImmune: 0, dodgeCut: 0, slowAll: 0 };
+      // 助战伙伴（设计书 51）
+      this.buddy = (opts.loadout && opts.loadout.buddy && D.town.find((f) => f.boss === opts.loadout.buddy)) || null;
+      if (this.buddy) {
+        const pk = this.buddy.perk;
+        for (const k of Object.keys(pk.mods || {})) this.mods[k] += pk.mods[k];
+        if (pk.shot) this.buddyTimer = pk.shot.every;
+      }
       this.storm = false; // 雷雷第三阶段的暴风雨：全场怪物加速（设计书 33.3）
       this.zones = []; // 地面区域：{ x, y, r, until, haste }
       this.heroStunUntil = 0;
@@ -218,6 +225,7 @@
 
     endWaveHeal() {
       if (this.stats.mend > 0 && this.waveIndex >= 0) this.healWall(this.wall.max * this.stats.mend, 'mend');
+      if (this.buddy && this.buddy.perk.waveHeal && this.waveIndex >= 0) this.healWall(this.wall.max * this.buddy.perk.waveHeal, 'buddy');
     }
 
     callNextWave() {
@@ -363,6 +371,7 @@
       if (m.cooked) s *= 1 + D.witch.cookSpeed;
       if (m.sheared) s *= m.def.wool.speedMult;
       if (this.storm && !m.def.boss) s *= 1 + D.thunderKing.stormSpeed;
+      if (this.mods.slowAll) s *= 1 - this.mods.slowAll;
       if (this.zones.length && !this.mods.fireproof) {
         for (const z of this.zones) {
           if (this.time < z.until && Math.abs(m.x - z.x) <= z.r && Math.abs(m.y - z.y) <= z.r) {
@@ -1101,6 +1110,22 @@
       return true;
     }
 
+    // 助战伙伴的主动能力：墨墨的墨团、雷雷的小闪电（设计书 51）
+    updateBuddy(dt) {
+      const shot = this.buddy.perk.shot;
+      this.buddyTimer -= dt;
+      if (this.buddyTimer > 0) return;
+      const pool = this.monsters.filter((m) => this.isTargetable(m) && this.inRange(m));
+      if (!pool.length) {
+        this.buddyTimer = 0.5;
+        return;
+      }
+      this.buddyTimer = shot.every;
+      const target = shot.pick === 'strongest' ? pool.reduce((a, b) => (b.hp > a.hp ? b : a)) : pool.reduce((a, b) => (b.x < a.x ? b : a));
+      this.emit('buddyShot', { buddy: this.buddy.boss, name: shot.name, x: target.x, y: target.y + target.yOffset });
+      this.damage(target, this.atk * shot.mult, { type: 'magic', fromFront: false, source: 'buddy' });
+    }
+
     // 怪物是否处在冰冻领域（减速或冰冻）中
     inFrost(m) {
       if (this.time < m.frozenUntil) return true;
@@ -1243,6 +1268,7 @@
       }
       this.updateWaves(dt);
       if (this.over) return;
+      if (this.buddyTimer !== undefined) this.updateBuddy(dt);
       this.updateMonsters(dt);
       if (this.over) return;
       this.updateWallDots(dt);

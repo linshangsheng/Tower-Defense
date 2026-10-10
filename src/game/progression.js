@@ -41,6 +41,7 @@
       achievements: {},
       settings: { sound: true, speed: 1, difficulty: 'normal', restMinutes: 30 },
       hero: 'dang', // 当前英雄（设计书 42）
+      buddy: null, // 助战伙伴（设计书 51）
       outfit: 'classic', // 铛铛的衣柜（设计书 30）
       outfitsSeen: { classic: true },
       story: {}, // 守城日记（设计书 28）：段落 id → 'read' 读完 / 'skipped' 跳过
@@ -77,6 +78,18 @@
   P.levelRecord = (save, n) => save.levels[n] || { stars: 0, clears: 0 };
 
   P.crowns = (save, levels) => (levels || Object.keys(save.levels)).filter((n) => (save.levels[n] || {}).crown).length;
+
+  // ---------- 助战伙伴（设计书 51） ----------
+  P.buddyUnlocked = (save, id) => {
+    const f = D.town && D.town.find((x) => x.boss === id);
+    return !!f && P.isCleared(save, f.level);
+  };
+  P.buddyId = (save) => (save.buddy && P.buddyUnlocked(save, save.buddy) ? save.buddy : null);
+  P.setBuddy = function (save, id) {
+    if (id && !P.buddyUnlocked(save, id)) return false;
+    save.buddy = id || null;
+    return true;
+  };
 
   // ---------- 英雄（设计书 42） ----------
   P.heroUnlocked = (save, id) => !!C.heroes[id] && (!C.heroes[id].unlock || P.isCleared(save, C.heroes[id].unlock));
@@ -475,7 +488,7 @@
       counts[id] = (counts[id] || 0) + 1;
       if (counts[id] <= (save.inventory[id] || 0)) items.push(id);
     });
-    return { active, activeLv, items, target: lo.target, autoCast: lo.autoCast };
+    return { active, activeLv, items, target: lo.target, autoCast: lo.autoCast, buddy: P.buddyId(save) };
   };
 
   // 消耗品使用后从背包扣除

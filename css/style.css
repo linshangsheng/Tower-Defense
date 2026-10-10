@@ -2013,3 +2013,20 @@ body {
 .map-screen .topbar .power {
   font-size: 14px;
 }
+
+/* ---------- 助战伙伴（设计书 51） ---------- */
+.buddy-row {
+  gap: 6px;
+}
+.slot.buddy-slot {
+  width: 64px;
+  min-height: 60px;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.slot.buddy-slot.on {
+  border-color: var(--primary);
+  background: #fff6e6;
+}

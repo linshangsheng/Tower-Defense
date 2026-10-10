@@ -160,6 +160,13 @@
         this.text(e.m.x, e.m.y - 140, '本体现身！伤害 +50%', '#ffd23f', 28, 1.5);
       });
       on('inkSlam', () => (this.shake = Math.max(this.shake, 20)));
+      // 助战伙伴（设计书 51）
+      on('buddyShot', (e) => {
+        const p = this.buddyPos(battle);
+        this.fx.push({ kind: 'chain', x0: p.x, y0: p.y - 30, x: e.x, y: e.y, life: 0.35, age: 0 });
+        this.text(p.x, p.y - 60, e.name + '！', '#ff8ab4', 18, 0.8);
+        this.burst(e.x, e.y, e.buddy === 'inkBoss' ? '#2a2438' : '#fff36b', 14, 220);
+      });
       // 技能协同（设计书 45）
       on('combo', (e) => {
         this.text(e.x, e.y, e.name, '#7ad0ff', 26, 1.1);
@@ -331,6 +338,7 @@
         this.drawProjectiles(b);
       }
       this.drawHero(b);
+      if (b && b.buddy) this.drawBuddy(b);
       if (b && b.time < this.sandUntil) this.drawSandstorm(b);
       if (b && b.time < this.fogUntil) this.drawFog(b);
       if (b && b.level.dark) this.drawDarkness();
@@ -1122,6 +1130,17 @@
         }
         ctx.restore();
       }
+    }
+
+    // 助战伙伴站在城墙后面、英雄下方（设计书 51）
+    buddyPos(b) {
+      return { x: C.wallX - 72, y: b.heroY + 120 };
+    }
+
+    drawBuddy(b) {
+      const { x, y } = this.buddyPos(b);
+      const def = TD.data.monsters[b.buddy.boss];
+      S.monster(this.ctx, b.buddy.boss, x, y, def.size * 0.42, this.t, { seed: 7 });
     }
 
     drawHero(b) {

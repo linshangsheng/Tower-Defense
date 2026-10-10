@@ -1275,3 +1275,24 @@ test('Boss 连战：通关第 60 关解锁，12 波各一个 Boss，打败当前
   assert.strictEqual(r.silver, 2);
   assert.strictEqual(s.bossRush.best, 2);
 });
+
+test('助战伙伴：打败对应 Boss 后才能带；属性类加成生效；墨墨定时吐墨团', () => {
+  const s = P.newSave();
+  assert.ok(!P.setBuddy(s, 'boarKing'));
+  clearUpTo(s, 50);
+  assert.ok(P.setBuddy(s, 'boarKing'));
+  const b1 = new TD.Battle({ level: 41, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 1 });
+  assert.ok(Math.abs(b1.mods.copperBonus - 0.05) < 1e-9);
+  P.setBuddy(s, 'inkBoss');
+  const b2 = new TD.Battle({ level: 41, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 1 });
+  const m = b2.spawnMonster('slime', 0, 400);
+  m.hp = m.maxHp = 1e6;
+  let shots = 0;
+  b2.on('buddyShot', () => shots++);
+  b2.waveState = 'running';
+  for (let i = 0; i < 60 * 26; i++) b2.updateBuddy(1 / 60);
+  assert.strictEqual(shots, 1);
+  assert.ok(m.hp < 1e6);
+  P.setBuddy(s, null);
+  assert.strictEqual(P.battleLoadout(s).buddy, null);
+});

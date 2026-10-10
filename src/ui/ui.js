@@ -1017,6 +1017,29 @@
       );
     }
 
+    // 助战伙伴（设计书 51）：打败的 Boss 可以带一位
+    const buddies = D.town.filter((f) => P.buddyUnlocked(s, f.boss));
+    if (buddies.length) {
+      el.append(h('div', { class: 'section-title' }, '助战伙伴'));
+      const cur = P.buddyId(s);
+      el.append(
+        h(
+          'div',
+          { class: 'slot-row buddy-row' },
+          h('button', { class: 'slot buddy-slot' + (cur ? '' : ' on'), onclick: () => (P.setBuddy(s, null), sfx('click'), game.persist(), renderShop()) }, h('div', { class: 'slot-content' }, '不带')),
+          buddies.map((f) => {
+            const img = TD.sprites.portrait(f.boss, 44);
+            return h(
+              'button',
+              { class: 'slot buddy-slot' + (cur === f.boss ? ' on' : ''), title: `${D.monsters[f.boss].name}：${f.perkDesc}`, onclick: () => (P.setBuddy(s, f.boss), sfx('click'), game.persist(), renderShop()) },
+              img
+            );
+          })
+        )
+      );
+      if (cur) el.append(h('div', { class: 'hint slot-note' }, `${D.monsters[cur].name}：${D.town.find((f) => f.boss === cur).perkDesc}`));
+    }
+
     // 武器：武器页还没开放时只显示已拥有的，并说明什么时候开放（设计书 6.5、41）
     el.append(h('div', { class: 'section-title' }, '武器'));
     const weaponsOpen = UI.tabUnlocked(s, 'weapons');
