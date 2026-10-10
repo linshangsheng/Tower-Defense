@@ -260,8 +260,15 @@
     const t = ctx.currentTime;
     master.gain.cancelScheduledValues(t);
     master.gain.setValueAtTime(Math.max(0.0001, master.gain.value), t);
-    master.gain.exponentialRampToValueAtTime(Math.max(0.0001, to), t + sec);
+    master.gain.exponentialRampToValueAtTime(Math.max(0.0001, to * M.volume), t + sec);
   }
+
+  // 音量 0–1（设计书 49）
+  M.volume = 1;
+  M.setVolume = function (v) {
+    M.volume = Math.max(0, Math.min(1, v));
+    if (M.playing) fade(M.mode === 'battle' ? 0.55 : 0.4, 0.2);
+  };
 
   // 切换曲子：theme 为章节号，mode 为 'calm'（菜单）或 'battle'
   M.play = function (theme, mode) {

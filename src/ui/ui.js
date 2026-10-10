@@ -233,6 +233,31 @@
         }),
         ' 背景音乐'
       ),
+      // 音量（设计书 49）
+      ...[
+        ['sfxVolume', '音效音量', (v) => (TD.audio.setVolume(v / 100), sfx('click'))],
+        ['musicVolume', '音乐音量', (v) => TD.music.setVolume(v / 100)],
+      ].map(([key, label, apply]) =>
+        h(
+          'label',
+          { class: 'row volume-row' },
+          label + ' ',
+          h('input', {
+            type: 'range',
+            min: 0,
+            max: 100,
+            step: 5,
+            value: s[key] ?? 100,
+            oninput: (e) => (e.target.nextSibling.textContent = e.target.value + '%'),
+            onchange: (e) => {
+              s[key] = +e.target.value;
+              apply(s[key]);
+              game.persist();
+            },
+          }),
+          h('span', { class: 'vol-val' }, `${s[key] ?? 100}%`)
+        )
+      ),
       h(
         'label',
         { class: 'row' },

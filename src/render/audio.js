@@ -14,10 +14,17 @@
     if (!AC) return null;
     A.ctx = new AC();
     A.master = A.ctx.createGain();
-    A.master.gain.value = 0.35;
+    A.master.gain.value = 0.35 * A.volume;
     A.master.connect(A.ctx.destination);
     return A.ctx;
   }
+
+  // 音量 0–1（设计书 49）
+  A.volume = 1;
+  A.setVolume = function (v) {
+    A.volume = Math.max(0, Math.min(1, v));
+    if (A.master) A.master.gain.value = 0.35 * A.volume;
+  };
 
   A.unlock = function () {
     const ctx = ensure();

@@ -316,6 +316,8 @@
     game.save = TD.saveStore.load() || P.newSave();
     TD.audio.enabled = game.save.settings.sound !== false;
     TD.music.enabled = game.save.settings.music !== false;
+    TD.audio.setVolume((game.save.settings.sfxVolume ?? 100) / 100);
+    TD.music.setVolume((game.save.settings.musicVolume ?? 100) / 100);
     const canvas = document.getElementById('game');
     game.renderer = new TD.Renderer(canvas);
     TD.ui.init(game);
