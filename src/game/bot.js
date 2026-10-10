@@ -129,6 +129,7 @@
       if (have < 1 && P.canAfford(save, D.items[id].cost)) P.buyItem(save, id);
       if ((save.inventory[id] || 0) > 0) P.setSlot(save, 'item', i, id);
     }
+    if (opts.silverOnly) return bought;
     // 铜币升级
     let guard = 0;
     while (guard++ < 200) {
@@ -170,6 +171,7 @@
       seed: opts.seed || 1,
       autoItems: !opts.noItems,
       autoSupply: true,
+      rally: opts.noRally ? 0 : P.rally(save, n),
     });
     const res = battle.runToEnd();
     for (const id of res.itemsUsed) P.consumeItem(save, id);

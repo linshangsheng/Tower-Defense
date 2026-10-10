@@ -20,6 +20,11 @@ try {
   await page.waitForTimeout(500);
   await page.screenshot({ path: `${out}/1-title.png` });
   await page.click('text=开始游戏');
+  // 新存档先选难度（设计书 27.3）
+  await page.waitForSelector('.diff-card.rec', { timeout: 3000 });
+  await page.waitForTimeout(500);
+  await page.screenshot({ path: `${out}/2-difficulty.png` });
+  await page.click('.diff-card.rec');
   await page.waitForTimeout(300);
   await page.screenshot({ path: `${out}/2-map.png` });
   await page.click('.map-node.current');

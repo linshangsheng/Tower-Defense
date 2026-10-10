@@ -57,6 +57,16 @@
       chapterAllStarsGold: 2,
     },
 
+    // 援军鼓舞（设计书 27.5）：同一关每连续失败一次，英雄攻击和城墙血量 +per，最多 cap；通关后清零
+    rally: { per: 0.05, cap: 0.25 },
+
+    // 难度（设计书 27.3）
+    difficulties: {
+      easy: { name: '轻松', hp: -0.25, dmg: -0.25, copper: 0, desc: '怪物血量和攻城伤害 −25%，适合想轻松看剧情的玩家' },
+      normal: { name: '标准', hp: 0, dmg: 0, copper: 0, desc: '设计的标准体验' },
+      hard: { name: '挑战', hp: 0.3, dmg: 0.15, copper: 0.2, desc: '怪物血量 +30%、攻城伤害 +15%，铜币收益 +20%' },
+    },
+
     stars: [
       // [星级, 城墙剩余血量比例下限]
       [3, 0.8],

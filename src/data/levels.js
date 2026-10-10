@@ -139,13 +139,13 @@
       type: 'normal',
       lanes: 3,
       waves: [
-        W(1.28, ['slime', 11], ['goblin', 3]),
-        W(1.2, ['goblin', 5], ['bunny', 8]),
-        W(1.12, ['goblin', 5], ['mushroom', 8]),
-        W(1.04, ['goblin', 7], ['bee', 14]),
-        W(1.04, ['goblin', 8], ['slime', 14]),
-        W(0.96, ['goblin', 8], ['bunny', 11], ['bee', 11]),
-        W(0.88, ['goblin', 11], ['mushroom', 11], ['slime', 11]),
+        W(1.28, ['slime', 11], ['goblin', 2]),
+        W(1.2, ['goblin', 3], ['bunny', 9]),
+        W(1.12, ['goblin', 3], ['mushroom', 9]),
+        W(1.04, ['goblin', 4], ['bee', 12]),
+        W(1.04, ['goblin', 4], ['slime', 14]),
+        W(0.96, ['goblin', 5], ['bunny', 10], ['bee', 9]),
+        W(0.88, ['goblin', 6], ['mushroom', 9], ['slime', 11]),
       ],
       tip: '木盾哥布林正面很硬。回旋镖返程、箭雨和「穿甲」都能对付它。',
     },
@@ -169,9 +169,9 @@
       type: 'boss',
       lanes: 3,
       waves: [
-        W(1.3, ['gobling', 10], ['goblin', 3]),
-        W(1.2, ['slime', 10], ['goblin', 4], ['bee', 6]),
-        W(2.0, ['boarKing', 1], ['gobling', 6]),
+        W(1.3, ['gobling', 8], ['goblin', 3]),
+        W(1.2, ['slime', 8], ['goblin', 3], ['bee', 5]),
+        W(2.0, ['boarKing', 1], ['gobling', 5]),
       ],
       tip: '咕噜大王血量低于 60% 后会冲锋。车道变红时集中火力打它，就能打断冲锋！',
     },
@@ -654,7 +654,7 @@
     40: {
       name: '霜霜女王',
       type: 'boss',
-      countMult: 1.91,
+      countMult: 1.62,
       lanes: 5,
       waves: [
         W(0.7, ['snowman', 12], ['wolf', 9], ['iceSprite', 2]),
@@ -750,7 +750,7 @@
     46: {
       name: '战车冲锋',
       type: 'rush',
-      countMult: 1.2,
+      countMult: 1.08,
       lanes: 5,
       rushInterval: 12,
       waves: [
@@ -818,7 +818,7 @@
     50: {
       name: '墨墨',
       type: 'boss',
-      countMult: 2.11,
+      countMult: 1.79,
       lanes: 5,
       final: true,
       waves: [

@@ -553,7 +553,7 @@
     vulnDuration: 6,
     vulnMult: 1.5,
     slamEvery: 9,
-    slamWarn: 2,
+    slamWarn: 2.5,
     slamDamage: 100,
     interruptRatio: 0.02,
     rageFirst: 30,
@@ -647,7 +647,7 @@
     holdX: 780, // 第一、二阶段停在战场中段指挥（在英雄射程内）
     chargeBelow: 0.6,
     chargeEvery: 8,
-    chargeWarn: 2,
+    chargeWarn: 2.5,
     chargeSpeed: 380,
     chargeDamage: 120,
     returnSpeed: 320,

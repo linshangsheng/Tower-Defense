@@ -1410,3 +1410,78 @@ body {
 .btn.pulse {
   animation: nudge 0.8s ease-in-out infinite;
 }
+
+.advice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  background: #eef7e6;
+  border: 2px solid var(--green);
+  border-radius: 12px;
+  padding: 6px 10px;
+  font-size: 15px;
+}
+.advice.missing {
+  background: #fff0e6;
+  border-color: #e6a34a;
+}
+.advice span:nth-child(2) {
+  flex: 1;
+}
+/* 援军鼓舞（设计书 27.5） */
+.advice.rally {
+  background: #fff7d6;
+  border-color: #e8b923;
+}
+.note.rally {
+  color: #b07a00;
+  font-weight: 700;
+}
+
+.diff-row {
+  display: flex;
+  gap: 14px;
+  margin-top: 10px;
+}
+.diff-card {
+  font: inherit;
+  flex: 1;
+  border: 3px solid var(--ink);
+  border-radius: 16px;
+  background: #fff;
+  padding: 14px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-shadow: 0 4px 0 var(--shadow);
+  position: relative;
+}
+.diff-card b {
+  font-size: 22px;
+}
+.diff-card span {
+  font-size: 14px;
+  color: #6d5644;
+}
+.diff-card.rec {
+  background: #fff4d6;
+}
+.diff-card em {
+  position: absolute;
+  right: 10px;
+  top: 8px;
+  font-style: normal;
+  font-size: 12px;
+  font-weight: 900;
+  color: #fff;
+  background: #e6a34a;
+  border-radius: 8px;
+  padding: 0 6px;
+}
+.settings select {
+  font: inherit;
+  font-size: 14px;
+  max-width: 420px;
+}

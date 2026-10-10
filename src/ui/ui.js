@@ -118,7 +118,7 @@
       h(
         'div',
         { class: 'title-buttons' },
-        h('button', { class: 'btn big primary', onclick: () => (sfx('click'), UI.showMap()) }, has ? '继续游戏' : '开始游戏'),
+        h('button', { class: 'btn big primary', onclick: () => (sfx('click'), has || game.save.settings.diffChosen ? UI.showMap() : UI.chooseDifficulty(() => UI.showMap())) }, has ? '继续游戏' : '开始游戏'),
         h('div', { class: 'btn-row' }, h('button', { class: 'btn', style: { flex: 1 }, onclick: () => (sfx('click'), UI.showBestiary()) }, '图鉴'), h('button', { class: 'btn', style: { flex: 1 }, onclick: () => (sfx('click'), UI.showAchievements()) }, '成就')),
         h('button', { class: 'btn', onclick: () => (sfx('click'), UI.showSettings()) }, '设置'),
         h('button', { class: 'btn', onclick: () => (sfx('click'), UI.showHelp()) }, '玩法说明')
@@ -126,6 +126,33 @@
       h('div', { class: 'title-foot' }, '网页原型 v0.5 · 五章 50 关')
     );
     root.appendChild(screenEl);
+  };
+
+  UI.chooseDifficulty = function (onDone) {
+    const s = game.save.settings;
+    const pick = (id) => {
+      s.difficulty = id;
+      s.diffChosen = true;
+      game.persist();
+      UI.closeModal();
+      onDone && onDone();
+    };
+    modal(
+      h(
+        'div',
+        null,
+        h('h2', null, '选择难度'),
+        h('p', { class: 'hint' }, '之后可以在「设置」里随时更改。'),
+        h(
+          'div',
+          { class: 'diff-row' },
+          Object.keys(C.difficulties).map((id) =>
+            h('button', { class: 'diff-card' + (id === 'normal' ? ' rec' : ''), onclick: () => (sfx('click'), pick(id)) }, h('b', null, C.difficulties[id].name), h('span', null, C.difficulties[id].desc), id === 'normal' ? h('em', null, '推荐') : null)
+          )
+        )
+      ),
+      { cls: 'wide' }
+    );
   };
 
   UI.showSettings = function () {
@@ -161,6 +188,22 @@
           },
         }),
         ' 背景音乐'
+      ),
+      h(
+        'label',
+        { class: 'row' },
+        '难度 ',
+        h(
+          'select',
+          {
+            onchange: (e) => {
+              s.difficulty = e.target.value;
+              s.diffChosen = true;
+              game.persist();
+            },
+          },
+          Object.keys(C.difficulties).map((id) => h('option', { value: id, selected: (s.difficulty || 'normal') === id ? true : null }, `${C.difficulties[id].name}：${C.difficulties[id].desc}`))
+        )
       ),
       h(
         'div',
@@ -441,6 +484,35 @@
     return seen;
   }
 
+  // 关卡预览里的"推荐武器"（设计书 6.4）：没解锁时给出入口
+  function weaponAdvice(n) {
+    const s = game.save;
+    const adv = P.idealWeapon(n);
+    if (!adv) return null;
+    const w = D.weapons[adv.id];
+    const owned = s.weapons[adv.id] && s.weapons[adv.id].owned;
+    // 已拥有但等级太低：提示去升级
+    let weak = false;
+    if (owned) {
+      let best = 0;
+      for (const id of Object.keys(D.weapons)) if (s.weapons[id].owned) best = Math.max(best, P.weaponScore(s, id, n));
+      weak = P.weaponScore(s, adv.id, n) < best * 0.75;
+    }
+    return h(
+      'div',
+      { class: 'advice' + (owned && !weak ? '' : ' missing') },
+      TD.sprites.iconCanvas(adv.id, 28),
+      h('span', null, h('b', null, `推荐武器：${w.name}`), `（${adv.reason}）`),
+      owned && weak
+        ? h('button', { class: 'btn small', onclick: () => (sfx('click'), UI.showShop(n, 'weapons')) }, `等级偏低，去升级`)
+        : owned
+        ? h('span', { class: 'equipped' }, '✔ 已拥有')
+        : UI.tabUnlocked(s, 'weapons')
+          ? h('button', { class: 'btn small primary', onclick: () => (sfx('click'), UI.showShop(n, 'weapons')) }, `去解锁（${P.costText(w.cost)}）`)
+          : null
+    );
+  }
+
   UI.showPreview = function (n) {
     const s = game.save;
     const lvl = D.levels[n];
@@ -471,6 +543,8 @@
         h('span', { class: power >= rp ? 'ok' : 'warn' }, `推荐战力 ${rp} · 你的战力 ${power}`)
       ),
       h('div', { class: 'mon-list' }, mons),
+      weaponAdvice(n),
+      P.rally(s, n) > 0 ? h('div', { class: 'advice rally' }, h('span', null, h('b', null, `🎺 援军鼓舞 +${Math.round(P.rally(s, n) * 100)}%`), `：已连续失败 ${rec.streak} 次，本次攻击和城墙血量提高，通关后清零`)) : null,
       h('div', { class: 'tip' }, '💡 ', lvl.tip),
       h(
         'div',
@@ -1402,13 +1476,13 @@
     if (reward.earlyCopper) rows.push(h('div', { class: 'reward-row' }, h('span', null, '提前召唤'), h('b', null, reward.earlyCopper, ' ', coinIcon('copper'))));
     if (reward.copperMult > 1) rows.push(h('div', { class: 'reward-row' }, h('span', null, '幸运加成'), h('b', null, `×${reward.copperMult.toFixed(2)}`)));
     rows.push(h('div', { class: 'reward-row total' }, h('span', null, '合计'), h('b', null, reward.copper, ' ', coinIcon('copper'), reward.silver ? [' ', reward.silver, ' ', coinIcon('silver')] : null, reward.gold ? [' ', reward.gold, ' ', coinIcon('gold')] : null)));
-    const notes = reward.notes.filter((x) => !x.includes('失败')).map((x) => h('div', { class: 'note' }, '✦ ' + x));
+    const notes = reward.notes.filter((x) => !x.includes('失败')).map((x) => h('div', { class: 'note' + (x.startsWith('援军') ? ' rally' : '') }, (x.startsWith('援军') ? '🎺 ' : '✦ ') + x));
     if (res.supplies && res.supplies.length) notes.push(h('div', { class: 'note' }, '📦 本关补给：' + res.supplies.map((x) => D.supplies[x].name).join('、')));
     const unlocks = reward.unlocks.map((x) => h('div', { class: 'note unlock' }, '🔓 ' + x));
     for (const a of reward.achievements || []) unlocks.push(h('div', { class: 'note achieve' }, `🏆 达成成就「${a.name}」：${a.desc}（+${P.costText(a.reward)}）`));
     let tips = null;
     if (!win) {
-      const sug = P.suggestions(game.save);
+      const sug = P.suggestions(game.save, n);
       tips = h('div', { class: 'suggest' }, h('h3', null, '推荐强化'), sug.map((x) => h('div', { class: 'note' + (x.afford ? ' afford' : '') }, (x.afford ? '✔ ' : '· ') + x.text)), h('div', { class: 'hint' }, `城墙守到了第 ${res.wave} / ${battle.totalWaves} 波。`));
     }
     const hasNext = win && D.levels[n + 1];

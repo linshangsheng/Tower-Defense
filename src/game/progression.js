@@ -39,7 +39,7 @@
       seenMonsters: {},
       seenTabs: { loadout: true, attrs: true },
       achievements: {},
-      settings: { sound: true, speed: 1 },
+      settings: { sound: true, speed: 1, difficulty: 'normal' },
     };
   };
 
@@ -428,7 +428,8 @@
     const firstClear = result.win && rec.clears === 0;
     const out = { copper: 0, silver: 0, gold: 0, stars: 0, firstClear, notes: [], unlocks: [] };
     const st = P.heroStats(save);
-    const copperMult = 1 + st.luck + (result.charm ? D.items.charm.copperBonus : 0) + (result.copperBonus || 0);
+    const diff = C.difficulties[(save.settings && save.settings.difficulty) || 'normal'] || C.difficulties.normal;
+    const copperMult = 1 + st.luck + (result.charm ? D.items.charm.copperBonus : 0) + (result.copperBonus || 0) + diff.copper;
     const before = {
       active: P.slotCount(save, 'active'),
       passive: P.slotCount(save, 'passive'),
@@ -459,10 +460,15 @@
         out.notes.push('首次三星奖励');
       }
       rec.clears++;
+      rec.streak = 0;
       rec.stars = Math.max(rec.stars, stars);
     } else {
       base = R.baseCopper(n) * R.failMult;
       out.notes.push('失败安慰奖励');
+      rec.fails = (rec.fails || 0) + 1;
+      rec.streak = (rec.streak || 0) + 1;
+      const r = P.rally(save, n);
+      if (r > 0) out.notes.push(`援军鼓舞：下次挑战本关攻击和城墙 +${Math.round(r * 100)}%`);
     }
     out.baseCopper = Math.round(base);
     out.killCopper = result.killCopper || 0;
@@ -523,9 +529,36 @@
     return got;
   };
 
+  // 援军鼓舞（设计书 27.5）：同一关连续失败的次数换算成攻击 / 城墙加成
+  P.rally = function (save, n) {
+    if (typeof n !== 'number' || !save.levels[n]) return 0;
+    const R = C.rally;
+    return Math.min(R.cap, (save.levels[n].streak || 0) * R.per);
+  };
+
+  // 某把武器比练得最高的武器低 3 级以上（推荐配装此时不会硬切过去，设计书 27.2）
+  P.weaponLagging = function (save, id) {
+    let top = 0;
+    for (const k of Object.keys(save.weapons)) if (save.weapons[k].owned) top = Math.max(top, save.weapons[k].lv || 0);
+    return save.weapons[id].owned && top - (save.weapons[id].lv || 0) >= 3;
+  };
+
   // 失败后的强化建议：挑出当前买得起（或最接近）的高性价比升级
-  P.suggestions = function (save) {
+  P.suggestions = function (save, n) {
     const list = [];
+    const tips = [];
+    if (n) {
+      const lo = save.loadout;
+      if (!lo.autoCast && P.battleLoadout(save).active.length) tips.push({ text: '试试开启「技能自动释放」（战斗右下角），技能冷却好就会自动放', afford: true });
+      const adv = P.idealWeapon && P.idealWeapon(n);
+      if (adv && !save.weapons[adv.id].owned) tips.push({ text: `解锁推荐武器「${D.weapons[adv.id].name}」：${adv.reason}（${P.costText(D.weapons[adv.id].cost)}）`, afford: P.canAfford(save, D.weapons[adv.id].cost) });
+      else if (adv && P.weaponLagging(save, adv.id)) {
+        const c = P.weaponUpgradeCost(save, adv.id);
+        if (c) tips.push({ label: 'advWeapon', text: `推荐武器「${D.weapons[adv.id].name}」等级偏低，先升级它：${adv.reason}（${P.costText(c)}）`, afford: P.canAfford(save, c) });
+      }
+      const rec = P.levelRecord(save, n);
+      if ((rec.fails || 0) >= 3 && (save.settings.difficulty || 'normal') === 'normal') tips.push({ text: '也可以在「设置」里切换到轻松难度', afford: true });
+    }
     const st = P.heroStats(save);
     const dps0 = P.estimateDps(st);
     const tryGain = (label, mutate, cost) => {
@@ -545,7 +578,7 @@
     // 提升不到 1% 的不推荐
     for (let i = list.length - 1; i >= 0; i--) if (list[i].gain < 0.01) list.splice(i, 1);
     list.sort((a, b) => b.value - a.value);
-    const out = list.slice(0, 3).map((x) => ({ label: x.label, text: `${x.label}：战力 +${Math.round(x.gain * 100)}%（${P.costText(x.cost)}）`, afford: x.afford }));
+    const out = tips.concat(list.slice(0, 3).map((x) => ({ label: x.label, text: `${x.label}：战力 +${Math.round(x.gain * 100)}%（${P.costText(x.cost)}）`, afford: x.afford })));
     const wallCost = P.wallCost(save, 'level');
     if (wallCost) out.push({ label: '城墙等级', text: `升级城墙等级：城墙血量 +10%（${P.costText(wallCost)}）`, afford: P.canAfford(save, wallCost) });
     return out;

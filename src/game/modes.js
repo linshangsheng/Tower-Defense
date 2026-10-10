@@ -83,7 +83,8 @@
     const e = (save.endless = save.endless || { best: 0, runs: 0 });
     const waves = result.wavesCleared || 0;
     const out = { copper: 0, silver: 0, gold: 0, notes: [], unlocks: [], waves, oldBest: e.best };
-    out.copper = Math.round(waves * 15 * (1 + st.luck + (result.copperBonus || 0)) + (result.killCopper || 0) * 0.5);
+    const diff = C.difficulties[save.settings.difficulty || 'normal'] || C.difficulties.normal;
+    out.copper = Math.round(waves * 15 * (1 + st.luck + (result.copperBonus || 0) + diff.copper) + (result.killCopper || 0) * 0.5);
     if (waves > e.best) {
       out.silver = Math.floor(waves / 5) - Math.floor(e.best / 5);
       out.notes.push(`新纪录！${e.best} → ${waves} 波`);
@@ -146,7 +147,8 @@
     save.daily = save.daily || {};
     const out = { copper: 0, silver: 0, gold: 0, notes: [], unlocks: [] };
     const st = P.heroStats(save);
-    out.copper = Math.round((result.killCopper || 0) * (1 + st.luck + (result.copperBonus || 0)));
+    const diff = C.difficulties[save.settings.difficulty || 'normal'] || C.difficulties.normal;
+    out.copper = Math.round((result.killCopper || 0) * (1 + st.luck + (result.copperBonus || 0) + diff.copper));
     if (result.win && !save.daily[info.key]) {
       save.daily[info.key] = true;
       out.silver = 3;

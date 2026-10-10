@@ -95,6 +95,30 @@
     return dpsBase * eff * aoe;
   };
 
+  // 本关的理想武器（不考虑是否拥有）：用于关卡预览的"推荐武器"提示
+  TD.progression.idealWeapon = function (n) {
+    const D = TD.data;
+    const lvl = D.levels[n];
+    const counts = {};
+    let total = 0;
+    for (const w of lvl.waves)
+      for (const [type, c] of w.groups) {
+        counts[type] = (counts[type] || 0) + c;
+        total += c;
+      }
+    const share = (t) => (counts[t] || 0) / total;
+    const magicProof = share('lavaGolem') * 2 + (counts.rockGolem ? 0.3 : 0);
+    const armored = share('mummy') + share('yeti') * 2 + (counts.pharaoh ? 0.3 : 0);
+    const spirit = share('ghost') + (counts.boneMage ? 0.3 : 0);
+    const flying = share('bee') + share('vulture') + share('bat') + share('iceSprite');
+    if (magicProof > 0.25) return { id: 'cannon', reason: '熔岩怪物不怕魔法，用物理重炮' };
+    if (spirit > 0.2) return { id: 'staff', reason: '小幽灵几乎不怕物理攻击' };
+    if (armored > 0.25) return { id: 'staff', reason: '魔法伤害无视物理护甲' };
+    if (flying > 0.35) return { id: 'crossbow', reason: '一次射 3 支，对飞行怪伤害 +50%' };
+    if (share('goblin') > 0.15) return { id: 'boomerang', reason: '返程从背后命中，无视木盾' };
+    return null;
+  };
+
   // 一键推荐配装（设计书 6.4）：根据关卡里的怪物构成推荐武器、技能、道具
   TD.progression.recommend = function (save, n) {
     const P = TD.progression;
@@ -138,6 +162,24 @@
     else if (lvl.type === 'rush' && owned('crossbow')) weapon = 'crossbow';
     else if (n > 20 && magicPick) weapon = magicPick;
     else if (n > 10 && owned('staff')) weapon = 'staff';
+    // 克制武器等级太低（有效输出不到最强武器的 75%）时，不硬切，继续用最强的（设计书 27.2）
+    // 联合关、灵体关的法球 / 法杖例外：估分低估了法球的弹幕（模拟：第 39 关改用估分最高武器后 12 次全负）
+    if (magicProof <= 0.25 && lvl.type !== 'union' && !(spirit > 0.2 && magicPick)) {
+      let bestId = weapon;
+      let bestScore = -1;
+      for (const id of Object.keys(D.weapons)) {
+        if (!owned(id)) continue;
+        const sc = P.weaponScore(save, id, n);
+        if (sc > bestScore) {
+          bestScore = sc;
+          bestId = id;
+        }
+      }
+      // 只在克制武器明显没练（比最强武器低 3 级以上）时才换：强机器人各武器都练过，换了反而更差
+      const lvGap = (save.weapons[bestId].lv || 0) - (save.weapons[weapon].lv || 0);
+      // 雷电法球例外：估分低估了闪电跳跃（模拟：第 32 关法球比练满的法杖低 7 级，仍然一次过；换成法杖要 2–5 次）
+      if (lvGap >= 3 && weapon !== 'orb' && P.weaponScore(save, weapon, n) < bestScore * 0.75) weapon = bestId;
+    }
     lo.weapon = weapon;
     notes.push(`武器：${D.weapons[weapon].name}`);
 

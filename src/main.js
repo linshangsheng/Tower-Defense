@@ -38,7 +38,7 @@
     if (lo.items.includes('charm')) P.consumeItem(s, 'charm');
     const stats = P.heroStats(s, rules.forceBow ? { weapon: 'bow' } : undefined);
     const seed = mode && mode.kind === 'daily' ? mode.info.seed : (Date.now() & 0xffffff) + (typeof n === 'number' ? n : 7);
-    const battle = new TD.Battle({ level: n, levelDef: mode && mode.levelDef, stage: mode && mode.stage, stats, loadout: lo, seed });
+    const battle = new TD.Battle({ level: n, levelDef: mode && mode.levelDef, stage: mode && mode.stage, stats, loadout: lo, seed, difficulty: s.settings.difficulty, rally: mode ? 0 : P.rally(s, n) });
     battle.mode = mode || null;
     game.battle = battle;
     game.paused = false;

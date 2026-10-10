@@ -17,6 +17,9 @@
       this.stage = opts.stage || (typeof opts.level === 'number' ? opts.level : 1);
       this.D = C.difficulty(this.stage);
       this.rules = this.level.rules || {};
+      const diff = C.difficulties[opts.difficulty || 'normal'] || C.difficulties.normal;
+      this.diffHp = 1 + diff.hp;
+      this.diffDmg = 1 + diff.dmg;
       this.stats = opts.stats;
       this.rng = TD.util.rng(opts.seed || Date.now());
       this.lanes = this.level.lanes;
@@ -24,7 +27,8 @@
       this.over = false;
       this.result = null;
 
-      const wallMult = (1 + (this.rules.wallHp || 0)) * (this.rules.wallHalf ? 0.5 : 1);
+      this.rally = opts.rally || 0; // 援军鼓舞（设计书 27.5）
+      const wallMult = (1 + (this.rules.wallHp || 0)) * (this.rules.wallHalf ? 0.5 : 1) * (1 + this.rally);
       this.wall = { hp: Math.round(this.stats.wallMax * wallMult), max: Math.round(this.stats.wallMax * wallMult) };
       this.monsters = [];
       this.projectiles = [];
@@ -100,7 +104,7 @@
     }
 
     get atk() {
-      return this.stats.atk * (1 + this.mods.atkMult);
+      return this.stats.atk * (1 + this.mods.atkMult) * (1 + this.rally);
     }
 
     get range() {
@@ -261,7 +265,7 @@
         this.pack.left--;
       }
       if (lane === undefined) lane = def.boss ? Math.floor(this.lanes / 2) : this.rng.int(this.lanes);
-      const hp = Math.round(def.hp * this.D * (1 + (this.rules.monsterHp || 0)));
+      const hp = Math.round(def.hp * this.D * (1 + (this.rules.monsterHp || 0)) * this.diffHp);
       const m = {
         id: nextId++,
         type,
@@ -1016,6 +1020,7 @@
     }
 
     hitWall(amount, m, big, kind) {
+      amount *= this.diffDmg;
       const temp = this.time < this.tempDr.until ? this.tempDr.amt : 0;
       const dmg = amount * (1 - Math.min(0.8, this.stats.wallDr + this.mods.wallDr + temp));
       this.wall.hp = Math.max(0, this.wall.hp - dmg);

@@ -767,3 +767,70 @@ test('老存档迁移：已通关的玩家不显示商店"新"角标', () => {
   const fresh = P.migrate(P.newSave());
   assert.ok(!fresh.seenTabs.skills, '新存档的技能页是"新"的');
 });
+
+test('难度：轻松降低怪物血量和攻城伤害，挑战提高铜币', () => {
+  const s = P.newSave();
+  const mk = (difficulty) => new TD.Battle({ level: 5, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 1, difficulty });
+  const easy = mk('easy');
+  const normal = mk('normal');
+  const me = easy.spawnMonster('slime', 0);
+  const mn = normal.spawnMonster('slime', 0);
+  assert.ok(Math.abs(me.maxHp / mn.maxHp - 0.75) < 0.02);
+  easy.hitWall(100);
+  normal.hitWall(100);
+  assert.ok(easy.wall.hp > normal.wall.hp);
+  const a = P.newSave();
+  const b = P.newSave();
+  b.settings.difficulty = 'hard';
+  const res = { win: true, wallRatio: 1, killCopper: 100 };
+  assert.ok(P.applyResult(b, 1, res).copper > P.applyResult(a, 1, res).copper);
+});
+
+test('援军鼓舞：连续失败累积、上限 25%、通关清零', () => {
+  const s = P.newSave();
+  const lose = { win: false, wallRatio: 0, killCopper: 0 };
+  assert.strictEqual(P.rally(s, 3), 0);
+  P.applyResult(s, 3, lose);
+  assert.ok(Math.abs(P.rally(s, 3) - 0.05) < 1e-9);
+  for (let i = 0; i < 9; i++) P.applyResult(s, 3, lose);
+  assert.ok(Math.abs(P.rally(s, 3) - 0.25) < 1e-9);
+  assert.strictEqual(P.rally(s, 4), 0, '只影响失败的那一关');
+  P.applyResult(s, 3, { win: true, wallRatio: 1, killCopper: 0 });
+  assert.strictEqual(P.rally(s, 3), 0);
+  assert.strictEqual(P.rally(s, 'endless'), 0);
+});
+
+test('援军鼓舞：战斗中提高攻击和城墙', () => {
+  const s = P.newSave();
+  const mk = (rally) => new TD.Battle({ level: 5, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 1, rally });
+  const a = mk(0);
+  const b = mk(0.2);
+  assert.ok(Math.abs(b.wall.max / a.wall.max - 1.2) < 0.01);
+  assert.ok(Math.abs(b.atk / a.atk - 1.2) < 1e-9);
+});
+
+test('推荐配装：克制武器明显没练时不硬切，失败提示去升级它', () => {
+  const s = P.newSave();
+  clearUpTo(s, 7);
+  s.weapons.bow.lv = 8;
+  s.weapons.boomerang.owned = true;
+  s.weapons.boomerang.lv = 0;
+  P.recommend(s, 8);
+  assert.strictEqual(s.loadout.weapon, 'bow');
+  assert.ok(P.weaponLagging(s, 'boomerang'));
+  assert.ok(P.suggestions(s, 8).some((x) => x.label === 'advWeapon'));
+  s.weapons.boomerang.lv = 7;
+  P.recommend(s, 8);
+  assert.strictEqual(s.loadout.weapon, 'boomerang');
+});
+
+test('失败提示：没开自动释放时建议开启；标准难度连败 3 次建议轻松', () => {
+  const s = P.newSave();
+  s.activeOwned.arrowRain = true;
+  s.loadout.active[0] = 'arrowRain';
+  s.loadout.autoCast = false;
+  for (let i = 0; i < 3; i++) P.applyResult(s, 2, { win: false, wallRatio: 0, killCopper: 0 });
+  const t = P.suggestions(s, 2).map((x) => x.text).join('|');
+  assert.ok(t.includes('自动释放'));
+  assert.ok(t.includes('轻松'));
+});
