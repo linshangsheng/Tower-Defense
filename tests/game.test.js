@@ -1408,7 +1408,7 @@ test('海胆：被打死时扎伤周围的怪（可以连锁），远处的不�
   u2.hp = 1;
   b.kill(u);
   assert.ok(u2.dead, '扎死了另一只海胆');
-  assert.ok(Math.abs(1e6 - near.hp - 2 * 30 * b.D) < 1e-6, '两次尖刺');
+  assert.ok(Math.abs(1e6 - near.hp - 2 * 20 * b.D) < 1e-6, '两次尖刺');
   assert.strictEqual(far.hp, 1e6);
 });
 

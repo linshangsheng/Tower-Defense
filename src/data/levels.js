@@ -1008,7 +1008,7 @@
     61: {
       name: '寄居蟹搬家',
       type: 'normal',
-      countMult: 2,
+      countMult: 2.6,
       lanes: 5,
       waves: [
         W(0.8, ['hermitCrab', 8], ['slime', 8]),
@@ -1024,7 +1024,7 @@
     62: {
       name: '盾龟护送',
       type: 'normal',
-      countMult: 2,
+      countMult: 2.28,
       lanes: 5,
       waves: [
         W(0.8, ['turtle', 3], ['slime', 10]),
@@ -1040,7 +1040,7 @@
     63: {
       name: '飞鱼跳跳',
       type: 'rush',
-      countMult: 1.4,
+      countMult: 1.94,
       lanes: 5,
       rushInterval: 12,
       waves: [
@@ -1060,14 +1060,13 @@
       countMult: 2,
       lanes: 5,
       waves: [
-        W(0.8, ['urchin', 6], ['slime', 10]),
-        W(0.75, ['seahorse', 2], ['hermitCrab', 8], ['urchin', 4]),
-        W(0.7, ['urchin', 8], ['cloudSheep', 8]),
-        W(0.7, ['seahorse', 3], ['flyingFish', 8], ['urchin', 4]),
-        W(0.65, ['urchin', 8], ['turtle', 3], ['bunny', 8]),
-        W(0.6, ['seahorse', 3], ['hermitCrab', 10], ['urchin', 6]),
-        W(0.6, ['urchin', 10], ['mushroom', 10]),
-        W(0.55, ['seahorse', 4], ['urchin', 10], ['flyingFish', 8]),
+        W(0.7, ['urchin', 6], ['wolf', 8]),
+        W(0.65, ['seahorse', 2], ['hermitCrab', 8], ['urchin', 4]),
+        W(0.65, ['urchin', 8], ['chariot', 6]),
+        W(0.6, ['seahorse', 3], ['flyingFish', 10], ['urchin', 4]),
+        W(0.6, ['urchin', 8], ['turtle', 3], ['kite', 8]),
+        W(0.55, ['seahorse', 3], ['hermitCrab', 10], ['urchin', 6]),
+        W(0.5, ['seahorse', 4], ['urchin', 10], ['flyingFish', 10]),
       ],
       tip: '海胆被打死时会扎伤周围的怪——等它走进怪堆再打！海马的泡泡能挡一次攻击，连发弩和雷电法球戳得最快。',
     },
