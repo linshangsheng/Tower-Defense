@@ -1310,3 +1310,11 @@ test('统计：普通关卡、无尽、每日、Boss 连战都用同一套累计
   assert.strictEqual(s.stats.killsByType.slime, 10);
   assert.strictEqual(s.stats.wins, 0);
 });
+
+test('设计书目录列出了每一章', () => {
+  const fs = require('fs');
+  const path = require('path');
+  const doc = fs.readFileSync(path.join(__dirname, '..', 'tower-defense-design.md'), 'utf8');
+  const toc = doc.slice(doc.indexOf('## 目录'), doc.indexOf('## 0. 文档说明'));
+  for (const m of doc.matchAll(/^## (\d+)\. (.+)$/gm)) assert.ok(toc.includes(`${m[1]}. ${m[2]}`), `目录缺少第 ${m[1]} 章`);
+});
