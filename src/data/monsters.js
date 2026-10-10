@@ -574,7 +574,7 @@
     },
     windGiant: {
       name: '呼呼',
-      hp: 1100,
+      hp: 1700,
       speed: 18,
       dps: 30,
       armor: 0,

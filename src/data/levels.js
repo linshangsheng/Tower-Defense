@@ -839,6 +839,7 @@
     51: {
       name: '彩虹桥',
       type: 'normal',
+      countMult: 2.27,
       lanes: 5,
       waves: [
         W(0.8, ['cloudSheep', 8], ['slime', 8]),
@@ -854,6 +855,7 @@
     52: {
       name: '风筝节',
       type: 'raid',
+      countMult: 1.8,
       lanes: 5,
       waves: [
         W(0.6, ['kite', 10], ['bat', 6]),
@@ -869,6 +871,7 @@
     53: {
       name: '雷雨云',
       type: 'normal',
+      countMult: 2.4,
       lanes: 5,
       waves: [
         W(0.75, ['thunderBall', 8], ['slime', 8]),
@@ -884,6 +887,7 @@
     54: {
       name: '空中马戏团',
       type: 'normal',
+      countMult: 1.94,
       lanes: 5,
       waves: [
         W(0.8, ['balloon', 4], ['cloudSheep', 8]),
@@ -900,6 +904,7 @@
     55: {
       name: '呼呼',
       type: 'miniboss',
+      countMult: 3.15,
       lanes: 5,
       waves: [
         W(0.75, ['cloudSheep', 10], ['kite', 6]),
@@ -914,22 +919,24 @@
     56: {
       name: '浮空要塞',
       type: 'armored',
+      countMult: 0.8,
       lanes: 5,
       waves: [
-        W(0.85, ['balloon', 6], ['yeti', 4]),
-        W(0.8, ['lavaGolem', 4], ['cloudSheep', 8]),
-        W(0.8, ['balloon', 6], ['mummy', 8]),
-        W(0.75, ['yeti', 5], ['lavaGolem', 4], ['kite', 6]),
-        W(0.75, ['balloon', 8], ['stump', 4]),
-        W(0.7, ['lavaGolem', 5], ['yeti', 5]),
-        W(0.7, ['balloon', 8], ['mummy', 8], ['rainbowBird', 2]),
-        W(0.65, ['lavaGolem', 6], ['yeti', 6], ['balloon', 6]),
+        W(0.85, ['balloon', 3], ['yeti', 2], ['cloudSheep', 6]),
+        W(0.8, ['lavaGolem', 2], ['cloudSheep', 8]),
+        W(0.8, ['balloon', 3], ['mummy', 4], ['kite', 6]),
+        W(0.75, ['yeti', 2], ['lavaGolem', 2], ['cloudSheep', 8]),
+        W(0.75, ['balloon', 4], ['stump', 2], ['thunderBall', 6]),
+        W(0.7, ['lavaGolem', 3], ['yeti', 2], ['cloudSheep', 8]),
+        W(0.7, ['balloon', 4], ['mummy', 4], ['rainbowBird', 2]),
+        W(0.65, ['lavaGolem', 3], ['yeti', 3], ['balloon', 3], ['cloudSheep', 8]),
       ],
       tip: '雪怪不怕物理，熔岩傀儡不怕魔法——两种输出都要准备。',
     },
     57: {
       name: '剪羊毛大赛',
       type: 'rush',
+      countMult: 1.34,
       lanes: 5,
       rushInterval: 12,
       waves: [
@@ -946,6 +953,7 @@
     58: {
       name: '乌云密布',
       type: 'dark',
+      countMult: 2.24,
       dark: true,
       lanes: 5,
       waves: [
@@ -963,6 +971,7 @@
     59: {
       name: '天空大合唱',
       type: 'union',
+      countMult: 1.68,
       lanes: 5,
       waves: [
         B(2.0, ['cloudSheep', 10], ['kite', 5]),
@@ -979,6 +988,7 @@
     60: {
       name: '雷雷',
       type: 'boss',
+      countMult: 1,
       lanes: 5,
       waves: [
         W(0.7, ['cloudSheep', 12], ['kite', 8], ['thunderBall', 4]),
