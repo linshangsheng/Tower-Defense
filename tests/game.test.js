@@ -903,9 +903,9 @@ test('衣柜：按进度解锁，未解锁不能穿，新外观只提示一次',
   assert.strictEqual(s.outfit, 'meadow');
   assert.deepStrictEqual(P.newOutfits(s).map((o) => o.id), ['meadow']);
   assert.strictEqual(P.newOutfits(s).length, 0);
-  for (let k = 1; k <= 50; k++) s.levels[k] = { stars: 3, clears: 1 };
+  for (let k = 1; k <= 70; k++) s.levels[k] = { stars: 3, clears: 1 };
   assert.ok(!P.outfitUnlocked(s, 'gold'), '金甲勇士要全部王冠');
-  for (let k = 1; k <= 50; k++) s.levels[k].crown = true;
+  for (let k = 1; k <= 70; k++) s.levels[k].crown = true;
   assert.ok(D.outfits.every((o) => P.outfitUnlocked(s, o.id)));
   // 外观只是颜色：每套都有完整的颜色表
   for (const o of D.outfits) for (const k of ['cape', 'body', 'helmTop', 'helmBottom', 'brim', 'plume', 'plumeHi', 'shield', 'shieldHi']) assert.ok(o.colors[k], `${o.id}.${k}`);
@@ -1261,8 +1261,8 @@ test('Boss 连战：通关第 60 关解锁，12 波各一个 Boss，打败当前
   assert.ok(!TD.modes.bossRushUnlocked(s));
   clearUpTo(s, 60);
   assert.ok(TD.modes.bossRushUnlocked(s));
-  const def = TD.modes.buildBossRush();
-  assert.strictEqual(def.waves.length, 12);
+  const def = TD.modes.buildBossRush(s);
+  assert.strictEqual(def.waves.length, 12, '通关第七章前只有 12 个 Boss');
   for (const w of def.waves) assert.strictEqual(w.groups.filter(([t]) => D.monsters[t].boss).length, 1);
   const b = new TD.Battle({ level: 'bossrush', levelDef: def, stage: def.stage, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 1 });
   for (let i = 0; i < 60 * 60 && !b.over; i++) {
@@ -1317,4 +1317,215 @@ test('设计书目录列出了每一章', () => {
   const doc = fs.readFileSync(path.join(__dirname, '..', 'tower-defense-design.md'), 'utf8');
   const toc = doc.slice(doc.indexOf('## 目录'), doc.indexOf('## 0. 文档说明'));
   for (const m of doc.matchAll(/^## (\d+)\. (.+)$/gm)) assert.ok(toc.includes(`${m[1]}. ${m[2]}`), `目录缺少第 ${m[1]} 章`);
+});
+
+// ---------- 第七章 · 珊瑚海湾（设计书 52） ----------
+function ch7Battle(level, seed) {
+  const s = P.newSave();
+  return new TD.Battle({ level, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: seed || 1 });
+}
+
+test('第七章：通关第 60 关后开放，章节、关卡、补给、故事、小镇齐全', () => {
+  const s = P.newSave();
+  clearUpTo(s, 60);
+  assert.ok(P.isUnlocked(s, 61));
+  assert.strictEqual(D.chapterOf(65).id, 7);
+  for (let n = 61; n <= 70; n++) assert.ok(D.levels[n] && D.levels[n].waves.length >= 3, `第 ${n} 关`);
+  for (const id of ['crowbar', 'pin', 'net']) assert.strictEqual(D.supplies[id].minLevel, 61);
+  for (const k of ['ch7', 'pre65', 'post65', 'pre70', 'post70']) assert.ok(D.storyOrder.includes(k), k);
+  assert.strictEqual(D.town.length, 14);
+});
+
+test('寄居蟹：每挨 4 下缩壳，壳里伤害 ×0.1 且不走路；灼烧不计数；小撬棍缩短缩壳', () => {
+  const b = ch7Battle(61);
+  const m = b.spawnMonster('hermitCrab', 0, 900);
+  m.hp = m.maxHp = 1e6;
+  for (let i = 0; i < 3; i++) b.damage(m, 10, { type: 'magic', source: 'weapon' });
+  b.damage(m, 10, { type: 'magic', source: 'burn' });
+  assert.strictEqual(m.shellUntil, 0, '灼烧不计数');
+  b.damage(m, 10, { type: 'magic', source: 'weapon' });
+  assert.ok(Math.abs(m.shellUntil - 1.2) < 1e-9, '第 4 下缩壳');
+  assert.strictEqual(b.monsterSpeed(m), 0);
+  const hp0 = m.hp;
+  b.damage(m, 100, { type: 'magic', source: 'weapon' });
+  assert.ok(Math.abs(hp0 - m.hp - 10) < 1e-6, '壳里只受 10% 伤害');
+  const b2 = ch7Battle(61);
+  b2.mods.shellCut = 0.6;
+  const m2 = b2.spawnMonster('hermitCrab', 0, 900);
+  m2.hp = m2.maxHp = 1e6;
+  for (let i = 0; i < 4; i++) b2.damage(m2, 1, { type: 'magic', source: 'weapon' });
+  assert.ok(Math.abs(m2.shellUntil - 1.2 * 0.4) < 1e-9);
+});
+
+test('盾龟：周围的怪受到英雄攻击 ×0.6，技能不受影响，盾龟自己不受影响', () => {
+  const b = ch7Battle(62);
+  const turtle = b.spawnMonster('turtle', 0, 900);
+  const near = b.spawnMonster('slime', 0, 960);
+  const far = b.spawnMonster('slime', 0, 1200);
+  for (const m of [turtle, near, far]) m.hp = m.maxHp = 1e6;
+  b.updateMonsters(0);
+  const hit = (m, source) => {
+    const h0 = m.hp;
+    b.damage(m, 100, { type: 'magic', source });
+    return h0 - m.hp;
+  };
+  assert.ok(Math.abs(hit(near, 'weapon') - 60) < 1e-6);
+  assert.ok(Math.abs(hit(near, 'chain') - 60) < 1e-6);
+  assert.ok(Math.abs(hit(near, 'thunder') - 100) < 1e-6, '技能不受影响');
+  assert.ok(Math.abs(hit(far, 'weapon') - 100) < 1e-6, '离得远不受保护');
+  assert.ok(Math.abs(hit(turtle, 'weapon') - 100) < 1e-6);
+});
+
+test('飞鱼：定时向前跳，空中无法被攻击；渔网缩短跳跃距离', () => {
+  const b = ch7Battle(63);
+  const m = b.spawnMonster('flyingFish', 0, 1000);
+  m.leapTimer = 0.001;
+  b.updateMonsters(1 / 60);
+  assert.ok(m.leapUntil > b.time, '起跳');
+  assert.ok(!b.isTargetable(m), '空中打不到');
+  const x0 = m.leapFrom;
+  for (let i = 0; i < 60; i++) {
+    b.time += 1 / 60;
+    b.updateMonsters(1 / 60);
+  }
+  assert.ok(b.isTargetable(m));
+  assert.ok(x0 - m.x > 130, `跳了 130 以上：${x0 - m.x}`);
+  const b2 = ch7Battle(63);
+  b2.mods.leapCut = 0.5;
+  const m2 = b2.spawnMonster('flyingFish', 0, 1000);
+  m2.leapTimer = 0.001;
+  b2.updateMonsters(1 / 60);
+  assert.ok(Math.abs(m2.leapDist - 65) < 1e-9);
+});
+
+test('海胆：被打死时扎伤周围的怪（可以连锁），远处的不受影响', () => {
+  const b = ch7Battle(64);
+  const u = b.spawnMonster('urchin', 0, 800);
+  const u2 = b.spawnMonster('urchin', 0, 880);
+  const near = b.spawnMonster('slime', 0, 850);
+  const far = b.spawnMonster('slime', 0, 1200);
+  near.hp = near.maxHp = far.hp = far.maxHp = 1e6;
+  u2.hp = 1;
+  b.kill(u);
+  assert.ok(u2.dead, '扎死了另一只海胆');
+  assert.ok(Math.abs(1e6 - near.hp - 2 * 30 * b.D) < 1e-6, '两次尖刺');
+  assert.strictEqual(far.hp, 1e6);
+});
+
+test('海马：停在远处给怪套泡泡；泡泡挡住一次伤害；戳戳针让一半伤害生效', () => {
+  const b = ch7Battle(64);
+  const sh = b.spawnMonster('seahorse', 0, 640);
+  const m = b.spawnMonster('slime', 0, 600);
+  m.hp = m.maxHp = 1e6;
+  for (let i = 0; i < 60 * 1.1; i++) {
+    b.time += 1 / 60;
+    b.updateMonsters(1 / 60);
+  }
+  assert.ok(m.bubble, '套上泡泡');
+  assert.strictEqual(sh.x, 640, '海马停在 640');
+  assert.strictEqual(b.damage(m, 500, { type: 'magic', source: 'weapon' }), 0);
+  assert.ok(!m.bubble && b.bubblesPopped === 1);
+  assert.ok(b.damage(m, 500, { type: 'magic', source: 'weapon' }) > 0);
+  m.bubble = true;
+  b.mods.pinPop = 0.5;
+  assert.ok(Math.abs(b.damage(m, 500, { type: 'magic', source: 'weapon' }) - 250) < 1e-6);
+});
+
+test('贝贝：合壳 ×0.1 并召唤寄居蟹，张壳 ×1.3 并吐珍珠；残血后开合更快', () => {
+  const B = D.pearlClam;
+  const b = ch7Battle(65);
+  const boss = b.spawnMonster('pearlClam', 2, B.holdX);
+  b.updatePearlClam(boss, 0.01);
+  assert.strictEqual(boss.ai.mode, 'hold');
+  assert.ok(!boss.ai.open);
+  assert.strictEqual(b.monsters.filter((m) => m.type === 'hermitCrab').length, B.crabCount);
+  let h0 = boss.hp;
+  b.damage(boss, 1000, { type: 'magic', source: 'thunder' });
+  assert.ok(Math.abs(h0 - boss.hp - 100) < 1e-6, '合壳 ×0.1');
+  for (let i = 0; i < B.closedTime * 100 + 1; i++) b.updatePearlClam(boss, 0.01);
+  assert.ok(boss.ai.open, '张壳');
+  h0 = boss.hp;
+  b.damage(boss, 1000, { type: 'magic', source: 'thunder' });
+  assert.ok(Math.abs(h0 - boss.hp - 1300) < 1e-6, '张壳 ×1.3');
+  const w0 = b.wall.hp;
+  for (let i = 0; i < 100; i++) b.updatePearlClam(boss, 0.01);
+  assert.ok(b.wall.hp < w0, '吐珍珠');
+  boss.hp = boss.maxHp * 0.3;
+  b.updatePearlClam(boss, 0.01);
+  assert.strictEqual(boss.ai.phase, 2);
+});
+
+test('波波：在其余车道伸出触手；2 条以上触手护身；吸盘回血；触手会长回来；打败后触手缩回', () => {
+  const O = D.octoKing;
+  const b = ch7Battle(70);
+  const boss = b.spawnMonster('octoKing', 2, O.holdX);
+  b.updateOctoKing(boss, 0.01);
+  const tents = b.monsters.filter((m) => m.type === 'tentacle');
+  assert.strictEqual(tents.length, 4);
+  assert.ok(!tents.some((t) => t.lane === boss.lane), '触手不在 Boss 的车道');
+  assert.ok(boss.ai.guarded);
+  let h0 = boss.hp;
+  b.damage(boss, 1000, { type: 'magic', source: 'thunder' });
+  assert.ok(Math.abs(h0 - boss.hp - 1000 * O.guardMult) < 1e-6, '护身减伤');
+  for (const t of tents.slice(0, 3)) b.kill(t);
+  b.updateOctoKing(boss, 0.01);
+  assert.ok(!boss.ai.guarded, '只剩 1 条触手：护身消失');
+  h0 = boss.hp;
+  b.damage(boss, 1000, { type: 'magic', source: 'thunder' });
+  assert.ok(Math.abs(h0 - boss.hp - 1000) < 1e-6);
+  b.time += O.regrow + 0.1;
+  b.updateOctoKing(boss, 0.01);
+  assert.strictEqual(b.monsters.filter((m) => m.type === 'tentacle' && !m.dead).length, 4, '触手长回来');
+  boss.hp = boss.maxHp * 0.5;
+  b.updateOctoKing(boss, 0.01);
+  assert.strictEqual(boss.ai.phase, 2);
+  h0 = boss.hp;
+  b.updateOctoKing(boss, 1);
+  assert.ok(boss.hp > h0, '吸盘回血');
+  boss.hp = boss.maxHp * 0.2;
+  b.updateOctoKing(boss, 0.01);
+  assert.strictEqual(boss.ai.phase, 3);
+  assert.ok(b.whirl);
+  b.kill(boss);
+  assert.ok(!b.whirl);
+  assert.ok(b.monsters.filter((m) => m.type === 'tentacle').every((m) => m.dead), '触手缩回');
+});
+
+test('Boss 连战：通关第七章后贝贝和波波加入，共 14 个', () => {
+  const s = P.newSave();
+  clearUpTo(s, 70);
+  assert.strictEqual(TD.modes.buildBossRush(s).waves.length, 14);
+  const r = TD.modes.applyBossRushResult(s, { killsByType: { jellyPrince: 1 }, killCopper: 0, time: 100 });
+  assert.strictEqual(r.total, 14);
+});
+
+test('助战伙伴贝贝：每波开始给城墙一个泡泡护盾', () => {
+  const s = P.newSave();
+  clearUpTo(s, 70);
+  assert.ok(P.setBuddy(s, 'pearlClam'));
+  const b = new TD.Battle({ level: 61, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 1 });
+  b.startWave(0);
+  assert.ok(Math.abs(b.wallShield - b.wall.max * 0.03) < 1e-6);
+  const hp0 = b.wall.hp;
+  b.hitWall(b.wall.max * 0.02, null);
+  assert.strictEqual(b.wall.hp, hp0, '护盾吸收');
+  b.hitWall(b.wall.max * 0.02, null);
+  assert.ok(b.wall.hp < hp0 && b.wall.hp > hp0 - b.wall.max * 0.02);
+});
+
+test('无尽 / 每日：通关第 70 关后才出现海湾怪物', () => {
+  const sea = new Set(['hermitCrab', 'turtle', 'flyingFish', 'urchin', 'seahorse', 'pearlClam', 'octoKing']);
+  const types = (save) => {
+    const set = new Set();
+    for (let seed = 1; seed <= 5; seed++) for (const w of TD.modes.buildEndless(save, seed).waves) for (const [t] of w.groups) set.add(t);
+    return set;
+  };
+  const a = P.newSave();
+  clearUpTo(a, 65);
+  assert.ok(![...types(a)].some((t) => sea.has(t)));
+  assert.strictEqual(TD.modes.poolLast(a), 60);
+  const b = P.newSave();
+  clearUpTo(b, 70);
+  assert.ok([...types(b)].some((t) => sea.has(t)));
+  assert.strictEqual(TD.modes.poolLast(b), 70);
 });

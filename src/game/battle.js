@@ -10,6 +10,8 @@
   // 技能协同（设计书 45）
   const SYNERGY = { shatter: D.synergies.shatter.mult, drumRain: D.synergies.drumRain.mult };
   const AUTO_ORDER = { drum: 1, frost: 2, repair: 3, arrowRain: 4, thunder: 5 };
+  // 英雄自己的攻击（受盾龟护卫影响）：武器、溅射、连锁闪电
+  const HERO_SOURCES = { weapon: true, splash: true, chain: true };
 
   // 连击提示（设计书 38.2）
   const STREAK_CALLS = { 10: '10 连击！', 20: '横扫千军！', 30: '势不可挡！', 50: '无人能挡！' };
@@ -27,6 +29,8 @@
     inkBoss: 'updateInkBoss',
     windGiant: 'updateWindGiant',
     thunderKing: 'updateThunderKing',
+    pearlClam: 'updatePearlClam',
+    octoKing: 'updateOctoKing',
   };
 
   class Battle extends TD.Emitter {
@@ -85,7 +89,7 @@
       this.waveStartTime = 0;
 
       // 战场补给（设计书 2.7）
-      this.mods = { atkMult: 0, aspdMult: 0, crit: 0, critDmg: 0, cdMult: 0, copperBonus: 0, wallDr: 0, range: 0, slowOnHit: 0, magicMult: 0, armorIgnore: 0, dotReduce: 0, spiritPierce: 0, chillResist: 0, igniteOnHit: 0, fireproof: 0, reveal: 0, woolCut: 0, stunImmune: 0, dodgeCut: 0, slowAll: 0 };
+      this.mods = { atkMult: 0, aspdMult: 0, crit: 0, critDmg: 0, cdMult: 0, copperBonus: 0, wallDr: 0, range: 0, slowOnHit: 0, magicMult: 0, armorIgnore: 0, dotReduce: 0, spiritPierce: 0, chillResist: 0, igniteOnHit: 0, fireproof: 0, reveal: 0, woolCut: 0, stunImmune: 0, dodgeCut: 0, slowAll: 0, shellCut: 0, pinPop: 0, leapCut: 0 };
       // 助战伙伴（设计书 51）
       this.buddy = (opts.loadout && opts.loadout.buddy && D.town.find((f) => f.boss === opts.loadout.buddy)) || null;
       if (this.buddy) {
@@ -94,6 +98,9 @@
         if (pk.shot) this.buddyTimer = pk.shot.every;
       }
       this.storm = false; // 雷雷第三阶段的暴风雨：全场怪物加速（设计书 33.3）
+      this.whirl = false; // 波波第三阶段的大漩涡（设计书 52.3）
+      this.guards = []; // 活着的盾龟（设计书 52.2）
+      this.bubblesPopped = 0;
       this.zones = []; // 地面区域：{ x, y, r, until, haste }
       this.heroStunUntil = 0;
       this.chillStacks = 0;
@@ -220,6 +227,8 @@
       this.waveState = 'spawning';
       this.waveStartTime = this.time;
       this.clearedOnce = false;
+      // 贝贝的泡泡护盾（设计书 52.7）：每波开始时刷新
+      if (this.buddy && this.buddy.perk.wallBubble) this.wallShield = this.wall.max * this.buddy.perk.wallBubble;
       this.emit('waveStart', { index: i, total: this.totalWaves, chapter: wave.chapter });
     }
 
@@ -349,6 +358,16 @@
       if (def.ranged) m.rangedTimer = 0.8;
       if (def.laneHop) m.hopTimer = def.laneHop.every * (0.6 + this.rng() * 0.6);
       if (def.regen) m.lastHit = -99;
+      // 第七章（设计书 52.2）
+      if (def.shell) {
+        m.shellHits = 0;
+        m.shellUntil = 0;
+      }
+      if (def.leap) {
+        m.leapTimer = def.leap.every * (0.5 + this.rng() * 0.5);
+        m.leapUntil = 0;
+      }
+      if (def.bubbler) m.bubbleTimer = 1;
       if (def.stealth) {
         m.stealthed = true;
         m.hopTimer = def.stealth.hopEvery;
@@ -359,11 +378,11 @@
     }
 
     isTargetable(m) {
-      return !m.dead && !m.burrowed && !m.bones && !m.hidden && !m.stealthed && m.x <= C.width + 5;
+      return !m.dead && !m.burrowed && !m.bones && !m.hidden && !m.stealthed && !(m.leapUntil > this.time) && m.x <= C.width + 5;
     }
 
     monsterSpeed(m) {
-      if (this.time < m.frozenUntil || this.time < m.stunUntil) return 0;
+      if (this.time < m.frozenUntil || this.time < m.stunUntil || this.time < m.shellUntil) return 0;
       let s = m.def.speed * (1 + (this.rules.monsterSpeed || 0));
       if (m.def.ai === 'boarKing' && m.ai.phase === 3) s *= D.boarKing.enrageSpeedMult;
       if (m.burrowed && m.def.burrow) s *= m.def.burrow.speedMult;
@@ -371,6 +390,7 @@
       if (m.cooked) s *= 1 + D.witch.cookSpeed;
       if (m.sheared) s *= m.def.wool.speedMult;
       if (this.storm && !m.def.boss) s *= 1 + D.thunderKing.stormSpeed;
+      if (this.whirl && !m.def.boss) s *= 1 + D.octoKing.whirlSpeed;
       if (this.mods.slowAll) s *= 1 - this.mods.slowAll;
       if (this.zones.length && !this.mods.fireproof) {
         for (const z of this.zones) {
@@ -401,6 +421,8 @@
       let chill = 0;
       for (const m of this.monsters) if (!m.dead && m.def.chill && m.x <= C.width) chill++;
       this.chillStacks = chill;
+      this.guards.length = 0;
+      for (const m of this.monsters) if (!m.dead && m.def.guard && m.x <= C.width) this.guards.push(m);
       for (const m of this.monsters) {
         if (m.dead) continue;
         if (m.hitFlash > 0) m.hitFlash -= dt;
@@ -435,6 +457,44 @@
           }
           const ty = this.laneY(m.lane);
           if (m.y !== ty) m.y += Math.sign(ty - m.y) * Math.min(Math.abs(ty - m.y), 140 * dt);
+        }
+        // 跳跃（飞鱼）：空中无法被攻击，落地前不做别的事
+        const lp = m.def.leap;
+        if (lp) {
+          if (this.time < m.leapUntil) {
+            m.x = Math.max(this.wallStopX(m), m.x - (m.leapDist / lp.time) * dt);
+            m.state = 'leap';
+            continue;
+          }
+          if (this.time >= m.frozenUntil && this.time >= m.stunUntil) m.leapTimer -= dt;
+          const dist = lp.dist * (1 - Math.min(1, this.mods.leapCut));
+          if (m.leapTimer <= 0 && m.x <= C.width && m.x - dist > this.wallStopX(m) + 20) {
+            m.leapTimer = lp.every;
+            m.leapUntil = this.time + lp.time;
+            m.leapDist = dist;
+            m.leapFrom = m.x;
+            this.emit('leap', { m });
+          }
+        }
+        // 吹泡泡（海马）：给最靠近城墙、还没有泡泡的一只怪套上泡泡
+        const bub = m.def.bubbler;
+        if (bub && m.x <= bub.holdX && this.time >= m.frozenUntil && this.time >= m.stunUntil) {
+          m.bubbleTimer -= dt;
+          if (m.bubbleTimer <= 0) {
+            m.bubbleTimer = bub.every;
+            let best = null;
+            for (const o of this.monsters) {
+              if (o.dead || o === m || o.bubble || o.def.boss || o.def.bossPart || o.x > C.width) continue;
+              const dx = o.x - m.x;
+              const dy = o.y - m.y;
+              if (dx * dx + dy * dy > bub.radius * bub.radius) continue;
+              if (!best || o.x < best.x) best = o;
+            }
+            if (best) {
+              best.bubble = true;
+              this.emit('bubble', { from: m, m: best });
+            }
+          }
         }
         // 再生（树桩怪）
         if (m.def.regen && this.time - m.lastHit >= m.def.regen.delay && m.hp < m.maxHp) {
@@ -474,11 +534,11 @@
         }
         const ranged = m.def.ranged;
         const chillDef = m.def.chill;
-        const stopX = heal ? heal.holdX : ranged ? ranged.holdX : chillDef ? chillDef.holdX : this.wallStopX(m);
+        const stopX = heal ? heal.holdX : ranged ? ranged.holdX : chillDef ? chillDef.holdX : bub ? bub.holdX : this.wallStopX(m);
         if (m.x > stopX) {
           m.state = 'walk';
           m.x = Math.max(stopX, m.x - this.monsterSpeed(m) * dt);
-        } else if (heal || chillDef) {
+        } else if (heal || chillDef || bub) {
           m.state = 'hold';
         } else if (ranged) {
           // 远程型：停在远处向城墙吐毒液
@@ -487,7 +547,7 @@
             m.rangedTimer -= dt;
             if (m.rangedTimer <= 0) {
               m.rangedTimer = ranged.every;
-              this.emit('spit', { m, x: m.x, y: m.y });
+              this.emit(m.def.bossPart ? 'slap' : 'spit', { m, x: m.x, y: m.y });
               this.hitWall(ranged.damage * this.D, m);
               if (ranged.poison) this.addWallDot(ranged.poison.dps * this.D, ranged.poison.duration, 'poison', true, m.type);
             }
@@ -575,7 +635,14 @@
     hitWall(amount, m, big, kind, who) {
       amount *= this.diffDmg;
       const temp = this.time < this.tempDr.until ? this.tempDr.amt : 0;
-      const dmg = amount * (1 - Math.min(0.8, this.stats.wallDr + this.mods.wallDr + temp));
+      let dmg = amount * (1 - Math.min(0.8, this.stats.wallDr + this.mods.wallDr + temp));
+      if (this.wallShield > 0) {
+        const take = Math.min(this.wallShield, dmg);
+        this.wallShield -= take;
+        dmg -= take;
+        if (this.wallShield <= 0) this.emit('wallBubblePop', {});
+        if (dmg <= 0) return;
+      }
       this.wall.hp = Math.max(0, this.wall.hp - dmg);
       this.minWallRatio = Math.min(this.minWallRatio, this.wall.hp / this.wall.max);
       this.wallDamageTaken += dmg;
@@ -621,8 +688,17 @@
         this.emit('dodge', { m, x: m.x, y: m.y + m.yOffset });
         return 0;
       }
+      // 泡泡（海马）：挡住下一次伤害（设计书 52.2）
+      if (m.bubble) {
+        m.bubble = false;
+        this.bubblesPopped++;
+        this.emit('bubblePop', { m, x: m.x, y: m.y + m.yOffset });
+        if (!this.mods.pinPop) return 0;
+        amount *= 1 - Math.min(1, this.mods.pinPop);
+      }
       if (opts.type === 'magic' && opts.source !== 'thorns') amount *= 1 + this.mods.magicMult;
       if (m.vulnUntil && this.time < m.vulnUntil) amount *= D.inkBoss.vulnMult;
+      amount *= this.damageMult(m, opts);
       // 护盾：先吸收伤害，魔法效果更好（设计书 19.3）
       if (m.shield > 0) {
         const P2 = D.pharaoh;
@@ -694,6 +770,37 @@
       return dmg;
     }
 
+    // 第七章的减伤 / 增伤（设计书 52.2、52.3）
+    damageMult(m, opts) {
+      let k = 1;
+      const def = m.def;
+      // 护卫（盾龟）：周围的其他怪物受到英雄攻击的伤害降低，多只不叠加
+      if (this.guards.length && !def.boss && !def.guard && HERO_SOURCES[opts.source || 'weapon']) {
+        for (const g of this.guards) {
+          if (g.dead) continue;
+          const r = g.def.guard.radius;
+          const dx = g.x - m.x;
+          const dy = g.y - m.y;
+          if (dx * dx + dy * dy <= r * r) {
+            k *= g.def.guard.mult;
+            break;
+          }
+        }
+      }
+      // 缩壳（寄居蟹）：每挨几下就缩进壳里；灼烧不计数
+      if (def.shell) {
+        if (this.time < m.shellUntil) k *= def.shell.mult;
+        else if (opts.source !== 'burn' && !opts.peek && ++m.shellHits >= def.shell.hits) {
+          m.shellHits = 0;
+          m.shellUntil = this.time + def.shell.duration * (1 - Math.min(1, this.mods.shellCut));
+          this.emit('shell', { m });
+        }
+      }
+      if (def.ai === 'pearlClam' && m.ai.mode !== 'walk') k *= m.ai.open ? D.pearlClam.openMult : D.pearlClam.closedMult;
+      if (def.ai === 'octoKing' && m.ai.guarded) k *= D.octoKing.guardMult;
+      return k;
+    }
+
     split(m, count) {
       const sp = m.def.split;
       for (let i = 0; i < count; i++) {
@@ -740,6 +847,22 @@
       }
       if (m.def.split) this.split(m, m.def.split.deathCount);
       if (m.def.ai === 'thunderKing') this.storm = false; // 雷雷被打败，雨停了
+      // 尖刺（海胆）：扎伤周围的怪物，可能连锁（设计书 52.2）
+      const sp = m.def.spikes;
+      if (sp && !noReward) {
+        this.emit('spikes', { x: m.x, y: m.y + m.yOffset, radius: sp.radius });
+        for (const o of this.monsters.slice()) {
+          if (o.dead || o === m || o.def.bossPart) continue;
+          const dx = o.x - m.x;
+          const dy = o.y - m.y;
+          if (dx * dx + dy * dy <= sp.radius * sp.radius) this.damage(o, sp.damage * this.D, { type: 'magic', fromFront: false, source: 'spikes' });
+        }
+      }
+      if (m.def.ai === 'octoKing') {
+        this.whirl = false;
+        for (const o of this.monsters) if (!o.dead && o.owner === m) this.kill(o, true);
+        this.emit('tentacleRetract', { m });
+      }
       // 静电：电麻后 1.5 秒内不会再被电麻，避免一群雷团子把英雄电到动不了
       const ss = m.def.staticShock;
       if (ss && m.x < C.wallX + ss.range && this.time >= (this.staticImmuneUntil || 0)) {
@@ -805,11 +928,15 @@
       if (mode === 'weakest') list.sort((a, b) => a.hp - b.hp || byX(a, b));
       else if (mode === 'strongest') list.sort((a, b) => b.hp - a.hp || byX(a, b));
       else if (mode === 'flying') list.sort((a, b) => (b.def.flying ? 1 : 0) - (a.def.flying ? 1 : 0) || byX(a, b));
-      else if (mode === 'boss') list.sort((a, b) => (b.def.boss ? 1 : 0) - (a.def.boss ? 1 : 0) || byX(a, b));
+      else if (mode === 'boss') {
+        // 波波有触手护身时先打触手（设计书 52.3）
+        const pri = (m) => (m.def.boss ? (m.ai && m.ai.guarded ? 1 : 3) : m.def.bossPart ? 2 : 0);
+        list.sort((a, b) => pri(b) - pri(a) || byX(a, b));
+      }
       else if (mode === 'smart') {
         // 威胁优先：逼近城墙的先打；城墙安全时优先打辅助型怪物（治疗、光环、远程）
         const danger = (m) => m.x < C.wallX + C.smartDanger;
-        const support = (m) => !!(m.def.healer || m.def.chill || m.def.ranged);
+        const support = (m) => !!(m.def.healer || m.def.chill || m.def.ranged || m.def.guard || m.def.bubbler);
         list.sort((a, b) => (danger(b) ? 1 : 0) - (danger(a) ? 1 : 0) || (support(b) ? 1 : 0) - (support(a) ? 1 : 0) || byX(a, b));
       } else list.sort(byX);
       return list;
@@ -1212,9 +1339,13 @@
               go = near >= 4 || this.monsters.some((m) => m.ai && m.ai.mode === 'warn');
               break;
             }
-            case 'thunder':
+            case 'thunder': {
               go = all.some((m) => m.hp >= this.atk * 4) || this.monsters.some((m) => m.ai && m.ai.mode === 'warn');
+              // 贝贝合壳、波波有触手护身时先等一等（设计书 52.3）
+              const top = all.reduce((a, m) => (!a || m.hp > a.hp ? m : a), null);
+              if (top && this.damageMult(top, { source: 'thunder', peek: true }) < 0.5) go = false;
               break;
+            }
           }
           if (go) {
             const warnBoss = this.monsters.find((m) => m.ai && m.ai.mode === 'warn');
@@ -1301,6 +1432,7 @@
         earlyCalls: this.earlyCalls,
         skillsCast: this.skillsCast,
         bestStreak: this.bestStreak,
+        bubbles: this.bubblesPopped,
         combos: Object.assign({}, this.combos),
         minWallRatio: this.minWallRatio,
         skillsCarried: this.skills.length,

@@ -79,7 +79,7 @@
     const el = h(
       'div',
       { class: 'story-overlay', onclick: advance },
-      h('div', { class: 'story-title' }, key.startsWith('ch') ? `第${'一二三四五六'[+key.slice(2) - 1]}章 · ${sc.title}` : sc.title),
+      h('div', { class: 'story-title' }, key.startsWith('ch') ? `第${'一二三四五六七八九十'[+key.slice(2) - 1]}章 · ${sc.title}` : sc.title),
       h('div', { class: 'story-box' }, avatar, h('div', { class: 'story-main' }, nameEl, textEl), nextEl),
       h('button', { class: 'btn small story-skip', onclick: (e) => (e.stopPropagation(), sfx('click'), end(false)) }, '跳过 ›')
     );
@@ -274,7 +274,8 @@
     const cv = h('canvas', { class: 'town-canvas', width: W, height: H });
     const ctx = cv.getContext('2d');
     const T = D.town;
-    const slot = (i) => ({ x: 110 + (i % 6) * 150, y: i < 6 ? 175 : 360 });
+    // 每排 7 栋房子（设计书 52.7：第七章后 14 位邻居）
+    const slot = (i) => ({ x: 75 + (i % 7) * 135, y: i < 7 ? 175 : 360 });
     const friends = T.map((f) => P.isCleared(s, f.level));
     const bubbles = {}; // 序号 → { text, until }
     const said = {};

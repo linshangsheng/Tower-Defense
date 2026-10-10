@@ -109,6 +109,23 @@
       ],
       chords: [['F3', 'A3', 'C4'], ['Bb2', 'D4', 'F4'], ['F3', 'A3', 'C4'], ['C3', 'E4', 'G4'], ['D3', 'F3', 'A3'], ['Bb2', 'D4', 'F4'], ['C3', 'E4', 'G4'], ['F3', 'A3', 'C4']],
     },
+    // 第七章（设计书 52.6）：降 B 大调，像马林巴一样的拨弦
+    7: {
+      name: '珊瑚海湾',
+      bpm: 108,
+      lead: 'pluck',
+      melody: [
+        'Bb4 . D5 F5 . D5 F5 .',
+        'G5 . F5 . Eb5 D5 C5 .',
+        'D5 . F5 Bb5 . A5 G5 .',
+        'F5 . . . D5 . - -',
+        'Eb5 . G5 . Bb5 . G5 .',
+        'F5 . D5 . Bb4 . D5 .',
+        'C5 . Eb5 D5 C5 . A4 .',
+        'Bb4 . . . - - - -',
+      ],
+      chords: [['Bb2', 'D4', 'F4'], ['Eb3', 'G3', 'Bb3'], ['Bb2', 'D4', 'F4'], ['F2', 'A3', 'C4'], ['Eb3', 'G3', 'Bb3'], ['Bb2', 'D4', 'F4'], ['F2', 'A3', 'C4'], ['Bb2', 'D4', 'F4']],
+    },
   };
 
   const M = (TD.music = { enabled: true, theme: null, mode: 'calm', tension: 0, playing: false });

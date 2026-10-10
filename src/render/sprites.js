@@ -1736,6 +1736,324 @@
       ctx.arc(-s * 0.05, s * 0.32, s * 0.14, Math.PI * 1.15, Math.PI * 1.85);
       ctx.stroke();
     },
+    // ---------- 第七章 · 珊瑚海湾（设计书 52.6） ----------
+    hermitCrab(ctx, s, t, o) {
+      const hide = !!o.shellIn;
+      const step = hide ? 0 : Math.sin(t * 10 + (o.seed || 0));
+      shadow(ctx, 0, 2, s * 0.85);
+      if (!hide) {
+        // 小腿
+        ctx.strokeStyle = '#c84a3a';
+        ctx.lineWidth = 2.5;
+        ctx.lineCap = 'round';
+        for (const [lx, ph] of [[-0.55, 1], [-0.3, -1], [-0.05, 1]]) {
+          ctx.beginPath();
+          ctx.moveTo(s * lx, -s * 0.3);
+          ctx.lineTo(s * lx - s * 0.12 + step * ph * 2, 0);
+          ctx.stroke();
+        }
+        // 身体和大钳子
+        ellipse(ctx, -s * 0.35, -s * 0.4, s * 0.42, s * 0.3, '#ff7a5a', OUTLINE, 2);
+        const snap = o.attack ? Math.abs(Math.sin(t * 10)) * 0.3 : 0;
+        for (const cy of [-0.55, -0.25]) {
+          ctx.save();
+          ctx.translate(-s * 0.85, s * cy);
+          ctx.rotate(-snap);
+          ellipse(ctx, 0, 0, s * 0.2, s * 0.14, '#ff6a4a', OUTLINE, 1.6);
+          ctx.restore();
+        }
+        // 眼睛长在小柄上
+        ctx.strokeStyle = OUTLINE;
+        ctx.lineWidth = 1.6;
+        for (const ex of [-0.5, -0.32]) {
+          ctx.beginPath();
+          ctx.moveTo(s * ex, -s * 0.6);
+          ctx.lineTo(s * ex - s * 0.04, -s * 0.92);
+          ctx.stroke();
+          ellipse(ctx, s * ex - s * 0.04, -s * 0.96, s * 0.08, s * 0.09, '#fff', OUTLINE, 1.2);
+          ellipse(ctx, s * ex - s * 0.07, -s * 0.95, s * 0.04, s * 0.05, '#000');
+        }
+      }
+      // 螺旋贝壳
+      const shake = hide ? Math.sin(t * 30) * 1.5 : 0;
+      ctx.save();
+      ctx.translate(s * 0.2 + shake, -s * 0.62);
+      const k = hide ? 1.1 : 1;
+      ellipse(ctx, 0, 0, s * 0.62 * k, s * 0.55 * k, '#f2d2a8', OUTLINE, 2);
+      ctx.strokeStyle = '#c9925a';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      for (let a = 0; a < 9; a++) {
+        const r = s * 0.5 * k * (1 - a / 10);
+        const ang = a * 0.9;
+        ctx.lineTo(Math.cos(ang) * r * 0.9, Math.sin(ang) * r * 0.8);
+      }
+      ctx.stroke();
+      ellipse(ctx, -s * 0.05, -s * 0.05, s * 0.1, s * 0.08, '#e8b880');
+      ctx.restore();
+      if (hide) {
+        // 壳里探出两只小眼睛
+        ellipse(ctx, -s * 0.38, -s * 0.5, s * 0.07, s * 0.08, '#fff', OUTLINE, 1);
+        ellipse(ctx, -s * 0.22, -s * 0.52, s * 0.07, s * 0.08, '#fff', OUTLINE, 1);
+        ellipse(ctx, -s * 0.4, -s * 0.49, s * 0.035, s * 0.04, '#000');
+        ellipse(ctx, -s * 0.24, -s * 0.51, s * 0.035, s * 0.04, '#000');
+      }
+    },
+    turtle(ctx, s, t, o) {
+      const step = Math.sin(t * 5 + (o.seed || 0));
+      shadow(ctx, 0, 2, s * 1.05);
+      // 四只脚
+      for (const [fx, ph] of [[-0.55, 1], [-0.2, -1], [0.25, 1], [0.6, -1]]) ellipse(ctx, s * fx + step * ph * 2, -s * 0.1, s * 0.16, s * 0.12, '#7cc47a', OUTLINE, 1.6);
+      // 头
+      ellipse(ctx, -s * 0.95, -s * 0.42 + step, s * 0.28, s * 0.24, '#7cc47a', OUTLINE, 2);
+      ellipse(ctx, -s * 1.02, -s * 0.48 + step, s * 0.06, s * 0.07, '#000');
+      ellipse(ctx, -s * 1.04, -s * 0.5 + step, s * 0.025, s * 0.025, '#fff');
+      // 壳
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.8, -s * 0.25);
+      ctx.bezierCurveTo(-s * 0.8, -s * 1.35, s * 0.85, -s * 1.35, s * 0.85, -s * 0.25);
+      ctx.closePath();
+      ctx.fillStyle = '#3f8a52';
+      ctx.fill();
+      ctx.strokeStyle = OUTLINE;
+      ctx.lineWidth = 2.2;
+      ctx.stroke();
+      // 六边形花纹
+      ctx.strokeStyle = '#8fd17a';
+      ctx.lineWidth = 1.8;
+      for (const [hx, hy, hr] of [[0, -0.75, 0.22], [-0.45, -0.5, 0.17], [0.45, -0.5, 0.17]]) {
+        ctx.beginPath();
+        for (let a = 0; a < 6; a++) ctx.lineTo(s * hx + Math.cos((a * Math.PI) / 3) * s * hr, s * hy + Math.sin((a * Math.PI) / 3) * s * hr);
+        ctx.closePath();
+        ctx.stroke();
+      }
+      ctx.fillStyle = '#c9a24a';
+      roundRect(ctx, -s * 0.85, -s * 0.32, s * 1.7, s * 0.14, s * 0.07);
+      ctx.fill();
+    },
+    flyingFish(ctx, s, t, o) {
+      const flap = Math.sin(t * (o.leap ? 30 : 10) + (o.seed || 0));
+      if (!o.leap) shadow(ctx, 0, 2, s * 0.8);
+      ctx.save();
+      ctx.translate(0, -s * 0.7);
+      if (o.leap) ctx.rotate(-0.3 + o.leap * 0.6);
+      // 尾巴
+      ctx.fillStyle = '#2a78c0';
+      ctx.beginPath();
+      ctx.moveTo(s * 0.55, 0);
+      ctx.lineTo(s * 1.05, -s * 0.38);
+      ctx.lineTo(s * 0.95, 0);
+      ctx.lineTo(s * 1.05, s * 0.38);
+      ctx.closePath();
+      ctx.fill();
+      // 透明的胸鳍翅膀
+      ctx.globalAlpha = 0.6;
+      ctx.fillStyle = '#bfe8ff';
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.1, -s * 0.1);
+      ctx.lineTo(s * 0.45, -s * (0.7 + flap * 0.25));
+      ctx.lineTo(s * 0.35, -s * 0.05);
+      ctx.closePath();
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      ellipse(ctx, 0, 0, s * 0.65, s * 0.34, '#4aa8e8', OUTLINE, 2);
+      ellipse(ctx, -s * 0.05, s * 0.12, s * 0.45, s * 0.14, '#cfeaff');
+      ellipse(ctx, -s * 0.38, -s * 0.06, s * 0.1, s * 0.11, '#fff', OUTLINE, 1.2);
+      ellipse(ctx, -s * 0.42, -s * 0.05, s * 0.05, s * 0.06, '#000');
+      ctx.restore();
+    },
+    urchin(ctx, s, t, o) {
+      const roll = t * 2 + (o.seed || 0);
+      shadow(ctx, 0, 2, s * 0.8);
+      ctx.save();
+      ctx.translate(0, -s * 0.75 - Math.abs(Math.sin(roll * 2)) * 1.5);
+      ctx.strokeStyle = '#5a3a8a';
+      ctx.lineWidth = 2;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      for (let i = 0; i < 14; i++) {
+        const a = roll * 0.3 + (i * Math.PI * 2) / 14;
+        const len = i % 2 ? 1.05 : 1.2;
+        ctx.moveTo(Math.cos(a) * s * 0.55, Math.sin(a) * s * 0.55);
+        ctx.lineTo(Math.cos(a) * s * len, Math.sin(a) * s * len);
+      }
+      ctx.stroke();
+      ellipse(ctx, 0, 0, s * 0.62, s * 0.6, '#8a5ac8', OUTLINE, 2);
+      ellipse(ctx, -s * 0.18, -s * 0.2, s * 0.18, s * 0.12, '#b48aff');
+      eyes(ctx, -s * 0.1, 0, s * 0.3, s * 0.11);
+      ctx.restore();
+    },
+    seahorse(ctx, s, t, o) {
+      const bob = Math.sin(t * 3 + (o.seed || 0)) * 3;
+      shadow(ctx, 0, 2, s * 0.6);
+      ctx.save();
+      ctx.translate(0, bob);
+      // 卷尾巴
+      ctx.strokeStyle = '#e8a82a';
+      ctx.lineWidth = s * 0.2;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.arc(s * 0.12, -s * 0.35, s * 0.22, -Math.PI * 0.5, Math.PI * 1.2);
+      ctx.stroke();
+      // 身体
+      ellipse(ctx, s * 0.05, -s * 0.9, s * 0.34, s * 0.5, '#ffc83f', OUTLINE, 2);
+      ellipse(ctx, -s * 0.08, -s * 0.85, s * 0.16, s * 0.34, '#fff0b0');
+      // 背鳍
+      ctx.fillStyle = '#ffe28a';
+      ctx.beginPath();
+      ctx.moveTo(s * 0.35, -s * 1.1);
+      ctx.quadraticCurveTo(s * 0.7 + Math.sin(t * 12) * 2, -s * 0.9, s * 0.36, -s * 0.7);
+      ctx.fill();
+      // 头和长嘴
+      ellipse(ctx, -s * 0.05, -s * 1.48, s * 0.32, s * 0.28, '#ffc83f', OUTLINE, 2);
+      ellipse(ctx, -s * 0.42, -s * 1.42, s * 0.22, s * 0.09, '#ffc83f', OUTLINE, 1.6);
+      ellipse(ctx, -s * 0.08, -s * 1.52, s * 0.08, s * 0.09, '#fff', OUTLINE, 1.2);
+      ellipse(ctx, -s * 0.11, -s * 1.51, s * 0.04, s * 0.05, '#000');
+      ctx.restore();
+      // 嘴边冒出的泡泡
+      for (let i = 0; i < 3; i++) {
+        const ph = (t * 0.8 + i / 3 + (o.seed || 0) * 0.13) % 1;
+        ctx.globalAlpha = 1 - ph;
+        ellipse(ctx, -s * 0.7 - ph * s * 0.2, -s * 1.45 - ph * s * 1.2, s * (0.06 + ph * 0.08), s * (0.06 + ph * 0.08), null, '#7ad0ff', 1.5);
+      }
+      ctx.globalAlpha = 1;
+    },
+    tentacle(ctx, s, t, o) {
+      const sway = Math.sin(t * 2.5 + (o.seed || 0)) * s * 0.35;
+      const slap = o.attack ? Math.max(0, Math.sin(t * 3)) : 0;
+      S.ellipse(ctx, 0, 0, s * 0.9, s * 0.25, '#d9c08a', 'rgba(140,110,60,0.6)', 1.5);
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.45, 0);
+      ctx.quadraticCurveTo(-s * 0.5 + sway, -s * 1.3, -s * 0.3 + sway - slap * s * 0.5, -s * 2.4);
+      ctx.quadraticCurveTo(-s * 0.05 + sway, -s * 2.5, s * 0.05 + sway, -s * 2.2);
+      ctx.quadraticCurveTo(s * 0.2 + sway * 0.6, -s * 1.2, s * 0.45, 0);
+      ctx.closePath();
+      ctx.fillStyle = '#c0508a';
+      ctx.fill();
+      ctx.strokeStyle = OUTLINE;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      // 吸盘
+      for (let i = 0; i < 4; i++) {
+        const k = i / 4;
+        ellipse(ctx, -s * 0.28 + sway * k * 0.9, -s * (0.35 + k * 1.6), s * (0.12 - k * 0.02), s * (0.09 - k * 0.015), '#ffb3d1', '#9a3a6a', 1);
+      }
+    },
+    pearlClam(ctx, s, t, o) {
+      const ai = o.ai || {};
+      const open = !!ai.open;
+      const ang = open ? 0.55 + Math.sin(t * 4) * 0.04 : 0.04;
+      shadow(ctx, 0, 2, s * 1.3);
+      // 下壳
+      ctx.beginPath();
+      ctx.ellipse(0, -s * 0.45, s * 1.15, s * 0.5, 0, 0, Math.PI);
+      ctx.closePath();
+      ctx.fillStyle = '#ff8ab4';
+      ctx.fill();
+      ctx.strokeStyle = OUTLINE;
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+      if (open) {
+        // 发光的珍珠
+        ctx.save();
+        ctx.globalAlpha = 0.35 + Math.sin(t * 6) * 0.1;
+        ellipse(ctx, -s * 0.15, -s * 0.62, s * 0.45, s * 0.42, '#fff6c8');
+        ctx.restore();
+        const g = ctx.createRadialGradient(-s * 0.25, -s * 0.72, s * 0.04, -s * 0.15, -s * 0.62, s * 0.3);
+        g.addColorStop(0, '#ffffff');
+        g.addColorStop(1, '#f4d4ec');
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(-s * 0.15, -s * 0.62, s * 0.28, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#c9a0c0';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+      // 上壳（从右边的铰链处打开）
+      ctx.save();
+      ctx.translate(s * 1.05, -s * 0.45);
+      ctx.rotate(ang);
+      ctx.translate(-s * 1.05, s * 0.45);
+      ctx.beginPath();
+      ctx.ellipse(0, -s * 0.45, s * 1.15, s * 0.85, 0, Math.PI, Math.PI * 2);
+      ctx.closePath();
+      ctx.fillStyle = '#ffb3d1';
+      ctx.fill();
+      ctx.strokeStyle = OUTLINE;
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+      ctx.strokeStyle = 'rgba(200,80,130,0.6)';
+      ctx.lineWidth = 2;
+      for (let i = 1; i < 6; i++) {
+        const a = Math.PI + (i * Math.PI) / 6;
+        ctx.beginPath();
+        ctx.moveTo(0, -s * 0.45);
+        ctx.lineTo(Math.cos(a) * s * 1.1, -s * 0.45 + Math.sin(a) * s * 0.8);
+        ctx.stroke();
+      }
+      // 脸
+      eyes(ctx, -s * 0.35, -s * 0.85, s * 0.42, s * 0.14);
+      blush(ctx, -s * 0.35, -s * 0.62, s * 0.7, s * 0.1);
+      ctx.restore();
+    },
+    octoKing(ctx, s, t, o) {
+      const ai = o.ai || {};
+      const angry = ai.phase >= 3;
+      shadow(ctx, 0, 2, s * 1.4);
+      // 腿
+      ctx.strokeStyle = '#9a3a78';
+      ctx.lineWidth = s * 0.26;
+      ctx.lineCap = 'round';
+      for (let i = 0; i < 5; i++) {
+        const x0 = -s * 0.8 + i * s * 0.4;
+        const w = Math.sin(t * 3 + i) * s * 0.2;
+        ctx.beginPath();
+        ctx.moveTo(x0, -s * 0.6);
+        ctx.quadraticCurveTo(x0 + w, -s * 0.25, x0 + w * 1.6 - s * 0.15, -s * 0.05);
+        ctx.stroke();
+      }
+      // 大脑袋
+      const g = ctx.createRadialGradient(-s * 0.35, -s * 1.7, s * 0.1, 0, -s * 1.3, s * 1.1);
+      g.addColorStop(0, '#e48ac0');
+      g.addColorStop(1, '#a03a7a');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.ellipse(0, -s * 1.3, s * 1.0, s * 0.95, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = OUTLINE;
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+      for (const [px, py, pr] of [[0.45, -1.75, 0.13], [0.62, -1.35, 0.09], [-0.55, -1.75, 0.08]]) ellipse(ctx, s * px, s * py, s * pr, s * pr * 0.8, 'rgba(255,200,230,0.7)');
+      // 眼睛和嘴
+      eyes(ctx, -s * 0.2, -s * 1.2, s * 0.6, s * 0.2);
+      if (angry) {
+        ctx.strokeStyle = '#3a1030';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.moveTo(-s * 0.65, -s * 1.55);
+        ctx.lineTo(-s * 0.3, -s * 1.42);
+        ctx.moveTo(s * 0.3, -s * 1.55);
+        ctx.lineTo(-s * 0.05, -s * 1.42);
+        ctx.stroke();
+      }
+      ellipse(ctx, -s * 0.2, -s * 0.78, s * 0.12, s * (angry ? 0.06 : 0.1), '#5a1a4a');
+      // 小王冠
+      ctx.fillStyle = '#ffd23f';
+      ctx.strokeStyle = OUTLINE;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.35, -s * 2.12);
+      ctx.lineTo(-s * 0.35, -s * 2.45);
+      ctx.lineTo(-s * 0.18, -s * 2.28);
+      ctx.lineTo(0, -s * 2.5);
+      ctx.lineTo(s * 0.18, -s * 2.28);
+      ctx.lineTo(s * 0.35, -s * 2.45);
+      ctx.lineTo(s * 0.35, -s * 2.12);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+    },
     inkBoss(ctx, s, t, o) {
       const ai = o.ai || {};
       const big = ai.big ? 1.6 : 1;
@@ -2175,6 +2493,22 @@
       ctx.lineWidth = 1.2;
       ctx.stroke();
       ellipse(ctx, 0, -s * 0.04, s * 0.03, s * 0.03, '#e04848');
+    } else if (extra === 'anchor') {
+      // 小锚别在头盔侧面（设计书 52.7）
+      ctx.translate(s * 0.48, -s * 0.28);
+      ctx.strokeStyle = '#2a5a9a';
+      ctx.lineWidth = 2.2;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.arc(0, -s * 0.13, s * 0.04, 0, Math.PI * 2);
+      ctx.moveTo(0, -s * 0.09);
+      ctx.lineTo(0, s * 0.12);
+      ctx.moveTo(-s * 0.08, -s * 0.04);
+      ctx.lineTo(s * 0.08, -s * 0.04);
+      ctx.moveTo(-s * 0.11, s * 0.04);
+      ctx.quadraticCurveTo(-s * 0.08, s * 0.14, 0, s * 0.12);
+      ctx.quadraticCurveTo(s * 0.08, s * 0.14, s * 0.11, s * 0.04);
+      ctx.stroke();
     }
     ctx.restore();
   };

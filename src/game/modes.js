@@ -11,14 +11,20 @@
   // ---------- 无尽模式 ----------
   M.endlessUnlocked = (save) => P.isCleared(save, 20);
 
+  // 无尽 / 每日的关卡上限：第六章、第七章通关后才放开
+  function poolLast(save) {
+    return P.isCleared(save, 70) ? 70 : P.isCleared(save, 60) ? 60 : 50;
+  }
+  M.poolLast = poolLast;
+
   // 已解锁章节里出现过的怪物
   function unlockedPool(save) {
     const h = Math.max(1, P.highestCleared(save));
     const normal = new Set();
     const mini = new Set();
     const major = new Set();
-    // 第六章的怪物在通关第 60 关后才进入（设计书 34.2）
-    const last = P.isCleared(save, 60) ? 60 : 50;
+    // 第六、七章的怪物在通关本章最后一关后才进入（设计书 34.2、52.7）
+    const last = poolLast(save);
     for (let n = 1; n <= Math.min(h, last); n++) {
       for (const w of D.levels[n].waves)
         for (const [t] of w.groups) {
@@ -103,9 +109,13 @@
   // ---------- Boss 连战（设计书 48） ----------
   M.bossRushUnlocked = (save) => P.isCleared(save, 60);
 
-  M.buildBossRush = function () {
+  // 可以出场的 Boss：已经搬进小镇的朋友（设计书 52.7）
+  M.bossRushList = (save) => D.town.filter((f) => !save || P.isCleared(save, f.level));
+
+  M.buildBossRush = function (save) {
     const stage = 60;
-    const waves = D.town.map((f) => {
+    const list = M.bossRushList(save);
+    const waves = list.map((f) => {
       // 护卫：Boss 原来那一关里的第一种小怪
       const lvl = D.levels[f.level];
       let escort = 'slime';
@@ -122,18 +132,19 @@
       waves,
       supplyEvery: 3,
       stage,
-      tip: 'Boss 连战：12 个 Boss 按顺序出场，打败当前 Boss 才会来下一个！',
+      tip: `Boss 连战：${list.length} 个 Boss 按顺序出场，打败当前 Boss 才会来下一个！`,
     };
   };
 
   M.applyBossRushResult = function (save, result) {
     const r = (save.bossRush = save.bossRush || { best: 0, bestTime: 0, runs: 0 });
-    const bossTypes = new Set(D.town.map((f) => f.boss));
+    const list = M.bossRushList(save);
+    const bossTypes = new Set(list.map((f) => f.boss));
     let beaten = 0;
     for (const [t, c] of Object.entries(result.killsByType || {})) if (bossTypes.has(t)) beaten += c;
-    beaten = Math.min(beaten, D.town.length);
-    const all = beaten === D.town.length;
-    const out = { copper: 0, silver: 0, gold: 0, notes: [], unlocks: [], beaten, oldBest: r.best };
+    beaten = Math.min(beaten, list.length);
+    const all = beaten === list.length;
+    const out = { copper: 0, silver: 0, gold: 0, notes: [], unlocks: [], beaten, total: list.length, oldBest: r.best };
     out.copper = result.killCopper || 0;
     if (beaten > r.best) {
       out.silver = beaten - r.best;
@@ -185,7 +196,7 @@
     for (const ch of key) seed = (seed * 31 + ch.charCodeAt(0)) >>> 0;
     const rng = TD.util.rng(seed);
     const h = Math.max(5, P.highestCleared(save));
-    const level = 1 + rng.int(Math.min(h, P.isCleared(save, 60) ? 60 : 50));
+    const level = 1 + rng.int(Math.min(h, poolLast(save)));
     const ruleIds = Object.keys(M.dailyRules);
     const rule = ruleIds[rng.int(ruleIds.length)];
     return { key, level, rule, seed, done: !!(save.daily && save.daily[key]) };

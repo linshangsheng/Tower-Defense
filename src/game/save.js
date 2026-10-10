@@ -116,6 +116,7 @@
     const dodgy = share('kite');
     if (magicProof > 0.25) return { id: 'cannon', reason: '熔岩怪物不怕魔法，用物理重炮' };
     if (dodgy > 0.3) return { id: 'orb', reason: '风筝怪躲不开闪电，跳跃还能连着打好几只' };
+    if (share('hermitCrab') > 0.25) return { id: 'orb', reason: '闪电在好几只寄居蟹之间跳，不容易把一只打得缩壳' };
     if (spirit > 0.2) return { id: 'staff', reason: '小幽灵几乎不怕物理攻击' };
     if (armored > 0.25) return { id: 'staff', reason: '魔法伤害无视物理护甲' };
     if (flying > 0.35) return { id: 'crossbow', reason: '一次射 3 支，对飞行怪伤害 +50%' };
@@ -160,6 +161,8 @@
         }
       }
     } else if ((spirit > 0.2 || dodgy > 0.3 || lvl.type === 'union') && magicPick) weapon = magicPick;
+    // 寄居蟹多的关：分散火力（设计书 52.2）
+    else if (share('hermitCrab') > 0.25 && (magicPick === 'orb' || owned('crossbow'))) weapon = magicPick === 'orb' ? 'orb' : 'crossbow';
     else if (armored > 0.25 && owned('staff')) weapon = 'staff';
     else if (armored > 0.25 && owned('cannon')) weapon = 'cannon';
     else if (flying > 0.35 && owned('crossbow')) weapon = 'crossbow';
@@ -239,7 +242,8 @@
 
     // 有治疗、光环、远程等辅助型怪物时用"威胁优先"（模拟验证：第 22 关城墙剩余 76% → 95%）
     // 只有毒蛙这种远程持续伤害的怪，"威胁优先"才明显更好（设计书 22.7）
-    const supports = share('frog') + share('imp') + share('rainbowBird');
+    // 第七章：海马、盾龟也算辅助型；波波的触手算远程（设计书 52.3）
+    const supports = share('frog') + share('imp') + share('rainbowBird') + share('seahorse') + share('turtle');
     lo.target = lvl.type === 'raid' ? 'flying' : supports > 0.03 ? 'smart' : 'nearest';
     if (lo.target !== 'nearest') notes.push('目标：' + D.targetModes[lo.target]);
     return notes;

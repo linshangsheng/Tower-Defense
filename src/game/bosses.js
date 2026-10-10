@@ -1,4 +1,4 @@
-// Boss AI（设计书 18.5、19、20、21、22、23、33）：从 battle.js 拆出，挂到 Battle 原型上
+// Boss AI（设计书 18.5、19、20、21、22、23、33、52）：从 battle.js 拆出，挂到 Battle 原型上
 // 每个 Boss 的 update 由 Battle.updateMonsters 按 def.ai 调用（见 BOSS_UPDATE）
 (function (TD) {
   'use strict';
@@ -30,7 +30,8 @@
       } else if (ai === 'thunderKing') {
         const T = D.thunderKing;
         m.ai = { phase: 1, mode: 'walk', summonTimer: T.summonFirst, summons: 0, chargeTimer: T.chargeFirst, warnTimer: 0, chargeDmg: 0 };
-      }
+      } else if (ai === 'pearlClam') m.ai = { phase: 1, mode: 'walk', open: false, cycleTimer: 0, pearlTimer: 0 };
+      else if (ai === 'octoKing') m.ai = { phase: 1, mode: 'walk', summonTimer: D.octoKing.summonFirst, slots: null, guarded: false, alive: 0 };
     },
 
     updateBoarKing(m, dt) {
@@ -561,6 +562,116 @@
         ai.chargeDmg = 0;
         this.emit('bossWarn', { m, lane: m.lane, duration: T.chargeWarn });
       }
+    },
+
+    // 贝贝：合壳（几乎打不动 + 召唤寄居蟹）↔ 张壳（易伤 + 吐珍珠）（设计书 52.3）
+    updatePearlClam(m, dt) {
+      const B = D.pearlClam;
+      const ai = m.ai;
+      if (ai.phase === 1 && m.hp / m.maxHp < B.lowBelow) {
+        ai.phase = 2;
+        this.emit('bossPhase', { m, phase: 2, text: '贝贝着急了：开合得更快了！' });
+      }
+      if (ai.mode === 'walk') {
+        if (m.x > B.holdX) return;
+        m.x = B.holdX;
+        ai.mode = 'hold';
+        this.clamClose(m);
+        return;
+      }
+      if (this.time < m.stunUntil) return;
+      ai.cycleTimer -= dt;
+      if (ai.cycleTimer <= 0) {
+        if (ai.open) this.clamClose(m);
+        else {
+          ai.open = true;
+          ai.cycleTimer = ai.phase === 2 ? B.openTime2 : B.openTime;
+          ai.cycleMax = ai.cycleTimer;
+          ai.pearlTimer = B.pearlEvery * 0.5;
+          this.emit('clamOpen', { m });
+        }
+      }
+      if (ai.open) {
+        ai.pearlTimer -= dt;
+        if (ai.pearlTimer <= 0) {
+          ai.pearlTimer += B.pearlEvery;
+          this.hitWall(B.pearlDamage * this.D, m);
+          this.emit('pearl', { m });
+        }
+      }
+    },
+
+    clamClose(m) {
+      const B = D.pearlClam;
+      const ai = m.ai;
+      ai.open = false;
+      ai.cycleTimer = ai.phase === 2 ? B.closedTime2 : B.closedTime;
+      ai.cycleMax = ai.cycleTimer;
+      for (let i = 0; i < B.crabCount; i++) this.spawnMonster('hermitCrab', this.rng.int(this.lanes), Math.min(C.spawnX, m.x + 30 + this.rng() * 40));
+      if (ai.phase === 2) this.spawnMonster('seahorse', this.rng.int(this.lanes), Math.min(C.spawnX, m.x + 60));
+      this.emit('clamClose', { m });
+      this.emit('bossSummon', { m });
+    },
+
+    // 波波：触手护身 → 吸盘回血 → 大漩涡（设计书 52.3）
+    updateOctoKing(m, dt) {
+      const O = D.octoKing;
+      const ai = m.ai;
+      const ratio = m.hp / m.maxHp;
+      if (ai.phase === 1 && ratio < O.phase2Below) {
+        ai.phase = 2;
+        this.emit('bossPhase', { m, phase: 2, text: '波波的吸盘在吸收力量！快打掉触手！' });
+      }
+      if (ai.phase === 2 && ratio < O.phase3Below) {
+        ai.phase = 3;
+        this.whirl = true;
+        ai.mode = 'walk';
+        if (ai.slots) for (const sl of ai.slots) if (!sl.m) this.growTentacle(m, sl);
+        this.emit('bossPhase', { m, phase: 3, text: '大漩涡！触手全部长回来了，所有怪物都变快了！' });
+      }
+      if (ai.mode === 'walk' && ai.phase < 3 && m.x <= O.holdX) {
+        m.x = O.holdX;
+        ai.mode = 'hold';
+      }
+      // 第一次停下时，在其余车道伸出触手
+      if (!ai.slots && m.x <= O.holdX) {
+        ai.slots = [];
+        for (let l = 0; l < this.lanes && ai.slots.length < O.tentacles; l++) if (l !== m.lane) ai.slots.push({ lane: l, m: null, regrowAt: 0 });
+        for (const sl of ai.slots) this.growTentacle(m, sl);
+      }
+      let alive = 0;
+      if (ai.slots) {
+        for (const sl of ai.slots) {
+          if (sl.m && sl.m.dead) {
+            sl.m = null;
+            sl.regrowAt = this.time + (ai.phase >= 2 ? O.regrow2 : O.regrow);
+          }
+          if (!sl.m && this.time >= sl.regrowAt) this.growTentacle(m, sl);
+          if (sl.m) alive++;
+        }
+      }
+      ai.alive = alive;
+      ai.guarded = alive >= O.guardMin;
+      // 吸盘：每条活着的触手给波波回血
+      if (ai.phase >= 2 && alive > 0 && m.hp < m.maxHp) m.hp = Math.min(m.maxHp, m.hp + m.maxHp * O.suckPct * alive * dt);
+      if (this.time < m.stunUntil) return;
+      if (m.x <= C.spawnX) {
+        ai.summonTimer -= dt;
+        if (ai.summonTimer <= 0) {
+          ai.summonTimer = O.summonEvery;
+          const types = ai.phase === 1 ? ['flyingFish', 'flyingFish'] : ['urchin', 'seahorse'];
+          for (const t of types) this.spawnMonster(t, this.rng.int(this.lanes), Math.min(C.spawnX, m.x + 30 + this.rng() * 40));
+          this.emit('bossSummon', { m });
+        }
+      }
+    },
+
+    growTentacle(m, sl) {
+      const t = this.spawnMonster('tentacle', sl.lane, D.octoKing.tentacleX);
+      t.owner = m;
+      t.rangedTimer = 1.5 + this.rng();
+      sl.m = t;
+      this.emit('tentacleGrow', { m: t });
     },
 
     splitInk(m) {

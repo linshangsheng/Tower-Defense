@@ -504,7 +504,7 @@
           title: open ? c.name : `通关第 ${c.levels[0] - 1} 关后开放`,
           onclick: () => (sfx('click'), UI.showMap(c.id)),
         },
-        open ? '一二三四五六'[c.id - 1] : '🔒'
+        open ? '一二三四五六七八九十'[c.id - 1] : '🔒'
       );
     });
     const nodes = ch.levels.map((n, i) => {
@@ -556,14 +556,14 @@
         : h('div', { class: 'map-note' }, `恭喜通关「${ch.name}」！全部 ${D.chapters.length} 章都守住了。可以回头挑战三星和王冠，或者去无尽模式刷新纪录。`);
     screenEl = h(
       'div',
-      { class: 'screen map-screen' + (ch.theme.desert ? ' desert' : ch.theme.swamp ? ' swamp' : ch.theme.snow ? ' snow' : ch.theme.lava ? ' lava' : ch.theme.sky6 ? ' sky6' : '') },
+      { class: 'screen map-screen' + (ch.theme.desert ? ' desert' : ch.theme.swamp ? ' swamp' : ch.theme.snow ? ' snow' : ch.theme.lava ? ' lava' : ch.theme.sky6 ? ' sky6' : ch.theme.sea7 ? ' sea7' : '') },
       path,
       h(
         'div',
         { class: 'topbar' },
         h('button', { class: 'btn small', onclick: () => (sfx('click'), UI.showTitle()) }, '‹ 标题'),
         h('div', { class: 'chapter-tabs' }, chapterTabs),
-        h('div', { class: 'chapter-title', title: `第${'一二三四五六'[ch.id - 1]}章 · ${ch.name}` }, ch.name, h('span', { class: 'chapter-stars' }, ` ★ ${totalStars}/${ch.levels.length * 3}`), P.crowns(s, ch.levels) ? h('span', { class: 'chapter-crowns', title: '本章王冠（挑战难度通关）' }, `👑${P.crowns(s, ch.levels)}`) : null),
+        h('div', { class: 'chapter-title', title: `第${'一二三四五六七八九十'[ch.id - 1]}章 · ${ch.name}` }, ch.name, h('span', { class: 'chapter-stars' }, ` ★ ${totalStars}/${ch.levels.length * 3}`), P.crowns(s, ch.levels) ? h('span', { class: 'chapter-crowns', title: '本章王冠（挑战难度通关）' }, `👑${P.crowns(s, ch.levels)}`) : null),
         h('div', { class: 'power' }, '战力 ', h('b', null, P.power(s))),
         currencyBar(),
         P.isCleared(s, 5) ? h('button', { class: 'btn small icon-btn', title: '王国小镇', onclick: () => (sfx('click'), UI.showTown()) }, '🏘') : null,

@@ -228,6 +228,28 @@
         this.burst(e.m.x, e.m.y - 30, '#f2efe6', 30, 260);
         this.text(e.m.x, e.m.y - 110, '还没完呢…', '#c58cff', 26, 1.5);
       });
+      // 第七章（设计书 52.6）
+      on('shell', (e) => this.text(e.m.x, e.m.y - 46, '缩壳', '#f2d2a8', 15, 0.5));
+      on('leap', (e) => this.burst(e.m.x, e.m.y + 2, '#bfe8ff', 6, 120));
+      on('bubble', (e) => this.fx.push({ kind: 'spit', x0: e.from.x - 14, y0: e.from.y - 40, x1: e.m.x, y1: e.m.y + e.m.yOffset - 20, life: 0.4, age: 0, bubble: true }));
+      on('bubblePop', (e) => {
+        this.fx.push({ kind: 'ring', x: e.x, y: e.y - 18, r0: 14, r1: 30, color: 'rgba(122,208,255,', life: 0.25, age: 0 });
+        this.text(e.x, e.y - 40, '啵', '#7ad0ff', 16, 0.45);
+      });
+      on('spikes', (e) => {
+        this.fx.push({ kind: 'ring', x: e.x, y: e.y, r0: 8, r1: e.radius, color: 'rgba(138,90,200,', life: 0.35, age: 0 });
+        this.burst(e.x, e.y - 10, '#8a5ac8', 10, 220);
+      });
+      on('slap', (e) => {
+        this.fx.push({ kind: 'spit', x0: e.x - 10, y0: e.y - 50, x1: C.wallX - 10, y1: e.y - 30, life: 0.35, age: 0, ink: true });
+        this.shake = Math.max(this.shake, 3);
+      });
+      on('clamOpen', (e) => this.text(e.m.x, e.m.y - 110, '张壳了！快打！', '#ff8ab4', 24, 0.9));
+      on('clamClose', (e) => this.burst(e.m.x, e.m.y - 30, '#ffb3d1', 8, 140));
+      on('pearl', (e) => this.fx.push({ kind: 'spit', x0: e.m.x - 20, y0: e.m.y - 50, x1: C.wallX - 10, y1: e.m.y - 30, life: 0.45, age: 0, pearl: true }));
+      on('tentacleGrow', (e) => this.burst(e.m.x, e.m.y + 4, '#d9c08a', 10, 160));
+      on('tentacleRetract', () => this.banner('触手都缩回海里去了！'));
+      on('wallBubblePop', () => this.text(C.wallX + 10, C.fieldTop + 40, '泡泡护盾破了', '#7ad0ff', 18, 0.8));
     }
 
     // ---------- 特效工具 ----------
@@ -346,6 +368,14 @@
       if (this.theme.snow) this.drawSnowfall(b && b.time < this.blizzardUntil);
       if (this.theme.lava) this.drawEmbers();
       if (b && b.storm) this.drawStormRain();
+      if (b && b.whirl) this.drawWhirl();
+      if (b && b.wallShield > 0) {
+        // 贝贝的泡泡护盾（助战伙伴，设计书 52.7）
+        ctx.save();
+        ctx.globalAlpha = 0.22 + Math.sin(this.t * 3) * 0.05;
+        S.ellipse(ctx, C.wallX - 20, (C.fieldTop + C.fieldBottom) / 2, 60, (C.fieldBottom - C.fieldTop) / 2 + 10, '#bfe8ff', '#7ad0ff', 3);
+        ctx.restore();
+      }
       if (b && b.time < b.heroStunUntil) this.drawHeroStun(b);
       if (b) this.drawRiftTimer(b);
       if (b && b.time < this.sealUntil) this.drawWallSeal(b);
@@ -379,8 +409,28 @@
       ctx.restore();
     }
 
+    // 波波的大漩涡：画面右侧旋转的水纹（设计书 52.3）
+    drawWhirl() {
+      const ctx = this.ctx;
+      ctx.save();
+      ctx.fillStyle = 'rgba(40,120,170,0.12)';
+      ctx.fillRect(0, 0, C.width, C.height);
+      ctx.strokeStyle = 'rgba(190,235,255,0.5)';
+      ctx.lineWidth = 3;
+      const cx = 1000;
+      const cy = (C.fieldTop + C.fieldBottom) / 2;
+      for (let i = 0; i < 5; i++) {
+        const r = 60 + i * 55;
+        const a0 = this.t * (1.6 - i * 0.2) + i;
+        ctx.beginPath();
+        ctx.ellipse(cx, cy, r, r * 0.55, 0, a0, a0 + Math.PI * 1.2);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
     drawBackground(lanes) {
-      const key = lanes + (this.theme.desert ? 'd' : this.theme.swamp ? 's' : this.theme.snow ? 'w' : this.theme.lava ? 'l' : this.theme.sky6 ? 'c' : 'g');
+      const key = lanes + (this.theme.desert ? 'd' : this.theme.swamp ? 's' : this.theme.snow ? 'w' : this.theme.lava ? 'l' : this.theme.sky6 ? 'c' : this.theme.sea7 ? 'o' : 'g');
       if (!this.bgCache || this.bgCache.key !== key) {
         const c = document.createElement('canvas');
         c.width = C.width;
@@ -406,7 +456,7 @@
     paintBackground(ctx, lanes) {
       const th = this.theme;
       const sky = ctx.createLinearGradient(0, 0, 0, C.fieldTop);
-      sky.addColorStop(0, th.desert ? '#ffd38a' : th.swamp ? '#8f87a8' : th.snow ? '#b9dcf5' : th.lava ? '#2a1420' : th.sky6 ? '#ffd6ea' : '#9fdcff');
+      sky.addColorStop(0, th.desert ? '#ffd38a' : th.swamp ? '#8f87a8' : th.snow ? '#b9dcf5' : th.lava ? '#2a1420' : th.sky6 ? '#ffd6ea' : th.sea7 ? '#7fd0f0' : '#9fdcff');
       sky.addColorStop(1, th.sky);
       ctx.fillStyle = sky;
       ctx.fillRect(0, 0, C.width, C.fieldTop);
@@ -415,6 +465,55 @@
       const snow = !!th.snow;
       const lava = !!th.lava;
       const cloud = !!th.sky6;
+      const sea = !!th.sea7;
+      if (sea) {
+        // 海平面、灯塔和小帆船（设计书 52.6）
+        ctx.fillStyle = '#4ab0d8';
+        ctx.fillRect(0, C.fieldTop - 46, C.width, 46);
+        ctx.strokeStyle = 'rgba(255,255,255,0.55)';
+        ctx.lineWidth = 2;
+        for (let k = 0; k < 18; k++) {
+          const wx = (k * 173) % C.width;
+          const wy = C.fieldTop - 40 + ((k * 37) % 26);
+          ctx.beginPath();
+          ctx.moveTo(wx, wy);
+          ctx.quadraticCurveTo(wx + 9, wy - 4, wx + 18, wy);
+          ctx.stroke();
+        }
+        // 灯塔
+        ctx.fillStyle = '#fff';
+        ctx.beginPath();
+        ctx.moveTo(1040, C.fieldTop - 30);
+        ctx.lineTo(1048, C.fieldTop - 96);
+        ctx.lineTo(1064, C.fieldTop - 96);
+        ctx.lineTo(1072, C.fieldTop - 30);
+        ctx.fill();
+        ctx.fillStyle = '#ff5a5a';
+        ctx.fillRect(1045, C.fieldTop - 76, 22, 10);
+        ctx.fillRect(1042, C.fieldTop - 52, 28, 10);
+        ctx.fillStyle = '#ffe28a';
+        ctx.fillRect(1049, C.fieldTop - 108, 14, 12);
+        ctx.fillStyle = '#ff5a5a';
+        ctx.beginPath();
+        ctx.moveTo(1044, C.fieldTop - 108);
+        ctx.lineTo(1056, C.fieldTop - 120);
+        ctx.lineTo(1068, C.fieldTop - 108);
+        ctx.fill();
+        // 小帆船
+        ctx.fillStyle = '#a07a52';
+        ctx.beginPath();
+        ctx.moveTo(560, C.fieldTop - 34);
+        ctx.lineTo(620, C.fieldTop - 34);
+        ctx.lineTo(608, C.fieldTop - 24);
+        ctx.lineTo(572, C.fieldTop - 24);
+        ctx.fill();
+        ctx.fillStyle = '#fff';
+        ctx.beginPath();
+        ctx.moveTo(590, C.fieldTop - 36);
+        ctx.lineTo(590, C.fieldTop - 76);
+        ctx.lineTo(616, C.fieldTop - 38);
+        ctx.fill();
+      }
       if (cloud) {
         // 彩虹与浮空岛（设计书 33.6）
         const cols = ['#ff7a7a', '#ffb347', '#ffe066', '#7fd67a', '#7ab8ff', '#b48aff'];
@@ -527,7 +626,7 @@
           ctx.stroke();
         }
       }
-      ctx.fillStyle = desert ? '#f0c878' : swamp ? '#5f7a5d' : snow ? '#dbe9f6' : lava ? '#4a3438' : cloud ? '#ffffff' : '#8fd17a';
+      ctx.fillStyle = desert ? '#f0c878' : swamp ? '#5f7a5d' : snow ? '#dbe9f6' : lava ? '#4a3438' : cloud ? '#ffffff' : sea ? '#f6e8c0' : '#8fd17a';
       ctx.beginPath();
       ctx.moveTo(0, C.fieldTop);
       for (let x = 0; x <= C.width; x += 80) ctx.lineTo(x, C.fieldTop - 18 - Math.sin(x * 0.012) * 14 - Math.sin(x * 0.031) * 8);
@@ -543,7 +642,7 @@
         // 小路
         const cy = y0 + h * 0.5 + 8;
         const ph = Math.min(52, h * 0.38);
-        ctx.fillStyle = desert ? '#e9c27a' : swamp ? '#8a7a5a' : snow ? '#cfdcea' : lava ? '#6a4a44' : cloud ? '#f7faff' : '#e3c992';
+        ctx.fillStyle = desert ? '#e9c27a' : swamp ? '#8a7a5a' : snow ? '#cfdcea' : lava ? '#6a4a44' : cloud ? '#f7faff' : sea ? '#fbf1d4' : '#e3c992';
         S.roundRect(ctx, C.wallX - 10, cy - ph / 2, C.width - C.wallX + 20, ph, ph / 2);
         ctx.fill();
         ctx.fillStyle = 'rgba(160,120,70,0.18)';
@@ -556,6 +655,10 @@
           ctx.fillRect(C.wallX, y0 - 4, C.width - C.wallX, 8);
           ctx.fillStyle = '#ffd23f';
           for (let x = C.wallX; x < C.width; x += 40) ctx.fillRect(x + ((i * 13) % 20), y0 - 1, 14, 2);
+        } else if (i > 0 && sea) {
+          // 车道之间是退潮留下的小水沟
+          ctx.fillStyle = 'rgba(90,180,220,0.45)';
+          ctx.fillRect(C.wallX, y0 - 3, C.width - C.wallX, 6);
         } else if (i > 0 && cloud) {
           // 云朵铺成的路之间是蓝天的缝隙
           ctx.fillStyle = 'rgba(150,200,250,0.55)';
@@ -573,6 +676,33 @@
               S.ellipse(ctx, fx, fy, 10, 5, 'rgba(255,255,255,0.95)');
               S.ellipse(ctx, fx + 7, fy - 3, 7, 5, 'rgba(255,255,255,0.95)');
             } else S.ellipse(ctx, fx, fy, 2.6, 2.6, ['#ff8ab4', '#ffd23f', '#7ab8ff'][(k + i) % 3]);
+            continue;
+          }
+          if (sea) {
+            if (k % 3 === 0) {
+              // 小珊瑚
+              ctx.strokeStyle = '#ff8a9a';
+              ctx.lineWidth = 3;
+              ctx.lineCap = 'round';
+              ctx.beginPath();
+              ctx.moveTo(fx, fy + 2);
+              ctx.lineTo(fx, fy - 12);
+              ctx.moveTo(fx, fy - 5);
+              ctx.lineTo(fx - 6, fy - 11);
+              ctx.moveTo(fx, fy - 8);
+              ctx.lineTo(fx + 6, fy - 15);
+              ctx.stroke();
+            } else if (k % 3 === 1) {
+              // 小海星
+              ctx.fillStyle = '#ffb347';
+              ctx.beginPath();
+              for (let a = 0; a < 10; a++) {
+                const r = a % 2 ? 2.5 : 6;
+                const ang = -Math.PI / 2 + (a * Math.PI) / 5;
+                ctx.lineTo(fx + Math.cos(ang) * r, fy + Math.sin(ang) * r);
+              }
+              ctx.fill();
+            } else S.ellipse(ctx, fx, fy, 4, 3, '#fff3e6', 'rgba(200,150,120,0.6)', 1);
             continue;
           }
           if (lava) {
@@ -629,7 +759,7 @@
         }
       }
       // 草丛点缀
-      ctx.fillStyle = desert ? 'rgba(170,120,60,0.35)' : swamp ? 'rgba(40,70,40,0.5)' : snow ? 'rgba(150,180,210,0.35)' : lava ? 'rgba(255,120,60,0.25)' : cloud ? 'rgba(170,200,240,0.3)' : 'rgba(60,130,50,0.5)';
+      ctx.fillStyle = desert ? 'rgba(170,120,60,0.35)' : swamp ? 'rgba(40,70,40,0.5)' : snow ? 'rgba(150,180,210,0.35)' : lava ? 'rgba(255,120,60,0.25)' : cloud ? 'rgba(170,200,240,0.3)' : sea ? 'rgba(190,160,100,0.3)' : 'rgba(60,130,50,0.5)';
       for (let k = 0; k < 40; k++) {
         const x = C.wallX + ((k * 211) % (C.width - C.wallX));
         const y = C.fieldTop + ((k * 97) % (C.fieldBottom - C.fieldTop));
@@ -640,10 +770,10 @@
         ctx.fill();
       }
       // 底部地面
-      ctx.fillStyle = desert ? '#e0b766' : swamp ? '#566f52' : snow ? '#d6e4f2' : lava ? '#3a2a2e' : cloud ? '#dce9fb' : '#7cbf5e';
+      ctx.fillStyle = desert ? '#e0b766' : swamp ? '#566f52' : snow ? '#d6e4f2' : lava ? '#3a2a2e' : cloud ? '#dce9fb' : sea ? '#ecd7a6' : '#7cbf5e';
       ctx.fillRect(0, C.fieldBottom, C.width, C.height - C.fieldBottom);
       // 城墙后方的家园（沙漠里是帐篷，沼泽里是高脚屋）
-      ctx.fillStyle = desert ? '#f5dc9c' : swamp ? '#7f9a74' : snow ? '#eef6fc' : lava ? '#5a4448' : cloud ? '#f0f6ff' : '#b6e3a0';
+      ctx.fillStyle = desert ? '#f5dc9c' : swamp ? '#7f9a74' : snow ? '#eef6fc' : lava ? '#5a4448' : cloud ? '#f0f6ff' : sea ? '#f3e3b8' : '#b6e3a0';
       ctx.fillRect(0, C.fieldTop, C.wallX - 60, C.fieldBottom - C.fieldTop);
       for (let i = 0; i < 4; i++) {
         const y = C.fieldTop + 70 + i * 130;
@@ -659,6 +789,39 @@
           ctx.fillRect(10, y - 4, 62, 10);
           ctx.fillStyle = '#ffd23f';
           ctx.fillRect(34, y + 16, 12, 12);
+          continue;
+        }
+        if (sea) {
+          // 渔村小屋：木头墙、蓝屋顶、晾着的渔网
+          ctx.fillStyle = '#c99a6a';
+          ctx.fillRect(18, y + 8, 46, 30);
+          ctx.strokeStyle = '#8a6a4a';
+          ctx.lineWidth = 2;
+          ctx.strokeRect(18, y + 8, 46, 30);
+          for (let r = 1; r < 3; r++) {
+            ctx.beginPath();
+            ctx.moveTo(18, y + 8 + r * 10);
+            ctx.lineTo(64, y + 8 + r * 10);
+            ctx.stroke();
+          }
+          ctx.fillStyle = ['#4a8ad8', '#2a5a9a', '#5ab8c8', '#4a8ad8'][i];
+          ctx.beginPath();
+          ctx.moveTo(12, y + 10);
+          ctx.lineTo(41, y - 12);
+          ctx.lineTo(70, y + 10);
+          ctx.fill();
+          ctx.fillStyle = '#ffe28a';
+          ctx.fillRect(35, y + 16, 12, 10);
+          ctx.strokeStyle = 'rgba(120,90,60,0.6)';
+          ctx.lineWidth = 1;
+          for (let r = 0; r < 4; r++) {
+            ctx.beginPath();
+            ctx.moveTo(70 + r * 4, y + 12);
+            ctx.lineTo(70 + r * 4, y + 36);
+            ctx.moveTo(70, y + 14 + r * 6);
+            ctx.lineTo(84, y + 14 + r * 6);
+            ctx.stroke();
+          }
           continue;
         }
         if (cloud) {
@@ -1001,7 +1164,39 @@
           ctx.globalAlpha = 1;
         }
       } else {
-        S.monster(ctx, m.type, x, y, def.size, t, { flash: m.hitFlash, attack: m.state === 'attack' || m.state === 'hold', seed: m.id, ai: m.ai, shield: m.shield, regen, wool: m.woolMax ? m.wool / m.woolMax : null, scale: scale * DRAW_SCALE });
+        // 飞鱼跳跃：画一条弧线（设计书 52.6）
+        let leap = 0;
+        let ly = y;
+        if (m.leapUntil > b.time) {
+          leap = 1 - (m.leapUntil - b.time) / def.leap.time;
+          ly = y - Math.sin(leap * Math.PI) * 46;
+        }
+        if (def.guard) {
+          // 盾龟的护卫圈
+          ctx.save();
+          ctx.globalAlpha = 0.18 + Math.sin(this.t * 3 + m.id) * 0.05;
+          S.ellipse(ctx, x, y - 6, def.guard.radius, def.guard.radius * 0.45, null, '#5aa86a', 3);
+          ctx.restore();
+        }
+        S.monster(ctx, m.type, x, ly, def.size, t, { flash: m.hitFlash, attack: m.state === 'attack' || m.state === 'hold', seed: m.id, ai: m.ai, shield: m.shield, regen, wool: m.woolMax ? m.wool / m.woolMax : null, shellIn: m.shellUntil > b.time, leap, scale: scale * DRAW_SCALE });
+        if (m.bubble) {
+          // 海马的泡泡
+          const r = def.size * DRAW_SCALE * 1.15;
+          ctx.save();
+          ctx.globalAlpha = 0.35;
+          S.ellipse(ctx, x, ly - r * 0.9, r, r, '#bfe8ff');
+          ctx.globalAlpha = 0.9;
+          S.ellipse(ctx, x, ly - r * 0.9, r, r, null, '#7ad0ff', 2);
+          S.ellipse(ctx, x - r * 0.4, ly - r * 1.3, r * 0.18, r * 0.12, '#fff');
+          ctx.restore();
+        }
+        if (def.ai === 'octoKing' && m.ai.guarded) {
+          // 触手护身：粉色的护罩
+          ctx.save();
+          ctx.globalAlpha = 0.25 + Math.sin(this.t * 4) * 0.08;
+          S.ellipse(ctx, x, y - def.size * 1.3, def.size * 1.5, def.size * 1.6, null, '#ff8ac0', 5);
+          ctx.restore();
+        }
       }
       if (m.shade && !dark) {
         // 墨影：紫色的眼睛
@@ -1220,6 +1415,25 @@
       ctx.font = 'bold 15px sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText(`${boss.def.name}  ${Math.ceil(boss.hp)} / ${boss.maxHp}${boss.shield > 0 ? '  🛡 ' + Math.ceil(boss.shield) : ''}`, cx, y + 12);
+      if (boss.def.ai === 'octoKing') {
+        ctx.fillStyle = '#fff';
+        for (const r of [TD.data.octoKing.phase2Below, TD.data.octoKing.phase3Below]) ctx.fillRect(x + w * r - 1, y - 2, 2, 18);
+      }
+      // 贝贝的开合倒计时、波波的触手护身（设计书 52.3）
+      const ai = boss.ai || {};
+      let sub = null;
+      if (boss.def.ai === 'pearlClam' && ai.mode === 'hold') sub = { text: ai.open ? `张壳中！快打 ${ai.cycleTimer.toFixed(1)} 秒` : `合壳中… ${ai.cycleTimer.toFixed(1)} 秒后张开`, color: ai.open ? '#ff8ab4' : '#c9b8d6', pr: ai.cycleMax ? ai.cycleTimer / ai.cycleMax : 0 };
+      if (boss.def.ai === 'octoKing' && ai.slots) sub = { text: ai.guarded ? `触手护身：还剩 ${ai.alive} 条，先打触手！` : `触手只剩 ${ai.alive} 条，快打波波！`, color: ai.guarded ? '#c9b8d6' : '#ff8ab4', pr: ai.slots.length ? ai.alive / ai.slots.length : 0 };
+      if (sub) {
+        ctx.fillStyle = 'rgba(40,20,10,0.65)';
+        S.roundRect(ctx, x + w / 2 - 130, y + 22, 260, 22, 8);
+        ctx.fill();
+        ctx.fillStyle = sub.color;
+        ctx.fillRect(x + w / 2 - 124, y + 36, 248 * Math.max(0, Math.min(1, sub.pr)), 5);
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 13px sans-serif';
+        ctx.fillText(sub.text, cx, y + 34);
+      }
       const INT = { boarKing: ['集中火力打断冲锋！'], inkBoss: ['集中火力打断重击！'], windGiant: ['集中火力打断大风！'], thunderKing: ['集中火力打断落雷！'] };
       if (boss.ai && (boss.ai.mode === 'warn' || boss.ai.mode === 'charge') && INT[boss.def.ai]) {
         const need = boss.maxHp * TD.data[boss.def.ai].interruptRatio;
@@ -1517,10 +1731,13 @@
             const x = f.x0 + (f.x1 - f.x0) * k;
             const y = f.y0 + (f.y1 - f.y0) * k - Math.sin(k * Math.PI) * 60;
             if (f.fire) S.ellipse(ctx, x, y, 8, 8, '#ffb347', '#e04848', 2);
+            else if (f.bubble) S.ellipse(ctx, x, y, 7, 7, 'rgba(190,235,255,0.5)', '#7ad0ff', 1.5);
+            else if (f.pearl) S.ellipse(ctx, x, y, 8, 8, '#fff6fb', '#c9a0c0', 2);
+            else if (f.ink) S.ellipse(ctx, x, y, 7, 7, '#e48ac0', '#9a3a78', 2);
             else S.ellipse(ctx, x, y, 6, 6, '#9df58a', '#3d7a2f', 1.5);
-            if (k > 0.9 && !f.burst) {
+            if (k > 0.9 && !f.burst && !f.bubble) {
               f.burst = true;
-              this.burst(f.x1, f.y1, f.fire ? '#ff8a3d' : '#7dff9a', 6, 100);
+              this.burst(f.x1, f.y1, f.fire ? '#ff8a3d' : f.pearl ? '#ffe6f2' : f.ink ? '#e48ac0' : '#7dff9a', 6, 100);
             }
             break;
           }

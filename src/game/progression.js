@@ -608,7 +608,7 @@
     }
     // 首次通关时的功能解锁提示（设计书 38、39）
     if (firstClear) {
-      const FEATURE = { 5: '解锁「王国小镇」（地图上的 🏘）和「每日挑战」（地图右下角）', 10: '解锁 3 倍速：战斗右下角的速度按钮', 20: '解锁「无尽模式」（地图右下角）', 50: '解锁第六章「云端王国」' };
+      const FEATURE = { 5: '解锁「王国小镇」（地图上的 🏘）和「每日挑战」（地图右下角）', 10: '解锁 3 倍速：战斗右下角的速度按钮', 20: '解锁「无尽模式」（地图右下角）', 50: '解锁第六章「云端王国」', 60: '解锁第七章「珊瑚海湾」和「Boss 连战」（地图右下角）' };
       if (FEATURE[n]) out.unlocks.push(FEATURE[n]);
     }
     return out;
@@ -625,6 +625,7 @@
     st.interrupts += result.interrupts || 0;
     st.earlyCalls += result.earlyCalls || 0;
     st.supplies += (result.supplies || []).length;
+    st.bubbles = (st.bubbles || 0) + (result.bubbles || 0);
     for (const k of Object.keys(result.killsByType || {})) st.killsByType[k] = (st.killsByType[k] || 0) + result.killsByType[k];
   };
 

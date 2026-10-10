@@ -42,14 +42,15 @@
 
   // ================= Boss 连战（设计书 48） =================
   UI.startBossRush = function () {
-    const levelDef = TD.modes.buildBossRush();
+    const levelDef = TD.modes.buildBossRush(G().save);
     G().startBattle('bossrush', { kind: 'bossrush', levelDef, stage: levelDef.stage });
   };
 
   UI.showBossRush = function () {
     const s = G().save;
     const r = s.bossRush || { best: 0, bestTime: 0 };
-    const faces = D.town.map((f) => {
+    const list = TD.modes.bossRushList(s);
+    const faces = list.map((f) => {
       const img = TD.sprites.portrait(f.boss, 44);
       img.title = D.monsters[f.boss].name;
       return img;
@@ -58,12 +59,12 @@
       h(
         'div',
         { class: 'preview' },
-        h('div', { class: 'preview-head' }, h('h2', null, '👑 Boss 连战'), h('span', { class: 'tag' }, `最多 ${r.best} / 12${r.bestTime ? ' · 最快 ' + TD.modes.fmtTime(r.bestTime) : ''}`)),
+        h('div', { class: 'preview-head' }, h('h2', null, '👑 Boss 连战'), h('span', { class: 'tag' }, `最多 ${r.best} / ${list.length}${r.bestTime ? ' · 最快 ' + TD.modes.fmtTime(r.bestTime) : ''}`)),
         h('div', { class: 'rush-faces' }, faces),
         h(
           'ul',
           { class: 'mode-rules' },
-          h('li', null, '12 个 Boss 按故事顺序出场，每个带 6 只它那一章的小怪；打败当前 Boss 才会来下一个。'),
+          h('li', null, `${list.length} 个 Boss 按故事顺序出场，每个带 6 只它那一章的小怪；打败当前 Boss 才会来下一个。${list.length < D.town.length ? '通关第七章后，贝贝和波波也会加入。' : ''}`),
           h('li', null, '想刷最快纪录？"提前召唤"可以让下一个 Boss 马上出场——两个 Boss 同时在场，很冒险！'),
           h('li', null, '全部按第 60 关的难度计算；每 3 波一次战场补给；城墙被攻破时结束。'),
           h('li', null, '刷新"打败 Boss 数"纪录时，每多 1 个奖励 1 银；全部打败解锁成就「Boss 克星」（1 金）。')
@@ -146,9 +147,9 @@
         ? `坚持了 ${reward.waves} 波！`
         : '城墙被攻破了…'
       : rush
-      ? reward.beaten >= D.town.length
+      ? reward.beaten >= reward.total
         ? `全部打败！用时 ${TD.modes.fmtTime(res.time)}`
-        : `打败了 ${reward.beaten} / ${D.town.length} 个 Boss`
+        : `打败了 ${reward.beaten} / ${reward.total} 个 Boss`
       : res.win
       ? '挑战成功！'
       : '挑战失败…';

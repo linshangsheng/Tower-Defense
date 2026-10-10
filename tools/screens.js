@@ -21,7 +21,7 @@ const STEPS = [
   ['help', () => (TD.ui.showHelp(), !!document.querySelector('.modal'))],
   ['export', () => (TD.ui.showExport(), !!document.querySelector('textarea'))],
   ['import', () => (TD.ui.showImport(), !!document.querySelector('textarea'))],
-  ...[1, 2, 3, 4, 5, 6].map((c) => [`map-${c}`, (c) => (TD.ui.closeModal(), TD.ui.showMap(c), document.querySelectorAll('.map-node').length === 10), c]),
+  ...[1, 2, 3, 4, 5, 6, 7].map((c) => [`map-${c}`, (c) => (TD.ui.closeModal(), TD.ui.showMap(c), document.querySelectorAll('.map-node').length === 10), c]),
   ['preview', () => (TD.ui.showPreview(45), !!document.querySelector('.preview .mon-card'))],
   ...['loadout', 'attrs', 'weapons', 'skills', 'equip', 'wall', 'items', 'exchange'].map((t) => [`shop-${t}`, (t) => (TD.ui.showShop(45, t), !!document.querySelector('.shop, .screen')), t]),
   ['diary', () => (TD.ui.showMap(5), TD.ui.showDiary(), document.querySelectorAll('.diary-item').length === TD.data.storyOrder.length)],
@@ -29,10 +29,10 @@ const STEPS = [
   ['town', () => (TD.ui.showTown(), !!document.querySelector('.town-canvas'))],
   ['achievements', () => (TD.ui.showAchievements(), document.querySelectorAll('.ach').length === TD.data.achievements.length)],
   ['records', () => (TD.ui.showAchievements('records'), !!document.querySelector('.rec-tile'))],
-  ...[1, 6].map((c) => [`bestiary-${c}`, (c) => (TD.ui.showBestiary(c), !!document.querySelector('.modal')), c]),
+  ...[1, 7].map((c) => [`bestiary-${c}`, (c) => (TD.ui.showBestiary(c), !!document.querySelector('.modal')), c]),
   ['endless', () => (TD.ui.showEndless(), !!document.querySelector('.mode-rules'))],
   ['daily', () => (TD.ui.showDaily(), !!document.querySelector('.preview'))],
-  ['bossrush', () => (TD.ui.showBossRush(), document.querySelectorAll('.rush-faces canvas').length === 12)],
+  ['bossrush', () => (TD.ui.showBossRush(), document.querySelectorAll('.rush-faces canvas').length === TD.modes.bossRushList(TD.game.save).length)],
   ['story', () => (TD.ui.closeModal(), TD.ui.playStory('pre60', () => {}, { replay: true }), !!document.querySelector('.story-overlay'))],
   ['story-skip', () => (document.querySelector('.story-skip').click(), !document.querySelector('.story-overlay'))],
   ['rest', () => ((TD.game.playSeconds = 99999), TD.ui.showMap(5), !!document.querySelector('.rest'))],
@@ -102,7 +102,7 @@ const STEPS = [
   await page.evaluate(() => {
     const s = TD.game.save;
     s.settings.diffChosen = true;
-    for (let k = 1; k <= 60; k++) s.levels[k] = { stars: (k % 3) + 1, clears: 1, crown: k % 4 === 0, mission: k % 2 === 0 };
+    for (let k = 1; k <= 70; k++) s.levels[k] = { stars: (k % 3) + 1, clears: 1, crown: k % 4 === 0, mission: k % 2 === 0 };
     for (const k of TD.data.storyOrder) s.story[k] = 'read';
     for (const t of Object.keys(TD.data.monsters)) s.seenMonsters[t] = true;
     for (const w of Object.keys(s.weapons)) s.weapons[w].owned = true;

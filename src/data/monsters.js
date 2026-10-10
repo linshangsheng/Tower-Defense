@@ -598,6 +598,107 @@
       ai: 'thunderKing',
       desc: '第六章 Boss。爱生气的大雷云：召唤雷团子和彩虹鸟、蓄力落雷、最后掀起暴风雨。',
     },
+    // ---------- 第七章 · 珊瑚海湾（设计书 52.2） ----------
+    hermitCrab: {
+      name: '寄居蟹',
+      hp: 64,
+      speed: 34,
+      dps: 10,
+      armor: 20,
+      copper: 3,
+      size: 24,
+      color: '#ff7a5a',
+      shell: { hits: 4, duration: 1.2, mult: 0.1 },
+      desc: '每挨 4 下打就缩进壳里一小会儿，壳里几乎打不动。别盯着一只打——连发弩、雷电法球分散火力更有效。',
+    },
+    turtle: {
+      name: '盾龟',
+      hp: 140,
+      speed: 24,
+      dps: 12,
+      armor: 40,
+      copper: 5,
+      size: 30,
+      color: '#5aa86a',
+      guard: { radius: 110, mult: 0.6 },
+      desc: '护卫：周围的怪物受到英雄攻击的伤害 −40%。先打掉它，或者用技能。',
+    },
+    flyingFish: {
+      name: '飞鱼',
+      hp: 26,
+      speed: 46,
+      dps: 6,
+      armor: 0,
+      copper: 2,
+      size: 18,
+      color: '#4aa8e8',
+      leap: { every: 2.4, dist: 130, time: 0.45 },
+      desc: '每隔一会儿向前跳一大步，跳在空中时打不到。跑得比看起来快！',
+    },
+    urchin: {
+      name: '海胆',
+      hp: 52,
+      speed: 30,
+      dps: 8,
+      armor: 0,
+      copper: 2,
+      size: 20,
+      color: '#8a5ac8',
+      slam: 30,
+      spikes: { radius: 100, damage: 30 },
+      desc: '被打死时射出尖刺，扎伤周围的怪物。等它挤进怪堆里再打！走到城墙时会先扎一下。',
+    },
+    seahorse: {
+      name: '海马',
+      hp: 38,
+      speed: 40,
+      dps: 4,
+      armor: 0,
+      copper: 3,
+      size: 23,
+      color: '#ffc83f',
+      bubbler: { holdX: 640, every: 3, radius: 180 },
+      desc: '停在远处给怪物套泡泡，泡泡能挡住一次攻击。连发弩、雷电法球能很快戳破泡泡。',
+    },
+    tentacle: {
+      name: '触手',
+      hp: 150,
+      speed: 0,
+      dps: 0,
+      armor: 0,
+      copper: 0,
+      size: 22,
+      color: '#c0508a',
+      bossPart: true,
+      ranged: { holdX: 9999, every: 4, damage: 8 },
+      desc: '波波的触手。只要还有 2 条以上，波波就很难打动。',
+    },
+    pearlClam: {
+      name: '贝贝',
+      hp: 2200,
+      speed: 18,
+      dps: 30,
+      armor: 0,
+      copper: 90,
+      size: 46,
+      color: '#ff9ac0',
+      boss: 'mini',
+      ai: 'pearlClam',
+      desc: '小 Boss。巨大的珍珠贝：合壳时几乎打不动，张壳时露出珍珠——抓住张壳的时候放技能！',
+    },
+    octoKing: {
+      name: '波波',
+      hp: 4000,
+      speed: 14,
+      dps: 40,
+      armor: 0,
+      copper: 400,
+      size: 52,
+      color: '#b04a8a',
+      boss: 'major',
+      ai: 'octoKing',
+      desc: '第七章 Boss。章鱼大王：触手护身、吸盘回血、最后卷起大漩涡。先打触手！',
+    },
   };
 
   // 怪物类型标签（用于新敌人登场卡片、关卡预览）
@@ -626,13 +727,36 @@
     if (def.dodge) t.push('闪避');
     if (def.staticShock) t.push('静电');
     if (def.onDeath) t.push('孢子');
+    if (def.shell) t.push('缩壳');
+    if (def.guard) t.push('护卫');
+    if (def.leap) t.push('跳跃');
+    if (def.spikes) t.push('尖刺');
+    if (def.bubbler) t.push('泡泡');
     return t;
   };
   // 不单独介绍的怪物：分裂产物和 Boss 召唤物
-  TD.data.noIntro = { minijelly: true, minipumpkin: true, snowball: true, inkClone: true, iceDragon: true };
+  TD.data.noIntro = { minijelly: true, minipumpkin: true, snowball: true, inkClone: true, iceDragon: true, tentacle: true };
 
   // 呼呼的参数（设计书 33.3）
   TD.data.windGiant = { holdX: 760, kiteFirst: 3, kiteEvery: 8, kiteCount: 2, gustFirst: 6, gustEvery: 10, gustEveryLow: 7, lowBelow: 0.3, gustWarn: 2, gustPush: 140, interruptRatio: 0.04 };
+  // 贝贝的参数（设计书 52.3）
+  TD.data.pearlClam = { holdX: 760, closedTime: 4.5, openTime: 3, closedTime2: 4, openTime2: 2.5, lowBelow: 0.4, closedMult: 0.1, openMult: 1.3, pearlEvery: 1, pearlDamage: 20, crabCount: 2 };
+  // 波波的参数（设计书 52.3）
+  TD.data.octoKing = {
+    holdX: 800,
+    tentacleX: 560,
+    tentacles: 4,
+    guardMin: 2,
+    guardMult: 0.4,
+    regrow: 25,
+    regrow2: 18,
+    phase2Below: 0.6,
+    phase3Below: 0.25,
+    suckPct: 0.0012,
+    summonFirst: 4,
+    summonEvery: 7,
+    whirlSpeed: 0.2,
+  };
   // 雷雷的参数（设计书 33.3）
   TD.data.thunderKing = {
     holdX: 780,

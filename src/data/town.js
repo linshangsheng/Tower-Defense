@@ -16,5 +16,7 @@
     { boss: 'inkBoss', level: 50, perk: { shot: { every: 25, mult: 3, pick: 'nearest', name: '墨团' } }, perkDesc: '每 25 秒向最近的怪物吐一个墨团（攻击力 ×3）', lines: ['我搬到了城墙边上，每天都能看铛铛站岗。', '我学会了用墨水画画！这是你，这是我。', '……有朋友的感觉，真好。'] },
     { boss: 'windGiant', level: 55, perk: { mods: { slowAll: 0.03 } }, perkDesc: '所有怪物速度 −3%', lines: ['呼——风车磨的面粉，做成了全镇的面包。', '我把风筝都放到了天上，晚上像星星一样。', '下次刮大风之前，我会先打招呼的。'] },
     { boss: 'thunderKing', level: 60, perk: { shot: { every: 20, mult: 4, pick: 'strongest', name: '小闪电' } }, perkDesc: '每 20 秒劈一道小闪电，打血量最多的怪物（攻击力 ×4）', lines: ['轰……今天下了一场小雨，彩虹挂得高高的。', '我在练习小声打雷。轰。（很小声）', '谢谢你们，没有讨厌生气的我。'] },
+    { boss: 'pearlClam', level: 65, perk: { wallBubble: 0.03 }, perkDesc: '每波开始时给城墙一个泡泡护盾，吸收 3% 最大血量的伤害', lines: ['欢迎光临贝贝珍珠店！每一颗珍珠都登记过了。', '啪嗒——不好意思，一紧张就会合上壳。', '城墙的壳……我是说城墙，今天也很结实。'] },
+    { boss: 'octoKing', level: 70, perk: { shot: { every: 18, mult: 3, pick: 'nearest', name: '触手拍' } }, perkDesc: '每 18 秒用触手拍一下最靠近城墙的怪物（攻击力 ×3）', lines: ['咕嘟！今天用八条腿同时帮八户人家修了屋顶。', '我的新家超——大，欢迎来玩！', '有家的感觉，原来是这样暖暖的。'] },
   ];
 })((globalThis.TD = globalThis.TD || {}));

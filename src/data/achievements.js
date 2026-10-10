@@ -17,6 +17,8 @@
     { id: 'ch4', name: '雪原守护者', desc: '通关第四章', reward: { silver: 3 }, check: (s) => cleared(s, 40) },
     { id: 'hero', name: '守城英雄', desc: '击败墨墨', reward: { gold: 1 }, check: (s) => cleared(s, 50) },
     { id: 'ch6', name: '云端守护者', desc: '通关第六章，让雷雷消气', reward: { gold: 1 }, check: (s) => cleared(s, 60) },
+    { id: 'ch7', name: '海湾守护者', desc: '通关第七章，帮波波找到新家', reward: { gold: 1 }, check: (s) => cleared(s, 70) },
+    { id: 'bubbles', name: '啵啵啵', desc: '累计戳破 100 个泡泡', reward: { silver: 3 }, check: (s) => (s.stats.bubbles || 0) >= 100 },
     { id: 'perfect', name: '毫发无损', desc: '第 3 关以后，城墙满血通关任意一关', reward: { silver: 2 }, check: (s, c) => !!(c && c.win && c.level >= 3 && c.wallRatio >= 0.9999) },
     { id: 'close', name: '惊险过关', desc: '城墙剩余不到 5% 时通关', reward: { silver: 2 }, check: (s, c) => !!(c && c.win && c.wallRatio < 0.05) },
     { id: 'noskill', name: '不靠技能', desc: '不带任何主动技能，通关第 10 关以后的任意一关', reward: { silver: 3 }, check: (s, c) => !!(c && c.win && c.level > 10 && c.skillsCarried === 0) },
@@ -25,7 +27,7 @@
     { id: 'supply', name: '补给专家', desc: '累计选择 50 张补给卡', reward: { silver: 2 }, check: (s) => (s.stats.supplies || 0) >= 50 },
     { id: 'stars50', name: '星光闪闪', desc: '累计获得 50 颗星', reward: { silver: 3 }, check: (s) => totalStars(s) >= 50 },
     { id: 'stars150', name: '繁星满天', desc: '累计获得 150 颗星', reward: { gold: 1 }, check: (s) => totalStars(s) >= 150 },
-    { id: 'starsAll', name: '星河璀璨', desc: '获得全部关卡的三星（第六章也算）', reward: { gold: 2 }, check: (s) => Object.keys(TD.data.levels).every((n) => (s.levels[n] || {}).stars >= 3) },
+    { id: 'starsAll', name: '星河璀璨', desc: '获得全部关卡的三星（第六、七章也算）', reward: { gold: 2 }, check: (s) => Object.keys(TD.data.levels).every((n) => (s.levels[n] || {}).stars >= 3) },
     { id: 'weapons', name: '武器收藏家', desc: '拥有全部 6 把武器', reward: { silver: 3 }, check: (s) => Object.keys(TD.data.weapons).every((w) => s.weapons[w] && s.weapons[w].owned) },
     {
       id: 'skills',

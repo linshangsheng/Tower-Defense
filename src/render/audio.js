@@ -152,10 +152,22 @@
       tone(3136, 0.25, 'sine', 0.06, 1, 0.01);
     },
     streak: () => [784, 988, 1175, 1568].forEach((f, i) => tone(f, 0.12, 'triangle', 0.14, 1, i * 0.06)),
+    // 第七章（设计书 52.6）
+    bubblePop: () => tone(900, 0.06, 'sine', 0.1, 2.2),
+    shell: () => tone(320, 0.07, 'square', 0.06, 0.7),
+    spikes: () => {
+      noise(0.08, 0.2, 5000);
+      tone(1200, 0.06, 'triangle', 0.06, 0.6);
+    },
+    splash: () => noise(0.25, 0.18, 1200),
+    clam: () => {
+      tone(220, 0.12, 'triangle', 0.15, 0.6);
+      tone(660, 0.18, 'sine', 0.08, 1.2, 0.05);
+    },
   };
 
   // 同一种音效有最小间隔，避免成群怪物时刺耳
-  const MIN_GAP = { hit: 0.05, pop: 0.04, wall: 0.12, shoot: 0.07, coin: 0.06, crit: 0.08, dodge: 0.1, shear: 0.15, zap: 0.3 };
+  const MIN_GAP = { hit: 0.05, pop: 0.04, wall: 0.12, shoot: 0.07, coin: 0.06, crit: 0.08, dodge: 0.1, shear: 0.15, zap: 0.3, bubblePop: 0.06, shell: 0.12, spikes: 0.1, splash: 0.2 };
 
   A.play = function (name) {
     if (!A.enabled) return;

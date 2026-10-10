@@ -283,8 +283,12 @@
     shears: { name: '羊毛剪', desc: '云朵羊的羊毛 −60%', mods: { woolCut: 0.6 }, icon: 'fury', minLevel: 51 },
     lightningRod: { name: '避雷针', desc: '英雄不会被电麻或震晕', mods: { stunImmune: 1 }, icon: 'eye', minLevel: 51 },
     windFlag: { name: '顺风旗', desc: '风筝怪的闪避率 −25%', mods: { dodgeCut: 0.25 }, icon: 'arrowUp', minLevel: 51 },
+    // 第七章（设计书 52.4）
+    crowbar: { name: '小撬棍', desc: '寄居蟹缩壳的时间 −60%', mods: { shellCut: 0.6 }, icon: 'cannon', minLevel: 61 },
+    pin: { name: '戳戳针', desc: '泡泡被戳破的那一下，仍有 50% 伤害生效', mods: { pinPop: 0.5 }, icon: 'arrowUp', minLevel: 61 },
+    net: { name: '渔网', desc: '飞鱼的跳跃距离 −50%', mods: { leapCut: 0.5 }, icon: 'freeze', minLevel: 61 },
   };
-  TD.data.supplyBotOrder = ['sharp', 'quick', 'master', 'handWarmer', 'fireTip', 'obsidian', 'lens', 'extinguisher', 'lightningRod', 'windFlag', 'shears', 'arcane', 'breaker', 'exorcism', 'antidote', 'flare', 'eagle', 'fury', 'frostTip', 'farsight', 'bricks', 'purse'];
+  TD.data.supplyBotOrder = ['sharp', 'quick', 'master', 'handWarmer', 'fireTip', 'obsidian', 'lens', 'extinguisher', 'lightningRod', 'windFlag', 'shears', 'pin', 'crowbar', 'net', 'arcane', 'breaker', 'exorcism', 'antidote', 'flare', 'eagle', 'fury', 'frostTip', 'farsight', 'bricks', 'purse'];
 
   TD.data.targetModes = {
     nearest: '最近优先',

@@ -80,6 +80,13 @@
     battle.on('gust', () => TD.audio.play('gust'));
     battle.on('thunderBolt', () => TD.audio.play('bolt'));
     battle.on('stunBlocked', () => TD.audio.play('ding'));
+    // 第七章（设计书 52.6）
+    battle.on('bubblePop', () => TD.audio.play('bubblePop'));
+    battle.on('shell', () => TD.audio.play('shell'));
+    battle.on('spikes', () => TD.audio.play('spikes'));
+    battle.on('leap', () => TD.audio.play('splash'));
+    battle.on('clamOpen', () => TD.audio.play('clam'));
+    battle.on('tentacleGrow', () => TD.audio.play('splash'));
     battle.on('win', () => {
       game.renderer.mood = 'win';
       TD.audio.play('win');
