@@ -108,6 +108,7 @@
   // ================= 标题 =================
   UI.showTitle = function () {
     clear();
+    TD.music.play(1, 'calm');
     game.renderer.mood = 'idle';
     const has = P.highestCleared(game.save) > 0 || game.save.copper > 0;
     screenEl = h(
@@ -146,6 +147,20 @@
           },
         }),
         ' 音效'
+      ),
+      h(
+        'label',
+        { class: 'row' },
+        h('input', {
+          type: 'checkbox',
+          checked: s.music !== false ? true : null,
+          onchange: (e) => {
+            s.music = e.target.checked;
+            TD.music.setEnabled(s.music);
+            game.persist();
+          },
+        }),
+        ' 背景音乐'
       ),
       h(
         'div',
@@ -328,6 +343,7 @@
     }
     const ch = D.chapters.find((c) => c.id === chapterId) || D.chapters[0];
     UI.mapChapter = ch.id;
+    TD.music.play(ch.id, 'calm');
     game.renderer.setChapter(ch);
     const chapterTabs = D.chapters.map((c) => {
       const open = P.isUnlocked(s, c.levels[0]);

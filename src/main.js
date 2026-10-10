@@ -79,6 +79,10 @@
       TD.audio.play('lose');
     });
     game.persist();
+    TD.music.play(TD.data.chapterOf(battle.stage).id, 'battle');
+    battle.on('waveStart', (e) => {
+      if (e.chapter) TD.music.play(e.chapter, 'battle');
+    });
     TD.ui.showBattle(battle);
   };
 
@@ -268,13 +272,20 @@
       renderDt = dt * game.speed;
     } else if (game.paused || game.introPaused) renderDt = 0;
     game.renderer.render(renderDt);
-    if (b) TD.ui.updateHud();
+    if (b) {
+      TD.ui.updateHud();
+      if (!b.over) {
+        const ratio = b.wall.hp / b.wall.max;
+        TD.music.setTension(ratio < 0.35 ? 2 : b.monsters.some((m) => m.def.boss && !m.dead) ? 1 : 0);
+      }
+    }
     requestAnimationFrame(frame);
   }
 
   function init() {
     game.save = TD.saveStore.load() || P.newSave();
     TD.audio.enabled = game.save.settings.sound !== false;
+    TD.music.enabled = game.save.settings.music !== false;
     const canvas = document.getElementById('game');
     game.renderer = new TD.Renderer(canvas);
     TD.ui.init(game);
@@ -282,7 +293,10 @@
     window.addEventListener('resize', fit);
 
     // 首次交互时解锁音频
-    const unlock = () => TD.audio.unlock();
+    const unlock = () => {
+      TD.audio.unlock();
+      setTimeout(() => TD.music.resume(), 50);
+    };
     window.addEventListener('pointerdown', unlock);
     window.addEventListener('keydown', unlock);
 
