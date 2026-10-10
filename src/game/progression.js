@@ -35,8 +35,9 @@
       },
       levels: {},
       chapterStarGold: {},
-      stats: { battles: 0, wins: 0, kills: 0 },
+      stats: { battles: 0, wins: 0, kills: 0, interrupts: 0, earlyCalls: 0, supplies: 0, killsByType: {} },
       seenMonsters: {},
+      achievements: {},
       settings: { sound: true, speed: 1 },
     };
   };
@@ -478,13 +479,40 @@
     save.stats.battles++;
     if (result.win) save.stats.wins++;
     save.stats.kills += result.kills || 0;
+    save.stats.interrupts += result.interrupts || 0;
+    save.stats.earlyCalls += result.earlyCalls || 0;
+    save.stats.supplies += (result.supplies || []).length;
+    for (const k of Object.keys(result.killsByType || {})) save.stats.killsByType[k] = (save.stats.killsByType[k] || 0) + result.killsByType[k];
 
+    out.achievements = P.checkAchievements(save, Object.assign({ level: n }, result));
     const names = { active: '主动技能槽', passive: '被动技能槽', item: '消耗品槽' };
     for (const k of Object.keys(before)) {
       const now = P.slotCount(save, k);
       if (now > before[k]) out.unlocks.push(`解锁第 ${now} 个${names[k]}`);
     }
     return out;
+  };
+
+  // 成就（设计书 24.1）：检查并发放奖励，返回新达成的成就
+  P.checkAchievements = function (save, ctx) {
+    const got = [];
+    save.achievements = save.achievements || {};
+    for (const a of D.achievements || []) {
+      if (save.achievements[a.id]) continue;
+      let ok = false;
+      try {
+        ok = a.check(save, ctx || null);
+      } catch (e) {
+        ok = false;
+      }
+      if (!ok) continue;
+      save.achievements[a.id] = true;
+      save.copper += a.reward.copper || 0;
+      save.silver += a.reward.silver || 0;
+      save.gold += a.reward.gold || 0;
+      got.push(a);
+    }
+    return got;
   };
 
   // 失败后的强化建议：挑出当前买得起（或最接近）的高性价比升级

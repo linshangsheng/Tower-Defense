@@ -70,6 +70,11 @@
       this.autoSupply = !!opts.autoSupply;
       this.castCount = 0;
 
+      this.killsByType = {};
+      this.interrupts = 0;
+      this.earlyCalls = 0;
+      this.on('bossInterrupt', () => this.interrupts++);
+
       this.killCopper = 0;
       this.earlyCopper = 0;
       this.kills = 0;
@@ -174,6 +179,7 @@
       if (this.waveState !== 'waiting' || this.waveIndex >= this.totalWaves - 1) return -1;
       const bonus = Math.floor(this.countdown) * C.earlyCallCopperPerSec;
       this.earlyCopper += bonus;
+      this.earlyCalls++;
       this.countdown = 0;
       this.emit('earlyCall', { bonus });
       return bonus;
@@ -1110,7 +1116,10 @@
       m.hp = 0;
       m.diedAt = this.time;
       const copper = noReward ? 0 : m.def.copper;
-      if (!noReward) this.kills++;
+      if (!noReward) {
+        this.kills++;
+        this.killsByType[m.type] = (this.killsByType[m.type] || 0) + 1;
+      }
       this.killCopper += copper;
       this.emit('death', { m, copper, noReward: !!noReward });
       const od = m.def.onDeath;
@@ -1621,6 +1630,10 @@
         charm: this.charm,
         copperBonus: this.mods.copperBonus,
         supplies: this.supplyPicked.slice(),
+        killsByType: Object.assign({}, this.killsByType),
+        interrupts: this.interrupts,
+        earlyCalls: this.earlyCalls,
+        skillsCarried: this.skills.length,
         itemsUsed: this.itemsUsed.slice(),
         wave: this.waveIndex + 1,
       };

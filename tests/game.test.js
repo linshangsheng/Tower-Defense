@@ -653,3 +653,40 @@ test('墨墨：魔王形态的重击可以被打断；裂隙狂暴会倒计时',
   assert.strictEqual(m.ai.phase, 4);
   assert.ok(m.ai.rageTimer > 25);
 });
+
+// ---------- 成就 ----------
+test('成就：首通第 1 关发奖励，且只发一次', () => {
+  const s = P.newSave();
+  const r = P.applyResult(s, 1, { win: true, wallRatio: 1, killCopper: 0, earlyCopper: 0 });
+  assert.ok(r.achievements.some((a) => a.id === 'first'));
+  const silver = s.silver;
+  const r2 = P.applyResult(s, 1, { win: true, wallRatio: 1, killCopper: 0, earlyCopper: 0 });
+  assert.ok(!r2.achievements.some((a) => a.id === 'first'));
+  assert.strictEqual(s.silver, silver, '重复通关不再发首通和成就奖励');
+});
+
+test('成就：毫发无损、不靠技能按战斗结果判定', () => {
+  const s = P.newSave();
+  for (let k = 1; k <= 11; k++) s.levels[k] = { stars: 1, clears: 1 };
+  const r = P.applyResult(s, 12, { win: true, wallRatio: 1, killCopper: 0, earlyCopper: 0, skillsCarried: 0 });
+  const ids = r.achievements.map((a) => a.id);
+  assert.ok(ids.includes('perfect'));
+  assert.ok(ids.includes('noskill'));
+});
+
+test('成就：累计统计（打断、击败 Boss）', () => {
+  const s = P.newSave();
+  const kbt = {};
+  for (const k of Object.keys(D.monsters)) if (D.monsters[k].boss) kbt[k] = 1;
+  const r = P.applyResult(s, 1, { win: false, wallRatio: 0, killCopper: 0, earlyCopper: 0, interrupts: 10, killsByType: kbt });
+  const ids = r.achievements.map((a) => a.id);
+  assert.ok(ids.includes('interrupt'));
+  assert.ok(ids.includes('bosses'));
+});
+
+test('战斗统计击败数和提前召唤次数', () => {
+  const s = P.newSave();
+  const b = new TD.Battle({ level: 1, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 3 });
+  const r = b.runToEnd();
+  assert.strictEqual(Object.values(r.killsByType).reduce((a, c) => a + c, 0), r.kills);
+});

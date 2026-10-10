@@ -118,6 +118,7 @@
         'div',
         { class: 'title-buttons' },
         h('button', { class: 'btn big primary', onclick: () => (sfx('click'), UI.showMap()) }, has ? '继续游戏' : '开始游戏'),
+        h('div', { class: 'btn-row' }, h('button', { class: 'btn', style: { flex: 1 }, onclick: () => (sfx('click'), UI.showBestiary()) }, '图鉴'), h('button', { class: 'btn', style: { flex: 1 }, onclick: () => (sfx('click'), UI.showAchievements()) }, '成就')),
         h('button', { class: 'btn', onclick: () => (sfx('click'), UI.showSettings()) }, '设置'),
         h('button', { class: 'btn', onclick: () => (sfx('click'), UI.showHelp()) }, '玩法说明')
       ),
@@ -338,7 +339,7 @@
           title: open ? c.name : `通关第 ${c.levels[0] - 1} 关后开放`,
           onclick: () => (sfx('click'), UI.showMap(c.id)),
         },
-        open ? `第${'一二三四五'[c.id - 1]}章` : '🔒'
+        open ? '一二三四五'[c.id - 1] : '🔒'
       );
     });
     const nodes = ch.levels.map((n, i) => {
@@ -398,6 +399,8 @@
         h('div', { class: 'chapter-title' }, `第${'一二三四五'[ch.id - 1]}章 · ${ch.name}`, h('span', { class: 'chapter-stars' }, ` ★ ${totalStars}/${ch.levels.length * 3}`)),
         h('div', { class: 'power' }, '战力 ', h('b', null, P.power(s))),
         currencyBar(),
+        h('button', { class: 'btn small', title: '怪物图鉴', onclick: () => (sfx('click'), UI.showBestiary()) }, '📖'),
+        h('button', { class: 'btn small', title: '成就', onclick: () => (sfx('click'), UI.showAchievements()) }, '🏆'),
         h('button', { class: 'btn small primary', onclick: () => (sfx('click'), UI.showShop(null, 'loadout')) }, '商店 / 配装')
       ),
       nodes,
@@ -558,6 +561,7 @@
         onclick: () => {
           if (onBuy()) {
             sfx('buy');
+            UI.announce(P.checkAchievements(s));
             game.persist();
             renderShop();
           } else sfx('error');
@@ -1017,6 +1021,84 @@
     if (nudgeIdx >= 0) hud.nudge.style.left = 10 + nudgeIdx * 102 + 'px';
   };
 
+  // ================= 成就与图鉴（设计书 24 章） =================
+  UI.announce = function (list) {
+    (list || []).forEach((a, i) => setTimeout(() => UI.toast(`🏆 达成成就「${a.name}」+${P.costText(a.reward)}`, 'achieve', 2600), i * 900));
+  };
+
+  UI.showAchievements = function () {
+    const s = game.save;
+    const all = D.achievements;
+    const done = all.filter((a) => (s.achievements || {})[a.id]).length;
+    const cards = all.map((a) => {
+      const ok = (s.achievements || {})[a.id];
+      return h('div', { class: 'ach' + (ok ? ' done' : '') }, h('div', { class: 'ach-icon' }, ok ? '🏆' : '🔒'), h('div', { class: 'ach-main' }, h('b', null, a.name), h('span', null, a.desc)), h('div', { class: 'ach-reward' }, P.costText(a.reward)));
+    });
+    modal(
+      h(
+        'div',
+        null,
+        h('h2', null, `成就 ${done} / ${all.length}`),
+        h('div', { class: 'ach-stats' }, `战斗 ${s.stats.battles} 次 · 胜利 ${s.stats.wins} 次 · 击败 ${s.stats.kills} 只 · 打断 ${s.stats.interrupts || 0} 次 · 提前召唤 ${s.stats.earlyCalls || 0} 次`),
+        h('div', { class: 'ach-grid' }, cards),
+        h('div', { class: 'modal-buttons' }, h('button', { class: 'btn', onclick: UI.closeModal }, '关闭'))
+      ),
+      { cls: 'wide', closeOnBack: true }
+    );
+  };
+
+  // 怪物首次出现的章节（召唤物、分裂产物跟随母体）
+  function monsterChapter(type) {
+    const extra = { minijelly: 1, gobling: 1, minipumpkin: 3, snowball: 4, iceDragon: 4, inkClone: 5 };
+    if (extra[type]) return extra[type];
+    const nums = Object.keys(D.levels).map(Number).sort((a, b) => a - b);
+    for (const n of nums) for (const w of D.levels[n].waves) for (const [t] of w.groups) if (t === type) return D.chapterOf(n).id;
+    return 1;
+  }
+
+  UI.showBestiary = function (chapterId) {
+    const s = game.save;
+    chapterId = chapterId || 1;
+    const seen = s.seenMonsters || {};
+    const kills = s.stats.killsByType || {};
+    const types = Object.keys(D.monsters).filter((t) => monsterChapter(t) === chapterId);
+    const total = Object.keys(D.monsters).length;
+    const seenCount = Object.keys(D.monsters).filter((t) => seen[t] || kills[t]).length;
+    const tabs = D.chapters.map((c) => h('button', { class: 'btn small' + (c.id === chapterId ? ' primary' : ''), onclick: () => (sfx('click'), UI.showBestiary(c.id)) }, c.name));
+    const cards = types.map((t) => {
+      const def = D.monsters[t];
+      const known = seen[t] || kills[t];
+      let img;
+      if (known) img = TD.sprites.portrait(t, 64);
+      else {
+        img = document.createElement('canvas');
+        img.width = img.height = 64;
+        const sil = TD.sprites.silhouette(t, def.boss ? 17 : 19, '#5e4a3a');
+        const cx = img.getContext('2d');
+        if (sil) cx.drawImage(sil.canvas, 32 - sil.ox, (def.flying ? 48 : 56) - sil.oy);
+      }
+      img.className = 'portrait';
+      return h(
+        'div',
+        { class: 'mon-card' + (def.boss ? ' boss' : '') + (known ? '' : ' unknown') },
+        img,
+        h('div', { class: 'mon-name' }, known ? def.name : '？？？', known ? h('span', { class: 'mon-kills' }, ` 击败 ${kills[t] || 0}`) : null),
+        h('div', { class: 'mon-desc' }, known ? [h('div', { class: 'intro-tags' }, D.monsterTags(def).map((x) => h('span', { class: 'tag small' }, x))), def.desc] : '还没有遇见过。')
+      );
+    });
+    modal(
+      h(
+        'div',
+        null,
+        h('h2', null, `怪物图鉴 ${seenCount} / ${total}`),
+        h('div', { class: 'btn-row bestiary-tabs' }, tabs),
+        h('div', { class: 'mon-list bestiary' }, cards),
+        h('div', { class: 'modal-buttons' }, h('button', { class: 'btn', onclick: UI.closeModal }, '关闭'))
+      ),
+      { cls: 'wide', closeOnBack: true }
+    );
+  };
+
   // ================= 新敌人登场（设计书 12.6） =================
   UI.showIntro = function (type, onClose) {
     const def = D.monsters[type];
@@ -1204,6 +1286,7 @@
     const notes = reward.notes.filter((x) => !x.includes('失败')).map((x) => h('div', { class: 'note' }, '✦ ' + x));
     if (res.supplies && res.supplies.length) notes.push(h('div', { class: 'note' }, '📦 本关补给：' + res.supplies.map((x) => D.supplies[x].name).join('、')));
     const unlocks = reward.unlocks.map((x) => h('div', { class: 'note unlock' }, '🔓 ' + x));
+    for (const a of reward.achievements || []) unlocks.push(h('div', { class: 'note achieve' }, `🏆 达成成就「${a.name}」：${a.desc}（+${P.costText(a.reward)}）`));
     let tips = null;
     if (!win) {
       const sug = P.suggestions(game.save);
