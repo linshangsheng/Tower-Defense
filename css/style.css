@@ -1831,3 +1831,8 @@ body {
 .advice.mission span:nth-child(2) {
   flex: none;
 }
+.rep-streak {
+  font-weight: 700;
+  color: #c48a10;
+  font-size: 13px;
+}

@@ -1278,7 +1278,7 @@
       btn.classList.toggle('armed', game.pendingLane && game.pendingLane.kind === 'item' && game.pendingLane.index === i);
     });
     hud.targetBtn.textContent = '🎯 ' + D.targetModes[b.target];
-    hud.speedBtn.textContent = game.speed === 2 ? '⏩ 2倍速' : '▶ 1倍速';
+    hud.speedBtn.textContent = game.speed === 3 ? '⏭ 3倍速' : game.speed === 2 ? '⏩ 2倍速' : '▶ 1倍速';
     hud.autoBtn.textContent = b.autoCast ? '自动释放：开' : '自动释放：关';
     hud.laneHint.classList.toggle('hidden', !game.pendingLane);
     // 新手引导（设计书 12.6）：前 4 关第一次可以放技能时提示
@@ -1381,7 +1381,7 @@
       if (topK !== 'boss' && D.monsters[topK] && topV / wt >= 0.3 && D.monsterTags(D.monsters[topK]).length) tips.push(`城墙伤害最多来自「${name(topK)}」：${D.monsters[topK].desc}`);
     }
     if (!parts.length) return null;
-    return h('details', { class: 'report', open: open ? true : null }, h('summary', null, '📊 战斗报告'), parts, tips.map((t) => h('div', { class: 'note rep-tip' }, '💡 ' + t)));
+    return h('details', { class: 'report', open: open ? true : null }, h('summary', null, '📊 战斗报告', res.bestStreak >= 5 ? h('span', { class: 'rep-streak' }, `  最高连击 ${res.bestStreak}`) : null), parts, tips.map((t) => h('div', { class: 'note rep-tip' }, '💡 ' + t)));
   };
 
   UI.showModeResult = function (battle, reward) {

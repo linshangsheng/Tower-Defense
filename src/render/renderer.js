@@ -160,6 +160,11 @@
         this.text(e.m.x, e.m.y - 140, '本体现身！伤害 +50%', '#ffd23f', 28, 1.5);
       });
       on('inkSlam', () => (this.shake = Math.max(this.shake, 20)));
+      // 连击（设计书 38.2）
+      on('streak', (e) => {
+        this.text(C.heroX + 60, battle.heroY - 130, e.text, e.count >= 30 ? '#ff5a4f' : '#ffd23f', 22 + Math.min(14, e.count / 4), 1.1);
+        this.burst(C.heroX + 40, battle.heroY - 100, '#ffd23f', 10 + Math.min(20, e.count / 2), 240);
+      });
       // 第六章（设计书 33）
       on('dodge', (e) => this.text(e.x, e.y - 30, '闪避', '#9fb6cc', 16, 0.5));
       on('woolHit', (e) => {

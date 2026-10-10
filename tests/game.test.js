@@ -1129,3 +1129,24 @@ test('关卡任务：战斗统计技能释放次数和城墙最低血量', () =>
   b.healWall(b.wall.max);
   assert.ok(b.minWallRatio <= 0.61, '回血不影响最低值');
 });
+
+test('连击：1.2 秒内连续击败才算，记录最高连击；不影响奖励', () => {
+  const s = P.newSave();
+  const b = new TD.Battle({ level: 5, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 1 });
+  const calls = [];
+  b.on('streak', (e) => calls.push(e.count));
+  for (let i = 0; i < 12; i++) {
+    b.time = i * 0.5;
+    b.kill(b.spawnMonster('slime', 0));
+  }
+  assert.strictEqual(b.streak, 12);
+  assert.deepStrictEqual(calls, [10]);
+  b.time += 2;
+  b.kill(b.spawnMonster('slime', 0));
+  assert.strictEqual(b.streak, 1);
+  assert.strictEqual(b.bestStreak, 12);
+  const res = b.runToEnd();
+  assert.ok(res.bestStreak >= 12);
+  P.applyResult(s, 5, Object.assign({}, res, { bestStreak: 31 }));
+  assert.ok(s.achievements.streak30);
+});

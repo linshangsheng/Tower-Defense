@@ -45,7 +45,7 @@
     game.introPaused = false;
     game.pendingLane = null;
     game.acc = 0;
-    game.speed = s.settings.speed || 1;
+    game.speed = Math.min(s.settings.speed || 1, P.isCleared(s, 10) ? 3 : 2);
     game.renderer.attach(battle);
     battle.on('end', () => setTimeout(() => game.onBattleEnd(battle), 1300));
     battle.on('item', (e) => P.consumeItem(s, e.id));
@@ -70,6 +70,7 @@
       TD.ui.showSupply(battle, e.choices);
     });
     battle.on('bossInterrupt', () => TD.audio.play('interrupt'));
+    battle.on('streak', () => TD.audio.play('streak'));
     // 第六章（设计书 34.1）
     battle.on('dodge', () => TD.audio.play('dodge'));
     battle.on('shear', () => TD.audio.play('shear'));
@@ -171,7 +172,9 @@
   };
 
   game.toggleSpeed = function () {
-    game.speed = game.speed === 2 ? 1 : 2;
+    // 通关第 10 关后解锁 3 倍速（设计书 38.1）
+    const max = P.isCleared(game.save, 10) ? 3 : 2;
+    game.speed = game.speed >= max ? 1 : game.speed + 1;
     game.save.settings.speed = game.speed;
     game.persist();
     TD.ui.updateHud();

@@ -7,6 +7,9 @@
 
   let nextId = 1;
 
+  // 连击提示（设计书 38.2）
+  const STREAK_CALLS = { 10: '10 连击！', 20: '横扫千军！', 30: '势不可挡！', 50: '无人能挡！' };
+
   // Boss AI 的 update 方法名（实现在 src/game/bosses.js）
   const BOSS_UPDATE = {
     boarKing: 'updateBoarKing',
@@ -98,6 +101,9 @@
       this.interrupts = 0;
       this.earlyCalls = 0;
       this.skillsCast = 0; // 关卡任务（设计书 36）
+      this.streak = 0; // 连击（设计书 38.2）
+      this.bestStreak = 0;
+      this.lastKillAt = -99;
       this.minWallRatio = 1;
       this.on('bossInterrupt', () => this.interrupts++);
 
@@ -695,6 +701,11 @@
       m.diedAt = this.time;
       const copper = noReward ? 0 : m.def.copper;
       if (!noReward) {
+        // 连击：1.2 秒内连续击败
+        this.streak = this.time - this.lastKillAt <= 1.2 ? this.streak + 1 : 1;
+        this.lastKillAt = this.time;
+        if (this.streak > this.bestStreak) this.bestStreak = this.streak;
+        if (STREAK_CALLS[this.streak]) this.emit('streak', { count: this.streak, text: STREAK_CALLS[this.streak] });
         this.kills++;
         this.killsByType[m.type] = (this.killsByType[m.type] || 0) + 1;
       }
@@ -1222,6 +1233,7 @@
         interrupts: this.interrupts,
         earlyCalls: this.earlyCalls,
         skillsCast: this.skillsCast,
+        bestStreak: this.bestStreak,
         minWallRatio: this.minWallRatio,
         skillsCarried: this.skills.length,
         itemsUsed: this.itemsUsed.slice(),

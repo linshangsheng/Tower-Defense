@@ -574,6 +574,7 @@
     save.stats.battles++;
     if (result.win) save.stats.wins++;
     save.stats.kills += result.kills || 0;
+    save.stats.bestStreak = Math.max(save.stats.bestStreak || 0, result.bestStreak || 0);
     save.stats.interrupts += result.interrupts || 0;
     save.stats.earlyCalls += result.earlyCalls || 0;
     save.stats.supplies += (result.supplies || []).length;
