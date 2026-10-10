@@ -276,6 +276,7 @@
     const b = game.battle;
     let renderDt = dt;
     if (b && !game.paused && !game.introPaused) {
+      if (!b.over) game.playSeconds = (game.playSeconds || 0) + dt; // 休息提醒（设计书 40）
       const step = 1 / C.tickRate;
       game.acc += dt * game.speed;
       let n = 0;

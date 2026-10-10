@@ -1849,3 +1849,23 @@ body {
   border: 3px solid var(--paper-2);
   cursor: pointer;
 }
+
+/* ---------- 休息提醒（设计书 40） ---------- */
+.rest {
+  text-align: center;
+}
+.rest-avatar {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 6px;
+  border-radius: 50%;
+  border: 3px solid var(--ink);
+  background: #dce9ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.rest p {
+  font-size: 17px;
+}

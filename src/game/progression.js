@@ -39,7 +39,7 @@
       seenMonsters: {},
       seenTabs: { loadout: true, attrs: true },
       achievements: {},
-      settings: { sound: true, speed: 1, difficulty: 'normal' },
+      settings: { sound: true, speed: 1, difficulty: 'normal', restMinutes: 30 },
       outfit: 'classic', // 铛铛的衣柜（设计书 30）
       outfitsSeen: { classic: true },
       story: {}, // 守城日记（设计书 28）：段落 id → 'read' 读完 / 'skipped' 跳过

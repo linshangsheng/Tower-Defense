@@ -176,6 +176,29 @@
     );
   };
 
+  // 休息提醒（设计书 40）：战斗累计时间到了，回到地图时提醒
+  UI.maybeRest = function () {
+    const min = game.save.settings.restMinutes;
+    if (!min || (game.playSeconds || 0) < min * 60) return;
+    if (document.querySelector('.story-overlay')) return;
+    modal(
+      h(
+        'div',
+        { class: 'rest' },
+        h('div', { class: 'rest-avatar' }, TD.sprites.heroPortrait(110, 'win')),
+        h('h2', null, `已经守城 ${min} 分钟啦！`),
+        h('p', null, '眨眨眼睛、看看远处，喝口水吧。城墙交给国王爷爷看一会儿。'),
+        h(
+          'div',
+          { class: 'modal-buttons' },
+          h('button', { class: 'btn', onclick: () => ((game.playSeconds = 0), UI.closeModal()) }, '再玩一会儿'),
+          h('button', { class: 'btn primary', onclick: () => ((game.playSeconds = 0), UI.closeModal(), UI.showTitle()) }, '休息一下')
+        )
+      ),
+      { cls: 'rest-modal' }
+    );
+  };
+
   UI.showSettings = function () {
     const s = game.save.settings;
     const body = h(
@@ -224,6 +247,21 @@
             },
           },
           Object.keys(C.difficulties).map((id) => h('option', { value: id, selected: (s.difficulty || 'normal') === id ? true : null }, `${C.difficulties[id].name}：${C.difficulties[id].desc}`))
+        )
+      ),
+      h(
+        'label',
+        { class: 'row' },
+        '休息提醒 ',
+        h(
+          'select',
+          {
+            onchange: (e) => {
+              s.restMinutes = +e.target.value;
+              game.persist();
+            },
+          },
+          [0, 20, 30, 45].map((m) => h('option', { value: m, selected: (s.restMinutes === undefined ? 30 : s.restMinutes) === m ? true : null }, m ? `每玩 ${m} 分钟提醒休息` : '关闭'))
         )
       ),
       h(
@@ -500,6 +538,7 @@
     root.appendChild(screenEl);
     // 章节开场（设计书 28.3）：第一次打开、且该章第一关还没通关
     if (!P.isCleared(s, ch.levels[0])) UI.maybeStory('ch' + ch.id);
+    UI.maybeRest();
   };
 
   // ================= 关卡预览 =================
