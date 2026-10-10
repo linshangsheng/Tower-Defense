@@ -20,7 +20,7 @@
         else el.setAttribute(k, v === true ? '' : v);
       }
     }
-    for (const kid of kids.flat()) {
+    for (const kid of kids.flat(Infinity)) {
       if (kid === null || kid === undefined || kid === false) continue;
       el.appendChild(typeof kid === 'string' || typeof kid === 'number' ? document.createTextNode(String(kid)) : kid);
     }
@@ -1342,6 +1342,44 @@
     );
   };
 
+  // ================= 战斗报告（设计书 32） =================
+  const SOURCE_NAMES = { weapon: '武器', splash: '溅射', chain: '闪电跳跃', arrowRain: '箭雨', thunder: '雷霆一击', burn: '灼烧', thorns: '荆棘', bomb: '小炸弹' };
+  UI.reportEl = function (res, open) {
+    const rp = res && res.report;
+    if (!rp) return null;
+    const pct = (x) => Math.round(x * 100) + '%';
+    const bar = (label, v, total, cls) =>
+      h('div', { class: 'rep-row' }, h('span', { class: 'rep-label' }, label), h('div', { class: 'rep-bar' }, h('div', { class: 'rep-fill ' + (cls || ''), style: { width: (total ? (v / total) * 100 : 0).toFixed(1) + '%' } })), h('span', { class: 'rep-val' }, total ? pct(v / total) : '—'));
+    const parts = [];
+    // 1. 伤害来源
+    const src = Object.entries(rp.bySource).sort((a, b) => b[1] - a[1]);
+    const dealt = src.reduce((a, [, v]) => a + v, 0);
+    if (dealt > 0) parts.push(h('h4', null, `伤害来源（共 ${Math.round(dealt)}）`), src.map(([k, v]) => bar(SOURCE_NAMES[k] || k, v, dealt)));
+    // 2. 被挡掉的伤害
+    const tips = [];
+    const blocked = (kind) => (rp.raw[kind] > 0 ? 1 - rp.real[kind] / rp.raw[kind] : 0);
+    const bp = blocked('phys');
+    const bm = blocked('magic');
+    const rows = [];
+    if (rp.raw.phys > 0) rows.push(bar('物理被挡', bp, 1, 'block'));
+    if (rp.raw.magic > 0) rows.push(bar('魔法被挡', bm, 1, 'block'));
+    if (rows.length) parts.push(h('h4', null, '被护甲 / 魔抗挡掉的伤害'), rows);
+    if (rp.raw.phys > rp.raw.magic * 0.3 && bp > 0.3) tips.push(`物理伤害有 ${pct(bp)} 被护甲、木盾或灵体挡掉了：试试魔法杖、回旋镖或「穿甲」。`);
+    if (rp.raw.magic > rp.raw.phys * 0.3 && bm > 0.3) tips.push(`魔法伤害有 ${pct(bm)} 被魔抗挡掉了：熔岩怪物不怕魔法，换物理武器（火炮、连发弩）。`);
+    // 3. 城墙伤害来源
+    const wall = Object.entries(rp.wallBy).sort((a, b) => b[1] - a[1]);
+    const wt = wall.reduce((a, [, v]) => a + v, 0);
+    if (wt > 0) {
+      const name = (k) => (k === 'boss' ? 'Boss 技能' : D.monsters[k] ? D.monsters[k].name : k);
+      parts.push(h('h4', null, `城墙伤害来源（共 ${Math.round(wt)}）`), wall.slice(0, 3).map(([k, v]) => bar(name(k), v, wt, 'wall')));
+      const [topK, topV] = wall[0];
+      // 只对有特殊机制的怪给提示（普通小怪的说明没有参考价值）
+      if (topK !== 'boss' && D.monsters[topK] && topV / wt >= 0.3 && D.monsterTags(D.monsters[topK]).length) tips.push(`城墙伤害最多来自「${name(topK)}」：${D.monsters[topK].desc}`);
+    }
+    if (!parts.length) return null;
+    return h('details', { class: 'report', open: open ? true : null }, h('summary', null, '📊 战斗报告'), parts, tips.map((t) => h('div', { class: 'note rep-tip' }, '💡 ' + t)));
+  };
+
   UI.showModeResult = function (battle, reward) {
     const res = battle.result;
     const endless = battle.mode.kind === 'endless';
@@ -1357,6 +1395,7 @@
         endless ? h('div', { class: 'hint' }, `个人纪录：${(game.save.endless || {}).best} 波 · 击败 ${res.kills} 只`) : h('div', { class: 'hint' }, `击败 ${res.kills} 只`),
         h('div', { class: 'reward-box' }, rows),
         notes,
+        UI.reportEl(res, false),
         h(
           'div',
           { class: 'modal-buttons' },
@@ -1647,10 +1686,10 @@
       h('h2', { class: 'result-title' }, win ? '守城成功！' : '城墙被攻破了…'),
       win ? h('div', { class: 'result-stars' }, [1, 2, 3].map((i) => h('span', { class: 'big-star' + (i <= res.stars ? ' on' : ''), style: { animationDelay: i * 0.25 + 's' } }, '★'))) : null,
       win ? h('div', { class: 'hint' }, `城墙剩余 ${Math.round(res.wallRatio * 100)}%`) : null,
-      h('div', { class: 'reward-box' }, rows),
-      notes,
-      unlocks,
-      tips,
+      // 失败时左右两栏：左边奖励和推荐强化，右边战斗报告（设计书 32.2）
+      win
+        ? [h('div', { class: 'reward-box' }, rows), notes, unlocks, UI.reportEl(res, false)]
+        : h('div', { class: 'result-cols' }, h('div', null, h('div', { class: 'reward-box' }, rows), notes, unlocks, tips), h('div', null, UI.reportEl(res, true))),
       h(
         'div',
         { class: 'modal-buttons' },
@@ -1660,6 +1699,6 @@
         hasNext ? h('button', { class: 'btn primary', onclick: () => (UI.closeModal(), UI.showMap(D.chapterOf(n + 1).id), UI.showPreview(n + 1)) }, '下一关 ›') : null
       )
     );
-    modal(body, { cls: 'result-modal' });
+    modal(body, { cls: 'result-modal' + (win ? '' : ' lose-wide') });
   };
 })((globalThis.TD = globalThis.TD || {}));

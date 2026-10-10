@@ -88,6 +88,8 @@
       this.kills = 0;
       this.damageDealt = 0;
       this.wallDamageTaken = 0;
+      // 战斗报告（设计书 32）
+      this.report = { bySource: {}, raw: { phys: 0, magic: 0 }, real: { phys: 0, magic: 0 }, wallBy: {} };
     }
 
     // 补给出现在哪几波之后（波序号从 0 开始）
@@ -469,7 +471,7 @@
               m.rangedTimer = ranged.every;
               this.emit('spit', { m, x: m.x, y: m.y });
               this.hitWall(ranged.damage * this.D, m);
-              if (ranged.poison) this.addWallDot(ranged.poison.dps * this.D, ranged.poison.duration, 'poison', true);
+              if (ranged.poison) this.addWallDot(ranged.poison.dps * this.D, ranged.poison.duration, 'poison', true, m.type);
             }
           }
         } else if (m.def.explode) {
@@ -744,7 +746,7 @@
       ai.fogTimer -= dt;
       if (ai.fogTimer <= 0) {
         ai.fogTimer = ai.phase === 3 ? W2.fogEveryP3 : W2.fogEvery;
-        this.addWallDot(W2.fogDps * this.D, W2.fogDuration, 'fog', false);
+        this.addWallDot(W2.fogDps * this.D, W2.fogDuration, 'fog', false, m.type);
         this.emit('poisonFog', { duration: W2.fogDuration });
       }
       if (ai.phase >= 2) {
@@ -1005,7 +1007,8 @@
     }
 
     // 城墙持续伤害（毒液、毒雾）。refresh=true 时同来源只刷新时间不叠加
-    addWallDot(dps, duration, src, refresh) {
+    // who：施加持续伤害的怪物种类（战斗报告用）
+    addWallDot(dps, duration, src, refresh, who) {
       if (refresh) {
         const e = this.wallDots.find((d) => d.src === src && d.until > this.time);
         if (e) {
@@ -1014,7 +1017,7 @@
           return;
         }
       }
-      this.wallDots.push({ dps, until: this.time + duration, src });
+      this.wallDots.push({ dps, until: this.time + duration, src, who });
     }
 
     updateWallDots(dt) {
@@ -1022,18 +1025,23 @@
       this.dotTick -= dt;
       if (this.dotTick > 0) return;
       this.dotTick += 0.5;
-      let total = 0;
-      for (const d of this.wallDots) if (this.time < d.until) total += d.dps * 0.5;
+      const byWho = {};
+      for (const d of this.wallDots) if (this.time < d.until) byWho[d.who || 'boss'] = (byWho[d.who || 'boss'] || 0) + d.dps * 0.5;
       this.wallDots = this.wallDots.filter((d) => this.time < d.until);
-      if (total > 0) this.hitWall(total * (1 - Math.min(0.9, this.mods.dotReduce)), null, false, 'dot');
+      for (const who of Object.keys(byWho)) {
+        if (this.over) break;
+        this.hitWall(byWho[who] * (1 - Math.min(0.9, this.mods.dotReduce)), null, false, 'dot', who);
+      }
     }
 
-    hitWall(amount, m, big, kind) {
+    hitWall(amount, m, big, kind, who) {
       amount *= this.diffDmg;
       const temp = this.time < this.tempDr.until ? this.tempDr.amt : 0;
       const dmg = amount * (1 - Math.min(0.8, this.stats.wallDr + this.mods.wallDr + temp));
       this.wall.hp = Math.max(0, this.wall.hp - dmg);
       this.wallDamageTaken += dmg;
+      const by = who || (m && m.type) || 'boss';
+      this.report.wallBy[by] = (this.report.wallBy[by] || 0) + dmg;
       this.emit('wallHit', { amount: dmg, m, big: !!big, kind });
       if (this.wall.hp <= 0) this.finish(false);
     }
@@ -1085,6 +1093,7 @@
         }
         return 0;
       }
+      const raw = amount;
       let armor = 0;
       if (opts.type !== 'magic') {
         armor = (m.def.armor || 0) + (opts.fromFront ? m.def.frontArmor || 0 : 0);
@@ -1095,6 +1104,11 @@
         armor = m.def.mres || 0;
       }
       const dmg = Math.max(1, amount * (1 - armor / (armor + 100)));
+      const rp = this.report;
+      const kind = opts.type === 'magic' ? 'magic' : 'phys';
+      rp.bySource[opts.source || 'weapon'] = (rp.bySource[opts.source || 'weapon'] || 0) + dmg;
+      rp.raw[kind] += Math.max(raw, dmg);
+      rp.real[kind] += dmg;
       m.hp -= dmg;
       m.hitFlash = 0.12;
       m.lastHit = this.time;
@@ -1657,6 +1671,7 @@
         copperBonus: this.mods.copperBonus,
         supplies: this.supplyPicked.slice(),
         killsByType: Object.assign({}, this.killsByType),
+        report: TD.util.deepClone(this.report),
         interrupts: this.interrupts,
         earlyCalls: this.earlyCalls,
         skillsCarried: this.skills.length,

@@ -942,3 +942,21 @@ test('机器人战斗使用存档里的难度', () => {
   const { battle } = TD.bot.playLevel(s, 1, { seed: 1 });
   assert.ok(Math.abs(battle.diffHp - 1.3) < 1e-9);
 });
+
+test('战斗报告：统计伤害来源、被挡比例、城墙伤害来源', () => {
+  const s = P.newSave();
+  const b = new TD.Battle({ level: 8, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 5 });
+  const g = b.spawnMonster('goblin', 0);
+  b.damage(g, 100, { type: 'phys', fromFront: true, source: 'weapon' });
+  b.damage(g, 50, { type: 'magic', fromFront: false, source: 'thunder' });
+  const rp = b.report;
+  assert.ok(rp.bySource.weapon > 0 && rp.bySource.thunder > 0);
+  assert.ok(rp.real.phys < rp.raw.phys, '木盾挡掉了一部分物理伤害');
+  assert.ok(Math.abs(rp.real.magic - rp.raw.magic) < 1e-9);
+  b.hitWall(30, g);
+  b.addWallDot(10, 5, 'poison', true, 'frog');
+  for (let i = 0; i < 120; i++) b.updateWallDots(1 / 60);
+  assert.ok(rp.wallBy.goblin > 0 && rp.wallBy.frog > 0);
+  const res = b.runToEnd();
+  assert.ok(res.report && res.report.bySource);
+});
