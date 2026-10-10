@@ -1023,11 +1023,17 @@
     }
 
     drawBossBar(b) {
-      const boss = b.monsters.find((m) => m.def.boss && !m.dead);
-      if (!boss) return;
+      // 精英挑战会同时出现两个 Boss（设计书 29.2）：并排画两条短血条
+      const bosses = b.monsters.filter((m) => m.def.boss && !m.dead).slice(0, 2);
+      if (bosses.length === 2) {
+        this.drawOneBossBar(bosses[0], C.width / 2 - 170, 300);
+        this.drawOneBossBar(bosses[1], C.width / 2 + 170, 300);
+      } else if (bosses.length) this.drawOneBossBar(bosses[0], C.width / 2, 460);
+    }
+
+    drawOneBossBar(boss, cx, w) {
       const ctx = this.ctx;
-      const w = 460;
-      const x = (C.width - w) / 2;
+      const x = cx - w / 2;
       const y = C.fieldTop - 26;
       ctx.save();
       ctx.fillStyle = 'rgba(40,20,10,0.65)';
@@ -1057,7 +1063,7 @@
       ctx.fillStyle = '#fff';
       ctx.font = 'bold 15px sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText(`${boss.def.name}  ${Math.ceil(boss.hp)} / ${boss.maxHp}${boss.shield > 0 ? '  🛡 ' + Math.ceil(boss.shield) : ''}`, C.width / 2, y + 12);
+      ctx.fillText(`${boss.def.name}  ${Math.ceil(boss.hp)} / ${boss.maxHp}${boss.shield > 0 ? '  🛡 ' + Math.ceil(boss.shield) : ''}`, cx, y + 12);
       if (boss.ai && (boss.ai.mode === 'warn' || boss.ai.mode === 'charge') && (boss.def.ai === 'boarKing' || boss.def.ai === 'inkBoss')) {
         const need = boss.maxHp * (boss.def.ai === 'inkBoss' ? TD.data.inkBoss.interruptRatio : TD.data.boarKing.interruptRatio);
         const pr = Math.min(1, boss.ai.chargeDmg / need);
@@ -1067,7 +1073,7 @@
         ctx.fillStyle = '#ffd23f';
         ctx.fillRect(x + w / 2 - 124, y + 36, 248 * pr, 5);
         ctx.font = 'bold 13px sans-serif';
-        ctx.fillText(boss.def.ai === 'inkBoss' ? '集中火力打断重击！' : '集中火力打断冲锋！', C.width / 2, y + 34);
+        ctx.fillText(boss.def.ai === 'inkBoss' ? '集中火力打断重击！' : '集中火力打断冲锋！', cx, y + 34);
       }
       ctx.restore();
     }

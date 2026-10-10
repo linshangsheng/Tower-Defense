@@ -882,3 +882,13 @@ test('守城日记：老存档迁移时已过去的段落记为跳过', () => {
   assert.ok(!s.story.pre15);
   assert.ok(P.storyDue(s, 'pre15') === false, '第 15 关还没开放');
 });
+
+test('精英挑战：同时出场的两个 Boss 走不同车道', () => {
+  const s = P.newSave();
+  const b = new TD.Battle({ level: 49, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 3 });
+  const a = b.spawnMonster('jellyPrince');
+  const c = b.spawnMonster('kingScorpion');
+  assert.strictEqual(a.lane, 2);
+  assert.notStrictEqual(c.lane, a.lane);
+  assert.ok(D.levels[49].waves.some((w) => w.groups.filter(([t]) => D.monsters[t].boss).length === 2));
+});

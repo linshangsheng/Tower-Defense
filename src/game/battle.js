@@ -264,7 +264,14 @@
         lane = this.pack.lane;
         this.pack.left--;
       }
-      if (lane === undefined) lane = def.boss ? Math.floor(this.lanes / 2) : this.rng.int(this.lanes);
+      if (lane === undefined && def.boss) {
+        // Boss 走中间车道；已经有 Boss 在中间时（精英挑战两两出场）换到旁边的车道
+        const mid = Math.floor(this.lanes / 2);
+        const taken = (l) => this.monsters.some((o) => !o.dead && o.def.boss && o.lane === l);
+        lane = [mid, mid - 1, mid + 1, mid - 2, mid + 2].find((l) => l >= 0 && l < this.lanes && !taken(l));
+        if (lane === undefined) lane = mid;
+      }
+      if (lane === undefined) lane = this.rng.int(this.lanes);
       const hp = Math.round(def.hp * this.D * (1 + (this.rules.monsterHp || 0)) * this.diffHp);
       const m = {
         id: nextId++,

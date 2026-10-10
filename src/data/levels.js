@@ -654,7 +654,7 @@
     40: {
       name: '霜霜女王',
       type: 'boss',
-      countMult: 1.62,
+      countMult: 1.87,
       lanes: 5,
       waves: [
         W(0.7, ['snowman', 12], ['wolf', 9], ['iceSprite', 2]),
@@ -801,24 +801,23 @@
     49: {
       name: '精英挑战',
       type: 'elite',
-      countMult: 1.36,
+      countMult: 1.16,
       lanes: 5,
       waves: [
         W(0.8, ['slime', 12], ['goblin', 6], ['bee', 10]),
-        W(1.2, ['jellyPrince', 1], ['mushroom', 10]),
+        W(1.2, ['jellyPrince', 1], ['kingScorpion', 1], ['mushroom', 10]),
         W(0.75, ['scorpion', 12], ['mummy', 6], ['cactus', 8]),
-        W(1.2, ['kingScorpion', 1], ['vulture', 10]),
+        W(1.2, ['boneMage', 1], ['iceGiant', 1], ['stump', 4], ['vulture', 8]),
         W(0.7, ['ghost', 14], ['frog', 4], ['pumpkin', 6]),
-        W(1.2, ['boneMage', 1], ['stump', 4]),
         W(0.65, ['snowman', 10], ['wolf', 12], ['iceSprite', 3]),
-        W(1.2, ['iceGiant', 1], ['penguin', 10], ['magma', 10]),
+        W(1.2, ['kingScorpion', 1], ['boneMage', 1], ['penguin', 10], ['magma', 10]),
       ],
-      tip: '精英挑战：前四章的小 Boss 一个接一个回来了！',
+      tip: '精英挑战：前四章的小 Boss 两个两个一起回来了！切换"Boss 优先"或"威胁优先"，别让两个 Boss 同时走到城墙下。',
     },
     50: {
       name: '墨墨',
       type: 'boss',
-      countMult: 1.79,
+      countMult: 2.02,
       lanes: 5,
       final: true,
       waves: [

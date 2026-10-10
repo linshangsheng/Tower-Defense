@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // 自动平衡：按关卡类型的目标城墙剩余，调整每关的怪物数量倍率 countMult，并写回 src/data/levels.js
-// 用法：node tools/tune.js <起始关> <结束关> [--seeds 3] [--dry]
+// 用法：node tools/tune.js <起始关> <结束关> [--seeds 3] [--dry] [--only 40,49,50]
 const fs = require('fs');
 const path = require('path');
 const TD = require('./load');
@@ -11,9 +11,11 @@ const from = +args[0];
 const to = +args[1];
 const seeds = +(args[args.indexOf('--seeds') + 1] || 0) || 3;
 const dry = args.includes('--dry');
+// --only 40,49,50：只调这几关，其余关卡照常打过去推进存档
+const only = args.includes('--only') ? args[args.indexOf('--only') + 1].split(',').map(Number) : null;
 
 // 目标：首次挑战（机器人正常购物后）的平均城墙剩余
-const TARGET = { tutorial: 0.95, normal: 0.8, raid: 0.85, rush: 0.7, armored: 0.65, dark: 0.75, union: 0.6, miniboss: 0.6, boss: 0.45 };
+const TARGET = { tutorial: 0.95, normal: 0.8, raid: 0.85, rush: 0.7, armored: 0.65, dark: 0.75, union: 0.6, miniboss: 0.6, elite: 0.6, boss: 0.55 };
 
 function playUntilWin(save, n, seed) {
   let r;
@@ -38,6 +40,10 @@ for (let s = 1; s <= seeds; s++) {
 const results = {};
 for (let n = from; n <= to; n++) {
   const lvl = TD.data.levels[n];
+  if (only && !only.includes(n)) {
+    saves.forEach((save, i) => playUntilWin(save, n, i + 1));
+    continue;
+  }
   const target = TARGET[lvl.type] || 0.8;
   let mult = lvl.countMult || 1;
   let best = null;
