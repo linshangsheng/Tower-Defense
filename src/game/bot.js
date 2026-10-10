@@ -1,0 +1,117 @@
+// 模拟玩家：用于自动数值验证（tools/sim.js），也为"一键推荐配装"提供购买建议
+(function (TD) {
+  'use strict';
+
+  const D = TD.data;
+  const P = TD.progression;
+
+  const Bot = (TD.bot = {});
+
+  // 列出当前可以购买的铜币升级，并估算性价比
+  Bot.copperOptions = function (save) {
+    const opts = [];
+    const st0 = P.heroStats(save);
+    const dps0 = P.estimateDps(st0);
+    const ehp0 = st0.wallMax / (1 - st0.wallDr);
+    const add = (label, cost, mutate, weight) => {
+      if (!cost || !cost.copper) return;
+      const clone = TD.util.deepClone(save);
+      mutate(clone);
+      const st = P.heroStats(clone);
+      const dGain = P.estimateDps(st) / dps0 - 1;
+      const hGain = st.wallMax / (1 - st.wallDr) / ehp0 - 1;
+      const gain = dGain + hGain * 0.55 * (weight || 1);
+      opts.push({ label, cost, value: gain / cost.copper, apply: mutate });
+    };
+    for (const k of Object.keys(D.attributes)) {
+      if (k === 'luck') continue;
+      add('attr:' + k, P.attrCost(save, k), (s) => P.buyAttr(s, k) || s.attrs[k]++);
+    }
+    const wid = save.loadout.weapon;
+    add('weapon:' + wid, P.weaponUpgradeCost(save, wid), (s) => s.weapons[wid].lv++);
+    add('wall:level', P.wallCost(save, 'level'), (s) => s.wall.level++);
+    add('wall:fortify', P.wallCost(save, 'fortify'), (s) => s.wall.fortify++);
+    opts.sort((a, b) => b.value - a.value);
+    return opts;
+  };
+
+  // 机器人花钱：先买银币物品，再按性价比花铜币
+  Bot.shop = function (save, opts) {
+    opts = opts || {};
+    const bought = [];
+    // 银币：技能优先
+    const silverOrder = opts.silverOrder || ['arrowRain', 'precision', 'thunder', 'burn', 'repair', 'frost', 'combo', 'pierceArmor'];
+    for (const id of silverOrder) {
+      if (D.activeSkills[id] && !save.activeOwned[id] && P.canAfford(save, D.activeSkills[id].cost)) {
+        P.buyActive(save, id);
+        bought.push(id);
+      } else if (D.passiveSkills[id] && !save.passiveOwned[id] && P.canAfford(save, D.passiveSkills[id].cost)) {
+        P.buyPassive(save, id);
+        bought.push(id);
+      }
+    }
+    // 金币
+    if (!save.equipOwned.lionCrown && P.canAfford(save, D.equipment.lionCrown.cost)) {
+      P.buyEquip(save, 'lionCrown');
+      P.setEquip(save, 'helm', 'lionCrown');
+    }
+    // 铜币装备（性价比高，优先）
+    for (const id of ['ironHelm', 'redCape', 'fang']) {
+      if (!save.equipOwned[id] && P.canAfford(save, D.equipment[id].cost) && save.copper - D.equipment[id].cost.copper >= 0) {
+        P.buyEquip(save, id);
+        bought.push(id);
+      }
+    }
+    // 消耗品：保持槽位填满
+    const nItem = P.slotCount(save, 'item');
+    const wantItems = ['patch', 'bomb', 'haste'];
+    for (let i = 0; i < nItem; i++) {
+      const id = wantItems[i];
+      const have = save.inventory[id] || 0;
+      if (have < 1 && P.canAfford(save, D.items[id].cost)) P.buyItem(save, id);
+      if ((save.inventory[id] || 0) > 0) P.setSlot(save, 'item', i, id);
+    }
+    // 铜币升级
+    let guard = 0;
+    while (guard++ < 200) {
+      const list = Bot.copperOptions(save);
+      const best = list.find((o) => P.canAfford(save, o.cost));
+      if (!best || !list.length) break;
+      // 最优项买不起时，存钱而不是去买次优项（仅当差距不大）
+      if (best !== list[0] && list[0].cost.copper <= save.copper * 1.6 && best.value < list[0].value * 0.6) break;
+      const [kind, key] = best.label.split(':');
+      if (kind === 'attr') P.buyAttr(save, key);
+      else if (kind === 'weapon') P.upgradeWeapon(save, key);
+      else if (kind === 'wall') P.buyWall(save, key);
+      bought.push(best.label);
+    }
+    // 自动装满技能槽
+    const nA = P.slotCount(save, 'active');
+    const pref = ['arrowRain', 'thunder', 'drum', 'repair', 'frost'];
+    const ownedActive = pref.filter((id) => save.activeOwned[id]);
+    for (let i = 0; i < nA; i++) save.loadout.active[i] = ownedActive[i] || null;
+    const nP = P.slotCount(save, 'passive');
+    const prefP = ['precision', 'burn', 'combo', 'pierceArmor'];
+    const ownedP = prefP.filter((id) => save.passiveOwned[id]);
+    for (let i = 0; i < nP; i++) save.loadout.passive[i] = ownedP[i] || null;
+    return bought;
+  };
+
+  // 跑一局
+  Bot.playLevel = function (save, n, opts) {
+    opts = opts || {};
+    const lo = P.battleLoadout(save);
+    if (opts.noSkills) lo.active = [];
+    lo.autoCast = !opts.noSkills;
+    const battle = new TD.Battle({
+      level: n,
+      stats: P.heroStats(save),
+      loadout: lo,
+      seed: opts.seed || 1,
+      autoItems: !opts.noItems,
+    });
+    const res = battle.runToEnd();
+    for (const id of res.itemsUsed) P.consumeItem(save, id);
+    return { res, battle };
+  };
+})((globalThis.TD = globalThis.TD || {}));

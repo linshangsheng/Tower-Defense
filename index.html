@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>守城英雄</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div id="stage">
+      <canvas id="game" width="1280" height="720"></canvas>
+      <div id="ui"></div>
+    </div>
+    <noscript>请开启 JavaScript 后再游玩《守城英雄》。</noscript>
+
+    <!-- 按顺序加载：基础 → 数据 → 逻辑 → 画面 → 界面 → 入口 -->
+    <script src="src/core/ns.js"></script>
+    <script src="src/data/config.js"></script>
+    <script src="src/data/monsters.js"></script>
+    <script src="src/data/gear.js"></script>
+    <script src="src/data/levels.js"></script>
+    <script src="src/game/progression.js"></script>
+    <script src="src/game/battle.js"></script>
+    <script src="src/game/bot.js"></script>
+    <script src="src/game/save.js"></script>
+    <script src="src/render/sprites.js"></script>
+    <script src="src/render/audio.js"></script>
+    <script src="src/render/renderer.js"></script>
+    <script src="src/ui/ui.js"></script>
+    <script src="src/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,110 @@
+// 浏览器本地存档（设计书 13.3）：JSON + 版本号
+(function (TD) {
+  'use strict';
+
+  const KEY = 'shouchengyingxiong.save.v1';
+
+  TD.saveStore = {
+    load() {
+      try {
+        const raw = globalThis.localStorage && localStorage.getItem(KEY);
+        if (!raw) return null;
+        return TD.progression.migrate(JSON.parse(raw));
+      } catch (e) {
+        console.warn('读取存档失败', e);
+        return null;
+      }
+    },
+    write(save) {
+      try {
+        if (globalThis.localStorage) localStorage.setItem(KEY, JSON.stringify(save));
+        return true;
+      } catch (e) {
+        console.warn('写入存档失败', e);
+        return false;
+      }
+    },
+    clear() {
+      try {
+        if (globalThis.localStorage) localStorage.removeItem(KEY);
+      } catch (e) {
+        /* 忽略 */
+      }
+    },
+  };
+
+  // 一键推荐配装（设计书 6.4）：根据关卡里的怪物构成推荐武器、技能、道具
+  TD.progression.recommend = function (save, n) {
+    const P = TD.progression;
+    const D = TD.data;
+    const lvl = D.levels[n];
+    const counts = {};
+    let total = 0;
+    for (const w of lvl.waves)
+      for (const [type, c] of w.groups) {
+        counts[type] = (counts[type] || 0) + c;
+        total += c;
+      }
+    const share = (t) => (counts[t] || 0) / total;
+    const owned = (id) => save.weapons[id] && save.weapons[id].owned;
+    const lo = save.loadout;
+    const notes = [];
+
+    // 武器
+    let weapon = 'bow';
+    if (share('bee') > 0.35 && owned('crossbow')) weapon = 'crossbow';
+    else if (share('goblin') > 0.15 && owned('boomerang')) weapon = 'boomerang';
+    else if (lvl.type === 'rush' && owned('crossbow')) weapon = 'crossbow';
+    lo.weapon = weapon;
+    notes.push(`武器：${D.weapons[weapon].name}`);
+
+    // 主动技能
+    let pref;
+    if (lvl.type === 'boss' || lvl.type === 'miniboss') pref = ['thunder', 'arrowRain', 'drum', 'repair', 'frost'];
+    else if (lvl.type === 'raid') pref = ['arrowRain', 'drum', 'frost', 'thunder', 'repair'];
+    else if (lvl.type === 'rush') pref = ['frost', 'arrowRain', 'drum', 'repair', 'thunder'];
+    else pref = ['arrowRain', 'drum', 'thunder', 'frost', 'repair'];
+    const nA = P.slotCount(save, 'active');
+    const act = pref.filter((id) => save.activeOwned[id]).slice(0, nA);
+    for (let i = 0; i < 3; i++) lo.active[i] = act[i] || null;
+
+    // 被动技能
+    const prefP = share('goblin') > 0.15 ? ['pierceArmor', 'precision', 'burn', 'combo'] : ['precision', 'burn', 'combo', 'pierceArmor'];
+    const nP = P.slotCount(save, 'passive');
+    const pas = prefP.filter((id) => save.passiveOwned[id]).slice(0, nP);
+    for (let i = 0; i < 3; i++) lo.passive[i] = pas[i] || null;
+
+    // 消耗品
+    const nI = P.slotCount(save, 'item');
+    const prefI = ['charm', 'patch', 'bomb', 'haste', 'freeze'];
+    const items = [];
+    const left = Object.assign({}, save.inventory);
+    for (const id of prefI) {
+      while ((left[id] || 0) > 0 && items.length < nI) {
+        items.push(id);
+        left[id]--;
+        if (id === 'charm') break;
+      }
+    }
+    for (let i = 0; i < 3; i++) lo.items[i] = items[i] || null;
+
+    // 装备：每个栏位挑战力提升最大的
+    const slots = { helm: ['helm'], cape: ['cape'], trinket: ['trinket1', 'trinket2'] };
+    for (const kind of Object.keys(slots)) {
+      const cands = Object.keys(D.equipment).filter((id) => save.equipOwned[id] && D.equipment[id].slot === kind);
+      const scored = cands
+        .map((id) => {
+          const clone = TD.util.deepClone(save);
+          for (const k of slots[kind]) clone.loadout.equip[k] = null;
+          clone.loadout.equip[slots[kind][0]] = id;
+          return { id, score: P.estimateDps(P.heroStats(clone)) + (D.equipment[id].stats.wallDr || 0) * 50 + (D.equipment[id].stats.luck || 0) * 5 };
+        })
+        .sort((a, b) => b.score - a.score);
+      slots[kind].forEach((k, i) => (lo.equip[k] = scored[i] ? scored[i].id : null));
+    }
+
+    lo.target = lvl.type === 'raid' ? 'flying' : 'nearest';
+    if (lvl.type === 'raid') notes.push('目标：飞行优先');
+    return notes;
+  };
+})((globalThis.TD = globalThis.TD || {}));
