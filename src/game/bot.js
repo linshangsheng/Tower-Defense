@@ -74,12 +74,22 @@
     }
     const saveForOrb = P.highestCleared(save) >= 20 && !save.weapons.orb.owned;
     if (save.equipOwned.lionCrown && !saveForOrb)
-      for (const id of ['thunder', 'arrowRain', 'drum']) {
+      for (const id of ['thunder', 'arrowRain', 'drum', 'repair', 'frost']) {
         if (P.skillLevel(save, id) === 2 && P.canAfford(save, D.skillUpgradeCost[3])) {
           P.upgradeSkill(save, id);
           bought.push('skill3:' + id);
         }
       }
+    // 银币富余时：精良装备，再用汇兑所换金币升 Lv3 技能
+    if (!saveForStaff && P.highestCleared(save) >= 12) {
+      for (const id of ['starCape', 'eagleEye']) {
+        if (!save.equipOwned[id] && save.silver >= D.equipment[id].cost.silver + 6) {
+          P.buyEquip(save, id);
+          bought.push(id);
+        }
+      }
+      while (save.silver >= 70 && Object.keys(D.activeSkills).some((k) => P.skillLevel(save, k) === 2)) P.exchange(save, 'silver', 1);
+    }
     // 武器：随进度解锁
     const h = P.highestCleared(save);
     const wantWeapon = (id, minCleared) => {

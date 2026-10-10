@@ -180,7 +180,7 @@
     11: {
       name: '沙丘下的影子',
       type: 'normal',
-      countMult: 1.17,
+      countMult: 1.11,
       lanes: 3,
       waves: [
         W(0.9, ['slime', 11], ['scorpion', 4]),
@@ -195,7 +195,7 @@
     12: {
       name: '绷带木乃伊',
       type: 'normal',
-      countMult: 1.08,
+      countMult: 1.18,
       lanes: 3,
       waves: [
         W(0.98, ['slime', 10], ['mummy', 2]),
@@ -243,7 +243,7 @@
     15: {
       name: '钳钳',
       type: 'miniboss',
-      countMult: 0.8,
+      countMult: 1.1,
       lanes: 4,
       waves: [
         W(1.0, ['scorpion', 10], ['slime', 8]),
@@ -259,23 +259,23 @@
     16: {
       name: '秃鹫盘旋',
       type: 'raid',
-      countMult: 1.18,
+      countMult: 0.96,
       lanes: 4,
       waves: [
         W(0.64, ['vulture', 14]),
         W(0.56, ['vulture', 17], ['bee', 12]),
-        W(0.56, ['vulture', 21], ['scorpion', 9]),
+        W(0.56, ['vulture', 21], ['scorpion', 9], ['mummy', 3]),
         W(0.48, ['vulture', 23], ['bee', 14]),
-        W(0.48, ['vulture', 25], ['cactus', 9]),
+        W(0.48, ['vulture', 25], ['cactus', 9], ['mummy', 3]),
         W(0.44, ['vulture', 29], ['bee', 21]),
-        W(0.4, ['vulture', 37], ['mummy', 6]),
+        W(0.4, ['vulture', 37], ['mummy', 6], ['mummy', 3]),
       ],
       tip: '空袭关！秃鹫飞得很快。连发弩和「飞行优先」是好选择。',
     },
     17: {
       name: '猫咪祭司',
       type: 'normal',
-      countMult: 1.28,
+      countMult: 1.37,
       lanes: 4,
       waves: [
         W(1.1, ['slime', 8], ['priest', 1]),
@@ -292,7 +292,7 @@
     18: {
       name: '木乃伊大军',
       type: 'armored',
-      countMult: 1.24,
+      countMult: 1.34,
       lanes: 4,
       waves: [
         W(1.2, ['mummy', 4], ['priest', 1]),
@@ -309,7 +309,7 @@
     19: {
       name: '沙暴前夜',
       type: 'normal',
-      countMult: 1.21,
+      countMult: 1.25,
       lanes: 4,
       waves: [
         W(1.0, ['scorpion', 6], ['vulture', 6]),
@@ -326,7 +326,7 @@
     20: {
       name: '胖法老',
       type: 'boss',
-      countMult: 1.26,
+      countMult: 1.48,
       lanes: 4,
       waves: [
         W(1.1, ['mummy', 6], ['scorpion', 8]),
@@ -340,7 +340,7 @@
     21: {
       name: '雾中的眼睛',
       type: 'normal',
-      countMult: 1.13,
+      countMult: 1.2,
       lanes: 4,
       waves: [
         W(0.77, ['slime', 14], ['ghost', 6]),
@@ -356,7 +356,7 @@
     22: {
       name: '呱呱毒蛙',
       type: 'normal',
-      countMult: 1.26,
+      countMult: 1.4,
       lanes: 4,
       waves: [
         W(0.77, ['ghost', 9], ['frog', 3]),
@@ -372,7 +372,7 @@
     23: {
       name: '无月之夜',
       type: 'dark',
-      countMult: 1.15,
+      countMult: 1.3,
       dark: true,
       lanes: 4,
       waves: [
@@ -389,7 +389,7 @@
     24: {
       name: '第五条路',
       type: 'normal',
-      countMult: 1.28,
+      countMult: 1.26,
       lanes: 5,
       waves: [
         W(0.72, ['bat', 9], ['slime', 14]),
@@ -406,7 +406,7 @@
     25: {
       name: '骨头先生',
       type: 'miniboss',
-      countMult: 1.39,
+      countMult: 1.4,
       lanes: 5,
       waves: [
         W(0.72, ['ghost', 14], ['slime', 12]),
@@ -422,7 +422,7 @@
     26: {
       name: '会走路的树桩',
       type: 'normal',
-      countMult: 1.09,
+      countMult: 1.06,
       lanes: 5,
       waves: [
         W(0.77, ['stump', 2], ['slime', 14]),
@@ -439,16 +439,16 @@
     27: {
       name: '蝙蝠洞',
       type: 'raid',
-      countMult: 1.1,
+      countMult: 1.56,
       lanes: 5,
       waves: [
         W(0.51, ['bat', 17]),
         W(0.47, ['bat', 20], ['vulture', 9]),
-        W(0.47, ['bat', 23], ['ghost', 9]),
+        W(0.47, ['bat', 23], ['ghost', 9], ['stump', 3]),
         W(0.42, ['bat', 26], ['vulture', 12]),
-        W(0.42, ['bat', 29], ['frog', 4]),
+        W(0.42, ['bat', 29], ['frog', 4], ['stump', 3]),
         W(0.38, ['bat', 32], ['vulture', 14]),
-        W(0.38, ['bat', 35], ['ghost', 12]),
+        W(0.38, ['bat', 35], ['ghost', 12], ['stump', 3]),
         W(0.34, ['bat', 44]),
       ],
       tip: '空袭关！蝙蝠会换道，范围攻击比瞄准更可靠。',
@@ -473,7 +473,7 @@
     29: {
       name: '百鬼夜行',
       type: 'union',
-      countMult: 1.14,
+      countMult: 1.08,
       lanes: 5,
       waves: [
         B(2.2, ['slime', 8], ['ghost', 4]),
@@ -490,7 +490,7 @@
     30: {
       name: '毒汤婆婆',
       type: 'boss',
-      countMult: 1.87,
+      countMult: 1.93,
       lanes: 5,
       waves: [
         W(0.9, ['ghost', 10], ['pumpkin', 4], ['frog', 2]),
@@ -504,7 +504,7 @@
     31: {
       name: '初雪',
       type: 'normal',
-      countMult: 0.88,
+      countMult: 1.01,
       lanes: 5,
       waves: [
         W(0.75, ['snowman', 10], ['ghost', 6]),
@@ -520,7 +520,7 @@
     32: {
       name: '滑溜溜',
       type: 'normal',
-      countMult: 1.11,
+      countMult: 1.31,
       lanes: 5,
       waves: [
         W(0.7, ['penguin', 8], ['snowman', 8]),
@@ -536,7 +536,7 @@
     33: {
       name: '雪原狂奔',
       type: 'rush',
-      countMult: 1.11,
+      countMult: 1.27,
       lanes: 5,
       rushInterval: 13,
       waves: [
@@ -553,7 +553,7 @@
     34: {
       name: '冰晶之光',
       type: 'normal',
-      countMult: 1.08,
+      countMult: 1.16,
       lanes: 5,
       waves: [
         W(0.75, ['snowman', 10], ['iceSprite', 2]),
@@ -570,7 +570,7 @@
     35: {
       name: '冰棍大叔',
       type: 'miniboss',
-      countMult: 1.12,
+      countMult: 1.37,
       lanes: 5,
       waves: [
         W(0.7, ['snowman', 12], ['penguin', 6]),
@@ -586,7 +586,7 @@
     36: {
       name: '狼嚎',
       type: 'normal',
-      countMult: 1.16,
+      countMult: 1.24,
       lanes: 5,
       waves: [
         W(0.6, ['wolf', 12], ['snowman', 6]),
@@ -603,7 +603,7 @@
     37: {
       name: '雪怪出没',
       type: 'armored',
-      countMult: 0.95,
+      countMult: 1.05,
       lanes: 5,
       waves: [
         W(0.9, ['yeti', 3], ['snowman', 8]),
@@ -620,16 +620,16 @@
     38: {
       name: '冰晶风暴',
       type: 'raid',
-      countMult: 2.8,
+      countMult: 1.8,
       lanes: 5,
       waves: [
         W(0.6, ['iceSprite', 4], ['bat', 10]),
         W(0.55, ['iceSprite', 4], ['vulture', 10]),
-        W(0.55, ['iceSprite', 5], ['bat', 14]),
+        W(0.55, ['iceSprite', 5], ['bat', 14], ['yeti', 3]),
         W(0.5, ['iceSprite', 5], ['vulture', 12], ['bat', 6]),
-        W(0.5, ['iceSprite', 6], ['bat', 16]),
+        W(0.5, ['iceSprite', 6], ['bat', 16], ['yeti', 3]),
         W(0.45, ['iceSprite', 6], ['vulture', 16]),
-        W(0.45, ['iceSprite', 7], ['bat', 20]),
+        W(0.45, ['iceSprite', 7], ['bat', 20], ['yeti', 3]),
         W(0.4, ['iceSprite', 8], ['bat', 18], ['vulture', 10]),
       ],
       tip: '空袭关，而且冰晶精灵很多。「飞行优先」加连发弩或雷电法球！',
@@ -637,7 +637,7 @@
     39: {
       name: '雪崩',
       type: 'union',
-      countMult: 0.87,
+      countMult: 1.03,
       lanes: 5,
       waves: [
         B(2.0, ['snowman', 10], ['penguin', 5]),
@@ -654,7 +654,7 @@
     40: {
       name: '霜霜女王',
       type: 'boss',
-      countMult: 1.79,
+      countMult: 1.91,
       lanes: 5,
       waves: [
         W(0.7, ['snowman', 12], ['wolf', 9], ['iceSprite', 2]),
@@ -668,7 +668,7 @@
     41: {
       name: '裂隙入口',
       type: 'normal',
-      countMult: 1.81,
+      countMult: 2,
       lanes: 5,
       waves: [
         W(0.75, ['magma', 10], ['snowman', 6]),
@@ -684,7 +684,7 @@
     42: {
       name: '火球雨',
       type: 'normal',
-      countMult: 2.32,
+      countMult: 2.45,
       lanes: 5,
       waves: [
         W(0.75, ['imp', 3], ['magma', 8]),
@@ -700,7 +700,7 @@
     43: {
       name: '熔岩巨人',
       type: 'armored',
-      countMult: 1.92,
+      countMult: 2.08,
       lanes: 5,
       waves: [
         W(0.9, ['lavaGolem', 3], ['magma', 8]),
@@ -717,7 +717,7 @@
     44: {
       name: '影子里的刀',
       type: 'dark',
-      countMult: 1.22,
+      countMult: 1.35,
       dark: true,
       lanes: 5,
       waves: [
@@ -750,7 +750,7 @@
     46: {
       name: '战车冲锋',
       type: 'rush',
-      countMult: 1.03,
+      countMult: 1.2,
       lanes: 5,
       rushInterval: 12,
       waves: [
@@ -767,16 +767,16 @@
     47: {
       name: '火雨天空',
       type: 'raid',
-      countMult: 1.96,
+      countMult: 1.47,
       lanes: 5,
       waves: [
         W(0.6, ['imp', 5], ['bat', 10]),
         W(0.55, ['imp', 6], ['vulture', 10]),
-        W(0.55, ['imp', 6], ['iceSprite', 2], ['bat', 10]),
+        W(0.55, ['imp', 6], ['iceSprite', 2], ['bat', 10], ['chariot', 4]),
         W(0.5, ['imp', 7], ['vulture', 12]),
-        W(0.5, ['imp', 8], ['bat', 14], ['lavaGolem', 2]),
+        W(0.5, ['imp', 8], ['bat', 14], ['lavaGolem', 2], ['chariot', 4]),
         W(0.45, ['imp', 8], ['vulture', 14]),
-        W(0.45, ['imp', 9], ['bat', 16], ['lavaGolem', 2]),
+        W(0.45, ['imp', 9], ['bat', 16], ['lavaGolem', 2], ['chariot', 4]),
         W(0.4, ['imp', 10], ['vulture', 16], ['iceSprite', 3]),
       ],
       tip: '空袭关，小恶魔会在远处扔火球。「威胁优先」或「飞行优先」都试试看！',
@@ -784,7 +784,7 @@
     48: {
       name: '万象',
       type: 'union',
-      countMult: 0.58,
+      countMult: 0.91,
       lanes: 5,
       waves: [
         B(2.0, ['magma', 10], ['assassin', 5]),
@@ -801,7 +801,7 @@
     49: {
       name: '精英挑战',
       type: 'elite',
-      countMult: 0.91,
+      countMult: 1.36,
       lanes: 5,
       waves: [
         W(0.8, ['slime', 12], ['goblin', 6], ['bee', 10]),
@@ -818,7 +818,7 @@
     50: {
       name: '墨墨',
       type: 'boss',
-      countMult: 1.6,
+      countMult: 2.11,
       lanes: 5,
       final: true,
       waves: [
