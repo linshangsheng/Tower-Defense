@@ -49,6 +49,7 @@
       check: (s) => Object.keys(TD.data.levels).every((n) => !TD.data.missionFor(+n) || (s.levels[n] || {}).mission),
     },
     { id: 'streak30', name: '势不可挡', desc: '单局连击达到 30（1.2 秒内连续击败怪物）', reward: { silver: 2 }, check: (s) => (s.stats.bestStreak || 0) >= 30 },
+    { id: 'combo50', name: '协同大师', desc: '累计触发 50 次技能协同（碎冰、鼓点箭雨）', reward: { silver: 2 }, check: (s) => (s.stats.combos || 0) >= 50 },
     { id: 'diary', name: '日记写满了', desc: '读完全部守城日记（跳过的段落可以在日记本里重看）', reward: { silver: 3 }, check: (s) => (TD.data.storyOrder || []).every((k) => (s.story || {})[k] === 'read') },
     { id: 'kill1k', name: '百怪斩', desc: '累计击败 1000 只怪物', reward: { silver: 2 }, check: (s) => s.stats.kills >= 1000 },
     { id: 'kill10k', name: '万怪敌', desc: '累计击败 10000 只怪物', reward: { gold: 1 }, check: (s) => s.stats.kills >= 10000 },

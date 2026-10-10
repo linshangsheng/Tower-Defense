@@ -136,9 +136,55 @@
     (list || []).forEach((a, i) => setTimeout(() => UI.toast(`🏆 达成成就「${a.name}」+${P.costText(a.reward)}`, 'achieve', 2600), i * 900));
   };
 
-  UI.showAchievements = function () {
+  // 守城档案（设计书 46）
+  function recordsEl(s) {
+    const st = s.stats;
+    const lv = Object.keys(D.levels);
+    const kt = st.killsByType || {};
+    const fav = Object.keys(kt).sort((a, b) => kt[b] - kt[a])[0];
+    const tile = (label, value, extra) => h('div', { class: 'rec-tile' }, extra || null, h('b', null, value), h('span', null, label));
+    const count = (fn) => lv.filter((n) => fn(s.levels[n] || {})).length;
+    const groups = [
+      ['战斗', [tile('战斗次数', st.battles), tile('胜利次数', st.wins), tile('胜率', st.battles ? Math.round((st.wins / st.battles) * 100) + '%' : '—'), tile('最高连击', st.bestStreak || 0)]],
+      [
+        '怪物',
+        [
+          tile('累计击败', st.kills),
+          fav ? tile(`击败最多：${D.monsters[fav].name}`, kt[fav], TD.sprites.portrait(fav, 40)) : tile('击败最多', '—'),
+          tile('遇见的怪物', `${Object.keys(s.seenMonsters || {}).length} 种`),
+        ],
+      ],
+      ['操作', [tile('打断 Boss', st.interrupts || 0), tile('提前召唤', st.earlyCalls || 0), tile('选择补给', st.supplies || 0), tile('技能协同', st.combos || 0)]],
+      [
+        '收集',
+        [
+          tile('星星', `${lv.reduce((a, n) => a + ((s.levels[n] || {}).stars || 0), 0)} / ${lv.length * 3}`),
+          tile('王冠', `${count((r) => r.crown)} / ${lv.length}`),
+          tile('关卡任务', `${count((r) => r.mission)} / ${lv.filter((n) => D.missionFor(+n)).length}`),
+          tile('成就', `${D.achievements.filter((a) => (s.achievements || {})[a.id]).length} / ${D.achievements.length}`),
+          tile('日记', `${D.storyOrder.filter((k) => (s.story || {})[k] === 'read').length} / ${D.storyOrder.length}`),
+          tile('外观', `${D.outfits.filter((o) => P.outfitUnlocked(s, o.id)).length} / ${D.outfits.length}`),
+          tile('小镇邻居', `${D.town.filter((f) => P.isCleared(s, f.level)).length} / ${D.town.length}`),
+        ],
+      ],
+      ['挑战', [tile('无尽最高', `${(s.endless || {}).best || 0} 波`), tile('每日挑战', `${Object.keys(s.daily || {}).length} 天`)]],
+    ];
+    return h('div', { class: 'records' }, groups.map(([title, tiles]) => [h('h4', null, title), h('div', { class: 'rec-row' }, tiles)]));
+  }
+
+  UI.showAchievements = function (tab) {
     const s = G().save;
     const all = D.achievements;
+    const tabs = h(
+      'div',
+      { class: 'ach-tabs' },
+      h('button', { class: 'btn small' + (tab === 'records' ? '' : ' primary'), onclick: () => UI.showAchievements() }, '🏆 成就'),
+      h('button', { class: 'btn small' + (tab === 'records' ? ' primary' : ''), onclick: () => UI.showAchievements('records') }, '📜 守城档案')
+    );
+    if (tab === 'records') {
+      modal(h('div', null, tabs, h('h2', null, '守城档案'), recordsEl(s), h('div', { class: 'modal-buttons' }, h('button', { class: 'btn', onclick: UI.closeModal }, '关闭'))), { cls: 'wide', closeOnBack: true });
+      return;
+    }
     const done = all.filter((a) => (s.achievements || {})[a.id]).length;
     const cards = all.map((a) => {
       const ok = (s.achievements || {})[a.id];
@@ -148,6 +194,7 @@
       h(
         'div',
         null,
+        tabs,
         h('h2', null, `成就 ${done} / ${all.length}`),
         h('div', { class: 'ach-stats' }, `战斗 ${s.stats.battles} 次 · 胜利 ${s.stats.wins} 次 · 击败 ${s.stats.kills} 只 · 打断 ${s.stats.interrupts || 0} 次 · 提前召唤 ${s.stats.earlyCalls || 0} 次`),
         h('div', { class: 'ach-grid' }, cards),
