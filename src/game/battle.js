@@ -272,7 +272,9 @@
         if (lane === undefined) lane = mid;
       }
       if (lane === undefined) lane = this.rng.int(this.lanes);
-      const hp = Math.round(def.hp * this.D * (1 + (this.rules.monsterHp || 0)) * this.diffHp);
+      // bossHp：精英挑战里回归的小 Boss 是强化版（设计书 29.2）
+      const bossMult = def.boss ? 1 + (this.level.bossHp || 0) : 1;
+      const hp = Math.round(def.hp * this.D * (1 + (this.rules.monsterHp || 0)) * this.diffHp * bossMult);
       const m = {
         id: nextId++,
         type,

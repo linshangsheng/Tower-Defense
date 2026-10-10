@@ -424,6 +424,7 @@
         h('span', { class: 'node-num' }, lvl.type === 'boss' ? '👑' : lvl.type === 'miniboss' ? '♛' : n),
         h('span', { class: 'node-index' }, n),
         rec.clears ? starsEl(rec.stars) : null,
+        rec.crown ? h('span', { class: 'node-crown', title: '已在挑战难度通关' }, '👑') : null,
         h('span', { class: 'node-name' }, `${n}. ${lvl.name}`)
       );
     });
@@ -455,13 +456,13 @@
         { class: 'topbar' },
         h('button', { class: 'btn small', onclick: () => (sfx('click'), UI.showTitle()) }, '‹ 标题'),
         h('div', { class: 'chapter-tabs' }, chapterTabs),
-        h('div', { class: 'chapter-title' }, `第${'一二三四五'[ch.id - 1]}章 · ${ch.name}`, h('span', { class: 'chapter-stars' }, ` ★ ${totalStars}/${ch.levels.length * 3}`)),
+        h('div', { class: 'chapter-title' }, `第${'一二三四五'[ch.id - 1]}章 · ${ch.name}`, h('span', { class: 'chapter-stars' }, ` ★ ${totalStars}/${ch.levels.length * 3}`), P.crowns(s, ch.levels) ? h('span', { class: 'chapter-crowns', title: '本章王冠（挑战难度通关）' }, `👑${P.crowns(s, ch.levels)}`) : null),
         h('div', { class: 'power' }, '战力 ', h('b', null, P.power(s))),
         currencyBar(),
-        h('button', { class: 'btn small', title: '铛铛的衣柜', onclick: () => (sfx('click'), UI.showWardrobe()) }, '👕'),
-        h('button', { class: 'btn small', title: '守城日记', onclick: () => (sfx('click'), UI.showDiary()) }, '📔'),
-        h('button', { class: 'btn small', title: '怪物图鉴', onclick: () => (sfx('click'), UI.showBestiary()) }, '📖'),
-        h('button', { class: 'btn small', title: '成就', onclick: () => (sfx('click'), UI.showAchievements()) }, '🏆'),
+        h('button', { class: 'btn small icon-btn', title: '铛铛的衣柜', onclick: () => (sfx('click'), UI.showWardrobe()) }, '👕'),
+        h('button', { class: 'btn small icon-btn', title: '守城日记', onclick: () => (sfx('click'), UI.showDiary()) }, '📔'),
+        h('button', { class: 'btn small icon-btn', title: '怪物图鉴', onclick: () => (sfx('click'), UI.showBestiary()) }, '📖'),
+        h('button', { class: 'btn small icon-btn', title: '成就', onclick: () => (sfx('click'), UI.showAchievements()) }, '🏆'),
         h('button', { class: 'btn small primary', onclick: () => (sfx('click'), UI.showShop(null, 'loadout')) }, '商店 / 配装')
       ),
       nodes,
@@ -693,7 +694,8 @@
         { class: 'preview-info' },
         h('span', null, `车道 ${lvl.lanes} 条`),
         h('span', null, lvl.type === 'boss' ? `${lvl.waves.length} 波（含 Boss）` : `${lvl.waves.length} 波`),
-        h('span', { class: power >= rp ? 'ok' : 'warn' }, `推荐战力 ${rp} · 你的战力 ${power}`)
+        h('span', { class: power >= rp ? 'ok' : 'warn' }, `推荐战力 ${rp} · 你的战力 ${power}`),
+        rec.crown ? h('span', { class: 'ok' }, '👑 已在挑战难度通关') : (s.settings.difficulty || 'normal') === 'hard' ? h('span', null, '👑 挑战难度通关可得王冠') : null
       ),
       h('div', { class: 'mon-list' }, mons),
       weaponAdvice(n),

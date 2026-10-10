@@ -1,12 +1,15 @@
 #!/usr/bin/env node
 // 自动数值模拟：验证设计书 18.10 的原型验收目标
-// 用法：node tools/sim.js [--seeds 5] [--verbose]
+// 用法：node tools/sim.js [--seeds 5] [--verbose] [--hard | --easy] [--campaign]
+//   --hard / --easy：机器人在该难度下打（设计书 31.3）；--campaign：只跑目标 2（推进全部关卡）
 const TD = require('./load');
 const P = TD.progression;
 
 const args = process.argv.slice(2);
 const seeds = +(args[args.indexOf('--seeds') + 1] || 0) || 5;
 const verbose = args.includes('--verbose');
+const difficulty = args.includes('--hard') ? 'hard' : args.includes('--easy') ? 'easy' : 'normal';
+const campaignOnly = args.includes('--campaign');
 const LAST = Math.max(...Object.keys(TD.data.levels).map(Number));
 
 function pct(x) {
@@ -33,6 +36,7 @@ function noPurchase() {
 function campaign(seed, opts) {
   opts = opts || {};
   const save = P.newSave();
+  save.settings.difficulty = difficulty;
   const log = [];
   const before = {};
   let retries = 0;
@@ -62,9 +66,11 @@ function campaign(seed, opts) {
   return { log, retries, save, before };
 }
 
-console.log('=== 目标 1：不做任何购买时的通过率 ===');
-const np = noPurchase();
-console.log(Object.entries(np).map(([n, r]) => `第${n}关 ${pct(r)}`).join('  '));
+if (!campaignOnly) {
+  console.log('=== 目标 1：不做任何购买时的通过率 ===');
+  const np = noPurchase();
+  console.log(Object.entries(np).map(([n, r]) => `第${n}关 ${pct(r)}`).join('  '));
+}
 
 console.log('\n=== 目标 2：机器人正常升级推进 ===');
 let totalRetries = 0;
@@ -93,6 +99,7 @@ for (const [n, p] of Object.entries(perLevel)) {
   );
 }
 console.log(`全部通关的种子：${allClear}/${seeds}，平均重试次数：${(totalRetries / seeds).toFixed(1)}`);
+if (campaignOnly) process.exit(0);
 
 console.log('\n=== 目标 3：第 10 关，有无主动技能对比 ===');
 const BOSS1 = 10;

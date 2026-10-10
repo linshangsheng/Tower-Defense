@@ -904,6 +904,8 @@ test('衣柜：按进度解锁，未解锁不能穿，新外观只提示一次',
   assert.deepStrictEqual(P.newOutfits(s).map((o) => o.id), ['meadow']);
   assert.strictEqual(P.newOutfits(s).length, 0);
   for (let k = 1; k <= 50; k++) s.levels[k] = { stars: 3, clears: 1 };
+  assert.ok(!P.outfitUnlocked(s, 'gold'), '金甲勇士要全部王冠');
+  for (let k = 1; k <= 50; k++) s.levels[k].crown = true;
   assert.ok(D.outfits.every((o) => P.outfitUnlocked(s, o.id)));
   // 外观只是颜色：每套都有完整的颜色表
   for (const o of D.outfits) for (const k of ['cape', 'body', 'helmTop', 'helmBottom', 'brim', 'plume', 'plumeHi', 'shield', 'shieldHi']) assert.ok(o.colors[k], `${o.id}.${k}`);
@@ -915,4 +917,28 @@ test('衣柜：通关结算提示新外观', () => {
   s.levels[10] = { stars: 0, clears: 0 };
   const r = P.applyResult(s, 10, { win: true, wallRatio: 0.5, killCopper: 0 });
   assert.ok(r.unlocks.some((x) => x.includes('草原游侠')));
+});
+
+test('挑战王冠：挑战难度通关得王冠和 1 银，只给一次；标准难度不给', () => {
+  const s = P.newSave();
+  const win = { win: true, wallRatio: 1, killCopper: 0 };
+  P.applyResult(s, 1, win);
+  assert.ok(!s.levels[1].crown);
+  s.settings.difficulty = 'hard';
+  const silver0 = s.silver;
+  const r = P.applyResult(s, 1, win);
+  assert.ok(s.levels[1].crown);
+  assert.ok(r.notes.some((x) => x.includes('王冠')));
+  assert.ok(s.silver >= silver0 + 1);
+  const r2 = P.applyResult(s, 1, win);
+  assert.ok(!r2.notes.some((x) => x.includes('王冠')));
+  assert.strictEqual(P.crowns(s), 1);
+  assert.strictEqual(P.crowns(s, [2, 3]), 0);
+});
+
+test('机器人战斗使用存档里的难度', () => {
+  const s = P.newSave();
+  s.settings.difficulty = 'hard';
+  const { battle } = TD.bot.playLevel(s, 1, { seed: 1 });
+  assert.ok(Math.abs(battle.diffHp - 1.3) < 1e-9);
 });

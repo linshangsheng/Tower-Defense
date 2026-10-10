@@ -75,6 +75,8 @@
 
   P.levelRecord = (save, n) => save.levels[n] || { stars: 0, clears: 0 };
 
+  P.crowns = (save, levels) => (levels || Object.keys(save.levels)).filter((n) => (save.levels[n] || {}).crown).length;
+
   // ---------- 铛铛的衣柜（设计书 30） ----------
   P.outfitUnlocked = (save, id) => {
     const o = D.outfits && D.outfits.find((x) => x.id === id);
@@ -493,7 +495,8 @@
     const firstClear = result.win && rec.clears === 0;
     const out = { copper: 0, silver: 0, gold: 0, stars: 0, firstClear, notes: [], unlocks: [] };
     const st = P.heroStats(save);
-    const diff = C.difficulties[(save.settings && save.settings.difficulty) || 'normal'] || C.difficulties.normal;
+    const diffId = (save.settings && save.settings.difficulty) || 'normal';
+    const diff = C.difficulties[diffId] || C.difficulties.normal;
     const copperMult = 1 + st.luck + (result.charm ? D.items.charm.copperBonus : 0) + (result.copperBonus || 0) + diff.copper;
     const before = {
       active: P.slotCount(save, 'active'),
@@ -526,6 +529,12 @@
       }
       rec.clears++;
       rec.streak = 0;
+      // 挑战王冠（设计书 31）
+      if (diffId === 'hard' && !rec.crown) {
+        rec.crown = true;
+        out.silver += 1;
+        out.notes.push('👑 首次在挑战难度通关：获得王冠');
+      }
       rec.stars = Math.max(rec.stars, stars);
     } else {
       base = R.baseCopper(n) * R.failMult;

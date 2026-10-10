@@ -801,7 +801,8 @@
     49: {
       name: '精英挑战',
       type: 'elite',
-      countMult: 1.16,
+      bossHp: 0.3,
+      countMult: 0.79,
       lanes: 5,
       waves: [
         W(0.8, ['slime', 12], ['goblin', 6], ['bee', 10]),

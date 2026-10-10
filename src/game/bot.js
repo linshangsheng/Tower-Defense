@@ -172,6 +172,7 @@
       autoItems: !opts.noItems,
       autoSupply: true,
       rally: opts.noRally ? 0 : P.rally(save, n),
+      difficulty: (save.settings && save.settings.difficulty) || 'normal',
     });
     const res = battle.runToEnd();
     for (const id of res.itemsUsed) P.consumeItem(save, id);

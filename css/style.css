@@ -1092,6 +1092,12 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-size: 19px;
+}
+/* 地图顶栏的图标按钮（衣柜、日记、图鉴、成就）收窄一点，给章节标题留位置 */
+.map-screen .topbar .btn.small.icon-btn {
+  min-width: 44px;
+  padding: 4px 8px;
 }
 .map-screen.desert {
   background: radial-gradient(ellipse at 50% 60%, rgba(250, 215, 140, 0.6), rgba(205, 150, 70, 0.85));
@@ -1699,4 +1705,19 @@ body {
   .outfit-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+}
+
+/* ---------- 挑战王冠（设计书 31） ---------- */
+.node-crown {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  font-size: 20px;
+  filter: drop-shadow(0 2px 0 rgba(0, 0, 0, 0.35));
+  pointer-events: none;
+}
+.chapter-crowns {
+  font-size: 14px;
+  color: #c48a10;
+  margin-left: 6px;
 }
