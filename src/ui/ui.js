@@ -458,6 +458,7 @@
         h('div', { class: 'chapter-title' }, `第${'一二三四五'[ch.id - 1]}章 · ${ch.name}`, h('span', { class: 'chapter-stars' }, ` ★ ${totalStars}/${ch.levels.length * 3}`)),
         h('div', { class: 'power' }, '战力 ', h('b', null, P.power(s))),
         currencyBar(),
+        h('button', { class: 'btn small', title: '铛铛的衣柜', onclick: () => (sfx('click'), UI.showWardrobe()) }, '👕'),
         h('button', { class: 'btn small', title: '守城日记', onclick: () => (sfx('click'), UI.showDiary()) }, '📔'),
         h('button', { class: 'btn small', title: '怪物图鉴', onclick: () => (sfx('click'), UI.showBestiary()) }, '📖'),
         h('button', { class: 'btn small', title: '成就', onclick: () => (sfx('click'), UI.showAchievements()) }, '🏆'),
@@ -584,6 +585,38 @@
     });
     modal(
       h('div', { class: 'diary' }, h('div', { class: 'preview-head' }, h('h2', null, '📔 铛铛的守城日记'), h('span', { class: 'tag' }, `已读 ${read} / ${order.length}`)), h('div', { class: 'diary-list' }, items), h('div', { class: 'modal-buttons' }, h('button', { class: 'btn primary', onclick: UI.closeModal }, '合上日记'))),
+      { closeOnBack: true, cls: 'wide' }
+    );
+  };
+
+  // ================= 铛铛的衣柜（设计书 30） =================
+  UI.showWardrobe = function () {
+    const s = game.save;
+    const cards = D.outfits.map((o) => {
+      const open = P.outfitUnlocked(s, o.id);
+      const on = (s.outfit || 'classic') === o.id;
+      const img = TD.sprites.heroPortrait(110, on ? 'win' : 'idle', o.id);
+      return h(
+        'button',
+        {
+          class: 'outfit-card' + (open ? '' : ' locked') + (on ? ' on' : ''),
+          onclick: () => {
+            if (!open) return sfx('error'), UI.toast(`解锁条件：${o.unlock}`);
+            sfx('click');
+            P.setOutfit(s, o.id);
+            game.persist();
+            UI.showWardrobe();
+          },
+        },
+        h('div', { class: 'outfit-img' }, img),
+        h('b', null, o.name),
+        h('span', null, open ? o.desc : '🔒 ' + o.unlock),
+        on ? h('em', null, '穿着') : null
+      );
+    });
+    const n = D.outfits.filter((o) => P.outfitUnlocked(s, o.id)).length;
+    modal(
+      h('div', { class: 'wardrobe' }, h('div', { class: 'preview-head' }, h('h2', null, '👕 铛铛的衣柜'), h('span', { class: 'tag' }, `${n} / ${D.outfits.length}`)), h('div', { class: 'outfit-grid' }, cards), h('div', { class: 'modal-buttons' }, h('button', { class: 'btn primary', onclick: UI.closeModal }, '好了'))),
       { closeOnBack: true, cls: 'wide' }
     );
   };

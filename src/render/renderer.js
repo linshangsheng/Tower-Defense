@@ -1007,7 +1007,7 @@
       }
       // 英雄脚下的城墙平台
       const ascended = !!(b && b.stats.weaponDef && b.stats.weaponDef.ascended);
-      S.hero(this.ctx, C.heroX, heroY, { t: this.t, weapon, aimAngle: aim, shotAge, mood, critAge: this.critAge, ascended });
+      S.hero(this.ctx, C.heroX, heroY, { t: this.t, weapon, aimAngle: aim, shotAge, mood, critAge: this.critAge, ascended, outfit: TD.game && TD.game.save && TD.game.save.outfit });
       // 战鼓等增益光环
       if (b && b.buffs.some((x) => b.time < x.until)) {
         const ctx = this.ctx;

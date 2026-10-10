@@ -1607,6 +1607,10 @@
   S.hero = function (ctx, x, y, st) {
     const t = st.t;
     const s = 32;
+    // 外观（设计书 30）：颜色 + 头盔小装饰
+    const outfit = TD.data.outfitById ? TD.data.outfitById(st.outfit) : null;
+    const col = outfit ? outfit.colors : { cape: '#e04848', body: '#5b7bd5', helmTop: '#eef2f7', helmBottom: '#a9b4c2', brim: '#8c97a6', plume: '#ff5a4f', plumeHi: '#ffb3ad', shield: '#c9a24a', shieldHi: '#ffe08a' };
+    const extra = outfit && outfit.extra;
     ctx.save();
     ctx.translate(x, y);
     let bob = Math.sin(t * 3) * 1.5;
@@ -1622,17 +1626,25 @@
     ctx.quadraticCurveTo(-s * 1.1, -s * 0.4 + capeWave, -s * 0.8 + capeWave, s * 0.05);
     ctx.lineTo(s * 0.1, -s * 0.1);
     ctx.closePath();
-    ctx.fillStyle = '#e04848';
+    ctx.fillStyle = col.cape;
     ctx.fill();
     ctx.strokeStyle = OUTLINE;
     ctx.lineWidth = 2;
     ctx.stroke();
+    if (extra === 'stars' || extra === 'ink') {
+      // 披风上的星星 / 墨点
+      ctx.fillStyle = extra === 'stars' ? '#ffd23f' : '#0e0a18';
+      for (const [px, py] of [[-0.7, -0.5], [-0.55, -0.2], [-0.35, -0.75], [-0.25, -0.3]]) {
+        if (extra === 'stars') star(ctx, s * px + capeWave * 0.5, s * py, 2.6);
+        else ellipse(ctx, s * px + capeWave * 0.5, s * py, 2.6, 2.2, '#0e0a18');
+      }
+    }
     // 背后小圆盾
-    ellipse(ctx, -s * 0.55, -s * 0.65, s * 0.32, s * 0.36, '#c9a24a', OUTLINE, 2);
-    ellipse(ctx, -s * 0.55, -s * 0.65, s * 0.12, s * 0.13, '#ffe08a');
+    ellipse(ctx, -s * 0.55, -s * 0.65, s * 0.32, s * 0.36, col.shield, OUTLINE, 2);
+    ellipse(ctx, -s * 0.55, -s * 0.65, s * 0.12, s * 0.13, col.shieldHi);
     // 身体
     roundRect(ctx, -s * 0.38, -s * 1.0, s * 0.8, s * 0.95, s * 0.3);
-    ctx.fillStyle = '#5b7bd5';
+    ctx.fillStyle = col.body;
     ctx.fill();
     ctx.stroke();
     ctx.fillStyle = '#8a5a3c';
@@ -1702,25 +1714,26 @@
     ctx.lineTo(-s * 0.82, s * 0.08);
     ctx.closePath();
     const g = ctx.createLinearGradient(0, -s * 0.6, 0, s * 0.1);
-    g.addColorStop(0, '#eef2f7');
-    g.addColorStop(1, '#a9b4c2');
+    g.addColorStop(0, col.helmTop);
+    g.addColorStop(1, col.helmBottom);
     ctx.fillStyle = g;
     ctx.fill();
     ctx.strokeStyle = OUTLINE;
     ctx.lineWidth = 2;
     ctx.stroke();
     roundRect(ctx, -s * 0.86, -s * 0.02, s * 1.72, s * 0.16, s * 0.06);
-    ctx.fillStyle = '#8c97a6';
+    ctx.fillStyle = col.brim;
     ctx.fill();
     ctx.stroke();
     ellipse(ctx, -s * 0.35, -s * 0.32, s * 0.14, s * 0.08, 'rgba(255,255,255,0.8)');
+    if (extra) S.heroExtra(ctx, extra, s, t);
     // 红缨
     const tuft = Math.sin(t * 6) * 0.15;
     ctx.save();
     ctx.translate(0, -s * 0.58);
     ctx.rotate(tuft);
-    ellipse(ctx, 0, -s * 0.14, s * 0.17, s * 0.17, '#ff5a4f', OUTLINE, 1.8);
-    ellipse(ctx, -s * 0.05, -s * 0.2, s * 0.05, s * 0.04, '#ffb3ad');
+    ellipse(ctx, 0, -s * 0.14, s * 0.17, s * 0.17, col.plume, OUTLINE, 1.8);
+    ellipse(ctx, -s * 0.05, -s * 0.2, s * 0.05, s * 0.04, col.plumeHi);
     ctx.restore();
     if (st.critAge !== undefined && st.critAge < 0.4) {
       ctx.fillStyle = '#ffd23f';
@@ -1730,6 +1743,98 @@
       }
     }
     ctx.restore();
+    ctx.restore();
+  };
+
+  // 头盔上的小装饰（坐标系：头盔中心，s = 32）
+  S.heroExtra = function (ctx, extra, s, t) {
+    ctx.save();
+    if (extra === 'leaf') {
+      // 四叶草别在头盔侧面
+      ctx.translate(s * 0.5, -s * 0.25);
+      for (let i = 0; i < 4; i++) {
+        ctx.save();
+        ctx.rotate((i * Math.PI) / 2 + 0.4);
+        ellipse(ctx, 0, -s * 0.09, s * 0.07, s * 0.1, '#5aa845', OUTLINE, 1.2);
+        ctx.restore();
+      }
+    } else if (extra === 'sun') {
+      ctx.translate(s * 0.48, -s * 0.22);
+      ctx.strokeStyle = '#ff9f2e';
+      ctx.lineWidth = 2;
+      for (let i = 0; i < 8; i++) {
+        const a = (i * Math.PI) / 4 + t;
+        ctx.beginPath();
+        ctx.moveTo(Math.cos(a) * s * 0.12, Math.sin(a) * s * 0.12);
+        ctx.lineTo(Math.cos(a) * s * 0.18, Math.sin(a) * s * 0.18);
+        ctx.stroke();
+      }
+      ellipse(ctx, 0, 0, s * 0.1, s * 0.1, '#ffd23f', OUTLINE, 1.2);
+    } else if (extra === 'mushroom') {
+      ctx.translate(s * 0.42, -s * 0.42);
+      ctx.fillStyle = '#fff3dc';
+      ctx.fillRect(-s * 0.04, -s * 0.02, s * 0.08, s * 0.12);
+      ctx.beginPath();
+      ctx.arc(0, 0, s * 0.13, Math.PI, 0);
+      ctx.closePath();
+      ctx.fillStyle = '#e04848';
+      ctx.fill();
+      ctx.strokeStyle = OUTLINE;
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
+      ellipse(ctx, -s * 0.05, -s * 0.06, s * 0.025, s * 0.025, '#fff');
+      ellipse(ctx, s * 0.05, -s * 0.04, s * 0.02, s * 0.02, '#fff');
+    } else if (extra === 'scarf') {
+      // 围巾在下巴下面飘
+      const wave = Math.sin(t * 6) * 3;
+      ctx.translate(0, s * 0.62);
+      roundRect(ctx, -s * 0.45, -s * 0.06, s * 0.9, s * 0.14, s * 0.06);
+      ctx.fillStyle = '#e04848';
+      ctx.fill();
+      ctx.strokeStyle = OUTLINE;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.4, 0);
+      ctx.quadraticCurveTo(-s * 0.75, s * 0.05 + wave, -s * 0.95, s * 0.12 - wave);
+      ctx.lineTo(-s * 0.9, s * 0.22 - wave);
+      ctx.quadraticCurveTo(-s * 0.7, s * 0.15 + wave, -s * 0.35, s * 0.08);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+    } else if (extra === 'ink') {
+      // 墨墨趴在头盔上
+      ctx.translate(-s * 0.3, -s * 0.5);
+      const bob = Math.sin(t * 4) * 1.2;
+      ellipse(ctx, 0, bob, s * 0.2, s * 0.14, '#2a2438', OUTLINE, 1.2);
+      ellipse(ctx, -s * 0.06, bob - s * 0.02, s * 0.03, s * 0.035, '#fff');
+      ellipse(ctx, s * 0.06, bob - s * 0.02, s * 0.03, s * 0.035, '#fff');
+    } else if (extra === 'stars') {
+      ctx.fillStyle = '#ffd23f';
+      for (let i = 0; i < 3; i++) {
+        const a = t * 1.5 + (i * Math.PI * 2) / 3;
+        ctx.globalAlpha = 0.6 + Math.sin(t * 5 + i) * 0.4;
+        star(ctx, Math.cos(a) * s * 0.95, -s * 0.3 + Math.sin(a) * s * 0.3, 3.5);
+      }
+    } else if (extra === 'crown') {
+      ctx.translate(s * 0.35, -s * 0.55);
+      ctx.rotate(0.25);
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.16, 0);
+      ctx.lineTo(-s * 0.16, -s * 0.12);
+      ctx.lineTo(-s * 0.08, -s * 0.05);
+      ctx.lineTo(0, -s * 0.16);
+      ctx.lineTo(s * 0.08, -s * 0.05);
+      ctx.lineTo(s * 0.16, -s * 0.12);
+      ctx.lineTo(s * 0.16, 0);
+      ctx.closePath();
+      ctx.fillStyle = '#ffd23f';
+      ctx.fill();
+      ctx.strokeStyle = OUTLINE;
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
+      ellipse(ctx, 0, -s * 0.04, s * 0.03, s * 0.03, '#e04848');
+    }
     ctx.restore();
   };
 
@@ -2209,7 +2314,7 @@
   };
 
   // 铛铛的头像（守城日记的对话框）
-  S.heroPortrait = function (size, mood) {
+  S.heroPortrait = function (size, mood, outfit) {
     const c = document.createElement('canvas');
     const px = size || 96;
     c.width = px;
@@ -2218,7 +2323,7 @@
     const k = px / 84;
     ctx.translate(px * 0.56, px * 0.97);
     ctx.scale(k, k);
-    S.hero(ctx, 0, 0, { t: 0.3, weapon: 'bow', aimAngle: 0, shotAge: 9, mood: mood || 'idle', critAge: 9 });
+    S.hero(ctx, 0, 0, { t: 0.3, weapon: 'bow', aimAngle: 0, shotAge: 9, mood: mood || 'idle', critAge: 9, outfit: outfit !== undefined ? outfit : TD.game && TD.game.save && TD.game.save.outfit });
     return c;
   };
 

@@ -892,3 +892,27 @@ test('精英挑战：同时出场的两个 Boss 走不同车道', () => {
   assert.notStrictEqual(c.lane, a.lane);
   assert.ok(D.levels[49].waves.some((w) => w.groups.filter(([t]) => D.monsters[t].boss).length === 2));
 });
+
+test('衣柜：按进度解锁，未解锁不能穿，新外观只提示一次', () => {
+  const s = P.newSave();
+  assert.strictEqual(s.outfit, 'classic');
+  assert.ok(!P.setOutfit(s, 'meadow'));
+  assert.strictEqual(P.newOutfits(s).length, 0);
+  clearUpTo(s, 10);
+  assert.ok(P.setOutfit(s, 'meadow'));
+  assert.strictEqual(s.outfit, 'meadow');
+  assert.deepStrictEqual(P.newOutfits(s).map((o) => o.id), ['meadow']);
+  assert.strictEqual(P.newOutfits(s).length, 0);
+  for (let k = 1; k <= 50; k++) s.levels[k] = { stars: 3, clears: 1 };
+  assert.ok(D.outfits.every((o) => P.outfitUnlocked(s, o.id)));
+  // 外观只是颜色：每套都有完整的颜色表
+  for (const o of D.outfits) for (const k of ['cape', 'body', 'helmTop', 'helmBottom', 'brim', 'plume', 'plumeHi', 'shield', 'shieldHi']) assert.ok(o.colors[k], `${o.id}.${k}`);
+});
+
+test('衣柜：通关结算提示新外观', () => {
+  const s = P.newSave();
+  clearUpTo(s, 9);
+  s.levels[10] = { stars: 0, clears: 0 };
+  const r = P.applyResult(s, 10, { win: true, wallRatio: 0.5, killCopper: 0 });
+  assert.ok(r.unlocks.some((x) => x.includes('草原游侠')));
+});

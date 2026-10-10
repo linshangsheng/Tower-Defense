@@ -1641,3 +1641,62 @@ body {
     font-size: 17px;
   }
 }
+
+/* ---------- 铛铛的衣柜（设计书 30） ---------- */
+.outfit-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-top: 10px;
+}
+.outfit-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: #fff;
+  border: 3px solid var(--paper-2);
+  border-radius: 14px;
+  padding: 8px;
+  font: inherit;
+  color: var(--ink);
+  cursor: pointer;
+}
+.outfit-card.on {
+  border-color: var(--primary);
+  background: #fff6e6;
+}
+.outfit-card.locked {
+  cursor: default;
+}
+.outfit-card.locked .outfit-img {
+  filter: grayscale(1) brightness(0.55);
+  opacity: 0.6;
+}
+.outfit-card span {
+  font-size: 13px;
+  color: #6a5440;
+  text-align: center;
+  min-height: 34px;
+}
+.outfit-card em {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  font-style: normal;
+  font-size: 12px;
+  font-weight: 700;
+  background: var(--primary);
+  color: #fff;
+  border-radius: 8px;
+  padding: 1px 7px;
+}
+.outfit-img canvas {
+  display: block;
+}
+@media (max-width: 760px) {
+  .outfit-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

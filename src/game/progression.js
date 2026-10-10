@@ -40,6 +40,8 @@
       seenTabs: { loadout: true, attrs: true },
       achievements: {},
       settings: { sound: true, speed: 1, difficulty: 'normal' },
+      outfit: 'classic', // 铛铛的衣柜（设计书 30）
+      outfitsSeen: { classic: true },
       story: {}, // 守城日记（设计书 28）：段落 id → 'read' 读完 / 'skipped' 跳过
     };
   };
@@ -72,6 +74,29 @@
   };
 
   P.levelRecord = (save, n) => save.levels[n] || { stars: 0, clears: 0 };
+
+  // ---------- 铛铛的衣柜（设计书 30） ----------
+  P.outfitUnlocked = (save, id) => {
+    const o = D.outfits && D.outfits.find((x) => x.id === id);
+    return !!o && !!o.check(save);
+  };
+  P.setOutfit = function (save, id) {
+    if (!P.outfitUnlocked(save, id)) return false;
+    save.outfit = id;
+    return true;
+  };
+  // 新解锁、还没提示过的外观（结算界面提示一次）
+  P.newOutfits = function (save) {
+    save.outfitsSeen = save.outfitsSeen || {};
+    const out = [];
+    for (const o of D.outfits || []) {
+      if (!save.outfitsSeen[o.id] && o.check(save)) {
+        save.outfitsSeen[o.id] = true;
+        out.push(o);
+      }
+    }
+    return out;
+  };
 
   // ---------- 守城日记（设计书 28） ----------
   // 段落是否已解锁（日记本里可以看）：章节开场 = 章节开放；战前 = Boss 关开放；战后 = Boss 关已通关
@@ -539,6 +564,7 @@
     for (const k of Object.keys(result.killsByType || {})) save.stats.killsByType[k] = (save.stats.killsByType[k] || 0) + result.killsByType[k];
 
     out.achievements = P.checkAchievements(save, Object.assign({ level: n }, result));
+    for (const o of P.newOutfits(save)) out.unlocks.push(`衣柜里多了一套新衣服：「${o.name}」（地图上的 👕）`);
     const names = { active: '主动技能槽', passive: '被动技能槽', item: '消耗品槽' };
     for (const k of Object.keys(before)) {
       const now = P.slotCount(save, k);
