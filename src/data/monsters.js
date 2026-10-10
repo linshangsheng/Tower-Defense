@@ -587,7 +587,7 @@
     },
     thunderKing: {
       name: '雷雷',
-      hp: 4200,
+      hp: 5000,
       speed: 16,
       dps: 35,
       armor: 0,

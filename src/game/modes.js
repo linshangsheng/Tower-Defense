@@ -17,7 +17,9 @@
     const normal = new Set();
     const mini = new Set();
     const major = new Set();
-    for (let n = 1; n <= Math.min(h, 50); n++) {
+    // 第六章的怪物在通关第 60 关后才进入（设计书 34.2）
+    const last = P.isCleared(save, 60) ? 60 : 50;
+    for (let n = 1; n <= Math.min(h, last); n++) {
       for (const w of D.levels[n].waves)
         for (const [t] of w.groups) {
           const def = D.monsters[t];
@@ -128,7 +130,7 @@
     for (const ch of key) seed = (seed * 31 + ch.charCodeAt(0)) >>> 0;
     const rng = TD.util.rng(seed);
     const h = Math.max(5, P.highestCleared(save));
-    const level = 1 + rng.int(Math.min(h, 50));
+    const level = 1 + rng.int(Math.min(h, P.isCleared(save, 60) ? 60 : 50));
     const ruleIds = Object.keys(M.dailyRules);
     const rule = ruleIds[rng.int(ruleIds.length)];
     return { key, level, rule, seed, done: !!(save.daily && save.daily[key]) };

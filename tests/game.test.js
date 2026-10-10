@@ -1073,3 +1073,18 @@ test('第六章：通关第 50 关后开放，章节、关卡、补给齐全', (
   for (let n = 51; n <= 60; n++) assert.ok(D.levels[n] && D.levels[n].waves.length >= 3, `第 ${n} 关`);
   for (const id of ['shears', 'lightningRod', 'windFlag']) assert.strictEqual(D.supplies[id].minLevel, 51);
 });
+
+test('无尽模式：通关第 60 关后才出现云端怪物', () => {
+  const ch6 = new Set(['cloudSheep', 'kite', 'thunderBall', 'rainbowBird', 'balloon', 'thunderKing']);
+  const types = (save) => {
+    const set = new Set();
+    for (const w of TD.modes.buildEndless(save, 7).waves) for (const [t] of w.groups) set.add(t);
+    return set;
+  };
+  const a = P.newSave();
+  clearUpTo(a, 55);
+  assert.ok(![...types(a)].some((t) => ch6.has(t)));
+  const b = P.newSave();
+  clearUpTo(b, 60);
+  assert.ok([...types(b)].some((t) => ch6.has(t)));
+});

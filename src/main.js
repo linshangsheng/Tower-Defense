@@ -70,6 +70,13 @@
       TD.ui.showSupply(battle, e.choices);
     });
     battle.on('bossInterrupt', () => TD.audio.play('interrupt'));
+    // 第六章（设计书 34.1）
+    battle.on('dodge', () => TD.audio.play('dodge'));
+    battle.on('shear', () => TD.audio.play('shear'));
+    battle.on('staticShock', () => TD.audio.play('zap'));
+    battle.on('gust', () => TD.audio.play('gust'));
+    battle.on('thunderBolt', () => TD.audio.play('bolt'));
+    battle.on('stunBlocked', () => TD.audio.play('ding'));
     battle.on('win', () => {
       game.renderer.mood = 'win';
       TD.audio.play('win');

@@ -123,10 +123,27 @@
       tone(1319, 0.14, 'square', 0.08, 1, 0.07);
     },
     error: () => tone(160, 0.15, 'square', 0.12),
+    // 第六章（设计书 34.1）
+    dodge: () => tone(1400, 0.08, 'sine', 0.06, 0.5),
+    shear: () => {
+      noise(0.04, 0.25, 4000);
+      noise(0.04, 0.25, 4000);
+      tone(2200, 0.05, 'square', 0.05, 0.8, 0.12);
+    },
+    zap: () => {
+      tone(180, 0.25, 'sawtooth', 0.15, 2.5);
+      noise(0.2, 0.2, 3000);
+    },
+    gust: () => noise(0.9, 0.35, 600),
+    bolt: () => {
+      noise(0.7, 0.6, 2200);
+      tone(50, 0.7, 'sawtooth', 0.3, 0.5);
+    },
+    ding: () => tone(1760, 0.2, 'triangle', 0.15),
   };
 
   // 同一种音效有最小间隔，避免成群怪物时刺耳
-  const MIN_GAP = { hit: 0.05, pop: 0.04, wall: 0.12, shoot: 0.07, coin: 0.06, crit: 0.08 };
+  const MIN_GAP = { hit: 0.05, pop: 0.04, wall: 0.12, shoot: 0.07, coin: 0.06, crit: 0.08, dodge: 0.1, shear: 0.15, zap: 0.3 };
 
   A.play = function (name) {
     if (!A.enabled) return;
