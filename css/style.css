@@ -1869,3 +1869,7 @@ body {
 .rest p {
   font-size: 17px;
 }
+.slot-note {
+  align-self: center;
+  padding: 6px 4px;
+}

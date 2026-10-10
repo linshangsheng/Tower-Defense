@@ -946,13 +946,16 @@
         )
       );
 
-    // 武器
+    // 武器：武器页还没开放时只显示已拥有的，并说明什么时候开放（设计书 6.5、41）
     el.append(h('div', { class: 'section-title' }, '武器'));
+    const weaponsOpen = UI.tabUnlocked(s, 'weapons');
     el.append(
       h(
         'div',
         { class: 'slot-row' },
-        Object.keys(D.weapons).map((id) =>
+        Object.keys(D.weapons)
+          .filter((id) => weaponsOpen || s.weapons[id].owned)
+          .map((id) =>
           slotBox(
             P.weaponDef(s, id).name,
             s.weapons[id].owned ? (lo.weapon === id ? '✔ 使用中' : '点击装备') : null,
@@ -966,7 +969,8 @@
             !s.weapons[id].owned,
             s.weapons[id].owned ? `Lv.${s.weapons[id].lv}` : '去武器页解锁'
           )
-        )
+        ),
+        weaponsOpen ? null : h('span', { class: 'hint slot-note' }, `更多武器：通关第 ${TAB_UNLOCK.weapons} 关后在「武器」页解锁`)
       )
     );
 
@@ -993,16 +997,19 @@
     slotGroup('active', '主动技能', D.activeSkills, s.activeOwned);
     slotGroup('passive', '被动技能', D.passiveSkills, s.passiveOwned);
 
-    // 装备
+    // 装备：装备页开放前只显示一行说明
     el.append(h('div', { class: 'section-title' }, '装备'));
     const eqNames = { helm: '头盔', cape: '披风', trinket1: '饰品 1', trinket2: '饰品 2' };
-    el.append(
-      h(
-        'div',
-        { class: 'slot-row' },
-        Object.keys(eqNames).map((k) => slotBox(eqNames[k], lo.equip[k] ? D.equipment[lo.equip[k]].name : null, () => pickEquip(k), false, lo.equip[k] ? D.equipment[lo.equip[k]].desc : null))
-      )
-    );
+    const anyEquip = Object.keys(s.equipOwned || {}).some((k) => s.equipOwned[k]);
+    if (!UI.tabUnlocked(s, 'equip') && !anyEquip) el.append(h('div', { class: 'hint slot-note' }, `通关第 ${TAB_UNLOCK.equip} 关后开放「装备」：头盔、披风和饰品`));
+    else
+      el.append(
+        h(
+          'div',
+          { class: 'slot-row' },
+          Object.keys(eqNames).map((k) => slotBox(eqNames[k], lo.equip[k] ? D.equipment[lo.equip[k]].name : null, () => pickEquip(k), false, lo.equip[k] ? D.equipment[lo.equip[k]].desc : null))
+        )
+      );
 
     const invOwned = {};
     for (const id of Object.keys(s.inventory)) if (s.inventory[id] > 0) invOwned[id] = true;
@@ -1309,7 +1316,7 @@
         'div',
         { class: 'modal-buttons' },
         h('button', { class: 'btn', onclick: () => (UI.closeModal(), UI.showMap(D.chapterOf(n).id)) }, '地图'),
-        h('button', { class: 'btn' + (!win && game.save.stats.wins < 3 ? ' primary pulse' : ''), onclick: () => (UI.closeModal(), UI.showShop(win && hasNext ? n + 1 : n, win ? 'loadout' : 'attrs')) }, '去商店'),
+        h('button', { class: 'btn' + (!win && game.save.stats.wins < 3 ? ' primary pulse' : ''), onclick: () => (UI.closeModal(), UI.showShop(win && hasNext ? n + 1 : n, win && game.save.stats.wins >= 3 ? 'loadout' : 'attrs')) }, '去商店'),
         !win || !hasNext ? h('button', { class: 'btn' + (win ? '' : ' primary'), onclick: () => (UI.closeModal(), game.startBattle(n)) }, '再来一次') : null,
         hasNext ? h('button', { class: 'btn primary', onclick: () => (UI.closeModal(), UI.showMap(D.chapterOf(n + 1).id), UI.showPreview(n + 1)) }, '下一关 ›') : null
       )
