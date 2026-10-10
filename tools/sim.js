@@ -161,3 +161,26 @@ if (LAST >= 30) {
   }
   console.log(`第 25 关：有魔法输出胜 ${magic}/${total}，无魔法输出胜 ${noMagic}/${total}`);
 }
+
+if (LAST >= 40) {
+  console.log('\n=== 目标 6：辅助型怪物关卡，威胁优先 vs 最近优先 ===');
+  for (const lv of [17, 22]) {
+    const res = { smart: [0, 0], nearest: [0, 0] };
+    for (let s = 1; s <= seeds; s++) {
+      const { before } = campaign(s);
+      if (!before[lv]) continue;
+      for (let k = 0; k < 2; k++) {
+        for (const mode of ['smart', 'nearest']) {
+          const a = TD.util.deepClone(before[lv]);
+          TD.bot.shop(a);
+          P.recommend(a, lv);
+          a.loadout.target = mode;
+          const r = TD.bot.playLevel(a, lv, { seed: 300 + s * 7 + k, keepLoadout: true }).res;
+          res[mode][0] += r.win ? r.wallRatio : 0;
+          res[mode][1]++;
+        }
+      }
+    }
+    console.log(`第 ${lv} 关平均城墙剩余：威胁优先 ${pct(res.smart[0] / res.smart[1])}，最近优先 ${pct(res.nearest[0] / res.nearest[1])}`);
+  }
+}

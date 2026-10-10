@@ -505,6 +505,8 @@
     const wid = save.loadout.weapon;
     tryGain(`升级${D.weapons[wid].name}`, (s) => s.weapons[wid].lv++, P.weaponUpgradeCost(save, wid));
     list.forEach((x) => (x.value = x.gain / (x.cost.copper || 1)));
+    // 提升不到 1% 的不推荐
+    for (let i = list.length - 1; i >= 0; i--) if (list[i].gain < 0.01) list.splice(i, 1);
     list.sort((a, b) => b.value - a.value);
     const out = list.slice(0, 3).map((x) => ({ label: x.label, text: `${x.label}：战力 +${Math.round(x.gain * 100)}%（${P.costText(x.cost)}）`, afford: x.afford }));
     const wallCost = P.wallCost(save, 'level');

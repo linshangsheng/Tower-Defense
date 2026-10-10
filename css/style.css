@@ -1132,3 +1132,10 @@ body {
 .map-screen.swamp {
   background: radial-gradient(ellipse at 50% 60%, rgba(120, 150, 110, 0.6), rgba(60, 60, 85, 0.85));
 }
+
+.map-screen.snow {
+  background: radial-gradient(ellipse at 50% 60%, rgba(230, 242, 252, 0.6), rgba(120, 160, 200, 0.85));
+}
+.skill-btn.frozen {
+  outline: 3px solid #9fe3ff;
+}

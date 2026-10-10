@@ -55,7 +55,10 @@
       this.waveStartTime = 0;
 
       // 战场补给（设计书 2.7）
-      this.mods = { atkMult: 0, aspdMult: 0, crit: 0, critDmg: 0, cdMult: 0, copperBonus: 0, wallDr: 0, range: 0, slowOnHit: 0, magicMult: 0, armorIgnore: 0, dotReduce: 0, spiritPierce: 0 };
+      this.mods = { atkMult: 0, aspdMult: 0, crit: 0, critDmg: 0, cdMult: 0, copperBonus: 0, wallDr: 0, range: 0, slowOnHit: 0, magicMult: 0, armorIgnore: 0, dotReduce: 0, spiritPierce: 0, chillResist: 0, igniteOnHit: 0 };
+      this.chillStacks = 0;
+      this.wallSealedUntil = 0;
+      this.pack = null;
       this.wallDots = []; // 城墙持续伤害：{ dps, until, src }
       this.dotTick = 0.5;
       this.supplyWaves = this.computeSupplyWaves();
@@ -136,7 +139,9 @@
     startWave(i) {
       this.waveIndex = i;
       const wave = this.level.waves[i];
-      const groups = wave.groups.map(([type, count]) => ({ type, left: count }));
+      // countMult：自动平衡工具（tools/tune.js）写入的每关数量倍率，Boss 不受影响
+      const cm = this.level.countMult || 1;
+      const groups = wave.groups.map(([type, count]) => ({ type, left: D.monsters[type].boss ? count : Math.max(1, Math.round(count * cm)) }));
       const queue = [];
       let any = true;
       while (any) {
@@ -150,7 +155,8 @@
         }
       }
       this.spawnQueue = queue;
-      this.spawnGap = wave.gap;
+      // 数量倍率提高时出怪更密集，避免关卡时间被拉长
+      this.spawnGap = cm > 1 ? wave.gap / Math.pow(cm, 0.75) : wave.gap;
       this.spawnTimer = 0;
       this.waveState = 'spawning';
       this.waveStartTime = this.time;
@@ -228,6 +234,12 @@
     // ---------- 怪物 ----------
     spawnMonster(type, lane, x) {
       const def = D.monsters[type];
+      if (lane === undefined && def.pack) {
+        // 狼群：同一组从同一条车道出来
+        if (!this.pack || this.pack.type !== type || this.pack.left <= 0) this.pack = { type, lane: this.rng.int(this.lanes), left: def.pack };
+        lane = this.pack.lane;
+        this.pack.left--;
+      }
       if (lane === undefined) lane = def.boss ? Math.floor(this.lanes / 2) : this.rng.int(this.lanes);
       const hp = Math.round(def.hp * this.D);
       const m = {
@@ -273,6 +285,11 @@
       if (def.regen) m.lastHit = -99;
       if (def.ai === 'boneMage') m.ai = { phase: 1, mode: 'walk', summonTimer: D.boneMage.summonFirst, revived: false };
       else if (def.ai === 'witch') m.ai = { phase: 1, mode: 'walk', fogTimer: D.witch.fogFirst, cookTimer: 3, pourTimer: 2 };
+      else if (def.ai === 'iceGiant') m.ai = { phase: 1, mode: 'walk', freezeTimer: D.iceGiant.freezeFirst };
+      else if (def.ai === 'frostQueen') {
+        const Q = D.frostQueen;
+        m.ai = { phase: 1, mode: 'walk', blizzardTimer: Q.blizzardFirst, sealTimer: 3, wolfTimer: 2, dragonTimer: 1 };
+      }
       this.monsters.push(m);
       this.emit('spawn', m);
       return m;
@@ -306,6 +323,9 @@
     }
 
     updateMonsters(dt) {
+      let chill = 0;
+      for (const m of this.monsters) if (!m.dead && m.def.chill && m.x <= C.width) chill++;
+      this.chillStacks = chill;
       for (const m of this.monsters) {
         if (m.dead) continue;
         if (m.hitFlash > 0) m.hitFlash -= dt;
@@ -324,6 +344,8 @@
           else if (m.def.ai === 'pharaoh') this.updatePharaoh(m, dt);
           else if (m.def.ai === 'boneMage') this.updateBoneMage(m, dt);
           else if (m.def.ai === 'witch') this.updateWitch(m, dt);
+          else if (m.def.ai === 'iceGiant') this.updateIceGiant(m, dt);
+          else if (m.def.ai === 'frostQueen') this.updateFrostQueen(m, dt);
           if (m.dead) continue;
           if (m.ai.mode !== 'walk') continue;
         }
@@ -364,11 +386,12 @@
           }
         }
         const ranged = m.def.ranged;
-        const stopX = heal ? heal.holdX : ranged ? ranged.holdX : this.wallStopX(m);
+        const chillDef = m.def.chill;
+        const stopX = heal ? heal.holdX : ranged ? ranged.holdX : chillDef ? chillDef.holdX : this.wallStopX(m);
         if (m.x > stopX) {
           m.state = 'walk';
           m.x = Math.max(stopX, m.x - this.monsterSpeed(m) * dt);
-        } else if (heal) {
+        } else if (heal || chillDef) {
           m.state = 'hold';
         } else if (ranged) {
           // 远程型：停在远处向城墙吐毒液
@@ -389,6 +412,11 @@
           this.kill(m, true);
         } else {
           m.state = 'attack';
+          if (m.def.slam && !m.slammed) {
+            m.slammed = true;
+            this.hitWall(m.def.slam * this.D, m, true);
+            this.emit('slam', { m });
+          }
           if (this.time >= m.frozenUntil && this.time >= m.stunUntil) {
             m.attackTimer -= dt;
             if (m.attackTimer <= 0) {
@@ -688,6 +716,81 @@
       if (ai.mode === 'hold' && ai.phase === 3) ai.mode = 'walk';
     }
 
+    // 冰棍大叔：周期性冻结一个技能槽（设计书 22.2）
+    updateIceGiant(m, dt) {
+      const G = D.iceGiant;
+      const ai = m.ai;
+      if (ai.phase === 1 && m.hp / m.maxHp < G.walkBelow) {
+        ai.phase = 2;
+        if (ai.mode === 'hold') ai.mode = 'walk';
+        this.emit('bossPhase', { m, phase: 2, text: '冰棍大叔向城墙走来了！' });
+      }
+      ai.freezeTimer -= dt;
+      if (ai.freezeTimer <= 0 && this.skills.length) {
+        ai.freezeTimer = G.freezeEvery;
+        const free = this.skills.map((sk, i) => i).filter((i) => !(this.time < (this.skills[i].frozenUntil || 0)));
+        if (free.length) {
+          const ready = free.filter((i) => this.skills[i].cd <= 0);
+          const pick = (ready.length ? ready : free)[this.rng.int((ready.length ? ready : free).length)];
+          this.skills[pick].frozenUntil = this.time + G.freezeDuration;
+          this.emit('skillFrozen', { index: pick, id: this.skills[pick].id, m });
+        }
+      }
+      if (ai.mode === 'walk' && ai.phase === 1 && m.x <= G.holdX) {
+        m.x = G.holdX;
+        ai.mode = 'hold';
+      }
+    }
+
+    // 霜霜女王：暴风雪、冰封城墙、召唤狼群和小冰龙（设计书 22.2）
+    updateFrostQueen(m, dt) {
+      const Q = D.frostQueen;
+      const ai = m.ai;
+      const ratio = m.hp / m.maxHp;
+      if (ai.phase === 1 && ratio < Q.phase2Below) {
+        ai.phase = 2;
+        this.emit('bossPhase', { m, phase: 2, text: '霜霜女王冰封了城墙！' });
+      }
+      if (ai.phase === 2 && ratio < Q.phase3Below) {
+        ai.phase = 3;
+        this.emit('bossPhase', { m, phase: 3, text: '小冰龙来了！空中地面一起压上！' });
+      }
+      ai.blizzardTimer -= dt;
+      if (ai.blizzardTimer <= 0) {
+        ai.blizzardTimer = Q.blizzardEvery;
+        this.buffs.push({ aspd: Q.blizzardAspd, until: this.time + Q.blizzardDuration, src: 'blizzard' });
+        this.emit('blizzard', { duration: Q.blizzardDuration });
+      }
+      if (ai.phase >= 2) {
+        ai.sealTimer -= dt;
+        if (ai.sealTimer <= 0) {
+          ai.sealTimer = Q.sealEvery;
+          this.wallSealedUntil = this.time + Q.sealDuration;
+          this.emit('wallSeal', { duration: Q.sealDuration });
+        }
+        ai.wolfTimer -= dt;
+        if (ai.wolfTimer <= 0) {
+          ai.wolfTimer = Q.wolfEvery;
+          const lane = this.rng.int(this.lanes);
+          for (let i = 0; i < Q.wolfCount; i++) this.spawnMonster('wolf', lane, C.spawnX + i * 24);
+          this.emit('bossSummon', { m });
+        }
+      }
+      if (ai.phase === 3) {
+        ai.dragonTimer -= dt;
+        if (ai.dragonTimer <= 0) {
+          ai.dragonTimer = Q.dragonEvery;
+          for (let i = 0; i < Q.dragonCount; i++) this.spawnMonster('iceDragon', this.rng.int(this.lanes), Math.min(C.spawnX, m.x + 60));
+          this.emit('bossSummon', { m });
+        }
+      }
+      if (ai.mode === 'walk' && ai.phase < 3 && m.x <= Q.holdX) {
+        m.x = Q.holdX;
+        ai.mode = 'hold';
+      }
+      if (ai.mode === 'hold' && ai.phase === 3) ai.mode = 'walk';
+    }
+
     raiseShield(m) {
       m.shieldMax = m.maxHp * D.pharaoh.shieldRatio;
       m.shield = m.shieldMax;
@@ -743,6 +846,10 @@
     }
 
     healWall(amount, src) {
+      if (this.time < this.wallSealedUntil) {
+        this.emit('healBlocked', { src });
+        return;
+      }
       const before = this.wall.hp;
       this.wall.hp = Math.min(this.wall.max, this.wall.hp + amount);
       this.emit('wallHeal', { amount: this.wall.hp - before, src });
@@ -869,10 +976,19 @@
     }
 
     // ---------- 英雄 ----------
+    // 攻速：增益相加；减益（沙暴、暴风雪、冰晶精灵光环）相加后受"暖手炉"减免
+    aspdMalus() {
+      let malus = 0;
+      for (const b of this.buffs) if (this.time < b.until && b.aspd < 0) malus -= b.aspd;
+      const sprite = D.monsters.iceSprite.chill;
+      malus += Math.min(sprite.maxStacks, this.chillStacks) * sprite.aspd;
+      return malus * (1 - Math.min(0.9, this.mods.chillResist));
+    }
+
     currentAspd() {
       let bonus = 0;
-      for (const b of this.buffs) if (this.time < b.until) bonus += b.aspd;
-      return this.stats.aspd * (1 + this.mods.aspdMult) * Math.max(0.3, 1 + bonus);
+      for (const b of this.buffs) if (this.time < b.until && b.aspd > 0) bonus += b.aspd;
+      return this.stats.aspd * (1 + this.mods.aspdMult) * Math.max(0.3, 1 + bonus - this.aspdMalus());
     }
 
     inRange(m) {
@@ -893,7 +1009,12 @@
       else if (mode === 'strongest') list.sort((a, b) => b.hp - a.hp || byX(a, b));
       else if (mode === 'flying') list.sort((a, b) => (b.def.flying ? 1 : 0) - (a.def.flying ? 1 : 0) || byX(a, b));
       else if (mode === 'boss') list.sort((a, b) => (b.def.boss ? 1 : 0) - (a.def.boss ? 1 : 0) || byX(a, b));
-      else list.sort(byX);
+      else if (mode === 'smart') {
+        // 威胁优先：逼近城墙的先打；城墙安全时优先打辅助型怪物（治疗、光环、远程）
+        const danger = (m) => m.x < C.wallX + C.smartDanger;
+        const support = (m) => !!(m.def.healer || m.def.chill || m.def.ranged);
+        list.sort((a, b) => (danger(b) ? 1 : 0) - (danger(a) ? 1 : 0) || (support(b) ? 1 : 0) - (support(a) ? 1 : 0) || byX(a, b));
+      } else list.sort(byX);
       return list;
     }
 
@@ -1012,6 +1133,7 @@
         m.burnUntil = this.time + b.duration;
         m.burnDps = (this.atk * b.atkMult) / b.duration;
       }
+      if (this.mods.igniteOnHit && !m.dead) this.ignite(m);
       if (this.mods.slowOnHit > 0 && !m.dead) {
         const prev = this.time < m.slowUntil ? m.slowAmt : 0;
         m.slowAmt = Math.max(prev, this.mods.slowOnHit);
@@ -1105,7 +1227,7 @@
     // ---------- 技能与道具 ----------
     skillReady(i) {
       const s = this.skills[i];
-      return s && s.cd <= 0 && !this.over && this.waveState !== 'prepare';
+      return s && s.cd <= 0 && !this.over && this.waveState !== 'prepare' && !(this.time < (s.frozenUntil || 0));
     }
 
     // 车道类技能未指定车道时自动选怪最多的车道
@@ -1229,7 +1351,7 @@
               go = inRange.length >= 3 || (hasBoss && inRange.length > 0);
               break;
             case 'repair':
-              go = wallRatio < 0.6;
+              go = wallRatio < 0.6 && this.time >= this.wallSealedUntil;
               break;
             case 'arrowRain':
               go = inRange.length >= 6 || (hasBoss && inRange.length >= 2);
@@ -1260,7 +1382,7 @@
               break;
             }
             case 'patch':
-              go = wallRatio < 0.45;
+              go = wallRatio < 0.45 && this.time >= this.wallSealedUntil;
               break;
             case 'haste':
               go = inRange.length >= 6 || (hasBoss && inRange.length > 0 && wallRatio < 0.8);

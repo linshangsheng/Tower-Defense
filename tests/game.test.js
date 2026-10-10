@@ -494,3 +494,75 @@ test('雷电法球：闪电在怪之间跳跃', () => {
   assert.ok(chains >= 3, `跳跃 ${chains} 次`);
   assert.ok(ms.every((m) => m.hp < m.maxHp));
 });
+
+// ---------- 第四章机制 ----------
+test('冰晶精灵光环降低英雄攻速，最多叠 3 层；暖手炉减免', () => {
+  const b = newBattle(34);
+  b.hero.cooldown = 1e9;
+  const a0 = b.currentAspd();
+  for (let i = 0; i < 4; i++) b.spawnMonster('iceSprite', i, 700);
+  b.step(1 / 60);
+  assert.ok(Math.abs(b.currentAspd() / a0 - 0.4) < 1e-6, '3 层 −60%');
+  b.mods.chillResist = 0.6;
+  assert.ok(Math.abs(b.currentAspd() / a0 - 0.76) < 1e-6, '暖手炉减免 60%');
+});
+
+test('北极狼三只一组从同一条车道出来', () => {
+  const b = newBattle(36);
+  const lanes = [];
+  for (let i = 0; i < 6; i++) lanes.push(b.spawnMonster('wolf').lane);
+  assert.strictEqual(lanes[0], lanes[1]);
+  assert.strictEqual(lanes[1], lanes[2]);
+  assert.strictEqual(lanes[3], lanes[4]);
+});
+
+test('企鹅第一次撞墙造成额外伤害', () => {
+  const b = newBattle(32);
+  b.hero.cooldown = 1e9;
+  b.spawnMonster('penguin', 0, 200);
+  const hp0 = b.wall.hp;
+  let slam = false;
+  b.on('slam', () => (slam = true));
+  for (let i = 0; i < 30; i++) b.step(1 / 60);
+  assert.ok(slam);
+  assert.ok(hp0 - b.wall.hp >= 40 * b.D * 0.99);
+});
+
+test('冰棍大叔冻结技能槽', () => {
+  const s = P.newSave();
+  s.activeOwned.thunder = true;
+  for (let k = 1; k <= 10; k++) s.levels[k] = { stars: 1, clears: 1 };
+  s.loadout.active = ['drum', 'thunder', null];
+  const b = new TD.Battle({ level: 35, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 2 });
+  b.waveState = 'final';
+  b.hero.cooldown = 1e9;
+  b.spawnMonster('iceGiant', 2, 760);
+  let frozen = null;
+  b.on('skillFrozen', (e) => (frozen = e.index));
+  for (let i = 0; i < 60 * 5 && frozen === null; i++) b.step(1 / 60);
+  assert.ok(frozen !== null);
+  assert.ok(!b.skillReady(frozen), '被冻住的技能不能释放');
+});
+
+test('霜霜女王冰封城墙时无法修复', () => {
+  const b = newBattle(40);
+  b.wall.hp = b.wall.max * 0.5;
+  b.wallSealedUntil = b.time + 5;
+  b.healWall(100, 'test');
+  assert.strictEqual(b.wall.hp, b.wall.max * 0.5);
+  b.time += 6;
+  b.healWall(100, 'test');
+  assert.ok(b.wall.hp > b.wall.max * 0.5);
+});
+
+test('countMult 按倍率调整小怪数量，Boss 不变', () => {
+  const s = P.newSave();
+  const lvl = TD.data.levels[40];
+  const old = lvl.countMult;
+  lvl.countMult = 2;
+  const b = new TD.Battle({ level: 40, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 1 });
+  b.startWave(2);
+  assert.strictEqual(b.spawnQueue.filter((x) => x === 'frostQueen').length, 1);
+  assert.strictEqual(b.spawnQueue.filter((x) => x === 'wolf').length, 12);
+  lvl.countMult = old;
+});

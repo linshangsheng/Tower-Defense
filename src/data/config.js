@@ -16,6 +16,8 @@
     waveClearDelay: 4,
     waveMaxDelay: 18,
     earlyCallCopperPerSec: 1,
+    // "威胁优先"的危险区：怪物离城墙这么近时优先打它
+    smartDanger: 220,
     // 每秒模拟步数
     tickRate: 60,
 

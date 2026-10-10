@@ -121,7 +121,7 @@
         h('button', { class: 'btn', onclick: () => (sfx('click'), UI.showSettings()) }, '设置'),
         h('button', { class: 'btn', onclick: () => (sfx('click'), UI.showHelp()) }, '玩法说明')
       ),
-      h('div', { class: 'title-foot' }, '网页原型 v0.3 · 三章 30 关')
+      h('div', { class: 'title-foot' }, '网页原型 v0.4 · 四章 40 关')
     );
     root.appendChild(screenEl);
   };
@@ -388,7 +388,7 @@
         : h('div', { class: 'map-note' }, `恭喜通关「${ch.name}」！下一章正在建设中……可以回头挑战三星，或者收集金币购买传说装备。`);
     screenEl = h(
       'div',
-      { class: 'screen map-screen' + (ch.theme.desert ? ' desert' : ch.theme.swamp ? ' swamp' : '') },
+      { class: 'screen map-screen' + (ch.theme.desert ? ' desert' : ch.theme.swamp ? ' swamp' : ch.theme.snow ? ' snow' : '') },
       path,
       h(
         'div',
@@ -984,7 +984,12 @@
       const ready = b.skillReady(i);
       btn.classList.toggle('ready', ready);
       btn.classList.toggle('armed', game.pendingLane && game.pendingLane.kind === 'skill' && game.pendingLane.index === i);
-      if (sk.cd > 0) {
+      const frozen = b.time < (sk.frozenUntil || 0);
+      btn.classList.toggle('frozen', frozen);
+      if (frozen) {
+        cd.style.background = 'rgba(160,220,255,0.75)';
+        cd.textContent = '❄' + Math.ceil(sk.frozenUntil - b.time);
+      } else if (sk.cd > 0) {
         cd.style.background = `conic-gradient(rgba(30,20,10,0.65) ${(sk.cd / sk.def.cd) * 360}deg, transparent 0)`;
         cd.textContent = Math.ceil(sk.cd);
       } else {

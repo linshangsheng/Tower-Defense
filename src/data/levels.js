@@ -28,6 +28,12 @@
       theme: { sky: '#b9b3cf', ground: '#6f8f6a', ground2: '#668564', lane: '#7f9a74', accent: '#7a5aa8', swamp: true },
       levels: [21, 22, 23, 24, 25, 26, 27, 28, 29, 30],
     },
+    {
+      id: 4,
+      name: '冰霜雪原',
+      theme: { sky: '#dff1ff', ground: '#eef6fc', ground2: '#e3eef8', lane: '#f6fbff', accent: '#5aa8e0', snow: true },
+      levels: [31, 32, 33, 34, 35, 36, 37, 38, 39, 40],
+    },
   ];
 
   TD.data.chapterOf = function (n) {
@@ -168,6 +174,7 @@
     11: {
       name: '沙丘下的影子',
       type: 'normal',
+      countMult: 1.17,
       lanes: 3,
       waves: [
         W(0.9, ['slime', 11], ['scorpion', 4]),
@@ -182,6 +189,7 @@
     12: {
       name: '绷带木乃伊',
       type: 'normal',
+      countMult: 1.08,
       lanes: 3,
       waves: [
         W(0.98, ['slime', 10], ['mummy', 2]),
@@ -197,6 +205,7 @@
     13: {
       name: '第四条路',
       type: 'normal',
+      countMult: 1,
       lanes: 4,
       waves: [
         W(0.83, ['scorpion', 11], ['slime', 11]),
@@ -212,6 +221,7 @@
     14: {
       name: '滚滚仙人掌',
       type: 'normal',
+      countMult: 1,
       lanes: 4,
       waves: [
         W(1.1, ['slime', 8], ['cactus', 4]),
@@ -227,6 +237,7 @@
     15: {
       name: '钳钳',
       type: 'miniboss',
+      countMult: 0.8,
       lanes: 4,
       waves: [
         W(1.0, ['scorpion', 10], ['slime', 8]),
@@ -242,6 +253,7 @@
     16: {
       name: '秃鹫盘旋',
       type: 'raid',
+      countMult: 1.18,
       lanes: 4,
       waves: [
         W(0.64, ['vulture', 14]),
@@ -257,6 +269,7 @@
     17: {
       name: '猫咪祭司',
       type: 'normal',
+      countMult: 1.28,
       lanes: 4,
       waves: [
         W(1.1, ['slime', 8], ['priest', 1]),
@@ -268,11 +281,12 @@
         W(0.8, ['cactus', 10], ['priest', 3], ['bunny', 8]),
         W(0.7, ['mummy', 7], ['priest', 4], ['scorpion', 10]),
       ],
-      tip: '小祭司会躲在后排给怪物回血。试试「最弱优先」或雷霆一击先解决它！',
+      tip: '小祭司会躲在后排给怪物回血。雷霆一击、魔法杖的爆炸能连它一起打到。',
     },
     18: {
       name: '木乃伊大军',
       type: 'armored',
+      countMult: 1.24,
       lanes: 4,
       waves: [
         W(1.2, ['mummy', 4], ['priest', 1]),
@@ -289,6 +303,7 @@
     19: {
       name: '沙暴前夜',
       type: 'normal',
+      countMult: 1.21,
       lanes: 4,
       waves: [
         W(1.0, ['scorpion', 6], ['vulture', 6]),
@@ -305,6 +320,7 @@
     20: {
       name: '胖法老',
       type: 'boss',
+      countMult: 1.26,
       lanes: 4,
       waves: [
         W(1.1, ['mummy', 6], ['scorpion', 8]),
@@ -318,6 +334,7 @@
     21: {
       name: '雾中的眼睛',
       type: 'normal',
+      countMult: 1.13,
       lanes: 4,
       waves: [
         W(0.77, ['slime', 14], ['ghost', 6]),
@@ -333,6 +350,7 @@
     22: {
       name: '呱呱毒蛙',
       type: 'normal',
+      countMult: 1.26,
       lanes: 4,
       waves: [
         W(0.77, ['ghost', 9], ['frog', 3]),
@@ -343,11 +361,12 @@
         W(0.59, ['cactus', 12], ['frog', 7], ['ghost', 9]),
         W(0.59, ['mummy', 9], ['frog', 9], ['ghost', 14]),
       ],
-      tip: '毒蛙停在远处向城墙吐毒液。试试「最强优先」或「最弱优先」，别让它们一直吐。',
+      tip: '毒蛙停在远处向城墙吐毒液。把目标切换成「威胁优先」，英雄会在城墙安全时优先打它们。',
     },
     23: {
       name: '无月之夜',
       type: 'dark',
+      countMult: 1.15,
       dark: true,
       lanes: 4,
       waves: [
@@ -364,6 +383,7 @@
     24: {
       name: '第五条路',
       type: 'normal',
+      countMult: 1.28,
       lanes: 5,
       waves: [
         W(0.72, ['bat', 9], ['slime', 14]),
@@ -380,6 +400,7 @@
     25: {
       name: '骨头先生',
       type: 'miniboss',
+      countMult: 1.39,
       lanes: 5,
       waves: [
         W(0.72, ['ghost', 14], ['slime', 12]),
@@ -395,6 +416,7 @@
     26: {
       name: '会走路的树桩',
       type: 'normal',
+      countMult: 1.09,
       lanes: 5,
       waves: [
         W(0.77, ['stump', 2], ['slime', 14]),
@@ -411,6 +433,7 @@
     27: {
       name: '蝙蝠洞',
       type: 'raid',
+      countMult: 1.1,
       lanes: 5,
       waves: [
         W(0.51, ['bat', 17]),
@@ -427,6 +450,7 @@
     28: {
       name: '南瓜田',
       type: 'normal',
+      countMult: 1.01,
       lanes: 5,
       waves: [
         W(0.77, ['pumpkin', 6], ['slime', 12]),
@@ -443,6 +467,7 @@
     29: {
       name: '百鬼夜行',
       type: 'union',
+      countMult: 1.14,
       lanes: 5,
       waves: [
         B(2.2, ['slime', 8], ['ghost', 4]),
@@ -459,6 +484,7 @@
     30: {
       name: '毒汤婆婆',
       type: 'boss',
+      countMult: 1.87,
       lanes: 5,
       waves: [
         W(0.9, ['ghost', 10], ['pumpkin', 4], ['frog', 2]),
@@ -466,6 +492,170 @@
         W(2.0, ['witch', 1], ['ghost', 6], ['pumpkin', 3]),
       ],
       tip: '毒汤婆婆会把小怪煮成强化版。尽快清场，带上城墙修复应对毒雾！',
+    },
+
+    // ---------- 第四章 · 冰霜雪原（设计书 22.4） ----------
+    31: {
+      name: '初雪',
+      type: 'normal',
+      countMult: 0.88,
+      lanes: 5,
+      waves: [
+        W(0.75, ['snowman', 10], ['ghost', 6]),
+        W(0.7, ['snowman', 12], ['bat', 10]),
+        W(0.7, ['snowman', 14], ['scorpion', 10]),
+        W(0.65, ['snowman', 14], ['pumpkin', 6]),
+        W(0.6, ['snowman', 16], ['ghost', 12]),
+        W(0.6, ['snowman', 18], ['mummy', 6], ['frog', 3]),
+        W(0.55, ['snowman', 22], ['bat', 12]),
+      ],
+      tip: '雪团团死后会碎成两个小雪团。范围伤害一次清理更省力。',
+    },
+    32: {
+      name: '滑溜溜',
+      type: 'normal',
+      countMult: 1.11,
+      lanes: 5,
+      waves: [
+        W(0.7, ['penguin', 8], ['snowman', 8]),
+        W(0.65, ['penguin', 12], ['ghost', 8]),
+        W(0.65, ['penguin', 12], ['snowman', 10]),
+        W(0.6, ['penguin', 14], ['mummy', 6]),
+        W(0.6, ['penguin', 16], ['bat', 10]),
+        W(0.55, ['penguin', 18], ['snowman', 12]),
+        W(0.5, ['penguin', 22], ['frog', 4], ['ghost', 8]),
+      ],
+      tip: '企鹅滑得飞快，撞上城墙会造成大量伤害。冰冻领域能让它们慢下来。',
+    },
+    33: {
+      name: '雪原狂奔',
+      type: 'rush',
+      countMult: 1.17,
+      lanes: 5,
+      rushInterval: 13,
+      waves: [
+        W(0.45, ['penguin', 10], ['wolf', 9]),
+        W(0.42, ['wolf', 15], ['penguin', 8]),
+        W(0.4, ['penguin', 14], ['wolf', 12]),
+        W(0.38, ['wolf', 18], ['snowman', 6]),
+        W(0.36, ['penguin', 16], ['wolf', 15]),
+        W(0.34, ['wolf', 21], ['penguin', 12]),
+        W(0.32, ['wolf', 24], ['penguin', 14]),
+      ],
+      tip: '速攻关：每 13 秒来一波！企鹅和狼群都很快，冰冻领域和箭雨要及时放。',
+    },
+    34: {
+      name: '冰晶之光',
+      type: 'normal',
+      countMult: 1,
+      lanes: 5,
+      waves: [
+        W(0.75, ['snowman', 10], ['iceSprite', 2]),
+        W(0.7, ['penguin', 10], ['iceSprite', 2]),
+        W(0.7, ['ghost', 10], ['iceSprite', 3], ['snowman', 6]),
+        W(0.65, ['wolf', 12], ['iceSprite', 3]),
+        W(0.6, ['snowman', 12], ['iceSprite', 3], ['bat', 8]),
+        W(0.6, ['penguin', 14], ['iceSprite', 4]),
+        W(0.55, ['mummy', 6], ['iceSprite', 4], ['ghost', 12]),
+        W(0.5, ['snowman', 16], ['iceSprite', 5], ['wolf', 9]),
+      ],
+      tip: '冰晶精灵活着时英雄的攻速会变慢。它们躲在远处，用箭雨、雷霆一击顺手清掉最划算。',
+    },
+    35: {
+      name: '冰棍大叔',
+      type: 'miniboss',
+      countMult: 1.12,
+      lanes: 5,
+      waves: [
+        W(0.7, ['snowman', 12], ['penguin', 6]),
+        W(0.65, ['wolf', 12], ['iceSprite', 2]),
+        W(0.65, ['snowman', 14], ['ghost', 8]),
+        W(0.6, ['penguin', 12], ['wolf', 9]),
+        W(0.6, ['snowman', 14], ['iceSprite', 3]),
+        W(0.55, ['wolf', 15], ['penguin', 10]),
+        W(1.3, ['iceGiant', 1], ['snowman', 10], ['wolf', 6]),
+      ],
+      tip: '冰棍大叔会冻住你的技能。别把所有希望押在一个技能上！',
+    },
+    36: {
+      name: '狼嚎',
+      type: 'normal',
+      countMult: 1.16,
+      lanes: 5,
+      waves: [
+        W(0.6, ['wolf', 12], ['snowman', 6]),
+        W(0.55, ['wolf', 15], ['ghost', 6]),
+        W(0.55, ['wolf', 18], ['penguin', 6]),
+        W(0.5, ['wolf', 18], ['iceSprite', 2], ['snowman', 8]),
+        W(0.5, ['wolf', 21], ['bat', 8]),
+        W(0.45, ['wolf', 24], ['iceSprite', 3]),
+        W(0.45, ['wolf', 24], ['snowman', 12]),
+        W(0.4, ['wolf', 30], ['penguin', 10]),
+      ],
+      tip: '北极狼三只一群冲过来。冰冻领域能一次拖住整群狼。',
+    },
+    37: {
+      name: '雪怪出没',
+      type: 'armored',
+      countMult: 0.95,
+      lanes: 5,
+      waves: [
+        W(0.9, ['yeti', 3], ['snowman', 8]),
+        W(0.85, ['yeti', 4], ['wolf', 9]),
+        W(0.8, ['yeti', 5], ['iceSprite', 2]),
+        W(0.8, ['yeti', 5], ['mummy', 5], ['penguin', 6]),
+        W(0.75, ['yeti', 6], ['snowman', 10]),
+        W(0.7, ['yeti', 7], ['iceSprite', 3]),
+        W(0.7, ['yeti', 8], ['wolf', 12]),
+        W(0.65, ['yeti', 10], ['mummy', 6]),
+      ],
+      tip: '重甲突击！雪怪的物理护甲很高，魔法、火炮和「穿甲」是关键。',
+    },
+    38: {
+      name: '冰晶风暴',
+      type: 'raid',
+      countMult: 2.8,
+      lanes: 5,
+      waves: [
+        W(0.6, ['iceSprite', 4], ['bat', 10]),
+        W(0.55, ['iceSprite', 4], ['vulture', 10]),
+        W(0.55, ['iceSprite', 5], ['bat', 14]),
+        W(0.5, ['iceSprite', 5], ['vulture', 12], ['bat', 6]),
+        W(0.5, ['iceSprite', 6], ['bat', 16]),
+        W(0.45, ['iceSprite', 6], ['vulture', 16]),
+        W(0.45, ['iceSprite', 7], ['bat', 20]),
+        W(0.4, ['iceSprite', 8], ['bat', 18], ['vulture', 10]),
+      ],
+      tip: '空袭关，而且冰晶精灵很多。「飞行优先」加连发弩或雷电法球！',
+    },
+    39: {
+      name: '雪崩',
+      type: 'union',
+      countMult: 0.82,
+      lanes: 5,
+      waves: [
+        B(2.0, ['snowman', 10], ['penguin', 5]),
+        B(1.9, ['wolf', 10], ['iceSprite', 5]),
+        B(1.8, ['snowman', 10], ['ghost', 10]),
+        B(1.8, ['yeti', 5], ['penguin', 10]),
+        B(1.7, ['wolf', 15], ['iceSprite', 5]),
+        B(1.6, ['snowman', 10], ['yeti', 5], ['bat', 10]),
+        B(1.6, ['penguin', 15], ['wolf', 10]),
+        B(1.5, ['yeti', 5], ['snowman', 15], ['iceSprite', 5]),
+      ],
+      tip: '联合关：所有车道同时出怪！全场技能和雷电法球是关键。',
+    },
+    40: {
+      name: '霜霜女王',
+      type: 'boss',
+      countMult: 1.79,
+      lanes: 5,
+      waves: [
+        W(0.7, ['snowman', 12], ['wolf', 9], ['iceSprite', 2]),
+        W(0.65, ['penguin', 12], ['yeti', 4], ['ghost', 8]),
+        W(2.0, ['frostQueen', 1], ['wolf', 6], ['iceSprite', 2]),
+      ],
+      tip: '霜霜女王会冰封城墙，期间无法修复。在冰封之前把城墙修好！',
     },
   };
 

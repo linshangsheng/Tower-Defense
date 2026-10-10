@@ -71,8 +71,8 @@
 
     // 武器
     let weapon = 'bow';
-    const armored = share('mummy') + (counts.pharaoh ? 0.3 : 0);
-    const flying = share('bee') + share('vulture') + share('bat');
+    const armored = share('mummy') + share('yeti') * 2 + (counts.pharaoh ? 0.3 : 0);
+    const flying = share('bee') + share('vulture') + share('bat') + share('iceSprite');
     const spirit = share('ghost') + (counts.boneMage ? 0.3 : 0);
     const magicPick = owned('orb') ? 'orb' : owned('staff') ? 'staff' : null;
     if ((spirit > 0.2 || lvl.type === 'union') && magicPick) weapon = magicPick;
@@ -134,8 +134,11 @@
       slots[kind].forEach((k, i) => (lo.equip[k] = scored[i] ? scored[i].id : null));
     }
 
-    lo.target = lvl.type === 'raid' ? 'flying' : share('priest') > 0.05 ? 'weakest' : 'nearest';
-    if (lvl.type === 'raid') notes.push('目标：飞行优先');
+    // 有治疗、光环、远程等辅助型怪物时用"威胁优先"（模拟验证：第 22 关城墙剩余 76% → 95%）
+    // 只有毒蛙这种远程持续伤害的怪，"威胁优先"才明显更好（设计书 22.7）
+    const supports = share('frog');
+    lo.target = lvl.type === 'raid' ? 'flying' : supports > 0.03 ? 'smart' : 'nearest';
+    if (lo.target !== 'nearest') notes.push('目标：' + D.targetModes[lo.target]);
     return notes;
   };
 })((globalThis.TD = globalThis.TD || {}));

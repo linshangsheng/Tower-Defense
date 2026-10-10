@@ -269,11 +269,14 @@
     flare: { name: '照明弹', desc: '射程 +20%（暗夜关里正好抵消黑暗）', mods: { range: 0.2 }, icon: 'eye', minLevel: 21 },
     antidote: { name: '解毒剂', desc: '城墙受到的持续伤害（中毒、毒雾）−60%', mods: { dotReduce: 0.6 }, icon: 'patch', minLevel: 21 },
     exorcism: { name: '驱魔之箭', desc: '物理伤害对灵体的效果 30% → 70%', mods: { spiritPierce: 0.4 }, icon: 'arrowUp', minLevel: 21 },
+    handWarmer: { name: '暖手炉', desc: '英雄受到的攻速降低效果 −60%', mods: { chillResist: 0.6 }, icon: 'haste', minLevel: 31 },
+    fireTip: { name: '火焰箭头', desc: '普通攻击命中后点燃目标', mods: { igniteOnHit: 1 }, icon: 'fury', minLevel: 31 },
   };
-  TD.data.supplyBotOrder = ['sharp', 'quick', 'master', 'arcane', 'breaker', 'exorcism', 'antidote', 'flare', 'eagle', 'fury', 'frostTip', 'farsight', 'bricks', 'purse'];
+  TD.data.supplyBotOrder = ['sharp', 'quick', 'master', 'handWarmer', 'fireTip', 'arcane', 'breaker', 'exorcism', 'antidote', 'flare', 'eagle', 'fury', 'frostTip', 'farsight', 'bricks', 'purse'];
 
   TD.data.targetModes = {
     nearest: '最近优先',
+    smart: '威胁优先',
     weakest: '最弱优先',
     strongest: '最强优先',
     flying: '飞行优先',
