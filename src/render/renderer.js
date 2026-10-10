@@ -135,8 +135,36 @@
         this.text(C.heroX + 40, battle.heroY - 110, '技能被冻住了！', '#9fe3ff', 22, 1.2);
         this.burst(e.m.x, e.m.y - 60, '#bfe9ff', 16, 200);
       });
+      // 第五章
+      on('stompWarn', (e) => this.text(e.m.x, e.m.y - 120, '要跺脚了！', '#ff8a3d', 24, 0.9));
+      on('stomp', () => {
+        this.shake = Math.max(this.shake, 14);
+        this.text(C.heroX + 40, battle.heroY - 110, '被震晕了！', '#ffd23f', 24, 1);
+      });
+      on('golemBoom', (e) => {
+        for (let i = 0; i < 6; i++) this.fx.push({ kind: 'boom', x: e.m.x + (Math.random() - 0.5) * 80, y: e.m.y - 20 + (Math.random() - 0.5) * 40, life: 0.6, age: -i * 0.06 });
+        this.shake = Math.max(this.shake, 18);
+        this.banner(e.near ? '岩岩在城墙边爆炸了！' : '岩岩爆炸了！车道变成熔岩');
+      });
+      on('fireZone', (e) => this.burst(e.x, e.y - 10, '#ff8a3d', 10, 140));
+      on('reveal', (e) => this.fx.push({ kind: 'poof', x: e.m.x, y: e.m.y - 20, r: 20, life: 0.3, age: 0 }));
+      on('inkSplit', (e) => {
+        this.burst(e.m.x, e.m.y - 40, '#7a5aa8', 40, 300);
+        this.shake = Math.max(this.shake, 10);
+      });
+      on('inkReform', (e) => {
+        this.burst(e.m.x, e.m.y - 40, '#c58cff', 40, 300);
+        this.text(e.m.x, e.m.y - 140, '本体现身！伤害 +50%', '#ffd23f', 28, 1.5);
+      });
+      on('inkSlam', () => (this.shake = Math.max(this.shake, 20)));
+      on('riftStrike', () => {
+        this.shake = Math.max(this.shake, 26);
+        this.fx.push({ kind: 'flash', color: '#7a5aa8', life: 0.6, age: 0 });
+        this.banner('裂隙打击！');
+      });
       // 第三章
-      on('spit', (e) => this.fx.push({ kind: 'spit', x0: e.x - 10, y0: e.y - 20, x1: C.wallX - 10, y1: e.y - 30, life: 0.5, age: 0 }));
+      on('spit', (e) =>
+        this.fx.push({ kind: 'spit', x0: e.x - 10, y0: e.y - 20 + (e.m.def.flying ? e.m.yOffset : 0), x1: C.wallX - 10, y1: e.y - 30, life: 0.5, age: 0, fire: e.m.type === 'imp' }));
       on('poisonFog', (e) => {
         this.fogUntil = battle.time + e.duration;
         this.banner('毒雾！城墙持续受损');
@@ -265,6 +293,9 @@
       if (b && b.level.dark) this.drawDarkness();
       else if (this.theme.swamp) this.drawMist();
       if (this.theme.snow) this.drawSnowfall(b && b.time < this.blizzardUntil);
+      if (this.theme.lava) this.drawEmbers();
+      if (b && b.time < b.heroStunUntil) this.drawHeroStun(b);
+      if (b) this.drawRiftTimer(b);
       if (b && b.time < this.sealUntil) this.drawWallSeal(b);
       if (b && b.chillStacks > 0) this.drawChill(b);
       this.drawFx(dt);
@@ -274,7 +305,7 @@
     }
 
     drawBackground(lanes) {
-      const key = lanes + (this.theme.desert ? 'd' : this.theme.swamp ? 's' : this.theme.snow ? 'w' : 'g');
+      const key = lanes + (this.theme.desert ? 'd' : this.theme.swamp ? 's' : this.theme.snow ? 'w' : this.theme.lava ? 'l' : 'g');
       if (!this.bgCache || this.bgCache.key !== key) {
         const c = document.createElement('canvas');
         c.width = C.width;
@@ -300,13 +331,14 @@
     paintBackground(ctx, lanes) {
       const th = this.theme;
       const sky = ctx.createLinearGradient(0, 0, 0, C.fieldTop);
-      sky.addColorStop(0, th.desert ? '#ffd38a' : th.swamp ? '#8f87a8' : th.snow ? '#b9dcf5' : '#9fdcff');
+      sky.addColorStop(0, th.desert ? '#ffd38a' : th.swamp ? '#8f87a8' : th.snow ? '#b9dcf5' : th.lava ? '#2a1420' : '#9fdcff');
       sky.addColorStop(1, th.sky);
       ctx.fillStyle = sky;
       ctx.fillRect(0, 0, C.width, C.fieldTop);
       const desert = !!th.desert;
       const swamp = !!th.swamp;
       const snow = !!th.snow;
+      const lava = !!th.lava;
       if (desert) {
         // 远处的金字塔
         for (const [px, ph] of [
@@ -329,6 +361,20 @@
         }
       }
       // 远山 / 沙丘
+      if (lava) {
+        // 冒烟的火山
+        ctx.fillStyle = '#3a2a30';
+        ctx.beginPath();
+        ctx.moveTo(620, C.fieldTop);
+        ctx.lineTo(780, C.fieldTop - 85);
+        ctx.lineTo(860, C.fieldTop - 85);
+        ctx.lineTo(1020, C.fieldTop);
+        ctx.fill();
+        ctx.fillStyle = '#ff7a3d';
+        ctx.fillRect(785, C.fieldTop - 88, 70, 6);
+        ctx.fillStyle = 'rgba(80,60,70,0.6)';
+        for (let i = 0; i < 4; i++) S.ellipse(ctx, 820 + i * 18, C.fieldTop - 100 - i * 14, 22 + i * 6, 12 + i * 3, 'rgba(90,70,80,0.55)');
+      }
       if (snow) {
         // 远处的雪山
         for (const [px, ph] of [
@@ -369,7 +415,7 @@
           ctx.stroke();
         }
       }
-      ctx.fillStyle = desert ? '#f0c878' : swamp ? '#5f7a5d' : snow ? '#dbe9f6' : '#8fd17a';
+      ctx.fillStyle = desert ? '#f0c878' : swamp ? '#5f7a5d' : snow ? '#dbe9f6' : lava ? '#4a3438' : '#8fd17a';
       ctx.beginPath();
       ctx.moveTo(0, C.fieldTop);
       for (let x = 0; x <= C.width; x += 80) ctx.lineTo(x, C.fieldTop - 18 - Math.sin(x * 0.012) * 14 - Math.sin(x * 0.031) * 8);
@@ -385,21 +431,37 @@
         // 小路
         const cy = y0 + h * 0.5 + 8;
         const ph = Math.min(52, h * 0.38);
-        ctx.fillStyle = desert ? '#e9c27a' : swamp ? '#8a7a5a' : snow ? '#cfdcea' : '#e3c992';
+        ctx.fillStyle = desert ? '#e9c27a' : swamp ? '#8a7a5a' : snow ? '#cfdcea' : lava ? '#6a4a44' : '#e3c992';
         S.roundRect(ctx, C.wallX - 10, cy - ph / 2, C.width - C.wallX + 20, ph, ph / 2);
         ctx.fill();
         ctx.fillStyle = 'rgba(160,120,70,0.18)';
         for (let x = C.wallX + 30; x < C.width; x += 57) {
           S.ellipse(ctx, x + ((i * 37) % 20), cy + ((x * 7) % 9) - 4, 4, 2.5, 'rgba(150,110,60,0.35)');
         }
-        // 车道分隔：小花丛
-        if (i > 0) {
+        // 车道分隔：小花丛（熔岩裂隙是岩浆河）
+        if (i > 0 && lava) {
+          ctx.fillStyle = '#ff7a3d';
+          ctx.fillRect(C.wallX, y0 - 4, C.width - C.wallX, 8);
+          ctx.fillStyle = '#ffd23f';
+          for (let x = C.wallX; x < C.width; x += 40) ctx.fillRect(x + ((i * 13) % 20), y0 - 1, 14, 2);
+        } else if (i > 0) {
           ctx.fillStyle = 'rgba(70,140,60,0.35)';
           ctx.fillRect(C.wallX, y0 - 2, C.width - C.wallX, 4);
         }
         for (let k = 0; k < 9; k++) {
           const fx = C.wallX + 60 + ((k * 137 + i * 61) % (C.width - C.wallX - 80));
           const fy = y0 + 10 + ((k * 53 + i * 29) % 16);
+          if (lava) {
+            // 黑曜石
+            ctx.fillStyle = '#2a2026';
+            ctx.beginPath();
+            ctx.moveTo(fx - 6, fy + 2);
+            ctx.lineTo(fx - 2, fy - 9);
+            ctx.lineTo(fx + 5, fy - 4);
+            ctx.lineTo(fx + 6, fy + 2);
+            ctx.fill();
+            continue;
+          }
           if (snow) {
             if (k % 3 === 0) {
               // 小松树
@@ -443,7 +505,7 @@
         }
       }
       // 草丛点缀
-      ctx.fillStyle = desert ? 'rgba(170,120,60,0.35)' : swamp ? 'rgba(40,70,40,0.5)' : snow ? 'rgba(150,180,210,0.35)' : 'rgba(60,130,50,0.5)';
+      ctx.fillStyle = desert ? 'rgba(170,120,60,0.35)' : swamp ? 'rgba(40,70,40,0.5)' : snow ? 'rgba(150,180,210,0.35)' : lava ? 'rgba(255,120,60,0.25)' : 'rgba(60,130,50,0.5)';
       for (let k = 0; k < 40; k++) {
         const x = C.wallX + ((k * 211) % (C.width - C.wallX));
         const y = C.fieldTop + ((k * 97) % (C.fieldBottom - C.fieldTop));
@@ -454,14 +516,27 @@
         ctx.fill();
       }
       // 底部地面
-      ctx.fillStyle = desert ? '#e0b766' : swamp ? '#566f52' : snow ? '#d6e4f2' : '#7cbf5e';
+      ctx.fillStyle = desert ? '#e0b766' : swamp ? '#566f52' : snow ? '#d6e4f2' : lava ? '#3a2a2e' : '#7cbf5e';
       ctx.fillRect(0, C.fieldBottom, C.width, C.height - C.fieldBottom);
       // 城墙后方的家园（沙漠里是帐篷，沼泽里是高脚屋）
-      ctx.fillStyle = desert ? '#f5dc9c' : swamp ? '#7f9a74' : snow ? '#eef6fc' : '#b6e3a0';
+      ctx.fillStyle = desert ? '#f5dc9c' : swamp ? '#7f9a74' : snow ? '#eef6fc' : lava ? '#5a4448' : '#b6e3a0';
       ctx.fillRect(0, C.fieldTop, C.wallX - 60, C.fieldBottom - C.fieldTop);
       for (let i = 0; i < 4; i++) {
         const y = C.fieldTop + 70 + i * 130;
         const color = ['#e46a5a', '#5b8fd5', '#e6a34a', '#9a6bd5'][i];
+        if (lava) {
+          // 石屋
+          ctx.fillStyle = '#7a6a66';
+          ctx.fillRect(14, y + 4, 54, 36);
+          ctx.strokeStyle = '#4a3a38';
+          ctx.lineWidth = 2;
+          ctx.strokeRect(14, y + 4, 54, 36);
+          ctx.fillStyle = color;
+          ctx.fillRect(10, y - 4, 62, 10);
+          ctx.fillStyle = '#ffd23f';
+          ctx.fillRect(34, y + 16, 12, 12);
+          continue;
+        }
         if (snow) {
           // 冰屋
           ctx.fillStyle = '#f7fbff';
@@ -662,7 +737,7 @@
         const fade = Math.min(1, (e.until - b.time) * 2);
         ctx.save();
         ctx.globalAlpha = 0.4 * fade;
-        ctx.fillStyle = e.type === 'freeze' ? '#cdeeff' : e.type === 'poison' ? '#6fd36a' : '#8fd8ff';
+        ctx.fillStyle = e.type === 'freeze' ? '#cdeeff' : e.type === 'poison' ? '#6fd36a' : e.type === 'lava' ? '#ff7a3d' : '#8fd8ff';
         ctx.fillRect(C.wallX, y0, C.width - C.wallX, h);
         if (e.type === 'poison') {
           ctx.globalAlpha = 0.6 * fade;
@@ -680,6 +755,26 @@
           const x = C.wallX + ((k * 89 + this.t * 30) % (C.width - C.wallX));
           const y = y0 + ((k * 41 + this.t * 20) % h);
           S.star(ctx, x, y, 4);
+        }
+        ctx.restore();
+      }
+      // 火焰地带
+      for (const z of b.zones) {
+        if (b.time > z.until) continue;
+        const fade = Math.min(1, (z.until - b.time) * 2);
+        ctx.save();
+        ctx.globalAlpha = 0.45 * fade;
+        S.ellipse(ctx, z.x, z.y + 8, z.r, z.r * 0.45, '#ff7a3d');
+        ctx.globalAlpha = 0.8 * fade;
+        for (let i = 0; i < 4; i++) {
+          const fx = z.x - z.r * 0.6 + i * z.r * 0.4;
+          const fh = 10 + Math.sin(this.t * 12 + i * 2) * 5;
+          ctx.fillStyle = i % 2 ? '#ffd23f' : '#ff8a3d';
+          ctx.beginPath();
+          ctx.moveTo(fx - 5, z.y + 8);
+          ctx.lineTo(fx, z.y + 8 - fh);
+          ctx.lineTo(fx + 5, z.y + 8);
+          ctx.fill();
         }
         ctx.restore();
       }
@@ -749,8 +844,17 @@
       }
       const regen = def.regen && b.time - m.lastHit >= def.regen.delay && m.hp < m.maxHp;
       const dark = b.level.dark && x > C.wallX + 450;
+      if (m.hidden) ctx.globalAlpha = 0.18;
+      if (m.stealthed) ctx.globalAlpha = 0.22 + Math.sin(this.t * 6 + m.id) * 0.06;
       if (dark && S.filterSupported) ctx.filter = 'brightness(0) opacity(0.55)';
+      else if (m.shade && S.filterSupported) ctx.filter = 'brightness(0.25) saturate(0.4)';
       S.monster(ctx, m.type, x, y, def.size, t, { flash: dark ? 0 : m.hitFlash, attack: m.state === 'attack' || m.state === 'hold', seed: m.id, ai: m.ai, shield: m.shield, regen, scale: scale * DRAW_SCALE });
+      if (m.shade && !dark) {
+        ctx.filter = 'none';
+        // 墨影：紫色的眼睛
+        S.ellipse(ctx, x - def.size * 0.35, y - def.size * 1.05, 2.5, 2.5, '#c58cff');
+        S.ellipse(ctx, x, y - def.size * 1.05, 2.5, 2.5, '#c58cff');
+      }
       if (dark) {
         ctx.filter = 'none';
         // 黑暗中只看得见一双发光的眼睛
@@ -931,6 +1035,10 @@
         ctx.fillStyle = 'rgba(255,229,138,0.9)';
         ctx.fillRect(x, y - 6, (w * boss.shield) / boss.shieldMax, 5);
       }
+      if (boss.def.ai === 'inkBoss') {
+        ctx.fillStyle = '#fff';
+        for (const r of [TD.data.inkBoss.phase2Below, TD.data.inkBoss.phase3Below, TD.data.inkBoss.phase4Below]) ctx.fillRect(x + w * r - 1, y - 2, 2, 18);
+      }
       if (boss.def.ai === 'pharaoh') {
         ctx.fillStyle = '#fff';
         for (const r of [TD.data.pharaoh.phase2Below, TD.data.pharaoh.phase3Below]) ctx.fillRect(x + w * r - 1, y - 2, 2, 18);
@@ -939,8 +1047,8 @@
       ctx.font = 'bold 15px sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText(`${boss.def.name}  ${Math.ceil(boss.hp)} / ${boss.maxHp}${boss.shield > 0 ? '  🛡 ' + Math.ceil(boss.shield) : ''}`, C.width / 2, y + 12);
-      if (boss.ai && (boss.ai.mode === 'warn' || boss.ai.mode === 'charge')) {
-        const need = boss.maxHp * TD.data.boarKing.interruptRatio;
+      if (boss.ai && (boss.ai.mode === 'warn' || boss.ai.mode === 'charge') && (boss.def.ai === 'boarKing' || boss.def.ai === 'inkBoss')) {
+        const need = boss.maxHp * (boss.def.ai === 'inkBoss' ? TD.data.inkBoss.interruptRatio : TD.data.boarKing.interruptRatio);
         const pr = Math.min(1, boss.ai.chargeDmg / need);
         ctx.fillStyle = 'rgba(40,20,10,0.65)';
         S.roundRect(ctx, x + w / 2 - 130, y + 22, 260, 22, 8);
@@ -948,7 +1056,7 @@
         ctx.fillStyle = '#ffd23f';
         ctx.fillRect(x + w / 2 - 124, y + 36, 248 * pr, 5);
         ctx.font = 'bold 13px sans-serif';
-        ctx.fillText('集中火力打断冲锋！', C.width / 2, y + 34);
+        ctx.fillText(boss.def.ai === 'inkBoss' ? '集中火力打断重击！' : '集中火力打断冲锋！', C.width / 2, y + 34);
       }
       ctx.restore();
     }
@@ -1034,6 +1142,47 @@
       const pct = Math.round(b.aspdMalus() * 100);
       ctx.strokeText(`攻速 −${pct}%`, C.heroX, b.heroY - 136);
       ctx.fillText(`攻速 −${pct}%`, C.heroX, b.heroY - 136);
+      ctx.restore();
+    }
+
+    drawEmbers() {
+      const ctx = this.ctx;
+      ctx.save();
+      for (let i = 0; i < 30; i++) {
+        const x = (i * 157 + Math.sin(this.t * 0.8 + i) * 30) % C.width;
+        const y = C.height - ((i * 89 + this.t * (30 + (i % 5) * 10)) % C.height);
+        ctx.globalAlpha = 0.5 + Math.sin(this.t * 4 + i) * 0.3;
+        S.ellipse(ctx, x, y, 2, 2, i % 3 ? '#ff8a3d' : '#ffd23f');
+      }
+      ctx.restore();
+    }
+
+    drawHeroStun(b) {
+      const ctx = this.ctx;
+      ctx.save();
+      ctx.fillStyle = '#ffd23f';
+      for (let i = 0; i < 3; i++) {
+        const a = this.t * 6 + (i * Math.PI * 2) / 3;
+        S.star(ctx, C.heroX + Math.cos(a) * 26, b.heroY - 100 + Math.sin(a) * 8, 6);
+      }
+      ctx.restore();
+    }
+
+    drawRiftTimer(b) {
+      const boss = b.monsters.find((m) => m.def.ai === 'inkBoss' && !m.dead);
+      if (!boss || boss.ai.phase !== 4) return;
+      const ctx = this.ctx;
+      const tLeft = Math.max(0, boss.ai.rageTimer);
+      ctx.save();
+      ctx.font = 'bold 44px "Trebuchet MS", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.lineWidth = 6;
+      ctx.strokeStyle = 'rgba(30,10,40,0.85)';
+      const urgent = tLeft < 5;
+      ctx.fillStyle = urgent && Math.sin(this.t * 12) > 0 ? '#ff5050' : '#e2c8ff';
+      const txt = `裂隙打击 ${tLeft.toFixed(1)}`;
+      ctx.strokeText(txt, C.width / 2, C.fieldTop + 70);
+      ctx.fillText(txt, C.width / 2, C.fieldTop + 70);
       ctx.restore();
     }
 
@@ -1193,10 +1342,11 @@
           case 'spit': {
             const x = f.x0 + (f.x1 - f.x0) * k;
             const y = f.y0 + (f.y1 - f.y0) * k - Math.sin(k * Math.PI) * 60;
-            S.ellipse(ctx, x, y, 6, 6, '#9df58a', '#3d7a2f', 1.5);
+            if (f.fire) S.ellipse(ctx, x, y, 8, 8, '#ffb347', '#e04848', 2);
+            else S.ellipse(ctx, x, y, 6, 6, '#9df58a', '#3d7a2f', 1.5);
             if (k > 0.9 && !f.burst) {
               f.burst = true;
-              this.burst(f.x1, f.y1, '#7dff9a', 6, 100);
+              this.burst(f.x1, f.y1, f.fire ? '#ff8a3d' : '#7dff9a', 6, 100);
             }
             break;
           }
@@ -1236,6 +1386,11 @@
             ctx.fillText('!', f.x, f.y - 14);
             break;
           }
+          case 'flash':
+            ctx.globalAlpha = (1 - k) * 0.5;
+            ctx.fillStyle = f.color;
+            ctx.fillRect(0, 0, C.width, C.height);
+            break;
           case 'clang':
             ctx.globalAlpha = 1 - k;
             ctx.strokeStyle = '#fff';

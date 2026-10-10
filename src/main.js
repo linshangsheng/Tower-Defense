@@ -68,6 +68,16 @@
     if (game.battle !== battle) return;
     const reward = P.applyResult(game.save, battle.levelNo, battle.result);
     game.persist();
+    // 第一次打败最终 Boss：先播结局演出
+    if (battle.level.final && battle.result.win && reward.firstClear) {
+      game.battle = null;
+      game.renderer.battle = null;
+      TD.ui.showEnding(() => {
+        TD.ui.showMap(TD.data.chapterOf(battle.levelNo).id);
+        TD.ui.showResult(battle, reward);
+      });
+      return;
+    }
     TD.ui.showResult(battle, reward);
   };
 

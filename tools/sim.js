@@ -53,6 +53,7 @@ function campaign(seed, opts) {
     } while (!res.win && attempts < 12);
     if (!res.win) {
       log.push({ n, attempts, win: false });
+      console.log(`  种子 ${seed} 卡在第 ${n} 关（${attempts} 次未通过）`);
       break;
     }
     retries += attempts - 1;
@@ -183,4 +184,28 @@ if (LAST >= 40) {
     }
     console.log(`第 ${lv} 关平均城墙剩余：威胁优先 ${pct(res.smart[0] / res.smart[1])}，最近优先 ${pct(res.nearest[0] / res.nearest[1])}`);
   }
+}
+
+if (LAST >= 50) {
+  console.log('\n=== 目标 7：第 43 关（熔岩傀儡），物理武器 vs 只有魔法武器 ===');
+  let phys = 0;
+  let magicOnly = 0;
+  let total = 0;
+  for (let s = 1; s <= seeds; s++) {
+    const { before } = campaign(s);
+    if (!before[43]) continue;
+    for (let k = 0; k < 3; k++) {
+      total++;
+      const a = TD.util.deepClone(before[43]);
+      const b = TD.util.deepClone(before[43]);
+      TD.bot.shop(a);
+      TD.bot.shop(b);
+      if (TD.bot.playLevel(a, 43, { seed: 200 + s * 7 + k }).res.win) phys++;
+      // 只有魔法：没收所有物理武器
+      for (const w of ['bow', 'crossbow', 'boomerang', 'cannon']) b.weapons[w].owned = false;
+      b.weapons.staff.owned = true;
+      if (TD.bot.playLevel(b, 43, { seed: 200 + s * 7 + k, forceWeapon: b.weapons.orb.owned ? 'orb' : 'staff' }).res.win) magicOnly++;
+    }
+  }
+  console.log(`第 43 关：有物理武器胜 ${phys}/${total}，只有魔法武器胜 ${magicOnly}/${total}`);
 }

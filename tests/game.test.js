@@ -525,7 +525,7 @@ test('企鹅第一次撞墙造成额外伤害', () => {
   b.on('slam', () => (slam = true));
   for (let i = 0; i < 30; i++) b.step(1 / 60);
   assert.ok(slam);
-  assert.ok(hp0 - b.wall.hp >= 40 * b.D * 0.99);
+  assert.ok(hp0 - b.wall.hp >= D.monsters.penguin.slam * b.D * 0.99);
 });
 
 test('冰棍大叔冻结技能槽', () => {
@@ -565,4 +565,91 @@ test('countMult 按倍率调整小怪数量，Boss 不变', () => {
   assert.strictEqual(b.spawnQueue.filter((x) => x === 'frostQueen').length, 1);
   assert.strictEqual(b.spawnQueue.filter((x) => x === 'wolf').length, 12);
   lvl.countMult = old;
+});
+
+// ---------- 第五章机制 ----------
+test('熔岩傀儡：魔法伤害减免 75%，物理正常', () => {
+  const b = newBattle(43);
+  const a = b.spawnMonster('lavaGolem', 0, 800);
+  const c = b.spawnMonster('lavaGolem', 0, 800);
+  assert.ok(Math.abs(b.damage(a, 100, { type: 'magic' }) - 25) < 0.01);
+  assert.strictEqual(b.damage(c, 100, { type: 'phys' }), 100);
+});
+
+test('岩浆团死后留下火焰地带，经过的怪加速；灭火器无效化', () => {
+  const b = newBattle(41);
+  const m = b.spawnMonster('magma', 1, 700);
+  const s = b.spawnMonster('slime', 1, 700);
+  const v0 = b.monsterSpeed(s);
+  b.damage(m, 1e6, { type: 'magic' });
+  assert.ok(Math.abs(b.monsterSpeed(s) - v0 * 1.5) < 1e-6);
+  b.mods.fireproof = 1;
+  assert.ok(Math.abs(b.monsterSpeed(s) - v0) < 1e-6);
+});
+
+test('暗影刺客远处隐身，靠近现身；透视镜提前现身', () => {
+  const b = newBattle(44);
+  b.hero.cooldown = 1e9;
+  const m = b.spawnMonster('assassin', 2, 900);
+  b.step(1 / 60);
+  assert.ok(m.stealthed && !b.isTargetable(m));
+  b.mods.reveal = 1;
+  m.x = 790;
+  b.step(1 / 60);
+  assert.ok(!m.stealthed && b.isTargetable(m));
+});
+
+test('岩岩跺脚会震晕英雄；在城墙边爆炸会炸城墙', () => {
+  const b = newBattle(45);
+  b.hero.cooldown = 1e9;
+  const g = b.spawnMonster('rockGolem', 2, 900);
+  let stomp = false;
+  b.on('stomp', () => (stomp = true));
+  for (let i = 0; i < 60 * 8 && !stomp; i++) b.step(1 / 60);
+  assert.ok(stomp && b.time < b.heroStunUntil);
+  g.x = 300;
+  b.wall.max = b.wall.hp = 1e6;
+  const hp0 = b.wall.hp;
+  b.damage(g, 1e9, { type: 'phys' });
+  assert.ok(g.dead);
+  assert.ok(hp0 - b.wall.hp > 150 * b.D, '城墙被炸');
+  assert.ok(b.laneEffects.some((e) => e.type === 'lava' && e.lane === g.lane));
+});
+
+test('墨墨：分身阶段本体无敌，打掉 3 个分身后现身并受到额外伤害', () => {
+  const b = newBattle(50);
+  b.hero.cooldown = 1e9;
+  const m = b.spawnMonster('inkBoss', 2, 760);
+  b.damage(m, m.maxHp * 0.3, { type: 'magic' });
+  b.step(1 / 60);
+  assert.ok(m.hidden && !b.isTargetable(m), '进入分身阶段');
+  const clones = b.monsters.filter((o) => o.cloneOf === m && !o.dead);
+  assert.strictEqual(clones.length, 3);
+  for (const c of clones) b.damage(c, 1e9, { type: 'magic' });
+  assert.ok(!m.hidden && m.vulnUntil > b.time);
+  const hp0 = m.hp;
+  b.damage(m, 100, { type: 'magic' });
+  assert.ok(Math.abs(hp0 - m.hp - 150) < 1e-6, '受到 150% 伤害');
+});
+
+test('墨墨：魔王形态的重击可以被打断；裂隙狂暴会倒计时', () => {
+  const b = newBattle(50);
+  b.hero.cooldown = 1e9;
+  const m = b.spawnMonster('inkBoss', 2, 760);
+  m.ai.phase = 3;
+  m.ai.big = true;
+  m.ai.mode = 'hold';
+  m.ai.slamTimer = 0.01;
+  let warned = false;
+  let interrupted = false;
+  b.on('bossWarn', () => (warned = true));
+  b.on('bossInterrupt', () => (interrupted = true));
+  for (let i = 0; i < 10; i++) b.step(1 / 60);
+  assert.ok(warned);
+  b.damage(m, m.maxHp * 0.025, { type: 'magic' });
+  assert.ok(interrupted);
+  m.hp = m.maxHp * 0.15;
+  b.step(1 / 60);
+  assert.strictEqual(m.ai.phase, 4);
+  assert.ok(m.ai.rageTimer > 25);
 });

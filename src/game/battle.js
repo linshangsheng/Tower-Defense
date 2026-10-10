@@ -55,7 +55,9 @@
       this.waveStartTime = 0;
 
       // 战场补给（设计书 2.7）
-      this.mods = { atkMult: 0, aspdMult: 0, crit: 0, critDmg: 0, cdMult: 0, copperBonus: 0, wallDr: 0, range: 0, slowOnHit: 0, magicMult: 0, armorIgnore: 0, dotReduce: 0, spiritPierce: 0, chillResist: 0, igniteOnHit: 0 };
+      this.mods = { atkMult: 0, aspdMult: 0, crit: 0, critDmg: 0, cdMult: 0, copperBonus: 0, wallDr: 0, range: 0, slowOnHit: 0, magicMult: 0, armorIgnore: 0, dotReduce: 0, spiritPierce: 0, chillResist: 0, igniteOnHit: 0, fireproof: 0, reveal: 0 };
+      this.zones = []; // 地面区域：{ x, y, r, until, haste }
+      this.heroStunUntil = 0;
       this.chillStacks = 0;
       this.wallSealedUntil = 0;
       this.pack = null;
@@ -286,6 +288,12 @@
       if (def.ai === 'boneMage') m.ai = { phase: 1, mode: 'walk', summonTimer: D.boneMage.summonFirst, revived: false };
       else if (def.ai === 'witch') m.ai = { phase: 1, mode: 'walk', fogTimer: D.witch.fogFirst, cookTimer: 3, pourTimer: 2 };
       else if (def.ai === 'iceGiant') m.ai = { phase: 1, mode: 'walk', freezeTimer: D.iceGiant.freezeFirst };
+      else if (def.ai === 'rockGolem') m.ai = { phase: 1, mode: 'walk', stompTimer: D.rockGolem.stompFirst, warn: 0 };
+      else if (def.ai === 'inkBoss') m.ai = { phase: 1, mode: 'walk', summonTimer: 2, slamTimer: 4, chargeDmg: 0, rageTimer: -1 };
+      if (def.stealth) {
+        m.stealthed = true;
+        m.hopTimer = def.stealth.hopEvery;
+      }
       else if (def.ai === 'frostQueen') {
         const Q = D.frostQueen;
         m.ai = { phase: 1, mode: 'walk', blizzardTimer: Q.blizzardFirst, sealTimer: 3, wolfTimer: 2, dragonTimer: 1 };
@@ -296,7 +304,7 @@
     }
 
     isTargetable(m) {
-      return !m.dead && !m.burrowed && !m.bones && m.x <= C.width + 5;
+      return !m.dead && !m.burrowed && !m.bones && !m.hidden && !m.stealthed && m.x <= C.width + 5;
     }
 
     monsterSpeed(m) {
@@ -306,6 +314,14 @@
       if (m.burrowed && m.def.burrow) s *= m.def.burrow.speedMult;
       if (m.def.ai === 'pharaoh' && m.ai.phase === 3) s *= D.pharaoh.phase3SpeedMult;
       if (m.cooked) s *= 1 + D.witch.cookSpeed;
+      if (this.zones.length && !this.mods.fireproof) {
+        for (const z of this.zones) {
+          if (this.time < z.until && Math.abs(m.x - z.x) <= z.r && Math.abs(m.y - z.y) <= z.r) {
+            s *= 1 + z.haste;
+            break;
+          }
+        }
+      }
       if (this.time < m.hasteUntil) s *= 1 + m.hasteAmt;
       let slow = this.time < m.slowUntil ? m.slowAmt : 0;
       for (const e of this.laneEffects) {
@@ -313,6 +329,7 @@
           if (e.type === 'freeze') return 0;
           if (e.type === 'frost') slow = Math.max(slow, e.slow);
           if (e.type === 'poison') s *= 1 + e.haste;
+          if (e.type === 'lava' && !this.mods.fireproof) s *= 1 + e.haste;
         }
       }
       return s * (1 - slow);
@@ -346,8 +363,27 @@
           else if (m.def.ai === 'witch') this.updateWitch(m, dt);
           else if (m.def.ai === 'iceGiant') this.updateIceGiant(m, dt);
           else if (m.def.ai === 'frostQueen') this.updateFrostQueen(m, dt);
+          else if (m.def.ai === 'rockGolem') this.updateRockGolem(m, dt);
+          else if (m.def.ai === 'inkBoss') this.updateInkBoss(m, dt);
           if (m.dead) continue;
           if (m.ai.mode !== 'walk') continue;
+        }
+        // 隐身（暗影刺客）：远处隐身并换道，靠近后现身
+        const st = m.def.stealth;
+        if (st) {
+          const revealX = this.mods.reveal ? 800 : st.revealX;
+          const was = m.stealthed;
+          m.stealthed = m.x > revealX;
+          if (was && !m.stealthed) this.emit('reveal', { m });
+          if (m.stealthed && this.lanes > 1) {
+            m.hopTimer -= dt;
+            if (m.hopTimer <= 0) {
+              m.hopTimer = st.hopEvery;
+              m.lane = m.lane === 0 ? 1 : m.lane === this.lanes - 1 ? m.lane - 1 : m.lane + (this.rng() < 0.5 ? -1 : 1);
+            }
+          }
+          const ty = this.laneY(m.lane);
+          if (m.y !== ty) m.y += Math.sign(ty - m.y) * Math.min(Math.abs(ty - m.y), 140 * dt);
         }
         // 再生（树桩怪）
         if (m.def.regen && this.time - m.lastHit >= m.def.regen.delay && m.hp < m.maxHp) {
@@ -791,6 +827,119 @@
       if (ai.mode === 'hold' && ai.phase === 3) ai.mode = 'walk';
     }
 
+    // 岩岩：跺脚震晕英雄；死亡爆炸（设计书 23.2）
+    updateRockGolem(m, dt) {
+      const R = D.rockGolem;
+      const ai = m.ai;
+      if (ai.warn > 0) {
+        ai.warn -= dt;
+        if (ai.warn <= 0) {
+          this.heroStunUntil = this.time + R.stunDuration;
+          this.emit('stomp', { m, duration: R.stunDuration });
+        }
+        return;
+      }
+      ai.stompTimer -= dt;
+      if (ai.stompTimer <= 0) {
+        ai.stompTimer = R.stompEvery;
+        ai.warn = R.stompWarn;
+        this.emit('stompWarn', { m });
+      }
+    }
+
+    // 墨墨：召唤墨影 → 分身 → 魔王重击 → 裂隙狂暴（设计书 23.2）
+    updateInkBoss(m, dt) {
+      const K = D.inkBoss;
+      const ai = m.ai;
+      const ratio = m.hp / m.maxHp;
+      if (ai.phase === 1 && ratio < K.phase2Below) {
+        ai.phase = 2;
+        this.splitInk(m);
+        this.emit('bossPhase', { m, phase: 2, text: '墨墨分身了！打掉三个分身！' });
+      }
+      if (ai.phase === 2 && !m.hidden && ratio < K.phase3Below) {
+        ai.phase = 3;
+        ai.big = true;
+        ai.slamTimer = 3;
+        this.emit('bossPhase', { m, phase: 3, text: '魔王形态！蓄力时集中火力打断！' });
+      }
+      if (ai.phase === 3 && ratio < K.phase4Below) {
+        ai.phase = 4;
+        ai.rageTimer = K.rageFirst;
+        this.emit('bossPhase', { m, phase: 4, text: '裂隙狂暴！30 秒内击败墨墨！' });
+      }
+      if (m.hidden) return;
+      // 召唤墨影（复刻前四章的小怪）
+      if (ai.phase < 3 || ai.phase === 4) {
+        ai.summonTimer -= dt;
+        if (ai.summonTimer <= 0) {
+          ai.summonTimer = K.summonEvery;
+          for (let i = 0; i < K.summonCount; i++) {
+            const sh = this.spawnMonster(this.rng.pick(K.shadePool), this.rng.int(this.lanes), Math.min(C.spawnX, m.x + 40 + this.rng() * 40));
+            sh.shade = true;
+          }
+          this.emit('bossSummon', { m });
+        }
+      }
+      // 魔王重击
+      if (ai.phase >= 3) {
+        if (ai.mode === 'warn') {
+          ai.warnTimer -= dt;
+          if (ai.warnTimer <= 0) {
+            ai.mode = 'hold';
+            ai.slamTimer = K.slamEvery;
+            this.hitWall(K.slamDamage * this.D, m, true);
+            this.emit('inkSlam', { m });
+          }
+        } else if (this.time >= m.stunUntil) {
+          ai.slamTimer -= dt;
+          if (ai.slamTimer <= 0) {
+            ai.mode = 'warn';
+            ai.warnTimer = K.slamWarn;
+            ai.chargeDmg = 0;
+            this.emit('bossWarn', { m, lane: m.lane, duration: K.slamWarn, ink: true });
+          }
+        }
+      }
+      // 裂隙狂暴倒计时
+      if (ai.phase === 4) {
+        ai.rageTimer -= dt;
+        if (ai.rageTimer <= 0) {
+          ai.rageTimer = K.rageEvery;
+          this.hitWall(this.wall.max * K.rageRatio, m, true);
+          this.emit('riftStrike', { m });
+        }
+      }
+      if (ai.mode === 'walk' && m.x <= K.holdX) {
+        m.x = K.holdX;
+        ai.mode = 'hold';
+      }
+    }
+
+    splitInk(m) {
+      const K = D.inkBoss;
+      m.hidden = true;
+      m.ai.mode = 'hold';
+      const lanes = [];
+      for (let i = 0; i < this.lanes; i++) lanes.push(i);
+      for (let k = 0; k < Math.min(K.cloneCount, this.lanes); k++) {
+        const lane = lanes.splice(this.rng.int(lanes.length), 1)[0];
+        const c = this.spawnMonster('inkClone', lane, m.x);
+        c.hp = c.maxHp = m.maxHp * K.cloneHp;
+        c.cloneOf = m;
+        c.splitFrom = { x: m.x, y: m.y };
+      }
+      this.emit('inkSplit', { m });
+    }
+
+    clonesDown(m) {
+      const K = D.inkBoss;
+      m.hidden = false;
+      m.stunUntil = this.time + K.stunAfterClones;
+      m.vulnUntil = this.time + K.vulnDuration;
+      this.emit('inkReform', { m });
+    }
+
     raiseShield(m) {
       m.shieldMax = m.maxHp * D.pharaoh.shieldRatio;
       m.shield = m.shieldMax;
@@ -801,6 +950,18 @@
     // 冲锋期间累计伤害，达到阈值就打断
     onBossDamaged(m, dmg) {
       const ai = m.ai;
+      if (m.def.ai === 'inkBoss') {
+        if (ai.mode !== 'warn') return;
+        ai.chargeDmg += dmg;
+        if (ai.chargeDmg >= m.maxHp * D.inkBoss.interruptRatio) {
+          ai.mode = ai.phase >= 3 ? 'hold' : 'hold';
+          ai.slamTimer = D.inkBoss.slamEvery;
+          m.stunUntil = this.time + 1.2;
+          this.emit('bossInterrupt', { m });
+        }
+        return;
+      }
+      if (m.def.ai !== 'boarKing') return;
       if (!ai || (ai.mode !== 'warn' && ai.mode !== 'charge')) return;
       ai.chargeDmg += dmg;
       if (ai.chargeDmg >= m.maxHp * D.boarKing.interruptRatio) {
@@ -877,6 +1038,7 @@
     damage(m, amount, opts) {
       if (m.dead) return 0;
       if (opts.type === 'magic' && opts.source !== 'thorns') amount *= 1 + this.mods.magicMult;
+      if (m.vulnUntil && this.time < m.vulnUntil) amount *= D.inkBoss.vulnMult;
       // 护盾：先吸收伤害，魔法效果更好（设计书 19.3）
       if (m.shield > 0) {
         const P2 = D.pharaoh;
@@ -965,6 +1127,21 @@
         this.emit('spore', { x: m.x, y: m.y + m.yOffset, radius: od.radius });
       }
       if (m.def.split) this.split(m, m.def.split.deathCount);
+      if (m.def.fireZone) {
+        const fz = m.def.fireZone;
+        this.zones.push({ x: m.x, y: m.y, r: fz.radius, until: this.time + fz.duration, haste: fz.haste });
+        this.emit('fireZone', { x: m.x, y: m.y, r: fz.radius, duration: fz.duration });
+      }
+      if (m.def.ai === 'rockGolem') {
+        const R = D.rockGolem;
+        if (m.x < C.wallX + R.boomRange) this.hitWall(R.boomDamage * this.D, m, true);
+        this.laneEffects.push({ lane: m.lane, type: 'lava', haste: R.lavaHaste, until: this.time + R.lavaDuration, start: this.time });
+        this.emit('golemBoom', { m, near: m.x < C.wallX + R.boomRange });
+      }
+      if (m.cloneOf) {
+        const boss = m.cloneOf;
+        if (boss.ai && !boss.dead && this.monsters.every((o) => o.dead || o.cloneOf !== boss)) this.clonesDown(boss);
+      }
       const ds = m.def.deathSpawn;
       if (ds) {
         for (let i = 0; i < ds.count; i++) {
@@ -1028,6 +1205,7 @@
     }
 
     updateHero(dt) {
+      if (this.time < this.heroStunUntil) return;
       this.hero.cooldown -= dt;
       if (this.hero.cooldown > 0) return;
       const targets = this.rankTargets();
@@ -1421,6 +1599,7 @@
       if (this.over) return;
       this.updateWallDots(dt);
       if (this.over) return;
+      if (this.zones.length && this.zones[0].until < this.time) this.zones = this.zones.filter((z) => z.until >= this.time);
       this.updateHero(dt);
       this.updateRain(dt);
       this.updateProjectiles(dt);

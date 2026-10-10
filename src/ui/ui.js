@@ -121,7 +121,7 @@
         h('button', { class: 'btn', onclick: () => (sfx('click'), UI.showSettings()) }, '设置'),
         h('button', { class: 'btn', onclick: () => (sfx('click'), UI.showHelp()) }, '玩法说明')
       ),
-      h('div', { class: 'title-foot' }, '网页原型 v0.4 · 四章 40 关')
+      h('div', { class: 'title-foot' }, '网页原型 v0.5 · 五章 50 关')
     );
     root.appendChild(screenEl);
   };
@@ -388,7 +388,7 @@
         : h('div', { class: 'map-note' }, `恭喜通关「${ch.name}」！下一章正在建设中……可以回头挑战三星，或者收集金币购买传说装备。`);
     screenEl = h(
       'div',
-      { class: 'screen map-screen' + (ch.theme.desert ? ' desert' : ch.theme.swamp ? ' swamp' : ch.theme.snow ? ' snow' : '') },
+      { class: 'screen map-screen' + (ch.theme.desert ? ' desert' : ch.theme.swamp ? ' swamp' : ch.theme.snow ? ' snow' : ch.theme.lava ? ' lava' : '') },
       path,
       h(
         'div',
@@ -1062,6 +1062,109 @@
         )
       )
     );
+  };
+
+  // ================= 结局演出（设计书 23.6） =================
+  UI.showEnding = function (onDone) {
+    clear();
+    const W = C.width;
+    const H = C.height;
+    const cv = h('canvas', { class: 'ending-canvas', width: W, height: H });
+    const ctx = cv.getContext('2d');
+    const textBox = h('div', { class: 'ending-text' });
+    const credits = h(
+      'div',
+      { class: 'ending-credits hidden' },
+      h('h2', null, '守城英雄'),
+      h('p', null, '小卫兵铛铛的守城日记'),
+      h('h3', null, '游戏设计 · 程序 · 美术 · 音效'),
+      h('p', null, 'Claude（与你一起）'),
+      h('h3', null, '出品'),
+      h('p', null, 'linshangsheng'),
+      h('h3', null, '你的守城记录'),
+      h('p', null, `战斗 ${game.save.stats.battles} 次 · 胜利 ${game.save.stats.wins} 次 · 击败怪物 ${game.save.stats.kills} 只`),
+      h('p', null, `获得星星 ${Object.values(game.save.levels).reduce((a, r) => a + (r.stars || 0), 0)} / 150`),
+      h('p', { class: 'thanks' }, '谢谢你守住了王国！'),
+      h('button', { class: 'btn primary big', onclick: () => (stop(), onDone && onDone()) }, '回到地图')
+    );
+    screenEl = h('div', { class: 'screen ending' }, cv, textBox, credits, h('button', { class: 'btn small ending-skip', onclick: () => (stop(), onDone && onDone()) }, '跳过 ›'));
+    root.appendChild(screenEl);
+    const lines = [
+      [1.0, '墨墨"噗"的一声，缩回了一个小团子……'],
+      [4.5, '铛铛跑过去，把它抱了起来。头盔"当"地响了一声。'],
+      [8.0, '裂隙慢慢合上了，天空重新变得湛蓝。'],
+      [11.5, '王国最小的守城卫兵，守住了最大的危机。'],
+    ];
+    let t0 = null;
+    let raf = 0;
+    let shown = 0;
+    function stop() {
+      cancelAnimationFrame(raf);
+    }
+    function frame(ts) {
+      if (t0 === null) t0 = ts;
+      const t = (ts - t0) / 1000;
+      // 天空：暗红 → 天蓝
+      const k = TD.util.clamp((t - 7) / 3, 0, 1);
+      const mix = (a, b) => Math.round(a + (b - a) * k);
+      ctx.fillStyle = `rgb(${mix(60, 159)},${mix(24, 220)},${mix(40, 255)})`;
+      ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = `rgb(${mix(70, 124)},${mix(52, 191)},${mix(56, 94)})`;
+      ctx.fillRect(0, H * 0.68, W, H * 0.32);
+      // 裂隙
+      const rift = Math.max(0, 1 - Math.max(0, t - 7) / 3);
+      if (rift > 0) {
+        ctx.save();
+        ctx.globalAlpha = rift;
+        ctx.strokeStyle = '#c58cff';
+        ctx.lineWidth = 8 * rift + 2;
+        ctx.beginPath();
+        ctx.moveTo(W * 0.72, 60);
+        for (let i = 1; i <= 8; i++) ctx.lineTo(W * 0.72 + (i % 2 ? 30 : -20) * rift, 60 + i * 45);
+        ctx.stroke();
+        ctx.restore();
+      }
+      if (k > 0.5) {
+        ctx.save();
+        ctx.globalAlpha = (k - 0.5) * 2;
+        for (let i = 0; i < 3; i++) {
+          const x = ((t * 15 + i * 420) % (W + 200)) - 100;
+          TD.sprites.ellipse(ctx, x, 80 + i * 40, 60, 20, '#fff');
+        }
+        ctx.restore();
+      }
+      // 墨墨：先是大团子缩小，然后被抱起
+      const momoX = W * 0.62;
+      const groundY = H * 0.72;
+      const shrink = TD.util.clamp(t / 2, 0, 1);
+      const momoSize = 48 * (1 - shrink * 0.65);
+      // 铛铛跑过去
+      const run = TD.util.clamp((t - 3.5) / 2, 0, 1);
+      const heroX = W * 0.25 + (momoX - 60 - W * 0.25) * run;
+      const hugging = t > 5.6;
+      if (!hugging) TD.sprites.monster(ctx, 'inkBoss', momoX, groundY, momoSize, t, { ai: {} });
+      TD.sprites.hero(ctx, heroX, groundY, { t, weapon: 'bow', aimAngle: 0, mood: t > 6 ? 'win' : 'focus', critAge: hugging && t < 6 ? t - 5.6 : 9 });
+      if (hugging) TD.sprites.monster(ctx, 'inkBoss', heroX + 26, groundY - 40 + Math.sin(t * 3) * 2, 17, t, { ai: {} });
+      if (hugging) {
+        ctx.fillStyle = '#ff7b9c';
+        for (let i = 0; i < 3; i++) {
+          const hy = groundY - 120 - ((t * 30 + i * 25) % 80);
+          ctx.globalAlpha = 0.8;
+          ctx.font = '22px sans-serif';
+          ctx.fillText('♥', heroX + 10 + i * 18, hy);
+        }
+        ctx.globalAlpha = 1;
+      }
+      // 文字
+      while (shown < lines.length && t >= lines[shown][0]) {
+        textBox.appendChild(h('p', { class: 'ending-line' }, lines[shown][1]));
+        shown++;
+      }
+      if (t > 15) credits.classList.remove('hidden');
+      raf = requestAnimationFrame(frame);
+    }
+    raf = requestAnimationFrame(frame);
+    TD.audio.play('win');
   };
 
   // ================= 结算 =================

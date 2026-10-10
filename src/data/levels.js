@@ -34,6 +34,12 @@
       theme: { sky: '#dff1ff', ground: '#eef6fc', ground2: '#e3eef8', lane: '#f6fbff', accent: '#5aa8e0', snow: true },
       levels: [31, 32, 33, 34, 35, 36, 37, 38, 39, 40],
     },
+    {
+      id: 5,
+      name: '熔岩裂隙',
+      theme: { sky: '#5a2a3a', ground: '#4a3a3e', ground2: '#443438', lane: '#5a4448', accent: '#ff7a3d', lava: true },
+      levels: [41, 42, 43, 44, 45, 46, 47, 48, 49, 50],
+    },
   ];
 
   TD.data.chapterOf = function (n) {
@@ -530,7 +536,7 @@
     33: {
       name: '雪原狂奔',
       type: 'rush',
-      countMult: 1.17,
+      countMult: 1.11,
       lanes: 5,
       rushInterval: 13,
       waves: [
@@ -547,7 +553,7 @@
     34: {
       name: '冰晶之光',
       type: 'normal',
-      countMult: 1,
+      countMult: 1.08,
       lanes: 5,
       waves: [
         W(0.75, ['snowman', 10], ['iceSprite', 2]),
@@ -631,7 +637,7 @@
     39: {
       name: '雪崩',
       type: 'union',
-      countMult: 0.82,
+      countMult: 0.87,
       lanes: 5,
       waves: [
         B(2.0, ['snowman', 10], ['penguin', 5]),
@@ -657,6 +663,171 @@
       ],
       tip: '霜霜女王会冰封城墙，期间无法修复。在冰封之前把城墙修好！',
     },
+
+    // ---------- 第五章 · 熔岩裂隙（设计书 23.4） ----------
+    41: {
+      name: '裂隙入口',
+      type: 'normal',
+      countMult: 1.81,
+      lanes: 5,
+      waves: [
+        W(0.75, ['magma', 10], ['snowman', 6]),
+        W(0.7, ['magma', 12], ['wolf', 9]),
+        W(0.7, ['magma', 12], ['ghost', 10]),
+        W(0.65, ['magma', 14], ['yeti', 3]),
+        W(0.6, ['magma', 16], ['penguin', 8]),
+        W(0.6, ['magma', 18], ['pumpkin', 6]),
+        W(0.55, ['magma', 22], ['wolf', 12]),
+      ],
+      tip: '岩浆团死后会留下火焰，后面的怪踩上去会加速。尽量在远处打掉它们。',
+    },
+    42: {
+      name: '火球雨',
+      type: 'normal',
+      countMult: 2.32,
+      lanes: 5,
+      waves: [
+        W(0.75, ['imp', 3], ['magma', 8]),
+        W(0.7, ['imp', 4], ['snowman', 8]),
+        W(0.7, ['imp', 4], ['wolf', 9], ['magma', 6]),
+        W(0.65, ['imp', 5], ['ghost', 10]),
+        W(0.6, ['imp', 5], ['magma', 12]),
+        W(0.6, ['imp', 6], ['penguin', 10]),
+        W(0.55, ['imp', 7], ['magma', 14], ['yeti', 3]),
+      ],
+      tip: '火焰小恶魔停在远处扔火球。试试「威胁优先」！',
+    },
+    43: {
+      name: '熔岩巨人',
+      type: 'armored',
+      countMult: 1.92,
+      lanes: 5,
+      waves: [
+        W(0.9, ['lavaGolem', 3], ['magma', 8]),
+        W(0.85, ['lavaGolem', 4], ['wolf', 9]),
+        W(0.8, ['lavaGolem', 5], ['imp', 2]),
+        W(0.8, ['lavaGolem', 5], ['snowman', 8]),
+        W(0.75, ['lavaGolem', 6], ['magma', 10]),
+        W(0.7, ['lavaGolem', 7], ['ghost', 8]),
+        W(0.7, ['lavaGolem', 8], ['imp', 3]),
+        W(0.65, ['lavaGolem', 10], ['magma', 12]),
+      ],
+      tip: '熔岩傀儡几乎不怕魔法！换上木弓、火炮或回旋镖。',
+    },
+    44: {
+      name: '影子里的刀',
+      type: 'dark',
+      countMult: 1.22,
+      dark: true,
+      lanes: 5,
+      waves: [
+        W(0.75, ['assassin', 6], ['magma', 6]),
+        W(0.7, ['assassin', 8], ['wolf', 6]),
+        W(0.7, ['assassin', 8], ['imp', 2], ['snowman', 6]),
+        W(0.65, ['assassin', 10], ['magma', 8]),
+        W(0.6, ['assassin', 10], ['ghost', 8]),
+        W(0.6, ['assassin', 12], ['lavaGolem', 2]),
+        W(0.55, ['assassin', 14], ['magma', 10], ['imp', 3]),
+      ],
+      tip: '暗影刺客在远处隐身，靠近才现身。补给里的「透视镜」能让它们早点现形。',
+    },
+    45: {
+      name: '岩岩',
+      type: 'miniboss',
+      countMult: 0.3,
+      lanes: 5,
+      waves: [
+        W(0.7, ['magma', 12], ['wolf', 6]),
+        W(0.65, ['chariot', 6], ['imp', 3]),
+        W(0.65, ['assassin', 8], ['magma', 8]),
+        W(0.6, ['snowman', 10], ['wolf', 9]),
+        W(0.6, ['magma', 14], ['imp', 4]),
+        W(0.55, ['assassin', 10], ['chariot', 6]),
+        W(1.3, ['rockGolem', 1], ['magma', 10], ['imp', 2]),
+      ],
+      tip: '岩岩被打败时会爆炸！在它走近城墙之前打掉它。它不怕魔法，带物理武器。',
+    },
+    46: {
+      name: '战车冲锋',
+      type: 'rush',
+      countMult: 1.03,
+      lanes: 5,
+      rushInterval: 12,
+      waves: [
+        W(0.45, ['chariot', 8], ['wolf', 6]),
+        W(0.42, ['chariot', 10], ['magma', 6]),
+        W(0.4, ['chariot', 12], ['penguin', 6]),
+        W(0.38, ['chariot', 12], ['wolf', 9]),
+        W(0.36, ['chariot', 14], ['magma', 8]),
+        W(0.34, ['chariot', 16], ['penguin', 8]),
+        W(0.32, ['chariot', 18], ['wolf', 12]),
+      ],
+      tip: '速攻关：骷髅战车撞墙伤害很高，冰冻领域和冰冻瓶是救命稻草。',
+    },
+    47: {
+      name: '火雨天空',
+      type: 'raid',
+      countMult: 1.96,
+      lanes: 5,
+      waves: [
+        W(0.6, ['imp', 5], ['bat', 10]),
+        W(0.55, ['imp', 6], ['vulture', 10]),
+        W(0.55, ['imp', 6], ['iceSprite', 2], ['bat', 10]),
+        W(0.5, ['imp', 7], ['vulture', 12]),
+        W(0.5, ['imp', 8], ['bat', 14], ['lavaGolem', 2]),
+        W(0.45, ['imp', 8], ['vulture', 14]),
+        W(0.45, ['imp', 9], ['bat', 16], ['lavaGolem', 2]),
+        W(0.4, ['imp', 10], ['vulture', 16], ['iceSprite', 3]),
+      ],
+      tip: '空袭关，小恶魔会在远处扔火球。「威胁优先」或「飞行优先」都试试看！',
+    },
+    48: {
+      name: '万象',
+      type: 'union',
+      countMult: 0.58,
+      lanes: 5,
+      waves: [
+        B(2.0, ['magma', 10], ['assassin', 5]),
+        B(1.9, ['lavaGolem', 5], ['imp', 5]),
+        B(1.8, ['chariot', 10], ['ghost', 5]),
+        B(1.8, ['magma', 10], ['wolf', 10]),
+        B(1.7, ['assassin', 10], ['lavaGolem', 5]),
+        B(1.6, ['imp', 5], ['chariot', 10], ['snowman', 5]),
+        B(1.6, ['magma', 15], ['yeti', 5]),
+        B(1.5, ['lavaGolem', 5], ['assassin', 10], ['imp', 5]),
+      ],
+      tip: '联合关：所有车道同时出怪，物理和魔法都要准备。',
+    },
+    49: {
+      name: '精英挑战',
+      type: 'elite',
+      countMult: 0.91,
+      lanes: 5,
+      waves: [
+        W(0.8, ['slime', 12], ['goblin', 6], ['bee', 10]),
+        W(1.2, ['jellyPrince', 1], ['mushroom', 10]),
+        W(0.75, ['scorpion', 12], ['mummy', 6], ['cactus', 8]),
+        W(1.2, ['kingScorpion', 1], ['vulture', 10]),
+        W(0.7, ['ghost', 14], ['frog', 4], ['pumpkin', 6]),
+        W(1.2, ['boneMage', 1], ['stump', 4]),
+        W(0.65, ['snowman', 10], ['wolf', 12], ['iceSprite', 3]),
+        W(1.2, ['iceGiant', 1], ['penguin', 10], ['magma', 10]),
+      ],
+      tip: '精英挑战：前四章的小 Boss 一个接一个回来了！',
+    },
+    50: {
+      name: '墨墨',
+      type: 'boss',
+      countMult: 1.6,
+      lanes: 5,
+      final: true,
+      waves: [
+        W(0.7, ['magma', 12], ['assassin', 6], ['imp', 3]),
+        W(0.65, ['lavaGolem', 4], ['chariot', 8], ['ghost', 8]),
+        W(2.0, ['inkBoss', 1], ['magma', 6]),
+      ],
+      tip: '最终决战！墨墨有四个阶段：清小怪、打分身、打断重击、限时击杀。',
+    },
   };
 
   TD.data.levelTypeNames = {
@@ -669,5 +840,6 @@
     armored: '重甲突击',
     dark: '暗夜',
     union: '联合',
+    elite: '精英挑战',
   };
 })((globalThis.TD = globalThis.TD || {}));

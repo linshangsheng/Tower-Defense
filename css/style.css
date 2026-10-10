@@ -1139,3 +1139,67 @@ body {
 .skill-btn.frozen {
   outline: 3px solid #9fe3ff;
 }
+
+.map-screen.lava {
+  background: radial-gradient(ellipse at 50% 60%, rgba(120, 60, 60, 0.6), rgba(40, 20, 30, 0.9));
+}
+/* ---------- 结局 ---------- */
+.ending {
+  background: #000;
+  z-index: 50;
+}
+.ending-canvas {
+  position: absolute;
+  inset: 0;
+}
+.ending-text {
+  position: absolute;
+  left: 60px;
+  top: 60px;
+  width: 640px;
+}
+.ending-line {
+  font-size: 26px;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 2px 4px #000;
+  margin: 0 0 14px;
+  animation: fadeIn 1.2s;
+}
+.ending-credits {
+  position: absolute;
+  right: 60px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 420px;
+  background: rgba(255, 248, 232, 0.94);
+  border: 4px solid var(--ink);
+  border-radius: 24px;
+  padding: 20px 26px;
+  text-align: center;
+  animation: popIn 0.6s;
+}
+.ending-credits h2 {
+  font-size: 34px;
+  margin: 0;
+  color: #d9741a;
+}
+.ending-credits h3 {
+  margin: 12px 0 2px;
+  font-size: 15px;
+  color: #8a6a50;
+}
+.ending-credits p {
+  margin: 2px 0;
+  font-size: 17px;
+}
+.ending-credits .thanks {
+  font-size: 20px;
+  font-weight: 900;
+  margin: 14px 0;
+}
+.ending-skip {
+  position: absolute;
+  right: 16px;
+  top: 14px;
+}

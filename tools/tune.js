@@ -76,7 +76,7 @@ for (let n = from; n <= to; n++) {
       hi = mult;
       mult = lo !== null ? (lo + hi) / 2 : mult * 0.8;
     }
-    mult = Math.max(0.4, Math.min(3.5, +mult.toFixed(3)));
+    mult = Math.max(0.3, Math.min(3.5, +mult.toFixed(3)));
   }
   lvl.countMult = +best.mult.toFixed(2);
   results[n] = best;
