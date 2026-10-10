@@ -197,6 +197,20 @@
     item: [2, 6, 8],
   };
 
+  // 战场补给卡（设计书 2.7、18.12）：mods 中的字段由战斗逻辑读取
+  TD.data.supplies = {
+    sharp: { name: '磨利箭头', desc: '攻击力 +10%', mods: { atkMult: 0.1 }, icon: 'arrowUp' },
+    quick: { name: '灵巧手指', desc: '攻击速度 +10%', mods: { aspdMult: 0.1 }, icon: 'haste' },
+    eagle: { name: '鹰之眼', desc: '暴击率 +8%', mods: { crit: 0.08 }, icon: 'eye' },
+    fury: { name: '狂热', desc: '暴击伤害 +25%', mods: { critDmg: 0.25 }, icon: 'fury' },
+    bricks: { name: '加固砖块', desc: '立即回复城墙 20%，城墙受到伤害 −8%', mods: { wallDr: 0.08 }, heal: 0.2, icon: 'repair' },
+    master: { name: '技能大师', desc: '主动技能冷却 −20%，并立即刷新所有冷却', mods: { cdMult: -0.2 }, refresh: true, needSkills: true, icon: 'master' },
+    purse: { name: '铜币袋', desc: '本关铜币收益 +25%', mods: { copperBonus: 0.25 }, icon: 'purse' },
+    frostTip: { name: '寒霜箭头', desc: '普通攻击使目标减速 20%，持续 1.5 秒', mods: { slowOnHit: 0.2 }, icon: 'frost' },
+    farsight: { name: '远望', desc: '射程 +12%', mods: { range: 0.12 }, icon: 'eye' },
+  };
+  TD.data.supplyBotOrder = ['sharp', 'quick', 'master', 'eagle', 'fury', 'frostTip', 'farsight', 'bricks', 'purse'];
+
   TD.data.targetModes = {
     nearest: '最近优先',
     weakest: '最弱优先',

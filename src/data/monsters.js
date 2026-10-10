@@ -8,7 +8,7 @@
   TD.data.monsters = {
     slime: {
       name: '绿团团',
-      hp: 24,
+      hp: 26,
       speed: 38,
       dps: 6,
       armor: 0,
@@ -19,7 +19,7 @@
     },
     bunny: {
       name: '兔冲冲',
-      hp: 14,
+      hp: 15,
       speed: 105,
       dps: 4,
       armor: 0,
@@ -30,7 +30,7 @@
     },
     mushroom: {
       name: '蘑菇兵',
-      hp: 36,
+      hp: 40,
       speed: 52,
       dps: 7,
       armor: 0,
@@ -42,7 +42,7 @@
     },
     bee: {
       name: '嗡嗡蜂',
-      hp: 16,
+      hp: 18,
       speed: 75,
       dps: 3,
       armor: 0,
@@ -54,7 +54,7 @@
     },
     goblin: {
       name: '木盾哥布林',
-      hp: 70,
+      hp: 76,
       speed: 34,
       dps: 10,
       armor: 0,
@@ -66,7 +66,7 @@
     },
     gobling: {
       name: '哥布林小兵',
-      hp: 20,
+      hp: 22,
       speed: 55,
       dps: 5,
       armor: 0,
@@ -77,7 +77,7 @@
     },
     minijelly: {
       name: '小果冻',
-      hp: 14,
+      hp: 15,
       speed: 50,
       dps: 4,
       armor: 0,
@@ -88,7 +88,7 @@
     },
     jellyPrince: {
       name: '果冻王子',
-      hp: 600,
+      hp: 660,
       speed: 24,
       dps: 25,
       armor: 0,
@@ -101,7 +101,7 @@
     },
     boarKing: {
       name: '咕噜大王',
-      hp: 1800,
+      hp: 2000,
       speed: 30,
       dps: 30,
       armor: 30,

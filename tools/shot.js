@@ -26,7 +26,10 @@ const { chromium } = require(path.join(process.env.NODE_PATH || '/opt/node22/lib
   );
   await page.evaluate((secs) => {
     const b = TD.game.battle;
-    while (!b.over && b.time < secs) b.step(1 / 60);
+    while (!b.over && b.time < secs) {
+      if (b.pendingSupply) TD.game.pickSupply(b.pendingSupply[0]);
+      b.step(1 / 60);
+    }
   }, +secs);
   await page.waitForTimeout(400);
   await page.screenshot({ path: outFile });

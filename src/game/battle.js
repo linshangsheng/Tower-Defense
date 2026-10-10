@@ -47,11 +47,70 @@
       this.spawnTimer = 0;
       this.waveStartTime = 0;
 
+      // 战场补给（设计书 2.7）
+      this.mods = { atkMult: 0, aspdMult: 0, crit: 0, critDmg: 0, cdMult: 0, copperBonus: 0, wallDr: 0, range: 0, slowOnHit: 0 };
+      this.supplyWaves = this.computeSupplyWaves();
+      this.supplyOffered = {};
+      this.supplyPicked = [];
+      this.pendingSupply = null;
+      this.autoSupply = !!opts.autoSupply;
+      this.castCount = 0;
+
       this.killCopper = 0;
       this.earlyCopper = 0;
       this.kills = 0;
       this.damageDealt = 0;
       this.wallDamageTaken = 0;
+    }
+
+    // 补给出现在哪几波之后（波序号从 0 开始）
+    computeSupplyWaves() {
+      const n = this.level.waves.length;
+      if (this.level.noSupply || n < 3) return [];
+      if (this.level.type === 'boss' || n < 5) return [1];
+      return [1, n - 2];
+    }
+
+    get atk() {
+      return this.stats.atk * (1 + this.mods.atkMult);
+    }
+
+    get range() {
+      return this.stats.range * (1 + this.mods.range);
+    }
+
+    offerSupply() {
+      const all = Object.keys(D.supplies).filter((id) => {
+        if (this.supplyPicked.includes(id)) return false;
+        if (D.supplies[id].needSkills && !this.skills.length) return false;
+        return true;
+      });
+      const choices = [];
+      while (choices.length < 3 && all.length) choices.push(all.splice(this.rng.int(all.length), 1)[0]);
+      this.supplyOffered[this.waveIndex] = true;
+      this.pendingSupply = choices;
+      this.emit('supply', { choices });
+      if (this.autoSupply) this.chooseSupply(this.botSupplyChoice(choices));
+    }
+
+    botSupplyChoice(choices) {
+      if (this.wall.hp / this.wall.max < 0.6 && choices.includes('bricks')) return 'bricks';
+      for (const id of D.supplyBotOrder) if (choices.includes(id)) return id;
+      return choices[0];
+    }
+
+    chooseSupply(id) {
+      if (!this.pendingSupply || !this.pendingSupply.includes(id)) return false;
+      const sup = D.supplies[id];
+      for (const k of Object.keys(sup.mods)) this.mods[k] += sup.mods[k];
+      if (sup.heal) this.healWall(this.wall.max * sup.heal, 'supply');
+      if (sup.refresh) for (const sk of this.skills) sk.cd = 0;
+      this.supplyPicked.push(id);
+      this.pendingSupply = null;
+      this.emit('supplyPicked', { id });
+      this.endWaveHeal();
+      this.startWave(this.waveIndex + 1);
+      return true;
     }
 
     laneY(lane) {
@@ -133,6 +192,10 @@
         }
         this.countdown -= dt;
         if (this.countdown <= 0) {
+          if (this.supplyWaves.includes(this.waveIndex) && !this.supplyOffered[this.waveIndex]) {
+            this.offerSupply();
+            return;
+          }
           this.endWaveHeal();
           this.startWave(this.waveIndex + 1);
         }
@@ -243,7 +306,7 @@
               m.attackTimer += 1;
               this.hitWall(m.dps, m);
               if (this.stats.thorns > 0 && !m.dead) {
-                this.damage(m, this.stats.atk * this.stats.thorns, { type: 'magic', fromFront: false, source: 'thorns' });
+                this.damage(m, this.atk * this.stats.thorns, { type: 'magic', fromFront: false, source: 'thorns' });
               }
             }
           }
@@ -348,7 +411,7 @@
     }
 
     hitWall(amount, m, big) {
-      const dmg = amount * (1 - this.stats.wallDr);
+      const dmg = amount * (1 - Math.min(0.75, this.stats.wallDr + this.mods.wallDr));
       this.wall.hp = Math.max(0, this.wall.hp - dmg);
       this.wallDamageTaken += dmg;
       this.emit('wallHit', { amount: dmg, m, big: !!big });
@@ -444,11 +507,11 @@
     currentAspd() {
       let bonus = 0;
       for (const b of this.buffs) if (this.time < b.until) bonus += b.aspd;
-      return this.stats.aspd * (1 + bonus);
+      return this.stats.aspd * (1 + this.mods.aspdMult) * (1 + bonus);
     }
 
     inRange(m) {
-      return m.x <= C.wallX + this.stats.range;
+      return m.x <= C.wallX + this.range;
     }
 
     // 按目标优先级排序可攻击目标
@@ -470,9 +533,9 @@
     }
 
     rollHit(mult) {
-      let dmg = this.stats.atk * this.stats.weaponMult * mult;
-      const crit = this.rng() < this.stats.crit;
-      if (crit) dmg *= this.stats.critDmg;
+      let dmg = this.atk * this.stats.weaponMult * mult;
+      const crit = this.rng() < this.stats.crit + this.mods.crit;
+      if (crit) dmg *= this.stats.critDmg + this.mods.critDmg;
       return { dmg, crit };
     }
 
@@ -513,7 +576,7 @@
           y: this.laneY(lane),
           dir: 1,
           speed: w.projSpeed,
-          maxX: C.wallX + this.stats.range,
+          maxX: C.wallX + this.range,
           hitOut: new Set(),
           hitBack: new Set(),
           spin: 0,
@@ -555,7 +618,12 @@
         const b = D.passiveSkills.burn;
         if (this.time >= m.burnUntil) m.burnTick = 0.5;
         m.burnUntil = this.time + b.duration;
-        m.burnDps = (this.stats.atk * b.atkMult) / b.duration;
+        m.burnDps = (this.atk * b.atkMult) / b.duration;
+      }
+      if (this.mods.slowOnHit > 0 && !m.dead) {
+        const prev = this.time < m.slowUntil ? m.slowAmt : 0;
+        m.slowAmt = Math.max(prev, this.mods.slowOnHit);
+        m.slowUntil = Math.max(m.slowUntil, this.time + 1.5);
       }
     }
 
@@ -623,7 +691,7 @@
       const s = this.skills[i];
       const def = s.def;
       if (def.targetLane && lane === undefined) lane = this.bestLane();
-      const atk = this.stats.atk;
+      const atk = this.atk;
       switch (s.id) {
         case 'drum':
           this.buffs.push({ aspd: def.aspdBonus, until: this.time + def.duration, src: 'drum' });
@@ -646,7 +714,8 @@
           break;
         }
       }
-      s.cd = def.cd;
+      s.cd = def.cd * Math.max(0.3, 1 + this.mods.cdMult);
+      this.castCount++;
       this.emit('skill', { id: s.id, lane });
       return true;
     }
@@ -656,7 +725,7 @@
       if (!it || it.used || this.over || this.waveState === 'prepare') return false;
       const def = it.def;
       if (def.targetLane && lane === undefined) lane = this.bestLane();
-      const atk = this.stats.atk;
+      const atk = this.atk;
       switch (it.id) {
         case 'bomb':
           for (const m of this.monsters.slice()) {
@@ -723,7 +792,7 @@
               break;
             }
             case 'thunder':
-              go = all.some((m) => m.hp >= this.stats.atk * 4) || this.monsters.some((m) => m.ai && m.ai.mode === 'warn');
+              go = all.some((m) => m.hp >= this.atk * 4) || this.monsters.some((m) => m.ai && m.ai.mode === 'warn');
               break;
           }
           if (go) {
@@ -759,7 +828,7 @@
 
     // ---------- 主循环 ----------
     step(dt) {
-      if (this.over) return;
+      if (this.over || this.pendingSupply) return;
       this.time += dt;
       for (const s of this.skills) if (s.cd > 0) s.cd = Math.max(0, s.cd - dt);
       if (this.buffs.length && this.buffs[0].until < this.time) this.buffs = this.buffs.filter((b) => b.until >= this.time);
@@ -787,6 +856,8 @@
         kills: this.kills,
         time: this.time,
         charm: this.charm,
+        copperBonus: this.mods.copperBonus,
+        supplies: this.supplyPicked.slice(),
         itemsUsed: this.itemsUsed.slice(),
         wave: this.waveIndex + 1,
       };
@@ -798,7 +869,10 @@
     runToEnd(maxTime) {
       const dt = 1 / C.tickRate;
       maxTime = maxTime || 1200;
-      while (!this.over && this.time < maxTime) this.step(dt);
+      while (!this.over && this.time < maxTime) {
+        if (this.pendingSupply) this.chooseSupply(this.botSupplyChoice(this.pendingSupply));
+        this.step(dt);
+      }
       if (!this.over) this.finish(false);
       return this.result;
     }

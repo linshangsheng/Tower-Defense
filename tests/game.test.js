@@ -177,3 +177,27 @@ test('存档迁移会补齐缺失字段', () => {
   assert.ok(s.loadout && s.loadout.active);
   assert.strictEqual(s.version, P.SAVE_VERSION);
 });
+
+test('战场补给：第 2 波结束后出现三选一，选择后生效并继续下一波', () => {
+  const s = P.newSave();
+  const b = new TD.Battle({ level: 4, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 3 });
+  let offered = null;
+  b.on('supply', (e) => (offered = e.choices));
+  while (!b.pendingSupply && !b.over && b.time < 400) b.step(1 / 60);
+  assert.ok(offered && offered.length === 3, '应出现 3 张补给卡');
+  assert.strictEqual(b.waveIndex, 1, '在第 2 波之后');
+  const t = b.time;
+  b.step(1 / 60);
+  assert.strictEqual(b.time, t, '选择前战斗暂停');
+  const pick = offered.includes('sharp') ? 'sharp' : offered[0];
+  const atk0 = b.atk;
+  assert.ok(b.chooseSupply(pick));
+  assert.strictEqual(b.waveIndex, 2, '选完立即进入第 3 波');
+  if (pick === 'sharp') assert.ok(b.atk > atk0);
+});
+
+test('补给的铜币加成计入结算', () => {
+  const s = P.newSave();
+  const r = P.applyResult(s, 1, { win: true, wallRatio: 1, killCopper: 0, earlyCopper: 0, copperBonus: 0.25 });
+  assert.strictEqual(r.copper, Math.round(TD.config.rewards.baseCopper(1) * 1.5 * 1.25));
+});

@@ -376,7 +376,7 @@
     const firstClear = result.win && rec.clears === 0;
     const out = { copper: 0, silver: 0, gold: 0, stars: 0, firstClear, notes: [], unlocks: [] };
     const st = P.heroStats(save);
-    const copperMult = 1 + st.luck + (result.charm ? D.items.charm.copperBonus : 0);
+    const copperMult = 1 + st.luck + (result.charm ? D.items.charm.copperBonus : 0) + (result.copperBonus || 0);
     const before = {
       active: P.slotCount(save, 'active'),
       passive: P.slotCount(save, 'passive'),

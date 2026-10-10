@@ -46,6 +46,11 @@
     battle.on('skill', (e) => TD.audio.play({ drum: 'drum', thunder: 'thunder', frost: 'frost', repair: 'heal' }[e.id] || 'skill'));
     battle.on('item', (e) => TD.audio.play({ bomb: 'boom', patch: 'heal', freeze: 'frost' }[e.id] || 'skill'));
     battle.on('bossWarn', () => TD.audio.play('warn'));
+    battle.on('supply', (e) => {
+      setPending(null);
+      TD.audio.play('skill');
+      TD.ui.showSupply(battle, e.choices);
+    });
     battle.on('bossInterrupt', () => TD.audio.play('interrupt'));
     battle.on('win', () => {
       game.renderer.mood = 'win';
@@ -75,9 +80,20 @@
     TD.ui.showMap();
   };
 
+  game.pickSupply = function (id) {
+    const b = game.battle;
+    if (!b || !b.pendingSupply) return;
+    if (b.chooseSupply(id)) {
+      game.save.stats.seenSupply = true;
+      game.persist();
+      TD.audio.play('buy');
+      TD.ui.closeModal();
+    }
+  };
+
   game.togglePause = function () {
     const b = game.battle;
-    if (!b || b.over) return;
+    if (!b || b.over || b.pendingSupply) return;
     game.paused = !game.paused;
     if (game.paused) TD.ui.showPause();
     else TD.ui.closeModal();
@@ -231,6 +247,10 @@
       if (!b || b.over) return;
       if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT')) return;
       const k = e.key.toLowerCase();
+      if (b.pendingSupply) {
+        if (k >= '1' && k <= '3' && b.pendingSupply[+k - 1]) game.pickSupply(b.pendingSupply[+k - 1]);
+        return;
+      }
       if (k === ' ' || k === 'escape') {
         e.preventDefault();
         if (k === 'escape' && game.pendingLane) setPending(null);
@@ -243,7 +263,6 @@
       else if (k === 'f') game.toggleSpeed();
       else if (k === 'n') game.callWave();
       else if (k === 't') game.cycleTarget();
-      else if (game.pendingLane && k >= '1' && k <= '5') laneClick(+k - 1);
     });
     // 页面切到后台时自动暂停
     document.addEventListener('visibilitychange', () => {

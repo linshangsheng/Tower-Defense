@@ -52,7 +52,7 @@
         if (e.id === 'bomb') {
           const y = battle.laneY(e.lane);
           for (let i = 0; i < 6; i++) {
-            const x = C.wallX + 120 + Math.random() * (battle.stats.range - 120);
+            const x = C.wallX + 120 + Math.random() * (battle.range - 120);
             this.fx.push({ kind: 'boom', x, y: y + (Math.random() - 0.5) * 40, life: 0.5, age: -i * 0.05 });
           }
           this.shake = Math.max(this.shake, 10);
@@ -87,8 +87,10 @@
     }
     // 横幅排队显示，避免互相重叠
     banner(text) {
-      const pending = this.fx.filter((f) => f.kind === 'banner' && f.age < f.life);
-      const delay = pending.reduce((d, f) => Math.max(d, f.life - f.age), 0);
+      // 只保留正在显示的一条，排队中的旧横幅直接丢弃
+      this.fx = this.fx.filter((f) => !(f.kind === 'banner' && f.age < 0));
+      const showing = this.fx.find((f) => f.kind === 'banner' && f.age < f.life);
+      const delay = showing ? Math.min(0.8, showing.life - showing.age) : 0;
       this.fx.push({ kind: 'banner', str: text, life: 1.6, age: -delay });
     }
 
@@ -389,7 +391,7 @@
 
     drawRangeMarker(b) {
       const ctx = this.ctx;
-      const x = C.wallX + b.stats.range;
+      const x = C.wallX + b.range;
       ctx.save();
       ctx.strokeStyle = 'rgba(255,255,255,0.35)';
       ctx.setLineDash([8, 10]);

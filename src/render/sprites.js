@@ -607,6 +607,306 @@
     ellipse(ctx, x - r * 0.3, y - r * 0.3, r * 0.28, r * 0.2, 'rgba(255,255,255,0.7)');
   };
 
+
+  // ---------- 图标（技能、道具、补给按钮） ----------
+  S.icon = function (ctx, id, cx, cy, r) {
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    const k = r / 20;
+    ctx.scale(k, k);
+    const f = ICONS[id] || ICONS.default;
+    f(ctx);
+    ctx.restore();
+  };
+
+  function arrowShape(ctx, x, y, len, angle, color) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(angle);
+    ctx.strokeStyle = '#8a5a3c';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(-len / 2, 0);
+    ctx.lineTo(len / 2 - 3, 0);
+    ctx.stroke();
+    ctx.fillStyle = color || '#cfd6de';
+    ctx.beginPath();
+    ctx.moveTo(len / 2 + 3, 0);
+    ctx.lineTo(len / 2 - 5, -4.5);
+    ctx.lineTo(len / 2 - 5, 4.5);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = OUTLINE;
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  const ICONS = {
+    default(ctx) {
+      ellipse(ctx, 0, 0, 14, 14, '#ffd23f', OUTLINE, 2);
+    },
+    drum(ctx) {
+      ellipse(ctx, 0, 6, 15, 7, '#c94b4b', OUTLINE, 2);
+      ctx.fillStyle = '#e04848';
+      ctx.fillRect(-15, -6, 30, 12);
+      ctx.strokeStyle = OUTLINE;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(-15, -6, 30, 12);
+      ellipse(ctx, 0, -6, 15, 7, '#fff2dc', OUTLINE, 2);
+      ctx.strokeStyle = '#8a5a3c';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(-14, -20);
+      ctx.lineTo(-3, -9);
+      ctx.moveTo(14, -20);
+      ctx.lineTo(3, -9);
+      ctx.stroke();
+    },
+    repair(ctx) {
+      ctx.fillStyle = '#c9c2b5';
+      ctx.strokeStyle = OUTLINE;
+      ctx.lineWidth = 2;
+      for (const [x, y] of [
+        [-15, 2],
+        [1, 2],
+        [-7, -10],
+      ]) {
+        ctx.fillRect(x, y, 15, 11);
+        ctx.strokeRect(x, y, 15, 11);
+      }
+      ctx.fillStyle = '#ff5a6e';
+      ctx.beginPath();
+      ctx.moveTo(10, -6);
+      ctx.bezierCurveTo(10, -14, 20, -14, 18, -6);
+      ctx.lineTo(10, 3);
+      ctx.lineTo(2, -6);
+      ctx.bezierCurveTo(0, -14, 10, -14, 10, -6);
+      ctx.fill();
+      ctx.stroke();
+    },
+    arrowRain(ctx) {
+      for (const [x, y] of [
+        [-10, -6],
+        [0, 2],
+        [10, -6],
+        [-5, 10],
+        [8, 12],
+      ])
+        arrowShape(ctx, x, y, 16, Math.PI / 2 + 0.15);
+    },
+    frost(ctx) {
+      ctx.strokeStyle = '#3d8fd1';
+      ctx.lineWidth = 3;
+      for (let i = 0; i < 3; i++) {
+        ctx.save();
+        ctx.rotate((i * Math.PI) / 3);
+        ctx.beginPath();
+        ctx.moveTo(0, -16);
+        ctx.lineTo(0, 16);
+        ctx.moveTo(-5, -12);
+        ctx.lineTo(0, -7);
+        ctx.lineTo(5, -12);
+        ctx.moveTo(-5, 12);
+        ctx.lineTo(0, 7);
+        ctx.lineTo(5, 12);
+        ctx.stroke();
+        ctx.restore();
+      }
+      ellipse(ctx, 0, 0, 4, 4, '#bfe9ff', '#3d8fd1', 2);
+    },
+    thunder(ctx) {
+      ctx.fillStyle = '#ffd23f';
+      ctx.strokeStyle = OUTLINE;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(4, -18);
+      ctx.lineTo(-10, 2);
+      ctx.lineTo(-1, 2);
+      ctx.lineTo(-5, 18);
+      ctx.lineTo(10, -4);
+      ctx.lineTo(1, -4);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+    },
+    bomb(ctx) {
+      ellipse(ctx, -2, 4, 13, 13, '#3b3b48', OUTLINE, 2);
+      ellipse(ctx, -6, 0, 4, 3, 'rgba(255,255,255,0.5)');
+      ctx.strokeStyle = '#8a5a3c';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(6, -6);
+      ctx.quadraticCurveTo(12, -14, 8, -18);
+      ctx.stroke();
+      ellipse(ctx, 8, -18, 4, 4, '#ffb347');
+      ellipse(ctx, 8, -18, 2, 2, '#fff3c4');
+    },
+    patch(ctx) {
+      ctx.save();
+      ctx.rotate(-0.6);
+      roundRect(ctx, -18, -7, 36, 14, 6);
+      ctx.fillStyle = '#f5d7b3';
+      ctx.fill();
+      ctx.strokeStyle = OUTLINE;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(-6, -7, 12, 14);
+      ctx.strokeRect(-6, -7, 12, 14);
+      ctx.fillStyle = '#e04848';
+      ctx.fillRect(-1.5, -4, 3, 8);
+      ctx.fillRect(-4, -1.5, 8, 3);
+      ctx.restore();
+    },
+    haste(ctx) {
+      ctx.fillStyle = '#ffb347';
+      ctx.strokeStyle = OUTLINE;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(-4, -16);
+      ctx.lineTo(4, -16);
+      ctx.lineTo(4, -8);
+      ctx.lineTo(12, 6);
+      ctx.quadraticCurveTo(14, 16, 0, 16);
+      ctx.quadraticCurveTo(-14, 16, -12, 6);
+      ctx.lineTo(-4, -8);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ellipse(ctx, -3, 6, 3, 4, 'rgba(255,255,255,0.6)');
+      ctx.fillStyle = '#8a5a3c';
+      ctx.fillRect(-5, -20, 10, 5);
+    },
+    freeze(ctx) {
+      ctx.fillStyle = '#bfe9ff';
+      ctx.strokeStyle = OUTLINE;
+      ctx.lineWidth = 2;
+      roundRect(ctx, -11, -10, 22, 26, 7);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = '#8a5a3c';
+      ctx.fillRect(-5, -17, 10, 7);
+      ICONS.frostMini(ctx);
+    },
+    frostMini(ctx) {
+      ctx.strokeStyle = '#3d8fd1';
+      ctx.lineWidth = 2;
+      for (let i = 0; i < 3; i++) {
+        ctx.save();
+        ctx.translate(0, 3);
+        ctx.rotate((i * Math.PI) / 3);
+        ctx.beginPath();
+        ctx.moveTo(0, -7);
+        ctx.lineTo(0, 7);
+        ctx.stroke();
+        ctx.restore();
+      }
+    },
+    charm(ctx) {
+      ctx.fillStyle = '#5aa845';
+      ctx.strokeStyle = OUTLINE;
+      ctx.lineWidth = 1.8;
+      for (let i = 0; i < 4; i++) {
+        ctx.save();
+        ctx.rotate((i * Math.PI) / 2 + Math.PI / 4);
+        ellipse(ctx, 0, -8, 6.5, 8, '#6fd36a', OUTLINE, 1.8);
+        ctx.restore();
+      }
+      ctx.strokeStyle = '#3d7a2f';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(0, 2);
+      ctx.quadraticCurveTo(4, 12, 10, 18);
+      ctx.stroke();
+    },
+    arrowUp(ctx) {
+      arrowShape(ctx, 0, 0, 30, -Math.PI / 4, '#ffd23f');
+      ctx.fillStyle = '#e04848';
+      ctx.font = 'bold 14px sans-serif';
+      ctx.fillText('+', 6, 14);
+    },
+    eye(ctx) {
+      ctx.fillStyle = '#fff';
+      ctx.strokeStyle = OUTLINE;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(-17, 0);
+      ctx.quadraticCurveTo(0, -16, 17, 0);
+      ctx.quadraticCurveTo(0, 16, -17, 0);
+      ctx.fill();
+      ctx.stroke();
+      ellipse(ctx, 0, 0, 7, 7, '#5b8fd5', OUTLINE, 1.5);
+      ellipse(ctx, 0, 0, 3, 3, OUTLINE);
+    },
+    fury(ctx) {
+      ctx.fillStyle = '#ffd23f';
+      star(ctx, 0, 0, 17);
+      ctx.strokeStyle = OUTLINE;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.fillStyle = '#e04848';
+      star(ctx, 0, 1, 7);
+    },
+    master(ctx) {
+      ellipse(ctx, 0, 0, 16, 16, '#fff3c4', OUTLINE, 2);
+      ctx.strokeStyle = OUTLINE;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(0, -10);
+      ctx.moveTo(0, 0);
+      ctx.lineTo(8, 4);
+      ctx.stroke();
+      ctx.strokeStyle = '#e04848';
+      ctx.beginPath();
+      ctx.arc(0, 0, 20, -2.4, -0.6);
+      ctx.stroke();
+    },
+    purse(ctx) {
+      ellipse(ctx, 0, 5, 15, 12, '#c98b4a', OUTLINE, 2);
+      ctx.fillStyle = '#a86d32';
+      ctx.beginPath();
+      ctx.moveTo(-7, -6);
+      ctx.lineTo(0, -14);
+      ctx.lineTo(7, -6);
+      ctx.fill();
+      ctx.stroke();
+      S.coin(ctx, 3, 6, 6, 'copper');
+    },
+    bow(ctx) {
+      ctx.strokeStyle = '#8a5a3c';
+      ctx.lineWidth = 3.5;
+      ctx.beginPath();
+      ctx.arc(-6, 0, 17, -1.2, 1.2);
+      ctx.stroke();
+      ctx.strokeStyle = '#eee';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(-6 + Math.cos(-1.2) * 17, Math.sin(-1.2) * 17);
+      ctx.lineTo(-6 + Math.cos(1.2) * 17, Math.sin(1.2) * 17);
+      ctx.stroke();
+      arrowShape(ctx, 0, 0, 26, 0);
+    },
+    crossbow(ctx) {
+      S.weaponInHand(ctx, 'crossbow', 24, 1);
+    },
+    boomerang(ctx) {
+      S.boomerang(ctx, 17, 0.4);
+    },
+  };
+
+  S.iconCanvas = function (id, px) {
+    const c = document.createElement('canvas');
+    c.width = px;
+    c.height = px;
+    S.icon(c.getContext('2d'), id, px / 2, px / 2, px * 0.4);
+    c.className = 'icon';
+    return c;
+  };
+
   // 把怪物画成头像（用于关卡预览、图鉴）
   S.portrait = function (type, size) {
     const c = document.createElement('canvas');

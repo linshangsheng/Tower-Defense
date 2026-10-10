@@ -109,6 +109,7 @@
       loadout: lo,
       seed: opts.seed || 1,
       autoItems: !opts.noItems,
+      autoSupply: true,
     });
     const res = battle.runToEnd();
     for (const id of res.itemsUsed) P.consumeItem(save, id);

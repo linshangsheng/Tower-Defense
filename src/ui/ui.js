@@ -509,7 +509,7 @@
                 '装备'
               )
         );
-      el.append(card(w.name, ws.owned ? `Lv.${ws.lv}/${D.weaponUpgrade.max}` : '未解锁', h('span', null, w.desc, h('span', { class: 'good' }, ' 擅长：' + w.good)), right));
+      el.append(card(h('span', { class: 'with-icon' }, TD.sprites.iconCanvas(id, 30), w.name), ws.owned ? `Lv.${ws.lv}/${D.weaponUpgrade.max}` : '未解锁', h('span', null, w.desc, h('span', { class: 'good' }, ' 擅长：' + w.good)), right));
     }
   }
 
@@ -518,7 +518,7 @@
     el.append(h('div', { class: 'section-title' }, '主动技能（战斗中点击释放）'));
     for (const id of Object.keys(D.activeSkills)) {
       const k = D.activeSkills[id];
-      el.append(card(k.name, `冷却 ${k.cd} 秒`, k.desc, s.activeOwned[id] ? h('span', { class: 'equipped' }, '已拥有') : buyBtn(k.cost, () => P.buyActive(s, id), '解锁')));
+      el.append(card(h('span', { class: 'with-icon' }, TD.sprites.iconCanvas(id, 30), k.name), `冷却 ${k.cd} 秒`, k.desc, s.activeOwned[id] ? h('span', { class: 'equipped' }, '已拥有') : buyBtn(k.cost, () => P.buyActive(s, id), '解锁')));
     }
     el.append(h('div', { class: 'section-title' }, '被动技能（自动生效）'));
     for (const id of Object.keys(D.passiveSkills)) {
@@ -569,7 +569,7 @@
     if (nI === 0) el.append(h('div', { class: 'hint warn' }, `通关第 ${D.slotUnlocks.item[0]} 关后解锁消耗品槽。现在可以先买好。`));
     for (const id of Object.keys(D.items)) {
       const it = D.items[id];
-      el.append(card(it.name, `背包 ${s.inventory[id] || 0}`, it.desc, buyBtn(it.cost, () => P.buyItem(s, id))));
+      el.append(card(h('span', { class: 'with-icon' }, TD.sprites.iconCanvas(id, 30), it.name), `背包 ${s.inventory[id] || 0}`, it.desc, buyBtn(it.cost, () => P.buyItem(s, id))));
     }
   }
 
@@ -782,13 +782,21 @@
         'button',
         { class: 'skill-btn', title: sk.def.desc, onclick: () => game.trySkill(i) },
         h('span', { class: 'key' }, i + 1),
+        TD.sprites.iconCanvas(sk.id, 40),
         h('span', { class: 'skill-name' }, sk.def.name),
         h('span', { class: 'cd' })
       )
     );
     const itemBtns = battle.items.map((it, i) =>
-      h('button', { class: 'item-btn', title: it.def.desc, onclick: () => game.tryItem(i) }, h('span', { class: 'key' }, 'QWE'[i]), h('span', { class: 'skill-name' }, it.def.name))
+      h(
+        'button',
+        { class: 'item-btn', title: it.def.desc, onclick: () => game.tryItem(i) },
+        h('span', { class: 'key' }, 'QWE'[i]),
+        TD.sprites.iconCanvas(it.id, 36),
+        h('span', { class: 'skill-name' }, it.def.name)
+      )
     );
+    hud.nudge = h('div', { class: 'nudge-bubble hidden' }, '点我释放技能！');
     hud.skillBtns = skillBtns;
     hud.itemBtns = itemBtns;
     hud.wallFill = h('div', { class: 'wall-fill' });
@@ -813,6 +821,7 @@
         h('button', { class: 'btn small', onclick: () => game.togglePause() }, '❚❚')
       ),
       hud.laneHint,
+      hud.nudge,
       h('div', { class: 'hud-bottom' }, h('div', { class: 'skill-bar' }, skillBtns, battle.skills.length ? null : h('span', { class: 'hint' }, '没有携带主动技能')), h('div', { class: 'item-bar' }, itemBtns), h('div', { class: 'ctrl-bar' }, hud.targetBtn, hud.autoBtn, hud.speedBtn))
     );
     root.appendChild(screenEl);
@@ -830,11 +839,12 @@
     let waveText;
     if (b.waveState === 'prepare') waveText = `准备… ${Math.ceil(b.countdown)}`;
     else waveText = `第 ${b.waveIndex + 1} / ${b.totalWaves} 波`;
-    if (b.waveState === 'waiting') waveText += ` · 下一波 ${Math.ceil(b.countdown)} 秒`;
+    if (b.pendingSupply) waveText += ' · 补给中';
+    else if (b.waveState === 'waiting') waveText += ` · 下一波 ${Math.max(0, Math.ceil(b.countdown))} 秒`;
     hud.wave.textContent = waveText;
-    const canCall = b.waveState === 'waiting' && b.waveIndex < b.totalWaves - 1;
+    const canCall = b.waveState === 'waiting' && b.waveIndex < b.totalWaves - 1 && !b.pendingSupply && b.countdown > 0;
     hud.callBtn.classList.toggle('hidden', !canCall);
-    if (canCall) hud.callBtn.textContent = `提前召唤 +${Math.floor(b.countdown)}铜 (N)`;
+    if (canCall) hud.callBtn.textContent = `提前召唤 +${Math.max(0, Math.floor(b.countdown))}铜 (N)`;
     hud.copper.textContent = b.killCopper + b.earlyCopper;
     b.skills.forEach((sk, i) => {
       const btn = hud.skillBtns[i];
@@ -859,6 +869,42 @@
     hud.speedBtn.textContent = game.speed === 2 ? '⏩ 2倍速' : '▶ 1倍速';
     hud.autoBtn.textContent = b.autoCast ? '自动释放：开' : '自动释放：关';
     hud.laneHint.classList.toggle('hidden', !game.pendingLane);
+    // 新手引导（设计书 12.6）：前 4 关第一次可以放技能时提示
+    let nudgeIdx = -1;
+    if (b.levelNo <= 4 && b.castCount === 0 && !b.over) {
+      const near = b.monsters.filter((m) => !m.dead && b.inRange(m)).length;
+      if (near >= 2) nudgeIdx = b.skills.findIndex((sk, i) => b.skillReady(i));
+    }
+    hud.skillBtns.forEach((btn, i) => btn.classList.toggle('nudge', i === nudgeIdx));
+    hud.nudge.classList.toggle('hidden', nudgeIdx < 0);
+    if (nudgeIdx >= 0) hud.nudge.style.left = 10 + nudgeIdx * 102 + 'px';
+  };
+
+  // ================= 战场补给（设计书 2.7） =================
+  UI.showSupply = function (battle, choices) {
+    const first = !game.save.stats.seenSupply;
+    const cards = choices.map((id, i) => {
+      const sup = D.supplies[id];
+      return h(
+        'button',
+        { class: 'supply-card', onclick: () => game.pickSupply(id) },
+        h('span', { class: 'key' }, i + 1),
+        TD.sprites.iconCanvas(sup.icon, 64),
+        h('div', { class: 'supply-name' }, sup.name),
+        h('div', { class: 'supply-desc' }, sup.desc)
+      );
+    });
+    modal(
+      h(
+        'div',
+        { class: 'supply' },
+        h('h2', null, '📦 补给箱到了！'),
+        h('div', { class: 'hint' }, first ? '战斗暂停中。选一张补给卡，效果持续到本关结束。按 1 / 2 / 3 也可以选。' : '选一张补给卡（本关有效）'),
+        h('div', { class: 'supply-row' }, cards),
+        battle.supplyPicked.length ? h('div', { class: 'hint' }, '已选：' + battle.supplyPicked.map((x) => D.supplies[x].name).join('、')) : null
+      ),
+      { cls: 'supply-modal' }
+    );
   };
 
   UI.showPause = function () {
@@ -893,6 +939,7 @@
     if (reward.copperMult > 1) rows.push(h('div', { class: 'reward-row' }, h('span', null, '幸运加成'), h('b', null, `×${reward.copperMult.toFixed(2)}`)));
     rows.push(h('div', { class: 'reward-row total' }, h('span', null, '合计'), h('b', null, reward.copper, ' ', coinIcon('copper'), reward.silver ? [' ', reward.silver, ' ', coinIcon('silver')] : null, reward.gold ? [' ', reward.gold, ' ', coinIcon('gold')] : null)));
     const notes = reward.notes.filter((x) => !x.includes('失败')).map((x) => h('div', { class: 'note' }, '✦ ' + x));
+    if (res.supplies && res.supplies.length) notes.push(h('div', { class: 'note' }, '📦 本关补给：' + res.supplies.map((x) => D.supplies[x].name).join('、')));
     const unlocks = reward.unlocks.map((x) => h('div', { class: 'note unlock' }, '🔓 ' + x));
     let tips = null;
     if (!win) {

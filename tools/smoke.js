@@ -32,7 +32,10 @@ try {
   // 快进到结束
   await page.evaluate(() => {
     const b = TD.game.battle;
-    while (!b.over && b.time < 600) b.step(1 / 60);
+    while (!b.over && b.time < 600) {
+      if (b.pendingSupply) TD.game.pickSupply(b.pendingSupply[0]);
+      b.step(1 / 60);
+    }
   });
   await page.waitForTimeout(1800);
   await page.screenshot({ path: `${out}/5-result.png` });
