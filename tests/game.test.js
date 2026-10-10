@@ -1150,3 +1150,12 @@ test('连击：1.2 秒内连续击败才算，记录最高连击；不影响奖�
   P.applyResult(s, 5, Object.assign({}, res, { bestStreak: 31 }));
   assert.ok(s.achievements.streak30);
 });
+
+test('王国小镇：每个 Boss 都有房子和 3 句台词，关卡号对得上', () => {
+  const bosses = Object.keys(D.monsters).filter((t) => D.monsters[t].boss);
+  for (const t of bosses) assert.ok(D.town.some((f) => f.boss === t), `${t} 没有房子`);
+  for (const f of D.town) {
+    assert.strictEqual(f.lines.length, 3);
+    assert.ok(D.levels[f.level].waves.some((w) => w.groups.some(([t]) => t === f.boss)), `${f.boss} 不在第 ${f.level} 关`);
+  }
+});

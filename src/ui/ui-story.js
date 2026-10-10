@@ -265,4 +265,127 @@
     TD.audio.play('win');
   };
 
+
+  // ================= 王国小镇（设计书 39） =================
+  UI.showTown = function () {
+    const s = G().save;
+    const W = 960;
+    const H = 420;
+    const cv = h('canvas', { class: 'town-canvas', width: W, height: H });
+    const ctx = cv.getContext('2d');
+    const T = D.town;
+    const slot = (i) => ({ x: 110 + (i % 6) * 150, y: i < 6 ? 175 : 360 });
+    const friends = T.map((f) => P.isCleared(s, f.level));
+    const bubbles = {}; // 序号 → { text, until }
+    const said = {};
+    const chapterColor = (lv) => D.chapterOf(lv).theme.accent;
+    let t0 = null;
+    let raf = 0;
+    const draw = (ts) => {
+      if (!cv.isConnected) return cancelAnimationFrame(raf);
+      if (t0 === null) t0 = ts;
+      const t = (ts - t0) / 1000;
+      // 街道背景
+      const sky = ctx.createLinearGradient(0, 0, 0, H);
+      sky.addColorStop(0, '#bfe8ff');
+      sky.addColorStop(1, '#fff3dc');
+      ctx.fillStyle = sky;
+      ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = '#c9b8e6';
+      TD.sprites.roundRect(ctx, 420, 20, 120, 60, 8);
+      ctx.fill();
+      for (const tx of [420, 470, 520]) {
+        ctx.fillStyle = '#9a86c6';
+        ctx.beginPath();
+        ctx.moveTo(tx - 6, 22);
+        ctx.lineTo(tx + 10, -2);
+        ctx.lineTo(tx + 26, 22);
+        ctx.fill();
+      }
+      ctx.fillStyle = '#e8d6b0';
+      ctx.fillRect(0, 190, W, 26);
+      ctx.fillRect(0, 375, W, 26);
+      T.forEach((f, i) => {
+        const { x, y } = slot(i);
+        // 房子
+        ctx.fillStyle = friends[i] ? '#fff8e8' : '#e6e0d6';
+        TD.sprites.roundRect(ctx, x - 50, y - 120, 100, 80, 6);
+        ctx.fill();
+        ctx.strokeStyle = '#8a6a4a';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.fillStyle = friends[i] ? chapterColor(f.level) : '#bdb5a8';
+        ctx.beginPath();
+        ctx.moveTo(x - 60, y - 118);
+        ctx.lineTo(x, y - 160);
+        ctx.lineTo(x + 60, y - 118);
+        ctx.fill();
+        ctx.fillStyle = friends[i] ? '#ffe28a' : '#cfc8bc';
+        ctx.fillRect(x - 12, y - 100, 24, 20);
+        if (friends[i]) {
+          const def = D.monsters[f.boss];
+          TD.sprites.monster(ctx, f.boss, x, y - 6, def.size * 0.55, t + i, { seed: i });
+        } else {
+          // 告示牌
+          ctx.fillStyle = '#a07a52';
+          ctx.fillRect(x - 3, y - 36, 6, 34);
+          ctx.fillStyle = '#d9b47a';
+          TD.sprites.roundRect(ctx, x - 38, y - 58, 76, 26, 4);
+          ctx.fill();
+          ctx.fillStyle = '#5b3c2a';
+          ctx.font = 'bold 13px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('？？？', x, y - 40);
+        }
+        ctx.fillStyle = '#5b3c2a';
+        ctx.font = 'bold 14px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(friends[i] ? D.monsters[f.boss].name : `第 ${f.level} 关`, x, y + 14);
+      });
+      // 对话气泡最后画，盖在房子上面
+      T.forEach((f, i) => {
+        const b = bubbles[i];
+        if (!b || t >= b.until) return;
+        const { x, y } = slot(i);
+        ctx.font = '14px sans-serif';
+        ctx.textAlign = 'center';
+        const w = Math.min(420, ctx.measureText(b.text).width + 24);
+        const bx = Math.max(w / 2 + 4, Math.min(W - w / 2 - 4, x));
+        ctx.fillStyle = 'rgba(255,255,255,0.97)';
+        TD.sprites.roundRect(ctx, bx - w / 2, y - 150, w, 34, 10);
+        ctx.fill();
+        ctx.strokeStyle = '#5b3c2a';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.fillStyle = '#3b2a1e';
+        ctx.fillText(b.text, bx, y - 128, w - 16);
+      });
+      raf = requestAnimationFrame(draw);
+    };
+    cv.addEventListener('click', (e) => {
+      const r = cv.getBoundingClientRect();
+      const px = ((e.clientX - r.left) / r.width) * W;
+      const py = ((e.clientY - r.top) / r.height) * H;
+      T.forEach((f, i) => {
+        const { x, y } = slot(i);
+        if (Math.abs(px - x) < 70 && py > y - 170 && py < y + 20) {
+          if (!friends[i]) {
+            sfx('error');
+            UI.toast(`通关第 ${f.level} 关后，这里会搬来一位新邻居`);
+            return;
+          }
+          sfx('click');
+          said[i] = ((said[i] === undefined ? -1 : said[i]) + 1) % f.lines.length;
+          bubbles[i] = { text: f.lines[said[i]], until: (performance.now() - t0) / 1000 + 4 };
+        }
+      });
+    });
+    const n = friends.filter(Boolean).length;
+    modal(
+      h('div', { class: 'town' }, h('div', { class: 'preview-head' }, h('h2', null, '🏘 王国小镇'), h('span', { class: 'tag' }, `邻居 ${n} / ${T.length}`)), h('p', { class: 'hint' }, '打败的 Boss 都搬到了小镇上。点一点，听听它们现在过得怎么样。'), cv, h('div', { class: 'modal-buttons' }, h('button', { class: 'btn primary', onclick: UI.closeModal }, '回地图'))),
+      { closeOnBack: true, cls: 'wide town-modal' }
+    );
+    raf = requestAnimationFrame(draw);
+  };
+
 })((globalThis.TD = globalThis.TD || {}));
