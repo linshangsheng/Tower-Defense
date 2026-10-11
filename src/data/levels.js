@@ -1057,7 +1057,7 @@
     64: {
       name: '泡泡派对',
       type: 'normal',
-      countMult: 2,
+      countMult: 2.77,
       lanes: 5,
       waves: [
         W(0.7, ['urchin', 6], ['wolf', 8]),
@@ -1073,7 +1073,7 @@
     65: {
       name: '贝贝',
       type: 'miniboss',
-      countMult: 2,
+      countMult: 0.34,
       lanes: 5,
       waves: [
         W(0.75, ['hermitCrab', 10], ['flyingFish', 6]),
@@ -1088,7 +1088,7 @@
     66: {
       name: '礁石堡垒',
       type: 'armored',
-      countMult: 1,
+      countMult: 0.64,
       lanes: 5,
       waves: [
         W(0.85, ['turtle', 3], ['yeti', 2], ['hermitCrab', 6]),
@@ -1105,7 +1105,7 @@
     67: {
       name: '海鸥海峡',
       type: 'raid',
-      countMult: 1.8,
+      countMult: 2.2,
       lanes: 5,
       waves: [
         W(0.6, ['kite', 10], ['bat', 6]),
@@ -1121,7 +1121,7 @@
     68: {
       name: '深夜潮声',
       type: 'dark',
-      countMult: 2,
+      countMult: 2.41,
       dark: true,
       lanes: 5,
       waves: [
@@ -1156,7 +1156,7 @@
     70: {
       name: '波波',
       type: 'boss',
-      countMult: 1,
+      countMult: 0.3,
       lanes: 5,
       waves: [
         W(0.7, ['hermitCrab', 12], ['flyingFish', 8], ['urchin', 4]),

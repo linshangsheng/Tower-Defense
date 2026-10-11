@@ -626,7 +626,7 @@
         ai.phase = 3;
         this.whirl = true;
         ai.mode = 'walk';
-        if (ai.slots) for (const sl of ai.slots) if (!sl.m) this.growTentacle(m, sl);
+        if (ai.slots && D.octoKing.regrowAllP3) for (const sl of ai.slots) if (!sl.m) this.growTentacle(m, sl);
         this.emit('bossPhase', { m, phase: 3, text: '大漩涡！触手全部长回来了，所有怪物都变快了！' });
       }
       if (ai.mode === 'walk' && ai.phase < 3 && m.x <= O.holdX) {
