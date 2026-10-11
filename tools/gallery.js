@@ -46,7 +46,7 @@ const pal = process.argv[4] || 'meadow';
         lg.addColorStop(1, TD.art.rgba(P.lane, 0));
         ctx.fillStyle = lg;
         ctx.fillRect(cx - cw / 2, cy - 30, cw, 60);
-        const isHero = id === 'hero' || id === 'heroDing';
+        const isHero = id.startsWith('hero');
         const size = isHero ? 40 : TD.data.monsters[id].size;
         const k = Math.min((ch * 0.78) / (isHero ? 2.9 * 32 : (TD.data.monsters[id].boss ? 2.6 : 2.2) * size), 3.2);
         const holder = {};
@@ -55,7 +55,7 @@ const pal = process.argv[4] || 'meadow';
           TD.sprites.volume = true;
           if (isHero) {
             g.scale(k, k);
-            TD.sprites.hero(g, 0, 0, { t: 0.6, weapon: 'bow', aimAngle: -0.1, shotAge: 9, mood: 'focus', critAge: 9, hero: id === 'heroDing' ? 'ding' : 'dang' });
+            TD.sprites.hero(g, 0, 0, { t: 0.6, weapon: 'bow', aimAngle: -0.1, shotAge: 9, mood: 'focus', critAge: 9, hero: id === 'hero' ? 'dang' : id.slice(4).toLowerCase() });
           } else TD.sprites.monster(g, id, 0, 0, size, 0.6, { seed: 1, scale: k });
         });
         ctx.drawImage(c2.canvas, cx - c2.ox, cy - c2.oy);

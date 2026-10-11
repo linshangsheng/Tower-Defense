@@ -293,6 +293,9 @@
     return {
       heroId: P.heroId(save),
       bell: hd.bell || null,
+      heroMods: hd.mods || null,
+      fireflies: hd.fireflies || null,
+      knockOnHit: hd.knockOnHit || 0,
       weapon: weaponId,
       weaponDef: w,
       atk,

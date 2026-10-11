@@ -1688,3 +1688,60 @@ test('自动配装：Boss 关挑屠龙盔、暗夜关挑夜枭盔', () => {
   P.recommend(s, 23);
   assert.strictEqual(s.loadout.equip.helm, 'owlHelm');
 });
+
+// ---------- 英雄扩充（设计书 59） ----------
+test('五位英雄：按关卡加入，都有名字、定位和说明', () => {
+  const C = TD.config;
+  assert.deepStrictEqual(Object.keys(C.heroes), ['dang', 'ding', 'yan', 'ying', 'mu']);
+  for (const id of Object.keys(C.heroes)) assert.ok(C.heroes[id].name && C.heroes[id].role && C.heroes[id].desc, id);
+  const s = P.newSave();
+  clearUpTo(s, 9);
+  assert.ok(!P.setHero(s, 'yan'));
+  clearUpTo(s, 10);
+  assert.ok(P.setHero(s, 'yan'));
+  assert.strictEqual(P.heroId(s), 'yan');
+  assert.ok(!P.heroUnlocked(s, 'ying') && !P.heroUnlocked(s, 'mu'));
+  for (const id of ['yan', 'ying', 'mu']) assert.ok(D.speakers[id] && D.speakers[id].hero === id, '剧情里能说话');
+});
+
+function heroBattle(id, level) {
+  const s = P.newSave();
+  clearUpTo(s, 69);
+  P.setHero(s, id);
+  return new TD.Battle({ level: level || 41, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 1 });
+}
+
+test('阿岩：城墙减伤 12%、每波多修 3%', () => {
+  const b = heroBattle('yan');
+  assert.ok(Math.abs(b.mods.wallDr - 0.12) < 1e-9);
+  b.waveIndex = 0;
+  b.wall.hp = b.wall.max / 2;
+  b.endWaveHeal();
+  assert.ok(Math.abs(b.wall.hp - b.wall.max * 0.53) < 1e-6);
+});
+
+test('萤萤：暗夜射程不减；每第 12 次攻击放出 3 只萤火虫（魔法，不触发命中效果）', () => {
+  const dark = heroBattle('ying', 23);
+  assert.ok(Math.abs(dark.range - dark.stats.range) < 1e-6);
+  const b = heroBattle('ying');
+  const m = b.spawnMonster('slime', 0, 400);
+  m.hp = m.maxHp = 1e7;
+  for (let i = 0; i < 12; i++) b.fire([m]);
+  const flies = b.projectiles.filter((p) => p.kind === 'firefly');
+  assert.strictEqual(flies.length, 3);
+  assert.ok(flies.every((p) => p.dmgType === 'magic' && Math.abs(p.dmg - b.atk * 0.6) < 1e-9));
+  for (let i = 0; i < 120; i++) b.updateProjectiles(1 / 60);
+  assert.ok(b.report.bySource.firefly > 0);
+});
+
+test('阿木：重箭把普通怪推后 12 像素，Boss 不动；无视 25% 护甲', () => {
+  const b = heroBattle('mu');
+  const m = b.spawnMonster('slime', 0, 500);
+  const boss = b.spawnMonster('boarKing', 0, 500);
+  m.hp = m.maxHp = boss.hp = boss.maxHp = 1e7;
+  b.applyWeaponHit(m, 10, false, true, null);
+  b.applyWeaponHit(boss, 10, false, true, null);
+  assert.strictEqual(m.x, 512);
+  assert.strictEqual(boss.x, 500);
+  assert.ok(Math.abs(b.mods.armorIgnore - 0.25) < 1e-9);
+});

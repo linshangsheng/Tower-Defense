@@ -37,12 +37,16 @@
     },
 
     // 游戏版本：与设计书版本号、sw.js 的缓存名保持一致（测试会检查）
-    version: 'v0.50',
+    version: 'v0.51',
 
     // 英雄（设计书 42）：在 hero 基础值上乘以倍率；所有升级共用
     heroes: {
-      dang: { name: '铛铛', atkMult: 1, aspdMult: 1, desc: '王国最小的守城卫兵，攻击稳定。' },
-      ding: { name: '叮叮', atkMult: 0.82, aspdMult: 1.2, unlock: 20, bell: { every: 10, radius: 100, stun: 0.5 }, desc: '铛铛的妹妹。攻击力 ×0.82、攻速 ×1.2；每第 10 次攻击敲响铃铛，眩晕目标周围的小怪 0.5 秒。' },
+      dang: { name: '铛铛', role: '均衡', atkMult: 1, aspdMult: 1, desc: '王国最小的守城卫兵，攻击稳定。' },
+      ding: { name: '叮叮', role: '快攻 · 控制', atkMult: 0.82, aspdMult: 1.2, unlock: 20, bell: { every: 10, radius: 100, stun: 0.5 }, desc: '铛铛的妹妹。攻击力 ×0.82、攻速 ×1.2；每第 10 次攻击敲响铃铛，眩晕目标周围的小怪 0.5 秒。' },
+      // v0.51 新英雄（设计书 59）：mods 进入战斗时并入战场修正
+      yan: { name: '阿岩', role: '守护城墙', atkMult: 0.97, aspdMult: 1.0, unlock: 10, mods: { wallDr: 0.12, mendBonus: 0.03 }, desc: '石匠的儿子，背着一面大石盾。攻击力 ×0.97；城墙受到伤害 −12%，每波结束多修 3% 城墙。' },
+      ying: { name: '萤萤', role: '暗夜 · 灵体', atkMult: 0.92, aspdMult: 1.05, unlock: 30, mods: { darkSight: 1, spiritPierce: 0.2 }, fireflies: { every: 12, count: 3, atkMult: 0.6 }, desc: '沼泽里提着萤火灯的女孩。攻击力 ×0.92、攻速 ×1.05；暗夜里射程不减，物理伤害对灵体 +20%；每第 12 次攻击放出 3 只萤火虫（各造成攻击力 ×0.6 的魔法伤害）。' },
+      mu: { name: '阿木', role: '重箭 · 破甲', atkMult: 1.5, aspdMult: 0.73, unlock: 40, mods: { armorIgnore: 0.25 }, knockOnHit: 12, desc: '森林的守林人，背着一张比他还高的长弓。攻击力 ×1.5、攻速 ×0.73；重箭无视 25% 护甲，并把普通怪物向后推 12 像素。' },
     },
 
     wall: {

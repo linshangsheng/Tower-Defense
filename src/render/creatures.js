@@ -221,15 +221,160 @@
   // 主角（设计书 56.3）
   // ======================================================================
   const HERO_COL = { cape: '#e04848', body: '#5b7bd5', helmTop: '#eef2f7', helmBottom: '#a9b4c2', brim: '#8c97a6', plume: '#ff5a4f', plumeHi: '#ffb3ad', shield: '#c9a24a', shieldHi: '#ffe08a' };
+  // v0.51 的三位新英雄（设计书 59.3）：各自固定的配色和体型，衣柜外观只用于铛铛和叮叮
+  const HERO_LOOKS = {
+    yan: { scale: 1.05, eye: '#ffd08a', col: { cape: '#6f6a62', body: '#8a5a3a', helmTop: '#d6cfc0', helmBottom: '#7d776c', brim: '#5d574e', plume: '#e0893a', plumeHi: '#ffc58a', shield: '#8d8678', shieldHi: '#ffcf7a' } },
+    ying: { scale: 0.9, eye: '#d8fff4', col: { cape: '#2f6f68', body: '#3f8f7a', helmTop: '#4a9486', helmBottom: '#1f4a46', brim: '#1a3b38', plume: '#7fe0c0', plumeHi: '#d8fff0', shield: '#e8d27a', shieldHi: '#fff3b0' } },
+    mu: { scale: 1.1, eye: '#e8ffb0', col: { cape: '#4d6b34', body: '#6b4a2e', helmTop: '#c49a66', helmBottom: '#6a4a2a', brim: '#4a3220', plume: '#9fd36a', plumeHi: '#e6ffb8', shield: '#7a5a32', shieldHi: '#d8f0a0' } },
+  };
+  // 新英雄的头部（设计书 59.3）：阿岩的平顶重盔、萤萤的兜帽、阿木的木面具
+  function heroHead(ctx, s, t, id, col, eye, open) {
+    if (id === 'yan') {
+      const hg = ctx.createLinearGradient(s * 0.3, -s * 0.4, -s * 0.3, s * 0.3);
+      hg.addColorStop(0, light(col.helmTop, 0.1));
+      hg.addColorStop(0.5, deep(col.helmBottom, 0.25));
+      hg.addColorStop(1, deep(col.helmBottom, 0.7));
+      ctx.fillStyle = hg;
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.32, s * 0.3);
+      ctx.lineTo(-s * 0.34, -s * 0.28);
+      ctx.quadraticCurveTo(0, -s * 0.44, s * 0.34, -s * 0.28);
+      ctx.lineTo(s * 0.34, s * 0.3);
+      ctx.closePath();
+      ctx.fill();
+      // 铆钉
+      for (const rx of [-0.24, 0.24]) dot(ctx, s * rx, -s * 0.2, 1.2, col.shieldHi, 0.6);
+      // T 形观察缝
+      ctx.fillStyle = '#07050c';
+      ctx.fillRect(-s * 0.04, -s * 0.02, s * 0.38, s * 0.1);
+      ctx.fillRect(s * 0.1, -s * 0.02, s * 0.09, s * 0.28);
+      glow(ctx, s * 0.17, s * 0.03, s * 0.42, eye, 0.45);
+      eyes(ctx, s * 0.15, s * 0.03, s * 0.17, s * 0.05, eye, 0, open);
+      ctx.strokeStyle = 'rgba(255,250,235,0.55)';
+      ctx.lineWidth = 1.4;
+      ctx.beginPath();
+      ctx.moveTo(s * 0.06, -s * 0.36);
+      ctx.quadraticCurveTo(s * 0.26, -s * 0.32, s * 0.31, -s * 0.12);
+      ctx.stroke();
+      // 一排短短的冠饰
+      for (let i = 0; i < 5; i++) {
+        const cx = -s * 0.2 + i * s * 0.09;
+        const h = s * (0.14 + (i === 2 ? 0.05 : 0)) + Math.sin(t * 3 + i) * 1;
+        ctx.fillStyle = i % 2 ? col.plume : light(col.plume, 0.15);
+        ctx.beginPath();
+        ctx.moveTo(cx - s * 0.04, -s * 0.36);
+        ctx.lineTo(cx - s * 0.02, -s * 0.36 - h);
+        ctx.lineTo(cx + s * 0.04, -s * 0.36);
+        ctx.closePath();
+        ctx.fill();
+      }
+      glow(ctx, 0, -s * 0.5, s * 0.3, col.plumeHi, 0.3);
+    } else if (id === 'ying') {
+      // 兜帽：软软地往后垂，尖端像一片叶子，挂着一颗小光点
+      const fl = Math.sin(t * 3) * 3;
+      const hg = ctx.createLinearGradient(s * 0.3, -s * 0.4, -s * 0.6, s * 0.3);
+      hg.addColorStop(0, light(col.helmTop, 0.1));
+      hg.addColorStop(1, deep(col.helmBottom, 0.5));
+      ctx.fillStyle = hg;
+      ctx.beginPath();
+      ctx.moveTo(s * 0.3, s * 0.3);
+      ctx.quadraticCurveTo(s * 0.42, -s * 0.2, s * 0.05, -s * 0.38);
+      ctx.quadraticCurveTo(-s * 0.4, -s * 0.42, -s * 0.62 - fl, -s * 0.1);
+      ctx.quadraticCurveTo(-s * 0.95 - fl * 1.5, s * 0.15, -s * 1.05 - fl * 2, s * 0.45);
+      ctx.quadraticCurveTo(-s * 0.7, s * 0.2, -s * 0.38, s * 0.3);
+      ctx.closePath();
+      ctx.fill();
+      glow(ctx, -s * 1.02 - fl * 2, s * 0.45, s * 0.3, '#d8ffb0', 0.7);
+      dot(ctx, -s * 1.02 - fl * 2, s * 0.45, 2, '#f4ffe0', 1);
+      // 帽沿下的脸藏在阴影里
+      ctx.fillStyle = '#0a0d10';
+      ctx.beginPath();
+      ctx.ellipse(s * 0.14, s * 0.06, s * 0.2, s * 0.17, 0, 0, TAU);
+      ctx.fill();
+      ctx.strokeStyle = rgba(col.plume, 0.6);
+      ctx.lineWidth = 1.4;
+      ctx.beginPath();
+      ctx.moveTo(s * 0.3, s * 0.28);
+      ctx.quadraticCurveTo(s * 0.4, -s * 0.18, s * 0.05, -s * 0.34);
+      ctx.stroke();
+      glow(ctx, s * 0.16, s * 0.06, s * 0.45, eye, 0.5);
+      eyes(ctx, s * 0.16, s * 0.06, s * 0.14, s * 0.055, eye, -0.05, open);
+    } else if (id === 'mu') {
+      // 木面具 + 一对小鹿角似的树枝 + 叶冠
+      ctx.strokeStyle = deep(col.helmBottom, 0.2);
+      ctx.lineCap = 'round';
+      for (const [bx, dir] of [[-s * 0.1, -1], [s * 0.1, 1]]) {
+        ctx.lineWidth = 2.4;
+        ctx.beginPath();
+        ctx.moveTo(bx, -s * 0.3);
+        ctx.quadraticCurveTo(bx + dir * s * 0.05 - s * 0.1, -s * 0.6, bx - s * 0.25 + dir * s * 0.05, -s * 0.85);
+        ctx.stroke();
+        ctx.lineWidth = 1.6;
+        ctx.beginPath();
+        ctx.moveTo(bx - s * 0.06, -s * 0.56);
+        ctx.lineTo(bx - s * 0.02 + dir * s * 0.12, -s * 0.72);
+        ctx.stroke();
+      }
+      for (let i = 0; i < 3; i++) {
+        ctx.save();
+        ctx.translate(-s * 0.22 - i * s * 0.08, -s * 0.84 + i * s * 0.1);
+        ctx.rotate(-0.8 + i * 0.3 + Math.sin(t * 3 + i) * 0.1);
+        ctx.fillStyle = i === 1 ? light(col.plume, 0.2) : col.plume;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, s * 0.05, s * 0.11, 0, 0, TAU);
+        ctx.fill();
+        ctx.restore();
+      }
+      glow(ctx, -s * 0.3, -s * 0.8, s * 0.3, col.plumeHi, 0.3);
+      // 兜帽披在面具后面
+      ctx.fillStyle = deep(col.cape, 0.35);
+      ctx.beginPath();
+      ctx.moveTo(s * 0.1, -s * 0.36);
+      ctx.quadraticCurveTo(-s * 0.5, -s * 0.38, -s * 0.5, s * 0.32);
+      ctx.lineTo(s * 0.0, s * 0.32);
+      ctx.closePath();
+      ctx.fill();
+      // 面具
+      const mg = ctx.createLinearGradient(s * 0.32, -s * 0.3, -s * 0.2, s * 0.3);
+      mg.addColorStop(0, light(col.helmTop, 0.15));
+      mg.addColorStop(1, deep(col.helmBottom, 0.35));
+      ctx.fillStyle = mg;
+      ctx.beginPath();
+      ctx.ellipse(s * 0.08, -s * 0.01, s * 0.27, s * 0.33, 0, 0, TAU);
+      ctx.fill();
+      // 木纹
+      ctx.strokeStyle = rgba('#3a2412', 0.45);
+      ctx.lineWidth = 1;
+      for (const k of [-0.18, 0.2]) {
+        ctx.beginPath();
+        ctx.moveTo(-s * 0.12, s * k);
+        ctx.quadraticCurveTo(s * 0.1, s * (k + 0.06), s * 0.3, s * k);
+        ctx.stroke();
+      }
+      // 眼洞里的光
+      ctx.fillStyle = '#0a0c06';
+      for (const ex of [s * 0.05, s * 0.24]) {
+        ctx.beginPath();
+        ctx.ellipse(ex, s * 0.0, s * 0.055, s * 0.04, 0, 0, TAU);
+        ctx.fill();
+      }
+      glow(ctx, s * 0.15, 0, s * 0.42, eye, 0.45);
+      eyes(ctx, s * 0.145, 0, s * 0.19, s * 0.04, eye, 0, open);
+      // 面具上一道发光的叶纹
+      rune(ctx, [[s * 0.15, -s * 0.28], [s * 0.15, -s * 0.12], [s * 0.08, -s * 0.06]], col.plumeHi, 1.2, 0.7);
+    }
+  }
+
   K.hero = function (ctx, x, y, st) {
     const S = TD.sprites;
     const t = st.t;
     const s = 32;
-    const outfit = TD.data.outfitById ? TD.data.outfitById(st.outfit) : null;
-    const col = outfit ? outfit.colors : HERO_COL;
+    const look = HERO_LOOKS[st.hero] || null;
+    const outfit = !look && TD.data.outfitById ? TD.data.outfitById(st.outfit) : null;
+    const col = look ? look.col : outfit ? outfit.colors : HERO_COL;
     const extra = outfit && outfit.extra;
     const ding = st.hero === 'ding';
-    const sc = ding ? 0.93 : 1;
+    const sc = look ? look.scale : ding ? 0.93 : 1;
     ctx.save();
     ctx.translate(x, y);
     ctx.scale(sc, sc);
@@ -247,7 +392,7 @@
     shadow(ctx, 0, 2, s * 0.7);
     ctx.translate(0, bob);
     ctx.rotate(-lean);
-    const eye = '#fff2c4';
+    const eye = look ? look.eye : '#fff2c4';
     const pull = st.shotAge !== undefined && st.shotAge < 0.15 ? 1 - st.shotAge / 0.15 : 0;
     const wave = Math.sin(t * 3.2) * 4 + pull * 6;
     const neckY = -s * 1.86;
@@ -286,16 +431,89 @@
         }
       }
     }
-    // 背后的小圆盾（只露出边缘的光）
-    ctx.fillStyle = deep(col.shield, 0.55);
-    ctx.beginPath();
-    ctx.arc(-s * 0.3, -s * 1.42, s * 0.22, 0, TAU);
-    ctx.fill();
-    ctx.strokeStyle = rgba(col.shieldHi, 0.55);
-    ctx.lineWidth = 1.3;
-    ctx.beginPath();
-    ctx.arc(-s * 0.3, -s * 1.42, s * 0.22, -1.2, 0.8);
-    ctx.stroke();
+    if (st.hero === 'yan') {
+      // 阿岩：背上一面高高的石盾，盾面刻着发光的符文
+      ctx.save();
+      ctx.translate(-s * 0.36, -s * 1.3);
+      ctx.rotate(-0.12);
+      const sg = ctx.createLinearGradient(-s * 0.3, -s * 0.7, s * 0.3, s * 0.6);
+      sg.addColorStop(0, light(col.shield, 0.1));
+      sg.addColorStop(1, deep(col.shield, 0.6));
+      ctx.fillStyle = sg;
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.3, -s * 0.62);
+      ctx.quadraticCurveTo(0, -s * 0.74, s * 0.3, -s * 0.62);
+      ctx.lineTo(s * 0.28, s * 0.25);
+      ctx.quadraticCurveTo(s * 0.2, s * 0.6, 0, s * 0.72);
+      ctx.quadraticCurveTo(-s * 0.2, s * 0.6, -s * 0.28, s * 0.25);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = deep(col.shield, 0.75);
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      // 石缝
+      ctx.strokeStyle = rgba('#2a2620', 0.5);
+      ctx.lineWidth = 1;
+      for (const [a, b, c2, d] of [[-0.25, -0.2, 0.05, -0.28], [0.05, -0.28, 0.27, -0.1], [-0.27, 0.18, 0.1, 0.12]]) {
+        ctx.beginPath();
+        ctx.moveTo(s * a, s * b);
+        ctx.lineTo(s * c2, s * d);
+        ctx.stroke();
+      }
+      rune(ctx, [[0, -s * 0.45], [0, s * 0.45]], col.shieldHi, 1.6, 0.8);
+      rune(ctx, [[-s * 0.16, -s * 0.05], [s * 0.16, -s * 0.05]], col.shieldHi, 1.6, 0.8);
+      glow(ctx, 0, -s * 0.05, s * 0.3, col.shieldHi, 0.35);
+      ctx.restore();
+    } else if (st.hero === 'mu') {
+      // 阿木：背上的长箭袋，露出一捆带叶羽的箭
+      ctx.save();
+      ctx.translate(-s * 0.28, -s * 1.5);
+      ctx.rotate(-0.45);
+      ctx.fillStyle = deep(col.body, 0.45);
+      ctx.beginPath();
+      ctx.ellipse(0, 0, s * 0.11, s * 0.5, 0, 0, TAU);
+      ctx.fill();
+      for (let i = 0; i < 4; i++) {
+        const ax = (i - 1.5) * s * 0.05;
+        ctx.strokeStyle = '#3a2a1a';
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        ctx.moveTo(ax, -s * 0.3);
+        ctx.lineTo(ax, -s * 0.78);
+        ctx.stroke();
+        ctx.fillStyle = i % 2 ? col.plume : light(col.plume, 0.3);
+        ctx.beginPath();
+        ctx.ellipse(ax, -s * 0.8, s * 0.035, s * 0.09, 0, 0, TAU);
+        ctx.fill();
+      }
+      ctx.restore();
+    } else if (st.hero !== 'ying') {
+      // 背后的小圆盾（只露出边缘的光）
+      ctx.fillStyle = deep(col.shield, 0.55);
+      ctx.beginPath();
+      ctx.arc(-s * 0.3, -s * 1.42, s * 0.22, 0, TAU);
+      ctx.fill();
+      ctx.strokeStyle = rgba(col.shieldHi, 0.55);
+      ctx.lineWidth = 1.3;
+      ctx.beginPath();
+      ctx.arc(-s * 0.3, -s * 1.42, s * 0.22, -1.2, 0.8);
+      ctx.stroke();
+    }
+    if (st.hero === 'mu') {
+      // 阿木的披风下摆缀着一圈叶子
+      for (let i = 0; i < 6; i++) {
+        const lx = -s * (0.15 + i * 0.17) - wave * (i / 6);
+        const ly = -s * 0.1 - Math.sin(t * 4 + i) * 2;
+        ctx.save();
+        ctx.translate(lx, ly);
+        ctx.rotate(0.6 + Math.sin(t * 3 + i) * 0.2);
+        ctx.fillStyle = i % 2 ? deep(col.plume, 0.25) : deep(col.plume, 0.45);
+        ctx.beginPath();
+        ctx.ellipse(0, 0, s * 0.06, s * 0.13, 0, 0, TAU);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
 
     // ----- 腿：修长、收在靴子里 -----
     const step = st.mood === 'win' ? 0 : Math.sin(t * 2.4) * 0.02;
@@ -351,6 +569,34 @@
       ctx.beginPath();
       ctx.arc(s * 0.2, -s * 1.08, s * 0.08, 0, TAU);
       ctx.fill();
+    }
+    if (st.hero === 'ying') {
+      // 萤萤腰间的萤火灯：放萤火虫时更亮
+      const lit = st.shotAge !== undefined && st.shotAge < 0.3 ? 1 : 0;
+      const sway = Math.sin(t * 2.6) * 0.15;
+      ctx.save();
+      ctx.translate(s * 0.22, -s * 1.18);
+      ctx.rotate(sway);
+      ctx.strokeStyle = '#2a1e12';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(0, s * 0.12);
+      ctx.stroke();
+      glow(ctx, 0, s * 0.24, s * 0.7, '#c8ffb0', 0.45 + lit * 0.35);
+      ctx.fillStyle = 'rgba(220,255,200,0.85)';
+      ctx.beginPath();
+      ctx.ellipse(0, s * 0.24, s * 0.08, s * 0.11, 0, 0, TAU);
+      ctx.fill();
+      ctx.fillStyle = '#3a2a16';
+      ctx.fillRect(-s * 0.07, s * 0.11, s * 0.14, s * 0.03);
+      ctx.fillRect(-s * 0.06, s * 0.34, s * 0.12, s * 0.03);
+      ctx.restore();
+      // 绕着她飞的三只萤火虫
+      for (let i = 0; i < 3; i++) {
+        const a = t * 1.6 + i * 2.1;
+        dot(ctx, Math.cos(a) * s * 0.7, -s * 1.5 + Math.sin(a * 1.3) * s * 0.5, 1.6, '#d8ffb0', 0.6 + Math.sin(t * 5 + i) * 0.3);
+      }
     }
     // 围巾：从脖子往后飘
     const sw2 = Math.sin(t * 3.6) * 3;
@@ -421,6 +667,13 @@
     // 脖子
     ctx.fillStyle = '#1c1420';
     ctx.fillRect(-s * 0.07, s * 0.15, s * 0.14, s * 0.15);
+    const openEye = st.mood === 'lose' ? 0.3 : st.mood === 'win' ? 0.55 : 1;
+    if (look) {
+      heroHead(ctx, s, t, st.hero, col, eye, openEye);
+      ctx.restore();
+      ctx.restore();
+      return;
+    }
     // 头盔：圆顶 + 护颊，前面开一道观察缝
     const hg = ctx.createLinearGradient(s * 0.3, -s * 0.4, -s * 0.3, s * 0.3);
     hg.addColorStop(0, light(col.helmTop, 0.15));

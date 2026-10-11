@@ -47,7 +47,7 @@
       const sp = speakerInfo(who);
       avatar.innerHTML = '';
       avatar.appendChild(sp.img());
-      avatar.className = 'story-avatar' + (who === 'dang' || who === 'ding' ? ' hero' : '');
+      avatar.className = 'story-avatar' + (who === 'dang' || (D.speakers[who] && D.speakers[who].hero) ? ' hero' : '');
       nameEl.textContent = sp.name;
       shown = 0;
       textEl.textContent = '';

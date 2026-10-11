@@ -2530,3 +2530,13 @@ select option {
 .set-line.on {
   color: #ffd27a;
 }
+
+/* ---------- 五位英雄（设计书 59.4） ---------- */
+.slot.hero-slot {
+  width: 150px;
+  gap: 4px;
+  padding: 4px 8px 4px 2px;
+}
+.hero-desc {
+  margin: -2px 0 8px;
+}

@@ -101,7 +101,7 @@
   };
 
   // ================= 战斗报告（设计书 32） =================
-  const SOURCE_NAMES = { buddy: '助战伙伴', weapon: '武器', splash: '溅射', chain: '闪电跳跃', arrowRain: '箭雨', thunder: '雷霆一击', burn: '灼烧', thorns: '荆棘', bomb: '小炸弹', zap: '雷鸣箭袋' };
+  const SOURCE_NAMES = { buddy: '助战伙伴', weapon: '武器', splash: '溅射', chain: '闪电跳跃', arrowRain: '箭雨', thunder: '雷霆一击', burn: '灼烧', thorns: '荆棘', bomb: '小炸弹', zap: '雷鸣箭袋', firefly: '萤火虫' };
   UI.reportEl = function (res, open) {
     const rp = res && res.report;
     if (!rp) return null;

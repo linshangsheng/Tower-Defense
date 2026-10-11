@@ -1015,7 +1015,7 @@
         )
       );
 
-    // 英雄（设计书 42）：叮叮通关第 20 关后解锁
+    // 英雄（设计书 42、59）：通关第 10 / 20 / 30 / 40 关陆续加入；卡片只放头像、名字和定位，详细说明在下面
     if (Object.keys(C.heroes).some((id) => id !== 'dang' && P.heroUnlocked(s, id))) {
       el.append(h('div', { class: 'section-title' }, '英雄'));
       el.append(
@@ -1031,11 +1031,12 @@
               'button',
               { class: 'slot hero-slot' + (on ? ' on' : '') + (open ? '' : ' locked'), title: hd.desc, onclick: () => (open && P.setHero(s, id) ? (sfx('click'), game.persist(), renderShop()) : sfx('error')) },
               img,
-              h('div', null, h('div', { class: 'slot-content' }, hd.name + (on ? ' ✔' : '')), h('div', { class: 'slot-sub' }, open ? hd.desc : `通关第 ${hd.unlock} 关解锁`))
+              h('div', null, h('div', { class: 'slot-content' }, hd.name + (on ? ' ✔' : '')), h('div', { class: 'slot-sub' }, open ? hd.role : `通关第 ${hd.unlock} 关`))
             );
           })
         )
       );
+      el.append(h('div', { class: 'hint hero-desc' }, C.heroes[P.heroId(s)].desc));
     }
 
     // 助战伙伴（设计书 51）：打败的 Boss 可以带一位

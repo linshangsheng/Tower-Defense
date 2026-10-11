@@ -11,7 +11,7 @@
   const SYNERGY = { shatter: D.synergies.shatter.mult, drumRain: D.synergies.drumRain.mult };
   const AUTO_ORDER = { drum: 1, frost: 2, repair: 3, arrowRain: 4, thunder: 5 };
   // 英雄自己的攻击（受盾龟护卫影响）：武器、溅射、连锁闪电
-  const HERO_SOURCES = { weapon: true, splash: true, chain: true, zap: true };
+  const HERO_SOURCES = { weapon: true, splash: true, chain: true, zap: true, firefly: true };
 
   // 连击提示（设计书 38.2）
   const STREAK_CALLS = { 10: '10 连击！', 20: '横扫千军！', 30: '势不可挡！', 50: '无人能挡！' };
@@ -93,7 +93,11 @@
       // 装备和套装的特殊效果（设计书 58）
       const gm = this.stats.gearMods || {};
       for (const k of Object.keys(gm)) this.mods[k] = (this.mods[k] || 0) + gm[k];
+      // 英雄的专属能力（设计书 59）
+      const hm = this.stats.heroMods || {};
+      for (const k of Object.keys(hm)) this.mods[k] = (this.mods[k] || 0) + hm[k];
       this.zapCount = 0;
+      this.fireflyCount = 0;
       // 助战伙伴（设计书 51）
       this.buddy = (opts.loadout && opts.loadout.buddy && D.town.find((f) => f.boss === opts.loadout.buddy)) || null;
       if (this.buddy) {
@@ -1016,6 +1020,15 @@
       this.hero.aimX = t0.x;
       this.hero.aimY = t0.y + t0.yOffset;
       this.hero.shotAt = this.time;
+      // 萤萤的萤火虫（设计书 59.2）：每第 N 次攻击放出几只，各自飞向射程内的怪
+      const ff = this.stats.fireflies;
+      if (ff && ++this.fireflyCount % ff.every === 0) {
+        for (let i = 0; i < ff.count; i++) {
+          const m = targets[i % targets.length];
+          this.projectiles.push({ kind: 'firefly', x: sx, y: sy - 10, sx, sy, target: m, tx: m.x, ty: m.y + m.yOffset, speed: 520 + i * 60, dmg: this.atk * ff.atkMult, crit: false, angle: 0, dmgType: 'magic', armorIgnore: 0, travel: 0, dist0: 1, source: 'firefly', wobble: i * 2.1 });
+        }
+        this.emit('fireflies', { x: sx, y: sy });
+      }
       // 雷鸣箭袋（设计书 58.3）：每第 N 次攻击落下一道小闪电
       const zap = this.stats.zap;
       if (zap && ++this.zapCount % zap.every === 0) {
@@ -1094,7 +1107,10 @@
     applyWeaponHit(m, dmg, crit, fromFront, p) {
       const type = p && p.dmgType === 'magic' ? 'magic' : 'phys';
       if (p && p.bossMult && (m.def.boss || m.def.bossPart)) dmg *= p.bossMult;
-      this.damage(m, dmg, { type, fromFront, crit, source: 'weapon', armorIgnore: p ? p.armorIgnore : 0 });
+      this.damage(m, dmg, { type, fromFront, crit, source: (p && p.source) || 'weapon', armorIgnore: p ? p.armorIgnore : 0 });
+      // 阿木的重箭（设计书 59.2）：把普通怪物往后推
+      if (p && p.source === 'firefly') return; // 萤火虫不触发灼烧、减速等命中效果
+      if (this.stats.knockOnHit && !m.dead && !m.def.boss && !m.def.bossPart) m.x = Math.min(C.spawnX, m.x + this.stats.knockOnHit);
       if (this.stats.passives.burn && !m.dead) {
         const b = D.passiveSkills.burn;
         if (this.time >= m.burnUntil) m.burnTick = 0.5;

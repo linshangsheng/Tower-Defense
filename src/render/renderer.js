@@ -1493,7 +1493,7 @@
         ctx.save();
         ctx.globalCompositeOperation = 'lighter';
         for (const p of b.projectiles) {
-          if (p.done || p.kind === 'boomerang') continue;
+          if (p.done || p.kind === 'boomerang' || p.kind === 'firefly') continue;
           const col = p.kind === 'zap' ? '#9fd0ff' : p.kind === 'orb' ? '#d9b8ff' : p.kind === 'shell' ? '#ffb070' : p.crit ? '#ffe680' : '#fff0c0';
           const tx = p.x - Math.cos(p.angle) * 46;
           const ty = p.y - Math.sin(p.angle) * 46;
@@ -1534,6 +1534,18 @@
           ctx.lineTo(p.x, p.y);
           ctx.stroke();
           ctx.restore();
+          continue;
+        }
+        if (p.kind === 'firefly') {
+          // 萤萤的萤火虫（设计书 59.2）：弯弯绕绕地飞，一闪一闪
+          const wob = Math.sin(p.travel * 0.05 + p.wobble) * 14;
+          const fx = p.x - Math.sin(p.angle) * wob;
+          const fy = p.y + Math.cos(p.angle) * wob;
+          ctx.save();
+          ctx.globalCompositeOperation = 'lighter';
+          TD.art.drawGlow(ctx, fx, fy, 16, '#c8ffb0', 0.75);
+          ctx.restore();
+          S.ellipse(ctx, fx, fy, 2.6, 2.6, '#f4ffe0');
           continue;
         }
         if (p.kind === 'orb') {
