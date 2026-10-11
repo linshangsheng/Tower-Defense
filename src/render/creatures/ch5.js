@@ -5,7 +5,7 @@
   const K = TD.creatures;
   const D = K.drawers;
   const TAU = Math.PI * 2;
-  const { deep, light, rgba, bodyGrad, glow, shadow, eyes, rune, dot, wing, jelly, jellyEyes, quadruped } = K;
+  const { deep, light, rgba, bodyGrad, glow, shadow, eyes, rune, dot, wing, jelly, jellyEyes, quadruped, seeded, strokes, speckle, scales, veins, sparkles, rimEdge, linear, radial } = K;
 
   // ======================================================================
   // 第五章 · 熔岩裂隙（设计书 56.4）

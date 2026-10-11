@@ -217,6 +217,148 @@
   }
   K.quadruped = quadruped;
 
+  // ---------- 细节工具（设计书 60.2）：让角色更精致，全部确定性（不用 Math.random），画进光影缓存 ----------
+  // 固定种子的随机数：同一只怪每次画出来的纹理一样
+  function seeded(seed) {
+    let v = (Math.abs(Math.floor((seed || 1) * 9301 + 49297)) % 233280) || 1;
+    return () => {
+      v = (v * 9301 + 49297) % 233280;
+      return v / 233280;
+    };
+  }
+  K.seeded = seeded;
+
+  // 在椭圆区域里画一簇短毛 / 羽毛笔触（ang：笔触方向，0 = 向右）
+  function strokes(ctx, x, y, rx, ry, n, color, a, seed, ang, len) {
+    const r = seeded(seed);
+    ctx.save();
+    ctx.strokeStyle = rgba(color, a === undefined ? 0.5 : a);
+    ctx.lineWidth = Math.max(0.7, Math.min(rx, ry) * 0.03);
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    const L = len || Math.min(rx, ry) * 0.22;
+    for (let i = 0; i < n; i++) {
+      const q = r() * TAU;
+      const d = Math.sqrt(r());
+      const px = x + Math.cos(q) * rx * d;
+      const py = y + Math.sin(q) * ry * d;
+      const aa = (ang === undefined ? -2.2 : ang) + (r() - 0.5) * 0.6;
+      ctx.moveTo(px, py);
+      ctx.quadraticCurveTo(px + Math.cos(aa) * L * 0.6 + L * 0.15, py + Math.sin(aa) * L * 0.6, px + Math.cos(aa) * L, py + Math.sin(aa) * L);
+    }
+    ctx.stroke();
+    ctx.restore();
+  }
+  K.strokes = strokes;
+
+  // 椭圆区域里的斑点（rMin–rMax），glowA > 0 时斑点自己发光
+  function speckle(ctx, x, y, rx, ry, n, color, a, seed, rMin, rMax, glowA) {
+    const r = seeded(seed);
+    for (let i = 0; i < n; i++) {
+      const q = r() * TAU;
+      const d = Math.sqrt(r());
+      const px = x + Math.cos(q) * rx * d;
+      const py = y + Math.sin(q) * ry * d;
+      const rr = (rMin || 0.8) + r() * ((rMax || 2) - (rMin || 0.8));
+      if (glowA) glow(ctx, px, py, rr * 3.5, color, glowA);
+      ctx.fillStyle = rgba(color, a === undefined ? 0.6 : a);
+      ctx.beginPath();
+      ctx.ellipse(px, py, rr, rr * (0.7 + r() * 0.3), q, 0, TAU);
+      ctx.fill();
+    }
+  }
+  K.speckle = speckle;
+
+  // 鳞片 / 甲片：一排排小弧线，只画在当前路径（clip）里面；先 ctx.save(); 画轮廓; ctx.clip(); 再调用
+  function scales(ctx, x0, y0, x1, y1, size, color, a) {
+    ctx.save();
+    ctx.strokeStyle = rgba(color, a === undefined ? 0.35 : a);
+    ctx.lineWidth = Math.max(0.8, size * 0.12);
+    let row = 0;
+    for (let y = y0; y <= y1 + size; y += size * 0.7, row++) {
+      ctx.beginPath();
+      for (let x = x0 + (row % 2 ? size * 0.5 : 0); x <= x1 + size; x += size) {
+        ctx.moveTo(x - size * 0.5, y);
+        ctx.quadraticCurveTo(x, y + size * 0.65, x + size * 0.5, y);
+      }
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+  K.scales = scales;
+
+  // 发光的分叉纹路（像叶脉 / 裂缝里透出的光），从 (x, y) 沿 ang 方向长出去
+  function veins(ctx, x, y, len, ang, depth, color, a, seed, w) {
+    const r = seeded(seed);
+    const pts = [];
+    const grow = (px, py, l, q, d) => {
+      const nx = px + Math.cos(q) * l;
+      const ny = py + Math.sin(q) * l;
+      const mx = (px + nx) / 2 + (r() - 0.5) * l * 0.4;
+      const my = (py + ny) / 2 + (r() - 0.5) * l * 0.4;
+      pts.push([px, py, mx, my, nx, ny, d]);
+      if (d > 0) {
+        grow(nx, ny, l * 0.62, q - 0.5 - r() * 0.3, d - 1);
+        if (r() < 0.7) grow(nx, ny, l * 0.55, q + 0.45 + r() * 0.3, d - 1);
+      }
+    };
+    grow(x, y, len, ang, depth === undefined ? 2 : depth);
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.lineCap = 'round';
+    for (const [px, py, mx, my, nx, ny, d] of pts) {
+      ctx.strokeStyle = rgba(color, (a === undefined ? 0.8 : a) * (0.55 + d * 0.15));
+      ctx.lineWidth = (w || 1.4) * (0.6 + d * 0.25);
+      ctx.beginPath();
+      ctx.moveTo(px, py);
+      ctx.quadraticCurveTo(mx, my, nx, ny);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+  K.veins = veins;
+
+  // 绕着身体飘的小光点（t 驱动，n 个）
+  function sparkles(ctx, x, y, rx, ry, n, t, color, seed, size) {
+    const r = seeded(seed);
+    for (let i = 0; i < n; i++) {
+      const ph = r() * TAU;
+      const sp = 0.6 + r() * 0.8;
+      const a = 0.35 + 0.45 * Math.max(0, Math.sin(t * 3 * sp + ph));
+      dot(ctx, x + Math.cos(t * sp + ph) * rx, y + Math.sin(t * sp * 1.3 + ph) * ry, (size || 1.2) * (0.7 + r() * 0.6), color, a);
+    }
+  }
+  K.sparkles = sparkles;
+
+  // 轮廓光：只在形状的右上边缘描一道亮边（光从右上来）。path 是一个画轮廓的函数：() => { ctx.beginPath(); ... }
+  function rimEdge(ctx, path, color, a, w, dx, dy) {
+    ctx.save();
+    path();
+    ctx.clip();
+    // 把同一个轮廓往左下挪一点再描边：留在形状里面的只有右上那一侧
+    ctx.translate(-(dx === undefined ? 2.5 : dx), dy === undefined ? 2.5 : dy);
+    path();
+    ctx.strokeStyle = rgba(color, a === undefined ? 0.6 : a);
+    ctx.lineWidth = w || 3;
+    ctx.stroke();
+    ctx.restore();
+  }
+  K.rimEdge = rimEdge;
+
+  // 渐变填充的小工具：stops = [[0, '#fff'], [1, '#000']]
+  function linear(ctx, x0, y0, x1, y1, stops) {
+    const g = ctx.createLinearGradient(x0, y0, x1, y1);
+    for (const [o, c] of stops) g.addColorStop(o, c);
+    return g;
+  }
+  K.linear = linear;
+  function radial(ctx, x, y, r0, r1, stops, fx, fy) {
+    const g = ctx.createRadialGradient(fx === undefined ? x : fx, fy === undefined ? y : fy, r0, x, y, r1);
+    for (const [o, c] of stops) g.addColorStop(o, c);
+    return g;
+  }
+  K.radial = radial;
+
   // ======================================================================
   // 主角（设计书 56.3）
   // ======================================================================

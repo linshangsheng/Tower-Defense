@@ -5,7 +5,7 @@
   const K = TD.creatures;
   const D = K.drawers;
   const TAU = Math.PI * 2;
-  const { deep, light, rgba, bodyGrad, glow, shadow, eyes, rune, dot, wing, jelly, jellyEyes, quadruped } = K;
+  const { deep, light, rgba, bodyGrad, glow, shadow, eyes, rune, dot, wing, jelly, jellyEyes, quadruped, seeded, strokes, speckle, scales, veins, sparkles, rimEdge, linear, radial } = K;
 
   // ======================================================================
   // 第四章 · 冰霜雪原（设计书 56.4）
