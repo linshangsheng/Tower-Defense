@@ -13,6 +13,7 @@
       this.ctx = canvas.getContext('2d');
       this.t = 0;
       this.fx = []; // 粒子、飘字等
+      this.vfx = TD.Vfx ? new TD.Vfx() : null; // 技能特效（设计书 60.4）
       this.shake = 0;
       this.battle = null;
       this.flashes = []; // 车道预警等
@@ -33,6 +34,7 @@
 
     attach(battle) {
       this.battle = battle;
+      this.vfx = TD.Vfx ? new TD.Vfx() : null;
       this.setChapter(TD.data.chapterOf(battle.stage));
       this.sandUntil = 0;
       this.fogUntil = 0;
@@ -52,30 +54,63 @@
         this.burst(C.wallX - 60, (C.fieldTop + C.fieldBottom) / 2, '#7dff9a', 18, 220);
       });
       on('spore', (e) => this.fx.push({ kind: 'ring', x: e.x, y: e.y, r0: 10, r1: e.radius, color: 'rgba(196,90,210,', life: 0.6, age: 0 }));
-      on('rainArrow', (e) => this.fx.push({ kind: 'fallArrow', x: e.x, y: e.y, life: 0.18, age: 0 }));
-      on('thunderChain', (e) => this.fx.push({ kind: 'chain', x0: e.x0, y0: e.y0, x: e.x, y: e.y, life: 0.3, age: 0 }));
-      on('laneFreeze', () => (this.shake = Math.max(this.shake, 3)));
-      // 雷鸣箭袋的小闪电（设计书 58.3）
-      on('gearZap', (e) => {
-        this.fx.push({ kind: 'bolt', x: e.x, y: e.y, life: 0.22, age: 0, seed: Math.random(), small: true });
+      // 技能和道具特效（设计书 60.4）
+      const V = this.vfx;
+      const laneBox = (lane) => {
+        const h = (C.fieldBottom - C.fieldTop) / battle.lanes;
+        return { y0: C.fieldTop + lane * h, h };
+      };
+      const iceLane = (lane, n) => {
+        const { y0, h } = laneBox(lane);
+        V.laneFlash(C.wallX, C.width, y0, h);
+        V.shards(C.wallX + 40, Math.min(C.width - 20, C.wallX + battle.range + 80), y0 + h * 0.7, n);
+      };
+      const wallHeal = (big) => V.heal(C.wallX - 30, C.fieldTop + 20, C.fieldBottom - 20, big);
+      on('rainArrow', (e) => (V ? V.rainArrow(e.x, e.y) : this.fx.push({ kind: 'fallArrow', x: e.x, y: e.y, life: 0.18, age: 0 })));
+      on('thunderChain', (e) => {
+        this.fx.push({ kind: 'chain', x0: e.x0, y0: e.y0, x: e.x, y: e.y, life: 0.3, age: 0 });
+        if (V) V.fx.push({ kind: 'flare', x: e.x, y: e.y, r: 50, color: '#d8c0ff', life: 0.3, age: 0 });
       });
+      on('laneFreeze', (e) => {
+        this.shake = Math.max(this.shake, 3);
+        if (V && e && e.lane !== undefined) iceLane(e.lane, 30);
+      });
+      // 雷鸣箭袋的小闪电（设计书 58.3）
+      on('gearZap', (e) => (V ? V.zap(e.x, e.y) : this.fx.push({ kind: 'bolt', x: e.x, y: e.y, life: 0.22, age: 0, seed: Math.random(), small: true })));
       on('thunder', (e) => {
-        this.fx.push({ kind: 'bolt', x: e.x, y: e.y, life: 0.35, age: 0, seed: Math.random() });
-        this.shake = Math.max(this.shake, 8);
+        if (V) {
+          V.thunder(e.x, e.y, 1);
+          this.fx.push({ kind: 'flash', color: '#b090ff', life: 0.25, age: 0 });
+        } else this.fx.push({ kind: 'bolt', x: e.x, y: e.y, life: 0.35, age: 0, seed: Math.random() });
+        this.shake = Math.max(this.shake, 9);
       });
       on('skill', (e) => {
-        if (e.id === 'drum') this.burst(C.heroX, battle.heroY - 40, '#ffb347', 20, 200);
-        if (e.id === 'frost' || e.id === 'freeze') this.shake = Math.max(this.shake, 2);
+        if (!V) {
+          if (e.id === 'drum') this.burst(C.heroX, battle.heroY - 40, '#ffb347', 20, 200);
+          return;
+        }
+        if (e.id === 'drum') V.shockwave(C.heroX + 10, battle.heroY - 10, '#ffcf6a', 3);
+        else if (e.id === 'arrowRain') V.sigil(C.wallX + battle.range * 0.55, C.fieldTop + 4, Math.min(170, battle.range * 0.3), '#ffd27a', 2.4);
+        else if (e.id === 'repair') wallHeal(true);
+        else if (e.id === 'frost' && e.lane !== undefined) iceLane(e.lane, 22);
+        if (e.id === 'frost') this.shake = Math.max(this.shake, 2);
       });
       on('item', (e) => {
         if (e.id === 'bomb') {
           const y = battle.laneY(e.lane);
           for (let i = 0; i < 6; i++) {
             const x = C.wallX + 120 + Math.random() * (battle.range - 120);
-            this.fx.push({ kind: 'boom', x, y: y + (Math.random() - 0.5) * 40, life: 0.5, age: -i * 0.05 });
+            const yy = y + (Math.random() - 0.5) * 40;
+            if (V) setTimeout(() => V.boom(x, yy, 1), i * 50);
+            else this.fx.push({ kind: 'boom', x, y: yy, life: 0.5, age: -i * 0.05 });
           }
-          this.shake = Math.max(this.shake, 10);
+          this.fx.push({ kind: 'flash', color: '#ffb060', life: 0.2, age: 0 });
+          this.shake = Math.max(this.shake, 12);
         }
+        if (!V) return;
+        if (e.id === 'patch') wallHeal(false);
+        else if (e.id === 'freeze') iceLane(e.lane, 34);
+        else if (e.id === 'haste') V.shockwave(C.heroX + 10, battle.heroY - 10, '#8affd8', 2);
       });
       on('bossWarn', (e) => this.flashes.push({ lane: e.lane, until: battle.time + e.duration, color: '255,60,60', m: e.m }));
       on('bossInterrupt', (e) => {
@@ -125,7 +160,8 @@
         if (e.any) this.fx.push({ kind: 'ring', x: e.m.x, y: e.m.y - 10, r0: 10, r1: e.radius, color: 'rgba(110,230,130,', life: 0.6, age: 0 });
       });
       on('explode', (e) => {
-        this.fx.push({ kind: 'boom', x: e.m.x, y: e.m.y, life: 0.5, age: 0 });
+        if (V) V.boom(e.m.x, e.m.y, 0.8);
+        else this.fx.push({ kind: 'boom', x: e.m.x, y: e.m.y, life: 0.5, age: 0 });
         this.text(e.m.x + 20, e.m.y - 50, '轰！', '#ff8a3d', 30, 0.8);
       });
       on('claw', (e) => this.text(e.m.x + 10, e.m.y - 80, '钳击！', '#ff5050', 30, 0.9));
@@ -155,7 +191,12 @@
         this.text(C.heroX + 40, battle.heroY - 110, '被震晕了！', '#ffd23f', 24, 1);
       });
       on('golemBoom', (e) => {
-        for (let i = 0; i < 6; i++) this.fx.push({ kind: 'boom', x: e.m.x + (Math.random() - 0.5) * 80, y: e.m.y - 20 + (Math.random() - 0.5) * 40, life: 0.6, age: -i * 0.06 });
+        for (let i = 0; i < 6; i++) {
+          const x = e.m.x + (Math.random() - 0.5) * 80;
+          const y = e.m.y - 20 + (Math.random() - 0.5) * 40;
+          if (V) setTimeout(() => V.boom(x, y, 1.1), i * 60);
+          else this.fx.push({ kind: 'boom', x, y, life: 0.6, age: -i * 0.06 });
+        }
         this.shake = Math.max(this.shake, 18);
         this.banner(e.near ? '岩岩在城墙边爆炸了！' : '岩岩爆炸了！车道变成熔岩');
       });
@@ -214,7 +255,8 @@
       });
       on('thunderBolt', () => {
         this.shake = Math.max(this.shake, 22);
-        this.fx.push({ kind: 'bolt', x: C.wallX + 20, y: battle.heroY, life: 0.4, age: 0, seed: Math.random() });
+        if (V) V.thunder(C.wallX + 20, battle.heroY, 1.2);
+        else this.fx.push({ kind: 'bolt', x: C.wallX + 20, y: battle.heroY, life: 0.4, age: 0, seed: Math.random() });
         this.fx.push({ kind: 'flash', color: '#fff6b0', life: 0.5, age: 0 });
       });
       on('riftStrike', () => {
@@ -389,8 +431,10 @@
         for (const m of alive) this.drawMonster(m, b);
         this.drawProjectiles(b);
       }
+      if (b) this.drawHeroAura(b, dt);
       this.drawHero(b);
       if (b && b.buddy) this.drawBuddy(b);
+      if (this.vfx) this.vfx.draw(ctx, dt);
       // 漂浮光点、景深雾、前景剪影、暗角（设计书 54.3）
       const sc = this.sceneFor(lanes);
       if (sc) {
@@ -1243,6 +1287,89 @@
       ctx.restore();
     }
 
+    // 冰冻领域 / 冰冻瓶（设计书 60.4）：冷光车道 + 一排长出来的冰晶 + 流动的冷雾 + 飘雪
+    drawIceLane(e, y0, h, fade, b) {
+      const ctx = this.ctx;
+      const freeze = e.type === 'freeze';
+      const age = b.time - (e.start || 0);
+      const x0 = C.wallX;
+      const x1 = C.width;
+      ctx.save();
+      // 冷光
+      const g = ctx.createLinearGradient(0, y0, 0, y0 + h);
+      g.addColorStop(0, `rgba(170,225,255,${0.1 * fade})`);
+      g.addColorStop(1, `rgba(200,240,255,${(freeze ? 0.4 : 0.26) * fade})`);
+      ctx.fillStyle = g;
+      ctx.fillRect(x0, y0, x1 - x0, h);
+      // 冰面上的裂纹高光
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.strokeStyle = `rgba(220,245,255,${0.35 * fade})`;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      for (let k = 0; k < 10; k++) {
+        const cx = x0 + 60 + k * 105;
+        const cy = y0 + h * (0.72 + ((k * 37) % 20) / 100);
+        ctx.moveTo(cx - 30, cy);
+        ctx.lineTo(cx, cy - 4);
+        ctx.lineTo(cx + 26, cy + 3);
+        ctx.moveTo(cx, cy - 4);
+        ctx.lineTo(cx + 8, cy - 14);
+      }
+      ctx.stroke();
+      ctx.globalCompositeOperation = 'source-over';
+      // 冰晶：从城墙往外一根根长出来（每根晚一点）
+      const n = 14;
+      for (let k = 0; k < n; k++) {
+        const cx = x0 + 40 + k * ((x1 - x0 - 60) / n) + ((k * 53) % 23);
+        const grow = Math.max(0, Math.min(1, (age - k * 0.025) / 0.3)) * fade;
+        if (grow <= 0) continue;
+        const ch = (freeze ? 34 : 22) * (0.7 + ((k * 29) % 10) / 22) * grow;
+        const cw = ch * 0.3;
+        const by = y0 + h - 6;
+        for (const [dx, sc, lean] of [[0, 1, -0.08], [-cw * 0.9, 0.6, -0.4], [cw * 0.9, 0.55, 0.35]]) {
+          ctx.save();
+          ctx.translate(cx + dx, by);
+          ctx.rotate(lean);
+          const hh = ch * sc;
+          const ww = cw * sc;
+          ctx.fillStyle = `rgba(150,205,240,${0.75 * fade})`;
+          ctx.beginPath();
+          ctx.moveTo(-ww / 2, 0);
+          ctx.lineTo(-ww / 2, -hh * 0.72);
+          ctx.lineTo(0, -hh);
+          ctx.lineTo(0, 0);
+          ctx.closePath();
+          ctx.fill();
+          ctx.fillStyle = `rgba(235,250,255,${0.85 * fade})`;
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          ctx.lineTo(0, -hh);
+          ctx.lineTo(ww / 2, -hh * 0.72);
+          ctx.lineTo(ww / 2, 0);
+          ctx.closePath();
+          ctx.fill();
+          ctx.restore();
+        }
+        TD.art.drawGlow(ctx, cx, by - ch * 0.8, ch * 0.9, '#bfe8ff', 0.35 * fade, true);
+      }
+      // 冷雾
+      ctx.globalCompositeOperation = 'lighter';
+      for (let k = 0; k < 4; k++) {
+        const mx = x0 + ((k * 290 + this.t * (18 + k * 6)) % (x1 - x0 + 200)) - 100;
+        TD.art.drawGlow(ctx, mx, y0 + h * 0.6, h * 0.8, '#cfeaff', 0.16 * fade, true);
+      }
+      // 飘雪
+      ctx.fillStyle = `rgba(255,255,255,${0.8 * fade})`;
+      for (let k = 0; k < 18; k++) {
+        const fx = x0 + ((k * 89 + this.t * (20 + (k % 5) * 6)) % (x1 - x0));
+        const fy = y0 + ((k * 41 + this.t * (30 + (k % 3) * 10)) % h);
+        ctx.beginPath();
+        ctx.arc(fx, fy, 1 + (k % 3) * 0.6, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+
     drawLaneEffects(b) {
       const ctx = this.ctx;
       const h = (C.fieldBottom - C.fieldTop) / b.lanes;
@@ -1261,6 +1388,11 @@
             S.ellipse(ctx, bx, by, 4 + (k % 3), 4 + (k % 3), '#9df58a', '#3d7a2f', 1);
           }
           ctx.restore();
+          continue;
+        }
+        if (e.type === 'frost' || e.type === 'freeze') {
+          ctx.restore();
+          this.drawIceLane(e, y0, h, fade, b);
           continue;
         }
         ctx.globalAlpha = 0.7 * fade;
@@ -1516,7 +1648,7 @@
         if (p.kind === 'boomerang') {
           ctx.save();
           ctx.translate(p.x, p.y - 10);
-          S.boomerang(ctx, 16, p.spin);
+          (TD.creatures ? TD.creatures.boomerang : S.boomerang)(ctx, 16, p.spin);
           ctx.restore();
           continue;
         }
@@ -1611,6 +1743,55 @@
       const { x, y } = this.buddyPos(b);
       const def = TD.data.monsters[b.buddy.boss];
       S.monster(this.ctx, b.buddy.boss, x, y, def.size * 0.42, this.t, { seed: 7 });
+    }
+
+    // 英雄脚下的光环：战鼓（金色）、加速药水（青绿色的上升光线）（设计书 60.4）
+    drawHeroAura(b, dt) {
+      const drum = b.buffs.some((x) => x.src === 'drum' && b.time < x.until);
+      const haste = b.buffs.some((x) => x.src === 'haste' && b.time < x.until);
+      if (!drum && !haste) return;
+      const ctx = this.ctx;
+      const x = C.heroX + 4;
+      const y = b.heroY + 2;
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      if (drum) {
+        const col = '#ffcf6a';
+        TD.art.drawGlow(ctx, x, y - 40, 90, col, 0.28 + Math.sin(this.t * 6) * 0.08, true);
+        ctx.translate(x, y);
+        ctx.scale(1, 0.32);
+        ctx.strokeStyle = TD.art.rgba(col, 0.75);
+        ctx.lineWidth = 3;
+        ctx.setLineDash([14, 10]);
+        ctx.lineDashOffset = -this.t * 60;
+        ctx.beginPath();
+        ctx.arc(0, 0, 54, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(0, 0, 42 + Math.sin(this.t * 8) * 3, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        if (this.vfx && Math.random() < dt * 14) this.vfx.spawn(1, () => ({ kind: 'mote', x: x + (Math.random() - 0.5) * 80, y: y - Math.random() * 20, vx: 0, vy: -60 - Math.random() * 50, life: 0.9, r: 2, color: '#ffe6a0' }));
+      }
+      if (haste) {
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.strokeStyle = 'rgba(140,255,216,0.5)';
+        ctx.lineWidth = 1.6;
+        ctx.lineCap = 'round';
+        for (let i = 0; i < 6; i++) {
+          const ph = (this.t * 1.6 + i / 6) % 1;
+          const lx = x - 30 + i * 12;
+          const ly = y - ph * 110;
+          ctx.globalAlpha = Math.sin(ph * Math.PI);
+          ctx.beginPath();
+          ctx.moveTo(lx, ly);
+          ctx.lineTo(lx, ly - 22);
+          ctx.stroke();
+        }
+      }
+      ctx.restore();
     }
 
     drawHero(b) {
@@ -1964,6 +2145,7 @@
         else if (f.kind === 'fallArrow') hole(f.x, f.y, 50, k * 0.7);
         else if (f.kind === 'ring') hole(f.x, f.y, (f.r0 + (f.r1 - f.r0) * (1 - k)) * 1.4, k * 0.8);
       }
+      if (this.vfx) for (const [x, y, r, a] of this.vfx.lights()) hole(x, y, r, a);
       ctx.save();
       ctx.imageSmoothingEnabled = true;
       ctx.drawImage(this.darkCanvas, 0, 0, C.width, C.height);

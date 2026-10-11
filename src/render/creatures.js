@@ -507,6 +507,227 @@
     }
   }
 
+  // 英雄手里的武器（设计书 60.3）：原点在握把，朝 +x 方向；戴深色手套的手
+  function glove(ctx, x, y, r) {
+    ctx.fillStyle = radial(ctx, x, y, 0.5, r, [[0, '#5a4030'], [1, '#22160e']], x + r * 0.3, y - r * 0.3);
+    ctx.beginPath();
+    ctx.ellipse(x, y, r, r * 0.9, 0, 0, TAU);
+    ctx.fill();
+  }
+  K.weapon = function (ctx, weapon, s, shotAge, col) {
+    const pull = shotAge !== undefined && shotAge < 0.12 ? 1 - shotAge / 0.12 : 0;
+    const fired = shotAge !== undefined && shotAge < 0.25 ? 1 - shotAge / 0.25 : 0;
+    const hi = (col && col.shieldHi) || '#ffe08a';
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    if (weapon === 'crossbow') {
+      // 弩身：木头 + 两道金属箍，前面的弩臂带发光的端点
+      ctx.fillStyle = linear(ctx, 0, -s * 0.12, 0, s * 0.12, [[0, '#9a6a44'], [1, '#3a2416']]);
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.15, -s * 0.07);
+      ctx.lineTo(s * 0.8, -s * 0.05);
+      ctx.lineTo(s * 0.82, s * 0.05);
+      ctx.lineTo(-s * 0.1, s * 0.12);
+      ctx.closePath();
+      ctx.fill();
+      for (const bx of [0.2, 0.55]) {
+        ctx.fillStyle = '#8a8f9a';
+        ctx.fillRect(s * bx, -s * 0.07, s * 0.05, s * 0.14);
+        ctx.fillStyle = 'rgba(255,255,255,0.5)';
+        ctx.fillRect(s * bx, -s * 0.07, s * 0.05, s * 0.025);
+      }
+      ctx.strokeStyle = '#2a1a10';
+      ctx.lineWidth = 3.4;
+      ctx.beginPath();
+      ctx.moveTo(s * 0.58, -s * 0.48);
+      ctx.quadraticCurveTo(s * 0.84, 0, s * 0.58, s * 0.48);
+      ctx.stroke();
+      ctx.strokeStyle = 'rgba(255,220,170,0.4)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.strokeStyle = rgba(hi, 0.8);
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(s * 0.58, -s * 0.48);
+      ctx.lineTo(s * 0.36 - pull * 4, 0);
+      ctx.lineTo(s * 0.58, s * 0.48);
+      ctx.stroke();
+      glow(ctx, s * 0.58, -s * 0.48, s * 0.12, hi, 0.6);
+      glow(ctx, s * 0.58, s * 0.48, s * 0.12, hi, 0.6);
+      glove(ctx, 0, s * 0.02, s * 0.12);
+    } else if (weapon === 'staff') {
+      // 魔法杖：螺旋缠绕的深色木杖，顶端一颗带光核的水晶
+      ctx.strokeStyle = linear(ctx, -s * 0.1, 0, s * 0.75, 0, [[0, '#2a1a12'], [1, '#6a4a32']]);
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.15, s * 0.16);
+      ctx.lineTo(s * 0.72, -s * 0.05);
+      ctx.stroke();
+      ctx.strokeStyle = 'rgba(210,170,255,0.55)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      for (let i = 0; i <= 10; i++) {
+        const u = i / 10;
+        const px = -s * 0.1 + u * s * 0.78;
+        const py = s * 0.15 - u * s * 0.2 + Math.sin(u * 14) * s * 0.035;
+        if (i) ctx.lineTo(px, py);
+        else ctx.moveTo(px, py);
+      }
+      ctx.stroke();
+      const k = 1 + fired * 0.5;
+      glow(ctx, s * 0.84, -s * 0.07, s * 0.45 * k, '#c58cff', 0.6 + fired * 0.3);
+      ctx.fillStyle = radial(ctx, s * 0.84, -s * 0.07, 0.5, s * 0.17 * k, [[0, '#ffffff'], [0.35, '#e2c8ff'], [1, '#6a3ab0']], s * 0.8, -s * 0.12);
+      ctx.beginPath();
+      ctx.moveTo(s * 0.84, -s * 0.27 * k);
+      ctx.lineTo(s * 0.97, -s * 0.07);
+      ctx.lineTo(s * 0.84, s * 0.12 * k);
+      ctx.lineTo(s * 0.71, -s * 0.07);
+      ctx.closePath();
+      ctx.fill();
+      // 托住水晶的两根木爪
+      ctx.strokeStyle = '#4a3020';
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.moveTo(s * 0.7, -s * 0.03);
+      ctx.quadraticCurveTo(s * 0.7, -s * 0.2, s * 0.78, -s * 0.24);
+      ctx.moveTo(s * 0.72, s * 0.02);
+      ctx.quadraticCurveTo(s * 0.86, s * 0.12, s * 0.94, s * 0.04);
+      ctx.stroke();
+      glove(ctx, s * 0.12, s * 0.02, s * 0.12);
+    } else if (weapon === 'orb') {
+      // 雷电法球：浮在手上方的水晶球，里面有一道道细闪电
+      const k = 1 + fired * 0.3;
+      const ox = s * 0.55;
+      glow(ctx, ox, 0, s * 0.7 * k, '#7ac8ff', 0.5 + fired * 0.4);
+      ctx.fillStyle = radial(ctx, ox, 0, 0.5, s * 0.3 * k, [[0, 'rgba(230,245,255,0.95)'], [0.6, 'rgba(110,180,255,0.75)'], [1, 'rgba(30,70,140,0.9)']], ox + s * 0.08, -s * 0.1);
+      ctx.beginPath();
+      ctx.arc(ox, 0, s * 0.3 * k, 0, TAU);
+      ctx.fill();
+      veins(ctx, ox - s * 0.12, s * 0.12, s * 0.14, -0.8, 2, '#ffffff', 0.85, Math.floor((shotAge || 0) * 20) + 3, 1);
+      ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.arc(ox, 0, s * 0.24 * k, -1.4, -0.5);
+      ctx.stroke();
+      glove(ctx, s * 0.15, 0, s * 0.12);
+    } else if (weapon === 'cannon') {
+      // 手炮：铁管 + 铜箍，开炮时炮口发光
+      const kick = shotAge !== undefined && shotAge < 0.15 ? (1 - shotAge / 0.15) * 6 : 0;
+      ctx.save();
+      ctx.translate(-kick, 0);
+      ctx.fillStyle = linear(ctx, 0, -s * 0.2, 0, s * 0.2, [[0, '#7a7f8c'], [0.4, '#3a3d48'], [1, '#15161c']]);
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.2, -s * 0.16);
+      ctx.lineTo(s * 0.88, -s * 0.2);
+      ctx.lineTo(s * 0.88, s * 0.2);
+      ctx.lineTo(-s * 0.2, s * 0.16);
+      ctx.quadraticCurveTo(-s * 0.3, 0, -s * 0.2, -s * 0.16);
+      ctx.fill();
+      for (const bx of [0.05, 0.45, 0.82]) {
+        ctx.fillStyle = linear(ctx, 0, -s * 0.22, 0, s * 0.22, [[0, '#ffe2a0'], [0.5, '#b8862e'], [1, '#5a3a10']]);
+        ctx.fillRect(s * bx, -s * 0.21, s * 0.07, s * 0.42);
+      }
+      ctx.fillStyle = '#0a0a0e';
+      ctx.beginPath();
+      ctx.ellipse(s * 0.89, 0, s * 0.06, s * 0.16, 0, 0, TAU);
+      ctx.fill();
+      if (fired > 0) glow(ctx, s * 0.95, 0, s * 0.6, '#ffb060', fired * 0.9, true);
+      ctx.restore();
+      glove(ctx, s * 0.05, s * 0.06, s * 0.12);
+    } else if (weapon === 'boomerang') {
+      if (shotAge === undefined || shotAge > 0.5) {
+        ctx.save();
+        ctx.translate(s * 0.42, 0);
+        K.boomerang(ctx, s * 0.5, 0);
+        ctx.restore();
+      }
+      glove(ctx, s * 0.2, 0, s * 0.12);
+    } else {
+      // 木弓：反曲的弓臂，中间缠着握把，两端的弓梢发光；拉弓时搭着一支发光的箭
+      const R = s * 0.64;
+      const a0 = -1.25;
+      const a1 = 1.25;
+      const cx = s * 0.12;
+      const limb = (sign) => {
+        ctx.beginPath();
+        ctx.moveTo(cx + R * 0.98, 0);
+        ctx.quadraticCurveTo(cx + R * 1.02, sign * R * 0.55, cx + Math.cos(sign * 1.1) * R, Math.sin(sign * 1.1) * R);
+        // 弓梢向外反曲
+        ctx.quadraticCurveTo(cx + Math.cos(sign * 1.25) * R * 0.95, Math.sin(sign * 1.25) * R * 1.02, cx + Math.cos(sign * 1.32) * R * 0.85, Math.sin(sign * 1.32) * R * 1.08);
+      };
+      for (const sign of [-1, 1]) {
+        limb(sign);
+        ctx.strokeStyle = '#2a170c';
+        ctx.lineWidth = 4.2;
+        ctx.stroke();
+        limb(sign);
+        ctx.strokeStyle = linear(ctx, cx + R, 0, cx + R * 0.4, sign * R, [[0, '#c48a52'], [1, '#7a4a26']]);
+        ctx.lineWidth = 2.6;
+        ctx.stroke();
+        limb(sign);
+        ctx.strokeStyle = 'rgba(255,230,190,0.45)';
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
+      }
+      const tipX = cx + Math.cos(1.32) * R * 0.85;
+      const tipY = Math.sin(1.32) * R * 1.08;
+      glow(ctx, tipX, -tipY, s * 0.16, hi, 0.55 + pull * 0.4);
+      glow(ctx, tipX, tipY, s * 0.16, hi, 0.55 + pull * 0.4);
+      // 弓弦
+      const nx = cx - pull * 8;
+      ctx.strokeStyle = rgba('#fff6e0', 0.9);
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(tipX, -tipY);
+      ctx.lineTo(nx, 0);
+      ctx.lineTo(tipX, tipY);
+      ctx.stroke();
+      // 拉弓时搭着的箭
+      if (pull > 0) {
+        ctx.strokeStyle = '#d8c0a0';
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        ctx.moveTo(nx, 0);
+        ctx.lineTo(cx + R * 1.25, 0);
+        ctx.stroke();
+        glow(ctx, cx + R * 1.25, 0, s * 0.25, hi, pull * 0.9, true);
+      }
+      // 握把的缠绳
+      ctx.fillStyle = '#3a2616';
+      ctx.fillRect(cx + R * 0.9, -s * 0.11, s * 0.1, s * 0.22);
+      ctx.strokeStyle = 'rgba(220,180,120,0.6)';
+      ctx.lineWidth = 0.8;
+      for (let i = 0; i < 4; i++) {
+        const yy = -s * 0.09 + i * s * 0.06;
+        ctx.beginPath();
+        ctx.moveTo(cx + R * 0.9, yy);
+        ctx.lineTo(cx + R * 0.9 + s * 0.1, yy + s * 0.03);
+        ctx.stroke();
+      }
+      glove(ctx, cx + R * 0.95, 0, s * 0.12);
+    }
+  };
+
+  // 回旋镖：刻着发光的符文
+  K.boomerang = function (ctx, size, spin) {
+    ctx.save();
+    ctx.rotate(spin);
+    const path = () => {
+      ctx.beginPath();
+      ctx.moveTo(-size, -size * 0.2);
+      ctx.quadraticCurveTo(0, -size * 0.55, size * 0.15, size * 0.05);
+      ctx.quadraticCurveTo(size * 0.1, -size * 0.95, size * 0.35, -size);
+      ctx.quadraticCurveTo(size * 0.4, size * 0.35, -size, size * 0.1);
+      ctx.closePath();
+    };
+    path();
+    ctx.fillStyle = linear(ctx, size * 0.4, -size, -size, size * 0.2, [[0, '#e8b064'], [1, '#6a3e1a']]);
+    ctx.fill();
+    rimEdge(ctx, path, '#fff0c8', 0.7, 2, 1.5, 1.5);
+    rune(ctx, [[-size * 0.7, -size * 0.08], [-size * 0.2, -size * 0.2], [size * 0.08, -size * 0.1], [size * 0.22, -size * 0.7]], '#ffd27a', 1.1, 0.7);
+    ctx.restore();
+  };
+
   K.hero = function (ctx, x, y, st) {
     const S = TD.sprites;
     const t = st.t;
@@ -562,6 +783,36 @@
     capeG.addColorStop(1, deep(col.cape, 0.66));
     ctx.fillStyle = capeG;
     ctx.fill();
+    // 披风的褶皱和一圈绣花滚边（设计书 60.3）
+    ctx.save();
+    capePath(1);
+    ctx.clip();
+    ctx.strokeStyle = rgba(deep(col.cape, 0.75), 0.6);
+    ctx.lineWidth = 1.4;
+    for (let i = 0; i < 4; i++) {
+      const fx = -s * (0.25 + i * 0.2) - wave * (0.2 + i * 0.15);
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.15 - i * s * 0.05, neckY + s * 0.3);
+      ctx.quadraticCurveTo(fx + s * 0.1, -s * 0.9, fx, -s * 0.1);
+      ctx.stroke();
+    }
+    ctx.strokeStyle = rgba(light(col.cape, 0.35), 0.25);
+    ctx.lineWidth = 1;
+    for (let i = 0; i < 3; i++) {
+      const fx = -s * (0.32 + i * 0.22) - wave * (0.25 + i * 0.15);
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.12 - i * s * 0.05, neckY + s * 0.35);
+      ctx.quadraticCurveTo(fx + s * 0.12, -s * 0.9, fx + s * 0.03, -s * 0.12);
+      ctx.stroke();
+    }
+    ctx.restore();
+    ctx.save();
+    capePath(0.93);
+    ctx.setLineDash([3, 3]);
+    ctx.strokeStyle = rgba(col.shieldHi, 0.4);
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.restore();
     if (extra === 'stars' || extra === 'ink') {
       for (const [px, py] of [[-0.6, -0.5], [-0.45, -1.0], [-0.8, -0.25], [-0.35, -0.7]]) {
         if (extra === 'stars') dot(ctx, s * px - wave * 0.4, s * py, 1.3, '#ffd23f', 0.9);
@@ -678,6 +929,29 @@
       ctx.lineTo(fx - s * 0.09, 0);
       ctx.closePath();
       ctx.fill();
+      // 靴子绑带、靴尖亮边、护膝
+      ctx.strokeStyle = far ? 'rgba(120,90,60,0.35)' : 'rgba(170,130,85,0.55)';
+      ctx.lineWidth = 1;
+      for (const by of [-0.28, -0.19]) {
+        ctx.beginPath();
+        ctx.moveTo(fx - s * 0.08, s * by);
+        ctx.lineTo(fx + s * 0.08, s * (by + 0.03));
+        ctx.stroke();
+      }
+      if (!far) {
+        ctx.strokeStyle = 'rgba(255,230,190,0.35)';
+        ctx.beginPath();
+        ctx.moveTo(fx + s * 0.08, -s * 0.12);
+        ctx.quadraticCurveTo(fx + s * 0.19, -s * 0.06, fx + s * 0.19, -s * 0.01);
+        ctx.stroke();
+        const kg = ctx.createRadialGradient(lx + s * 0.03, -s * 0.66, 0.5, lx, -s * 0.62, s * 0.1);
+        kg.addColorStop(0, deep(col.helmTop, 0.25));
+        kg.addColorStop(1, deep(col.helmBottom, 0.75));
+        ctx.fillStyle = kg;
+        ctx.beginPath();
+        ctx.ellipse(lx + s * 0.005, -s * 0.62, s * 0.07, s * 0.055, 0, 0, TAU);
+        ctx.fill();
+      }
     }
     // ----- 上衣：收腰、下摆张开 -----
     ctx.fillStyle = bodyGrad(ctx, -s * 0.35, neckY, s * 0.35, -s * 0.8, col.body, 0.3, 0.72);
@@ -697,6 +971,54 @@
     ctx.moveTo(-s * 0.34, -s * 0.82);
     ctx.lineTo(s * 0.34, -s * 0.82);
     ctx.stroke();
+    // 胸甲：几块甲片，每块上缘一道金属亮边（设计书 60.3）
+    for (let i = 0; i < 3; i++) {
+      const py = -s * (1.72 - i * 0.14);
+      const pw = s * (0.21 - i * 0.012);
+      const pg = ctx.createLinearGradient(pw, py - s * 0.1, -pw, py + s * 0.08);
+      pg.addColorStop(0, light(col.helmTop, 0.1));
+      pg.addColorStop(0.5, deep(col.helmBottom, 0.35));
+      pg.addColorStop(1, deep(col.helmBottom, 0.75));
+      ctx.fillStyle = pg;
+      ctx.beginPath();
+      ctx.moveTo(-pw, py);
+      ctx.quadraticCurveTo(0, py - s * 0.07, pw, py);
+      ctx.lineTo(pw * 0.96, py + s * 0.11);
+      ctx.quadraticCurveTo(0, py + s * 0.05, -pw * 0.96, py + s * 0.11);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255,248,230,0.45)';
+      ctx.lineWidth = 0.9;
+      ctx.beginPath();
+      ctx.moveTo(-pw * 0.2, py - s * 0.04);
+      ctx.quadraticCurveTo(pw * 0.5, py - s * 0.05, pw * 0.95, py);
+      ctx.stroke();
+    }
+    // 胸前的发光扣饰
+    glow(ctx, s * 0.02, -s * 1.76, s * 0.25, col.shieldHi, 0.55);
+    ctx.fillStyle = light(col.shieldHi, 0.4);
+    ctx.beginPath();
+    ctx.moveTo(s * 0.02, -s * 1.83);
+    ctx.lineTo(s * 0.07, -s * 1.76);
+    ctx.lineTo(s * 0.02, -s * 1.69);
+    ctx.lineTo(-s * 0.03, -s * 1.76);
+    ctx.closePath();
+    ctx.fill();
+    // 腰间的小皮包
+    ctx.fillStyle = '#3a2616';
+    ctx.beginPath();
+    ctx.moveTo(-s * 0.2, -s * 1.15);
+    ctx.lineTo(-s * 0.05, -s * 1.15);
+    ctx.quadraticCurveTo(-s * 0.04, -s * 0.98, -s * 0.12, -s * 0.96);
+    ctx.quadraticCurveTo(-s * 0.21, -s * 0.98, -s * 0.2, -s * 1.15);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(200,160,110,0.45)';
+    ctx.lineWidth = 0.9;
+    ctx.beginPath();
+    ctx.moveTo(-s * 0.19, -s * 1.1);
+    ctx.lineTo(-s * 0.06, -s * 1.1);
+    ctx.stroke();
+    dot(ctx, -s * 0.125, -s * 1.08, 0.9, col.shieldHi, 0.8);
     // 腰带
     ctx.fillStyle = '#1e140c';
     ctx.fillRect(-s * 0.19, -s * 1.22, s * 0.38, s * 0.07);
@@ -761,6 +1083,12 @@
     ctx.beginPath();
     ctx.ellipse(s * 0.12, -s * 1.74, s * 0.17, s * 0.12, -0.2, 0, TAU);
     ctx.fill();
+    ctx.strokeStyle = 'rgba(255,250,235,0.55)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.ellipse(s * 0.12, -s * 1.74, s * 0.15, s * 0.1, -0.2, -2.6, -0.4);
+    ctx.stroke();
+    for (const rx of [0.02, 0.12, 0.22]) dot(ctx, s * rx, -s * (1.66 + (rx === 0.12 ? -0.01 : 0.02)), 0.8, col.shieldHi, 0.7);
 
     // ----- 武器与手臂 -----
     if (st.mood !== 'lose') {
@@ -774,8 +1102,30 @@
       ctx.moveTo(-s * 0.05, s * 0.05);
       ctx.lineTo(s * 0.32, 0);
       ctx.stroke();
+      // 护腕：两道金属环
+      ctx.strokeStyle = light(col.helmTop, 0.05);
+      ctx.lineWidth = s * 0.1;
+      ctx.beginPath();
+      ctx.moveTo(s * 0.16, s * 0.012);
+      ctx.lineTo(s * 0.26, 0.002);
+      ctx.stroke();
+      ctx.strokeStyle = 'rgba(40,30,20,0.5)';
+      ctx.lineWidth = 0.8;
+      ctx.beginPath();
+      ctx.moveTo(s * 0.21, -s * 0.045);
+      ctx.lineTo(s * 0.21, s * 0.05);
+      ctx.stroke();
+      // 拉弓时手上一圈光
+      if (pull > 0) {
+        glow(ctx, s * 0.3, 0, s * 0.35, col.shieldHi, pull * 0.7);
+        ctx.strokeStyle = rgba(col.shieldHi, pull * 0.8);
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.arc(s * 0.3, 0, s * (0.12 + (1 - pull) * 0.15), 0, TAU);
+        ctx.stroke();
+      }
       ctx.translate(s * 0.12, 0);
-      S.weaponInHand(ctx, st.weapon, s * 0.9, st.shotAge);
+      K.weapon(ctx, st.weapon, s * 0.9, st.shotAge, col);
       if (pull > 0) glow(ctx, s * 0.5, 0, s * 0.7, '#fff0c0', pull * 0.8, true);
       if (st.ascended) {
         const tw = 0.6 + Math.sin(t * 8) * 0.4;
