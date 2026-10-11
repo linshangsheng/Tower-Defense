@@ -16,11 +16,30 @@
     }
   })();
 
+  // 体积渐变（设计书 55.3）：纯色填充的圆形部件自动变成"右上受光、左下背光"的径向渐变
+  S.volume = true;
+  const volCache = {};
+  function volStops(hex) {
+    let v = volCache[hex];
+    if (!v) {
+      if (hex.length === 4) hex = '#' + hex[1] + hex[1] + hex[2] + hex[2] + hex[3] + hex[3];
+      v = volCache[hex] = [lighten(hex, 0.45), hex, darken(hex, 0.35)];
+    }
+    return v;
+  }
   function ellipse(ctx, x, y, rx, ry, fill, stroke, lw) {
     ctx.beginPath();
     ctx.ellipse(x, y, Math.max(0.1, rx), Math.max(0.1, ry), 0, 0, Math.PI * 2);
     if (fill) {
-      ctx.fillStyle = fill;
+      const r = Math.max(rx, ry);
+      if (S.volume && r >= 4 && fill[0] === '#' && fill !== '#000' && fill !== '#000000') {
+        const st = volStops(fill);
+        const g = ctx.createRadialGradient(x + rx * 0.35, y - ry * 0.45, r * 0.08, x, y, r * 1.08);
+        g.addColorStop(0, st[0]);
+        g.addColorStop(0.5, st[1]);
+        g.addColorStop(1, st[2]);
+        ctx.fillStyle = g;
+      } else ctx.fillStyle = fill;
       ctx.fill();
     }
     if (stroke) {
@@ -134,14 +153,43 @@
     ctx.bezierCurveTo(-w, -h * 1.5, w, -h * 1.5, w, 0);
     ctx.quadraticCurveTo(0, h * 0.28, -w, 0);
     ctx.closePath();
-    ctx.fillStyle = color;
-    ctx.globalAlpha = 0.92;
+    // 胶质感（设计书 55.3）：受光一侧亮、底部深，中间透出一团亮光
+    const jg = ctx.createRadialGradient(w * 0.3, -h * 1.0, h * 0.1, 0, -h * 0.45, w * 1.15);
+    jg.addColorStop(0, lighten(color, 0.55));
+    jg.addColorStop(0.45, color);
+    jg.addColorStop(1, darken(color, 0.4));
+    ctx.fillStyle = jg;
+    ctx.globalAlpha = 0.94;
     ctx.fill();
     ctx.globalAlpha = 1;
     ctx.lineWidth = 2;
-    ctx.strokeStyle = darken(color, 0.45);
+    ctx.strokeStyle = darken(color, 0.5);
     ctx.stroke();
-    ellipse(ctx, -w * 0.45, -h * 0.85, w * 0.22, h * 0.16, 'rgba(255,255,255,0.65)');
+    ctx.save();
+    ctx.clip();
+    ctx.globalCompositeOperation = 'lighter';
+    const core = ctx.createRadialGradient(-w * 0.1, -h * 0.35, 0, -w * 0.1, -h * 0.35, w * 0.7);
+    core.addColorStop(0, 'rgba(255,255,255,0.22)');
+    core.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = core;
+    ctx.fillRect(-w, -h * 1.5, w * 2, h * 1.8);
+    // 底部边缘的反光
+    ctx.strokeStyle = 'rgba(255,255,255,0.25)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(-w * 0.6, -h * 0.08);
+    ctx.quadraticCurveTo(0, h * 0.12, w * 0.6, -h * 0.08);
+    ctx.stroke();
+    ctx.restore();
+    // 右上角的高光
+    ctx.fillStyle = 'rgba(255,255,255,0.75)';
+    ctx.beginPath();
+    ctx.ellipse(w * 0.38, -h * 0.9, w * 0.17, h * 0.11, -0.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,0.9)';
+    ctx.beginPath();
+    ctx.arc(w * 0.6, -h * 0.72, Math.max(1, w * 0.045), 0, Math.PI * 2);
+    ctx.fill();
     return h;
   }
 
@@ -2246,7 +2294,12 @@
     ctx.quadraticCurveTo(-s * 1.1, -s * 0.4 + capeWave, -s * 0.8 + capeWave, s * 0.05);
     ctx.lineTo(s * 0.1, -s * 0.1);
     ctx.closePath();
-    ctx.fillStyle = col.cape;
+    // 披风：上亮下暗（设计书 55.3）
+    const capeG = ctx.createLinearGradient(0, -s * 1.15, -s * 0.3, s * 0.05);
+    capeG.addColorStop(0, lighten(col.cape, 0.2));
+    capeG.addColorStop(0.5, col.cape);
+    capeG.addColorStop(1, darken(col.cape, 0.45));
+    ctx.fillStyle = capeG;
     ctx.fill();
     ctx.strokeStyle = OUTLINE;
     ctx.lineWidth = 2;
@@ -2264,7 +2317,11 @@
     ellipse(ctx, -s * 0.55, -s * 0.65, s * 0.12, s * 0.13, col.shieldHi);
     // 身体
     roundRect(ctx, -s * 0.38, -s * 1.0, s * 0.8, s * 0.95, s * 0.3);
-    ctx.fillStyle = col.body;
+    const bodyG = ctx.createLinearGradient(s * 0.4, -s * 1.0, -s * 0.38, -s * 0.05);
+    bodyG.addColorStop(0, lighten(col.body, 0.3));
+    bodyG.addColorStop(0.5, col.body);
+    bodyG.addColorStop(1, darken(col.body, 0.35));
+    ctx.fillStyle = bodyG;
     ctx.fill();
     ctx.stroke();
     ctx.fillStyle = '#8a5a3c';

@@ -352,6 +352,14 @@
 
     // ---------- 主渲染 ----------
     render(dt) {
+      // 体积渐变只用在进缓存的精灵上（设计书 55.3）；每帧直接画的东西保持纯色，省性能
+      const vol = S.volume;
+      S.volume = false;
+      this.renderFrame(dt);
+      S.volume = vol;
+    }
+
+    renderFrame(dt) {
       const ctx = this.ctx;
       const b = this.battle;
       this.t += dt;
@@ -370,6 +378,8 @@
         this.drawRangeMarker(b);
         // 先画地面怪，再画飞行怪；同层按 y 排序
         const alive = b.monsters.filter((m) => !m.dead);
+        // 怪物很多时降低光影缓存的刷新率（设计书 55.3）
+        if (TD.art) TD.art.LIT_FPS = alive.length > 60 ? 8 : 12;
         alive.sort((a, c) => (a.def.flying ? 1 : 0) - (c.def.flying ? 1 : 0) || a.y - c.y);
         for (const m of alive) this.drawMonster(m, b);
         this.drawProjectiles(b);
@@ -1358,7 +1368,9 @@
           const flags = (mo.shellIn ? 's' : '') + (mo.wool !== null ? 'w' + Math.round(mo.wool * 8) : '') + (scale !== 1 ? 'k' + Math.round(scale * 10) : '') + (frozen ? 'z' : '') + (mo.attack ? 'a' : '');
           let holder = m;
           let tt = t;
-          if (!(m.hitFlash > 0) && !def.boss && !m.ai) {
+          const flash = m.hitFlash;
+          mo.flash = 0; // 受击闪白不进缓存，画完后再叠一层（省掉单独重画）
+          if (!def.boss && !m.ai) {
             const group = m.id % 4;
             tt = frozen ? 0 : this.t + group * 0.37;
             mo.seed = group + 1;
@@ -1371,9 +1383,16 @@
             }
           }
           const frame = frozen ? -1 : Math.floor(tt * TD.art.LIT_FPS);
-          const key = frame + (m.hitFlash > 0 ? 'f' : '') + flags;
-          const c = TD.art.litSprite(holder, key, def.size * DRAW_SCALE, this.scene.palette.rim, TD.art.opts.glow ? 0.32 : 0, (g) => S.monster(g, m.type, 0, 0, def.size, tt, mo));
+          const key = frame + flags;
+          const c = TD.art.litSprite(holder, key, def.size * DRAW_SCALE, this.scene.palette.rim, TD.art.opts.glow ? 0.32 : 0, (g) => ((S.volume = true), S.monster(g, m.type, 0, 0, def.size, tt, mo), (S.volume = false)));
           ctx.drawImage(c.canvas, Math.round(x - c.ox), Math.round(ly - c.oy));
+          if (flash > 0) {
+            ctx.save();
+            ctx.globalCompositeOperation = 'lighter';
+            ctx.globalAlpha = Math.min(1, flash * 7) * 0.55;
+            ctx.drawImage(c.canvas, Math.round(x - c.ox), Math.round(ly - c.oy));
+            ctx.restore();
+          }
         } else S.monster(ctx, m.type, x, ly, def.size, t, mo);
         if (m.bubble) {
           // 海马的泡泡
@@ -1579,7 +1598,7 @@
       if (this.scene && !this.scene.none && TD.art.opts.lit) {
         // 英雄也加明暗和轮廓光（每帧重画，只有一个）
         this.heroArt = this.heroArt || {};
-        const c = TD.art.litSprite(this.heroArt, Math.random(), 40, this.scene.palette.rim, 0, (g) => S.hero(g, 0, 0, ho));
+        const c = TD.art.litSprite(this.heroArt, Math.random(), 40, this.scene.palette.rim, 0, (g) => ((S.volume = true), S.hero(g, 0, 0, ho), (S.volume = false)));
         this.ctx.drawImage(c.canvas, Math.round(C.heroX - c.ox), Math.round(heroY - c.oy));
       } else S.hero(this.ctx, C.heroX, heroY, ho);
       // 战鼓等增益光环
