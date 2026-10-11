@@ -129,7 +129,8 @@
   // m: 怪物实体或 { def, ... }；t：时间；opts.flash：受击闪白；opts.attack：攻城中
   S.monster = function (ctx, type, x, y, size, t, opts) {
     opts = opts || {};
-    const fn = S.drawers[type] || S.drawers.slime;
+    // 光影生灵（设计书 56）：已经重画的怪物用新画法
+    const fn = (TD.creatures && TD.creatures.drawers[type]) || S.drawers[type] || S.drawers.slime;
     ctx.save();
     ctx.translate(x, y);
     if (opts.scale) ctx.scale(opts.scale, opts.scale);
@@ -2273,6 +2274,7 @@
   // ---------- 英雄：铛铛 ----------
   // st: { weapon, aimAngle, shotAge, mood: 'idle'|'focus'|'worried'|'win'|'lose', t }
   S.hero = function (ctx, x, y, st) {
+    if (TD.creatures && TD.creatures.hero) return TD.creatures.hero(ctx, x, y, st);
     const t = st.t;
     const s = 32;
     // 外观（设计书 30）：颜色 + 头盔小装饰

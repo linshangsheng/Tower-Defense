@@ -678,7 +678,7 @@
     gb.globalCompositeOperation = 'destination-out';
     gb.drawImage(c.canvas, -r, r);
     g.globalCompositeOperation = 'lighter';
-    g.globalAlpha = 0.85;
+    g.globalAlpha = 0.5;
     g.drawImage(tmp, 0, 0, w, h, 0, 0, w, h);
     // 背光光晕垫在最后面
     if (glowAlpha > 0) {
