@@ -335,6 +335,16 @@
       if (big) {
         this.critAge = 0;
         this.shake = Math.max(this.shake, 3);
+        // 暴击：一圈金光 + 几道火花（设计书 60.4）
+        if (this.vfx && e.source !== 'burn') {
+          const y = e.y - e.m.def.size * 0.6;
+          this.vfx.fx.push({ kind: 'ring', x: e.x, y, r0: 6, r1: 44, color: '#ffd970', w: 2.5, life: 0.28, age: 0 });
+          this.vfx.spawn(5, () => {
+            const a = Math.random() * Math.PI * 2;
+            const v = 120 + Math.random() * 160;
+            return { kind: 'spark', x: e.x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, g: 200, life: 0.25, r: 1.6, color: '#ffe6a0' };
+          });
+        }
         if (TD.audio) TD.audio.play('crit');
       } else if (TD.audio && e.source === 'weapon') TD.audio.play('hit');
     }
@@ -365,6 +375,11 @@
         }
       }
       if (m.def.boss) this.shake = Math.max(this.shake, 14);
+      // Boss 倒下：几圈冲击波和一大团光（设计书 60.4）
+      if (m.def.boss && this.vfx) {
+        this.vfx.shockwave(m.x, m.y + m.yOffset, '#fff2c4', 3);
+        this.vfx.fx.push({ kind: 'flare', x: m.x, y: m.y + m.yOffset - m.def.size, r: 280, color: '#fff2c4', life: 0.7, age: 0 });
+      }
       if (TD.audio) TD.audio.play(m.def.boss ? 'bossDie' : 'pop');
     }
 
