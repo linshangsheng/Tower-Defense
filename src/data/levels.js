@@ -1073,7 +1073,7 @@
     65: {
       name: '贝贝',
       type: 'miniboss',
-      countMult: 0.34,
+      countMult: 2,
       lanes: 5,
       waves: [
         W(0.75, ['hermitCrab', 10], ['flyingFish', 6]),
