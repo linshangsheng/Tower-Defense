@@ -1156,7 +1156,7 @@
     70: {
       name: '波波',
       type: 'boss',
-      countMult: 0.3,
+      countMult: 1,
       lanes: 5,
       waves: [
         W(0.7, ['hermitCrab', 12], ['flyingFish', 8], ['urchin', 4]),
