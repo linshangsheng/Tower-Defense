@@ -42,7 +42,8 @@
   }
   S.roundRect = roundRect;
 
-  const OUTLINE = '#3b2a1e';
+  // 描边：半透明的深蓝紫，比纯深棕更柔和，和光影场景的冷色阴影融在一起（设计书 54.5）
+  const OUTLINE = 'rgba(26,22,52,0.62)';
 
   // 圆眼睛（看向左边，也就是城墙方向）
   function eyes(ctx, x, y, gap, r, look) {

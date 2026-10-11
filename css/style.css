@@ -2038,3 +2038,121 @@ body {
   border-color: var(--primary);
   background: #fff6e6;
 }
+
+/* ---------- 战斗界面：半透明深色"玻璃"质感（设计书 54.5） ---------- */
+.battle-hud .wall-bar,
+.battle-hud .wave-info,
+.battle-hud .hud-copper,
+.battle-hud .btn,
+.battle-hud .skill-btn,
+.battle-hud .item-btn {
+  color: #f6ecd8;
+  background: linear-gradient(rgba(30, 40, 56, 0.72), rgba(12, 18, 28, 0.78));
+  border: 1.5px solid rgba(255, 214, 150, 0.38);
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 240, 210, 0.18);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+.battle-hud .wall-track {
+  background: rgba(60, 14, 20, 0.85);
+  border: 1px solid rgba(255, 214, 150, 0.3);
+}
+.battle-hud .wall-fill {
+  background: linear-gradient(#b8ffb0, #4cc06a);
+  box-shadow: 0 0 10px rgba(140, 255, 150, 0.6);
+}
+.battle-hud .wall-fill.mid {
+  background: linear-gradient(#ffeaa0, #f2b52a);
+  box-shadow: 0 0 10px rgba(255, 210, 100, 0.6);
+}
+.battle-hud .wall-fill.low {
+  background: linear-gradient(#ffa59a, #e04848);
+  box-shadow: 0 0 10px rgba(255, 110, 100, 0.7);
+}
+.battle-hud .btn:hover:not([disabled]) {
+  filter: brightness(1.2);
+}
+.battle-hud .call-btn {
+  background: linear-gradient(rgba(150, 105, 30, 0.85), rgba(90, 60, 18, 0.9));
+  border-color: rgba(255, 220, 140, 0.7);
+  box-shadow: 0 0 14px rgba(255, 190, 90, 0.45), inset 0 1px 0 rgba(255, 240, 200, 0.35);
+}
+.battle-hud .skill-btn.ready {
+  background: linear-gradient(rgba(150, 105, 30, 0.85), rgba(80, 52, 16, 0.92));
+  border-color: rgba(255, 220, 140, 0.85);
+  box-shadow: 0 0 16px rgba(255, 196, 96, 0.6), inset 0 1px 0 rgba(255, 240, 200, 0.4);
+}
+.battle-hud .item-btn {
+  background: linear-gradient(rgba(30, 60, 84, 0.78), rgba(12, 26, 40, 0.85));
+  border-color: rgba(150, 215, 255, 0.45);
+}
+.battle-hud .item-btn.used {
+  opacity: 0.4;
+}
+
+/* ---------- 地图：透出光影场景，关卡节点是发光的光球（设计书 54.5） ---------- */
+.map-screen,
+.map-screen.desert,
+.map-screen.swamp,
+.map-screen.snow,
+.map-screen.lava,
+.map-screen.sky6,
+.map-screen.sea7 {
+  background: radial-gradient(ellipse at 50% 55%, rgba(6, 10, 22, 0.05), rgba(6, 10, 22, 0.5));
+}
+.map-node {
+  color: #fff6e0;
+  border: 2px solid rgba(255, 236, 190, 0.85);
+  background: radial-gradient(circle at 35% 30%, rgba(255, 250, 230, 0.55), rgba(120, 190, 170, 0.55) 45%, rgba(20, 50, 60, 0.85));
+  box-shadow: 0 0 18px rgba(170, 255, 220, 0.45), inset 0 0 12px rgba(255, 255, 255, 0.25);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+}
+.map-node.cleared {
+  background: radial-gradient(circle at 35% 30%, rgba(255, 250, 220, 0.7), rgba(150, 220, 140, 0.6) 45%, rgba(30, 70, 40, 0.88));
+}
+.map-node.current {
+  background: radial-gradient(circle at 35% 30%, #fffbe8, #ffd47a 45%, #b8701e);
+  box-shadow: 0 0 26px rgba(255, 210, 120, 0.85), inset 0 0 12px rgba(255, 255, 255, 0.4);
+}
+.map-node.locked {
+  color: rgba(220, 220, 230, 0.6);
+  border-color: rgba(200, 200, 220, 0.35);
+  background: radial-gradient(circle at 35% 30%, rgba(120, 130, 150, 0.5), rgba(20, 24, 36, 0.85));
+  box-shadow: none;
+}
+.map-node.miniboss,
+.map-node.boss {
+  border-color: rgba(255, 160, 140, 0.9);
+}
+.map-screen .node-name {
+  color: #fff3dc;
+  background: rgba(10, 16, 28, 0.66);
+  border: 1px solid rgba(255, 220, 160, 0.35);
+}
+.map-screen .map-note {
+  color: #fff3dc;
+  background: rgba(10, 16, 28, 0.72);
+  border: 1px solid rgba(255, 220, 160, 0.4);
+}
+.map-screen .topbar {
+  background: linear-gradient(rgba(12, 18, 30, 0.82), rgba(12, 18, 30, 0.55));
+  border-bottom: 1px solid rgba(255, 220, 160, 0.3);
+  color: #f6ecd8;
+}
+.map-screen .btn:not(.primary) {
+  color: #f6ecd8;
+  background: linear-gradient(rgba(30, 40, 56, 0.78), rgba(12, 18, 28, 0.85));
+  border: 1.5px solid rgba(255, 214, 150, 0.38);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.4);
+}
+.map-screen .btn.primary {
+  border: 1.5px solid rgba(255, 230, 170, 0.9);
+  box-shadow: 0 0 14px rgba(255, 190, 90, 0.5);
+}
+.map-screen .power {
+  color: #f6ecd8;
+}
+.map-screen .currency {
+  color: #f6ecd8;
+  background: linear-gradient(rgba(30, 40, 56, 0.78), rgba(12, 18, 28, 0.85));
+  border: 1.5px solid rgba(255, 214, 150, 0.38);
+}

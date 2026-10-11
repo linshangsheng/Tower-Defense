@@ -284,6 +284,7 @@
       const color = e.source === 'burn' ? '#ff8a3d' : e.source === 'thunder' ? '#c58cff' : big ? '#ffd23f' : '#ffffff';
       const size = e.source === 'burn' ? 15 : big ? 30 : e.dmg >= 100 ? 24 : 19;
       this.text(e.x + (Math.random() - 0.5) * 16, e.y - e.m.def.size * 1.4, (big ? '暴击 ' : '') + Math.round(e.dmg), color, size, big ? 0.9 : 0.6, big);
+      if (this.scene && !this.scene.none && e.source !== 'burn') this.fx.push({ kind: 'glow', x: e.x, y: e.y - e.m.def.size * 0.6, r: big ? 46 : 26, color: big ? '#ffd970' : '#fff2cc', life: big ? 0.28 : 0.16, age: 0 });
       if (e.blocked) this.fx.push({ kind: 'clang', x: e.x - e.m.def.size * 0.8, y: e.y - e.m.def.size * 0.7, life: 0.25, age: 0 });
       if (big) {
         this.critAge = 0;
@@ -294,6 +295,14 @@
 
     onDeath(e) {
       const m = e.m;
+      if (this.scene && !this.scene.none) {
+        // 化作一团光点慢慢升起（设计书 54.5）
+        const n = m.def.boss ? 30 : 7;
+        for (let i = 0; i < n; i++) {
+          this.fx.push({ kind: 'spirit', x: m.x + (Math.random() - 0.5) * m.def.size, y: m.y + m.yOffset - m.def.size * 0.6, vx: (Math.random() - 0.5) * 50, vy: -40 - Math.random() * 70, r: 6 + Math.random() * 8, color: this.scene.palette.mote, life: 0.8 + Math.random() * 0.6, age: 0 });
+        }
+        this.fx.push({ kind: 'glow', x: m.x, y: m.y + m.yOffset - m.def.size * 0.6, r: m.def.size * 2.6, color: this.scene.palette.rim, life: 0.3, age: 0 });
+      }
       this.burst(m.x, m.y + m.yOffset - m.def.size * 0.5, '#ffe28a', m.def.boss ? 40 : 10, m.def.boss ? 320 : 160);
       this.fx.push({ kind: 'poof', x: m.x, y: m.y + m.yOffset - m.def.size * 0.5, r: m.def.size, life: 0.35, age: 0 });
       if (e.copper > 0) {
@@ -367,6 +376,12 @@
       }
       this.drawHero(b);
       if (b && b.buddy) this.drawBuddy(b);
+      // 漂浮光点、景深雾、前景剪影、暗角（设计书 54.3）
+      const sc = this.sceneFor(lanes);
+      if (sc) {
+        if (TD.art.opts.motes) TD.art.drawMotes(ctx, this.motes, sc.palette.mote, dt, this.t);
+        if (TD.art.opts.front) ctx.drawImage(sc.front, 0, 0);
+      }
       if (b && b.time < this.sandUntil) this.drawSandstorm(b);
       if (b && b.time < this.fogUntil) this.drawFog(b);
       if (b && b.level.dark) this.drawDarkness();
@@ -435,7 +450,30 @@
       ctx.restore();
     }
 
+    // 光影手绘场景（设计书 54）：有章节光影设定时用新的分层场景
+    sceneFor(lanes) {
+      if (!TD.art || typeof document === 'undefined') return null;
+      const key = lanes + ':' + (this.theme.art || '');
+      if (!this.scene || this.scene.key !== key) {
+        const sc = TD.art.paintScene(this.theme, lanes);
+        this.scene = sc ? Object.assign(sc, { key }) : { key, none: true };
+        if (sc) this.motes = TD.art.makeMotes(28);
+      }
+      return this.scene.none ? null : this.scene;
+    }
+
     drawBackground(lanes) {
+      const sc = this.sceneFor(lanes);
+      if (sc) {
+        const ctx = this.ctx;
+        ctx.drawImage(sc.back, 0, 0);
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.globalAlpha = 0.6 + Math.sin(this.t * 0.6) * 0.25;
+        if (TD.art.opts.shafts) ctx.drawImage(sc.shafts, 0, 0);
+        ctx.restore();
+        return;
+      }
       const key = lanes + (this.theme.desert ? 'd' : this.theme.swamp ? 's' : this.theme.snow ? 'w' : this.theme.lava ? 'l' : this.theme.sky6 ? 'c' : this.theme.sea7 ? 'o' : 'g');
       if (!this.bgCache || this.bgCache.key !== key) {
         const c = document.createElement('canvas');
@@ -921,6 +959,7 @@
     }
 
     drawWall(ratio) {
+      if (this.scene && !this.scene.none) return this.drawWallArt(ratio);
       const ctx = this.ctx;
       const x0 = C.wallX - 64;
       const top = C.fieldTop - 28;
@@ -1028,6 +1067,132 @@
       }
     }
 
+    // 光影手绘的城墙（设计书 54.5）：一块块石头，右侧被夕阳照亮，墙头长着苔藓，挂一盏灯
+    drawWallArt(ratio) {
+      const ctx = this.ctx;
+      const x0 = C.wallX - 64;
+      const top = C.fieldTop - 28;
+      const bottom = C.fieldBottom + 10;
+      const P = this.scene.palette;
+      if (!this.wallArt || this.wallArt.key !== this.scene.key + (ratio < 0.4 ? 'b' : ratio < 0.7 ? 'c' : 'a')) {
+        const c = document.createElement('canvas');
+        c.width = 110;
+        c.height = bottom - top + 40;
+        const g = c.getContext('2d');
+        g.translate(0, 30);
+        const ox = 20;
+        // 墙体底色：左暗右亮
+        const body = g.createLinearGradient(ox, 0, ox + 64, 0);
+        body.addColorStop(0, '#1c232c');
+        body.addColorStop(1, '#3e4954');
+        g.fillStyle = body;
+        g.fillRect(ox, 0, 64, bottom - top);
+        // 石块
+        let seed = 7;
+        const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+        for (let y = 0; y < bottom - top; y += 22) {
+          const off = (y / 22) % 2 ? 0 : 16;
+          for (let x = ox - 16 + off; x < ox + 64; x += 32) {
+            const bx = Math.max(ox, x) + 1.5;
+            const bw = Math.min(ox + 64, x + 32) - bx - 1.5;
+            if (bw <= 2) continue;
+            const v = 40 + Math.floor(rnd() * 22) + (bx - ox) * 0.35;
+            g.fillStyle = `rgb(${v - 6},${v + 2},${v + 12})`;
+            TD.sprites.roundRect(g, bx, y + 1.5, bw, 19, 4);
+            g.fill();
+            // 右上边缘的暖色轮廓光
+            g.strokeStyle = TD.art.rgba(P.rim, 0.28 + (bx - ox) / 64 * 0.3);
+            g.lineWidth = 1.5;
+            g.beginPath();
+            g.moveTo(bx + 3, y + 2.5);
+            g.lineTo(bx + bw - 2, y + 2.5);
+            g.lineTo(bx + bw - 1, y + 12);
+            g.stroke();
+          }
+        }
+        // 垛口
+        for (let y = -4; y < bottom - top; y += 44) {
+          const gg = g.createLinearGradient(ox + 50, 0, ox + 72, 0);
+          gg.addColorStop(0, '#3a444f');
+          gg.addColorStop(1, '#5a6672');
+          g.fillStyle = gg;
+          TD.sprites.roundRect(g, ox + 50, y, 22, 26, 4);
+          g.fill();
+          g.strokeStyle = TD.art.rgba(P.rim, 0.55);
+          g.lineWidth = 2;
+          g.beginPath();
+          g.moveTo(ox + 54, y + 1);
+          g.lineTo(ox + 71, y + 1);
+          g.lineTo(ox + 71, y + 20);
+          g.stroke();
+          // 垛口上的苔藓
+          g.fillStyle = '#2f5a2c';
+          g.beginPath();
+          g.ellipse(ox + 58, y + 1, 9, 4, 0, 0, Math.PI * 2);
+          g.fill();
+          g.fillStyle = 'rgba(170,220,110,0.6)';
+          g.beginPath();
+          g.ellipse(ox + 60, y - 1, 5, 2, 0, 0, Math.PI * 2);
+          g.fill();
+        }
+        // 墙脚的苔藓和小草
+        g.fillStyle = '#244a26';
+        for (let y = 30; y < bottom - top; y += 70 + rnd() * 50) {
+          g.beginPath();
+          g.ellipse(ox + 4 + rnd() * 50, y, 10 + rnd() * 8, 5, 0, 0, Math.PI * 2);
+          g.fill();
+        }
+        // 裂纹与缺口（设计书 4.3）
+        g.strokeStyle = 'rgba(10,12,20,0.7)';
+        g.lineWidth = 2;
+        const cracks = ratio < 0.7 ? (ratio < 0.4 ? 9 : 5) : 0;
+        for (let i = 0; i < cracks; i++) {
+          const cx = ox + 10 + ((i * 23) % 44);
+          const cy = 40 + ((i * 97) % (bottom - top - 80));
+          g.beginPath();
+          g.moveTo(cx, cy);
+          g.lineTo(cx + 8, cy + 10);
+          g.lineTo(cx + 2, cy + 20);
+          g.lineTo(cx + 10, cy + 30);
+          g.stroke();
+        }
+        this.wallArt = { key: this.scene.key + (ratio < 0.4 ? 'b' : ratio < 0.7 ? 'c' : 'a'), canvas: c };
+      }
+      ctx.drawImage(this.wallArt.canvas, x0 - 20, top - 30);
+      // 旗帜
+      const fx = x0 + 12;
+      const fy = top - 50;
+      ctx.strokeStyle = '#2a1e18';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(fx, top);
+      ctx.lineTo(fx, fy);
+      ctx.stroke();
+      const wave = Math.sin(this.t * 4) * 4;
+      ctx.fillStyle = ratio < 0.4 ? '#7a2230' : '#c23a48';
+      ctx.beginPath();
+      ctx.moveTo(fx, fy);
+      ctx.quadraticCurveTo(fx + 20, fy + wave, fx + 38, fy + 6);
+      ctx.quadraticCurveTo(fx + 20, fy + 20 + wave, fx, fy + 22);
+      ctx.fill();
+      // 城墙的表情（设计书 1.4）：暗处发光的一双小眼睛
+      const ex = x0 + 30;
+      const ey = (top + bottom) / 2 + 40;
+      const eyeC = ratio > 0.4 ? '#ffe7a8' : '#ff9a7a';
+      TD.art.drawGlow(ctx, ex, ey + 2, 26, eyeC, 0.35);
+      S.ellipse(ctx, ex - 9, ey, 3, ratio > 0.7 ? 4 : 3, eyeC);
+      S.ellipse(ctx, ex + 9, ey, 3, ratio > 0.7 ? 4 : 3, eyeC);
+      ctx.strokeStyle = eyeC;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      if (ratio > 0.7) ctx.arc(ex, ey + 8, 6, 0.2, Math.PI - 0.2);
+      else if (ratio > 0.4) {
+        ctx.moveTo(ex - 6, ey + 11);
+        ctx.lineTo(ex + 6, ey + 11);
+      } else ctx.arc(ex, ey + 15, 6, Math.PI + 0.3, -0.3);
+      ctx.stroke();
+    }
+
     drawRangeMarker(b) {
       const ctx = this.ctx;
       const x = C.wallX + b.range;
@@ -1133,6 +1298,7 @@
       const ctx = this.ctx;
       const def = m.def;
       const x = m.x;
+      if (x > C.width + def.size * 3) return; // 还没走进画面
       const y = m.y + m.yOffset + (def.flying ? 0 : 6);
       const frozen = b.time < m.frozenUntil;
       const t = frozen ? 0 : this.t + m.id * 0.37;
@@ -1184,7 +1350,31 @@
           S.ellipse(ctx, x, y - 6, def.guard.radius, def.guard.radius * 0.45, null, '#5aa86a', 3);
           ctx.restore();
         }
-        S.monster(ctx, m.type, x, ly, def.size, t, { flash: m.hitFlash, attack: m.state === 'attack' || m.state === 'hold', seed: m.id, ai: m.ai, shield: m.shield, regen, wool: m.woolMax ? m.wool / m.woolMax : null, shellIn: m.shellUntil > b.time, leap, scale: scale * DRAW_SCALE });
+        const mo = { flash: m.hitFlash, attack: m.state === 'attack' || m.state === 'hold', seed: m.id, ai: m.ai, shield: m.shield, regen, wool: m.woolMax ? m.wool / m.woolMax : null, shellIn: m.shellUntil > b.time, leap, scale: scale * DRAW_SCALE };
+        if (this.scene && !this.scene.none && TD.art.opts.lit && ctx.globalAlpha === 1) {
+          // 光影缓存（设计书 54.5）：动画约 12 帧/秒。
+          // 普通小怪按"类型 + 4 个动画相位 + 状态"共用缓存，几十只同种怪只需要重画几次；
+          // 受击闪白的怪、Boss 用自己的缓存
+          const flags = (mo.shellIn ? 's' : '') + (mo.wool !== null ? 'w' + Math.round(mo.wool * 8) : '') + (scale !== 1 ? 'k' + Math.round(scale * 10) : '') + (frozen ? 'z' : '') + (mo.attack ? 'a' : '');
+          let holder = m;
+          let tt = t;
+          if (!(m.hitFlash > 0) && !def.boss && !m.ai) {
+            const group = m.id % 4;
+            tt = frozen ? 0 : this.t + group * 0.37;
+            mo.seed = group + 1;
+            const hk = m.type + '|' + group + '|' + flags;
+            this.litShared = this.litShared || new Map();
+            holder = this.litShared.get(hk);
+            if (!holder) {
+              if (this.litShared.size > 400) this.litShared.clear();
+              this.litShared.set(hk, (holder = {}));
+            }
+          }
+          const frame = frozen ? -1 : Math.floor(tt * TD.art.LIT_FPS);
+          const key = frame + (m.hitFlash > 0 ? 'f' : '') + flags;
+          const c = TD.art.litSprite(holder, key, def.size * DRAW_SCALE, this.scene.palette.rim, TD.art.opts.glow ? 0.32 : 0, (g) => S.monster(g, m.type, 0, 0, def.size, tt, mo));
+          ctx.drawImage(c.canvas, Math.round(x - c.ox), Math.round(ly - c.oy));
+        } else S.monster(ctx, m.type, x, ly, def.size, t, mo);
         if (m.bubble) {
           // 海马的泡泡
           const r = def.size * DRAW_SCALE * 1.15;
@@ -1254,6 +1444,29 @@
 
     drawProjectiles(b) {
       const ctx = this.ctx;
+      // 光尾（设计书 54.5）：每支弹道身后一条加色的光
+      if (this.scene && !this.scene.none) {
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        for (const p of b.projectiles) {
+          if (p.done || p.kind === 'boomerang') continue;
+          const col = p.kind === 'zap' ? '#9fd0ff' : p.kind === 'orb' ? '#d9b8ff' : p.kind === 'shell' ? '#ffb070' : p.crit ? '#ffe680' : '#fff0c0';
+          const tx = p.x - Math.cos(p.angle) * 46;
+          const ty = p.y - Math.sin(p.angle) * 46;
+          const lg = ctx.createLinearGradient(tx, ty, p.x, p.y);
+          lg.addColorStop(0, TD.art.rgba(col, 0));
+          lg.addColorStop(1, TD.art.rgba(col, 0.7));
+          ctx.strokeStyle = lg;
+          ctx.lineWidth = p.crit ? 5 : 3;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.moveTo(tx, ty);
+          ctx.lineTo(p.x, p.y);
+          ctx.stroke();
+          TD.art.drawGlow(ctx, p.x, p.y, p.crit ? 16 : 11, col, 0.7);
+        }
+        ctx.restore();
+      }
       for (const p of b.projectiles) {
         if (p.done) continue;
         if (p.kind === 'boomerang') {
@@ -1358,9 +1571,17 @@
         aim = TD.util.clamp(aim, -1.2, 1.2);
         shotAge = b.time - b.hero.shotAt;
       }
+      // 英雄身边的暖光（城墙上挂着的灯，设计书 54.5）
+      if (this.scene && !this.scene.none) TD.art.drawGlow(this.ctx, C.heroX + 6, heroY - 30, 110, '#ffc977', 0.42);
       // 英雄脚下的城墙平台
       const ascended = !!(b && b.stats.weaponDef && b.stats.weaponDef.ascended);
-      S.hero(this.ctx, C.heroX, heroY, { t: this.t, weapon, aimAngle: aim, shotAge, mood, critAge: this.critAge, ascended, outfit: TD.game && TD.game.save && TD.game.save.outfit, hero: b ? b.stats.heroId : TD.game && TD.game.save && TD.progression.heroId(TD.game.save) });
+      const ho = { t: this.t, weapon, aimAngle: aim, shotAge, mood, critAge: this.critAge, ascended, outfit: TD.game && TD.game.save && TD.game.save.outfit, hero: b ? b.stats.heroId : TD.game && TD.game.save && TD.progression.heroId(TD.game.save) };
+      if (this.scene && !this.scene.none && TD.art.opts.lit) {
+        // 英雄也加明暗和轮廓光（每帧重画，只有一个）
+        this.heroArt = this.heroArt || {};
+        const c = TD.art.litSprite(this.heroArt, Math.random(), 40, this.scene.palette.rim, 0, (g) => S.hero(g, 0, 0, ho));
+        this.ctx.drawImage(c.canvas, Math.round(C.heroX - c.ox), Math.round(heroY - c.oy));
+      } else S.hero(this.ctx, C.heroX, heroY, ho);
       // 战鼓等增益光环
       if (b && b.buffs.some((x) => b.time < x.until)) {
         const ctx = this.ctx;
@@ -1389,13 +1610,27 @@
       const x = cx - w / 2;
       const y = C.fieldTop - 26;
       ctx.save();
-      ctx.fillStyle = 'rgba(40,20,10,0.65)';
+      // 深色玻璃底 + 发光的血条（设计书 54.5）
+      const frame = ctx.createLinearGradient(0, y - 6, 0, y + 20);
+      frame.addColorStop(0, 'rgba(30,40,56,0.8)');
+      frame.addColorStop(1, 'rgba(10,14,24,0.85)');
+      ctx.fillStyle = frame;
       S.roundRect(ctx, x - 6, y - 6, w + 12, 26, 10);
       ctx.fill();
-      ctx.fillStyle = '#5a2020';
+      ctx.strokeStyle = 'rgba(255,214,150,0.45)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      ctx.fillStyle = 'rgba(70,14,22,0.9)';
       ctx.fillRect(x, y, w, 14);
-      ctx.fillStyle = '#ff5a4f';
+      const hpG = ctx.createLinearGradient(0, y, 0, y + 14);
+      hpG.addColorStop(0, '#ff9a8a');
+      hpG.addColorStop(0.5, '#ff4a4a');
+      hpG.addColorStop(1, '#b0202a');
+      ctx.fillStyle = hpG;
+      ctx.shadowColor = 'rgba(255,90,80,0.8)';
+      ctx.shadowBlur = 10;
       ctx.fillRect(x, y, (w * boss.hp) / boss.maxHp, 14);
+      ctx.shadowBlur = 0;
       // 阶段刻度
       if (boss.def.ai === 'boarKing') {
         ctx.fillStyle = '#fff';
@@ -1658,6 +1893,15 @@
             ctx.fillText(f.str, f.x, f.y);
             break;
           }
+          case 'glow':
+            TD.art.drawGlow(ctx, f.x, f.y, f.r * (0.7 + k * 0.6), f.color, 1 - k, true);
+            break;
+          case 'spirit':
+            f.x += f.vx * dt;
+            f.y += f.vy * dt;
+            f.vx *= Math.pow(0.3, dt);
+            TD.art.drawGlow(ctx, f.x, f.y, f.r * (1 - k * 0.5), f.color, (1 - k) * 0.9, true);
+            break;
           case 'spark':
             f.x += f.vx * dt;
             f.y += f.vy * dt;
@@ -1814,13 +2058,20 @@
             const inK = Math.min(1, f.age * 5);
             const outK = 1 - Math.max(0, (f.age - f.life + 0.4) / 0.4);
             ctx.globalAlpha = Math.min(inK, outK);
-            ctx.fillStyle = 'rgba(40,25,15,0.55)';
-            S.roundRect(ctx, C.width / 2 - 220, 190, 440, 64, 20);
-            ctx.fill();
+            // 横幅：中间一条渐隐的暗带 + 发光的字（设计书 54.5）
+            const bandG = ctx.createLinearGradient(C.width / 2 - 300, 0, C.width / 2 + 300, 0);
+            bandG.addColorStop(0, 'rgba(8,12,24,0)');
+            bandG.addColorStop(0.5, 'rgba(8,12,24,0.6)');
+            bandG.addColorStop(1, 'rgba(8,12,24,0)');
+            ctx.fillStyle = bandG;
+            ctx.fillRect(C.width / 2 - 300, 188, 600, 68);
             ctx.font = 'bold 36px "Trebuchet MS", sans-serif';
             ctx.textAlign = 'center';
-            ctx.fillStyle = '#fff6d6';
+            ctx.shadowColor = 'rgba(255,200,110,0.9)';
+            ctx.shadowBlur = 16;
+            ctx.fillStyle = '#fff3d0';
             ctx.fillText(f.str, C.width / 2, 235);
+            ctx.shadowBlur = 0;
             break;
           }
         }

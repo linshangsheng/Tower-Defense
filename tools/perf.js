@@ -1,5 +1,6 @@
 // 渲染性能测量（设计书 13.2）：在怪物最多的关卡里，测量每帧绘制耗时
-// 用法：node tools/perf.js [关卡号,关卡号,...]   默认测几个怪物最密集的关卡
+// 用法：node tools/perf.js [关卡号,关卡号,...] [关掉的光影效果,...]   默认测几个怪物最密集的关卡
+//   第二个参数用于排查性能：lit,motes,front,shafts,glow（设计书 54）
 const path = require('path');
 let chromium;
 try {
@@ -8,6 +9,7 @@ try {
   ({ chromium } = require(path.join(process.env.NODE_PATH || '/opt/node22/lib/node_modules', 'playwright')));
 }
 
+const artOff = (process.argv[3] || "").split(",").filter(Boolean);
 const levels = (process.argv[2] || '29,39,48,54,57,59,60').split(',').map(Number);
 
 (async () => {
@@ -21,7 +23,8 @@ const levels = (process.argv[2] || '29,39,48,54,57,59,60').split(',').map(Number
   for (const n of levels) {
     // 先在逻辑层快进 40 秒把怪物堆满，再让真实的游戏循环跑 6 秒，记录 requestAnimationFrame 的帧间隔
     // （直接在循环里连续调用 render 不让出主线程，软件渲染会一次性刷新命令缓冲，测出来的尖峰不真实）
-    const r = await page.evaluate(async (n) => {
+    const r = await page.evaluate(async ([n, artOff]) => {
+      for (const k of artOff) if (TD.art) TD.art.opts[k] = false;
       const s = TD.game.save;
       s.settings.diffChosen = true;
       for (let k = 1; k < n; k++) s.levels[k] = { stars: 3, clears: 1 };
@@ -55,7 +58,7 @@ const levels = (process.argv[2] || '29,39,48,54,57,59,60').split(',').map(Number
       gaps.sort((a, c) => a - c);
       const avg = gaps.reduce((a, c) => a + c, 0) / gaps.length;
       return { peak, avg, p95: gaps[Math.floor(gaps.length * 0.95)], max: gaps[gaps.length - 1] };
-    }, n);
+    }, [n, artOff]);
     console.log(`第${n}关  ${String(r.peak).padStart(5)}  ${r.avg.toFixed(1).padStart(11)}  ${r.p95.toFixed(1).padStart(6)}  ${r.max.toFixed(1).padStart(7)}  ${(1000 / r.avg).toFixed(0).padStart(7)}`);
   }
   if (errors.length) console.log('错误：\n' + errors.join('\n'));
