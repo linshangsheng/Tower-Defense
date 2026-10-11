@@ -97,6 +97,40 @@
     return dpsBase * eff * aoe;
   };
 
+  // 特长装备在第 n 关大约值多少输出（比例）：用于自动配装（设计书 58.5）
+  TD.progression.gearLevelValue = function (id, n, st) {
+    const D = TD.data;
+    const e = D.equipment[id];
+    const lvl = D.levels[n];
+    if (!lvl || (!e.mods && !e.zap)) return 0;
+    const m = e.mods || {};
+    let total = 0;
+    const w = { boss: 0, fly: 0, spirit: 0, armored: 0 };
+    for (const wave of lvl.waves)
+      for (const [type, c] of wave.groups) {
+        const def = D.monsters[type];
+        const weight = def.boss ? (def.boss === 'major' ? 25 : 10) : c;
+        total += weight;
+        if (def.boss || def.bossPart) w.boss += weight;
+        if (def.flying) w.fly += weight;
+        if (def.physResist) w.spirit += weight;
+        if ((def.armor || 0) + (def.frontArmor || 0) >= 30) w.armored += weight;
+      }
+    const share = (k) => (total ? w[k] / total : 0);
+    const magic = st && st.weaponDef && st.weaponDef.dmgType === 'magic';
+    let v = 0;
+    v += (m.bossDmg || 0) * share('boss');
+    v += (m.flyDmg || 0) * share('fly');
+    if (!magic) v += (m.spiritPierce || 0) * 2.5 * share('spirit');
+    if (!magic) v += (m.armorIgnore || 0) * 1.2 * share('armored');
+    if (m.darkSight && lvl.dark) v += 0.25;
+    v += (m.slowOnHit || 0) * 0.35 + (m.igniteChance || 0) * 0.3 + (m.lowWallAtk || 0) * 0.25;
+    v += -(m.cdMult || 0) * 0.5 + (m.frostExt || 0) * 0.1;
+    v += (m.mendBonus || 0) * 2 + (m.healBonus || 0) * 0.15;
+    if (e.zap) v += (e.zap.atkMult / e.zap.every) * 0.7;
+    return v;
+  };
+
   // 本关的理想武器（不考虑是否拥有）：用于关卡预览的"推荐武器"提示
   TD.progression.idealWeapon = function (n) {
     const D = TD.data;
@@ -226,8 +260,9 @@
     }
     for (let i = 0; i < 3; i++) lo.items[i] = items[i] || null;
 
-    // 装备：每个栏位挑战力提升最大的
+    // 装备：每个栏位挑战力提升最大的；特长装备按本关怪物构成折算（设计书 58.5）
     const slots = { helm: ['helm'], cape: ['cape'], trinket: ['trinket1', 'trinket2'] };
+    if (P.slotCount(save, 'quiver') > 0) slots.quiver = ['quiver'];
     for (const kind of Object.keys(slots)) {
       const cands = Object.keys(D.equipment).filter((id) => save.equipOwned[id] && D.equipment[id].slot === kind);
       const scored = cands
@@ -235,7 +270,8 @@
           const clone = TD.util.deepClone(save);
           for (const k of slots[kind]) clone.loadout.equip[k] = null;
           clone.loadout.equip[slots[kind][0]] = id;
-          return { id, score: P.estimateDps(P.heroStats(clone)) + (D.equipment[id].stats.wallDr || 0) * 50 + (D.equipment[id].stats.luck || 0) * 5 };
+          const st = P.heroStats(clone);
+          return { id, score: P.estimateDps(st) * (1 + P.gearLevelValue(id, n, st)) + (D.equipment[id].stats.wallDr || 0) * 50 + (D.equipment[id].stats.luck || 0) * 5 };
         })
         .sort((a, b) => b.score - a.score);
       slots[kind].forEach((k, i) => (lo.equip[k] = scored[i] ? scored[i].id : null));

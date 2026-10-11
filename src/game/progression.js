@@ -28,7 +28,7 @@
         weapon: 'bow',
         active: ['drum', null, null],
         passive: [null, null, null],
-        equip: { helm: null, cape: null, trinket1: null, trinket2: null },
+        equip: { helm: null, cape: null, quiver: null, trinket1: null, trinket2: null },
         items: [null, null, null],
         target: 'nearest',
         autoCast: false,
@@ -213,16 +213,42 @@
   };
 
   // ---------- 属性计算 ----------
-  P.equipStats = function (save) {
-    const s = { atkFlat: 0, atkPct: 0, aspdPct: 0, crit: 0, critDmg: 0, luck: 0, rangePct: 0, wallDr: 0 };
+  // 当前生效的装备：箭袋栏位要通关第 8 关才开放（设计书 58.2）
+  P.wornEquip = function (save) {
+    const out = [];
     for (const slot of Object.keys(save.loadout.equip)) {
       const id = save.loadout.equip[slot];
-      if (!id || !save.equipOwned[id]) continue;
+      if (!id || !save.equipOwned[id] || !D.equipment[id]) continue;
+      if (slot === 'quiver' && P.slotCount(save, 'quiver') < 1) continue;
+      out.push(id);
+    }
+    return out;
+  };
+  // 凑齐的套装（设计书 58.4）
+  P.activeSets = function (save) {
+    const worn = P.wornEquip(save);
+    return Object.keys(D.gearSets || {}).filter((k) => D.gearSets[k].parts.every((id) => worn.includes(id)));
+  };
+  P.equipStats = function (save) {
+    const s = { atkFlat: 0, atkPct: 0, aspdPct: 0, crit: 0, critDmg: 0, luck: 0, rangePct: 0, wallDr: 0 };
+    for (const id of P.wornEquip(save)) {
       const st = D.equipment[id].stats;
       for (const k of Object.keys(st)) s[k] += st[k];
     }
     return s;
   };
+  // 装备和套装的特殊效果：进入战斗时并入战场修正（battle.mods）
+  P.equipMods = function (save) {
+    const mods = {};
+    const add = (m) => {
+      for (const k of Object.keys(m || {})) mods[k] = (mods[k] || 0) + m[k];
+    };
+    for (const id of P.wornEquip(save)) add(D.equipment[id].mods);
+    for (const k of P.activeSets(save)) add(D.gearSets[k].mods);
+    return mods;
+  };
+  // 装备是否已经上架
+  P.equipAvailable = (save, id) => !D.equipment[id].minLevel || P.highestCleared(save) >= D.equipment[id].minLevel;
 
   P.passiveSet = function (save) {
     const set = {};
@@ -282,6 +308,8 @@
       mend: wl.mend * WU.mend.per,
       thorns: wl.thorns * WU.thorns.per,
       passives,
+      gearMods: P.equipMods(save),
+      zap: (P.wornEquip(save).map((id) => D.equipment[id].zap).find(Boolean)) || null,
     };
   };
 
@@ -400,11 +428,11 @@
   P.equipSlotsFor = (slot) => (slot === 'trinket' ? ['trinket1', 'trinket2'] : [slot]);
 
   P.buyEquip = function (save, id) {
-    if (save.equipOwned[id]) return false;
+    if (save.equipOwned[id] || !P.equipAvailable(save, id)) return false;
     if (!P.pay(save, D.equipment[id].cost)) return false;
     save.equipOwned[id] = true;
     const slots = P.equipSlotsFor(D.equipment[id].slot);
-    const empty = slots.find((s) => !save.loadout.equip[s]);
+    const empty = slots.find((s) => save.loadout.equip[s] === null || save.loadout.equip[s] === undefined);
     if (empty) save.loadout.equip[empty] = id;
     return true;
   };

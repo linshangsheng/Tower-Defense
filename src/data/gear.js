@@ -251,12 +251,39 @@
     clover: { name: '四叶草', slot: 'trinket', rarity: 'common', cost: { copper: 100 }, stats: { luck: 0.15 }, desc: '幸运 +15%' },
     fang: { name: '狼牙项链', slot: 'trinket', rarity: 'common', cost: { copper: 140 }, stats: { critDmg: 0.25 }, desc: '暴击伤害 +25%' },
     eagleEye: { name: '鹰眼坠', slot: 'trinket', rarity: 'rare', cost: { silver: 6 }, stats: { rangePct: 0.1 }, desc: '射程 +10%' },
+
+    // ---- v0.50 装备扩充（设计书 58）：minLevel = 通关第几关后上架；mods 进入战斗时并入战场修正 ----
+    dragonHelm: { name: '屠龙盔', slot: 'helm', rarity: 'rare', cost: { silver: 7 }, minLevel: 10, stats: { atkFlat: 3 }, mods: { bossDmg: 0.2 }, desc: '攻击力 +3；对 Boss（含触手）伤害 +20%' },
+    owlHelm: { name: '夜枭盔', slot: 'helm', rarity: 'rare', cost: { silver: 6 }, minLevel: 20, stats: { crit: 0.04 }, mods: { darkSight: 0.5 }, desc: '暴击率 +4%；暗夜关的射程惩罚减半' },
+    frostHelm: { name: '寒铁盔', slot: 'helm', rarity: 'rare', cost: { silver: 7 }, minLevel: 30, stats: { atkFlat: 3 }, mods: { frostExt: 0.3 }, set: 'frost', desc: '攻击力 +3；冰冻领域、冰冻瓶持续时间 +30%' },
+    windCape: { name: '疾风披风', slot: 'cape', rarity: 'common', cost: { copper: 260 }, minLevel: 4, stats: { aspdPct: 0.06 }, mods: { flyDmg: 0.15 }, desc: '攻击速度 +6%；对飞行怪伤害 +15%' },
+    emberCape: { name: '余烬斗篷', slot: 'cape', rarity: 'rare', cost: { silver: 8 }, minLevel: 40, stats: { aspdPct: 0.08 }, mods: { igniteChance: 0.2 }, desc: '攻击速度 +8%；普通攻击 20% 几率点燃目标' },
+    tideCape: { name: '潮汐斗篷', slot: 'cape', rarity: 'rare', cost: { silver: 8 }, minLevel: 60, stats: { aspdPct: 0.08, wallDr: 0.08 }, mods: { mendBonus: 0.02 }, set: 'tide', desc: '攻击速度 +8%，城墙受到伤害 −8%；每波结束城墙多回复 2%' },
+    leatherQuiver: { name: '皮箭袋', slot: 'quiver', rarity: 'common', cost: { copper: 500 }, minLevel: 15, stats: { critDmg: 0.15 }, desc: '暴击伤害 +15%' },
+    barbQuiver: { name: '倒钩箭袋', slot: 'quiver', rarity: 'common', cost: { copper: 700 }, minLevel: 15, stats: { atkPct: 0.05 }, desc: '攻击力 +5%' },
+    pierceQuiver: { name: '破甲箭袋', slot: 'quiver', rarity: 'rare', cost: { silver: 6 }, minLevel: 15, stats: {}, mods: { armorIgnore: 0.2 }, desc: '无视目标 20% 护甲' },
+    spiritQuiver: { name: '灵光箭袋', slot: 'quiver', rarity: 'rare', cost: { silver: 6 }, minLevel: 21, stats: { crit: 0.03 }, mods: { spiritPierce: 0.25 }, desc: '暴击率 +3%；物理伤害对灵体的效果 +25%' },
+    frostQuiver: { name: '霜羽箭袋', slot: 'quiver', rarity: 'rare', cost: { silver: 6 }, minLevel: 30, stats: {}, mods: { slowOnHit: 0.15 }, set: 'frost', desc: '普通攻击使目标减速 15%（1.5 秒）' },
+    thunderQuiver: { name: '雷鸣箭袋', slot: 'quiver', rarity: 'legend', cost: { gold: 3 }, minLevel: 25, stats: {}, zap: { every: 6, atkMult: 1.5 }, desc: '每第 6 次攻击，一道小闪电落在目标身上，额外造成攻击力 ×1.5 的魔法伤害' },
+    coinCharm: { name: '招财坠', slot: 'trinket', rarity: 'common', cost: { copper: 180 }, minLevel: 6, stats: {}, mods: { copperBonus: 0.1 }, desc: '本关铜币收益 +10%' },
+    rageBadge: { name: '背水徽章', slot: 'trinket', rarity: 'rare', cost: { silver: 6 }, minLevel: 15, stats: {}, mods: { lowWallAtk: 0.2 }, desc: '城墙血量低于 50% 时，攻击力 +20%' },
+    hourglass: { name: '时之沙漏', slot: 'trinket', rarity: 'legend', cost: { gold: 3 }, minLevel: 35, stats: {}, mods: { cdMult: -0.15 }, desc: '主动技能冷却 −15%' },
+    shellCharm: { name: '贝壳护符', slot: 'trinket', rarity: 'rare', cost: { silver: 6 }, minLevel: 61, stats: { wallDr: 0.06 }, mods: { healBonus: 0.25 }, set: 'tide', desc: '城墙受到伤害 −6%；城墙回血效果 +25%' },
+  };
+
+  TD.data.equipSlots = { helm: '头盔', cape: '披风', quiver: '箭袋', trinket: '饰品' };
+
+  // 套装（设计书 58.4）：凑齐 parts 后，mods 并入战场修正
+  TD.data.gearSets = {
+    frost: { name: '寒霜', parts: ['frostHelm', 'frostQuiver'], mods: { slowedDmg: 0.15 }, desc: '对被减速或冰冻的怪物伤害 +15%' },
+    tide: { name: '潮汐', parts: ['tideCape', 'shellCharm'], mods: { waveShield: 0.04 }, desc: '每波开始时，城墙获得 4% 最大血量的泡泡护盾' },
   };
 
   TD.data.rarityNames = { common: '普通', rare: '精良', legend: '传说' };
 
   // 配装栏位解锁：通关某关后解锁（0 表示初始）
   TD.data.slotUnlocks = {
+    quiver: [15],
     active: [0, 5, 20],
     passive: [3, 10, 30],
     item: [2, 6, 8],

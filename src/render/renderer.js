@@ -55,6 +55,10 @@
       on('rainArrow', (e) => this.fx.push({ kind: 'fallArrow', x: e.x, y: e.y, life: 0.18, age: 0 }));
       on('thunderChain', (e) => this.fx.push({ kind: 'chain', x0: e.x0, y0: e.y0, x: e.x, y: e.y, life: 0.3, age: 0 }));
       on('laneFreeze', () => (this.shake = Math.max(this.shake, 3)));
+      // 雷鸣箭袋的小闪电（设计书 58.3）
+      on('gearZap', (e) => {
+        this.fx.push({ kind: 'bolt', x: e.x, y: e.y, life: 0.22, age: 0, seed: Math.random(), small: true });
+      });
       on('thunder', (e) => {
         this.fx.push({ kind: 'bolt', x: e.x, y: e.y, life: 0.35, age: 0, seed: Math.random() });
         this.shake = Math.max(this.shake, 8);
@@ -2068,14 +2072,16 @@
           case 'bolt': {
             ctx.globalAlpha = 1 - k;
             ctx.strokeStyle = '#d9b8ff';
-            ctx.lineWidth = 6;
+            ctx.lineWidth = f.small ? 3 : 6;
             ctx.shadowColor = '#b07aff';
             ctx.shadowBlur = 20;
             ctx.beginPath();
+            // 小闪电（雷鸣箭袋）只从目标头顶 200 像素处落下
+            const top = f.small ? Math.max(0, f.y - 200) : 0;
             let x = f.x + 30;
-            ctx.moveTo(x, 0);
-            for (let y = 0; y < f.y; y += 40) {
-              x = f.x + (Math.sin(y * 0.3 + f.seed * 10) * 26 * (1 - y / f.y));
+            ctx.moveTo(x, top);
+            for (let y = top; y < f.y; y += f.small ? 25 : 40) {
+              x = f.x + (Math.sin(y * 0.3 + f.seed * 10) * (f.small ? 14 : 26) * (1 - (y - top) / (f.y - top)));
               ctx.lineTo(x, y);
             }
             ctx.lineTo(f.x, f.y);

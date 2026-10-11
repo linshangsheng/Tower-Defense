@@ -31,6 +31,16 @@
     add('weapon:' + wid, P.weaponUpgradeCost(save, wid), (s) => s.weapons[wid].lv++);
     add('wall:level', P.wallCost(save, 'level'), (s) => s.wall.level++);
     add('wall:fortify', P.wallCost(save, 'fortify'), (s) => s.wall.fortify++);
+    // 铜币箭袋（设计书 58）：和属性、武器升级按性价比一起比较
+    for (const id of ['leatherQuiver', 'barbQuiver']) {
+      if (save.equipOwned[id] || !P.equipAvailable(save, id) || P.slotCount(save, 'quiver') < 1) continue;
+      add('equip:' + id, D.equipment[id].cost, (s) => {
+        s.equipOwned[id] = true;
+        const cur = s.loadout.equip.quiver;
+        const keep = cur && P.estimateDps(P.heroStats(s)) > P.estimateDps(P.heroStats(Object.assign({}, s, { loadout: Object.assign({}, s.loadout, { equip: Object.assign({}, s.loadout.equip, { quiver: id }) }) })));
+        if (!keep) s.loadout.equip.quiver = id;
+      });
+    }
     opts.sort((a, b) => b.value - a.value);
     return opts;
   };
@@ -142,6 +152,7 @@
       if (kind === 'attr') P.buyAttr(save, key);
       else if (kind === 'weapon') P.upgradeWeapon(save, key);
       else if (kind === 'wall') P.buyWall(save, key);
+      else if (kind === 'equip') P.buyEquip(save, key);
       bought.push(best.label);
     }
     // 自动装满技能槽

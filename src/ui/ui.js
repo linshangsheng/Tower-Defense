@@ -905,23 +905,32 @@
     el.append(h('div', { class: 'hint' }, '买到的技能要在「配装」页放进技能槽才会带进战斗。'));
   }
 
+  // 套装说明（设计书 58.6）
+  function setLine(s, setId) {
+    const st = D.gearSets[setId];
+    const on = P.activeSets(s).includes(setId);
+    return h('div', { class: 'set-line' + (on ? ' on' : '') }, `${on ? '✨' : '◇'} 套装「${st.name}」：${st.parts.map((k) => D.equipment[k].name).join(' + ')} → ${st.desc}${on ? '（已凑齐）' : ''}`);
+  }
+
   function shopEquip(el) {
     const s = game.save;
-    const slotNames = { helm: '头盔', cape: '披风', trinket: '饰品' };
-    for (const slot of ['helm', 'cape', 'trinket']) {
-      el.append(h('div', { class: 'section-title' }, slotNames[slot]));
-      for (const id of Object.keys(D.equipment)) {
+    const worn = P.wornEquip(s);
+    for (const slot of Object.keys(D.equipSlots)) {
+      const quiverLocked = slot === 'quiver' && P.slotCount(s, 'quiver') < 1;
+      el.append(h('div', { class: 'section-title' }, D.equipSlots[slot] + (slot === 'trinket' ? '（可戴 2 件）' : '') + (quiverLocked ? `（通关第 ${D.slotUnlocks.quiver[0]} 关开放栏位，可以先买）` : '')));
+      // 已上架的在前，没上架的按上架关卡排在后面
+      const ids = Object.keys(D.equipment)
+        .filter((id) => D.equipment[id].slot === slot)
+        .sort((a, b) => (P.equipAvailable(s, a) ? 0 : D.equipment[a].minLevel) - (P.equipAvailable(s, b) ? 0 : D.equipment[b].minLevel));
+      for (const id of ids) {
         const e = D.equipment[id];
-        if (e.slot !== slot) continue;
-        el.append(
-          card(
-            e.name,
-            D.rarityNames[e.rarity],
-            e.desc,
-            s.equipOwned[id] ? h('span', { class: 'equipped' }, Object.values(s.loadout.equip).includes(id) ? '穿戴中' : '已拥有') : buyBtn(e.cost, () => P.buyEquip(s, id)),
-            { cls: 'rarity-' + e.rarity }
-          )
-        );
+        const avail = P.equipAvailable(s, id);
+        const right = s.equipOwned[id]
+          ? h('span', { class: 'equipped' }, worn.includes(id) ? '穿戴中' : '已拥有')
+          : avail
+            ? buyBtn(e.cost, () => P.buyEquip(s, id))
+            : h('span', { class: 'equipped dim' }, `通关第 ${e.minLevel} 关后上架`);
+        el.append(card(e.name, D.rarityNames[e.rarity], h('span', null, e.desc, e.set ? setLine(s, e.set) : null), right, { cls: 'rarity-' + e.rarity + (avail || s.equipOwned[id] ? '' : ' unavailable') }));
       }
     }
   }
@@ -1118,17 +1127,24 @@
 
     // 装备：装备页开放前只显示一行说明
     el.append(h('div', { class: 'section-title' }, '装备'));
-    const eqNames = { helm: '头盔', cape: '披风', trinket1: '饰品 1', trinket2: '饰品 2' };
+    const eqNames = { helm: '头盔', cape: '披风', quiver: '箭袋', trinket1: '饰品 1', trinket2: '饰品 2' };
     const anyEquip = Object.keys(s.equipOwned || {}).some((k) => s.equipOwned[k]);
-    if (!UI.tabUnlocked(s, 'equip') && !anyEquip) el.append(h('div', { class: 'hint slot-note' }, `通关第 ${TAB_UNLOCK.equip} 关后开放「装备」：头盔、披风和饰品`));
-    else
+    if (!UI.tabUnlocked(s, 'equip') && !anyEquip) el.append(h('div', { class: 'hint slot-note' }, `通关第 ${TAB_UNLOCK.equip} 关后开放「装备」：头盔、披风、箭袋和饰品`));
+    else {
       el.append(
         h(
           'div',
           { class: 'slot-row' },
-          Object.keys(eqNames).map((k) => slotBox(eqNames[k], lo.equip[k] ? D.equipment[lo.equip[k]].name : null, () => pickEquip(k), false, lo.equip[k] ? D.equipment[lo.equip[k]].desc : null))
+          Object.keys(eqNames).map((k) =>
+            k === 'quiver' && P.slotCount(s, 'quiver') < 1
+              ? slotBox(eqNames[k], null, () => {}, true, `通关第 ${D.slotUnlocks.quiver[0]} 关解锁`)
+              : slotBox(eqNames[k], lo.equip[k] ? D.equipment[lo.equip[k]].name : null, () => pickEquip(k), false, lo.equip[k] ? D.equipment[lo.equip[k]].desc : null)
+          )
         )
       );
+      const sets = P.activeSets(s);
+      if (sets.length) el.append(h('div', { class: 'synergy-row' }, sets.map((k) => h('span', { class: 'synergy on' }, `✨ 套装「${D.gearSets[k].name}」：${D.gearSets[k].desc}`))));
+    }
 
     const invOwned = {};
     for (const id of Object.keys(s.inventory)) if (s.inventory[id] > 0) invOwned[id] = true;

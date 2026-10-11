@@ -1574,3 +1574,117 @@ test('震地炮：把小怪震退并减速，Boss 不动', () => {
   assert.ok(Math.abs(m.slowAmt - 0.4) < 1e-9);
   assert.strictEqual(boss.x, 520);
 });
+
+// ---------- 装备扩充（设计书 58） ----------
+test('装备扩充：24 件装备，每件栏位合法；套装部件存在且属于该套装', () => {
+  assert.strictEqual(Object.keys(D.equipment).length, 24);
+  for (const id of Object.keys(D.equipment)) assert.ok(D.equipSlots[D.equipment[id].slot], id);
+  for (const k of Object.keys(D.gearSets)) for (const id of D.gearSets[k].parts) assert.strictEqual(D.equipment[id].set, k, id);
+});
+
+test('装备上架：没到关卡买不了；箭袋栏位通关第 15 关才生效', () => {
+  const s = P.newSave();
+  s.copper = 10000;
+  clearUpTo(s, 14);
+  assert.ok(!P.buyEquip(s, 'leatherQuiver'), '第 15 关前没上架');
+  clearUpTo(s, 15);
+  assert.ok(P.buyEquip(s, 'leatherQuiver'));
+  assert.strictEqual(s.loadout.equip.quiver, 'leatherQuiver', '自动穿上');
+  const base = P.heroStats(P.newSave()).critDmg;
+  assert.ok(Math.abs(P.heroStats(s).critDmg - base - 0.15) < 1e-9);
+  // 老存档迁移后有箭袋栏位
+  const old = P.newSave();
+  delete old.loadout.equip.quiver;
+  assert.strictEqual(P.migrate(old).loadout.equip.quiver, null);
+});
+
+function gearBattle(ids, level) {
+  const s = P.newSave();
+  clearUpTo(s, 69);
+  for (const id of ids) {
+    s.equipOwned[id] = true;
+    const slot = D.equipment[id].slot;
+    const key = slot === 'trinket' ? (s.loadout.equip.trinket1 ? 'trinket2' : 'trinket1') : slot;
+    s.loadout.equip[key] = id;
+  }
+  return new TD.Battle({ level: level || 41, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 1 });
+}
+
+test('屠龙盔对 Boss +20%，疾风披风对飞行怪 +15%，普通怪不变', () => {
+  const b0 = gearBattle([]);
+  const b1 = gearBattle(['dragonHelm', 'windCape']);
+  const opts = { type: 'magic', source: 'weapon' };
+  const boss = b1.spawnMonster('boarKing', 0, 600);
+  const bee = b1.spawnMonster('bee', 0, 600);
+  const slime = b1.spawnMonster('slime', 0, 600);
+  assert.ok(Math.abs(b1.damageMult(boss, opts) - 1.2) < 1e-9);
+  assert.ok(Math.abs(b1.damageMult(bee, opts) - 1.15) < 1e-9);
+  assert.strictEqual(b1.damageMult(slime, opts), 1);
+  assert.strictEqual(b0.damageMult(b0.spawnMonster('boarKing', 0, 600), opts), 1);
+  assert.strictEqual(b1.damageMult(boss, { type: 'phys', source: 'thorns' }), 1, '荆棘不吃加成');
+});
+
+test('夜枭盔：暗夜射程惩罚减半', () => {
+  const plain = gearBattle([], 23);
+  const owl = gearBattle(['owlHelm'], 23);
+  const full = plain.stats.range;
+  assert.ok(Math.abs(plain.range - full * 0.7) < 1e-6);
+  assert.ok(Math.abs(owl.range - owl.stats.range * 0.85) < 1e-6);
+});
+
+test('寒霜套装：凑齐后对减速的怪 +15%；寒铁盔让冰冻瓶多冻 30%', () => {
+  const s = P.newSave();
+  clearUpTo(s, 40);
+  s.equipOwned.frostHelm = s.equipOwned.frostQuiver = true;
+  s.loadout.equip.helm = 'frostHelm';
+  assert.deepStrictEqual(P.activeSets(s), []);
+  s.loadout.equip.quiver = 'frostQuiver';
+  assert.deepStrictEqual(P.activeSets(s), ['frost']);
+  const b = gearBattle(['frostHelm', 'frostQuiver']);
+  const m = b.spawnMonster('slime', 0, 600);
+  assert.strictEqual(b.damageMult(m, { source: 'weapon' }), 1);
+  m.slowUntil = b.time + 1;
+  assert.ok(Math.abs(b.damageMult(m, { source: 'weapon' }) - 1.15) < 1e-9);
+  b.waveState = 'spawning';
+  b.items = [{ id: 'freeze', def: D.items.freeze, used: false }];
+  b.useItem(0, 0);
+  assert.ok(Math.abs(m.frozenUntil - b.time - 3.9) < 1e-9);
+});
+
+test('雷鸣箭袋：每第 6 次攻击落一道小闪电（魔法伤害，算进战斗报告）', () => {
+  const b = gearBattle(['thunderQuiver']);
+  const m = b.spawnMonster('slime', 0, 400);
+  m.hp = m.maxHp = 1e7;
+  let zaps = 0;
+  b.on('gearZap', () => zaps++);
+  for (let i = 0; i < 12; i++) b.fire([m]);
+  assert.strictEqual(zaps, 2);
+  assert.ok(b.report.bySource.zap > 0);
+});
+
+test('潮汐套装：每波开始城墙有 4% 护盾；贝壳护符让回血 +25%', () => {
+  const b = gearBattle(['tideCape', 'shellCharm']);
+  b.startWave(0);
+  assert.ok(Math.abs(b.wallShield - b.wall.max * 0.04) < 1e-6);
+  b.wall.hp = b.wall.max / 2;
+  b.healWall(100, 'test');
+  assert.ok(Math.abs(b.wall.hp - (b.wall.max / 2 + 125)) < 1e-6);
+});
+
+test('背水徽章：城墙低于一半时攻击力 +20%', () => {
+  const b = gearBattle(['rageBadge']);
+  const a0 = b.atk;
+  b.wall.hp = b.wall.max * 0.4;
+  assert.ok(Math.abs(b.atk / a0 - 1.2) < 1e-9);
+});
+
+test('自动配装：Boss 关挑屠龙盔、暗夜关挑夜枭盔', () => {
+  const s = P.newSave();
+  clearUpTo(s, 69);
+  s.attrs.atk = 25; // 中期的攻击力，铁皮盔 +3 不再显得很大
+  for (const id of ['ironHelm', 'dragonHelm', 'owlHelm']) s.equipOwned[id] = true;
+  P.recommend(s, 30);
+  assert.strictEqual(s.loadout.equip.helm, 'dragonHelm');
+  P.recommend(s, 23);
+  assert.strictEqual(s.loadout.equip.helm, 'owlHelm');
+});

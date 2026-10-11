@@ -11,7 +11,7 @@
   const SYNERGY = { shatter: D.synergies.shatter.mult, drumRain: D.synergies.drumRain.mult };
   const AUTO_ORDER = { drum: 1, frost: 2, repair: 3, arrowRain: 4, thunder: 5 };
   // 英雄自己的攻击（受盾龟护卫影响）：武器、溅射、连锁闪电
-  const HERO_SOURCES = { weapon: true, splash: true, chain: true };
+  const HERO_SOURCES = { weapon: true, splash: true, chain: true, zap: true };
 
   // 连击提示（设计书 38.2）
   const STREAK_CALLS = { 10: '10 连击！', 20: '横扫千军！', 30: '势不可挡！', 50: '无人能挡！' };
@@ -89,7 +89,11 @@
       this.waveStartTime = 0;
 
       // 战场补给（设计书 2.7）
-      this.mods = { atkMult: 0, aspdMult: 0, crit: 0, critDmg: 0, cdMult: 0, copperBonus: 0, wallDr: 0, range: 0, slowOnHit: 0, magicMult: 0, armorIgnore: 0, dotReduce: 0, spiritPierce: 0, chillResist: 0, igniteOnHit: 0, fireproof: 0, reveal: 0, woolCut: 0, stunImmune: 0, dodgeCut: 0, slowAll: 0, shellCut: 0, pinPop: 0, leapCut: 0 };
+      this.mods = { atkMult: 0, aspdMult: 0, crit: 0, critDmg: 0, cdMult: 0, copperBonus: 0, wallDr: 0, range: 0, slowOnHit: 0, magicMult: 0, armorIgnore: 0, dotReduce: 0, spiritPierce: 0, chillResist: 0, igniteOnHit: 0, fireproof: 0, reveal: 0, woolCut: 0, stunImmune: 0, dodgeCut: 0, slowAll: 0, shellCut: 0, pinPop: 0, leapCut: 0, bossDmg: 0, flyDmg: 0, slowedDmg: 0, igniteChance: 0, darkSight: 0, frostExt: 0, mendBonus: 0, lowWallAtk: 0, healBonus: 0, waveShield: 0 };
+      // 装备和套装的特殊效果（设计书 58）
+      const gm = this.stats.gearMods || {};
+      for (const k of Object.keys(gm)) this.mods[k] = (this.mods[k] || 0) + gm[k];
+      this.zapCount = 0;
       // 助战伙伴（设计书 51）
       this.buddy = (opts.loadout && opts.loadout.buddy && D.town.find((f) => f.boss === opts.loadout.buddy)) || null;
       if (this.buddy) {
@@ -149,11 +153,15 @@
     }
 
     get atk() {
-      return this.stats.atk * (1 + this.mods.atkMult) * (1 + this.rally);
+      // 背水徽章：城墙血量低于 50% 时攻击力提高（设计书 58.3）
+      const low = this.mods.lowWallAtk && this.wall.hp < this.wall.max * 0.5 ? this.mods.lowWallAtk : 0;
+      return this.stats.atk * (1 + this.mods.atkMult + low) * (1 + this.rally);
     }
 
     get range() {
-      return this.stats.range * (1 + this.mods.range) * (this.level.dark ? 0.7 : 1);
+      // 暗夜射程 −30%；夜枭盔把惩罚减半
+      const dark = this.level.dark ? 1 - 0.3 * (1 - Math.min(1, this.mods.darkSight || 0)) : 1;
+      return this.stats.range * (1 + this.mods.range) * dark;
     }
 
     offerSupply() {
@@ -229,11 +237,14 @@
       this.clearedOnce = false;
       // 贝贝的泡泡护盾（设计书 52.7）：每波开始时刷新
       if (this.buddy && this.buddy.perk.wallBubble) this.wallShield = this.wall.max * this.buddy.perk.wallBubble;
+      // 潮汐套装（设计书 58.4）：和贝贝的护盾不叠加，取大的
+      if (this.mods.waveShield) this.wallShield = Math.max(this.wallShield || 0, this.wall.max * this.mods.waveShield);
       this.emit('waveStart', { index: i, total: this.totalWaves, chapter: wave.chapter });
     }
 
     endWaveHeal() {
-      if (this.stats.mend > 0 && this.waveIndex >= 0) this.healWall(this.wall.max * this.stats.mend, 'mend');
+      const mend = this.stats.mend + (this.mods.mendBonus || 0);
+      if (mend > 0 && this.waveIndex >= 0) this.healWall(this.wall.max * mend, 'mend');
       if (this.buddy && this.buddy.perk.waveHeal && this.waveIndex >= 0) this.healWall(this.wall.max * this.buddy.perk.waveHeal, 'buddy');
     }
 
@@ -658,6 +669,7 @@
         return;
       }
       const before = this.wall.hp;
+      amount *= 1 + (this.mods.healBonus || 0);
       this.wall.hp = Math.min(this.wall.max, this.wall.hp + amount);
       this.emit('wallHeal', { amount: this.wall.hp - before, src });
     }
@@ -798,6 +810,12 @@
       }
       if (def.ai === 'pearlClam' && m.ai.mode !== 'walk') k *= m.ai.open ? D.pearlClam.openMult : D.pearlClam.closedMult;
       if (def.ai === 'octoKing' && m.ai.guarded) k *= D.octoKing.guardMult;
+      // 装备特长（设计书 58.3）：荆棘反伤不算
+      if (opts.source !== 'thorns') {
+        if (this.mods.bossDmg && (def.boss || def.bossPart)) k *= 1 + this.mods.bossDmg;
+        if (this.mods.flyDmg && def.flying) k *= 1 + this.mods.flyDmg;
+        if (this.mods.slowedDmg && (this.time < m.slowUntil || this.inFrost(m))) k *= 1 + this.mods.slowedDmg;
+      }
       return k;
     }
 
@@ -998,6 +1016,13 @@
       this.hero.aimX = t0.x;
       this.hero.aimY = t0.y + t0.yOffset;
       this.hero.shotAt = this.time;
+      // 雷鸣箭袋（设计书 58.3）：每第 N 次攻击落下一道小闪电
+      const zap = this.stats.zap;
+      if (zap && ++this.zapCount % zap.every === 0) {
+        this.emit('gearZap', { x: t0.x, y: t0.y + t0.yOffset });
+        // 目标被闪电打死时，箭照常射出（飞到原位置落空），不影响后面的攻击节奏
+        this.damage(t0, this.atk * zap.atkMult, { type: 'magic', fromFront: false, source: 'zap' });
+      }
       if (w.boomerang) {
         const lanes = [t0.lane];
         if (w.twin && this.lanes > 1) lanes.push(t0.lane + 1 < this.lanes ? t0.lane + 1 : t0.lane - 1);
@@ -1077,6 +1102,7 @@
         m.burnDps = (this.atk * b.atkMult) / b.duration;
       }
       if (this.mods.igniteOnHit && !m.dead) this.ignite(m);
+      else if (this.mods.igniteChance && !m.dead && this.rng() < this.mods.igniteChance) this.ignite(m);
       if (this.mods.slowOnHit > 0 && !m.dead) {
         const prev = this.time < m.slowUntil ? m.slowAmt : 0;
         m.slowAmt = Math.max(prev, this.mods.slowOnHit);
@@ -1240,7 +1266,7 @@
           break;
         }
         case 'frost':
-          this.laneEffects.push({ lane, type: 'frost', slow: def.slow, until: this.time + def.duration, start: this.time, freezeEnd: def.freezeEnd || 0 });
+          this.laneEffects.push({ lane, type: 'frost', slow: def.slow, until: this.time + def.duration * (1 + this.mods.frostExt), start: this.time, freezeEnd: def.freezeEnd || 0 });
           break;
         case 'thunder': {
           let best = null;
@@ -1318,9 +1344,12 @@
         case 'haste':
           this.buffs.push({ aspd: def.aspdBonus, until: this.time + def.duration, src: 'haste' });
           break;
-        case 'freeze':
-          this.laneEffects.push({ lane, type: 'freeze', until: this.time + def.duration, start: this.time });
-          for (const m of this.monsters) if (m.lane === lane && !m.dead) m.frozenUntil = this.time + def.duration;
+        case 'freeze': {
+          const dur = def.duration * (1 + this.mods.frostExt);
+          this.laneEffects.push({ lane, type: 'freeze', until: this.time + dur, start: this.time });
+          for (const m of this.monsters) if (m.lane === lane && !m.dead) m.frozenUntil = this.time + dur;
+          break;
+        }
           break;
       }
       it.used = true;
