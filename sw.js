@@ -1,6 +1,6 @@
 // Service Worker（设计书 43）：首次打开时缓存全部文件，之后缓存优先，断网也能玩
 // 更新游戏时改 VERSION，旧缓存会在新版本启动时删除
-const VERSION = 'scyx-v0.48';
+const VERSION = 'scyx-v0.49';
 const CORE = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png'];
 
 self.addEventListener('install', (event) => {

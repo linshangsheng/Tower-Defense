@@ -1,4 +1,4 @@
-// 生成 PWA 图标（设计书 43.1）：用游戏里的绘制代码画铛铛头像，输出 icons/icon-192.png、icon-512.png
+// 生成 PWA 图标（设计书 43.1、57.4）：用游戏里的绘制代码画徽章 Logo，输出 icons/icon-192.png、icon-512.png
 const fs = require('fs');
 const path = require('path');
 let chromium;
@@ -18,17 +18,14 @@ try {
       const c = document.createElement('canvas');
       c.width = c.height = size;
       const ctx = c.getContext('2d');
-      // 圆角方形底：天空蓝 → 草地绿
-      const g = ctx.createLinearGradient(0, 0, 0, size);
-      g.addColorStop(0, '#9fdcff');
-      g.addColorStop(0.62, '#bfe8ff');
-      g.addColorStop(0.62, '#8fd17a');
-      g.addColorStop(1, '#6fbf5a');
+      // 深色圆角方形底 + 徽章 Logo（设计书 57.4）
+      const g = ctx.createRadialGradient(size / 2, size * 0.45, 0, size / 2, size * 0.45, size * 0.75);
+      g.addColorStop(0, '#1b2a4a');
+      g.addColorStop(1, '#060a14');
       ctx.fillStyle = g;
       TD.sprites.roundRect(ctx, 0, 0, size, size, size * 0.18);
       ctx.fill();
-      const p = TD.sprites.heroPortrait(Math.round(size * 0.8), 'win', 'classic', 'dang');
-      ctx.drawImage(p, size * 0.1, size * 0.15);
+      TD.logo.drawEmblem(ctx, size / 2, size * 0.53, size * 0.34, { t: 0 });
       return c.toDataURL('image/png').split(',')[1];
     }, size);
     fs.writeFileSync(path.join(__dirname, '..', 'icons', `icon-${size}.png`), Buffer.from(data, 'base64'));

@@ -43,6 +43,9 @@ try {
   await page.click('#intro-ok');
   await page.waitForTimeout(8000);
   await page.screenshot({ path: `${out}/4-battle.png` });
+  // 战场中间必须点得到画布（HUD 层挡住画布时，选车道的道具和技能点不出来）
+  const hit = await page.evaluate(() => document.elementFromPoint(640, 360).id);
+  if (hit !== 'game') errors.push('战场被界面层挡住，点到的是：' + hit);
   // 快进到结束
   await page.evaluate(() => {
     const b = TD.game.battle;

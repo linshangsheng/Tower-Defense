@@ -252,6 +252,8 @@
     const it = b.items[i];
     if (!it || it.used || b.waveState === 'prepare') {
       TD.audio.play('error');
+      if (it && !it.used) TD.ui.toast('第一波怪物出来后才能用道具');
+      else if (it) TD.ui.toast('这个道具本关已经用过了');
       return;
     }
     if (it.def.targetLane && b.lanes > 1) {
@@ -386,6 +388,16 @@
 
     TD.ui.showTitle();
     requestAnimationFrame(frame);
+    // 启动动画（设计书 57.4）：自动化测试里跳过（网址带 ?splash 时强制播放）
+    const boot = document.getElementById('boot');
+    const wantSplash = TD.logo && (!navigator.webdriver || /splash/.test(location.search));
+    if (wantSplash) TD.logo.playSplash(document.getElementById('stage'));
+    if (boot) {
+      boot.classList.add('gone');
+      setTimeout(() => boot.remove(), 600);
+    }
+    // 趁动画播放时把下一关的战场背景先画好，第一次进战斗不卡
+    setTimeout(() => game.renderer.prewarm(P.highestCleared(game.save) + 1), 120);
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);

@@ -134,10 +134,19 @@
     TD.music.play(1, 'calm');
     game.renderer.mood = 'idle';
     const has = P.highestCleared(game.save) > 0 || game.save.copper > 0;
+    // 背景用玩家当前所在章节的战场（设计书 57.4）
+    const nextLv = Math.min(P.highestCleared(game.save) + 1, Object.keys(D.levels).length);
+    game.renderer.setChapter(D.chapterOf(nextLv));
     screenEl = h(
       'div',
       { class: 'screen title-screen' },
-      h('div', { class: 'title-logo' }, h('div', { class: 'title-main' }, '守城英雄'), h('div', { class: 'title-sub' }, '小卫兵铛铛的守城日记')),
+      h(
+        'div',
+        { class: 'title-logo' },
+        TD.logo ? TD.logo.liveEmblem(220) : null,
+        h('div', { class: 'title-main' }, '守城英雄'),
+        h('div', { class: 'title-sub' }, h('i'), '小卫兵铛铛的守城日记', h('i'))
+      ),
       h(
         'div',
         { class: 'title-buttons' },

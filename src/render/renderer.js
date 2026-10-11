@@ -381,6 +381,7 @@
         // 怪物很多时降低光影缓存的刷新率（设计书 55.3）
         if (TD.art) TD.art.LIT_FPS = alive.length > 60 ? 8 : 12;
         alive.sort((a, c) => (a.def.flying ? 1 : 0) - (c.def.flying ? 1 : 0) || a.y - c.y);
+        this.darkEyes = [];
         for (const m of alive) this.drawMonster(m, b);
         this.drawProjectiles(b);
       }
@@ -394,7 +395,7 @@
       }
       if (b && b.time < this.sandUntil) this.drawSandstorm(b);
       if (b && b.time < this.fogUntil) this.drawFog(b);
-      if (b && b.level.dark) this.drawDarkness();
+      if (b && b.level.dark) this.drawDarkness(b);
       else if (this.theme.swamp) this.drawMist();
       if (this.theme.snow) this.drawSnowfall(b && b.time < this.blizzardUntil);
       if (this.theme.lava) this.drawEmbers();
@@ -465,11 +466,32 @@
       if (!TD.art || typeof document === 'undefined') return null;
       const key = lanes + ':' + (this.theme.art || '');
       if (!this.scene || this.scene.key !== key) {
-        const sc = TD.art.paintScene(this.theme, lanes);
-        this.scene = sc ? Object.assign(sc, { key }) : { key, none: true };
+        const sc = this.paintScene(this.theme, lanes, key);
+        this.scene = sc || { key, none: true };
         if (sc) this.motes = TD.art.makeMotes(28);
       }
       return this.scene.none ? null : this.scene;
+    }
+
+    // 画好的场景留几张在缓存里，来回切换章节时不用重画
+    paintScene(theme, lanes, key) {
+      this.sceneCache = this.sceneCache || new Map();
+      if (this.sceneCache.has(key)) return this.sceneCache.get(key);
+      const sc = TD.art.paintScene(theme, lanes);
+      if (!sc) return null;
+      Object.assign(sc, { key });
+      this.sceneCache.set(key, sc);
+      if (this.sceneCache.size > 3) this.sceneCache.delete(this.sceneCache.keys().next().value);
+      return sc;
+    }
+
+    // 预先画好第 n 关的战场背景（设计书 57.4，启动动画期间调用）
+    prewarm(n) {
+      const D = TD.data;
+      const lv = D.levels[n] || D.levels[1];
+      if (!TD.art || typeof document === 'undefined' || !lv.lanes) return;
+      const theme = D.chapterOf(D.levels[n] ? n : 1).theme;
+      this.paintScene(theme, lv.lanes, lv.lanes + ':' + (theme.art || ''));
     }
 
     drawBackground(lanes) {
@@ -1332,16 +1354,16 @@
         ctx.restore();
       }
       const regen = def.regen && b.time - m.lastHit >= def.regen.delay && m.hp < m.maxHp;
-      const dark = b.level.dark && x > C.wallX + 450;
+      // 暗夜（设计书 57.2）：火把照不到的怪照常画（被箭光、爆炸照亮时看得见），黑幕盖住后只露出眼睛
+      const dark = b.level.dark && x > this.torchEdge(b) - 30;
       if (m.hidden) ctx.globalAlpha = 0.18;
       if (m.stealthed) ctx.globalAlpha = 0.22 + Math.sin(this.t * 6 + m.id) * 0.06;
-      if (dark || m.shade) {
-        // 剪影：暗夜远处的怪（黑色）和墨影（深紫色）
-        const sil = S.silhouette(m.type, def.size, dark ? '#0c0a1a' : '#231a33');
+      if (m.shade) {
+        // 剪影：墨影（深紫色）
+        const sil = S.silhouette(m.type, def.size, '#231a33');
         if (sil) {
           const sc = scale * DRAW_SCALE;
           const bob = Math.sin(this.t * 6 + m.id) * 1.5;
-          if (dark) ctx.globalAlpha *= 0.6;
           ctx.drawImage(sil.canvas, x - sil.ox * sc, y - sil.oy * sc + bob, sil.canvas.width * sc, sil.canvas.height * sc);
           ctx.globalAlpha = 1;
         }
@@ -1419,9 +1441,8 @@
         S.ellipse(ctx, x, y - def.size * 1.05, 2.5, 2.5, '#c58cff');
       }
       if (dark) {
-        // 黑暗中只看得见一双发光的眼睛
-        S.ellipse(ctx, x - def.size * 0.3, y - def.size * 1.0, 2.5, 2.5, '#ffeb6b');
-        S.ellipse(ctx, x + def.size * 0.05, y - def.size * 1.0, 2.5, 2.5, '#ffeb6b');
+        // 黑暗中只看得见一双发光的眼睛（在黑幕之后画）
+        if (!m.hidden && !m.stealthed) this.darkEyes.push({ x, y, size: def.size, id: m.id, flying: def.flying });
         ctx.restore();
         return;
       }
@@ -1859,16 +1880,90 @@
       ctx.restore();
     }
 
-    drawDarkness() {
+    // 火把照亮的范围：正好是英雄在暗夜里的射程
+    torchEdge(b) {
+      return C.wallX + b.range;
+    }
+
+    // 暗夜（设计书 57.2）：一块几乎全黑的幕布，只有火把、飞行中的箭、命中火花、爆炸和闪电能在上面"挖"出光
+    drawDarkness(b) {
       const ctx = this.ctx;
+      const K = 0.5; // 半分辨率画遮罩，放大后边缘本来就是柔的
+      if (!this.darkCanvas) {
+        this.darkCanvas = document.createElement('canvas');
+        this.darkCanvas.width = C.width * K;
+        this.darkCanvas.height = C.height * K;
+      }
+      const dc = this.darkCanvas.getContext('2d');
+      dc.setTransform(1, 0, 0, 1, 0, 0);
+      dc.globalCompositeOperation = 'source-over';
+      dc.clearRect(0, 0, C.width * K, C.height * K);
+      // 全屏闪光（雷霆等）会让黑幕整体变薄
+      let flash = 0;
+      for (const f of this.fx) if (f.kind === 'flash' && f.age >= 0) flash = Math.max(flash, (1 - f.age / f.life) * 0.55);
+      dc.fillStyle = `rgba(3,2,10,${0.98 - flash})`;
+      dc.fillRect(0, 0, C.width * K, C.height * K);
+      dc.scale(K, K);
+      dc.globalCompositeOperation = 'destination-out';
+      const hole = (x, y, r, a) => {
+        if (r <= 0 || a <= 0) return;
+        const g = dc.createRadialGradient(x, y, 0, x, y, r);
+        g.addColorStop(0, `rgba(0,0,0,${a})`);
+        g.addColorStop(0.55, `rgba(0,0,0,${a * 0.7})`);
+        g.addColorStop(1, 'rgba(0,0,0,0)');
+        dc.fillStyle = g;
+        dc.fillRect(x - r, y - r, r * 2, r * 2);
+      };
+      // 城墙上的火把：照到射程边缘为止，会轻轻摇晃
+      const midY = (C.fieldTop + C.fieldBottom) / 2;
+      const flick = Math.sin(this.t * 9) * 6 + Math.sin(this.t * 23) * 3;
+      const reach = b.range + 40 + flick;
+      dc.save();
+      dc.translate(C.wallX - 40, midY);
+      dc.scale(1, 0.95);
+      const tg = dc.createRadialGradient(0, 0, 0, 0, 0, reach);
+      tg.addColorStop(0, 'rgba(0,0,0,1)');
+      tg.addColorStop(0.72, 'rgba(0,0,0,0.92)');
+      tg.addColorStop(0.9, 'rgba(0,0,0,0.45)');
+      tg.addColorStop(1, 'rgba(0,0,0,0)');
+      dc.fillStyle = tg;
+      dc.fillRect(-reach, -reach, reach * 2, reach * 2);
+      dc.restore();
+      // 冰冻 / 毒雾等车道效果发着微光
+      const lh = (C.fieldBottom - C.fieldTop) / b.lanes;
+      for (const e of b.laneEffects) {
+        const fade = Math.min(1, (e.until - b.time) * 2);
+        dc.fillStyle = `rgba(0,0,0,${0.18 * fade})`;
+        dc.fillRect(C.wallX, C.fieldTop + e.lane * lh, C.width - C.wallX, lh);
+      }
+      // 飞行中的箭和法球各带一团小光
+      for (const p of b.projectiles) if (!p.done) hole(p.x, p.y, p.crit ? 80 : 60, 0.9);
+      // 命中火花、爆炸、闪电
+      for (const f of this.fx) {
+        if (f.age < 0) continue;
+        const k = 1 - f.age / f.life;
+        if (f.kind === 'glow') hole(f.x, f.y, f.r * 2.6, k);
+        else if (f.kind === 'boom') hole(f.x, f.y - 10, 150, k);
+        else if (f.kind === 'bolt') hole(f.x, f.y, 190, k);
+        else if (f.kind === 'fallArrow') hole(f.x, f.y, 50, k * 0.7);
+        else if (f.kind === 'ring') hole(f.x, f.y, (f.r0 + (f.r1 - f.r0) * (1 - k)) * 1.4, k * 0.8);
+      }
       ctx.save();
-      const flick = Math.sin(this.t * 9) * 8;
-      const g = ctx.createRadialGradient(C.wallX, (C.fieldTop + C.fieldBottom) / 2, 120, C.wallX, (C.fieldTop + C.fieldBottom) / 2, 560 + flick);
-      g.addColorStop(0, 'rgba(10,8,30,0)');
-      g.addColorStop(0.75, 'rgba(10,8,30,0.55)');
-      g.addColorStop(1, 'rgba(10,8,30,0.78)');
-      ctx.fillStyle = g;
-      ctx.fillRect(0, 0, C.width, C.height);
+      ctx.imageSmoothingEnabled = true;
+      ctx.drawImage(this.darkCanvas, 0, 0, C.width, C.height);
+      // 黑暗里的眼睛：偶尔眨一下
+      const edge = this.torchEdge(b);
+      ctx.globalCompositeOperation = 'lighter';
+      for (const e of this.darkEyes || []) {
+        const ph = (this.t * 0.7 + e.id * 0.61) % 4;
+        if (ph < 0.12) continue;
+        const a = Math.min(1, (e.x - edge + 30) / 60);
+        const ey = e.y - e.size * (e.flying ? 0.75 : 1.0);
+        const ex = e.x - e.size * 0.3;
+        TD.art.drawGlow(ctx, ex + e.size * 0.17, ey, 10 + e.size * 0.25, '#ffd84a', 0.35 * a);
+        S.ellipse(ctx, ex, ey, 2.6, 1.9, `rgba(255,236,120,${a})`);
+        S.ellipse(ctx, ex + e.size * 0.35, ey, 2.6, 1.9, `rgba(255,236,120,${a})`);
+      }
       ctx.restore();
     }
 
