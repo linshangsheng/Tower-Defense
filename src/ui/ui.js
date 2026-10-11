@@ -862,7 +862,10 @@
               )
         );
       const ascLine = w.ascend ? h('div', { class: ws.asc ? 'asc on' : 'asc' }, `${ws.asc ? '✦ 已进阶' : '进阶后'}「${w.ascend.name}」：${w.ascend.desc}`) : null;
-      el.append(card(h('span', { class: 'with-icon' }, TD.sprites.iconCanvas(id, 30), ws.asc ? w.ascend.name : w.name), ws.owned ? `Lv.${ws.lv}/${D.weaponUpgrade.max}` : '未解锁', h('span', null, w.desc, h('span', { class: 'good' }, ' 擅长：' + w.good), ascLine), right));
+      // 满级专精（设计书 53）
+      const mastered = P.hasMastery(s, id);
+      const masteryLine = w.mastery ? h('div', { class: 'asc mastery' + (mastered ? ' on' : '') }, `${mastered ? '★ 专精' : `Lv${D.weaponUpgrade.max} 解锁专精`}「${w.mastery.name}」：${w.mastery.desc}`) : null;
+      el.append(card(h('span', { class: 'with-icon' }, TD.sprites.iconCanvas(id, 30), ws.asc ? w.ascend.name : w.name), ws.owned ? `Lv.${ws.lv}/${D.weaponUpgrade.max}` : '未解锁', h('span', null, w.desc, h('span', { class: 'good' }, ' 擅长：' + w.good), ascLine, masteryLine), right));
     }
   }
 

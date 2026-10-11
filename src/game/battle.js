@@ -1051,6 +1051,9 @@
           travel: 0,
           dist0: Math.hypot(s.m.x - sx, s.m.y + s.m.yOffset - sy),
           chain: w.chain,
+          pierce: w.pierce,
+          knock: w.knock,
+          bossMult: w.bossMult,
         });
       }
       this.emit('shoot', { weapon: this.stats.weapon });
@@ -1065,6 +1068,7 @@
 
     applyWeaponHit(m, dmg, crit, fromFront, p) {
       const type = p && p.dmgType === 'magic' ? 'magic' : 'phys';
+      if (p && p.bossMult && (m.def.boss || m.def.bossPart)) dmg *= p.bossMult;
       this.damage(m, dmg, { type, fromFront, crit, source: 'weapon', armorIgnore: p ? p.armorIgnore : 0 });
       if (this.stats.passives.burn && !m.dead) {
         const b = D.passiveSkills.burn;
@@ -1103,6 +1107,35 @@
         this.damage(best, dmg, { type: 'magic', fromFront: false, source: 'chain' });
         cur = best;
       }
+    }
+
+    // 穿云箭（木弓专精，设计书 53）：继续命中同一车道后方的怪
+    pierceFrom(first, p) {
+      const pc = p.pierce;
+      const behind = this.monsters
+        .filter((o) => o.id !== first.id && o.lane === first.lane && this.isTargetable(o) && o.x > first.x && o.x - first.x <= pc.range)
+        .sort((a, b) => a.x - b.x)
+        .slice(0, pc.count);
+      if (!behind.length) return;
+      this.emit('pierce', { x0: first.x, x1: behind[behind.length - 1].x, y: this.laneY(first.lane) - 20 });
+      for (const o of behind) this.applyWeaponHit(o, p.dmg * pc.mult, p.crit, true, p);
+    }
+
+    // 震地炮（火炮专精，设计书 53）：把爆炸范围内的小怪向后震退并减速
+    knockAt(x, y, p, primary) {
+      const k = p.knock;
+      const r = p.splash ? p.splash.radius : 60;
+      for (const o of this.monsters) {
+        if (o.dead || o.def.boss || o.def.bossPart) continue;
+        const dx = o.x - x;
+        const dy = o.y + o.yOffset - y;
+        if (dx * dx + dy * dy > r * r && o !== primary) continue;
+        o.x = Math.min(C.spawnX, o.x + k.dist);
+        const prev = this.time < o.slowUntil ? o.slowAmt : 0;
+        o.slowAmt = Math.max(prev, k.slow);
+        o.slowUntil = Math.max(o.slowUntil, this.time + k.duration);
+      }
+      this.emit('knock', { x, y, r });
     }
 
     // 范围爆炸：主目标以外的怪受到部分伤害
@@ -1153,7 +1186,10 @@
           if (!p.splash) m.pending = Math.max(0, m.pending - p.dmg * this.armorFactor(m, true, p.dmgType, p.armorIgnore));
           if (this.isTargetable(m)) this.applyWeaponHit(m, p.dmg, p.crit, true, p);
           else if (!m.dead) this.emit('miss', { x: p.tx, y: p.ty });
+          if (p.pierce && !m.dead) this.pierceFrom(m, p);
+          else if (p.pierce) this.pierceFrom({ x: p.tx, lane: m.lane, id: m.id }, p);
           if (p.splash) this.splashAt(p.tx, p.ty, p, m);
+          if (p.knock) this.knockAt(p.tx, p.ty, p, m);
           if (p.chain && this.isTargetable(m)) this.chainFrom(m, p);
         } else {
           p.x += (dx / dist) * step;

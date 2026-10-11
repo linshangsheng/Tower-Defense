@@ -1131,6 +1131,9 @@ body {
   color: #b8860b;
   font-weight: 700;
 }
+.asc.mastery.on {
+  color: #7a3fc0;
+}
 .save-code {
   width: 100%;
   height: 160px;

@@ -15,6 +15,7 @@
       desc: '单发，稳定，自带额外暴击率。打 Boss 好用。',
       good: '通用、Boss',
       ascend: { name: '雕花长弓', desc: '射程 +10%，暴击伤害 +30%', stats: { rangePct: 0.1, critDmg: 0.3 } },
+      mastery: { name: '穿云箭', desc: '箭命中后继续向后飞，再命中同一车道后方最多 2 只怪（40% 伤害）', weapon: () => ({ pierce: { count: 2, range: 160, mult: 0.4 } }) },
     },
     crossbow: {
       name: '连发弩',
@@ -51,6 +52,7 @@
       desc: '发射魔法弹，命中后小范围爆炸。魔法伤害无视物理护甲。',
       good: '绷带球、护盾、成堆的小怪',
       ascend: { name: '星辰法杖', desc: '爆炸半径 60 → 85，溅射伤害 60% → 75%', weapon: { splash: { radius: 85, mult: 0.75 } } },
+      mastery: { name: '星爆', desc: '溅射半径 +20，溅射伤害不再衰减（100%）', weapon: (w) => ({ splash: { radius: w.splash.radius + 20, mult: 1 } }) },
     },
     cannon: {
       name: '火炮',
@@ -64,6 +66,7 @@
       desc: '慢速重炮，落地大范围爆炸，无视目标 40% 护甲。',
       good: '重甲怪、成团的怪、Boss',
       ascend: { name: '攻城火炮', desc: '无视护甲 40% → 70%，溅射伤害 70% → 85%', weapon: { armorIgnore: 0.7, splash: { radius: 80, mult: 0.85 } } },
+      mastery: { name: '震地炮', desc: '爆炸把范围内的小怪向后震退 60 像素并减速 40%（1.5 秒）；对 Boss 和触手伤害 +50%', weapon: () => ({ knock: { dist: 60, slow: 0.4, duration: 1.5 }, bossMult: 1.5 }) },
     },
     orb: {
       name: '雷电法球',

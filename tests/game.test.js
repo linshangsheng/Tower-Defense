@@ -1529,3 +1529,48 @@ test('无尽 / 每日：通关第 70 关后才出现海湾怪物', () => {
   assert.ok([...types(b)].some((t) => sea.has(t)));
   assert.strictEqual(TD.modes.poolLast(b), 70);
 });
+
+// ---------- 满级专精（设计书 53） ----------
+test('满级专精：只有木弓、火炮、魔法杖有；武器 Lv10 才解锁', () => {
+  const s = P.newSave();
+  s.weapons.cannon.owned = true;
+  s.weapons.cannon.lv = 9;
+  assert.ok(!P.hasMastery(s, 'cannon'));
+  s.weapons.cannon.lv = 10;
+  assert.ok(P.hasMastery(s, 'cannon'));
+  assert.ok(P.weaponDef(s, 'cannon').knock && P.weaponDef(s, 'cannon').bossMult === 1.5);
+  s.weapons.staff.owned = true;
+  s.weapons.staff.lv = 10;
+  s.weapons.staff.asc = true;
+  const st = P.weaponDef(s, 'staff');
+  assert.strictEqual(st.splash.radius, 105, '进阶 85 + 专精 20');
+  assert.strictEqual(st.splash.mult, 1);
+  for (const id of ['crossbow', 'orb', 'boomerang']) assert.ok(!D.weapons[id].mastery, id);
+});
+
+test('穿云箭：命中后再打同一车道后方最多 2 只怪', () => {
+  const s = P.newSave();
+  s.weapons.bow.lv = 10;
+  const b = new TD.Battle({ level: 41, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 1 });
+  const a = b.spawnMonster('slime', 0, 500);
+  const c = b.spawnMonster('slime', 0, 560);
+  const d = b.spawnMonster('slime', 0, 600);
+  const e = b.spawnMonster('slime', 0, 640);
+  const other = b.spawnMonster('slime', 1, 560);
+  for (const m of [a, c, d, e, other]) m.hp = m.maxHp = 1e6;
+  b.pierceFrom(a, { dmg: 100, crit: false, pierce: b.stats.weaponDef.pierce, dmgType: 'phys' });
+  assert.ok(c.hp < 1e6 && d.hp < 1e6, '后面两只被穿透');
+  assert.strictEqual(e.hp, 1e6, '最多 2 只');
+  assert.strictEqual(other.hp, 1e6, '别的车道不受影响');
+});
+
+test('震地炮：把小怪震退并减速，Boss 不动', () => {
+  const s = P.newSave();
+  const b = new TD.Battle({ level: 41, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 1 });
+  const m = b.spawnMonster('slime', 0, 500);
+  const boss = b.spawnMonster('boarKing', 0, 520);
+  b.knockAt(500, m.y + m.yOffset, { knock: { dist: 60, slow: 0.4, duration: 1.5 }, splash: { radius: 80 } }, m);
+  assert.strictEqual(m.x, 560);
+  assert.ok(Math.abs(m.slowAmt - 0.4) < 1e-9);
+  assert.strictEqual(boss.x, 520);
+});

@@ -92,6 +92,12 @@
       on('combo', () => this.text(C.heroX + 30, battle.heroY - 100, '连珠!', '#ffd23f', 18, 0.6));
       // 第二章
       on('splash', (e) => this.fx.push({ kind: 'splash', x: e.x, y: e.y, r: e.radius, magic: e.magic, life: 0.35, age: 0 }));
+      // 满级专精（设计书 53）
+      on('pierce', (e) => this.fx.push({ kind: 'chain', x0: e.x0, y0: e.y, x: e.x1 + 20, y: e.y, life: 0.15, age: 0, straight: true }));
+      on('knock', (e) => {
+        this.fx.push({ kind: 'ring', x: e.x, y: e.y, r0: 10, r1: e.r + 20, color: 'rgba(255,200,120,', life: 0.3, age: 0 });
+        this.shake = Math.max(this.shake, 4);
+      });
       on('burrow', (e) => this.burst(e.m.x, e.m.y + 4, '#d9b26a', e.boss ? 20 : 8, 140));
       on('surface', (e) => {
         this.burst(e.m.x, e.m.y, '#d9b26a', e.boss ? 30 : 10, e.boss ? 260 : 160);
@@ -1743,6 +1749,16 @@
           }
           case 'chain': {
             ctx.globalAlpha = 1 - k;
+            if (f.straight) {
+              // 穿云箭：一道白色的直线
+              ctx.strokeStyle = 'rgba(255,250,220,0.9)';
+              ctx.lineWidth = 3;
+              ctx.beginPath();
+              ctx.moveTo(f.x0, f.y0);
+              ctx.lineTo(f.x, f.y);
+              ctx.stroke();
+              break;
+            }
             ctx.strokeStyle = '#e2c8ff';
             ctx.lineWidth = 4;
             ctx.shadowColor = '#b07aff';

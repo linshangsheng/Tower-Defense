@@ -195,9 +195,13 @@
   P.weaponDef = function (save, id) {
     const base = D.weapons[id];
     const w = save.weapons[id];
-    if (!w || !w.asc || !base.ascend) return base;
-    return Object.assign({}, base, base.ascend.weapon || {}, { name: base.ascend.name, ascended: true });
+    let def = base;
+    if (w && w.asc && base.ascend) def = Object.assign({}, base, base.ascend.weapon || {}, { name: base.ascend.name, ascended: true });
+    // 满级专精（设计书 53）
+    if (P.hasMastery(save, id)) def = Object.assign({}, def, base.mastery.weapon(def), { mastered: true });
+    return def;
   };
+  P.hasMastery = (save, id) => !!(D.weapons[id].mastery && save.weapons[id] && save.weapons[id].owned && save.weapons[id].lv >= D.weaponUpgrade.max);
   P.canAscend = (save, id) => {
     const w = save.weapons[id];
     return !!(w && w.owned && !w.asc && D.weapons[id].ascend && w.lv >= D.weaponAscend.minLv);

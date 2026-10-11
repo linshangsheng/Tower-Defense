@@ -114,6 +114,7 @@
     const spirit = share('ghost') + (counts.boneMage ? 0.3 : 0);
     const flying = share('bee') + share('vulture') + share('bat') + share('iceSprite');
     const dodgy = share('kite');
+    if (counts.octoKing) return { id: 'crossbow', reason: '3 支箭能同时打好几条触手；练满的木弓、火炮也很适合打波波' };
     if (magicProof > 0.25) return { id: 'cannon', reason: '熔岩怪物不怕魔法，用物理重炮' };
     if (dodgy > 0.3) return { id: 'orb', reason: '风筝怪躲不开闪电，跳跃还能连着打好几只' };
     if (share('hermitCrab') > 0.25) return { id: 'orb', reason: '闪电在好几只寄居蟹之间跳，不容易把一只打得缩壳' };
