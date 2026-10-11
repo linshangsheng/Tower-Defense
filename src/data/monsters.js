@@ -675,7 +675,7 @@
     },
     pearlClam: {
       name: '贝贝',
-      hp: 2200,
+      hp: 1500,
       speed: 18,
       dps: 30,
       armor: 0,
@@ -740,7 +740,7 @@
   // 呼呼的参数（设计书 33.3）
   TD.data.windGiant = { holdX: 760, kiteFirst: 3, kiteEvery: 8, kiteCount: 2, gustFirst: 6, gustEvery: 10, gustEveryLow: 7, lowBelow: 0.3, gustWarn: 2, gustPush: 140, interruptRatio: 0.04 };
   // 贝贝的参数（设计书 52.3）
-  TD.data.pearlClam = { holdX: 760, closedTime: 4.5, openTime: 3, closedTime2: 4, openTime2: 2.5, lowBelow: 0.4, closedMult: 0.1, openMult: 1.3, pearlEvery: 1, pearlDamage: 20, crabCount: 2 };
+  TD.data.pearlClam = { holdX: 760, closedTime: 4.5, openTime: 3, closedTime2: 4, openTime2: 2.5, lowBelow: 0.4, closedMult: 0.1, openMult: 1.3, pearlEvery: 1, pearlDamage: 15, crabCount: 2 };
   // 波波的参数（设计书 52.3）
   TD.data.octoKing = {
     holdX: 800,
