@@ -2699,7 +2699,7 @@
     ctx.lineCap = 'round';
     const k = r / 20;
     ctx.scale(k, k);
-    const f = ICONS[id] || ICONS.default;
+    const f = ICONS[id] || (S.moreIcons && S.moreIcons[id]) || ICONS.default;
     f(ctx);
     ctx.restore();
   };

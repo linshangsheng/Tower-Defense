@@ -219,6 +219,19 @@
     haste: { name: '加速药水', cost: { copper: 35 }, aspdBonus: 0.4, duration: 10, desc: '攻击速度 +40%，持续 10 秒。' },
     freeze: { name: '冰冻瓶', cost: { copper: 35 }, duration: 3, targetLane: true, desc: '冻结选定车道上的所有怪 3 秒。' },
     charm: { name: '幸运符', cost: { silver: 1 }, copperBonus: 0.3, passive: true, desc: '战斗开始时自动生效：本关铜币收益 +30%。' },
+
+    // ---- v0.54 消耗品扩充（设计书 62）：越强越贵，铜 → 银 → 金 ----
+    firebomb: { name: '燃烧瓶', cost: { copper: 80 }, atkMult: 3, targetLane: true, desc: '对选定车道上所有怪造成攻击力 ×3 的魔法伤害，并点燃它们。' },
+    thunderScroll: { name: '雷霆符', cost: { silver: 2 }, atkMult: 6, count: 5, desc: '全场血量最高的 5 只怪各被一道闪电劈中，每道攻击力 ×6 的魔法伤害。' },
+    bigBomb: { name: '重磅炸弹', cost: { silver: 3 }, atkMult: 10, targetLane: true, desc: '选定车道和相邻车道上所有怪受到攻击力 ×10 的伤害。' },
+    barrier: { name: '守护符文', cost: { silver: 3 }, shieldRatio: 0.5, desc: '城墙获得一层护盾，能吸收 50% 最大血量的伤害，持续到本关结束。' },
+    warBanner: { name: '战旗', cost: { silver: 3 }, atkBonus: 0.4, duration: 10, desc: '英雄攻击力 +40%，持续 10 秒。' },
+    quake: { name: '地震符', cost: { silver: 4 }, atkMult: 5, stun: 3, bossStun: 1.5, desc: '全场怪物眩晕 3 秒（Boss 1.5 秒），并受到攻击力 ×5 的伤害。' },
+    blizzard: { name: '暴风雪卷轴', cost: { gold: 1 }, duration: 8, bossDuration: 4, slowAfter: 0.6, slowTime: 5, shatter: 1, desc: '冰冻全体怪物 8 秒（Boss 4 秒），冻住期间它们受到的伤害翻倍，解冻后再减速 60%，持续 5 秒。' },
+    flood: { name: '洪水', cost: { gold: 1 }, push: 500, bossPush: 150, atkMult: 4, slow: 0.7, slowTime: 6, shatter: 0.6, desc: '洪水冲过战场：全体怪物向后倒退 500 像素（Boss 150 像素），受到攻击力 ×4 的伤害，被浸湿的怪物 6 秒内受到的伤害 +60%，并减速 70%。' },
+    holyLight: { name: '圣光', cost: { gold: 2 }, healRatio: 1, drAmt: 0.8, drDuration: 10, desc: '城墙回满血，之后 10 秒城墙受到的伤害 −80%。' },
+    meteor: { name: '陨石雨', cost: { gold: 2 }, count: 18, duration: 3, atkMult: 12, radius: 110, splashMult: 0.6, desc: '18 颗陨石落在全场随机的怪身上，每颗攻击力 ×12 的伤害，周围 110 像素内的怪受到六成。' },
+    chrono: { name: '时间静止', cost: { gold: 3 }, duration: 10, aspdBonus: 1, shatter: 2, desc: '冻结全体怪物 10 秒，连 Boss 也一起冻住，冻住期间它们受到的伤害 ×3；这期间英雄攻击速度 +100%。' },
   };
 
   TD.data.equipment = {

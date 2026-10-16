@@ -2561,3 +2561,12 @@ select option {
   font-size: 12px;
   opacity: 0.85;
 }
+
+/* ---------- 消耗品分档（设计书 62.5） ---------- */
+.card.item-tier-silver {
+  border-color: rgba(190, 205, 230, 0.45);
+}
+.card.item-tier-gold {
+  border-color: #d9a83a;
+  box-shadow: 0 0 14px rgba(255, 200, 90, 0.18);
+}

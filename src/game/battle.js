@@ -98,6 +98,8 @@
       for (const k of Object.keys(hm)) this.mods[k] = (this.mods[k] || 0) + hm[k];
       this.zapCount = 0;
       this.fireflyCount = 0;
+      this.itemShield = 0;
+      this.meteors = [];
       // 助战伙伴（设计书 51）
       this.buddy = (opts.loadout && opts.loadout.buddy && D.town.find((f) => f.boss === opts.loadout.buddy)) || null;
       if (this.buddy) {
@@ -159,7 +161,9 @@
     get atk() {
       // 背水徽章：城墙血量低于 50% 时攻击力提高（设计书 58.3）
       const low = this.mods.lowWallAtk && this.wall.hp < this.wall.max * 0.5 ? this.mods.lowWallAtk : 0;
-      return this.stats.atk * (1 + this.mods.atkMult + low) * (1 + this.rally);
+      let buff = 0;
+      for (const b of this.buffs) if (b.atk && this.time < b.until) buff += b.atk;
+      return this.stats.atk * (1 + this.mods.atkMult + low + buff) * (1 + this.rally);
     }
 
     get range() {
@@ -650,7 +654,15 @@
     hitWall(amount, m, big, kind, who) {
       amount *= this.diffDmg;
       const temp = this.time < this.tempDr.until ? this.tempDr.amt : 0;
-      let dmg = amount * (1 - Math.min(0.8, this.stats.wallDr + this.mods.wallDr + temp));
+      let dmg = amount * (1 - Math.min(temp > 0.5 ? 0.95 : 0.8, this.stats.wallDr + this.mods.wallDr + temp));
+      // 守护符文（设计书 62.3）：整场有效的护盾，先于泡泡护盾被打
+      if (this.itemShield > 0) {
+        const take = Math.min(this.itemShield, dmg);
+        this.itemShield -= take;
+        dmg -= take;
+        if (this.itemShield <= 0) this.emit('barrierBreak', {});
+        if (dmg <= 0) return;
+      }
       if (this.wallShield > 0) {
         const take = Math.min(this.wallShield, dmg);
         this.wallShield -= take;
@@ -819,6 +831,8 @@
         if (this.mods.bossDmg && (def.boss || def.bossPart)) k *= 1 + this.mods.bossDmg;
         if (this.mods.flyDmg && def.flying) k *= 1 + this.mods.flyDmg;
         if (this.mods.slowedDmg && (this.time < m.slowUntil || this.inFrost(m))) k *= 1 + this.mods.slowedDmg;
+        // 暴风雪 / 时间静止：冻住期间的怪物更脆（设计书 62.3）
+        if (m.shatterUntil && this.time < m.shatterUntil) k *= 1 + m.shatterAmt;
       }
       return k;
     }
@@ -1366,12 +1380,128 @@
           for (const m of this.monsters) if (m.lane === lane && !m.dead) m.frozenUntil = this.time + dur;
           break;
         }
+        case 'firebomb':
+          for (const m of this.monsters.slice()) {
+            if (m.lane !== lane || !this.isTargetable(m)) continue;
+            this.damage(m, atk * def.atkMult, { type: 'magic', fromFront: false, source: 'firebomb' });
+            if (!m.dead) this.ignite(m);
+          }
           break;
+        case 'thunderScroll': {
+          const pool = this.monsters.filter((m) => this.isTargetable(m)).sort((a, b) => b.hp - a.hp).slice(0, def.count);
+          for (const m of pool) {
+            this.emit('scrollBolt', { x: m.x, y: m.y + m.yOffset });
+            this.damage(m, atk * def.atkMult, { type: 'magic', fromFront: false, source: 'thunderScroll' });
+          }
+          break;
+        }
+        case 'bigBomb':
+          for (const m of this.monsters.slice()) {
+            if (Math.abs(m.lane - lane) <= 1 && this.isTargetable(m)) this.damage(m, atk * def.atkMult, { type: 'phys', fromFront: false, source: 'bigBomb' });
+          }
+          break;
+        case 'barrier':
+          this.itemShield += this.wall.max * def.shieldRatio;
+          break;
+        case 'warBanner':
+          this.buffs.push({ atk: def.atkBonus, until: this.time + def.duration, src: 'banner' });
+          break;
+        case 'quake':
+          for (const m of this.monsters.slice()) {
+            if (m.dead || m.hidden) continue;
+            const boss = m.def.boss || m.def.bossPart;
+            m.stunUntil = Math.max(m.stunUntil, this.time + (boss ? def.bossStun : def.stun));
+            if (this.isTargetable(m)) this.damage(m, atk * def.atkMult, { type: 'phys', fromFront: false, source: 'quake' });
+          }
+          break;
+        case 'blizzard': {
+          for (let l = 0; l < this.lanes; l++) this.laneEffects.push({ lane: l, type: 'freeze', until: this.time + def.duration, start: this.time });
+          for (const m of this.monsters) {
+            if (m.dead) continue;
+            const boss = m.def.boss || m.def.bossPart;
+            const dur = boss ? def.bossDuration : def.duration;
+            this.freezeMonster(m, dur);
+            m.shatterUntil = this.time + dur;
+            m.shatterAmt = def.shatter;
+            m.slowAmt = Math.max(this.time < m.slowUntil ? m.slowAmt : 0, def.slowAfter);
+            m.slowUntil = Math.max(m.slowUntil, this.time + dur + def.slowTime);
+          }
+          break;
+        }
+        case 'flood':
+          for (const m of this.monsters.slice()) {
+            if (m.dead) continue;
+            const boss = m.def.boss || m.def.bossPart;
+            m.x = Math.min(C.spawnX + 60, m.x + (boss ? def.bossPush : def.push));
+            m.slowAmt = Math.max(this.time < m.slowUntil ? m.slowAmt : 0, def.slow);
+            m.slowUntil = Math.max(m.slowUntil, this.time + def.slowTime);
+            m.shatterUntil = this.time + def.slowTime;
+            m.shatterAmt = def.shatter;
+            if (this.isTargetable(m)) this.damage(m, atk * def.atkMult, { type: 'magic', fromFront: false, source: 'flood' });
+          }
+          break;
+        case 'holyLight':
+          this.healWall(this.wall.max * def.healRatio, 'holyLight');
+          if (def.drAmt >= this.tempDr.amt || this.time >= this.tempDr.until) this.tempDr = { amt: def.drAmt, until: this.time + def.drDuration };
+          break;
+        case 'meteor': {
+          const gap = def.duration / def.count;
+          for (let k = 0; k < def.count; k++) this.meteors.push({ at: this.time + k * gap, landAt: null, x: 0, y: 0 });
+          break;
+        }
+        case 'chrono': {
+          for (let l = 0; l < this.lanes; l++) this.laneEffects.push({ lane: l, type: 'freeze', until: this.time + def.duration, start: this.time });
+          for (const m of this.monsters) {
+            if (m.dead) continue;
+            this.freezeMonster(m, def.duration);
+            m.shatterUntil = this.time + def.duration;
+            m.shatterAmt = def.shatter;
+          }
+          this.buffs.push({ aspd: def.aspdBonus, until: this.time + def.duration, src: 'chrono' });
+          break;
+        }
       }
       it.used = true;
       this.itemsUsed.push(it.id);
       this.emit('item', { id: it.id, lane });
       return true;
+    }
+
+    // 冻住一只怪；Boss 的行动只看眩晕，所以同时记一次眩晕，保证 Boss 也真的停下
+    freezeMonster(m, dur) {
+      m.frozenUntil = Math.max(m.frozenUntil, this.time + dur);
+      if (m.def.boss || m.def.bossPart) m.stunUntil = Math.max(m.stunUntil, this.time + dur);
+    }
+
+    // 陨石雨（设计书 62.3）：逐颗落下，每颗砸在落地那一刻随机的一只怪身上，周围的怪吃一半
+    updateMeteors() {
+      if (!this.meteors.length) return;
+      const def = D.items.meteor;
+      for (const mt of this.meteors) {
+        if (mt.at !== null && this.time >= mt.at && mt.landAt === null) {
+          const pool = this.monsters.filter((m) => this.isTargetable(m));
+          if (!pool.length) {
+            mt.done = true;
+            continue;
+          }
+          const m = this.rng.pick(pool);
+          mt.x = m.x;
+          mt.y = m.y + m.yOffset;
+          mt.landAt = this.time + 0.35;
+          this.emit('meteor', { x: mt.x, y: mt.y, fall: 0.35 });
+        }
+        if (mt.landAt !== null && !mt.done && this.time >= mt.landAt) {
+          mt.done = true;
+          this.emit('meteorHit', { x: mt.x, y: mt.y, radius: def.radius });
+          for (const o of this.monsters.slice()) {
+            if (!this.isTargetable(o)) continue;
+            const d = Math.hypot(o.x - mt.x, o.y + o.yOffset - mt.y);
+            if (d <= 30) this.damage(o, this.atk * def.atkMult, { type: 'magic', fromFront: false, source: 'meteor' });
+            else if (d <= def.radius) this.damage(o, this.atk * def.atkMult * def.splashMult, { type: 'magic', fromFront: false, source: 'meteor' });
+          }
+        }
+      }
+      this.meteors = this.meteors.filter((mt) => !mt.done);
     }
 
     // 箭雨：逐支落下，每支随机命中射程内的一只怪
@@ -1453,6 +1583,36 @@
             case 'freeze':
               go = wallRatio < 0.7 && all.filter((m) => m.x < C.wallX + 200).length >= 4;
               break;
+            // 新道具的自动使用规则（设计书 62.5）
+            case 'firebomb':
+            case 'bigBomb': {
+              const lane = this.bestLane();
+              go = all.filter((m) => m.lane === lane).length >= (it.id === 'bigBomb' ? 6 : 4);
+              break;
+            }
+            case 'thunderScroll':
+              go = hasBoss || inRange.filter((m) => m.hp > this.atk * 6).length >= 4;
+              break;
+            case 'barrier':
+              go = wallRatio < 0.7;
+              break;
+            case 'warBanner':
+              go = inRange.length >= 6 || (hasBoss && inRange.length > 0);
+              break;
+            case 'quake':
+            case 'blizzard':
+            case 'flood':
+              go = all.filter((m) => m.x < C.wallX + 300).length >= 5 || all.some((m) => m.def.boss && m.x < C.wallX + 220);
+              break;
+            case 'holyLight':
+              go = wallRatio < 0.5 && this.time >= this.wallSealedUntil;
+              break;
+            case 'meteor':
+              go = inRange.length >= 8;
+              break;
+            case 'chrono':
+              go = all.filter((m) => m.x < C.wallX + 350).length >= 6 || all.some((m) => m.def.boss && m.x < C.wallX + 250);
+              break;
           }
           if (go) this.useItem(i);
         });
@@ -1488,6 +1648,7 @@
       if (this.zones.length && this.zones[0].until < this.time) this.zones = this.zones.filter((z) => z.until >= this.time);
       this.updateHero(dt);
       this.updateRain(dt);
+      this.updateMeteors();
       this.updateProjectiles(dt);
       if (this.autoCast || this.autoItems) this.updateAuto();
     }

@@ -970,9 +970,15 @@
     const nI = P.slotCount(s, 'item');
     el.append(h('div', { class: 'section-title' }, '消耗品（一次性，战斗中使用）'));
     if (nI === 0) el.append(h('div', { class: 'hint warn' }, `通关第 ${D.slotUnlocks.item[0]} 关后解锁消耗品槽。现在可以先买好。`));
-    for (const id of Object.keys(D.items)) {
-      const it = D.items[id];
-      el.append(card(h('span', { class: 'with-icon' }, TD.sprites.iconCanvas(id, 30), it.name), `背包 ${s.inventory[id] || 0}`, it.desc, buyBtn(it.cost, () => P.buyItem(s, id))));
+    // 按价格分三档：铜币 → 银币 → 金币，越强越贵（设计书 62.2）
+    const tierOf = (it) => (it.cost.gold || it.cost.diamond ? 'gold' : it.cost.silver ? 'silver' : 'copper');
+    const tiers = [['copper', '铜币档 · 常用'], ['silver', '银币档 · 针对性强'], ['gold', '金币档 · 扭转战局的底牌']];
+    for (const [tier, title] of tiers) {
+      el.append(h('div', { class: 'section-title' }, title));
+      for (const id of Object.keys(D.items).filter((k) => tierOf(D.items[k]) === tier)) {
+        const it = D.items[id];
+        el.append(card(h('span', { class: 'with-icon' }, TD.sprites.iconCanvas(id, 30), it.name), `背包 ${s.inventory[id] || 0}`, it.desc, buyBtn(it.cost, () => P.buyItem(s, id)), { cls: 'item-tier-' + tier }));
+      }
     }
   }
 

@@ -1811,3 +1811,173 @@ test('饰品栏 3 个，且同一件饰品不能重复佩戴；头盔披风箭�
   assert.ok(!P.setEquip(s, 'helm', 'clover'), '饰品不能放进头盔栏');
   assert.deepStrictEqual(P.migrate(Object.assign(P.newSave(), { loadout: Object.assign(P.newSave().loadout, { equip: { helm: null, cape: null, quiver: null, trinket1: null, trinket2: null } }) })).loadout.equip.trinket3, null);
 });
+
+// ---------- 消耗品扩充（设计书 62） ----------
+function itemBattle(id, level) {
+  const s = P.newSave();
+  clearUpTo(s, 69);
+  s.inventory = { [id]: 1 };
+  s.loadout.items = [id, null, null];
+  const b = new TD.Battle({ level: level || 41, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 3 });
+  b.waveState = 'spawning';
+  return b;
+}
+const bigHp = (m) => ((m.hp = m.maxHp = 1e9), m);
+
+test('消耗品：共 16 种（含被动幸运符），价格按铜 → 银 → 金分档', () => {
+  const ids = Object.keys(D.items);
+  assert.strictEqual(ids.length, 16);
+  const tier = (it) => (it.cost.gold ? 3 : it.cost.silver ? 2 : 1);
+  for (const id of ['firebomb', 'bomb', 'patch', 'haste', 'freeze']) assert.strictEqual(tier(D.items[id]), 1, id);
+  for (const id of ['thunderScroll', 'bigBomb', 'barrier', 'warBanner', 'quake']) assert.strictEqual(tier(D.items[id]), 2, id);
+  for (const id of ['blizzard', 'flood', 'holyLight', 'meteor', 'chrono']) assert.strictEqual(tier(D.items[id]), 3, id);
+  assert.ok(D.items.chrono.cost.gold > D.items.blizzard.cost.gold, '时间静止比暴风雪更贵');
+  assert.ok(D.items.quake.cost.silver > D.items.thunderScroll.cost.silver);
+});
+
+test('暴风雪卷轴：冻结全体 8 秒，Boss 4 秒，解冻后减速', () => {
+  const b = itemBattle('blizzard');
+  const a = bigHp(b.spawnMonster('slime', 0, 600));
+  const c = bigHp(b.spawnMonster('slime', 3, 900));
+  const boss = bigHp(b.spawnMonster('boarKing', 1, 700));
+  assert.ok(b.useItem(0, 0));
+  assert.ok(Math.abs(a.frozenUntil - b.time - 8) < 1e-9 && Math.abs(c.frozenUntil - b.time - 8) < 1e-9, '所有车道的怪都冻住');
+  assert.ok(Math.abs(boss.frozenUntil - b.time - 4) < 1e-9, 'Boss 只冻一半时间');
+  assert.ok(boss.stunUntil >= b.time + 4 - 1e-9, 'Boss 的行动也停下');
+  assert.ok(a.slowUntil > a.frozenUntil && Math.abs(a.slowAmt - 0.6) < 1e-9, '解冻后还有减速');
+  const x0 = a.x;
+  for (let i = 0; i < 60; i++) b.step(1 / 60);
+  assert.strictEqual(a.x, x0, '冻住的怪不会走');
+  const fresh = bigHp(b.spawnMonster('slime', 2, 800));
+  assert.ok(Math.abs(b.damageMult(a, { source: 'weapon' }) / b.damageMult(fresh, { source: 'weapon' }) - 2) < 1e-9, '冻住期间伤害翻倍');
+});
+
+test('洪水：全体后退 500（Boss 150），受伤并减速，不会退出出怪点之外', () => {
+  const b = itemBattle('flood');
+  const a = bigHp(b.spawnMonster('slime', 0, 600));
+  const edge = bigHp(b.spawnMonster('slime', 1, 1250));
+  const boss = bigHp(b.spawnMonster('boarKing', 2, 700));
+  const hp0 = a.hp;
+  b.useItem(0, 0);
+  assert.strictEqual(a.x, 1100);
+  assert.strictEqual(boss.x, 850);
+  assert.ok(edge.x <= TD.config.spawnX + 60);
+  assert.ok(a.hp < hp0, '洪水有伤害');
+  assert.ok(Math.abs(a.slowAmt - 0.7) < 1e-9 && a.slowUntil > b.time);
+  assert.ok(Math.abs(b.damageMult(a, { source: 'weapon' }) - 1.6) < 1e-9, '被浸湿的怪伤害 +60%');
+});
+
+test('时间静止：连 Boss 也冻住 10 秒，英雄攻速 +100%', () => {
+  const b = itemBattle('chrono');
+  const boss = bigHp(b.spawnMonster('boarKing', 0, 700));
+  const m = bigHp(b.spawnMonster('slime', 1, 700));
+  const asp0 = b.currentAspd();
+  b.useItem(0, 0);
+  assert.ok(Math.abs(boss.frozenUntil - b.time - 10) < 1e-9 && boss.stunUntil >= b.time + 10 - 1e-9);
+  assert.ok(Math.abs(m.frozenUntil - b.time - 10) < 1e-9);
+  assert.ok(b.currentAspd() / asp0 > 1.99 && b.currentAspd() / asp0 < 2.01);
+  assert.strictEqual(b.monsterSpeed(boss), 0);
+  assert.ok(Math.abs(b.damageMult(m, { source: 'weapon' }) - 3) < 1e-9, '冻住期间伤害 ×3');
+});
+
+test('地震符：全体眩晕 3 秒（Boss 1.5 秒）并受伤', () => {
+  const b = itemBattle('quake');
+  const m = bigHp(b.spawnMonster('slime', 0, 900));
+  const boss = bigHp(b.spawnMonster('boarKing', 1, 900));
+  const h0 = m.hp;
+  b.useItem(0, 0);
+  assert.ok(Math.abs(m.stunUntil - b.time - 3) < 1e-9);
+  assert.ok(Math.abs(boss.stunUntil - b.time - 1.5) < 1e-9);
+  assert.ok(m.hp < h0, '有伤害（射程外也算全场）');
+});
+
+test('守护符文：护盾先吸收 50% 最大血量，打完才扣城墙', () => {
+  const b = itemBattle('barrier');
+  b.useItem(0, 0);
+  const shield = b.wall.max * 0.5;
+  assert.ok(Math.abs(b.itemShield - shield) < 1e-9);
+  b.hitWall(shield / 2);
+  assert.strictEqual(b.wall.hp, b.wall.max, '护盾没破，城墙不掉血');
+  b.hitWall(shield);
+  assert.ok(b.itemShield === 0 && b.wall.hp < b.wall.max);
+});
+
+test('战旗：攻击力 +40%，10 秒后恢复', () => {
+  const b = itemBattle('warBanner');
+  const a0 = b.atk;
+  b.useItem(0, 0);
+  assert.ok(Math.abs(b.atk / a0 - 1.4) < 1e-9);
+  b.time += 10.5;
+  assert.ok(Math.abs(b.atk / a0 - 1) < 1e-9);
+});
+
+test('圣光：回满城墙并让之后 10 秒的城墙伤害 −80%', () => {
+  const b = itemBattle('holyLight');
+  b.wall.hp = b.wall.max * 0.2;
+  b.useItem(0, 0);
+  assert.ok(Math.abs(b.wall.hp - b.wall.max) < 1e-6);
+  const before = b.wall.hp;
+  b.hitWall(100);
+  const lost = before - b.wall.hp;
+  assert.ok(lost < 100 * 0.25, '减伤约 80%：' + lost);
+  b.time += 11;
+  const before2 = b.wall.hp;
+  b.hitWall(100);
+  assert.ok(before2 - b.wall.hp > 80, '10 秒后恢复正常');
+});
+
+test('雷霆符：劈血量最高的 5 只；燃烧瓶打一条车道并点燃；重磅炸弹打三条车道', () => {
+  const b = itemBattle('thunderScroll');
+  const ms = [1, 2, 3, 4, 5, 6, 7].map((i) => {
+    const m = b.spawnMonster('slime', i % 3, 500 + i * 20);
+    m.hp = m.maxHp = 1e8 + i;
+    return m;
+  });
+  const hp0 = ms.map((m) => m.hp);
+  b.useItem(0, 0);
+  const hit = ms.filter((m, i) => m.hp < hp0[i]);
+  assert.strictEqual(hit.length, 5);
+  assert.ok(ms.slice(2).every((m) => hit.includes(m)), '打中的是血量最高的 5 只');
+
+  const f = itemBattle('firebomb');
+  const a = bigHp(f.spawnMonster('slime', 1, 500));
+  const o = bigHp(f.spawnMonster('slime', 0, 500));
+  f.useItem(0, 1);
+  assert.ok(a.hp < a.maxHp && a.burnUntil > f.time, '同车道的怪受伤并被点燃');
+  assert.strictEqual(o.hp, o.maxHp, '别的车道不受影响');
+
+  const g = itemBattle('bigBomb');
+  const l0 = bigHp(g.spawnMonster('slime', 0, 500));
+  const l1 = bigHp(g.spawnMonster('slime', 1, 500));
+  const l2 = bigHp(g.spawnMonster('slime', 2, 500));
+  g.useItem(0, 0);
+  assert.ok(l0.hp < l0.maxHp && l1.hp < l1.maxHp, '本车道和相邻车道');
+  assert.strictEqual(l2.hp, l2.maxHp, '隔一条的不受影响');
+});
+
+test('陨石雨：18 颗陆续砸下，周围吃六成', () => {
+  const b = itemBattle('meteor');
+  const m = bigHp(b.spawnMonster('slime', 0, 500));
+  const near = bigHp(b.spawnMonster('slime', 0, 550));
+  let lands = 0;
+  b.on('meteorHit', () => lands++);
+  b.useItem(0, 0);
+  for (let i = 0; i < 60 * 5; i++) b.step(1 / 60);
+  assert.strictEqual(lands, 18);
+  assert.ok(m.hp < m.maxHp && near.hp < near.maxHp);
+});
+
+test('所有新道具自动使用：整场战斗不报错，道具会被用掉', () => {
+  const ids = ['firebomb', 'thunderScroll', 'bigBomb', 'barrier', 'warBanner', 'quake', 'blizzard', 'flood', 'holyLight', 'meteor', 'chrono'];
+  for (let k = 0; k < ids.length; k += 3) {
+    const s = P.newSave();
+    clearUpTo(s, 69);
+    const pick = ids.slice(k, k + 3);
+    for (const id of pick) s.inventory[id] = 1;
+    s.loadout.items = pick.concat([null, null]).slice(0, 3);
+    s.loadout.active = ['drum'];
+    const b = new TD.Battle({ level: 30, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 5 + k, autoItems: true, autoSupply: true });
+    const res = b.runToEnd();
+    assert.ok(res, pick.join());
+  }
+});

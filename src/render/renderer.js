@@ -117,7 +117,54 @@
         if (e.id === 'patch') wallHeal(false);
         else if (e.id === 'freeze') iceLane(e.lane, 34);
         else if (e.id === 'haste') V.shockwave(C.heroX + 10, battle.heroY - 10, '#8affd8', 2);
+        else if (e.id === 'firebomb') {
+          const { y0, h } = laneBox(e.lane);
+          V.fireWall(C.wallX, C.width - 30, y0, h);
+          this.shake = Math.max(this.shake, 5);
+        } else if (e.id === 'bigBomb') {
+          for (let l = Math.max(0, e.lane - 1); l <= Math.min(battle.lanes - 1, e.lane + 1); l++) {
+            const y = battle.laneY(l);
+            for (let i = 0; i < 5; i++) {
+              const x = C.wallX + 140 + Math.random() * (battle.range - 140);
+              setTimeout(() => V.boom(x, y + (Math.random() - 0.5) * 30, 1.35), i * 55 + (l - e.lane + 1) * 40);
+            }
+          }
+          this.fx.push({ kind: 'flash', color: '#ffb060', life: 0.3, age: 0 });
+          this.shake = Math.max(this.shake, 16);
+        } else if (e.id === 'barrier') V.barrier(C.wallX - 20, C.fieldTop, C.fieldBottom);
+        else if (e.id === 'warBanner') V.bannerRaise(C.heroX + 10, battle.heroY - 10);
+        else if (e.id === 'quake') {
+          V.quake(C.wallX + 40, C.width - 20, C.fieldTop, C.fieldBottom);
+          this.shake = Math.max(this.shake, 22);
+        } else if (e.id === 'blizzard') {
+          V.frostSweep(C.width, C.height);
+          for (let l = 0; l < battle.lanes; l++) iceLane(l, 14);
+          this.fx.push({ kind: 'flash', color: '#dff4ff', life: 0.3, age: -0.5 });
+        } else if (e.id === 'flood') {
+          V.flood(C.wallX - 30, C.width, C.fieldTop - 10, C.fieldBottom + 10);
+          this.shake = Math.max(this.shake, 12);
+        } else if (e.id === 'holyLight') {
+          V.holyBeam(C.wallX - 30, C.fieldTop, C.fieldBottom);
+          wallHeal(true);
+          this.fx.push({ kind: 'flash', color: '#fff2c4', life: 0.4, age: 0 });
+        } else if (e.id === 'chrono') {
+          V.chronoRings(C.heroX + 10, battle.heroY, C.width, C.height);
+          for (let l = 0; l < battle.lanes; l++) iceLane(l, 10);
+        }
       });
+      on('scrollBolt', (e) => {
+        if (!V) return;
+        V.thunder(e.x, e.y, 0.75);
+        this.fx.push({ kind: 'flash', color: '#b090ff', life: 0.2, age: 0 });
+        this.shake = Math.max(this.shake, 8);
+      });
+      on('meteor', (e) => V && V.meteorFall(e.x, e.y, e.fall));
+      on('meteorHit', (e) => {
+        if (!V) return;
+        V.meteorLand(e.x, e.y, e.radius);
+        this.shake = Math.max(this.shake, 9);
+      });
+      on('barrierBreak', () => V && V.barrierBreak(C.wallX - 20, C.fieldTop, C.fieldBottom));
       on('bossWarn', (e) => this.flashes.push({ lane: e.lane, until: battle.time + e.duration, color: '255,60,60', m: e.m }));
       on('bossInterrupt', (e) => {
         this.text(e.m.x, e.m.y - 90, '打断！', '#ffd23f', 34, 1.2);
@@ -478,6 +525,7 @@
         S.ellipse(ctx, C.wallX - 20, (C.fieldTop + C.fieldBottom) / 2, 60, (C.fieldBottom - C.fieldTop) / 2 + 10, '#bfe8ff', '#7ad0ff', 3);
         ctx.restore();
       }
+      if (b && b.itemShield > 0) this.drawBarrier(b);
       if (b && b.time < b.heroStunUntil) this.drawHeroStun(b);
       if (b) this.drawRiftTimer(b);
       if (b && b.time < this.sealUntil) this.drawWallSeal(b);
@@ -2048,10 +2096,47 @@
       S.monster(this.ctx, b.buddy.boss, x, y, def.size * 0.42, this.t, { seed: 7 });
     }
 
+    // 守护符文的金色泡泡（设计书 62.4）：越被打越淡，快破的时候闪
+    drawBarrier(b) {
+      const ctx = this.ctx;
+      const D_BARRIER = TD.data.items.barrier.shieldRatio;
+      const ratio = Math.min(1, b.itemShield / (b.wall.max * D_BARRIER));
+      const cy = (C.fieldTop + C.fieldBottom) / 2;
+      const ry = (C.fieldBottom - C.fieldTop) / 2 + 14;
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      const blink = ratio < 0.25 ? 0.5 + Math.sin(this.t * 18) * 0.5 : 1;
+      const g = ctx.createRadialGradient(C.wallX - 28, cy, ry * 0.2, C.wallX - 28, cy, ry);
+      g.addColorStop(0, `rgba(255,226,150,0)`);
+      g.addColorStop(0.8, `rgba(255,214,120,${0.1 * ratio * blink})`);
+      g.addColorStop(1, `rgba(255,238,190,${0.45 * ratio * blink})`);
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.ellipse(C.wallX - 28, cy, 70, ry, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = `rgba(255,240,200,${(0.5 + Math.sin(this.t * 3) * 0.1) * ratio * blink})`;
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+      // 泡泡表面的六边形光纹
+      ctx.strokeStyle = `rgba(255,226,150,${0.2 * ratio * blink})`;
+      ctx.lineWidth = 1;
+      for (let i = 0; i < 6; i++) {
+        const yy = C.fieldTop + 20 + i * ((C.fieldBottom - C.fieldTop - 40) / 5);
+        ctx.beginPath();
+        ctx.ellipse(C.wallX - 28, yy, 62 * Math.sqrt(Math.max(0, 1 - Math.pow((yy - cy) / ry, 2))), 10, 0, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
     // 英雄脚下的光环：战鼓（金色）、加速药水（青绿色的上升光线）（设计书 60.4）
     drawHeroAura(b, dt) {
       const drum = b.buffs.some((x) => x.src === 'drum' && b.time < x.until);
       const haste = b.buffs.some((x) => x.src === 'haste' && b.time < x.until);
+      const banner = b.buffs.some((x) => x.src === 'banner' && b.time < x.until);
+      const chrono = b.buffs.some((x) => x.src === 'chrono' && b.time < x.until);
+      if (banner) this.drawBannerAura(b);
+      if (chrono) this.drawChronoAura(b, dt);
       if (!drum && !haste) return;
       const ctx = this.ctx;
       const x = C.heroX + 4;
@@ -2095,6 +2180,71 @@
         }
       }
       ctx.restore();
+    }
+
+    // 战旗：英雄身后立着一面发光的红金旗（设计书 62.4）
+    drawBannerAura(b) {
+      const ctx = this.ctx;
+      const x = C.heroX - 46;
+      const y = b.heroY + 6;
+      ctx.save();
+      ctx.strokeStyle = '#3a2418';
+      ctx.lineWidth = 4;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x, y - 128);
+      ctx.stroke();
+      const wave = Math.sin(this.t * 5) * 7;
+      const grad = ctx.createLinearGradient(x, 0, x + 70, 0);
+      grad.addColorStop(0, '#a82434');
+      grad.addColorStop(1, '#e8553a');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.moveTo(x, y - 126);
+      ctx.bezierCurveTo(x + 24, y - 126 + wave, x + 46, y - 112 - wave, x + 72, y - 118 + wave * 0.6);
+      ctx.lineTo(x + 58, y - 98 + wave * 0.3);
+      ctx.lineTo(x + 72, y - 80 + wave * 0.5);
+      ctx.bezierCurveTo(x + 46, y - 90 - wave, x + 24, y - 72 + wave, x, y - 80);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255,226,150,0.85)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.globalCompositeOperation = 'lighter';
+      TD.art.drawGlow(ctx, x + 36, y - 100, 70, '#ff8a3a', 0.4 + Math.sin(this.t * 6) * 0.1, true);
+      TD.art.drawGlow(ctx, x, y - 130, 18, '#ffe6a0', 0.8, true);
+      ctx.restore();
+    }
+
+    // 时间静止期间：英雄脚下一圈慢慢转的时钟刻度，空中悬浮的光尘
+    drawChronoAura(b, dt) {
+      const ctx = this.ctx;
+      const x = C.heroX + 4;
+      const y = b.heroY + 2;
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.translate(x, y);
+      ctx.scale(1, 0.3);
+      ctx.strokeStyle = 'rgba(200,184,255,0.8)';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(0, 0, 58, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.rotate(this.t * 0.6);
+      ctx.lineWidth = 2;
+      for (let i = 0; i < 24; i++) {
+        const q = (i / 24) * Math.PI * 2;
+        const l = i % 6 === 0 ? 14 : 7;
+        ctx.beginPath();
+        ctx.moveTo(Math.cos(q) * 58, Math.sin(q) * 58);
+        ctx.lineTo(Math.cos(q) * (58 - l), Math.sin(q) * (58 - l));
+        ctx.stroke();
+      }
+      ctx.restore();
+      if (this.vfx && Math.random() < dt * 20) {
+        this.vfx.spawn(1, () => ({ kind: 'mote', x: 100 + Math.random() * (C.width - 140), y: C.fieldTop + Math.random() * (C.fieldBottom - C.fieldTop), vx: 0, vy: -4, life: 1.6, r: 1.6 + Math.random() * 1.6, color: '#d8ccff' }));
+      }
     }
 
     drawHero(b) {
