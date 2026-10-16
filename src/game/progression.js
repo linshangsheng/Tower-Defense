@@ -394,15 +394,18 @@
 
   P.buyWeapon = function (save, id) {
     const w = save.weapons[id];
-    if (w.owned) return false;
+    if (w.owned || !P.weaponUnlocked(save, id)) return false;
     if (!P.pay(save, D.weapons[id].cost)) return false;
     w.owned = true;
     return true;
   };
+  // 高品质武器要通关到某一关才能买（设计书 63.2）
+  P.weaponUnlocked = (save, id) => !D.weapons[id].minLevel || P.highestCleared(save) >= D.weapons[id].minLevel;
+  P.weaponUpgradeMult = (id) => D.weaponRarity[D.weapons[id].rarity || 1].upgradeMult;
   P.weaponUpgradeCost = (save, id) => {
     const w = save.weapons[id];
     if (!w.owned || w.lv >= D.weaponUpgrade.max) return null;
-    return { copper: D.weaponUpgrade.cost(w.lv) };
+    return { copper: TD.util.round5(D.weaponUpgrade.cost(w.lv) * P.weaponUpgradeMult(id)) };
   };
   P.upgradeWeapon = function (save, id) {
     const cost = P.weaponUpgradeCost(save, id);
@@ -452,6 +455,12 @@
     return out;
   };
   P.sellPrice = (id) => P.halfCost(D.equipment[id].cost);
+  // 把价格折成铜币，用来比较贵贱（设计书 63.2）
+  P.costValue = (cost) => {
+    const E = C.exchange;
+    if (!cost) return 0;
+    return (cost.copper || 0) + (cost.silver || 0) * E.copperPerSilver + (cost.gold || 0) * E.copperPerSilver * E.silverPerGold;
+  };
   P.sellEquip = function (save, id) {
     if (!save.equipOwned[id] || !D.equipment[id]) return null;
     for (const k of Object.keys(save.loadout.equip)) if (save.loadout.equip[k] === id) save.loadout.equip[k] = null;

@@ -2570,3 +2570,22 @@ select option {
   border-color: #d9a83a;
   box-shadow: 0 0 14px rgba(255, 200, 90, 0.18);
 }
+
+/* ---------- 武器五色品质（设计书 63.4） ---------- */
+.card.wr-1 { border-color: rgba(95, 211, 95, 0.45); }
+.card.wr-2 { border-color: rgba(74, 154, 255, 0.55); }
+.card.wr-3 { border-color: rgba(180, 108, 255, 0.65); box-shadow: 0 0 10px rgba(180, 108, 255, 0.15); }
+.card.wr-4 { border-color: rgba(255, 90, 79, 0.75); box-shadow: 0 0 14px rgba(255, 90, 79, 0.2); }
+.card.wr-5 { border-color: #ffc83a; box-shadow: 0 0 18px rgba(255, 200, 58, 0.3); }
+.rar-title { margin-top: 10px; }
+.rar-tag {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 0 6px;
+  border-radius: 8px;
+  font-size: 11px;
+  line-height: 16px;
+  color: #101018;
+  font-weight: 800;
+  vertical-align: 2px;
+}

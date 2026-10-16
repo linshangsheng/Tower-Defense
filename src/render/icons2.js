@@ -270,4 +270,19 @@
       ell(ctx, 0, 0, 2.2, 2.2, '#ffd23f');
     },
   };
+
+  // 新武器的图标（设计书 63.4）：直接画武器本身，并按品质加一圈底色
+  for (const id of ['frostBow', 'flameCrossbow', 'piercer', 'meteorCannon', 'stormOrb', 'voidCrossbow', 'genesisBow', 'judgementStaff', 'chronoBoomerang']) {
+    S.moreIcons[id] = (ctx) => {
+      const K = TD.creatures;
+      const w = TD.data.weapons[id];
+      const rc = TD.data.weaponRarity[w.rarity].color;
+      if (TD.art && TD.art.drawGlow) TD.art.drawGlow(ctx, 0, 0, 22, rc, 0.45);
+      if (!K) return;
+      ctx.save();
+      ctx.translate(-9, 0);
+      K.weapon(ctx, id, 22, undefined, { shieldHi: '#ffe08a' }, 0.6);
+      ctx.restore();
+    };
+  }
 })((globalThis.TD = globalThis.TD || {}));

@@ -1977,7 +1977,7 @@
         ctx.globalCompositeOperation = 'lighter';
         for (const p of b.projectiles) {
           if (p.done || p.kind === 'boomerang' || p.kind === 'firefly') continue;
-          const col = p.kind === 'zap' ? '#9fd0ff' : p.kind === 'orb' ? '#d9b8ff' : p.kind === 'shell' ? '#ffb070' : p.crit ? '#ffe680' : '#fff0c0';
+          const col = p.tint || (p.kind === 'zap' ? '#9fd0ff' : p.kind === 'orb' ? '#d9b8ff' : p.kind === 'shell' ? '#ffb070' : p.crit ? '#ffe680' : '#fff0c0');
           const tx = p.x - Math.cos(p.angle) * 46;
           const ty = p.y - Math.sin(p.angle) * 46;
           const lg = ctx.createLinearGradient(tx, ty, p.x, p.y);
@@ -1999,7 +1999,7 @@
         if (p.kind === 'boomerang') {
           ctx.save();
           ctx.translate(p.x, p.y - 10);
-          (TD.creatures ? TD.creatures.boomerang : S.boomerang)(ctx, 16, p.spin);
+          (TD.creatures ? TD.creatures.boomerang : S.boomerang)(ctx, 16, p.spin, p.tint);
           ctx.restore();
           continue;
         }

@@ -1065,6 +1065,7 @@
             hitOut: new Set(),
             hitBack: new Set(),
             spin: 0,
+            tint: w.look ? w.look.color : null,
           });
         }
         this.emit('shoot', { weapon: 'boomerang' });
@@ -1082,7 +1083,7 @@
         if (w.flyingMult && s.m.def.flying) mult *= w.flyingMult;
         const roll = this.rollHit(mult);
         if (!w.splash) s.m.pending += roll.dmg * this.armorFactor(s.m, true, w.dmgType, w.armorIgnore);
-        const kind = { crossbow: 'bolt', staff: 'orb', cannon: 'shell', orb: 'zap' }[this.stats.weapon] || 'arrow';
+        const kind = { crossbow: 'bolt', staff: 'orb', cannon: 'shell', orb: 'zap' }[(w.look && w.look.base) || this.stats.weapon] || 'arrow';
         this.projectiles.push({
           kind,
           x: sx,
@@ -1106,6 +1107,7 @@
           pierce: w.pierce,
           knock: w.knock,
           bossMult: w.bossMult,
+          tint: w.look ? w.look.color : null,
         });
       }
       this.emit('shoot', { weapon: this.stats.weapon });
@@ -1130,6 +1132,16 @@
         if (this.time >= m.burnUntil) m.burnTick = 0.5;
         m.burnUntil = this.time + b.duration;
         m.burnDps = (this.atk * b.atkMult) / b.duration;
+      }
+      // 武器自带的点燃 / 减速（设计书 63.5）：寒霜弓、烈焰弩、创世之弓、时之回旋
+      if (!(p && p.source)) {
+        const wd = this.weaponDef();
+        if (wd.ignite && !m.dead) this.ignite(m);
+        if (wd.slow && !m.dead) {
+          const prev = this.time < m.slowUntil ? m.slowAmt : 0;
+          m.slowAmt = Math.max(prev, wd.slow.amt);
+          m.slowUntil = Math.max(m.slowUntil, this.time + wd.slow.dur);
+        }
       }
       if (this.mods.igniteOnHit && !m.dead) this.ignite(m);
       else if (this.mods.igniteChance && !m.dead && this.rng() < this.mods.igniteChance) this.ignite(m);

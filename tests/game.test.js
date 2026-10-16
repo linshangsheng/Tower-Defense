@@ -1981,3 +1981,98 @@ test('所有新道具自动使用：整场战斗不报错，道具会被用掉',
     assert.ok(res, pick.join());
   }
 });
+
+// ---------- 武器扩充：五色品质（设计书 63） ----------
+test('武器：15 把，每个品质 3 把，价格逐档上涨，升级费用逐档上涨', () => {
+  const ids = Object.keys(D.weapons);
+  assert.strictEqual(ids.length, 15);
+  const byR = {};
+  for (const id of ids) (byR[D.weapons[id].rarity] = byR[D.weapons[id].rarity] || []).push(id);
+  assert.deepStrictEqual(Object.keys(byR), ['1', '2', '3', '4', '5']);
+  for (const r of Object.keys(byR)) assert.strictEqual(byR[r].length, 3, '品质 ' + r);
+  for (let r = 1; r < 5; r++) {
+    const maxLow = Math.max(...byR[r].map((id) => P.costValue(D.weapons[id].cost)));
+    const minHigh = Math.min(...byR[r + 1].map((id) => P.costValue(D.weapons[id].cost)));
+    assert.ok(minHigh > maxLow, `品质 ${r + 1} 最便宜的比品质 ${r} 最贵的还贵`);
+  }
+  const mult = [1, 2, 3, 4, 5].map((r) => D.weaponRarity[r].upgradeMult);
+  for (let i = 1; i < 5; i++) assert.ok(mult[i] >= mult[i - 1]);
+  assert.ok(mult[4] > mult[0]);
+  assert.deepStrictEqual([1, 2, 3, 4, 5].map((r) => D.weaponRarity[r].name), ['绿', '蓝', '紫', '红', '金']);
+  const s = P.newSave();
+  for (const id of ['bow', 'frostBow', 'genesisBow']) s.weapons[id] = { owned: true, lv: 3, asc: false };
+  const c = (id) => P.weaponUpgradeCost(s, id).copper;
+  assert.ok(c('bow') < c('frostBow') && c('frostBow') < c('genesisBow'), '品质越高升级越贵');
+  for (const id of ids) if (D.weapons[id].look) assert.ok(['bow', 'crossbow', 'staff', 'orb', 'cannon', 'boomerang'].includes(D.weapons[id].look.base), id);
+});
+
+test('武器解锁关卡：没通关到不能买；老存档自动补上新武器', () => {
+  const s = P.newSave();
+  s.silver = 100;
+  s.gold = 100;
+  clearUpTo(s, 9);
+  assert.ok(!P.buyWeapon(s, 'frostBow'), '第 10 关前不能买蓝色');
+  clearUpTo(s, 10);
+  assert.ok(P.buyWeapon(s, 'frostBow'));
+  clearUpTo(s, 39);
+  assert.ok(!P.buyWeapon(s, 'meteorCannon'));
+  clearUpTo(s, 40);
+  assert.ok(P.buyWeapon(s, 'meteorCannon'));
+  assert.ok(!P.buyWeapon(s, 'genesisBow'));
+  clearUpTo(s, 60);
+  assert.ok(P.buyWeapon(s, 'genesisBow'));
+  assert.strictEqual(s.gold, 100 - 8 - 20);
+  const old = P.newSave();
+  delete old.weapons.genesisBow;
+  assert.deepStrictEqual(P.migrate(old).weapons.genesisBow, { owned: false, lv: 0 });
+});
+
+function weaponBattle(id) {
+  const s = P.newSave();
+  clearUpTo(s, 69);
+  s.weapons[id] = { owned: true, lv: 0, asc: false };
+  s.loadout.weapon = id;
+  return new TD.Battle({ level: 41, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 2 });
+}
+
+test('寒霜弓和时之回旋命中减速；烈焰弩和创世之弓命中点燃；普通木弓不会', () => {
+  for (const [id, slow, ignite] of [['frostBow', 0.3, false], ['chronoBoomerang', 0.4, false], ['flameCrossbow', 0, true], ['genesisBow', 0, true], ['bow', 0, false]]) {
+    const b = weaponBattle(id);
+    const m = b.spawnMonster('slime', 0, 500);
+    m.hp = m.maxHp = 1e9;
+    b.applyWeaponHit(m, 10, false, true, null);
+    if (slow) assert.ok(Math.abs(m.slowAmt - slow) < 1e-9 && m.slowUntil > b.time, id + ' 减速');
+    else assert.ok(!(m.slowUntil > b.time), id + ' 不减速');
+    assert.strictEqual(m.burnUntil > b.time, ignite, id + ' 点燃');
+  }
+});
+
+test('穿心长弓穿透 5 只；陨星炮对 Boss ×1.3 且无视 60% 护甲；风暴法球跳 5 次；时之回旋扔两支', () => {
+  const b = weaponBattle('piercer');
+  assert.strictEqual(b.weaponDef().pierce.count, 5);
+  const ms = [500, 540, 580, 620, 660, 700].map((x) => {
+    const m = b.spawnMonster('slime', 0, x);
+    m.hp = m.maxHp = 1e9;
+    return m;
+  });
+  b.pierceFrom(ms[0], { dmg: 100, crit: false, pierce: b.weaponDef().pierce, dmgType: 'phys' });
+  assert.strictEqual(ms.filter((m) => m.hp < m.maxHp).length, 5, '后面最多 5 只被穿透（不含第一只）');
+  const mc = weaponBattle('meteorCannon');
+  assert.strictEqual(mc.weaponDef().bossMult, 1.3);
+  assert.ok(Math.abs(mc.armorIgnore({ armorIgnore: mc.weaponDef().armorIgnore }) - 0.6) < 1e-9);
+  assert.strictEqual(weaponBattle('stormOrb').weaponDef().chain.count, 5);
+  const cb = weaponBattle('chronoBoomerang');
+  const t = cb.spawnMonster('slime', 1, 500);
+  t.hp = t.maxHp = 1e9;
+  cb.fire([t]);
+  assert.strictEqual(cb.projectiles.filter((p) => p.kind === 'boomerang').length, 2);
+});
+
+test('新武器的弹道带品质色；射出的弹道种类跟基础形状一致', () => {
+  const b = weaponBattle('flameCrossbow');
+  const m = b.spawnMonster('slime', 0, 500);
+  m.hp = m.maxHp = 1e9;
+  b.fire([m]);
+  assert.ok(b.projectiles.every((p) => p.kind === 'bolt' && p.tint === '#ff9a4a'));
+  assert.ok(weaponBattle('stormOrb').weaponDef().look.base === 'orb');
+});

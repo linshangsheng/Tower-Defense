@@ -7,6 +7,7 @@
   TD.data.weapons = {
     bow: {
       name: '木弓',
+      rarity: 1,
       cost: null,
       dmgMult: 1.0,
       aspdMult: 1.0,
@@ -19,6 +20,7 @@
     },
     crossbow: {
       name: '连发弩',
+      rarity: 1,
       cost: { copper: 300 },
       dmgMult: 0.45,
       aspdMult: 1.0,
@@ -32,8 +34,9 @@
     },
     boomerang: {
       name: '回旋镖',
+      rarity: 1,
       cost: { copper: 450 },
-      dmgMult: 0.8,
+      dmgMult: 0.7,
       aspdMult: 0.6,
       projSpeed: 750,
       boomerang: true,
@@ -43,8 +46,9 @@
     },
     staff: {
       name: '魔法杖',
+      rarity: 2,
       cost: { silver: 8 },
-      dmgMult: 0.9,
+      dmgMult: 1.15,
       aspdMult: 0.85,
       projSpeed: 700,
       dmgType: 'magic',
@@ -56,8 +60,9 @@
     },
     cannon: {
       name: '火炮',
+      rarity: 2,
       cost: { silver: 10 },
-      dmgMult: 2.6,
+      dmgMult: 3.3,
       aspdMult: 0.35,
       projSpeed: 600,
       arc: true,
@@ -70,6 +75,7 @@
     },
     orb: {
       name: '雷电法球',
+      rarity: 3,
       cost: { gold: 4 },
       dmgMult: 0.8,
       aspdMult: 0.9,
@@ -80,6 +86,55 @@
       good: '密集怪群、小幽灵、魔法抗性低的怪',
       ascend: { name: '雷神之球', desc: '跳跃 3 → 5 次', weapon: { chain: { count: 5, range: 200, falloff: 0.75 } } },
     },
+  };
+
+  // ---- v0.55 武器扩充（设计书 63）：五色品质，越高越强越贵；look = 基础形状 + 品质色 + 专属细节 ----
+  Object.assign(TD.data.weapons, {
+    frostBow: {
+      name: '寒霜弓', rarity: 2, cost: { silver: 12 }, minLevel: 10, dmgMult: 1.8, aspdMult: 1.0, projSpeed: 950, slow: { amt: 0.3, dur: 2 },
+      desc: '伤害 ×1.8；命中使目标减速 30%（2 秒）。', good: '快怪：兔子、狼、战车', look: { base: 'bow', color: '#8fd8ff', accent: 'frost' },
+    },
+    flameCrossbow: {
+      name: '烈焰弩', rarity: 3, cost: { gold: 4 }, minLevel: 20, dmgMult: 0.6, aspdMult: 1.0, projSpeed: 950, bolts: 3, extraBoltMult: 0.45, flyingMult: 1.5, ignite: true,
+      desc: '一次射 3 支火焰弩箭，每支点燃目标，对飞行怪伤害 +50%。', good: '群怪、飞行怪', look: { base: 'crossbow', color: '#ff9a4a', accent: 'flame' },
+    },
+    piercer: {
+      name: '穿心长弓', rarity: 3, cost: { gold: 5 }, minLevel: 20, dmgMult: 1.3, aspdMult: 0.9, projSpeed: 1100, pierce: { count: 5, range: 520, mult: 0.8 }, armorIgnore: 0.2,
+      desc: '箭穿过同一车道最多 5 只怪（每只 80% 伤害），无视 20% 护甲。', good: '排成长队的车道', look: { base: 'bow', color: '#d9a0ff', accent: 'lance' },
+    },
+    meteorCannon: {
+      name: '陨星炮', rarity: 4, cost: { gold: 8 }, minLevel: 40, dmgMult: 3.8, aspdMult: 0.4, projSpeed: 620, arc: true, splash: { radius: 100, mult: 0.8 }, armorIgnore: 0.6, bossMult: 1.3,
+      desc: '超重炮弹，爆炸半径 100，无视 60% 护甲，对 Boss 伤害 +30%。', good: '重甲怪、Boss', look: { base: 'cannon', color: '#ff6a3a', accent: 'meteor' },
+    },
+    stormOrb: {
+      name: '风暴法球', rarity: 4, cost: { gold: 9 }, minLevel: 40, dmgMult: 1.2, aspdMult: 1.0, projSpeed: 1600, dmgType: 'magic', chain: { count: 5, range: 240, falloff: 0.85 },
+      desc: '魔法闪电跳跃 5 次，每跳只衰减 15%。', good: '密集怪群、灵体', look: { base: 'orb', color: '#7ad0ff', accent: 'storm' },
+    },
+    voidCrossbow: {
+      name: '裂空弩', rarity: 4, cost: { gold: 10 }, minLevel: 40, dmgMult: 0.62, aspdMult: 1.0, projSpeed: 1000, bolts: 5, extraBoltMult: 0.55, flyingMult: 1.6, armorIgnore: 0.2,
+      desc: '一次射 5 支箭，对飞行怪伤害 +60%，无视 20% 护甲。', good: '群怪、飞行怪', look: { base: 'crossbow', color: '#b060ff', accent: 'void' },
+    },
+    genesisBow: {
+      name: '创世之弓', rarity: 5, cost: { gold: 20 }, minLevel: 60, dmgMult: 2.0, aspdMult: 1.15, projSpeed: 1200, bonusCrit: 0.2, pierce: { count: 3, range: 420, mult: 0.7 }, ignite: true,
+      desc: '高伤害、暴击率 +20%；箭穿透 3 只怪，并点燃目标。', good: '通用、Boss', look: { base: 'bow', color: '#ffd860', accent: 'genesis' },
+    },
+    judgementStaff: {
+      name: '天罚之杖', rarity: 5, cost: { gold: 18 }, minLevel: 60, dmgMult: 1.7, aspdMult: 0.95, projSpeed: 760, dmgType: 'magic', splash: { radius: 110, mult: 0.9 }, chain: { count: 2, range: 200, falloff: 0.7 },
+      desc: '魔法，大范围爆炸（半径 110、溅射 90%），再加 2 次闪电跳跃。', good: '成堆的怪、灵体、魔抗低的怪', look: { base: 'staff', color: '#fff0a0', accent: 'judgement' },
+    },
+    chronoBoomerang: {
+      name: '时之回旋', rarity: 5, cost: { gold: 16 }, minLevel: 60, dmgMult: 1.7, aspdMult: 0.75, projSpeed: 800, boomerang: true, twin: true, slow: { amt: 0.4, dur: 2 },
+      desc: '一次扔出两支回旋镖（本车道 + 相邻车道），命中使目标减速 40%。', good: '长队、木盾哥布林', look: { base: 'boomerang', color: '#c8a8ff', accent: 'chrono' },
+    },
+  });
+
+  // 武器品质（设计书 63.2）
+  TD.data.weaponRarity = {
+    1: { name: '绿', color: '#5fd35f', upgradeMult: 1 },
+    2: { name: '蓝', color: '#4a9aff', upgradeMult: 1.2 },
+    3: { name: '紫', color: '#b46cff', upgradeMult: 1.5 },
+    4: { name: '红', color: '#ff5a4f', upgradeMult: 3 },
+    5: { name: '金', color: '#ffc83a', upgradeMult: 5 },
   };
 
   // 技能协同（设计书 45）：两个技能前后释放时的额外效果

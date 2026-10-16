@@ -838,13 +838,22 @@
 
   function shopWeapons(el) {
     const s = game.save;
-    el.append(h('div', { class: 'section-title' }, '武器（永久解锁，每级伤害 +8%）'));
-    for (const id of Object.keys(D.weapons)) {
+    el.append(h('div', { class: 'section-title' }, '武器（永久解锁，每级伤害 +8%；品质越高越强、越贵，升级也越贵）'));
+    // 按品质分组：绿 → 蓝 → 紫 → 红 → 金（设计书 63.4）
+    const order = Object.keys(D.weapons).sort((a, b) => (D.weapons[a].rarity || 1) - (D.weapons[b].rarity || 1));
+    let lastR = 0;
+    for (const id of order) {
       const w = D.weapons[id];
       const ws = s.weapons[id];
+      const R = D.weaponRarity[w.rarity || 1];
+      if ((w.rarity || 1) !== lastR) {
+        lastR = w.rarity || 1;
+        el.append(h('div', { class: 'section-title rar-title', style: { color: R.color } }, `${R.name}色品质`));
+      }
       let right;
-      if (!ws.owned) right = buyBtn(w.cost, () => P.buyWeapon(s, id), '解锁');
-      else
+      if (!ws.owned) {
+        right = P.weaponUnlocked(s, id) ? buyBtn(w.cost, () => P.buyWeapon(s, id), '解锁') : h('span', { class: 'equipped dim' }, `通关第 ${w.minLevel} 关后可解锁（${P.costText(w.cost)}）`);
+      } else
         right = h(
           'div',
           { class: 'btn-col' },
@@ -874,7 +883,8 @@
       // 满级专精（设计书 53）
       const mastered = P.hasMastery(s, id);
       const masteryLine = w.mastery ? h('div', { class: 'asc mastery' + (mastered ? ' on' : '') }, `${mastered ? '★ 专精' : `Lv${D.weaponUpgrade.max} 解锁专精`}「${w.mastery.name}」：${w.mastery.desc}`) : null;
-      el.append(card(h('span', { class: 'with-icon' }, TD.sprites.iconCanvas(id, 30), ws.asc ? w.ascend.name : w.name), ws.owned ? `Lv.${ws.lv}/${D.weaponUpgrade.max}` : '未解锁', h('span', null, w.desc, h('span', { class: 'good' }, ' 擅长：' + w.good), ascLine, masteryLine), right));
+      const locked = !ws.owned && !P.weaponUnlocked(s, id);
+      el.append(card(h('span', { class: 'with-icon rar-name', style: { color: R.color } }, TD.sprites.iconCanvas(id, 30), ws.asc ? w.ascend.name : w.name, h('span', { class: 'rar-tag', style: { background: R.color } }, R.name)), ws.owned ? `Lv.${ws.lv}/${D.weaponUpgrade.max}` : locked ? '未解锁' : '可购买', h('span', null, w.desc, h('span', { class: 'good' }, ' 擅长：' + w.good), ascLine, masteryLine), right, { cls: 'wr-' + (w.rarity || 1) + (locked ? ' unavailable' : '') }));
     }
   }
 
@@ -1097,7 +1107,7 @@
           .filter((id) => weaponsOpen || s.weapons[id].owned)
           .map((id) =>
           slotBox(
-            P.weaponDef(s, id).name,
+            h('span', { style: { color: D.weaponRarity[D.weapons[id].rarity || 1].color } }, P.weaponDef(s, id).name),
             s.weapons[id].owned ? (lo.weapon === id ? '✔ 使用中' : '点击装备') : null,
             () => {
               if (P.setWeapon(s, id)) {

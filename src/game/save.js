@@ -89,10 +89,12 @@
     }
     // 范围伤害对成群的小怪更有价值
     let aoe = 1;
-    if (w.chain) aoe = 1 + w.chain.count * 0.3;
-    else if (w.splash) aoe = 1 + w.splash.mult * 0.9;
-    else if (w.bolts) aoe = 1.35;
-    else if (w.boomerang) aoe = 1.25;
+    if (w.chain) aoe += w.chain.count * 0.3;
+    if (w.splash) aoe += w.splash.mult * 0.9;
+    if (w.bolts) aoe += w.bolts > 3 ? 0.55 : 0.35;
+    if (w.boomerang) aoe += 0.25;
+    if (w.pierce) aoe += w.pierce.count * w.pierce.mult * 0.2;
+    if (w.slow || w.ignite) aoe += 0.08;
     if (lvl.type === 'union') aoe = 1 + (aoe - 1) * 1.4;
     return dpsBase * eff * aoe;
   };
