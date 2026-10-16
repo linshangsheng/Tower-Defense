@@ -2,7 +2,7 @@
 // 自动数值模拟：验证设计书 18.10 的原型验收目标
 // 用法：node tools/sim.js [--seeds 5] [--verbose] [--hard | --easy] [--campaign]
 //   --hard / --easy：机器人在该难度下打（设计书 31.3）；--campaign：只跑目标 2（推进全部关卡）
-//   --hero ding：解锁后改用叮叮（设计书 42.3）
+//   --hero ding：解锁后改用Lyra（设计书 42.3）
 const TD = require('./load');
 const P = TD.progression;
 
@@ -11,7 +11,7 @@ const seeds = +(args[args.indexOf('--seeds') + 1] || 0) || 5;
 const verbose = args.includes('--verbose');
 const difficulty = args.includes('--hard') ? 'hard' : args.includes('--easy') ? 'easy' : 'normal';
 const campaignOnly = args.includes('--campaign');
-// --hero ding：解锁后改用叮叮（设计书 42.3）
+// --hero ding：解锁后改用Lyra（设计书 42.3）
 const heroOpt = args.includes('--hero') ? args[args.indexOf('--hero') + 1] : null;
 const LAST = Math.max(...Object.keys(TD.data.levels).map(Number));
 

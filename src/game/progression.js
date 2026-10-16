@@ -16,6 +16,7 @@
       copper: 0,
       silver: 0,
       gold: 0,
+      diamond: 0, // 暂时无法获得（设计书 61.4）
       attrs: { atk: 0, aspd: 0, crit: 0, critDmg: 0, luck: 0 },
       wall: { level: 1, fortify: 0, mend: 0, thorns: 0 },
       weapons: Object.fromEntries(Object.keys(D.weapons).map((id) => [id, { owned: id === 'bow', lv: 0 }])),
@@ -28,7 +29,7 @@
         weapon: 'bow',
         active: ['drum', null, null],
         passive: [null, null, null],
-        equip: { helm: null, cape: null, quiver: null, trinket1: null, trinket2: null },
+        equip: { helm: null, cape: null, quiver: null, trinket1: null, trinket2: null, trinket3: null },
         items: [null, null, null],
         target: 'nearest',
         autoCast: false,
@@ -42,7 +43,7 @@
       settings: { sound: true, speed: 1, difficulty: 'normal', restMinutes: 30 },
       hero: 'dang', // 当前英雄（设计书 42）
       buddy: null, // 助战伙伴（设计书 51）
-      outfit: 'classic', // 铛铛的衣柜（设计书 30）
+      outfit: 'classic', // Kael的衣柜（设计书 30）
       outfitsSeen: { classic: true },
       story: {}, // 守城日记（设计书 28）：段落 id → 'read' 读完 / 'skipped' 跳过
     };
@@ -100,7 +101,7 @@
     return true;
   };
 
-  // ---------- 铛铛的衣柜（设计书 30） ----------
+  // ---------- Kael的衣柜（设计书 30） ----------
   P.outfitUnlocked = (save, id) => {
     const o = D.outfits && D.outfits.find((x) => x.id === id);
     return !!o && !!o.check(save);
@@ -344,7 +345,7 @@
   P.canAfford = function (save, cost) {
     if (!cost) return true;
     return (
-      (cost.copper || 0) <= save.copper && (cost.silver || 0) <= save.silver && (cost.gold || 0) <= save.gold
+      (cost.copper || 0) <= save.copper && (cost.silver || 0) <= save.silver && (cost.gold || 0) <= save.gold && (cost.diamond || 0) <= (save.diamond || 0)
     );
   };
   P.pay = function (save, cost) {
@@ -352,6 +353,7 @@
     save.copper -= cost.copper || 0;
     save.silver -= cost.silver || 0;
     save.gold -= cost.gold || 0;
+    save.diamond = (save.diamond || 0) - (cost.diamond || 0);
     return true;
   };
   P.costText = function (cost) {
@@ -360,6 +362,7 @@
     if (cost.copper) parts.push(cost.copper + ' 铜');
     if (cost.silver) parts.push(cost.silver + ' 银');
     if (cost.gold) parts.push(cost.gold + ' 金');
+    if (cost.diamond) parts.push(cost.diamond + ' 钻');
     return parts.join(' ');
   };
 
@@ -428,7 +431,38 @@
     return true;
   };
 
-  P.equipSlotsFor = (slot) => (slot === 'trinket' ? ['trinket1', 'trinket2'] : [slot]);
+  P.equipSlotsFor = (slot) => (slot === 'trinket' ? ['trinket1', 'trinket2', 'trinket3'] : [slot]);
+
+  // 卖出价是买入价的一半（设计书 61.5）；一半不是整数时，零头折成下一级货币
+  P.halfCost = function (cost) {
+    const E = C.exchange;
+    const g = (cost && cost.gold) || 0;
+    const s = (cost && cost.silver) || 0;
+    const c = (cost && cost.copper) || 0;
+    const d = (cost && cost.diamond) || 0;
+    const out = {};
+    const gold = Math.floor(g / 2);
+    const silver = Math.floor(s / 2) + (g % 2) * (E.silverPerGold / 2);
+    const copper = Math.floor(c / 2) + (s % 2) * (E.copperPerSilver / 2);
+    const diamond = Math.floor(d / 2);
+    if (copper) out.copper = copper;
+    if (silver) out.silver = silver;
+    if (gold) out.gold = gold;
+    if (diamond) out.diamond = diamond;
+    return out;
+  };
+  P.sellPrice = (id) => P.halfCost(D.equipment[id].cost);
+  P.sellEquip = function (save, id) {
+    if (!save.equipOwned[id] || !D.equipment[id]) return null;
+    for (const k of Object.keys(save.loadout.equip)) if (save.loadout.equip[k] === id) save.loadout.equip[k] = null;
+    delete save.equipOwned[id];
+    const price = P.sellPrice(id);
+    save.copper += price.copper || 0;
+    save.silver += price.silver || 0;
+    save.gold += price.gold || 0;
+    save.diamond = (save.diamond || 0) + (price.diamond || 0);
+    return price;
+  };
 
   P.buyEquip = function (save, id) {
     if (save.equipOwned[id] || !P.equipAvailable(save, id)) return false;

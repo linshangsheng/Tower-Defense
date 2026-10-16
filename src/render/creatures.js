@@ -363,13 +363,13 @@
   // 主角（设计书 56.3）
   // ======================================================================
   const HERO_COL = { cape: '#e04848', body: '#5b7bd5', helmTop: '#eef2f7', helmBottom: '#a9b4c2', brim: '#8c97a6', plume: '#ff5a4f', plumeHi: '#ffb3ad', shield: '#c9a24a', shieldHi: '#ffe08a' };
-  // v0.51 的三位新英雄（设计书 59.3）：各自固定的配色和体型，衣柜外观只用于铛铛和叮叮
+  // v0.51 的三位新英雄（设计书 59.3）：各自固定的配色和体型，衣柜外观只用于Kael和Lyra
   const HERO_LOOKS = {
     yan: { scale: 1.05, eye: '#ffd08a', col: { cape: '#6f6a62', body: '#8a5a3a', helmTop: '#d6cfc0', helmBottom: '#7d776c', brim: '#5d574e', plume: '#e0893a', plumeHi: '#ffc58a', shield: '#8d8678', shieldHi: '#ffcf7a' } },
     ying: { scale: 0.9, eye: '#d8fff4', col: { cape: '#2f6f68', body: '#3f8f7a', helmTop: '#4a9486', helmBottom: '#1f4a46', brim: '#1a3b38', plume: '#7fe0c0', plumeHi: '#d8fff0', shield: '#e8d27a', shieldHi: '#fff3b0' } },
     mu: { scale: 1.1, eye: '#e8ffb0', col: { cape: '#4d6b34', body: '#6b4a2e', helmTop: '#c49a66', helmBottom: '#6a4a2a', brim: '#4a3220', plume: '#9fd36a', plumeHi: '#e6ffb8', shield: '#7a5a32', shieldHi: '#d8f0a0' } },
   };
-  // 新英雄的头部（设计书 59.3）：阿岩的平顶重盔、萤萤的兜帽、阿木的木面具
+  // 新英雄的头部（设计书 59.3）：Atlas的平顶重盔、Nova的兜帽、Rowan的木面具
   function heroHead(ctx, s, t, id, col, eye, open) {
     if (id === 'yan') {
       const hg = ctx.createLinearGradient(s * 0.3, -s * 0.4, -s * 0.3, s * 0.3);
@@ -825,7 +825,7 @@
       }
     }
     if (st.hero === 'yan') {
-      // 阿岩：背上一面高高的石盾，盾面刻着发光的符文
+      // Atlas：背上一面高高的石盾，盾面刻着发光的符文
       ctx.save();
       ctx.translate(-s * 0.36, -s * 1.3);
       ctx.rotate(-0.12);
@@ -858,7 +858,7 @@
       glow(ctx, 0, -s * 0.05, s * 0.3, col.shieldHi, 0.35);
       ctx.restore();
     } else if (st.hero === 'mu') {
-      // 阿木：背上的长箭袋，露出一捆带叶羽的箭
+      // Rowan：背上的长箭袋，露出一捆带叶羽的箭
       ctx.save();
       ctx.translate(-s * 0.28, -s * 1.5);
       ctx.rotate(-0.45);
@@ -893,7 +893,7 @@
       ctx.stroke();
     }
     if (st.hero === 'mu') {
-      // 阿木的披风下摆缀着一圈叶子
+      // Rowan的披风下摆缀着一圈叶子
       for (let i = 0; i < 6; i++) {
         const lx = -s * (0.15 + i * 0.17) - wave * (i / 6);
         const ly = -s * 0.1 - Math.sin(t * 4 + i) * 2;
@@ -1026,7 +1026,7 @@
     ctx.fillStyle = light(col.shieldHi, 0.3);
     ctx.fillRect(-s * 0.02, -s * 1.22, s * 0.07, s * 0.07);
     if (ding) {
-      // 叮叮腰间会发光的铃铛
+      // Lyra腰间会发光的铃铛
       const ring = st.shotAge !== undefined && st.shotAge < 0.3 ? 1 : 0.4;
       glow(ctx, s * 0.2, -s * 1.08, s * 0.45, '#ffd27a', 0.5 + ring * 0.4);
       ctx.fillStyle = '#ffd96a';
@@ -1035,7 +1035,7 @@
       ctx.fill();
     }
     if (st.hero === 'ying') {
-      // 萤萤腰间的萤火灯：放萤火虫时更亮
+      // Nova腰间的萤火灯：放萤火虫时更亮
       const lit = st.shotAge !== undefined && st.shotAge < 0.3 ? 1 : 0;
       const sway = Math.sin(t * 2.6) * 0.15;
       ctx.save();

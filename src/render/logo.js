@@ -493,9 +493,9 @@
     t.lineWidth = 10;
     t.strokeStyle = 'rgba(40,20,5,0.85)';
     t.lineJoin = 'round';
-    t.strokeText('守城英雄', 380, 100);
+    t.strokeText('最后的堡垒', 380, 100);
     t.fillStyle = g;
-    t.fillText('守城英雄', 380, 100);
+    t.fillText('最后的堡垒', 380, 100);
     // 扫光
     t.globalCompositeOperation = 'source-atop';
     const sx = -200 + sweep * 1160;
@@ -596,19 +596,9 @@
         softGlow(ctx, CX, CY, R * 3.2 * (1.2 - k * 0.4), '#ffe2a0', 0.5 * k);
         ctx.restore();
       }
-      // 标题与副标题
+      // 标题（没有副标题）
       const ta = span(t, 3.0, 3.6);
       titleText(ctx, ta, span(t, 3.2, 4.3));
-      const sa = span(t, 3.5, 4.0);
-      if (sa > 0) {
-        ctx.save();
-        ctx.globalAlpha = sa;
-        ctx.textAlign = 'center';
-        ctx.font = '700 26px "PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif';
-        ctx.fillStyle = '#d8e8ff';
-        ctx.fillText('— 小卫兵铛铛的守城日记 —', CX, CY + 330);
-        ctx.restore();
-      }
       // 光点和光尾
       if (t < 3.0) {
         const p = orbAt(t);

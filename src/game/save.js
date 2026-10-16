@@ -261,7 +261,7 @@
     for (let i = 0; i < 3; i++) lo.items[i] = items[i] || null;
 
     // 装备：每个栏位挑战力提升最大的；特长装备按本关怪物构成折算（设计书 58.5）
-    const slots = { helm: ['helm'], cape: ['cape'], trinket: ['trinket1', 'trinket2'] };
+    const slots = { helm: ['helm'], cape: ['cape'], trinket: ['trinket1', 'trinket2', 'trinket3'] };
     if (P.slotCount(save, 'quiver') > 0) slots.quiver = ['quiver'];
     for (const kind of Object.keys(slots)) {
       const cands = Object.keys(D.equipment).filter((id) => save.equipOwned[id] && D.equipment[id].slot === kind);

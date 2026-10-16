@@ -118,12 +118,12 @@
       );
     });
     modal(
-      h('div', { class: 'diary' }, h('div', { class: 'preview-head' }, h('h2', null, '📔 铛铛的守城日记'), h('span', { class: 'tag' }, `已读 ${read} / ${order.length}`)), h('div', { class: 'diary-list' }, items), h('div', { class: 'modal-buttons' }, h('button', { class: 'btn primary', onclick: UI.closeModal }, '合上日记'))),
+      h('div', { class: 'diary' }, h('div', { class: 'preview-head' }, h('h2', null, '📔 Kael的守城日记'), h('span', { class: 'tag' }, `已读 ${read} / ${order.length}`)), h('div', { class: 'diary-list' }, items), h('div', { class: 'modal-buttons' }, h('button', { class: 'btn primary', onclick: UI.closeModal }, '合上日记'))),
       { closeOnBack: true, cls: 'wide' }
     );
   };
 
-  // ================= 铛铛的衣柜（设计书 30） =================
+  // ================= Kael的衣柜（设计书 30） =================
   UI.showWardrobe = function () {
     const s = G().save;
     const cards = D.outfits.map((o) => {
@@ -150,7 +150,7 @@
     });
     const n = D.outfits.filter((o) => P.outfitUnlocked(s, o.id)).length;
     modal(
-      h('div', { class: 'wardrobe' }, h('div', { class: 'preview-head' }, h('h2', null, '👕 铛铛的衣柜'), h('span', { class: 'tag' }, `${n} / ${D.outfits.length}`)), h('div', { class: 'outfit-grid' }, cards), h('div', { class: 'modal-buttons' }, h('button', { class: 'btn primary', onclick: UI.closeModal }, '好了'))),
+      h('div', { class: 'wardrobe' }, h('div', { class: 'preview-head' }, h('h2', null, '👕 Kael的衣柜'), h('span', { class: 'tag' }, `${n} / ${D.outfits.length}`)), h('div', { class: 'outfit-grid' }, cards), h('div', { class: 'modal-buttons' }, h('button', { class: 'btn primary', onclick: UI.closeModal }, '好了'))),
       { closeOnBack: true, cls: 'wide' }
     );
   };
@@ -173,8 +173,7 @@
     const credits = h(
       'div',
       { class: 'ending-credits hidden' },
-      h('h2', null, '守城英雄'),
-      h('p', null, '小卫兵铛铛的守城日记'),
+      h('h2', null, '最后的堡垒'),
       h('h3', null, '游戏设计 · 程序 · 美术 · 音效'),
       h('p', null, 'Claude（与你一起）'),
       h('h3', null, '出品'),
@@ -189,7 +188,7 @@
     R().appendChild(screenEl);
     const lines = [
       [1.0, '墨墨"噗"的一声，缩回了一个小团子……'],
-      [4.5, '铛铛跑过去，把它抱了起来。头盔"当"地响了一声。'],
+      [4.5, 'Kael跑过去，把它抱了起来。头盔"当"地响了一声。'],
       [8.0, '裂隙慢慢合上了，天空重新变得湛蓝。'],
       [11.5, '王国最小的守城卫兵，守住了最大的危机。'],
     ];
@@ -236,7 +235,7 @@
       const groundY = H * 0.72;
       const shrink = TD.util.clamp(t / 2, 0, 1);
       const momoSize = 48 * (1 - shrink * 0.65);
-      // 铛铛跑过去
+      // Kael跑过去
       const run = TD.util.clamp((t - 3.5) / 2, 0, 1);
       const heroX = W * 0.25 + (momoX - 60 - W * 0.25) * run;
       const hugging = t > 5.6;

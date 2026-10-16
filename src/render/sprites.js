@@ -2271,7 +2271,7 @@
   }
   S.crown = crown;
 
-  // ---------- 英雄：铛铛 ----------
+  // ---------- 英雄：Kael ----------
   // st: { weapon, aimAngle, shotAge, mood: 'idle'|'focus'|'worried'|'win'|'lose', t }
   S.hero = function (ctx, x, y, st) {
     if (TD.creatures && TD.creatures.hero) return TD.creatures.hero(ctx, x, y, st);
@@ -2357,7 +2357,7 @@
     ctx.rotate(headTilt);
     const ding = st.hero === 'ding';
     if (ding) {
-      // 叮叮的两条小辫子（设计书 42.1）
+      // Lyra的两条小辫子（设计书 42.1）
       const sway = Math.sin(t * 5) * 0.12;
       for (const d of [-1, 1]) {
         ctx.save();
@@ -3048,7 +3048,7 @@
     return c;
   };
 
-  // 铛铛的头像（守城日记的对话框）
+  // Kael的头像（守城日记的对话框）
   S.heroPortrait = function (size, mood, outfit, hero) {
     const c = document.createElement('canvas');
     const px = size || 96;

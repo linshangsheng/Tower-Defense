@@ -15,7 +15,7 @@
     { id: 'ch2', name: '沙漠守护者', desc: '通关第二章', reward: { silver: 3 }, check: (s) => cleared(s, 20) },
     { id: 'ch3', name: '沼泽守护者', desc: '通关第三章', reward: { silver: 3 }, check: (s) => cleared(s, 30) },
     { id: 'ch4', name: '雪原守护者', desc: '通关第四章', reward: { silver: 3 }, check: (s) => cleared(s, 40) },
-    { id: 'hero', name: '守城英雄', desc: '击败墨墨', reward: { gold: 1 }, check: (s) => cleared(s, 50) },
+    { id: 'hero', name: '堡垒守卫', desc: '击败墨墨', reward: { gold: 1 }, check: (s) => cleared(s, 50) },
     { id: 'ch6', name: '云端守护者', desc: '通关第六章，让雷雷消气', reward: { gold: 1 }, check: (s) => cleared(s, 60) },
     { id: 'ch7', name: '海湾守护者', desc: '通关第七章，帮波波找到新家', reward: { gold: 1 }, check: (s) => cleared(s, 70) },
     { id: 'bubbles', name: '啵啵啵', desc: '累计戳破 100 个泡泡', reward: { silver: 3 }, check: (s) => (s.stats.bubbles || 0) >= 100 },

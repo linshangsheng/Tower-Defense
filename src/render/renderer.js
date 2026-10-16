@@ -40,6 +40,8 @@
       this.fogUntil = 0;
       this.blizzardUntil = 0;
       this.sealUntil = 0;
+      this.collapse = null;
+      this.wallStage = undefined;
       this.fx = [];
       this.flashes = [];
       this.shake = 0;
@@ -49,6 +51,10 @@
       on('hit', this.onHit);
       on('death', this.onDeath);
       on('wallHit', this.onWallHit);
+      // 城墙血条归零：开始坍塌（设计书 61.6）
+      on('end', (res) => {
+        if (!res.win && battle.wall.hp <= 0) this.collapse = { t0: this.t };
+      });
       on('wallHeal', (e) => {
         if (e.amount > 0) this.text(C.wallX - 70, C.fieldTop + 40, '+' + Math.round(e.amount), '#4fd36a', 26);
         this.burst(C.wallX - 60, (C.fieldTop + C.fieldBottom) / 2, '#7dff9a', 18, 220);
@@ -223,7 +229,7 @@
         this.text(e.x, e.y, e.name, '#7ad0ff', 26, 1.1);
         this.burst(e.x, e.y + 20, '#bfe8ff', 18, 260);
       });
-      // 叮叮的铃声（设计书 42.2）
+      // Lyra的铃声（设计书 42.2）
       on('bell', (e) => {
         this.fx.push({ kind: 'ring', x: e.x, y: e.y, r0: 10, r1: e.radius, color: 'rgba(255,210,63,', life: 0.45, age: 0 });
         this.text(e.x, e.y - 40, '叮！', '#ffd23f', 20, 0.6);
@@ -424,6 +430,7 @@
       const ctx = this.ctx;
       const b = this.battle;
       this.t += dt;
+      this.lastDt = dt;
       this.critAge += dt;
       ctx.save();
       if (this.shake > 0.2) {
@@ -1163,114 +1170,330 @@
     }
 
     // 光影手绘的城墙（设计书 54.5）：一块块石头，右侧被夕阳照亮，墙头长着苔藓，挂一盏灯
+    // ---------- 城墙（设计书 61.6）：七档破损 + 坍塌 ----------
+    wallStageOf(ratio) {
+      const cuts = [0.85, 0.7, 0.55, 0.4, 0.25, 0.1];
+      let st = 0;
+      for (const c of cuts) if (ratio <= c) st++;
+      return st;
+    }
+
+    // 基础墙图（按场景缓存）：石块、垛口、苔藓，不含破损
+    wallBase(h) {
+      const key = this.scene.key;
+      if (this.wallBaseArt && this.wallBaseArt.key === key) return this.wallBaseArt.canvas;
+      const P = this.scene.palette;
+      const c = document.createElement('canvas');
+      c.width = 110;
+      c.height = h + 40;
+      const g = c.getContext('2d');
+      g.translate(0, 30);
+      const ox = 20;
+      const body = g.createLinearGradient(ox, 0, ox + 64, 0);
+      body.addColorStop(0, '#1c232c');
+      body.addColorStop(1, '#3e4954');
+      g.fillStyle = body;
+      g.fillRect(ox, 0, 64, h);
+      let seed = 7;
+      const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+      for (let y = 0; y < h; y += 22) {
+        const off = (y / 22) % 2 ? 0 : 16;
+        for (let x = ox - 16 + off; x < ox + 64; x += 32) {
+          const bx = Math.max(ox, x) + 1.5;
+          const bw = Math.min(ox + 64, x + 32) - bx - 1.5;
+          if (bw <= 2) continue;
+          const v = 40 + Math.floor(rnd() * 22) + (bx - ox) * 0.35;
+          g.fillStyle = `rgb(${v - 6},${v + 2},${v + 12})`;
+          TD.sprites.roundRect(g, bx, y + 1.5, bw, 19, 4);
+          g.fill();
+          g.strokeStyle = TD.art.rgba(P.rim, 0.28 + ((bx - ox) / 64) * 0.3);
+          g.lineWidth = 1.5;
+          g.beginPath();
+          g.moveTo(bx + 3, y + 2.5);
+          g.lineTo(bx + bw - 2, y + 2.5);
+          g.lineTo(bx + bw - 1, y + 12);
+          g.stroke();
+        }
+      }
+      for (let y = -4; y < h; y += 44) {
+        const gg = g.createLinearGradient(ox + 50, 0, ox + 72, 0);
+        gg.addColorStop(0, '#3a444f');
+        gg.addColorStop(1, '#5a6672');
+        g.fillStyle = gg;
+        TD.sprites.roundRect(g, ox + 50, y, 22, 26, 4);
+        g.fill();
+        g.strokeStyle = TD.art.rgba(P.rim, 0.55);
+        g.lineWidth = 2;
+        g.beginPath();
+        g.moveTo(ox + 54, y + 1);
+        g.lineTo(ox + 71, y + 1);
+        g.lineTo(ox + 71, y + 20);
+        g.stroke();
+        g.fillStyle = '#2f5a2c';
+        g.beginPath();
+        g.ellipse(ox + 58, y + 1, 9, 4, 0, 0, Math.PI * 2);
+        g.fill();
+        g.fillStyle = 'rgba(170,220,110,0.6)';
+        g.beginPath();
+        g.ellipse(ox + 60, y - 1, 5, 2, 0, 0, Math.PI * 2);
+        g.fill();
+      }
+      g.fillStyle = '#244a26';
+      for (let y = 30; y < h; y += 70 + rnd() * 50) {
+        g.beginPath();
+        g.ellipse(ox + 4 + rnd() * 50, y, 10 + rnd() * 8, 5, 0, 0, Math.PI * 2);
+        g.fill();
+      }
+      this.wallBaseArt = { key, canvas: c };
+      return c;
+    }
+
+    // 某一档的城墙：基础墙图 + 这一档累计的破损（按场景 + 档缓存）
+    wallStageArt(stage, h) {
+      this.wallStages = this.wallStages || new Map();
+      const key = this.scene.key + ':' + stage;
+      const hit = this.wallStages.get(key);
+      if (hit) return hit;
+      const base = this.wallBase(h);
+      const c = document.createElement('canvas');
+      c.width = base.width;
+      c.height = base.height;
+      const g = c.getContext('2d');
+      g.drawImage(base, 0, 0);
+      g.translate(0, 30);
+      const ox = 20;
+      let seed = 4242;
+      const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+      const holes = [];
+      const crenels = [];
+      for (let y = -4, k = 0; y < h; y += 44, k++) crenels.push(y);
+      // 每档新增多少：裂纹 / 缺砖 / 缺角垛口 / 塌掉的垛口 / 大洞
+      const CRACKS = [0, 3, 6, 9, 12, 15, 19][stage];
+      const BRICKS = [0, 0, 3, 6, 10, 15, 22][stage];
+      const CHIPS = [0, 2, 4, 5, 6, 6, 6][stage];
+      const GONE = [0, 0, 0, 1, 3, 5, 7][stage];
+      const BREACH = [0, 0, 0, 0, 2, 3, 5][stage];
+      // 打乱垛口的损坏顺序（固定）
+      const order = crenels.map((_, i) => i).sort((p, q) => ((p * 7919) % 31) - ((q * 7919) % 31));
+      // 先挖缺砖，再画裂纹，最后是大洞和垛口
+      const brickRects = [];
+      for (let i = 0; i < 40; i++) brickRects.push([ox + 2 + Math.floor(rnd() * 3) * 20 + (rnd() < 0.5 ? 0 : 10), 8 + Math.floor(rnd() * (h / 22 - 1)) * 22]);
+      for (let i = 0; i < BRICKS; i++) {
+        const [bx, by] = brickRects[i];
+        g.fillStyle = '#0b0f15';
+        TD.sprites.roundRect(g, bx, by + 1.5, 24, 19, 3);
+        g.fill();
+        g.strokeStyle = 'rgba(120,130,150,0.35)';
+        g.lineWidth = 1;
+        g.beginPath();
+        g.moveTo(bx + 2, by + 20);
+        g.lineTo(bx + 22, by + 20);
+        g.lineTo(bx + 22, by + 4);
+        g.stroke();
+      }
+      // 墙皮剥落：露出更深的内墙
+      if (stage >= 3) {
+        for (let i = 0; i < stage * 2; i++) {
+          const px = ox + 4 + rnd() * 40;
+          const py = 30 + rnd() * (h - 80);
+          g.fillStyle = 'rgba(14,18,26,0.9)';
+          g.beginPath();
+          g.moveTo(px, py);
+          g.lineTo(px + 14 + rnd() * 10, py + rnd() * 6);
+          g.lineTo(px + 10 + rnd() * 12, py + 16 + rnd() * 12);
+          g.lineTo(px - 4, py + 12 + rnd() * 8);
+          g.closePath();
+          g.fill();
+        }
+      }
+      // 裂纹：带分叉的折线，旁边一道浅色边
+      for (let i = 0; i < CRACKS; i++) {
+        let x = ox + 6 + rnd() * 52;
+        let y = 20 + rnd() * (h - 60);
+        const n = 3 + Math.floor(rnd() * 3);
+        const pts = [[x, y]];
+        for (let k = 0; k < n; k++) {
+          x += (rnd() - 0.4) * 16;
+          y += 8 + rnd() * 14;
+          pts.push([x, y]);
+        }
+        for (const [col, w, dx] of [['rgba(150,165,190,0.3)', 1.2, 1.2], ['rgba(6,8,14,0.9)', stage >= 4 ? 2.4 : 1.8, 0]]) {
+          g.strokeStyle = col;
+          g.lineWidth = w;
+          g.lineJoin = 'round';
+          g.beginPath();
+          pts.forEach(([px, py], j) => (j ? g.lineTo(px + dx, py) : g.moveTo(px + dx, py)));
+          g.stroke();
+        }
+        if (rnd() < 0.6) {
+          const [bx, by] = pts[1];
+          g.strokeStyle = 'rgba(6,8,14,0.85)';
+          g.lineWidth = 1.3;
+          g.beginPath();
+          g.moveTo(bx, by);
+          g.lineTo(bx + (rnd() - 0.5) * 22, by + 8 + rnd() * 10);
+          g.stroke();
+        }
+      }
+      // 大洞：不规则的缺口，里面透出暗红的光
+      for (let i = 0; i < BREACH; i++) {
+        const hx = ox + 8 + rnd() * 36;
+        const hy = 60 + ((i * 131 + 37) % Math.max(100, h - 160));
+        const r = 14 + rnd() * 10 + stage * 1.5;
+        const pts = [];
+        for (let k = 0; k < 9; k++) {
+          const a = (k / 9) * Math.PI * 2;
+          const rr = r * (0.65 + rnd() * 0.5);
+          pts.push([hx + Math.cos(a) * rr * 0.8, hy + Math.sin(a) * rr * 1.1]);
+        }
+        const path = () => {
+          g.beginPath();
+          pts.forEach(([px, py], j) => (j ? g.lineTo(px, py) : g.moveTo(px, py)));
+          g.closePath();
+        };
+        path();
+        const hg = g.createRadialGradient(hx, hy, 1, hx, hy, r);
+        hg.addColorStop(0, '#5a1a14');
+        hg.addColorStop(0.5, '#1c0c0e');
+        hg.addColorStop(1, '#07080c');
+        g.fillStyle = hg;
+        g.fill();
+        g.strokeStyle = 'rgba(150,160,185,0.45)';
+        g.lineWidth = 2;
+        g.stroke();
+        // 洞口掉出来的碎砖
+        for (let k = 0; k < 3; k++) {
+          g.fillStyle = `rgb(${50 + Math.floor(rnd() * 20)},${58 + Math.floor(rnd() * 20)},${70 + Math.floor(rnd() * 20)})`;
+          const sx = hx - r * 0.6 + rnd() * r * 1.2;
+          const sy = hy + r * 0.7 + rnd() * 10;
+          g.beginPath();
+          g.moveTo(sx, sy);
+          g.lineTo(sx + 7, sy + 1);
+          g.lineTo(sx + 5, sy + 7);
+          g.lineTo(sx - 2, sy + 5);
+          g.fill();
+        }
+        holes.push([hx, hy, r]);
+      }
+      // 垛口：先缺角，再整个塌掉
+      g.save();
+      g.globalCompositeOperation = 'destination-out';
+      for (let i = 0; i < CHIPS; i++) {
+        const y = crenels[order[i % crenels.length]];
+        g.beginPath();
+        g.moveTo(ox + 72, y + 2);
+        g.lineTo(ox + 72 - 9 - rnd() * 5, y + 2);
+        g.lineTo(ox + 72, y + 12 + rnd() * 6);
+        g.closePath();
+        g.fill();
+      }
+      for (let i = 0; i < GONE; i++) {
+        const y = crenels[order[i % crenels.length]];
+        g.fillRect(ox + 56, y - 6, 20, 24);
+      }
+      g.restore();
+      for (let i = 0; i < GONE; i++) {
+        // 塌掉的垛口只剩一截断茬
+        const y = crenels[order[i % crenels.length]];
+        g.fillStyle = '#323c47';
+        g.beginPath();
+        g.moveTo(ox + 52, y + 26);
+        g.lineTo(ox + 54, y + 16);
+        g.lineTo(ox + 61, y + 19);
+        g.lineTo(ox + 66, y + 14);
+        g.lineTo(ox + 72, y + 22);
+        g.lineTo(ox + 72, y + 26);
+        g.closePath();
+        g.fill();
+      }
+      // 烟熏：大洞上方的黑色烟痕
+      for (const [hx, hy, r] of holes) {
+        const sg = g.createLinearGradient(0, hy - r * 2.4, 0, hy - r * 0.5);
+        sg.addColorStop(0, 'rgba(0,0,0,0)');
+        sg.addColorStop(1, 'rgba(0,0,0,0.45)');
+        g.fillStyle = sg;
+        g.fillRect(hx - r * 0.7, hy - r * 2.4, r * 1.4, r * 1.9);
+      }
+      // 墙脚的碎石堆：越破越多
+      const pile = [0, 0, 2, 5, 8, 12, 16][stage];
+      for (let i = 0; i < pile; i++) {
+        const px = ox - 10 + rnd() * 90;
+        const pr = 3 + rnd() * 5;
+        g.fillStyle = `rgb(${46 + Math.floor(rnd() * 26)},${54 + Math.floor(rnd() * 26)},${64 + Math.floor(rnd() * 26)})`;
+        g.beginPath();
+        g.ellipse(px, h + 4 - rnd() * 6, pr * 1.3, pr * 0.8, rnd(), 0, Math.PI * 2);
+        g.fill();
+      }
+      const art = { canvas: c, holes };
+      if (this.wallStages.size > 16) this.wallStages.clear();
+      this.wallStages.set(key, art);
+      return art;
+    }
+
     drawWallArt(ratio) {
       const ctx = this.ctx;
       const x0 = C.wallX - 64;
       const top = C.fieldTop - 28;
       const bottom = C.fieldBottom + 10;
-      const P = this.scene.palette;
-      if (!this.wallArt || this.wallArt.key !== this.scene.key + (ratio < 0.4 ? 'b' : ratio < 0.7 ? 'c' : 'a')) {
-        const c = document.createElement('canvas');
-        c.width = 110;
-        c.height = bottom - top + 40;
-        const g = c.getContext('2d');
-        g.translate(0, 30);
-        const ox = 20;
-        // 墙体底色：左暗右亮
-        const body = g.createLinearGradient(ox, 0, ox + 64, 0);
-        body.addColorStop(0, '#1c232c');
-        body.addColorStop(1, '#3e4954');
-        g.fillStyle = body;
-        g.fillRect(ox, 0, 64, bottom - top);
-        // 石块
-        let seed = 7;
-        const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
-        for (let y = 0; y < bottom - top; y += 22) {
-          const off = (y / 22) % 2 ? 0 : 16;
-          for (let x = ox - 16 + off; x < ox + 64; x += 32) {
-            const bx = Math.max(ox, x) + 1.5;
-            const bw = Math.min(ox + 64, x + 32) - bx - 1.5;
-            if (bw <= 2) continue;
-            const v = 40 + Math.floor(rnd() * 22) + (bx - ox) * 0.35;
-            g.fillStyle = `rgb(${v - 6},${v + 2},${v + 12})`;
-            TD.sprites.roundRect(g, bx, y + 1.5, bw, 19, 4);
-            g.fill();
-            // 右上边缘的暖色轮廓光
-            g.strokeStyle = TD.art.rgba(P.rim, 0.28 + (bx - ox) / 64 * 0.3);
-            g.lineWidth = 1.5;
-            g.beginPath();
-            g.moveTo(bx + 3, y + 2.5);
-            g.lineTo(bx + bw - 2, y + 2.5);
-            g.lineTo(bx + bw - 1, y + 12);
-            g.stroke();
-          }
-        }
-        // 垛口
-        for (let y = -4; y < bottom - top; y += 44) {
-          const gg = g.createLinearGradient(ox + 50, 0, ox + 72, 0);
-          gg.addColorStop(0, '#3a444f');
-          gg.addColorStop(1, '#5a6672');
-          g.fillStyle = gg;
-          TD.sprites.roundRect(g, ox + 50, y, 22, 26, 4);
-          g.fill();
-          g.strokeStyle = TD.art.rgba(P.rim, 0.55);
-          g.lineWidth = 2;
-          g.beginPath();
-          g.moveTo(ox + 54, y + 1);
-          g.lineTo(ox + 71, y + 1);
-          g.lineTo(ox + 71, y + 20);
-          g.stroke();
-          // 垛口上的苔藓
-          g.fillStyle = '#2f5a2c';
-          g.beginPath();
-          g.ellipse(ox + 58, y + 1, 9, 4, 0, 0, Math.PI * 2);
-          g.fill();
-          g.fillStyle = 'rgba(170,220,110,0.6)';
-          g.beginPath();
-          g.ellipse(ox + 60, y - 1, 5, 2, 0, 0, Math.PI * 2);
-          g.fill();
-        }
-        // 墙脚的苔藓和小草
-        g.fillStyle = '#244a26';
-        for (let y = 30; y < bottom - top; y += 70 + rnd() * 50) {
-          g.beginPath();
-          g.ellipse(ox + 4 + rnd() * 50, y, 10 + rnd() * 8, 5, 0, 0, Math.PI * 2);
-          g.fill();
-        }
-        // 裂纹与缺口（设计书 4.3）
-        g.strokeStyle = 'rgba(10,12,20,0.7)';
-        g.lineWidth = 2;
-        const cracks = ratio < 0.7 ? (ratio < 0.4 ? 9 : 5) : 0;
-        for (let i = 0; i < cracks; i++) {
-          const cx = ox + 10 + ((i * 23) % 44);
-          const cy = 40 + ((i * 97) % (bottom - top - 80));
-          g.beginPath();
-          g.moveTo(cx, cy);
-          g.lineTo(cx + 8, cy + 10);
-          g.lineTo(cx + 2, cy + 20);
-          g.lineTo(cx + 10, cy + 30);
-          g.stroke();
-        }
-        this.wallArt = { key: this.scene.key + (ratio < 0.4 ? 'b' : ratio < 0.7 ? 'c' : 'a'), canvas: c };
+      const h = bottom - top;
+      const stage = this.wallStageOf(ratio);
+      // 升档：一块墙皮砸下来（设计书 61.6）
+      if (this.wallStage !== undefined && stage > this.wallStage && !this.collapse) this.wallBreak(stage, h, top);
+      this.wallStage = stage;
+      if (this.collapse) return this.drawWallCollapse(stage, h, top, x0);
+      const art = this.wallStageArt(stage, h);
+      ctx.save();
+      // 摇摇欲坠：最后两档墙体微微歪斜、颤抖
+      if (stage >= 5) {
+        const tilt = (stage === 5 ? 0.012 : 0.024) + Math.sin(this.t * 17) * 0.0016;
+        ctx.translate(x0 + 30, bottom);
+        ctx.rotate(tilt);
+        ctx.translate(-(x0 + 30), -bottom);
       }
-      ctx.drawImage(this.wallArt.canvas, x0 - 20, top - 30);
-      // 旗帜
-      const fx = x0 + 12;
-      const fy = top - 50;
-      ctx.strokeStyle = '#2a1e18';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.moveTo(fx, top);
-      ctx.lineTo(fx, fy);
-      ctx.stroke();
-      const wave = Math.sin(this.t * 4) * 4;
-      ctx.fillStyle = ratio < 0.4 ? '#7a2230' : '#c23a48';
-      ctx.beginPath();
-      ctx.moveTo(fx, fy);
-      ctx.quadraticCurveTo(fx + 20, fy + wave, fx + 38, fy + 6);
-      ctx.quadraticCurveTo(fx + 20, fy + 20 + wave, fx, fy + 22);
-      ctx.fill();
-      // 城墙的表情（设计书 1.4）：暗处发光的一双小眼睛
+      ctx.drawImage(art.canvas, x0 - 20, top - 30);
+      ctx.restore();
+      // 大洞里的暗红光会闪，往外冒烟和火星
+      const dt = this.lastDt || 0.016;
+      art.holes.forEach(([hx, hy, r], i) => {
+        const fl = 0.55 + Math.sin(this.t * 7 + i * 2.1) * 0.25 + Math.sin(this.t * 19 + i) * 0.1;
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        TD.art.drawGlow(ctx, x0 - 20 + hx, top - 30 + 30 + hy, r * 1.6, '#ff5a2a', 0.38 * fl);
+        ctx.restore();
+        if (stage >= 5 && this.vfx && Math.random() < dt * 5) {
+          const wx = x0 - 20 + hx + 20;
+          const wy = top + hy;
+          this.vfx.spawn(1, () => ({ kind: 'smoke', x: wx, y: wy, vx: -8 + Math.random() * 6, vy: -28 - Math.random() * 18, life: 1.4, r: 10 + Math.random() * 8, color: '#5a5a62' }));
+          if (stage >= 6) this.vfx.spawn(1, () => ({ kind: 'ember', x: wx, y: wy, vx: Math.random() * 50, vy: -50 - Math.random() * 60, g: 120, life: 0.8, r: 1.6, color: '#ff9a4a' }));
+        }
+      });
+      // 破损的墙一直在掉灰和小石子
+      if (stage >= 2 && this.vfx && Math.random() < dt * (stage - 1) * 1.6) {
+        const wx = x0 + 6 + Math.random() * 56;
+        const wy = top + 20 + Math.random() * (h - 60);
+        this.vfx.spawn(1, () => ({ kind: 'smoke', x: wx, y: wy, vx: (Math.random() - 0.5) * 6, vy: 18 + Math.random() * 20, life: 0.9, r: 3 + Math.random() * 3, color: '#8a8a92' }));
+      }
+      this.drawWallFace(ratio, x0, top, bottom);
+    }
+
+    // 升档的那一下：几块墙皮砸下来，扬起灰尘
+    wallBreak(stage, h, top) {
+      const x0 = C.wallX - 64;
+      this.shake = Math.max(this.shake, 6 + stage);
+      for (let i = 0; i < 6 + stage * 2; i++) {
+        this.fx.push({ kind: 'rock', x: x0 + 40 + Math.random() * 30, y: top + 40 + Math.random() * (h - 100), vx: 20 + Math.random() * 90, vy: -80 - Math.random() * 100, life: 0.8, age: 0 });
+      }
+      if (this.vfx) {
+        const y = top + 80 + Math.random() * (h - 200);
+        this.vfx.spawn(8, () => ({ kind: 'smoke', x: x0 + 40 + Math.random() * 50, y: y + Math.random() * 40, vx: 10 + Math.random() * 30, vy: -20 - Math.random() * 30, life: 1.1, r: 12 + Math.random() * 12, color: '#8a8a92' }));
+        this.vfx.fx.push({ kind: 'flare', x: x0 + 50, y, r: 90, color: '#ffb890', life: 0.3, age: 0 });
+      }
+      if (TD.audio) TD.audio.play('bigWall');
+    }
+
+    // 城墙的脸（设计书 1.4）：暗处发光的一双小眼睛，越破越难过
+    drawWallFace(ratio, x0, top, bottom) {
+      const ctx = this.ctx;
       const ex = x0 + 30;
       const ey = (top + bottom) / 2 + 40;
       const eyeC = ratio > 0.4 ? '#ffe7a8' : '#ff9a7a';
@@ -1286,6 +1509,71 @@
         ctx.lineTo(ex + 6, ey + 11);
       } else ctx.arc(ex, ey + 15, 6, Math.PI + 0.3, -0.3);
       ctx.stroke();
+    }
+
+    // 坍塌（设计书 61.6）：从中间向两头，一段一段塌下去，扬起尘土，墙脚留下一堆碎石
+    drawWallCollapse(stage, h, top, x0) {
+      const ctx = this.ctx;
+      const c = this.collapse;
+      const t = this.t - c.t0;
+      const art = this.wallStageArt(Math.max(stage, 5), h);
+      const N = 12;
+      const bandH = (h + 40) / N;
+      const dt = this.lastDt || 0.016;
+      // 几次大的震动
+      for (const [at, amt] of [[0.45, 14], [0.9, 18], [1.4, 10]]) {
+        if (t >= at && !c['s' + at]) {
+          c['s' + at] = true;
+          this.shake = Math.max(this.shake, amt);
+          if (this.vfx) this.vfx.fx.push({ kind: 'flare', x: x0 + 40, y: top + h * (at < 1 ? 0.5 : 0.8), r: 160, color: '#ffc8a0', life: 0.35, age: 0 });
+        }
+      }
+      ctx.save();
+      for (let i = 0; i < N; i++) {
+        const d = Math.abs(i - (N - 1) / 2) / ((N - 1) / 2);
+        const delay = d * 0.55 + ((i * 37) % 7) * 0.012;
+        const tau = Math.max(0, t - delay);
+        if (tau > 1.8) continue;
+        const dir = i % 2 ? 1 : -1;
+        const drop = 0.5 * 900 * tau * tau;
+        const alpha = tau < 0.9 ? 1 : Math.max(0, 1 - (tau - 0.9) / 0.9);
+        const sy = i * bandH;
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        ctx.translate(x0 - 20 + 55, top - 30 + sy + bandH / 2 + drop);
+        ctx.rotate(dir * Math.min(0.6, tau * 0.45) * (0.4 + d));
+        ctx.translate(dir * tau * 22, 0);
+        ctx.drawImage(art.canvas, 0, sy, art.canvas.width, bandH, -55, -bandH / 2, art.canvas.width, bandH);
+        ctx.restore();
+        // 每一段刚松动的时候喷一团灰
+        if (this.vfx && tau > 0 && tau < 0.12 && Math.random() < 0.7) {
+          const wx = x0 + 20 + Math.random() * 60;
+          const wy = top + sy + bandH / 2;
+          this.vfx.spawn(2, () => ({ kind: 'smoke', x: wx, y: wy, vx: 30 + Math.random() * 90, vy: -30 - Math.random() * 40, life: 1.5, r: 16 + Math.random() * 16, color: '#9a9aa2' }));
+          this.fx.push({ kind: 'rock', x: wx, y: wy, vx: 30 + Math.random() * 160, vy: -80 - Math.random() * 140, life: 1.0, age: 0 });
+        }
+      }
+      ctx.restore();
+      // 墙脚的碎石堆：随着坍塌越堆越高
+      const k = Math.min(1, t / 1.6);
+      let seed = 99;
+      const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+      for (let i = 0; i < 46; i++) {
+        const px = x0 - 14 + rnd() * 120;
+        const lift = rnd() * 38 * Math.sin((Math.min(1, (px - x0 + 14) / 120)) * Math.PI);
+        const pr = 4 + rnd() * 9;
+        if (i / 46 > k) continue;
+        ctx.fillStyle = `rgb(${40 + Math.floor(rnd() * 30)},${48 + Math.floor(rnd() * 30)},${58 + Math.floor(rnd() * 30)})`;
+        ctx.beginPath();
+        ctx.ellipse(px, C.fieldBottom + 12 - lift * k, pr * 1.3, pr * 0.85, rnd() * 3, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      // 持续的烟尘
+      if (this.vfx && t < 2.4 && Math.random() < dt * 22) {
+        const wx = x0 + Math.random() * 110;
+        const wy = C.fieldBottom - Math.random() * 90;
+        this.vfx.spawn(1, () => ({ kind: 'smoke', x: wx, y: wy, vx: 10 + Math.random() * 40, vy: -20 - Math.random() * 30, life: 1.8, r: 20 + Math.random() * 20, color: '#8a8a92' }));
+      }
     }
 
     drawRangeMarker(b) {
@@ -1684,7 +1972,7 @@
           continue;
         }
         if (p.kind === 'firefly') {
-          // 萤萤的萤火虫（设计书 59.2）：弯弯绕绕地飞，一闪一闪
+          // Nova的萤火虫（设计书 59.2）：弯弯绕绕地飞，一闪一闪
           const wob = Math.sin(p.travel * 0.05 + p.wobble) * 14;
           const fx = p.x - Math.sin(p.angle) * wob;
           const fy = p.y + Math.cos(p.angle) * wob;

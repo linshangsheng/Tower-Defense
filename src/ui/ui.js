@@ -106,7 +106,7 @@
   function costEl(cost) {
     if (!cost) return h('span', { class: 'cost' }, '免费');
     const parts = [];
-    for (const k of ['copper', 'silver', 'gold']) if (cost[k]) parts.push(h('span', { class: 'cost-part' }, coinIcon(k), cost[k]));
+    for (const k of ['copper', 'silver', 'gold', 'diamond']) if (cost[k]) parts.push(h('span', { class: 'cost-part' }, coinIcon(k), cost[k]));
     return h('span', { class: 'cost' }, parts);
   }
 
@@ -117,7 +117,8 @@
       { class: 'currency' },
       h('span', { title: '铜币' }, coinIcon('copper'), s.copper),
       h('span', { title: '银币' }, coinIcon('silver'), s.silver),
-      h('span', { title: '金币' }, coinIcon('gold'), s.gold)
+      h('span', { title: '金币' }, coinIcon('gold'), s.gold),
+      h('span', { title: '钻石（暂时无法获得）', class: 'dim-currency' }, coinIcon('diamond'), s.diamond || 0)
     );
   }
 
@@ -144,8 +145,7 @@
         'div',
         { class: 'title-logo' },
         TD.logo ? TD.logo.liveEmblem(220) : null,
-        h('div', { class: 'title-main' }, '守城英雄'),
-        h('div', { class: 'title-sub' }, h('i'), '小卫兵铛铛的守城日记', h('i'))
+        h('div', { class: 'title-main' }, '最后的堡垒')
       ),
       h(
         'div',
@@ -435,7 +435,7 @@
       h(
         'ul',
         null,
-        h('li', null, '铛铛站在城墙上自动射击，怪物从右边沿车道走来。城墙血量归零就失败。'),
+        h('li', null, 'Kael站在城墙上自动射击，怪物从右边沿车道走来。城墙血量归零就失败。'),
         h('li', null, '战斗中点击技能按钮（或按 1 / 2 / 3）释放主动技能，按 Q / W / E 使用道具。'),
         h('li', null, '冰冻领域、小炸弹、冰冻瓶需要选择车道：点技能后再点一条车道。'),
         h('li', null, '一波怪全部出场后，可以点「提前召唤」立刻叫出下一波，剩余的倒计时秒数会变成铜币奖励。'),
@@ -576,7 +576,7 @@
         h('div', { class: 'power' }, '战力 ', h('b', null, P.power(s))),
         currencyBar(),
         P.isCleared(s, 5) ? h('button', { class: 'btn small icon-btn', title: '王国小镇', onclick: () => (sfx('click'), UI.showTown()) }, '🏘') : null,
-        h('button', { class: 'btn small icon-btn', title: '铛铛的衣柜', onclick: () => (sfx('click'), UI.showWardrobe()) }, '👕'),
+        h('button', { class: 'btn small icon-btn', title: 'Kael的衣柜', onclick: () => (sfx('click'), UI.showWardrobe()) }, '👕'),
         h('button', { class: 'btn small icon-btn', title: '守城日记', onclick: () => (sfx('click'), UI.showDiary()) }, '📔'),
         h('button', { class: 'btn small icon-btn', title: '怪物图鉴', onclick: () => (sfx('click'), UI.showBestiary()) }, '📖'),
         h('button', { class: 'btn small icon-btn', title: '成就', onclick: () => (sfx('click'), UI.showAchievements()) }, '🏆'),
@@ -813,7 +813,7 @@
     const s = game.save;
     const st = P.heroStats(s);
     const firstVisit = !s.stats.shopGuided;
-    if (firstVisit) el.append(h('div', { class: 'guide' }, '👉 升级「攻击力」，铛铛就能更快消灭怪物！'));
+    if (firstVisit) el.append(h('div', { class: 'guide' }, '👉 升级「攻击力」，Kael就能更快消灭怪物！'));
     el.append(h('div', { class: 'section-title' }, '属性升级（永久）'));
     for (const key of Object.keys(D.attributes)) {
       const a = D.attributes[key];
@@ -917,7 +917,7 @@
     const worn = P.wornEquip(s);
     for (const slot of Object.keys(D.equipSlots)) {
       const quiverLocked = slot === 'quiver' && P.slotCount(s, 'quiver') < 1;
-      el.append(h('div', { class: 'section-title' }, D.equipSlots[slot] + (slot === 'trinket' ? '（可戴 2 件）' : '') + (quiverLocked ? `（通关第 ${D.slotUnlocks.quiver[0]} 关开放栏位，可以先买）` : '')));
+      el.append(h('div', { class: 'section-title' }, D.equipSlots[slot] + (slot === 'trinket' ? '（可戴 3 件）' : '') + (quiverLocked ? `（通关第 ${D.slotUnlocks.quiver[0]} 关开放栏位，可以先买）` : '')));
       // 已上架的在前，没上架的按上架关卡排在后面
       const ids = Object.keys(D.equipment)
         .filter((id) => D.equipment[id].slot === slot)
@@ -925,8 +925,25 @@
       for (const id of ids) {
         const e = D.equipment[id];
         const avail = P.equipAvailable(s, id);
+        const sellBtn = () =>
+          h(
+            'button',
+            {
+              class: 'btn small sell',
+              title: '卖出价是买入价的一半',
+              onclick: () =>
+                UI.confirm(`把「${e.name}」卖掉吗？卖出价 ${P.costText(P.sellPrice(id))}（买入价的一半）。以后想要可以按原价买回。`, () => {
+                  P.sellEquip(s, id);
+                  sfx('coin');
+                  game.persist();
+                  renderShop();
+                }),
+            },
+            '出售 ',
+            costEl(P.sellPrice(id))
+          );
         const right = s.equipOwned[id]
-          ? h('span', { class: 'equipped' }, worn.includes(id) ? '穿戴中' : '已拥有')
+          ? h('span', { class: 'equip-right' }, h('span', { class: 'equipped' }, worn.includes(id) ? '穿戴中' : '已拥有'), sellBtn())
           : avail
             ? buyBtn(e.cost, () => P.buyEquip(s, id))
             : h('span', { class: 'equipped dim' }, `通关第 ${e.minLevel} 关后上架`);
@@ -981,7 +998,8 @@
         coinIcon(to)
       );
     el.append(card(h('span', null, coinIcon('copper'), ` ${E.copperPerSilver} 铜 → 1 `, coinIcon('silver'), ' 银'), null, '银币用来解锁技能和精良装备。', h('div', { class: 'btn-row' }, mk('copper', 'silver', E.copperPerSilver, 1), mk('copper', 'silver', E.copperPerSilver, 5))));
-    el.append(card(h('span', null, coinIcon('silver'), ` ${E.silverPerGold} 银 → 1 `, coinIcon('gold'), ' 金'), null, '金币用来购买传说装备。', h('div', { class: 'btn-row' }, mk('silver', 'gold', E.silverPerGold, 1))));
+    el.append(card(h('span', null, coinIcon('silver'), ` ${E.silverPerGold} 银 → 1 `, coinIcon('gold'), ' 金'), null, '金币用来购买传说装备、高阶武器和技能 Lv3。', h('div', { class: 'btn-row' }, mk('silver', 'gold', E.silverPerGold, 1))));
+    el.append(card(h('span', null, coinIcon('diamond'), ' 钻石'), null, '最稀有的货币，暂时无法获得，也不能兑换。以后会加入获得方法。', h('span', { class: 'equipped dim' }, `你有 ${s.diamond || 0} 颗`)));
   }
 
   // ---- 配装页 ----
@@ -1128,7 +1146,7 @@
 
     // 装备：装备页开放前只显示一行说明
     el.append(h('div', { class: 'section-title' }, '装备'));
-    const eqNames = { helm: '头盔', cape: '披风', quiver: '箭袋', trinket1: '饰品 1', trinket2: '饰品 2' };
+    const eqNames = { helm: '头盔', cape: '披风', quiver: '箭袋', trinket1: '饰品 1', trinket2: '饰品 2', trinket3: '饰品 3' };
     const anyEquip = Object.keys(s.equipOwned || {}).some((k) => s.equipOwned[k]);
     if (!UI.tabUnlocked(s, 'equip') && !anyEquip) el.append(h('div', { class: 'hint slot-note' }, `通关第 ${TAB_UNLOCK.equip} 关后开放「装备」：头盔、披风、箭袋和饰品`));
     else {

@@ -1745,3 +1745,69 @@ test('阿木：重箭把普通怪推后 12 像素，Boss 不动；无视 25% 护
   assert.strictEqual(boss.x, 500);
   assert.ok(Math.abs(b.mods.armorIgnore - 0.25) < 1e-9);
 });
+
+// ---------- 改名、钻石、出售装备（设计书 61） ----------
+test('英雄显示名：Kael / Lyra / Atlas / Nova / Rowan，id 不变', () => {
+  const C = TD.config;
+  assert.deepStrictEqual(Object.keys(C.heroes).map((k) => C.heroes[k].name), ['Kael', 'Lyra', 'Atlas', 'Nova', 'Rowan']);
+  assert.deepStrictEqual(Object.keys(C.heroes), ['dang', 'ding', 'yan', 'ying', 'mu']);
+  assert.strictEqual(D.speakers.dang.name, 'Kael');
+});
+
+test('兑换所：100 铜 = 1 银，100 银 = 1 金；钻石暂时无法获得', () => {
+  const s = P.newSave();
+  s.silver = 99;
+  assert.ok(!P.exchange(s, 'silver', 1), '99 银不够');
+  s.silver = 100;
+  assert.ok(P.exchange(s, 'silver', 1));
+  assert.strictEqual(s.silver, 0);
+  assert.strictEqual(s.gold, 1);
+  assert.strictEqual(s.diamond, 0);
+  assert.ok(!P.exchange(s, 'gold', 1), '金不能换钻石');
+  assert.strictEqual(TD.config.exchange.diamondObtainable, false);
+  const old = P.newSave();
+  delete old.diamond;
+  assert.strictEqual(P.migrate(old).diamond, 0, '老存档补上钻石');
+  assert.ok(!P.canAfford(s, { diamond: 1 }));
+  assert.strictEqual(P.costText({ diamond: 2 }), '2 钻');
+});
+
+test('出售装备：卖价是买价的一半，零头折成下一级货币', () => {
+  assert.deepStrictEqual(P.halfCost({ copper: 150 }), { copper: 75 });
+  assert.deepStrictEqual(P.halfCost({ copper: 120 }), { copper: 60 });
+  assert.deepStrictEqual(P.halfCost({ silver: 7 }), { silver: 3, copper: 50 });
+  assert.deepStrictEqual(P.halfCost({ silver: 6 }), { silver: 3 });
+  assert.deepStrictEqual(P.halfCost({ gold: 3 }), { gold: 1, silver: 50 });
+  assert.deepStrictEqual(P.halfCost({ gold: 4 }), { gold: 2 });
+});
+
+test('出售装备：自动卸下、退钱、可以原价买回；不能卖没有的', () => {
+  const s = P.newSave();
+  clearUpTo(s, 20);
+  s.copper = 1000;
+  assert.ok(P.buyEquip(s, 'ironHelm'));
+  assert.strictEqual(s.loadout.equip.helm, 'ironHelm');
+  assert.strictEqual(s.copper, 880);
+  assert.deepStrictEqual(P.sellEquip(s, 'ironHelm'), { copper: 60 });
+  assert.strictEqual(s.copper, 940);
+  assert.strictEqual(s.loadout.equip.helm, null);
+  assert.ok(!s.equipOwned.ironHelm);
+  assert.strictEqual(P.sellEquip(s, 'ironHelm'), null);
+  assert.ok(P.buyEquip(s, 'ironHelm'), '可以买回');
+  assert.strictEqual(s.copper, 820);
+});
+
+test('饰品栏 3 个，且同一件饰品不能重复佩戴；头盔披风箭袋各 1', () => {
+  const s = P.newSave();
+  clearUpTo(s, 40);
+  for (const id of ['clover', 'fang', 'eagleEye', 'coinCharm']) s.equipOwned[id] = true;
+  assert.ok(P.setEquip(s, 'trinket1', 'clover'));
+  assert.ok(P.setEquip(s, 'trinket2', 'fang'));
+  assert.ok(P.setEquip(s, 'trinket3', 'eagleEye'));
+  assert.ok(!P.setEquip(s, 'trinket4', 'coinCharm'));
+  assert.deepStrictEqual(P.wornEquip(s).sort(), ['clover', 'eagleEye', 'fang']);
+  P.setEquip(s, 'trinket3', 'clover');
+  assert.strictEqual(s.loadout.equip.trinket1, null, '同一件饰品只能戴一个栏位');
+  assert.ok(!P.setEquip(s, 'helm', 'clover'), '饰品不能放进头盔栏');
+  assert.deepStrictEqual(P.migrate(Object.assign(P.newSave(), { loadout: Object.assign(P.newSave().loadout, { equip: { helm: null, cape: null, quiver: null, trinket1: null, trinket2: null } }) })).loadout.equip.trinket3, null);
+});

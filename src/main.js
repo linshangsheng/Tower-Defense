@@ -47,7 +47,8 @@
     game.acc = 0;
     game.speed = Math.min(s.settings.speed || 1, P.isCleared(s, 10) ? 3 : 2);
     game.renderer.attach(battle);
-    battle.on('end', () => setTimeout(() => game.onBattleEnd(battle), 1300));
+    // 失败时先看城墙坍塌（约 2 秒，设计书 61.6），再出结算
+    battle.on('end', (res) => setTimeout(() => game.onBattleEnd(battle), res.win || battle.wall.hp > 0 ? 1300 : 2400));
     battle.on('item', (e) => P.consumeItem(s, e.id));
     battle.on('waveStart', () => TD.audio.play('wave'));
     battle.on('shoot', () => TD.audio.play('shoot'));

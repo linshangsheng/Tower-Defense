@@ -98,7 +98,7 @@
           bought.push(id);
         }
       }
-      while (save.silver >= 70 && Object.keys(D.activeSkills).some((k) => P.skillLevel(save, k) === 2)) P.exchange(save, 'silver', 1);
+      while (save.silver >= TD.config.exchange.silverPerGold + 20 && Object.keys(D.activeSkills).some((k) => P.skillLevel(save, k) === 2)) P.exchange(save, 'silver', 1);
     }
     // 武器：随进度解锁
     const h = P.highestCleared(save);

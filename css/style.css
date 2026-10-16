@@ -2540,3 +2540,24 @@ select option {
 .hero-desc {
   margin: -2px 0 8px;
 }
+
+/* ---------- 钻石（设计书 61.4） ---------- */
+.coin.diamond {
+  background: linear-gradient(135deg, #e8fbff, #6ad8ff 55%, #2a8ad8);
+  border-color: #1d6fb0;
+  border-radius: 3px;
+  transform: rotate(45deg) scale(0.8);
+}
+.dim-currency {
+  opacity: 0.55;
+}
+.equip-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+.btn.sell {
+  font-size: 12px;
+  opacity: 0.85;
+}

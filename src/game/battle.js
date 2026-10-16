@@ -1003,7 +1003,7 @@
       const sx = C.heroX + 26;
       const sy = this.heroY - 46;
       const t0 = targets[0];
-      // 叮叮的铃声（设计书 42.2）：每第 N 次攻击眩晕目标周围的普通怪物
+      // Lyra的铃声（设计书 42.2）：每第 N 次攻击眩晕目标周围的普通怪物
       const bell = this.stats.bell;
       if (bell) {
         this.attackCount = (this.attackCount || 0) + 1;
@@ -1020,7 +1020,7 @@
       this.hero.aimX = t0.x;
       this.hero.aimY = t0.y + t0.yOffset;
       this.hero.shotAt = this.time;
-      // 萤萤的萤火虫（设计书 59.2）：每第 N 次攻击放出几只，各自飞向射程内的怪
+      // Nova的萤火虫（设计书 59.2）：每第 N 次攻击放出几只，各自飞向射程内的怪
       const ff = this.stats.fireflies;
       if (ff && ++this.fireflyCount % ff.every === 0) {
         for (let i = 0; i < ff.count; i++) {
@@ -1108,7 +1108,7 @@
       const type = p && p.dmgType === 'magic' ? 'magic' : 'phys';
       if (p && p.bossMult && (m.def.boss || m.def.bossPart)) dmg *= p.bossMult;
       this.damage(m, dmg, { type, fromFront, crit, source: (p && p.source) || 'weapon', armorIgnore: p ? p.armorIgnore : 0 });
-      // 阿木的重箭（设计书 59.2）：把普通怪物往后推
+      // Rowan的重箭（设计书 59.2）：把普通怪物往后推
       if (p && p.source === 'firefly') return; // 萤火虫不触发灼烧、减速等命中效果
       if (this.stats.knockOnHit && !m.dead && !m.def.boss && !m.def.bossPart) m.x = Math.min(C.spawnX, m.x + this.stats.knockOnHit);
       if (this.stats.passives.burn && !m.dead) {
