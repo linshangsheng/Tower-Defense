@@ -1536,7 +1536,7 @@
         this.vfx.spawn(8, () => ({ kind: 'smoke', x: x0 + 40 + Math.random() * 50, y: y + Math.random() * 40, vx: 10 + Math.random() * 30, vy: -20 - Math.random() * 30, life: 1.1, r: 12 + Math.random() * 12, color: '#8a8a92' }));
         this.vfx.fx.push({ kind: 'flare', x: x0 + 50, y, r: 90, color: '#ffb890', life: 0.3, age: 0 });
       }
-      if (TD.audio) TD.audio.play('bigWall');
+      if (TD.audio) TD.audio.play('wallBreak');
     }
 
     // 城墙的脸（设计书 1.4）：暗处发光的一双小眼睛，越破越难过
@@ -1572,6 +1572,7 @@
       for (const [at, amt] of [[0.45, 14], [0.9, 18], [1.4, 10]]) {
         if (t >= at && !c['s' + at]) {
           c['s' + at] = true;
+          if (at === 0.45 && TD.audio) TD.audio.play('wallCollapse');
           this.shake = Math.max(this.shake, amt);
           if (this.vfx) this.vfx.fx.push({ kind: 'flare', x: x0 + 40, y: top + h * (at < 1 ? 0.5 : 0.8), r: 160, color: '#ffc8a0', life: 0.35, age: 0 });
         }

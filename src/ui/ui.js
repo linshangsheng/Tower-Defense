@@ -132,7 +132,7 @@
   // ================= 标题 =================
   UI.showTitle = function () {
     clear();
-    TD.music.play(1, 'calm');
+    TD.music.play(0, 'title');
     game.renderer.mood = 'idle';
     const has = P.highestCleared(game.save) > 0 || game.save.copper > 0;
     // 背景用玩家当前所在章节的战场（设计书 57.4）

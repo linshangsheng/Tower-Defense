@@ -2076,3 +2076,83 @@ test('新武器的弹道带品质色；射出的弹道种类跟基础形状一�
   assert.ok(b.projectiles.every((p) => p.kind === 'bolt' && p.tint === '#ff9a4a'));
   assert.ok(weaponBattle('stormOrb').weaponDef().look.base === 'orb');
 });
+
+// ---------- 音乐与音效（设计书 64） ----------
+function mockAudioCtx() {
+  const calls = { osc: 0, noise: 0 };
+  const param = () => ({ value: 0, setValueAtTime() {}, linearRampToValueAtTime() {}, exponentialRampToValueAtTime() {}, cancelScheduledValues() {} });
+  const node = () => ({ connect() {}, disconnect() {}, start() {}, stop() {}, gain: param(), frequency: param(), detune: param(), Q: param(), threshold: param(), knee: param(), ratio: param(), attack: param(), release: param() });
+  return {
+    calls,
+    currentTime: 0,
+    sampleRate: 8000,
+    state: 'running',
+    destination: node(),
+    createGain: node,
+    createBiquadFilter: node,
+    createDynamicsCompressor: node,
+    createConvolver: node,
+    createOscillator: () => (calls.osc++, node()),
+    createBufferSource: () => (calls.noise++, node()),
+    createBuffer: (ch, len) => ({ getChannelData: () => new Float32Array(len) }),
+  };
+}
+
+test('音乐：标题 + 七章共 8 首，每首 8 小节和弦、64 个八分音符位置，音高在合理范围', () => {
+  globalThis.window = globalThis.window || undefined;
+  delete require.cache[require.resolve('../src/render/music.js')];
+  require('../src/render/music.js');
+  const M = TD.music;
+  for (let id = 0; id <= 7; id++) {
+    const th = M.THEMES[id];
+    assert.ok(th, `缺少第 ${id} 首`);
+    assert.strictEqual(th.chords.length, 8);
+    assert.strictEqual(th.notes.length, 64);
+    const played = th.notes.filter(Boolean);
+    assert.ok(played.length >= 14, `第 ${id} 首旋律音符太少`);
+    for (const n of played) assert.ok(Number.isFinite(n.midi) && n.midi >= 60 && n.midi <= 96, `第 ${id} 首有越界音高 ${n.midi}`);
+    assert.ok(th.bpm >= 70 && th.bpm <= 130);
+  }
+  assert.strictEqual(M.THEMES[5].lead, 'horn');
+});
+
+test('音乐：每首曲子在每种模式 / 紧张度下都能排完整个循环，且越紧张声音事件越多', () => {
+  const M = TD.music;
+  const events = {};
+  for (let id = 0; id <= 7; id++) {
+    for (const [mode, tension] of [['title', 0], ['calm', 0], ['battle', 0], ['battle', 1], ['battle', 2], ['battle', 3]]) {
+      if (id === 0 && mode !== 'title') continue;
+      if (id > 0 && mode === 'title') continue;
+      const ctx = mockAudioCtx();
+      const eng = new M.Engine(ctx, ctx.destination);
+      eng.tension = tension;
+      eng.setTheme(id, mode);
+      eng.schedule(40); // 足够跑完 8 小节循环
+      const n = ctx.calls.osc + ctx.calls.noise;
+      assert.ok(n > 20, `第 ${id} 首 ${mode}/${tension} 几乎没有声音`);
+      if (id === 1) events[mode + tension] = n / Math.min(40, eng.nextTime);
+    }
+  }
+  assert.ok(events.battle0 > events.calm0, '战斗比地图更密');
+  assert.ok(events.battle1 > events.battle0 && events.battle2 > events.battle1 && events.battle3 > events.battle2, '紧张度越高，声音事件越密');
+});
+
+test('音乐：一次性的结束音 / 登场音可以播放；紧张度越高总音量越大', () => {
+  const M = TD.music;
+  for (const name of ['boss', 'win', 'lose', 'wave']) {
+    const ctx = mockAudioCtx();
+    const eng = new M.Engine(ctx, ctx.destination);
+    eng.setTheme(1, 'battle');
+    eng.stinger(name);
+    assert.ok(ctx.calls.osc + ctx.calls.noise >= 4, `${name} 结束音太单薄`);
+  }
+  const lv = [0, 1, 2, 3].map((t) => M.levelFor('battle', t));
+  assert.ok(lv[0] < lv[1] && lv[1] < lv[2] && lv[2] < lv[3] && lv[3] <= 0.7);
+  assert.ok(M.levelFor('calm', 0) < lv[0]);
+});
+
+test('音效：每个道具都有专属音效，城墙破损 / 坍塌 / 陨石落地等也有', () => {
+  const src = require('fs').readFileSync(require('path').join(__dirname, '..', 'src/render/audio.js'), 'utf8');
+  for (const id of Object.keys(D.items)) assert.ok(src.includes(`item_${id}:`), `道具 ${id} 没有音效`);
+  for (const n of ['meteorHit', 'scrollBolt', 'barrierBreak', 'wallBreak', 'wallCollapse']) assert.ok(src.includes(`${n}:`), `缺少音效 ${n}`);
+});

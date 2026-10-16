@@ -54,8 +54,13 @@
     battle.on('shoot', () => TD.audio.play('shoot'));
     battle.on('death', (e) => e.copper && TD.audio.play('coin'));
     battle.on('skill', (e) => TD.audio.play({ drum: 'drum', thunder: 'thunder', frost: 'frost', repair: 'heal' }[e.id] || 'skill'));
-    battle.on('item', (e) => TD.audio.play({ bomb: 'boom', patch: 'heal', freeze: 'frost' }[e.id] || 'skill'));
+    battle.on('item', (e) => TD.audio.play('item_' + e.id));
+    battle.on('meteorHit', () => TD.audio.play('meteorHit'));
+    battle.on('scrollBolt', () => TD.audio.play('scrollBolt'));
+    battle.on('barrierBreak', () => TD.audio.play('barrierBreak'));
     battle.on('bossWarn', () => TD.audio.play('warn'));
+    // Boss 登场：音乐给一记重击（设计书 64.5）
+    battle.on('spawn', (m) => m.def && m.def.boss && TD.music.stinger('boss'));
     // 新敌人登场卡片：每种怪物只介绍一次
     game.introQueue = [];
     battle.on('spawn', (m) => {
@@ -91,10 +96,12 @@
     battle.on('win', () => {
       game.renderer.mood = 'win';
       TD.audio.play('win');
+      TD.music.battleEnd(true);
     });
     battle.on('lose', () => {
       game.renderer.mood = 'lose';
       TD.audio.play('lose');
+      TD.music.battleEnd(false);
     });
     game.persist();
     TD.music.play(TD.data.chapterOf(battle.stage).id, 'battle');
@@ -316,7 +323,9 @@
       TD.ui.updateHud();
       if (!b.over) {
         const ratio = b.wall.hp / b.wall.max;
-        TD.music.setTension(ratio < 0.35 ? 2 : b.monsters.some((m) => m.def.boss && !m.dead) ? 1 : 0);
+        const boss = b.monsters.some((m) => m.def.boss && !m.dead);
+        const low = ratio < 0.4;
+        TD.music.setTension(boss && low ? 3 : boss ? 2 : low ? 1 : 0);
       }
     }
     requestAnimationFrame(frame);
