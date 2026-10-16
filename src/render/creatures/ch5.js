@@ -28,6 +28,23 @@
     }
   }
 
+  // 一把石纹颗粒：所有小圆点拼进一条路径、只填一次（岩块多，逐个填太慢）
+  function grains(ctx, x, y, rx, ry, n, color, a, seed, rMin, rMax) {
+    const r = seeded(seed);
+    ctx.beginPath();
+    for (let i = 0; i < n; i++) {
+      const q = r() * TAU;
+      const d = Math.sqrt(r());
+      const px = x + Math.cos(q) * rx * d;
+      const py = y + Math.sin(q) * ry * d;
+      const rr = rMin + r() * (rMax - rMin);
+      ctx.moveTo(px + rr, py);
+      ctx.arc(px, py, rr, 0, TAU);
+    }
+    ctx.fillStyle = rgba(color, a);
+    ctx.fill();
+  }
+
   // 一块熔岩岩石：外圈背光、右上的斜切面受光、正面有明暗，加上石纹颗粒、细裂纹和右上轮廓光
   function rockChunk(ctx, x, y, w, h, base, seed, far) {
     const P = [[x - w, y - h * 0.6], [x - w * 0.4, y - h], [x + w * 0.8, y - h * 0.8], [x + w, y + h * 0.4], [x + w * 0.3, y + h], [x - w * 0.9, y + h * 0.7]];
@@ -49,12 +66,12 @@
     poly(ctx, I);
     ctx.fillStyle = bodyGrad(ctx, x - w * 0.6, y - h * 0.7, x + w * 0.7, y + h * 0.6, base, 0.42 + dk, 0.72 + dk);
     ctx.fill();
-    // 石纹：亮颗粒、暗坑、一条细裂纹（只画在岩石里面）
+    // 石纹：亮颗粒、暗坑、一条细裂纹，再加右上轮廓光（都只画在岩石里面，共用一次 clip）
     ctx.save();
     poly(ctx, P);
     ctx.clip();
-    speckle(ctx, x, y, w * 0.85, h * 0.85, 7, '#f0d0b0', 0.16, seed, 0.4, Math.max(0.9, w * 0.05));
-    speckle(ctx, x, y, w * 0.85, h * 0.85, 6, '#120806', 0.45, seed + 3, 0.4, Math.max(1, w * 0.06));
+    grains(ctx, x, y, w * 0.85, h * 0.85, 6, '#f0d0b0', 0.16, seed, 0.4, Math.max(0.9, w * 0.05));
+    grains(ctx, x, y, w * 0.85, h * 0.85, 6, '#120806', 0.45, seed + 3, 0.4, Math.max(1, w * 0.06));
     const r = seeded(seed + 5);
     const sx = x + (r() - 0.5) * w;
     const sy = y - h * (0.2 + r() * 0.5);
@@ -66,9 +83,14 @@
     ctx.lineTo(sx + (r() - 0.3) * w * 0.6, sy + h * 0.3);
     ctx.lineTo(sx + (r() - 0.5) * w * 0.7, sy + h * 0.65);
     ctx.stroke();
-    ctx.restore();
+    // 轮廓往左下挪一点再描边，留在岩石里的只有右上那道亮边
     const e = Math.max(1, w * 0.07);
-    rimEdge(ctx, () => poly(ctx, P), '#ffd8b0', far ? 0.25 : 0.5, e * 2, e, e);
+    ctx.translate(-e, e);
+    poly(ctx, P);
+    ctx.strokeStyle = rgba('#ffd8b0', far ? 0.25 : 0.5);
+    ctx.lineWidth = e * 2;
+    ctx.stroke();
+    ctx.restore();
     return P;
   }
 
@@ -122,49 +144,35 @@
     body();
     ctx.clip();
     glow(ctx, w * 0.1 + Math.sin(t * 1.7 + sd) * w * 0.25, -h * 0.5, w * 0.75, '#ffd070', 0.55 * heat, true);
-    // ② 冷却的岩壳：顺着圆顶排成三圈，越往下缝越宽（底下更烫）
-    const W = w * 1.12;
-    const arc = (k, x) => -h * k * Math.sqrt(Math.max(0, 1 - (x / W) * (x / W)));
-    const rows = [
-      [-0.15, 0.4, [-1, -0.5, 0.02, 0.52, 1], 0.78],
-      [0.4, 0.8, [-1, -0.25, 0.3, 1], 0.84],
-      [0.8, 1.5, [-1, 0.08, 1], 0.88],
-    ];
+    // ② 冷却的岩壳：几块不规则的深色碎壳浮在岩浆上，互相压着的地方只剩一道细缝（底下露出的岩浆更多，更烫）；壳边被烤红，右上沿受光
     const r = seeded(11);
     const shell = linear(ctx, w * 0.7, -h * 1.2, -w * 0.8, 0, [[0, '#6e4436'], [0.5, '#3e2219'], [1, '#1c0d09']]);
-    for (const [k0, k1, xs, f] of rows) {
-      for (let i = 0; i < xs.length - 1; i++) {
-        const xa = xs[i] * W + (i ? (r() - 0.5) * W * 0.12 : 0);
-        const xb = xs[i + 1] * W;
-        const P = [];
-        for (let u = 0; u <= 2; u++) P.push([xa + ((xb - xa) * u) / 2, arc(k0, xa + ((xb - xa) * u) / 2)]);
-        for (let u = 2; u >= 0; u--) P.push([xa + ((xb - xa) * u) / 2 + (r() - 0.5) * w * 0.06, arc(k1, xa + ((xb - xa) * u) / 2)]);
-        const mx = P.reduce((q, p) => q + p[0], 0) / P.length;
-        const my = P.reduce((q, p) => q + p[1], 0) / P.length;
-        const Q = P.map(([px, py]) => [mx + (px - mx) * f, my + (py - my) * f]);
-        poly(ctx, Q);
-        ctx.fillStyle = shell;
-        ctx.fill();
-        // 岩片的下沿被岩浆烤红，上沿受光
-        ctx.lineCap = 'round';
-        ctx.strokeStyle = 'rgba(255,120,50,0.55)';
-        ctx.lineWidth = Math.max(0.8, s * 0.05);
-        ctx.beginPath();
-        ctx.moveTo(Q[0][0], Q[0][1]);
-        ctx.lineTo(Q[1][0], Q[1][1]);
-        ctx.lineTo(Q[2][0], Q[2][1]);
-        ctx.stroke();
-        ctx.strokeStyle = 'rgba(255,215,180,0.28)';
-        ctx.lineWidth = Math.max(0.7, s * 0.035);
-        ctx.beginPath();
-        ctx.moveTo(Q[3][0], Q[3][1]);
-        ctx.lineTo(Q[4][0], Q[4][1]);
-        ctx.lineTo(Q[5][0], Q[5][1]);
-        ctx.stroke();
+    const plates = [[-0.5, -0.72, 0.52, 0.4], [0.15, -0.98, 0.5, 0.3], [0.7, -0.55, 0.44, 0.4], [-0.02, -0.5, 0.38, 0.28], [-0.9, -0.26, 0.3, 0.3], [0.45, -0.18, 0.36, 0.2], [-0.4, -0.16, 0.3, 0.17]];
+    ctx.lineJoin = 'round';
+    for (const P of plates) {
+      const cx = P[0] * w - lean * P[1];
+      const cy = P[1] * h;
+      const Q = [];
+      for (let k = 0; k < 7; k++) {
+        const a = (k / 7) * TAU + (r() - 0.5) * 0.5;
+        const f = 0.8 + r() * 0.22;
+        Q.push([cx + Math.cos(a) * P[2] * w * f, cy + Math.sin(a) * P[3] * h * f]);
       }
+      poly(ctx, Q);
+      ctx.fillStyle = shell;
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255,120,50,0.5)';
+      ctx.lineWidth = Math.max(0.8, s * 0.05);
+      ctx.stroke();
+      ctx.strokeStyle = 'rgba(255,215,180,0.3)';
+      ctx.lineWidth = Math.max(0.7, s * 0.035);
+      ctx.beginPath();
+      ctx.moveTo(Q[5][0], Q[5][1]);
+      ctx.lineTo(Q[6][0], Q[6][1]);
+      ctx.lineTo(Q[0][0], Q[0][1]);
+      ctx.stroke();
     }
-    // 岩壳上的气孔和亮颗粒
-    speckle(ctx, w * 0.05, -h * 0.65, w * 0.85, h * 0.5, 9, '#140806', 0.5, 13, 0.5, 1.3);
+    // 岩壳上的亮颗粒
     speckle(ctx, w * 0.2, -h * 0.8, w * 0.6, h * 0.35, 6, '#ffd2a8', 0.22, 14, 0.4, 0.9);
     // 头顶的岩浆泡：慢慢鼓起，破掉
     const bk = (t * 0.6 + sd * 0.3) % 1;
@@ -183,9 +191,9 @@
     // 眼睛嵌在岩壳上：先压一圈暗窝，光才看得清
     ctx.fillStyle = 'rgba(16,6,4,0.75)';
     ctx.beginPath();
-    ctx.ellipse(-s * 0.38, -h * 0.72, s * 0.27, s * 0.1, -0.15, 0, TAU);
+    ctx.ellipse(-s * 0.38, -h * 0.72, s * 0.29, s * 0.11, -0.15, 0, TAU);
     ctx.fill();
-    eyes(ctx, -s * 0.38, -h * 0.72, s * 0.28, s * 0.07, '#ffd27a', -0.15);
+    eyes(ctx, -s * 0.38, -h * 0.72, s * 0.3, s * 0.08, '#ffd27a', -0.15);
     // 火星
     embers(ctx, s * 0.1, -h * 1.05, s * 0.35, s * 0.9, 3, t, '#ffb050', 21 + sd, 1.1);
     if (bk >= 0.85) sparkles(ctx, w * 0.18 + lean, -h * 1.1, s * 0.15, s * 0.1, 3, t * 3, '#ffd070', 5, 0.9);
@@ -200,7 +208,7 @@
     shadow(ctx, 0, 2, s);
     glow(ctx, 0, -s * 1.1, s * 0.9, '#ff6a2a', 0.5);
     // 关节处的岩浆光：先画，岩块盖上后只从缝里透出来
-    for (const [jx, jy, jr] of [[-0.25, -0.6, 0.32], [0.25, -0.6, 0.32], [-0.55, -1.3, 0.24], [0.55, -1.3, 0.24], [-0.05, -1.5, 0.26]]) glow(ctx, s * jx, s * jy, s * jr, '#ff7a2a', 0.9 * pulse, true);
+    for (const [jx, jy, jr] of [[0, -0.6, 0.45], [-0.55, -1.3, 0.24], [0.55, -1.3, 0.24], [-0.05, -1.5, 0.26]]) glow(ctx, s * jx, s * jy, s * jr, '#ff7a2a', 0.9 * pulse, true);
     const sw = step * 2;
     rockChunk(ctx, s * 0.25 - sw, -s * 0.3, s * 0.22, s * 0.3, base, 3, true);
     rockChunk(ctx, -s * 0.25 + sw, -s * 0.3, s * 0.22, s * 0.3, base, 4);
@@ -212,7 +220,7 @@
     ctx.clip();
     const cx = -s * 0.05;
     const cy = -s * 1.05;
-    for (const [a, sv] of [[-2.55, 1], [-0.55, 2], [1.65, 3]]) veins(ctx, cx, cy, s * 0.26, a, 2, '#ff8a3a', 0.75 + pulse * 0.25, sv, Math.max(1.4, s * 0.06));
+    for (const [a, sv, d] of [[-2.55, 1, 2], [-0.55, 2, 2], [1.65, 3, 1]]) veins(ctx, cx, cy, s * 0.26, a, d, '#ff8a3a', 0.75 + pulse * 0.25, sv, Math.max(1.4, s * 0.06));
     glow(ctx, cx, cy, s * 0.32, '#ffb050', pulse, true);
     ctx.restore();
     dot(ctx, cx, cy, s * 0.05, '#ffe0a0', 0.9);
@@ -225,7 +233,7 @@
     ctx.ellipse(-s * 0.13, -s * 1.77, s * 0.2, s * 0.075, 0, 0, TAU);
     ctx.fill();
     eyes(ctx, -s * 0.13, -s * 1.78, s * 0.2, s * 0.05, '#ffc04a', 0);
-    embers(ctx, 0, -s * 1.35, s * 0.5, s * 0.95, 4, t, '#ffb050', 9 + sd, 1.0);
+    embers(ctx, 0, -s * 1.35, s * 0.5, s * 0.95, 3, t, '#ffb050', 9 + sd, 1.0);
   };
 
   // 火焰小恶魔：半透光的蝙蝠翅膀（有翅骨和翅脉）、桃心尖尾巴，身上有发光的火纹，手里托着一团火
@@ -477,21 +485,21 @@
     ctx.fillRect(-s * 0.4, -s * 1.0, s * 0.6, s * 0.08);
     ctx.restore();
     dot(ctx, -s * 0.12, -s * 0.96, Math.max(0.7, s * 0.04), glowC, 0.85);
-    rimEdge(ctx, torso, '#c8b0ff', 0.45, Math.max(1.5, s * 0.1), 1.2, 1.2);
-    // 飘在身后的长围巾：一条波浪形的带子，末端有两道浅色条纹和一点光
+    rimEdge(ctx, torso, '#c8b0ff', 0.35, Math.max(1.5, s * 0.1), 1.2, 1.2);
+    // 飘在身后的长围巾：从脖子左边绕过来，一条波浪形的带子，末端有两道浅色条纹和一点光
     const N = 10;
     const top = [];
     const bot = [];
     for (let i = 0; i <= N; i++) {
       const u = i / N;
-      const x = -s * 0.08 + u * s * 1.25;
+      const x = -s * 0.3 + u * s * 1.47;
       const y = -s * 1.6 - u * s * 0.02 + Math.sin(t * 7 - u * 5 + sd) * s * 0.11 * u;
       const hw = s * (0.08 - u * 0.035);
       top.push([x, y - hw]);
       bot.push([x, y + hw]);
     }
     poly(ctx, top.concat(bot.slice().reverse()));
-    ctx.fillStyle = linear(ctx, -s * 0.1, 0, s * 1.2, 0, [[0, 'rgba(170,70,210,0.95)'], [1, 'rgba(130,50,180,0.55)']]);
+    ctx.fillStyle = linear(ctx, -s * 0.3, 0, s * 1.2, 0, [[0, 'rgba(170,70,210,0.95)'], [1, 'rgba(130,50,180,0.55)']]);
     ctx.fill();
     ctx.strokeStyle = 'rgba(240,200,255,0.5)';
     ctx.lineWidth = Math.max(0.8, s * 0.05);
@@ -524,7 +532,7 @@
     ctx.moveTo(-s * 0.02, -s * 2.05);
     ctx.quadraticCurveTo(s * 0.06, -s * 1.85, s * 0.02, -s * 1.68);
     ctx.stroke();
-    rimEdge(ctx, hood, '#c8b0ff', 0.5, Math.max(1.5, s * 0.1), 1.2, 1.2);
+    rimEdge(ctx, hood, '#c8b0ff', 0.35, Math.max(1.5, s * 0.1), 1.2, 1.2);
     ctx.fillStyle = '#06050c';
     ctx.beginPath();
     ctx.ellipse(-s * 0.25, -s * 1.84, s * 0.13, s * 0.12, 0, 0, TAU);
@@ -737,10 +745,11 @@
     ctx.lineTo(lx, ly - s * 0.1);
     ctx.stroke();
     const flick = 0.8 + Math.sin(t * 9) * 0.15;
-    glow(ctx, lx, ly, s * 0.45, '#7affc0', flick * 0.8);
-    ctx.fillStyle = 'rgba(30,60,50,0.55)';
+    glow(ctx, lx, ly, s * 0.6, '#7affc0', flick, true);
+    // 灯罩里透出的绿光
+    ctx.fillStyle = radial(ctx, lx, ly, 0, s * 0.14, [[0, 'rgba(130,240,190,0.95)'], [1, 'rgba(30,110,80,0.85)']]);
     ctx.fillRect(lx - s * 0.1, ly - s * 0.1, s * 0.2, s * 0.2);
-    ctx.fillStyle = '#b8ffe0';
+    ctx.fillStyle = '#ecfff6';
     ctx.beginPath();
     ctx.moveTo(lx, ly - s * 0.09 - Math.sin(t * 17) * s * 0.02);
     ctx.quadraticCurveTo(lx + s * 0.07, ly + s * 0.02, lx, ly + s * 0.07);
@@ -806,34 +815,20 @@
     const r = s * scale;
     const glowC = angry ? '#ff8ad0' : '#b08aff';
     const br = 1 + Math.sin(t * 2 + sd) * 0.03;
-    // 脚下的墨晕，一圈圈慢慢化开
-    ctx.fillStyle = 'rgba(40,20,70,0.45)';
+    // 脚下的墨晕（边缘化开），一圈圈慢慢往外扩
+    ctx.save();
+    ctx.scale(1, 0.16);
+    ctx.fillStyle = radial(ctx, 0, 0, 0, r * 0.85, [[0, 'rgba(40,20,70,0.5)'], [0.6, 'rgba(40,20,70,0.32)'], [1, 'rgba(40,20,70,0)']]);
     ctx.beginPath();
-    ctx.ellipse(0, 0, r * 0.85, r * 0.13, 0, 0, TAU);
+    ctx.arc(0, 0, r * 0.85, 0, TAU);
     ctx.fill();
+    ctx.restore();
     const rk = (t * 0.5 + sd * 0.2) % 1;
     ctx.strokeStyle = rgba(glowC, 0.35 * (1 - rk));
     ctx.lineWidth = Math.max(0.8, r * 0.025);
     ctx.beginPath();
     ctx.ellipse(0, 0, r * (0.6 + rk * 0.55), r * (0.09 + rk * 0.08), 0, 0, TAU);
     ctx.stroke();
-    // boss 身边绕着飞的小墨滴（在身后）
-    if (boss) {
-      for (let i = 0; i < 3; i++) {
-        const q = t * 0.8 + i * 2.1 + sd;
-        const mx = Math.cos(q) * r * 1.05;
-        const my = -r * 0.62 + Math.sin(q) * r * 0.32 + Math.sin(t * 2 + i) * r * 0.05;
-        ctx.fillStyle = '#1a1230';
-        ctx.beginPath();
-        ctx.arc(mx, my, r * 0.06, 0, TAU);
-        ctx.fill();
-        ctx.strokeStyle = rgba(glowC, 0.6);
-        ctx.lineWidth = Math.max(0.8, r * 0.015);
-        ctx.beginPath();
-        ctx.arc(mx, my, r * 0.06, -1.6, 0.2);
-        ctx.stroke();
-      }
-    }
     // 往下垂、越来越细的墨须
     for (let i = 0; i < 6; i++) {
       const a = Math.PI * 0.15 + (i / 5) * Math.PI * 0.7;
@@ -871,10 +866,10 @@
     };
     // 边缘渐隐的墨雾（两层）
     body(1.14);
-    ctx.fillStyle = 'rgba(60,36,110,0.16)';
+    ctx.fillStyle = 'rgba(60,36,110,0.1)';
     ctx.fill();
     body(1.06);
-    ctx.fillStyle = 'rgba(40,24,80,0.3)';
+    ctx.fillStyle = 'rgba(40,24,80,0.18)';
     ctx.fill();
     // 主体
     body(1);
@@ -955,13 +950,13 @@
     if (boss) {
       const sw = Math.sin(t * 2.2 + sd) * r * 0.05;
       const tipX = r * 0.2 + sw;
-      const tipY = -r * 1.32;
+      const tipY = -r * 1.22;
       ctx.strokeStyle = '#1e1630';
       ctx.lineCap = 'round';
       ctx.lineWidth = r * 0.07;
       ctx.beginPath();
       ctx.moveTo(-r * 0.02, -r * 0.98 * br);
-      ctx.quadraticCurveTo(r * 0.0, -r * 1.25, tipX, tipY);
+      ctx.quadraticCurveTo(r * 0.0, -r * 1.16, tipX, tipY);
       ctx.stroke();
       ctx.lineWidth = r * 0.045;
       ctx.beginPath();
@@ -971,10 +966,10 @@
       ctx.lineWidth = Math.max(0.8, r * 0.018);
       ctx.beginPath();
       ctx.moveTo(r * 0.02, -r * 1.0 * br);
-      ctx.quadraticCurveTo(r * 0.04, -r * 1.24, tipX + r * 0.02, tipY - r * 0.01);
+      ctx.quadraticCurveTo(r * 0.04, -r * 1.15, tipX + r * 0.02, tipY - r * 0.01);
       ctx.stroke();
       dot(ctx, tipX + r * 0.06, tipY + r * 0.04, Math.max(1, r * 0.035), glowC, 0.9);
-      sparkles(ctx, 0, -r * 0.65, r * 1.05, r * 0.55, 5, t, glowC, 23, Math.max(1, r * 0.03));
+      sparkles(ctx, 0, -r * 0.65, r * 0.92, r * 0.5, 5, t, glowC, 23, Math.max(1, r * 0.03));
     }
   }
   D.inkClone = function (ctx, s, t, o) {
@@ -997,7 +992,7 @@
         ctx.strokeStyle = rgba('#ff8ad0', 0.5 * k);
         ctx.lineWidth = Math.max(1.5, r * 0.04);
         ctx.beginPath();
-        ctx.ellipse(0, -r * 0.6, r * (1.5 - k * 0.9), r * (1.0 - k * 0.6), 0, 0, TAU);
+        ctx.ellipse(0, -r * 0.6, r * (1.22 - k * 0.65), r * (0.85 - k * 0.45), 0, 0, TAU);
         ctx.stroke();
       }
     }

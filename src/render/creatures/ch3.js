@@ -97,17 +97,18 @@
     ctx.scale(1.2, 1.25);
     ctx.translate(-s * 0.25, s * 0.05);
     body();
-    ctx.fillStyle = radial(ctx, 0, -s * 0.15, 0, s * 1.4, [[0, 'rgba(190,215,255,0.32)'], [1, 'rgba(150,170,255,0)']]);
+    // 边缘前就淡完，不留一圈硬边
+    ctx.fillStyle = radial(ctx, 0, -s * 0.2, 0, s * 0.85, [[0, 'rgba(190,215,255,0.3)'], [0.55, 'rgba(170,195,255,0.12)'], [1, 'rgba(150,170,255,0)']]);
     ctx.fill();
     ctx.restore();
     // 两缕拖在后面的细雾
     for (let i = 0; i < 2; i++) {
-      const w = Math.sin(ph * 1.3 + i * 2) * s * 0.12;
-      ctx.strokeStyle = linear(ctx, s * 0.3, 0, s * 1.6, 0, [[0, 'rgba(205,228,255,0.5)'], [1, 'rgba(160,190,255,0)']]);
+      const w = Math.sin(ph * 1.3 + i * 2) * s * 0.1;
+      ctx.strokeStyle = linear(ctx, s * 0.3, 0, s * 1.3, 0, [[0, 'rgba(205,228,255,0.45)'], [1, 'rgba(160,190,255,0)']]);
       ctx.lineWidth = s * (0.08 - i * 0.03);
       ctx.beginPath();
       ctx.moveTo(s * 0.3, s * (0.05 + i * 0.15));
-      ctx.bezierCurveTo(s * 0.7, s * (0.4 + i * 0.1) + w, s * 1.1, s * (0.05 + i * 0.3) - w, s * (1.6 - i * 0.2), s * (0.3 + i * 0.2) + w);
+      ctx.bezierCurveTo(s * 0.65, s * (0.38 + i * 0.1) + w, s * 0.95, s * (0.08 + i * 0.25) - w, s * (1.3 - i * 0.15), s * (0.28 + i * 0.15) + w);
       ctx.stroke();
     }
     // 往前伸的小手
@@ -115,27 +116,29 @@
     ctx.fillStyle = 'rgba(215,232,255,0.72)';
     ctx.beginPath();
     ctx.moveTo(-s * 0.42, -s * 0.24);
-    ctx.quadraticCurveTo(-s * 0.72, -s * 0.22 + wave, -s * 0.76, -s * 0.06 + wave);
-    ctx.quadraticCurveTo(-s * 0.6, -s * 0.03, -s * 0.46, -s * 0.06);
+    ctx.quadraticCurveTo(-s * 0.6, -s * 0.22 + wave, -s * 0.64, -s * 0.08 + wave);
+    ctx.quadraticCurveTo(-s * 0.54, -s * 0.04, -s * 0.46, -s * 0.06);
     ctx.fill();
     // 身体：右上最亮，往左下渐渐变透
     body();
-    ctx.fillStyle = radial(ctx, 0, -s * 0.15, s * 0.05, s * 1.15, [[0, 'rgba(246,251,255,0.96)'], [0.45, 'rgba(188,216,255,0.7)'], [0.8, 'rgba(130,160,255,0.3)'], [1, 'rgba(120,150,255,0)']], s * 0.12, -s * 0.45);
+    ctx.fillStyle = radial(ctx, 0, -s * 0.15, s * 0.05, s * 1.15, [[0, 'rgba(246,251,255,0.96)'], [0.45, 'rgba(188,216,255,0.7)'], [0.68, 'rgba(130,160,255,0.28)'], [1, 'rgba(120,150,255,0)']], s * 0.12, -s * 0.45);
     ctx.fill();
     ctx.save();
     body();
     ctx.clip();
-    // 背光的左下偏蓝紫
+    // 背光的左下偏蓝紫（只染已经画上的雾，不让渐隐的尾巴变实）
+    ctx.globalCompositeOperation = 'source-atop';
     ctx.fillStyle = linear(ctx, s * 0.4, -s * 0.7, -s * 0.4, s * 0.3, [[0, 'rgba(110,120,230,0)'], [1, 'rgba(90,100,210,0.32)']]);
     ctx.fillRect(-s, -s, s * 2.6, s * 2);
     // 体内慢慢流动的光雾
     ctx.globalCompositeOperation = 'lighter';
     for (let i = 0; i < 3; i++) {
-      ctx.strokeStyle = `rgba(210,232,255,${0.2 - i * 0.04})`;
+      const a = 0.2 - i * 0.04;
+      ctx.strokeStyle = linear(ctx, -s * 0.6, 0, s * 0.9, 0, [[0, `rgba(210,232,255,${a})`], [0.6, `rgba(210,232,255,${a})`], [1, 'rgba(210,232,255,0)']]);
       ctx.lineWidth = s * (0.12 - i * 0.025);
       ctx.beginPath();
       for (let k = 0; k <= 10; k++) {
-        const x = -s * 0.6 + k * s * 0.19;
+        const x = -s * 0.6 + k * s * 0.15;
         const y = -s * (0.5 - i * 0.2) + Math.sin(k * 0.8 - t * 2.2 + i * 2) * s * 0.06 + k * i * s * 0.025;
         if (k) ctx.lineTo(x, y);
         else ctx.moveTo(x, y);
@@ -146,7 +149,16 @@
     glow(ctx, 0, -s * 0.25, s * 0.8, '#cfe4ff', 0.4);
     // 胸口一团暖暖的光核
     glow(ctx, -s * 0.02, -s * 0.18, s * 0.38, '#ffffff', 0.32 + Math.sin(t * 2.5 + seed) * 0.08, true);
-    rimEdge(ctx, body, '#ffffff', 0.55, s * 0.05, s * 0.05, s * 0.05);
+    // 轮廓光：头顶最亮，顺着尾巴渐渐淡掉
+    ctx.save();
+    body();
+    ctx.clip();
+    ctx.translate(-s * 0.05, s * 0.05);
+    body();
+    ctx.strokeStyle = linear(ctx, s * 0.2, 0, s * 1.2, 0, [[0, 'rgba(255,255,255,0.55)'], [1, 'rgba(255,255,255,0)']]);
+    ctx.lineWidth = s * 0.05;
+    ctx.stroke();
+    ctx.restore();
     // 深色的眼窝 + 眼底一点光 + 高光（偶尔眨眼）
     const blink = (t * 0.45 + seed * 0.31) % 1 < 0.05 ? 0.25 : 1;
     for (const dx of [-0.28, -0.02]) {
@@ -420,10 +432,10 @@
       ctx.lineTo(x + s * 0.08, y + s * 0.02);
     }
     ctx.stroke();
-    // 树结
-    ctx.fillStyle = deep(base, 0.85);
+    // 树结：鼓起的一圈木纹，中间一个小小的深点（不要像一个洞）
+    ctx.fillStyle = radial(ctx, s * 0.38, -s * 0.6, 0, s * 0.1, [[0, deep(base, 0.8)], [0.35, deep(base, 0.55)], [1, deep(base, 0.4)]], s * 0.36, -s * 0.62);
     ctx.beginPath();
-    ctx.ellipse(s * 0.38, -s * 0.6, s * 0.07, s * 0.09, 0.2, 0, TAU);
+    ctx.ellipse(s * 0.38, -s * 0.6, s * 0.08, s * 0.1, 0.2, 0, TAU);
     ctx.fill();
     ctx.strokeStyle = lightA(base, 0.25, 0.35);
     ctx.lineWidth = s * 0.025;
@@ -439,17 +451,23 @@
     ctx.restore();
     rimEdge(ctx, trunk, '#ffd9a8', 0.45, s * 0.06, s * 0.05, s * 0.05);
     // 背光一侧长着两朵发光的小木耳
-    for (const [my, mr] of [[-0.66, 0.13], [-0.52, 0.09]]) {
-      const mx = -s * 0.66 - mr * s * 0.4;
-      glow(ctx, mx, s * my, s * mr * 2.6, '#8ff0e0', 0.35 + pulse * 0.15);
-      ctx.fillStyle = linear(ctx, 0, s * (my - 0.05), 0, s * my, [[0, '#4a8a86'], [1, '#1a3a3a']]);
+    for (const [my, mr] of [[-0.66, 0.14], [-0.5, 0.1]]) {
+      const mx = -s * 0.62 - mr * s * 0.3;
+      const y = s * my;
+      glow(ctx, mx, y, s * mr * 2.6, '#8ff0e0', 0.35 + pulse * 0.15);
+      // 伞盖：上面亮、下缘暗，底下一道深色的菌褶
+      ctx.fillStyle = linear(ctx, 0, y - s * mr * 0.5, 0, y, [[0, '#a8f4e8'], [1, '#3a7e78']]);
       ctx.beginPath();
-      ctx.ellipse(mx, s * my, s * mr, s * mr * 0.38, 0, Math.PI, TAU);
+      ctx.ellipse(mx, y, s * mr, s * mr * 0.5, 0, Math.PI, TAU);
       ctx.fill();
-      ctx.strokeStyle = 'rgba(160,255,236,0.75)';
+      ctx.fillStyle = 'rgba(16,40,40,0.7)';
+      ctx.beginPath();
+      ctx.ellipse(mx, y, s * mr * 0.9, s * mr * 0.14, 0, 0, Math.PI);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(200,255,244,0.8)';
       ctx.lineWidth = s * 0.022;
       ctx.beginPath();
-      ctx.ellipse(mx, s * my, s * mr, s * mr * 0.38, 0, Math.PI * 0.95, TAU * 0.98);
+      ctx.ellipse(mx, y, s * mr, s * mr * 0.5, 0, Math.PI * 1.15, TAU * 0.98);
       ctx.stroke();
     }
     // 裂缝：深色的缝，里面透出树液的光，细细的光脉往两边爬
@@ -1154,24 +1172,24 @@
     ctx.translate(-s * 0.85, 0);
     if (ai.phase === 3) {
       // 倒翻的毒汤：从锅沿流下来，在地上积成一滩
-      glow(ctx, -s * 0.9, -s * 0.1, s * 0.7, brewC, 0.45);
-      ctx.fillStyle = radial(ctx, -s * 0.9, -s * 0.08, 0, s * 0.55, [[0, 'rgba(170,255,150,0.6)'], [1, 'rgba(111,255,106,0.3)']]);
+      glow(ctx, -s * 0.72, -s * 0.1, s * 0.55, brewC, 0.45);
+      ctx.fillStyle = radial(ctx, -s * 0.72, -s * 0.08, 0, s * 0.5, [[0, 'rgba(170,255,150,0.6)'], [1, 'rgba(111,255,106,0.3)']]);
       ctx.beginPath();
-      ctx.ellipse(-s * 0.9, -s * 0.08, s * 0.55, s * 0.12, 0, 0, TAU);
+      ctx.ellipse(-s * 0.72, -s * 0.08, s * 0.5, s * 0.12, 0, 0, TAU);
       ctx.fill();
       for (let i = 0; i < 3; i++) {
         const p = (t * 1.2 + i / 3) % 1;
         ctx.strokeStyle = rgba('#d8ffc0', (1 - p) * 0.6);
         ctx.lineWidth = s * 0.015;
         ctx.beginPath();
-        ctx.ellipse(-s * (1.2 - i * 0.28), -s * 0.08, s * 0.08 * p, s * 0.025 * p, 0, 0, TAU);
+        ctx.ellipse(-s * (1.0 - i * 0.25), -s * 0.08, s * 0.08 * p, s * 0.025 * p, 0, 0, TAU);
         ctx.stroke();
       }
       ctx.strokeStyle = rgba(brewC, 0.55);
       ctx.lineWidth = s * 0.08;
       ctx.beginPath();
       ctx.moveTo(-s * 0.6, -s * 1.0);
-      ctx.quadraticCurveTo(-s * 0.85, -s * 0.8, -s * 0.8, -s * 0.12);
+      ctx.quadraticCurveTo(-s * 0.82, -s * 0.8, -s * 0.74, -s * 0.12);
       ctx.stroke();
     }
     // 三条短腿
@@ -1254,10 +1272,10 @@
       const f = Math.sin(t * 12 + i) * 3;
       glow(ctx, -s * 0.25 + i * s * 0.25, -s * 0.15 - f, s * 0.25, '#ff8a3d', 0.7);
     }
-    for (let i = 0; i < 4; i++) {
+    [[-0.32, 0.065], [-0.1, 0.085], [0.12, 0.07], [0.31, 0.055]].forEach(([fx, fw], i) => {
       const h = s * (0.16 + 0.07 * Math.sin(t * 12 + i * 1.7) + (i % 2) * 0.05);
-      flame(ctx, -s * 0.33 + i * s * 0.22, -s * 0.05, s * 0.07, h, '#ff6a2a', '#ffd27a', 0.75);
-    }
+      flame(ctx, s * fx, -s * 0.05, s * fw, h, '#ff6a2a', '#ffd27a', 0.75);
+    });
     // 厚厚的锅沿
     ctx.fillStyle = linear(ctx, 0, -s * 1.15, 0, -s * 0.86, [[0, '#5a5a6e'], [1, '#1a1a24']]);
     ctx.beginPath();

@@ -126,23 +126,25 @@
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(spin || 0);
-    speckle(ctx, 0, 0, r * 0.9, r * 0.9, 18, '#3c5a80', 0.28, seed, r * 0.035, r * 0.08);
-    speckle(ctx, 0, 0, r * 0.85, r * 0.85, 12, '#ffffff', 0.85, seed + 5, r * 0.03, r * 0.06);
+    // 雪粒：亮的多、暗的少而淡（暗点多了会像月球坑）
+    speckle(ctx, 0, 0, r * 0.88, r * 0.88, 8, '#4a6890', 0.16, seed, r * 0.025, r * 0.05);
+    speckle(ctx, 0, 0, r * 0.85, r * 0.85, 12, '#ffffff', 0.8, seed + 5, r * 0.025, r * 0.055);
+    // 几个鼓起来的雪团：亮的顶面 + 下沿一道淡影
     const rr = seeded(seed + 9);
-    ctx.lineWidth = Math.max(0.8, r * 0.05);
-    for (let i = 0; i < 4; i++) {
+    ctx.lineWidth = Math.max(0.8, r * 0.04);
+    for (let i = 0; i < 3; i++) {
       const q = rr() * TAU;
       const d = 0.3 + rr() * 0.45;
       const cx = Math.cos(q) * r * d;
       const cy = Math.sin(q) * r * d;
       const cr = r * (0.12 + rr() * 0.08);
-      ctx.strokeStyle = 'rgba(40,64,100,0.3)';
+      ctx.fillStyle = 'rgba(255,255,255,0.35)';
       ctx.beginPath();
-      ctx.arc(cx, cy, cr, 0.3, 2.6);
-      ctx.stroke();
-      ctx.strokeStyle = 'rgba(255,255,255,0.75)';
+      ctx.ellipse(cx + cr * 0.1, cy - cr * 0.15, cr * 0.85, cr * 0.7, 0, 0, TAU);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(40,64,100,0.18)';
       ctx.beginPath();
-      ctx.arc(cx, cy, cr, -2.4, -0.5);
+      ctx.arc(cx, cy, cr, 0.5, 2.8);
       ctx.stroke();
     }
     ctx.restore();
@@ -517,12 +519,12 @@
     const flap = Math.sin(t * 12);
     // 外层的光雾
     glow(ctx, 0, 0, s * 1.3, '#7fd0ff', 0.35);
-    // 身下拖着的三片小冰晶，像尾巴一样摇
+    // 身下坠着的三片小冰晶，像短尾巴一样摇
     for (let i = 1; i <= 3; i++) {
-      const tx = s * (0.08 + i * 0.1) + Math.sin(t * 4 + sd - i) * s * 0.08;
-      const ty = s * (0.5 + i * 0.25);
-      glow(ctx, tx, ty, s * 0.22, '#9fe3ff', 0.5 - i * 0.1);
-      crystal(ctx, tx, ty + s * 0.09, s * (0.16 - i * 0.03), s * (0.24 - i * 0.04), Math.PI + Math.sin(t * 4 - i) * 0.3, '#9fd8ff', 0.95 - i * 0.2);
+      const tx = s * (0.03 + i * 0.05) + Math.sin(t * 4 + sd - i) * s * 0.06;
+      const ty = s * (0.55 + i * 0.08);
+      glow(ctx, tx, ty + s * 0.05, s * 0.18, '#9fe3ff', 0.45 - i * 0.1);
+      crystal(ctx, tx, ty, s * (0.14 - i * 0.025), s * (0.16 - i * 0.03), Math.PI + Math.sin(t * 4 - i) * 0.3, '#9fd8ff', 0.95 - i * 0.2);
     }
     // 寒气光环（两圈，反着转）和光环上的小光点
     ctx.strokeStyle = 'rgba(160,230,255,0.35)';
@@ -641,7 +643,7 @@
     ctx.beginPath();
     ctx.ellipse(-L * 0.05, by + high * 0.75, L * 0.5, high * 0.45, 0, 0, TAU);
     ctx.fill();
-    strokes(ctx, 0, by + high * 0.25, L * 0.55, high * 0.6, 24, '#1c2a40', 0.4, 5, 0.3, s * 0.16);
+    strokes(ctx, 0, by + high * 0.25, L * 0.55, high * 0.6, 20, '#1c2a40', 0.3, 5, 0.3, s * 0.16);
     strokes(ctx, s * 0.1, by - high * 0.45, L * 0.5, high * 0.35, 18, '#eef6ff', 0.5, 8, 0.15, s * 0.15);
     rune(ctx, [[-L * 0.38, by - high * 0.05], [-L * 0.15, by + high * 0.25], [L * 0.1, by + high * 0.05], [L * 0.35, by + high * 0.3]], '#8ae0ff', s * 0.04, 0.5);
     speckle(ctx, -L * 0.12, by - high * 0.25, L * 0.18, high * 0.12, 3, '#8ae0ff', 0.8, 9, s * 0.02, s * 0.03, 0.3);
@@ -720,7 +722,8 @@
     ctx.ellipse(-s * 1.3, by - s * 0.34, s * 0.22, s * 0.07, -0.3, 0, TAU);
     ctx.fill();
     ctx.restore();
-    rimEdge(ctx, headPath, '#eaf6ff', 0.65, s * 0.05, s * 0.03, s * 0.04);
+    // 轮廓光只描头顶（后脑那条边连着身体，描亮了会像一道接缝）
+    rimEdge(ctx, headPath, '#eaf6ff', 0.65, s * 0.05, 0, s * 0.045);
     // 竖起的耳朵（内侧深色）
     ctx.fillStyle = headFill;
     ctx.beginPath();
@@ -767,19 +770,13 @@
     // 腿：毛发笔触 + 三颗浅色钝爪
     for (const [lx, p, far] of [[s * 0.35, 1, true], [-s * 0.05, -1, false]]) {
       const x = lx + step * p * s * 0.12;
-      const legPath = () => {
-        ctx.beginPath();
-        ctx.ellipse(x, -s * 0.32, s * 0.22, s * 0.34, 0, 0, TAU);
-      };
-      legPath();
+      ctx.beginPath();
+      ctx.ellipse(x, -s * 0.32, s * 0.22, s * 0.34, 0, 0, TAU);
       ctx.fillStyle = bodyGrad(ctx, x - s * 0.22, -s * 0.66, x + s * 0.22, 0, base, far ? 0.6 : 0.35, far ? 0.85 : 0.72);
       ctx.fill();
-      ctx.save();
-      legPath();
-      ctx.clip();
-      strokes(ctx, x, -s * 0.36, s * 0.2, s * 0.3, 10, '#0e1828', 0.4, 3 + p, 1.75, s * 0.14);
-      if (!far) strokes(ctx, x + s * 0.08, -s * 0.42, s * 0.1, s * 0.22, 6, '#eef6ff', 0.35, 6, 1.7, s * 0.12);
-      ctx.restore();
+      // 毛发笔触落在腿的范围里（笔触往下长，所以区域偏上）
+      strokes(ctx, x, -s * 0.42, s * 0.15, s * 0.22, 9, '#0e1828', 0.4, 3 + p, 1.75, s * 0.14);
+      if (!far) strokes(ctx, x + s * 0.07, -s * 0.46, s * 0.08, s * 0.18, 6, '#eef6ff', 0.35, 6, 1.7, s * 0.12);
       ctx.fillStyle = far ? 'rgba(150,170,195,0.7)' : '#dfe8f2';
       for (let i = 0; i < 3; i++) {
         ctx.beginPath();
@@ -806,53 +803,66 @@
     };
     const tuft = (p0, p1, p2, us, dx, dy, col) => {
       ctx.fillStyle = col;
+      ctx.beginPath();
       for (const u of us) {
         const a = qb(p0, p1, p2, u - 0.06);
         const b = qb(p0, p1, p2, u + 0.06);
         const m = qb(p0, p1, p2, u);
         const sw = Math.sin(ph * 0.8 + u * 6) * s * 0.02;
-        ctx.beginPath();
         ctx.moveTo(a[0], a[1]);
         ctx.quadraticCurveTo(m[0] + dx * 0.4, m[1] + dy * 0.6, m[0] + dx + sw, m[1] + dy);
         ctx.lineTo(b[0], b[1]);
         ctx.closePath();
-        ctx.fill();
       }
+      ctx.fill();
     };
-    tuft([s * 0.6, -s * 0.45], [s * 0.85, -s * 1.3], [s * 0.35, -s * 1.85], [0.2, 0.42, 0.64, 0.86], s * 0.16, s * 0.06, deep(base, 0.35));
+    tuft([s * 0.6, -s * 0.45], [s * 0.85, -s * 1.3], [s * 0.35, -s * 1.85], [0.2, 0.42, 0.64, 0.86], s * 0.1, s * 0.07, deep(base, 0.35));
     tuft([s * 0.35, -s * 1.85], [-s * 0.2, -s * 2.25], [-s * 0.7, -s * 1.85], [0.12, 0.32], s * 0.1, -s * 0.06, deep(base, 0.2));
     tuft([-s * 0.6, -s * 0.9], [-s * 0.3, -s * 0.5], [s * 0.6, -s * 0.45], [0.15, 0.35, 0.55, 0.75, 0.92], s * 0.02, s * 0.14, deep(base, 0.62));
     // 驼背的身体：肩膀高、往前探；径向明暗，受光的肩头最亮
+    const fur = radial(ctx, s * 0.2, -s * 1.7, s * 0.1, s * 1.7, [[0, light(base, 0.3)], [0.35, deep(base, 0.12)], [1, deep(base, 0.72)]], s * 0.3, -s * 1.85);
     bodyPath();
-    ctx.fillStyle = radial(ctx, s * 0.2, -s * 1.7, s * 0.1, s * 1.7, [[0, light(base, 0.3)], [0.35, deep(base, 0.12)], [1, deep(base, 0.72)]], s * 0.3, -s * 1.85);
+    ctx.fillStyle = fur;
     ctx.fill();
     ctx.save();
     bodyPath();
     ctx.clip();
-    // 细毛纹理
-    strokes(ctx, 0, -s * 1.2, s * 0.7, s * 0.6, 40, '#14223a', 0.3, 21, 1.75, s * 0.18);
-    // 一绺绺的长毛：两排，深色的影子 + 受光一侧更亮的发丝，发梢随步子摆
-    for (let row = 0; row < 2; row++) {
-      for (let i = 0; i < 12; i++) {
-        const u = i / 11;
-        const fx = -s * 0.68 + u * s * 1.3 + row * s * 0.05;
-        const fy = -s * (2.0 - Math.sin(u * Math.PI) * 0.18) + (u > 0.75 ? (u - 0.75) * s * 1.6 : 0) + row * s * 0.5;
-        const len = s * (0.55 + ((i * 7 + row * 3) % 5) * 0.06);
-        const sw = Math.sin(ph + i * 0.7 + row) * s * 0.05;
-        ctx.lineCap = 'round';
-        ctx.strokeStyle = 'rgba(12,22,40,0.32)';
-        ctx.lineWidth = s * 0.06;
-        ctx.beginPath();
-        ctx.moveTo(fx - s * 0.03, fy);
-        ctx.quadraticCurveTo(fx + s * 0.05, fy + len * 0.55, fx + sw, fy + len);
-        ctx.stroke();
-        ctx.strokeStyle = `rgba(240,248,255,${0.12 + u * 0.4})`;
-        ctx.lineWidth = s * 0.03;
-        ctx.beginPath();
-        ctx.moveTo(fx + s * 0.02, fy);
-        ctx.quadraticCurveTo(fx + s * 0.09, fy + len * 0.5, fx + s * 0.04 + sw, fy + len * 0.95);
-        ctx.stroke();
+    // 一层层的毛绺：从下往上画，上面一层盖住下面一层的根部；每绺先落一道影子，再用身体的明暗填色，右侧描一道亮边
+    const hiLine = linear(ctx, -s * 0.7, 0, s * 0.6, 0, [[0, 'rgba(240,248,255,0.12)'], [1, 'rgba(240,248,255,0.6)']]);
+    const w = s * 0.11;
+    ctx.lineWidth = s * 0.028;
+    ctx.lineCap = 'round';
+    for (let row = 3; row >= 0; row--) {
+      const locks = [];
+      for (let i = 0; i < 9; i++) {
+        const u = (i + (row % 2) * 0.5) / 8.5;
+        const fx = -s * 0.7 + u * s * 1.35;
+        const fy = -s * (2.02 - Math.sin(u * Math.PI) * 0.16) + (u > 0.75 ? (u - 0.75) * s * 1.6 : 0) + row * s * 0.36;
+        const len = s * (0.4 + ((i * 7 + row * 3) % 4) * 0.05);
+        locks.push([fx, fy, len, Math.sin(ph + i * 0.7 + row) * s * 0.04]);
       }
+      const lockPath = (dx, dy) => {
+        ctx.beginPath();
+        for (const [fx, fy, len, sw] of locks) {
+          ctx.moveTo(fx - w + dx, fy + dy);
+          ctx.quadraticCurveTo(fx - w * 0.8 + dx, fy + len * 0.65 + dy, fx + sw + dx, fy + len + dy);
+          ctx.quadraticCurveTo(fx + w * 0.9 + dx, fy + len * 0.5 + dy, fx + w + dx, fy + dy);
+          ctx.closePath();
+        }
+      };
+      lockPath(-s * 0.035, s * 0.05);
+      ctx.fillStyle = 'rgba(12,22,40,0.32)';
+      ctx.fill();
+      lockPath(0, 0);
+      ctx.fillStyle = fur;
+      ctx.fill();
+      ctx.strokeStyle = hiLine;
+      ctx.beginPath();
+      for (const [fx, fy, len, sw] of locks) {
+        ctx.moveTo(fx + w * 0.55, fy + len * 0.12);
+        ctx.quadraticCurveTo(fx + w * 0.6, fy + len * 0.55, fx + sw + w * 0.15, fy + len * 0.85);
+      }
+      ctx.stroke();
     }
     // 胸前颜色浅一点
     ctx.fillStyle = 'rgba(230,240,252,0.18)';
@@ -896,32 +906,36 @@
     icicle(ctx, -s * 0.33, -s * 0.95, s * 0.06, s * 0.16, 0.85);
     icicle(ctx, -s * 0.28, -s * 0.85, s * 0.05, s * 0.11, 0.8);
     // 手：深色的手指 + 浅色的钝爪
+    const fx0 = -s * 0.58 + step * s * 0.1;
+    ctx.fillStyle = deep(base, 0.55);
+    ctx.beginPath();
     for (let i = 0; i < 3; i++) {
-      const fx = -s * 0.58 + i * s * 0.08 + step * s * 0.1;
-      ctx.fillStyle = deep(base, 0.55);
-      ctx.beginPath();
-      ctx.ellipse(fx, -s * 0.15, s * 0.06, s * 0.1, 0.2, 0, TAU);
-      ctx.fill();
-      ctx.fillStyle = '#e6eef6';
-      ctx.beginPath();
-      ctx.ellipse(fx - s * 0.015, -s * 0.05, s * 0.03, s * 0.025, 0, 0, TAU);
-      ctx.fill();
+      ctx.moveTo(fx0 + i * s * 0.08 + s * 0.06 * Math.cos(0.2), -s * 0.15 + s * 0.06 * Math.sin(0.2));
+      ctx.ellipse(fx0 + i * s * 0.08, -s * 0.15, s * 0.06, s * 0.1, 0.2, 0, TAU);
     }
+    ctx.fill();
+    ctx.fillStyle = '#e6eef6';
+    ctx.beginPath();
+    for (let i = 0; i < 3; i++) {
+      ctx.moveTo(fx0 + i * s * 0.08 + s * 0.015, -s * 0.05);
+      ctx.ellipse(fx0 + i * s * 0.08 - s * 0.015, -s * 0.05, s * 0.03, s * 0.025, 0, 0, TAU);
+    }
+    ctx.fill();
     // 头：在驼峰的前上方；一圈蓬毛、深色的脸、眉骨、蓝眼睛、带两颗小牙的嘴、两只有环纹的弯角
     const hx = -s * 0.68;
     const hy = -s * 1.88;
     ctx.fillStyle = deep(base, 0.3);
+    ctx.beginPath();
     for (let i = 0; i < 7; i++) {
       const a = Math.PI * (0.95 + i * 0.16);
       const r0 = s * 0.3;
       const sw = Math.sin(ph * 0.8 + i) * s * 0.02;
-      ctx.beginPath();
       ctx.moveTo(hx + Math.cos(a - 0.2) * r0, hy + Math.sin(a - 0.2) * r0);
       ctx.lineTo(hx + Math.cos(a) * s * 0.46 + sw, hy + Math.sin(a) * s * 0.42);
       ctx.lineTo(hx + Math.cos(a + 0.2) * r0, hy + Math.sin(a + 0.2) * r0);
       ctx.closePath();
-      ctx.fill();
     }
+    ctx.fill();
     const headPath = () => {
       ctx.beginPath();
       ctx.ellipse(hx, hy, s * 0.36, s * 0.32, 0, 0, TAU);
@@ -929,11 +943,8 @@
     headPath();
     ctx.fillStyle = radial(ctx, hx + s * 0.1, hy - s * 0.12, s * 0.05, s * 0.45, [[0, light(base, 0.25)], [0.5, deep(base, 0.15)], [1, deep(base, 0.6)]]);
     ctx.fill();
-    ctx.save();
-    headPath();
-    ctx.clip();
-    strokes(ctx, hx + s * 0.1, hy - s * 0.05, s * 0.3, s * 0.28, 16, '#14223a', 0.3, 25, 1.4, s * 0.12);
-    ctx.restore();
+    // 头顶的细毛（区域收在头里面，不用裁剪）
+    strokes(ctx, hx + s * 0.08, hy - s * 0.1, s * 0.2, s * 0.16, 14, '#14223a', 0.3, 25, 1.4, s * 0.12);
     rimEdge(ctx, headPath, '#f2f8ff', 0.7, s * 0.06, s * 0.04, s * 0.04);
     ctx.fillStyle = radial(ctx, hx - s * 0.12, hy + s * 0.04, s * 0.02, s * 0.24, [[0, '#3a4a62'], [1, '#141c2c']], hx - s * 0.05, hy - s * 0.06);
     ctx.beginPath();
@@ -952,18 +963,16 @@
     ctx.beginPath();
     ctx.ellipse(hx - s * 0.2, hy + s * 0.06, s * 0.035, s * 0.025, 0, 0, TAU);
     ctx.fill();
-    // 嘴：攻击时张大一点，上沿两颗圆圆的小牙
+    // 嘴：攻击时张大一点，上沿两颗圆圆的小门牙
     const mo = o.attack ? 0.06 + Math.max(0, Math.sin(t * 8)) * 0.03 : 0.04;
     ctx.fillStyle = '#0a0e18';
     ctx.beginPath();
     ctx.ellipse(hx - s * 0.16, hy + s * 0.15, s * 0.085, s * mo, 0, 0, TAU);
     ctx.fill();
     ctx.fillStyle = '#e8f0f8';
-    for (const dx of [-0.21, -0.11]) {
+    for (const dx of [-0.19, -0.13]) {
       ctx.beginPath();
-      ctx.moveTo(hx + s * dx - s * 0.022, hy + s * (0.15 - mo * 0.7));
-      ctx.lineTo(hx + s * dx, hy + s * (0.15 - mo * 0.7) + s * 0.04);
-      ctx.lineTo(hx + s * dx + s * 0.022, hy + s * (0.15 - mo * 0.7));
+      ctx.ellipse(hx + s * dx, hy + s * (0.15 - mo * 0.55), s * 0.026, s * 0.03, 0, 0, TAU);
       ctx.fill();
     }
     // 弯角：由粗到细的几段，环纹
@@ -973,11 +982,11 @@
       const p2 = [hx + s * (dx + 0.16), hy - s * 0.46];
       const far = dx > 0;
       ctx.lineCap = 'round';
-      for (let i = 0; i < 5; i++) {
-        const a = qb(p0, p1, p2, i / 5);
-        const b = qb(p0, p1, p2, (i + 1) / 5);
-        ctx.strokeStyle = far ? deep('#d8e0e8', 0.35 - i * 0.04) : light('#b8c4d2', i * 0.18);
-        ctx.lineWidth = s * (0.085 - i * 0.012);
+      for (let i = 0; i < 4; i++) {
+        const a = qb(p0, p1, p2, i / 4);
+        const b = qb(p0, p1, p2, (i + 1) / 4);
+        ctx.strokeStyle = far ? deep('#d8e0e8', 0.35 - i * 0.05) : light('#b8c4d2', i * 0.22);
+        ctx.lineWidth = s * (0.085 - i * 0.015);
         ctx.beginPath();
         ctx.moveTo(a[0], a[1]);
         ctx.lineTo(b[0], b[1]);
@@ -996,11 +1005,11 @@
     // 呼出的白气 + 身边飘的雪沫
     const bk = (t * 0.9 + sd * 0.1) % 1;
     glow(ctx, hx - s * (0.32 + bk * 0.45), hy + s * (0.12 - bk * 0.1), s * (0.12 + bk * 0.2), '#e8f8ff', (1 - bk) * 0.45);
-    sparkles(ctx, 0, -s * 1.2, s * 1.0, s * 0.8, 5, t, '#e8f8ff', 17, s * 0.04);
+    sparkles(ctx, 0, -s * 1.2, s * 0.95, s * 0.8, 4, t, '#e8f8ff', 17, s * 0.04);
   };
 
-  // 冰龙的翅膀：几根翼骨撑开半透明的冰膜，膜的下沿是一道道弧，翼尖挂着小冰晶
-  function dragonWing(ctx, x, y, len, ang, sq, col, a) {
+  // 冰龙的翅膀：几根翼骨撑开半透明的冰膜，膜的下沿是一道道弧；fine 时膜上加冰纹、翼尖挂小光点（只给近侧那片）
+  function dragonWing(ctx, x, y, len, ang, sq, col, a, fine) {
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(ang);
@@ -1020,11 +1029,13 @@
     ctx.fillStyle = linear(ctx, 0, 0, len * 0.4, -len, [[0, rgba(col, 0.3)], [1, rgba(col, 0.62)]]);
     ctx.fill();
     // 膜上细细的冰纹
-    ctx.save();
-    ctx.clip();
-    veins(ctx, len * 0.3, -len * 0.75, len * 0.25, 1.9, 1, '#e8fbff', 0.35, 3, len * 0.02);
-    veins(ctx, len * 0.55, -len * 0.45, len * 0.2, 2.0, 1, '#e8fbff', 0.3, 4, len * 0.02);
-    ctx.restore();
+    if (fine) {
+      ctx.save();
+      ctx.clip();
+      veins(ctx, len * 0.3, -len * 0.75, len * 0.25, 1.9, 1, '#e8fbff', 0.35, 3, len * 0.02);
+      veins(ctx, len * 0.55, -len * 0.45, len * 0.2, 2.0, 1, '#e8fbff', 0.3, 4, len * 0.02);
+      ctx.restore();
+    }
     // 翼骨（前缘最粗最亮）
     ctx.lineCap = 'round';
     tips.slice(0, 3).forEach(([tx, ty], i) => {
@@ -1035,7 +1046,7 @@
       ctx.quadraticCurveTo(tx * 0.3 + len * 0.06, ty * 0.55, tx, ty);
       ctx.stroke();
     });
-    for (const [tx, ty] of tips.slice(0, 3)) dot(ctx, tx, ty, len * 0.03, '#e8fbff', 0.8);
+    if (fine) for (const [tx, ty] of tips.slice(0, 3)) dot(ctx, tx, ty, len * 0.03, '#e8fbff', 0.8);
     ctx.restore();
   }
 
@@ -1084,10 +1095,10 @@
     // 远侧的翅膀（暗、小）
     dragonWing(ctx, s * 0.0, pts[4][1] - s * 0.12, s * 0.85, 0.25 + flap * 0.35, 0.75 + flap * 0.25, '#7fb8e0', 0.6);
     // 背上的冰刺（先画，身体盖住根部）
-    for (let i = 1; i < 9; i++) {
+    for (let i = 1; i < 7; i++) {
       const [px, py] = side(i, 0.75);
       const ang = Math.atan2(nor[i][0], -nor[i][1]) + 0.35;
-      crystal(ctx, px, py, s * (0.11 - i * 0.006), s * (0.22 - i * 0.015), ang, '#bfeaff', 0.95);
+      crystal(ctx, px, py, s * (0.11 - i * 0.006), s * (0.22 - i * 0.015), ang, '#9fd8ff', 0.95);
     }
     // 尾尖的冰晶鳍
     const tn = Math.atan2(pts[N][1] - pts[N - 1][1], pts[N][0] - pts[N - 1][0]);
@@ -1101,27 +1112,24 @@
     ctx.save();
     bodyPath();
     ctx.clip();
-    scales(ctx, -s * 0.8, -s * 0.5, s * 1.6, s * 0.4, s * 0.1, '#e8f8ff', 0.28);
-    // 背上一道亮面、腹下一条浅色腹甲（一节节的）
-    ctx.lineCap = 'round';
-    for (let i = 1; i <= N; i++) {
-      const a = side(i - 1, 0.55);
-      const b = side(i, 0.55);
-      ctx.strokeStyle = 'rgba(220,245,255,0.28)';
-      ctx.lineWidth = half[i] * 0.55;
+    scales(ctx, -s * 0.7, -s * 0.42, s * 1.55, s * 0.32, s * 0.11, '#cfeeff', 0.2);
+    // 背上一道亮面、腹下一条浅色腹甲（一节节的）：各是一条跟着身体弯的窄带
+    const band = (f0, f1) => {
+      const a = pts.map((p, i) => side(i, f0));
+      const b = pts.map((p, i) => side(i, f1)).reverse();
       ctx.beginPath();
-      ctx.moveTo(a[0], a[1]);
-      ctx.lineTo(b[0], b[1]);
-      ctx.stroke();
-      const c = side(i - 1, -0.62);
-      const d = side(i, -0.62);
-      ctx.strokeStyle = 'rgba(214,240,255,0.7)';
-      ctx.lineWidth = half[i] * 0.7;
-      ctx.beginPath();
-      ctx.moveTo(c[0], c[1]);
-      ctx.lineTo(d[0], d[1]);
-      ctx.stroke();
-    }
+      ctx.moveTo(a[0][0], a[0][1]);
+      smooth(a);
+      ctx.lineTo(b[0][0], b[0][1]);
+      smooth(b);
+      ctx.closePath();
+    };
+    band(0.3, 0.75);
+    ctx.fillStyle = 'rgba(200,238,255,0.14)';
+    ctx.fill();
+    band(-0.3, -0.95);
+    ctx.fillStyle = 'rgba(196,230,252,0.38)';
+    ctx.fill();
     ctx.strokeStyle = 'rgba(40,90,150,0.45)';
     ctx.lineWidth = Math.max(0.6, s * 0.018);
     ctx.beginPath();
@@ -1133,16 +1141,16 @@
     }
     ctx.stroke();
     ctx.restore();
-    rimEdge(ctx, bodyPath, '#e6f8ff', 0.65, s * 0.06, s * 0.03, s * 0.04);
+    rimEdge(ctx, bodyPath, '#e6f8ff', 0.45, s * 0.045, s * 0.02, s * 0.035);
     // 脊背上一道发光的霜线，一团光顺着它往尾巴流
-    rune(ctx, pts.slice(0, 11).map((p, i) => side(i, 0.3)), '#bff4ff', Math.max(0.8, s * 0.03), 0.45);
+    rune(ctx, pts.slice(0, 11).map((p, i) => side(i, 0.3)), '#7fd8ff', Math.max(0.8, s * 0.03), 0.5);
     const fk = ((t * 0.8 + sd * 0.1) % 1) * (N - 1);
     const fi = Math.floor(fk);
     const fa = side(fi, 0.3);
     const fb = side(fi + 1, 0.3);
     glow(ctx, fa[0] + (fb[0] - fa[0]) * (fk - fi), fa[1] + (fb[1] - fa[1]) * (fk - fi), s * 0.2, '#dffaff', 0.7);
     // 近侧的翅膀
-    dragonWing(ctx, -s * 0.15, pts[3][1] - s * 0.1, s * 1.15, -0.05 + flap * 0.4, 0.7 + flap * 0.3, '#bfefff', 0.95);
+    dragonWing(ctx, -s * 0.15, pts[3][1] - s * 0.1, s * 1.15, -0.05 + flap * 0.4, 0.7 + flap * 0.3, '#bfefff', 0.95, true);
     // 头：长吻、下颌线、眉骨、两只往后掠的冰晶角、腮边的小冰刺
     const hy = pts[0][1];
     crystal(ctx, -s * 0.6, hy - s * 0.17, s * 0.07, s * 0.28, 1.05, '#8fc8ee');
@@ -1170,7 +1178,7 @@
     ctx.ellipse(-s * 0.9, hy + s * 0.1, s * 0.28, s * 0.05, -0.12, 0, TAU);
     ctx.fill();
     ctx.restore();
-    rimEdge(ctx, headPath, '#e6f8ff', 0.7, s * 0.05, s * 0.03, s * 0.04);
+    rimEdge(ctx, headPath, '#e6f8ff', 0.7, s * 0.05, 0, s * 0.045);
     ctx.strokeStyle = 'rgba(20,40,80,0.55)';
     ctx.lineWidth = Math.max(0.6, s * 0.02);
     ctx.beginPath();
@@ -1208,8 +1216,8 @@
       glow(ctx, -s * (1.25 + k * (o.attack ? 0.6 : 0.25)), hy + Math.sin(k * 6 + i) * s * 0.05, s * (0.06 + k * 0.16), '#dff8ff', (1 - k) * (o.attack ? 0.6 : 0.35));
     }
     // 尾巴后面飘散的冰尘
-    for (let i = 0; i < 3; i++) {
-      const k = (t * 1.2 + i / 3 + sd * 0.07) % 1;
+    for (let i = 0; i < 2; i++) {
+      const k = (t * 1.2 + i / 2 + sd * 0.07) % 1;
       dot(ctx, tip[0] + k * s * 0.6, tip[1] + Math.sin(k * 5 + i * 2) * s * 0.12, s * 0.04, '#dff8ff', (1 - k) * 0.7);
     }
   };
@@ -1323,7 +1331,16 @@
     veins(ctx, s * 0.05, -s * 1.25, s * 0.3, -0.6, 2, '#9fe3ff', ca * 0.8, 31, s * 0.03);
     veins(ctx, -s * 0.05, -s * 1.15, s * 0.28, 2.6, 2, '#9fe3ff', ca * 0.7, 32, s * 0.03);
     glow(ctx, 0, -s * 1.2, s * (0.45 + beat * 0.12 + charge * 0.2), '#9fe3ff', ca, true);
-    crystal(ctx, 0, -s * 1.08, s * 0.16, s * 0.26, 0, '#bff0ff');
+    // 一颗心形的冰晶：跳的时候鼓一下，右上一点高光
+    const hh = s * 0.15 * (1 + beat * 0.15);
+    const hy = -s * 1.2;
+    ctx.fillStyle = radial(ctx, 0, hy, hh * 0.1, hh * 1.3, [[0, '#ffffff'], [0.4, '#a8ecff'], [1, '#2f78c0']], hh * 0.35, hy - hh * 0.35);
+    ctx.beginPath();
+    ctx.moveTo(0, hy + hh * 0.9);
+    ctx.bezierCurveTo(-hh * 1.35, hy + hh * 0.05, -hh * 0.75, hy - hh * 0.95, 0, hy - hh * 0.35);
+    ctx.bezierCurveTo(hh * 0.75, hy - hh * 0.95, hh * 1.35, hy + hh * 0.05, 0, hy + hh * 0.9);
+    ctx.fill();
+    dot(ctx, hh * 0.45, hy - hh * 0.35, hh * 0.14, '#ffffff', 0.9);
     // 肩上的冰晶
     glow(ctx, s * 0.5, -s * 1.95, s * 0.4, '#9fe3ff', 0.35);
     crystal(ctx, s * 0.38, -s * 1.86, s * 0.12, s * 0.24, 0.15, '#bfeaff');
@@ -1475,17 +1492,22 @@
     ctx.beginPath();
     ctx.ellipse(-s * 0.02, -s * 2.2, s * 0.2, s * 0.26, 0, 0, TAU);
     ctx.fill();
-    // 眼窝一点阴影（白脸上的发光眼也看得清），淡淡的嘴
+    // 眼窝一点阴影（白脸上的发光眼也看得清），淡淡的腮红和微笑
     ctx.fillStyle = 'rgba(40,64,120,0.4)';
     ctx.beginPath();
     ctx.ellipse(-s * 0.07, -s * 2.22, s * 0.13, s * 0.045, -0.05, 0, TAU);
     ctx.fill();
     eyes(ctx, -s * 0.07, -s * 2.22, s * 0.13, s * 0.04, '#5ad0ff', -0.05);
-    ctx.strokeStyle = 'rgba(90,110,170,0.6)';
-    ctx.lineWidth = s * 0.015;
+    ctx.fillStyle = 'rgba(200,170,230,0.35)';
     ctx.beginPath();
-    ctx.moveTo(-s * 0.14, -s * 2.07);
-    ctx.lineTo(-s * 0.06, -s * 2.07);
+    ctx.ellipse(-s * 0.15, -s * 2.12, s * 0.04, s * 0.025, 0, 0, TAU);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(90,110,170,0.7)';
+    ctx.lineWidth = s * 0.016;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(-s * 0.145, -s * 2.08);
+    ctx.quadraticCurveTo(-s * 0.1, -s * 2.05, -s * 0.055, -s * 2.08);
     ctx.stroke();
     // 长发往后飘：深色的底层 + 浅色的发丝 + 发梢的光点
     const hw = Math.sin(t * 2.5 + sd) * s * 0.08;

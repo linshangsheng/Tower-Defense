@@ -47,8 +47,8 @@
     }
   }
 
-  // 小卷卷（羊毛卷、云卷）：一个个半圈的小弧，a0 是弧的起始角
-  function curls(ctx, x, y, rx, ry, n, color, a, seed, rr, w, a0) {
+  // 小卷卷（羊毛卷、云卷）：一段段小弧，a0 是弧的起始角、span 是弧长（角度）；skip = [x, y, rx, ry] 时这块椭圆里不画（留出脸）
+  function curls(ctx, x, y, rx, ry, n, color, a, seed, rr, w, a0, span, skip) {
     const r = seeded(seed);
     ctx.save();
     ctx.strokeStyle = rgba(color, a);
@@ -62,8 +62,9 @@
       const py = y + Math.sin(q) * ry * d;
       const k = rr * (0.6 + r() * 0.8);
       const b = a0 + (r() - 0.5) * 0.6;
+      if (skip && ((px - skip[0]) / skip[2]) ** 2 + ((py - skip[1]) / skip[3]) ** 2 < 1) continue;
       ctx.moveTo(px + Math.cos(b) * k, py + Math.sin(b) * k);
-      ctx.arc(px, py, k, b, b + Math.PI * 0.95);
+      ctx.arc(px, py, k, b, b + span);
     }
     ctx.stroke();
     ctx.restore();
@@ -140,13 +141,13 @@
         ctx.arc(x, y, r * 1.13, 0, TAU);
       }
       ctx.fill();
-      cloudMass(ctx, P, '#ffffff', '#e6eaf8', '#9aa2cc', '#6a70a8', 0.55, '#ffffff', 0.55);
-      // 羊毛卷：同一批小卷，下半圈暗、上半圈亮
+      cloudMass(ctx, P, '#ffffff', '#eef1fc', '#aab2da', '#6a70a8', 0.45, '#ffffff', 0.55);
+      // 羊毛卷：亮的小弧在卷顶，暗的小弧在卷底，两批错开，不连成一个个圈
       ctx.save();
       puffPath(ctx, P);
       ctx.clip();
-      curls(ctx, s * 0.08 * k, by - s * 0.32, s * 0.78 * k, s * 0.42, 24, '#6a70a8', 0.4, 3, s * 0.075 * k, s * 0.035, 0.1 * Math.PI);
-      curls(ctx, s * 0.08 * k, by - s * 0.32, s * 0.78 * k, s * 0.42, 24, '#ffffff', 0.8, 3, s * 0.075 * k, s * 0.028, 1.1 * Math.PI);
+      curls(ctx, s * 0.08 * k, by - s * 0.28, s * 0.78 * k, s * 0.42, 18, '#6a70a8', 0.3, 4, s * 0.07 * k, s * 0.03, 0.2 * Math.PI, 0.6 * Math.PI);
+      curls(ctx, s * 0.08 * k, by - s * 0.32, s * 0.78 * k, s * 0.42, 24, '#ffffff', 0.85, 3, s * 0.075 * k, s * 0.03, 1.1 * Math.PI, 0.8 * Math.PI);
       ctx.restore();
       sparkles(ctx, s * 0.1, by - s * 0.45, s * 0.95 * k, s * 0.45, 3, t, '#ffffff', 11, 1.1);
     } else {
@@ -158,9 +159,9 @@
       ctx.save();
       bp();
       ctx.clip();
-      ctx.fillStyle = linear(ctx, 0, by - s * 0.3, 0, by + s * 0.3, [[0, 'rgba(255,240,248,0.4)'], [0.45, 'rgba(255,240,248,0)'], [0.7, 'rgba(90,30,70,0)'], [1, 'rgba(90,30,70,0.4)']]);
+      ctx.fillStyle = linear(ctx, q.L * 0.3, by - s * 0.3, -q.L * 0.2, by + s * 0.3, [[0, 'rgba(255,236,246,0.55)'], [0.45, 'rgba(255,236,246,0)'], [0.75, 'rgba(110,40,80,0)'], [1, 'rgba(110,40,80,0.25)']]);
       ctx.fillRect(-q.L, by - s * 0.3, q.L * 2, s * 0.6);
-      strokes(ctx, s * 0.05, by - s * 0.06, q.L * 0.5, s * 0.2, 30, '#fff4fa', 0.5, 5, -2.0, s * 0.07);
+      strokes(ctx, s * 0.05, by - s * 0.08, q.L * 0.5, s * 0.18, 20, '#ffe4f2', 0.4, 5, -2.0, s * 0.06);
       ctx.restore();
       rimEdge(ctx, bp, '#fff0f8', 0.6, s * 0.07, s * 0.05, s * 0.05);
       // 跑得飞快：身后几道粉白的风线
@@ -557,21 +558,21 @@
       ctx.ellipse(-s * 0.45, -s * 0.15, s * 0.2, s * 0.17, 0, 0, TAU);
     };
     body();
-    ctx.fillStyle = radial(ctx, s * 0.05, -s * 0.2, s * 0.02, s * 0.75, [[0, light(BC, 0.45)], [0.45, BC], [1, deep(BC, 0.6)]]);
+    ctx.fillStyle = radial(ctx, s * 0.12, -s * 0.18, s * 0.02, s * 0.62, [[0, light(BC, 0.35)], [0.3, BC], [0.75, deep(BC, 0.3)], [1, deep(BC, 0.6)]]);
     ctx.fill();
     ctx.save();
     body();
     ctx.clip();
-    // 浅色的胸脯
-    ctx.fillStyle = radial(ctx, -s * 0.32, s * 0.1, 0, s * 0.4, [[0, 'rgba(235,248,255,0.75)'], [1, 'rgba(235,248,255,0)']]);
+    // 浅色的胸脯（只在下巴到胸前一小块）
+    ctx.fillStyle = radial(ctx, -s * 0.38, s * 0.04, 0, s * 0.26, [[0, 'rgba(225,244,255,0.6)'], [1, 'rgba(225,244,255,0)']]);
     ctx.fillRect(-s * 0.8, -s * 0.4, s * 1.4, s * 0.7);
-    // 羽毛笔触：顺着身体往后
-    strokes(ctx, s * 0.05, -s * 0.08, s * 0.4, s * 0.14, 22, '#e8f6ff', 0.5, 7, 0.15, s * 0.11);
-    strokes(ctx, 0, s * 0.08, s * 0.38, s * 0.1, 14, '#12305a', 0.4, 9, 0.2, s * 0.09);
+    // 羽毛笔触：顺着身体往后，背上亮、肚子下暗
+    strokes(ctx, s * 0.08, -s * 0.1, s * 0.36, s * 0.1, 14, '#e0f2ff', 0.35, 7, 0.15, s * 0.1);
+    strokes(ctx, s * 0.05, s * 0.1, s * 0.32, s * 0.08, 8, '#12305a', 0.3, 9, 0.2, s * 0.09);
     // 彩虹光泽：一道慢慢滑过的彩色反光
     const sh = Math.sin(t * 1.5 + sd) * s * 0.3;
     ctx.globalCompositeOperation = 'lighter';
-    ctx.fillStyle = linear(ctx, -s * 0.45 + sh, -s * 0.3, s * 0.3 + sh, s * 0.15, [[0, 'rgba(255,120,120,0)'], [0.2, 'rgba(255,150,90,0.2)'], [0.4, 'rgba(255,230,110,0.2)'], [0.6, 'rgba(120,230,140,0.18)'], [0.8, 'rgba(160,130,255,0.2)'], [1, 'rgba(180,120,255,0)']]);
+    ctx.fillStyle = linear(ctx, -s * 0.45 + sh, -s * 0.3, s * 0.3 + sh, s * 0.15, [[0, 'rgba(255,120,120,0)'], [0.2, 'rgba(255,150,90,0.14)'], [0.4, 'rgba(255,230,110,0.14)'], [0.6, 'rgba(120,230,140,0.12)'], [0.8, 'rgba(160,130,255,0.14)'], [1, 'rgba(180,120,255,0)']]);
     ctx.fillRect(-s, -s * 0.5, s * 2, s);
     ctx.restore();
     rimEdge(ctx, body, '#ffffff', 0.6, s * 0.06, s * 0.035, s * 0.035);
@@ -585,7 +586,7 @@
     ctx.fill();
     eyes(ctx, -s * 0.5, -s * 0.18, 0.01, s * 0.05, '#ffffff', 0);
     // 近侧的翅膀
-    featherWing(ctx, s * 0.05, -s * 0.15, s * 0.9, 0.6 + flap * 0.5, '#bfe8ff', 0.95);
+    featherWing(ctx, s * 0.05, -s * 0.15, s * 0.9, 0.6 + flap * 0.5, '#a8dcff', 0.9);
     // 治疗的光点
     const hx = -s * 0.2 + Math.sin(t * 2) * s * 0.3;
     const ha = 0.6 + Math.sin(t * 4) * 0.3;
@@ -766,21 +767,19 @@
     ctx.save();
     bk();
     ctx.clip();
-    const hiW = new Path2D();
-    const loW = new Path2D();
-    for (let row = 0; row < 5; row++) {
-      const y = -s * 0.19 + row * s * 0.07;
-      for (let x = -s * 0.36 + (row % 2) * s * 0.05; x < s * 0.38; x += s * 0.1) {
-        hiW.moveTo(x + s * 0.04, y - s * 0.01);
-        hiW.ellipse(x, y - s * 0.01, s * 0.04, s * 0.017, 0, 0, TAU);
-        loW.moveTo(x + s * 0.045, y + s * 0.022);
-        loW.ellipse(x, y + s * 0.022, s * 0.045, s * 0.01, 0, 0, TAU);
+    // 一行行藤条：每根上半亮、下沿一道暗缝
+    for (const [col, oy, rx, ry] of [['rgba(255,225,170,0.35)', -0.01, 0.04, 0.017], ['rgba(40,20,8,0.4)', 0.022, 0.045, 0.01]]) {
+      ctx.fillStyle = col;
+      ctx.beginPath();
+      for (let row = 0; row < 5; row++) {
+        const y = -s * 0.19 + row * s * 0.07 + s * oy;
+        for (let x = -s * 0.36 + (row % 2) * s * 0.05; x < s * 0.38; x += s * 0.1) {
+          ctx.moveTo(x + s * rx, y);
+          ctx.ellipse(x, y, s * rx, s * ry, 0, 0, TAU);
+        }
       }
+      ctx.fill();
     }
-    ctx.fillStyle = 'rgba(255,225,170,0.35)';
-    ctx.fill(hiW);
-    ctx.fillStyle = 'rgba(40,20,8,0.4)';
-    ctx.fill(loW);
     ctx.restore();
     // 上沿的粗藤边
     ctx.fillStyle = linear(ctx, 0, -s * 0.29, 0, -s * 0.21, [[0, '#e8c08a'], [1, '#7a5228']]);
