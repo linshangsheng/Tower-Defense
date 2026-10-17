@@ -249,7 +249,9 @@
     return mods;
   };
   // 装备是否已经上架
-  P.equipAvailable = (save, id) => !D.equipment[id].minLevel || P.highestCleared(save) >= D.equipment[id].minLevel;
+  // 装备随时可买，只看钱（设计书 66.3）；minLevel 只是商店里的“推荐关卡”提示
+  P.equipAvailable = () => true;
+  P.recommended = (save, d) => !!d.minLevel && P.highestCleared(save) < d.minLevel;
 
   P.passiveSet = function (save) {
     const set = {};
@@ -399,8 +401,8 @@
     w.owned = true;
     return true;
   };
-  // 高品质武器要通关到某一关才能买（设计书 63.2）
-  P.weaponUnlocked = (save, id) => !D.weapons[id].minLevel || P.highestCleared(save) >= D.weapons[id].minLevel;
+  // 武器随时可买，只看钱（设计书 66.3）；minLevel 只是商店里的“推荐关卡”提示
+  P.weaponUnlocked = () => true;
   P.weaponUpgradeMult = (id) => D.weaponRarity[D.weapons[id].rarity || 1].upgradeMult;
   P.weaponUpgradeCost = (save, id) => {
     const w = save.weapons[id];

@@ -344,9 +344,15 @@
     window.addEventListener('resize', fit);
 
     // 首次交互时解锁音频
+    // 浏览器只允许在用户操作里进全屏：第一次点击 / 按键就进（设计书 66.2）
+    let triedFull = false;
     const unlock = () => {
       TD.audio.unlock();
       setTimeout(() => TD.music.resume(), 50);
+      if (!triedFull) {
+        triedFull = true;
+        if (game.save.settings.fullscreen !== false) TD.ui.setFullscreen(true);
+      }
     };
     window.addEventListener('pointerdown', unlock);
     window.addEventListener('keydown', unlock);

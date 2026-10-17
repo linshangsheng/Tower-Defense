@@ -129,6 +129,23 @@
     return h('span', { class: 'stars' }, out);
   }
 
+  // 全屏（设计书 66.2）：浏览器要求在用户操作里调用；失败（不支持 / 被拒绝）就算了
+  UI.setFullscreen = function (on) {
+    try {
+      const d = globalThis.document;
+      if (!d || !d.documentElement) return;
+      if (on && !d.fullscreenElement && d.documentElement.requestFullscreen) {
+        const p = d.documentElement.requestFullscreen({ navigationUI: 'hide' });
+        if (p && p.catch) p.catch(() => {});
+      } else if (!on && d.fullscreenElement && d.exitFullscreen) {
+        const p = d.exitFullscreen();
+        if (p && p.catch) p.catch(() => {});
+      }
+    } catch (e) {
+      /* 不支持就保持窗口模式 */
+    }
+  };
+
   // ================= 标题 =================
   UI.showTitle = function () {
     clear();
@@ -243,6 +260,20 @@
           },
         }),
         ' 背景音乐'
+      ),
+      h(
+        'label',
+        { class: 'row' },
+        h('input', {
+          type: 'checkbox',
+          checked: s.fullscreen !== false ? true : null,
+          onchange: (e) => {
+            s.fullscreen = e.target.checked;
+            UI.setFullscreen(s.fullscreen);
+            game.persist();
+          },
+        }),
+        ' 全屏（打开游戏后第一次点击自动进入）'
       ),
       // 音量（设计书 49）
       ...[
@@ -698,7 +729,7 @@
   ];
 
   // 商店页签随进度解锁（设计书 6.5）：通关第 N 关后出现
-  const TAB_UNLOCK = { loadout: 0, attrs: 0, wall: 1, items: 2, skills: 2, equip: 3, weapons: 4, exchange: 5 };
+  const TAB_UNLOCK = { loadout: 0, attrs: 0, wall: 1, items: 2, skills: 2, equip: 0, weapons: 0, exchange: 5 };
   UI.tabUnlocked = (save, id) => P.highestCleared(save) >= (TAB_UNLOCK[id] || 0);
 
   UI.showShop = function (levelNo, tab) {
@@ -852,7 +883,7 @@
       }
       let right;
       if (!ws.owned) {
-        right = P.weaponUnlocked(s, id) ? buyBtn(w.cost, () => P.buyWeapon(s, id), '解锁') : h('span', { class: 'equipped dim' }, `通关第 ${w.minLevel} 关后可解锁（${P.costText(w.cost)}）`);
+        right = buyBtn(w.cost, () => P.buyWeapon(s, id), '购买');
       } else
         right = h(
           'div',
@@ -883,8 +914,8 @@
       // 满级专精（设计书 53）
       const mastered = P.hasMastery(s, id);
       const masteryLine = w.mastery ? h('div', { class: 'asc mastery' + (mastered ? ' on' : '') }, `${mastered ? '★ 专精' : `Lv${D.weaponUpgrade.max} 解锁专精`}「${w.mastery.name}」：${w.mastery.desc}`) : null;
-      const locked = !ws.owned && !P.weaponUnlocked(s, id);
-      el.append(card(h('span', { class: 'with-icon rar-name', style: { color: R.color } }, TD.sprites.iconCanvas(id, 30), ws.asc ? w.ascend.name : w.name, h('span', { class: 'rar-tag', style: { background: R.color } }, R.name)), ws.owned ? `Lv.${ws.lv}/${D.weaponUpgrade.max}` : locked ? '未解锁' : '可购买', h('span', null, w.desc, h('span', { class: 'good' }, ' 擅长：' + w.good), ascLine, masteryLine), right, { cls: 'wr-' + (w.rarity || 1) + (locked ? ' unavailable' : '') }));
+      const recTip = !ws.owned && P.recommended(s, w) ? h('div', { class: 'rec-tip' }, `推荐通关第 ${w.minLevel} 关后购买`) : null;
+      el.append(card(h('span', { class: 'with-icon rar-name', style: { color: R.color } }, TD.sprites.iconCanvas(id, 30), ws.asc ? w.ascend.name : w.name, h('span', { class: 'rar-tag', style: { background: R.color } }, R.name)), ws.owned ? `Lv.${ws.lv}/${D.weaponUpgrade.max}` : '可购买', h('span', null, w.desc, h('span', { class: 'good' }, ' 擅长：' + w.good), ascLine, masteryLine, recTip), right, { cls: 'wr-' + (w.rarity || 1) }));
     }
   }
 
@@ -928,13 +959,12 @@
     for (const slot of Object.keys(D.equipSlots)) {
       const quiverLocked = slot === 'quiver' && P.slotCount(s, 'quiver') < 1;
       el.append(h('div', { class: 'section-title' }, D.equipSlots[slot] + (slot === 'trinket' ? '（可戴 3 件）' : '') + (quiverLocked ? `（通关第 ${D.slotUnlocks.quiver[0]} 关开放栏位，可以先买）` : '')));
-      // 已上架的在前，没上架的按上架关卡排在后面
+      // 按价格从低到高排（买得起就能买）
       const ids = Object.keys(D.equipment)
         .filter((id) => D.equipment[id].slot === slot)
-        .sort((a, b) => (P.equipAvailable(s, a) ? 0 : D.equipment[a].minLevel) - (P.equipAvailable(s, b) ? 0 : D.equipment[b].minLevel));
+        .sort((a, b) => P.costValue(D.equipment[a].cost) - P.costValue(D.equipment[b].cost));
       for (const id of ids) {
         const e = D.equipment[id];
-        const avail = P.equipAvailable(s, id);
         const sellBtn = () =>
           h(
             'button',
@@ -954,10 +984,9 @@
           );
         const right = s.equipOwned[id]
           ? h('span', { class: 'equip-right' }, h('span', { class: 'equipped' }, worn.includes(id) ? '穿戴中' : '已拥有'), sellBtn())
-          : avail
-            ? buyBtn(e.cost, () => P.buyEquip(s, id))
-            : h('span', { class: 'equipped dim' }, `通关第 ${e.minLevel} 关后上架`);
-        el.append(card(e.name, D.rarityNames[e.rarity], h('span', null, e.desc, e.set ? setLine(s, e.set) : null), right, { cls: 'rarity-' + e.rarity + (avail || s.equipOwned[id] ? '' : ' unavailable') }));
+          : buyBtn(e.cost, () => P.buyEquip(s, id));
+        const recTip = !s.equipOwned[id] && P.recommended(s, e) ? h('div', { class: 'rec-tip' }, `推荐通关第 ${e.minLevel} 关后购买`) : null;
+        el.append(card(e.name, D.rarityNames[e.rarity], h('span', null, e.desc, e.set ? setLine(s, e.set) : null, recTip), right, { cls: 'rarity-' + e.rarity }));
       }
     }
   }

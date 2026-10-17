@@ -1582,16 +1582,20 @@ test('装备扩充：24 件装备，每件栏位合法；套装部件存在且�
   for (const k of Object.keys(D.gearSets)) for (const id of D.gearSets[k].parts) assert.strictEqual(D.equipment[id].set, k, id);
 });
 
-test('装备上架：没到关卡买不了；箭袋栏位通关第 15 关才生效', () => {
+test('装备随时可买（只看钱）；箭袋栏位一开始就有；minLevel 只是推荐关卡', () => {
   const s = P.newSave();
   s.copper = 10000;
-  clearUpTo(s, 14);
-  assert.ok(!P.buyEquip(s, 'leatherQuiver'), '第 15 关前没上架');
-  clearUpTo(s, 15);
-  assert.ok(P.buyEquip(s, 'leatherQuiver'));
+  assert.strictEqual(P.slotCount(s, 'quiver'), 1);
+  assert.ok(P.recommended(s, D.equipment.leatherQuiver), '第 15 关前商店里提示推荐关卡');
+  assert.ok(P.buyEquip(s, 'leatherQuiver'), '没通关也能买');
   assert.strictEqual(s.loadout.equip.quiver, 'leatherQuiver', '自动穿上');
   const base = P.heroStats(P.newSave()).critDmg;
   assert.ok(Math.abs(P.heroStats(s).critDmg - base - 0.15) < 1e-9);
+  const poor = P.newSave();
+  poor.copper = 10;
+  assert.ok(!P.buyEquip(poor, 'windCape'), '钱不够照样买不起');
+  clearUpTo(s, 15);
+  assert.ok(!P.recommended(s, D.equipment.leatherQuiver), '到了推荐关卡后提示消失');
   // 老存档迁移后有箭袋栏位
   const old = P.newSave();
   delete old.loadout.equip.quiver;
@@ -2006,22 +2010,19 @@ test('武器：15 把，每个品质 3 把，价格逐档上涨，升级费用�
   for (const id of ids) if (D.weapons[id].look) assert.ok(['bow', 'crossbow', 'staff', 'orb', 'cannon', 'boomerang'].includes(D.weapons[id].look.base), id);
 });
 
-test('武器解锁关卡：没通关到不能买；老存档自动补上新武器', () => {
+test('武器随时可买（只看钱）；老存档自动补上新武器', () => {
   const s = P.newSave();
   s.silver = 100;
   s.gold = 100;
-  clearUpTo(s, 9);
-  assert.ok(!P.buyWeapon(s, 'frostBow'), '第 10 关前不能买蓝色');
-  clearUpTo(s, 10);
-  assert.ok(P.buyWeapon(s, 'frostBow'));
-  clearUpTo(s, 39);
-  assert.ok(!P.buyWeapon(s, 'meteorCannon'));
-  clearUpTo(s, 40);
+  assert.ok(P.buyWeapon(s, 'frostBow'), '没通关也能买蓝色');
   assert.ok(P.buyWeapon(s, 'meteorCannon'));
-  assert.ok(!P.buyWeapon(s, 'genesisBow'));
-  clearUpTo(s, 60);
   assert.ok(P.buyWeapon(s, 'genesisBow'));
   assert.strictEqual(s.gold, 100 - 8 - 20);
+  const poor = P.newSave();
+  poor.silver = 3;
+  assert.ok(!P.buyWeapon(poor, 'frostBow'), '钱不够照样买不起');
+  assert.ok(P.recommended(P.newSave(), D.weapons.genesisBow));
+  assert.ok(!P.recommended(Object.assign(P.newSave(), { levels: Object.fromEntries(Array.from({ length: 60 }, (_, i) => [i + 1, { stars: 1, clears: 1 }])) }), D.weapons.genesisBow));
   const old = P.newSave();
   delete old.weapons.genesisBow;
   assert.deepStrictEqual(P.migrate(old).weapons.genesisBow, { owned: false, lv: 0 });

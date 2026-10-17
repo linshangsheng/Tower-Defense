@@ -12,7 +12,7 @@ browsers = Array( _
   sh.ExpandEnvironmentStrings("%LocalAppData%") & "\Google\Chrome\Application\chrome.exe")
 For Each b In browsers
   If fso.FileExists(b) Then
-    sh.Run """" & b & """ --app=""" & game & """ --window-size=1280,760", 1, False
+    sh.Run """" & b & """ --app=""" & game & """ --start-fullscreen", 1, False
     WScript.Quit
   End If
 Next

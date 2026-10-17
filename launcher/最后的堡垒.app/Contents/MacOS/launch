@@ -4,7 +4,7 @@ DIR="$(cd "$(dirname "$0")/../../../.." && pwd)"
 URL="file://$DIR/index.html"
 for APP in "Google Chrome" "Microsoft Edge" "Brave Browser" "Chromium"; do
   if [ -d "/Applications/$APP.app" ]; then
-    exec open -na "$APP" --args --app="$URL" --window-size=1280,760
+    exec open -na "$APP" --args --app="$URL" --start-fullscreen
   fi
 done
 exec open "$URL"

@@ -26,7 +26,7 @@ browsers = Array( _
   sh.ExpandEnvironmentStrings("%LocalAppData%") & "\Google\Chrome\Application\chrome.exe")
 For Each b In browsers
   If fso.FileExists(b) Then
-    sh.Run """" & b & """ --app=""" & game & """ --window-size=1280,760", 1, False
+    sh.Run """" & b & """ --app=""" & game & """ --start-fullscreen", 1, False
     WScript.Quit
   End If
 Next
@@ -76,7 +76,7 @@ DIR="$(cd "$(dirname "$0")/../../../.." && pwd)"
 URL="file://$DIR/index.html"
 for APP in "Google Chrome" "Microsoft Edge" "Brave Browser" "Chromium"; do
   if [ -d "/Applications/$APP.app" ]; then
-    exec open -na "$APP" --args --app="$URL" --window-size=1280,760
+    exec open -na "$APP" --args --app="$URL" --start-fullscreen
   fi
 done
 exec open "$URL"

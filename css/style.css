@@ -2589,3 +2589,12 @@ select option {
   font-weight: 800;
   vertical-align: 2px;
 }
+
+/* ---------- 推荐关卡提示（设计书 66.3） ---------- */
+.rec-tip {
+  display: block;
+  margin-top: 3px;
+  font-size: 12px;
+  color: #e9b85a;
+  opacity: 0.85;
+}

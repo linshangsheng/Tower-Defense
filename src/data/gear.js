@@ -320,7 +320,7 @@
     fang: { name: '狼牙项链', slot: 'trinket', rarity: 'common', cost: { copper: 140 }, stats: { critDmg: 0.25 }, desc: '暴击伤害 +25%' },
     eagleEye: { name: '鹰眼坠', slot: 'trinket', rarity: 'rare', cost: { silver: 6 }, stats: { rangePct: 0.1 }, desc: '射程 +10%' },
 
-    // ---- v0.50 装备扩充（设计书 58）：minLevel = 通关第几关后上架；mods 进入战斗时并入战场修正 ----
+    // ---- v0.50 装备扩充（设计书 58）：minLevel = 推荐关卡（只是提示，买得起就能买，设计书 66）；mods 进入战斗时并入战场修正 ----
     dragonHelm: { name: '屠龙盔', slot: 'helm', rarity: 'rare', cost: { silver: 7 }, minLevel: 10, stats: { atkFlat: 3 }, mods: { bossDmg: 0.2 }, desc: '攻击力 +3；对 Boss（含触手）伤害 +20%' },
     owlHelm: { name: '夜枭盔', slot: 'helm', rarity: 'rare', cost: { silver: 6 }, minLevel: 20, stats: { crit: 0.04 }, mods: { darkSight: 0.5 }, desc: '暴击率 +4%；暗夜关的射程惩罚减半' },
     frostHelm: { name: '寒铁盔', slot: 'helm', rarity: 'rare', cost: { silver: 7 }, minLevel: 30, stats: { atkFlat: 3 }, mods: { frostExt: 0.3 }, set: 'frost', desc: '攻击力 +3；冰冻领域、冰冻瓶持续时间 +30%' },
@@ -351,7 +351,7 @@
 
   // 配装栏位解锁：通关某关后解锁（0 表示初始）
   TD.data.slotUnlocks = {
-    quiver: [15],
+    quiver: [0],
     active: [0, 5, 20],
     passive: [3, 10, 30],
     item: [2, 6, 8],
