@@ -1,0 +1,10 @@
+#!/bin/bash
+# 最后的堡垒 - macOS 启动器：用 Chrome / Edge 的应用窗口模式打开，找不到就用默认浏览器
+DIR="$(cd "$(dirname "$0")/../../../.." && pwd)"
+URL="file://$DIR/index.html"
+for APP in "Google Chrome" "Microsoft Edge" "Brave Browser" "Chromium"; do
+  if [ -d "/Applications/$APP.app" ]; then
+    exec open -na "$APP" --args --app="$URL" --window-size=1280,760
+  fi
+done
+exec open "$URL"
