@@ -745,6 +745,10 @@
   function renderShop() {
     const st = UI.shopState;
     const s = game.save;
+    // 同一个页签里买东西 / 升级后重画：保持滚动位置；换页签才回到顶部
+    const prevContent = screenEl.querySelector('.shop-content');
+    const keepScroll = prevContent && st.drawnTab === st.tab ? prevContent.scrollTop : 0;
+    st.drawnTab = st.tab;
     screenEl.innerHTML = '';
     s.seenTabs = s.seenTabs || {};
     s.seenTabs[st.tab] = true;
@@ -788,6 +792,7 @@
       ),
       h('div', { class: 'shop-body' }, h('div', { class: 'tabs' }, tabs), content, statPanel(stats))
     );
+    if (keepScroll) content.scrollTop = keepScroll;
   }
   UI.refreshShop = () => UI.shopState && screenEl && screenEl.classList.contains('shop-screen') && renderShop();
 
