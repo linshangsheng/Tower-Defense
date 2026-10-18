@@ -480,9 +480,8 @@ test('联合关：所有车道同时出怪', () => {
   const spawned = [];
   b.on('spawn', (m) => spawned.push(m));
   while (!spawned.length) b.step(1 / 60);
-  const own = spawned.filter((m) => !m.swarm); // 多出来的小怪另走一条队列（设计书 84），不算在联合出怪里
-  assert.strictEqual(own.length, 5);
-  assert.deepStrictEqual(own.map((m) => m.lane).sort(), [0, 1, 2, 3, 4]);
+  assert.strictEqual(spawned.length, 5);
+  assert.deepStrictEqual(spawned.map((m) => m.lane).sort(), [0, 1, 2, 3, 4]);
 });
 
 test('暗夜关射程降低 30%', () => {
@@ -3088,8 +3087,9 @@ test('多出的小怪和原有的同类怪完全一样：血量、伤害、铜�
   const b = new TD.Battle({ level: 3, stats: P.heroStats(s), seed: 9, loadout: { active: [], items: [] } });
   const m = b.spawnMonster('bunny', 1, TD.config.wallX + 5);
   assert.strictEqual(m.maxHp, Math.round(D.monsters.bunny.hp * b.D), '血量和原有的一样');
+  b.heroStunUntil = 1e9; // 英雄不出手，只看怪自己的行为
   const hp0 = b.wall.hp;
   for (let i = 0; i < 60 * 3; i++) b.step(1 / 60);
   assert.ok(!m.dead && b.wall.hp < hp0, '停在城墙前继续啃，不会消失');
-  assert.ok(!('swarm' in m), '没有特殊身份');
+  assert.ok(Math.abs(m.dps - D.monsters.bunny.dps * b.D) < 1e-9, '伤害和原有的一样');
 });

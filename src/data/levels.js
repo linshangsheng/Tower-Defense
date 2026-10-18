@@ -80,6 +80,7 @@
     1: {
       name: '草原初战',
       type: 'tutorial',
+      countMult: 1,
       lanes: 1,
       waves: [W(2.4, ['slime', 5]), W(2.0, ['slime', 7]), W(1.6, ['slime', 10])],
       tip: 'Kael会自动攻击。绿团团走到城墙前就会开始啃城墙！',
@@ -87,6 +88,7 @@
     2: {
       name: '兔子来了',
       type: 'tutorial',
+      countMult: 1,
       lanes: 2,
       waves: [
         W(2.0, ['slime', 6]),
@@ -99,6 +101,7 @@
     3: {
       name: '三条小路',
       type: 'normal',
+      countMult: 1,
       lanes: 3,
       waves: [
         W(1.6, ['slime', 8]),
@@ -112,6 +115,7 @@
     4: {
       name: '蘑菇林',
       type: 'normal',
+      countMult: 1,
       lanes: 3,
       waves: [
         W(1.6, ['slime', 6], ['mushroom', 3]),
@@ -125,6 +129,7 @@
     5: {
       name: '果冻王子',
       type: 'miniboss',
+      countMult: 0.81,
       lanes: 3,
       waves: [
         W(1.5, ['slime', 10]),
@@ -139,6 +144,7 @@
     6: {
       name: '嗡嗡嗡',
       type: 'normal',
+      countMult: 1,
       lanes: 3,
       waves: [
         W(1.12, ['slime', 11], ['bee', 5]),
@@ -153,6 +159,7 @@
     7: {
       name: '蜂群空袭',
       type: 'raid',
+      countMult: 1,
       lanes: 3,
       waves: [
         W(0.72, ['bee', 16]),
@@ -167,6 +174,7 @@
     8: {
       name: '哥布林前哨',
       type: 'normal',
+      countMult: 1,
       lanes: 3,
       waves: [
         W(1.28, ['slime', 11], ['goblin', 2]),
@@ -182,6 +190,7 @@
     9: {
       name: '兔子大迁徙',
       type: 'rush',
+      countMult: 0.97,
       lanes: 3,
       rushInterval: 14,
       waves: [
@@ -197,6 +206,8 @@
     10: {
       name: '咕噜大王',
       type: 'boss',
+      countMult: 0.3,
+      extraMult: 0.5,
       lanes: 3,
       waves: [
         W(1.3, ['gobling', 8], ['goblin', 3]),
@@ -486,7 +497,7 @@
     28: {
       name: '南瓜田',
       type: 'normal',
-      countMult: 1.01,
+      countMult: 0.87,
       lanes: 5,
       waves: [
         W(0.77, ['pumpkin', 6], ['slime', 12]),
@@ -863,7 +874,7 @@
     51: {
       name: '彩虹桥',
       type: 'normal',
-      countMult: 2.27,
+      countMult: 2.17,
       lanes: 5,
       waves: [
         W(0.8, ['cloudSheep', 8], ['slime', 8]),
@@ -911,7 +922,7 @@
     54: {
       name: '空中马戏团',
       type: 'normal',
-      countMult: 1.94,
+      countMult: 1.86,
       lanes: 5,
       waves: [
         W(0.8, ['balloon', 4], ['cloudSheep', 8]),
@@ -995,7 +1006,7 @@
     59: {
       name: '天空大合唱',
       type: 'union',
-      countMult: 1.68,
+      countMult: 1.57,
       lanes: 5,
       waves: [
         B(2.0, ['cloudSheep', 10], ['kite', 5]),
@@ -1012,7 +1023,7 @@
     60: {
       name: '雷雷',
       type: 'boss',
-      countMult: 1,
+      countMult: 0.95,
       lanes: 5,
       waves: [
         W(0.7, ['cloudSheep', 12], ['kite', 8], ['thunderBall', 4]),
@@ -1106,7 +1117,7 @@
     66: {
       name: '礁石堡垒',
       type: 'armored',
-      countMult: 0.64,
+      countMult: 0.62,
       lanes: 5,
       waves: [
         W(0.85, ['turtle', 3], ['yeti', 2], ['hermitCrab', 6]),
@@ -1202,7 +1213,7 @@
     72: {
       name: '骨盾卫兵',
       type: 'normal',
-      countMult: 0.72,
+      countMult: 0.7,
       lanes: 5,
       waves: [
         W(0.90, ['skelGuard', 3], ['moonSlime', 5], ['digger', 4], ['mushroom', 2]),
@@ -1218,7 +1229,7 @@
     73: {
       name: '月夜疾风',
       type: 'rush',
-      countMult: 1,
+      countMult: 0.91,
       lanes: 5,
       rushInterval: 12,
       waves: [
@@ -1252,7 +1263,7 @@
     75: {
       name: '骨头先生的回声',
       type: 'miniboss',
-      countMult: 1.37,
+      countMult: 1.25,
       lanes: 5,
       waves: [
         W(0.85, ['moonSlime', 7], ['skelGuard', 2], ['wraith', 5]),
@@ -1267,7 +1278,7 @@
     76: {
       name: '石像鬼巢穴',
       type: 'armored',
-      countMult: 0.64,
+      countMult: 0.58,
       lanes: 5,
       waves: [
         W(0.90, ['skelGuard', 1], ['gargoyle', 3], ['digger', 3], ['wraith', 3]),
@@ -1283,7 +1294,7 @@
     77: {
       name: '蝙蝠群袭',
       type: 'raid',
-      countMult: 0.51,
+      countMult: 0.37,
       lanes: 5,
       waves: [
         W(0.60, ['bloodBat', 8], ['gargoyle', 6], ['lanternGhost', 2]),
@@ -1299,7 +1310,7 @@
     78: {
       name: '无灯长廊',
       type: 'dark',
-      countMult: 0.95,
+      countMult: 0.93,
       lanes: 5,
       dark: true,
       waves: [
@@ -1333,7 +1344,8 @@
     80: {
       name: '胖法老的回声',
       type: 'boss',
-      countMult: 1,
+      countMult: 0.3,
+      extraMult: 0,
       lanes: 5,
       waves: [
         W(0.80, ['skelGuard', 4], ['wraith', 4], ['moonSlime', 6]),
@@ -1345,7 +1357,7 @@
     81: {
       name: '熔炉入口',
       type: 'normal',
-      countMult: 0.85,
+      countMult: 0.77,
       lanes: 5,
       waves: [
         W(0.85, ['ironSnowman', 7], ['forgeImp', 5], ['ironWolf', 2]),
@@ -1377,7 +1389,8 @@
     83: {
       name: '战车洪流',
       type: 'rush',
-      countMult: 0.33,
+      countMult: 0.3,
+      extraMult: 0.75,
       lanes: 5,
       rushInterval: 12,
       waves: [
@@ -1394,7 +1407,7 @@
     84: {
       name: '无光锻造间',
       type: 'dark',
-      countMult: 1.47,
+      countMult: 1.45,
       lanes: 5,
       dark: true,
       waves: [
@@ -1411,7 +1424,8 @@
     85: {
       name: '岩岩的回声',
       type: 'miniboss',
-      countMult: 0.33,
+      countMult: 0.3,
+      extraMult: 0.75,
       lanes: 5,
       waves: [
         W(0.85, ['slagMagma', 6], ['forgeImp', 4], ['ironSnowman', 4]),
@@ -1426,7 +1440,8 @@
     86: {
       name: '钢与熔铁',
       type: 'armored',
-      countMult: 0.41,
+      countMult: 0.3,
+      extraMult: 0,
       lanes: 5,
       waves: [
         W(0.90, ['steelYeti', 3], ['moltenGolem', 1], ['ironSnowman', 3], ['ironChariot', 1]),
@@ -1443,6 +1458,7 @@
       name: '霜龙空袭',
       type: 'raid',
       countMult: 0.3,
+      extraMult: 0.75,
       lanes: 5,
       waves: [
         W(0.60, ['frostWyrm', 8], ['forgeImp', 6], ['gargoyle', 2]),
@@ -1458,7 +1474,7 @@
     88: {
       name: '炉火熄灭',
       type: 'dark',
-      countMult: 0.64,
+      countMult: 0.62,
       lanes: 5,
       dark: true,
       waves: [
@@ -1475,7 +1491,7 @@
     89: {
       name: '炉渣大合唱',
       type: 'union',
-      countMult: 0.8,
+      countMult: 0.62,
       lanes: 5,
       waves: [
         B(2.00, ['ironSnowman', 4], ['slagMagma', 2], ['forgeImp', 2], ['ironChariot', 2]),
@@ -1492,7 +1508,7 @@
     90: {
       name: '霜霜女王的回声',
       type: 'boss',
-      countMult: 1.02,
+      countMult: 0.5,
       lanes: 5,
       waves: [
         W(0.80, ['ironSnowman', 7], ['steelYeti', 2], ['frostWyrm', 5]),
@@ -1504,7 +1520,7 @@
     91: {
       name: '裂隙边缘',
       type: 'normal',
-      countMult: 0.9,
+      countMult: 0.89,
       lanes: 5,
       waves: [
         W(0.85, ['voidSheep', 7], ['voidKite', 5], ['voidBird', 2]),
@@ -1520,7 +1536,7 @@
     92: {
       name: '雷鸣之间',
       type: 'normal',
-      countMult: 0.68,
+      countMult: 0.64,
       lanes: 5,
       waves: [
         W(0.80, ['voidShock', 5], ['voidCrab', 5], ['voidSheep', 4]),
@@ -1536,7 +1552,7 @@
     93: {
       name: '飞鱼风暴',
       type: 'rush',
-      countMult: 0.54,
+      countMult: 0.5,
       lanes: 5,
       rushInterval: 12,
       waves: [
@@ -1553,7 +1569,7 @@
     94: {
       name: '虚空盾阵',
       type: 'normal',
-      countMult: 0.51,
+      countMult: 0.5,
       lanes: 5,
       waves: [
         W(0.80, ['voidTurtle', 4], ['voidCrab', 5], ['voidUrchin', 5]),
@@ -1569,7 +1585,7 @@
     95: {
       name: '呼呼的回声',
       type: 'miniboss',
-      countMult: 1.13,
+      countMult: 1.07,
       lanes: 5,
       waves: [
         W(0.85, ['voidSheep', 6], ['voidKite', 4], ['voidShock', 4]),
@@ -1584,7 +1600,8 @@
     96: {
       name: '万物回响',
       type: 'armored',
-      countMult: 0.33,
+      countMult: 0.3,
+      extraMult: 0,
       lanes: 5,
       waves: [
         W(0.90, ['steelYeti', 2], ['voidTurtle', 2], ['voidCrab', 4], ['voidSheep', 4]),
@@ -1600,7 +1617,7 @@
     97: {
       name: '气球舰队',
       type: 'raid',
-      countMult: 0.33,
+      countMult: 0.31,
       lanes: 5,
       waves: [
         W(0.60, ['voidBalloon', 5], ['voidKite', 5], ['voidBird', 3], ['voidFish', 3]),
@@ -1616,7 +1633,7 @@
     98: {
       name: '无光之海',
       type: 'dark',
-      countMult: 1.12,
+      countMult: 1.01,
       lanes: 5,
       dark: true,
       waves: [
@@ -1633,7 +1650,7 @@
     99: {
       name: '回响合唱',
       type: 'union',
-      countMult: 0.76,
+      countMult: 0.7,
       lanes: 5,
       waves: [
         B(2.00, ['voidCrab', 4], ['voidUrchin', 2], ['voidTurtle', 2], ['voidFish', 2]),
@@ -1650,7 +1667,7 @@
     100: {
       name: '墨墨的回声',
       type: 'boss',
-      countMult: 0.8,
+      countMult: 0.37,
       lanes: 5,
       waves: [
         W(0.80, ['voidCrab', 2], ['voidUrchin', 4], ['voidKite', 4], ['voidSheep', 4]),
