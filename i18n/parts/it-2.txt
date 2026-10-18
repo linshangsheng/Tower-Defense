@@ -1,0 +1,463 @@
+463	Mostro Aquilone
+464	Prob. di schivata del Mostro Aquilone −25%
+465	I Mostri Aquilone non schivano i fulmini, e i salti ne colpiscono più di uno in catena
+466	I Mostri Aquilone schivano gli attacchi fisici delle armi. Bastone, Sfera Fulminea, Pioggia di Frecce e Colpo di Tuono non si schivano!
+467	Festa degli Aquiloni
+468	Raid dello Sciame di Api
+469	Mantello di Piume di Fenice
+470	Fortezza Volante
+471	Armatura a Piastre Runica
+472	Corona Runica
+473	Stivali Fortunati
+474	Copia
+475	Armatura d'acciaio
+476	Elmo d'acciaio
+477	Mantello di filo metallico
+478	Yeti d'Acciaio
+479	Gli Yeti d'Acciaio temono la magia, i Golem di Ferro Fuso temono gli attacchi fisici: cambia arma o usa le abilità, a te la scelta.
+480	Gli Yeti d'Acciaio temono la magia e le Tartarughe Scudo proteggono i mostri vicini: elimina prima la Tartaruga Scudo, poi usa la magia sullo Yeti d'Acciaio.
+481	Acciaio e Ferro Fuso
+482	Danni alti, prob. critico +12%; le frecce trapassano 3 mostri e incendiano il bersaglio.
+483	Veloce
+484	Avamposto dei Goblin
+485	Goblin Soldato
+486	Fratellone! Voglio difendere anch'io le mura! Quando suona il mio campanello, tutti i mostriciattoli saltano per lo spavento!
+487	Record personale: ondata {0} · {1} sconfitti
+488	Sceglie in automatico armi, abilità e oggetti in base ai mostri del livello.
+489	Altre armi: sbloccale nella scheda Armi della pagina Equipaggiamento
+490	Peggio ancora, hanno sentito dire che sulla terraferma c'è un "guscio grande e robusto" e stanno arrivando in fila per traslocare...
+491	Cannone d'Assedio
+492	I mostri che attaccano le mura subiscono danni riflessi pari ad ATT dell'eroe ×20% / livello.
+493	ATT
+494	ATT +{0}
+495	ATT +{0}%
+496	ATT +12%
+497	ATT +15%, prob. critico +10%, danni critici +25%
+498	ATT +20%, velocità d'attacco +15%, prob. critico +8%
+499	ATT +3
+500	ATT +3; durata di Zona di Gelo e Ampolla di Gelo +30%
+501	ATT +3; danni ai Boss (tentacoli inclusi) +20%
+502	ATT +3%
+503	ATT +35%, velocità d'attacco +25%, prob. critico +15%, danni critici +50%
+504	ATT +5, prob. critico +5%
+505	ATT +5%
+506	ATT +6%, danni critici +20%
+507	ATT +8%, gli attacchi normali hanno il 15% di probabilità di incendiare il bersaglio
+508	ATT ×5
+509	ATT ×6
+510	ATT ×7, e si propaga a 3 mostri vicini (50% ciascuno)
+511	Velocità d'attacco
+512	Velocità d'attacco +{0}%
+513	Velocità d'attacco +10%
+514	Velocità d'attacco +12%
+515	Velocità d'attacco +15%, danni subiti dalle mura −10%
+516	Velocità d'attacco +3%
+517	Velocità d'attacco +35% per 9 sec.
+518	Velocità d'attacco +50% per 8 sec.
+519	Velocità d'attacco +6%; danni ai mostri volanti +15%
+520	Velocità d'attacco +8%, danni subiti dalle mura −8%; a fine ondata le mura si curano di un altro 2%
+521	Velocità d'attacco +8%, gittata +3%
+522	Velocità d'attacco +8%; gli attacchi normali hanno il 20% di probabilità di incendiare il bersaglio
+523	VA +50%, 8 sec
+524	VA +65%, 10 sec
+525	VA +80%, 10 sec, prob. critico +10% nel frattempo
+526	VA −{0}%
+527	Complimenti, hai superato "{0}"! Hai difeso tutti i {1} capitoli. Puoi tornare per tre stelle e corone, o battere nuovi record nella Modalità infinita.
+528	Complimenti, hai superato "{0}"! Il nuovo capitolo "{1}" è ora aperto.
+529	Compra
+530	Rana Velenosa Gracidante
+531	Gru? Come facevi a sapere che stavo per caricare?
+532	Glu glu! Oggi con le mie otto zampe ho riparato i tetti di otto case insieme.
+533	Glu glu... non ce la faccio più a portarlo. Scusa, volevo solo una casa abbastanza grande per me.
+534	Glu glu! Questo guscio è così grande e robusto, perfetto per le mie otto zampe!
+535	Gru... ora ho la testa libera. Mi ricordo solo un vento nero arrivato dal deserto, poi non mi importava più di niente e volevo solo caricare.
+536	Gru... i piccoli dicono che sono bello quando spazzo.
+537	Re Gulu
+538	Seguace di Re Gulu.
+539	Re Gulu è furioso: Carica del Cinghiale!
+540	Re Gulu è andato in furia!
+541	Re Gulu carica quando i suoi PV scendono sotto il 60%. Quando la corsia diventa rossa, concentra il fuoco su di lui per interrompere la carica!
+542	Gru gru! D'ora in poi il prato è mio! Servitori, all'attacco!
+543	Coro del Castello
+544	Guardia con Scudo d'Ossa
+545	Signor Ossa
+546	Signor Ossa? Non eri già...
+547	Il Signor Ossa risorge una volta dopo essere stato sconfitto. Tieni un'abilità per quando si rialza!
+548	Eco del Signor Ossa
+549	Il Signor Ossa è risorto!
+550	In realtà il Signor Ossa è molto spiritoso. Dice che nel calderone di Nonna Pozione sta bollendo un'enorme pentolata di Inchiostro nero.
+551	Pioggia di Frecce a Tamburo
+552	Mostri
+553	I mostri compaiono a caso dai capitoli sbloccati, sempre più forti a ogni ondata.
+554	Marea di Mostri
+555	I mostri sono tutti viola.
+556	Numero di mostri +50%
+557	Numero di mostri −40%, ma PV +80%
+558	Velocità dei mostri +30%
+559	I mostri arrivano tutti insieme in massa e sconfiggerli non dà nulla: solo superare un piano dà diamanti. I diamanti si ottengono solo qui. Più si sale, più re demoni ci sono: 10% al piano 1, 50% al piano 9.
+560	Bestiario
+561	Bestiario {0} / {1}
+562	PV dei mostri +30%, danni d'assedio +15%, guadagno di rame +20%
+563	PV dei mostri +40%, PV delle mura +40%
+564	PV dei mostri e danni d'assedio −25%, per chi vuole godersi la storia
+565	Chiudi
+566	Missioni del livello
+567	Missione del livello completata
+568	Faretra Perforante
+569	Aura
+570	Aura: finché è vivo, la velocità d'attacco degli eroi cala. Eliminalo per primo!
+571	Esplode quando arriva alle mura, infliggendo molti danni in un colpo. Abbattilo assolutamente da lontano.
+572	Cactus Rotolante
+573	Nonno Re
+574	Principe Gelatina
+575	Il Principe Gelatina si divide quando viene colpito. I danni ad area (Pioggia di Frecce, Boomerang) eliminano in fretta le gelatine piccole.
+576	Gelatine piccole nate dalla divisione del Principe Gelatina.
+577	Il Principe Gelatina è in realtà un tipetto saltellante. Dice che l'Inchiostro nero è arrivato da molto, molto lontano.
+578	Non è ancora finita...
+579	Nessuna abilità disponibile. Vai alla pagina Abilità e sbloccale con l'argento.
+580	Mai incontrato.
+581	Nessun equipaggiamento per questo slot. Compralo nella pagina Equipaggiamento.
+582	Ancora nessuno che mi tagli le unghie.
+583	E poi paguri, cavallucci marini, Tartarughe Scudo... tutti hanno bisogno di una casa nuova!
+584	Hai una sfida non ancora conclusa.
+585	La sabbia in riva al mare è calda. I paguri portano i loro gusci e avanzano in fila verso le mura, come se le considerassero davvero la loro nuova casa.
+586	Riccio di Mare
+587	I Ricci di Mare feriscono i mostri vicini quando muoiono: colpiscili quando entrano nella folla! Le bolle dei cavallucci marini bloccano un attacco; Balestra a ripetizione e Sfera Fulminea le bucano più in fretta.
+588	Capitano Pirata
+589	Cavalluccio Marino
+590	Stretto dei Gabbiani
+591	Coro della Baia
+592	Guardiano della Baia
+593	Brina
+594	Arco di Brina
+595	Faretra di Brina
+596	Punta di Freccia di Brina
+597	Elmo di Ferro Gelido
+598	Senza un graffio
+599	OK
+600	Fatto
+601	Bene, Kael, Lyra. Torniamo a casa: stasera il regno dà la più grande festa di vittoria e vengono tutti gli amici. Perfino le ombre degli echi portano i biscotti.
+602	Che caldo, che caldo... si scalda perfino l'elmo.
+603	Che caldo... le crepe nel terreno sono piene di Inchiostro nero.
+604	Totale
+605	Guscio chiuso... si apre tra {0}s
+606	Chiudi diario
+607	Armatura di Ossidiana
+608	Mattone di Ossidiana
+609	Dove la mia lampada fa luce nel buio, arrivano anche le mie frecce. Lasciami venire con voi!
+610	Spazza via tutti!
+611	Bum!
+612	Bum... oggi è caduta una pioggerellina e l'arcobaleno era alto alto.
+613	Bum. Bum. ...Non sono Rocky. Sono i passi che Rocky ha lasciato.
+614	Brrum! Siete stati voi a sporcare il mio arcobaleno!
+615	Rosso
+616	Nastro rosso
+617	Mantello rosso
+618	Inondazione
+619	Un'inondazione travolge il campo di battaglia: tutti i mostri arretrano di 350 px (Boss 100 px), subiscono danni pari ad ATT ×3, e i mostri bagnati subiscono +40% di danni per 5 sec e sono rallentati del 60%.
+620	Armatura di tessuto spesso
+621	Fuuu... ti soffio sulla zuppa per raffreddarla.
+622	Fuuu! Una raffica ha spinto i mostri verso le mura!
+623	Fuuu! La farina del mulino a vento è diventata il pane di tutta la città.
+624	Fuu, fuu! Chi chiama il mio nome?
+625	Fuu, fuu! Voi, quelli di terra! Siete stati voi a sporcare il mio arcobaleno?
+626	Fuu! Trasformerò tutte le mura in un ghiacciolo!
+627	Puah... i ghiaccioli all'Inchiostro sono terribili. Meglio quelli alla fragola.
+628	Uff... queste bende sono così strette. Un tizio col mantello mi ha dato una bottiglia di Inchiostro dicendo che bevendola sarei diventato forte.
+629	Uff... tutto quel girare mi ha fatto venire il mal di testa. Va bene, vi credo.
+630	Fuffo
+631	Eco di Fuffo
+632	L'Eco di Fuffo ci ha lasciato la sua ultima folata: ci ha spinti avanti, verso il punto più profondo della frattura.
+633	Fuffo avvisa 2 sec prima di scatenare la bufera: concentra il fuoco per interromperlo, altrimenti tutti i mostri del campo vengono spinti fino alle mura!
+634	Fuffo è in realtà un mulino a vento che macina farina per le nuvole. Dice che per calmare Rombo bisogna prima prendere al volo il suo tuono.
+635	Fuffo gira più veloce!
+636	Ciondolo Dente di Tigre
+637	Scudo infranto!
+638	Guardia
+639	Guardia: i mostri vicini subiscono il 40% di danni in meno dagli attacchi degli eroi. Eliminala per prima, oppure usa le abilità.
+640	Spendere {0} per comprare "{1}"?\nStatistiche extra: {2}
+641	Scivoloso
+642	Benvenuti nel negozio di perle di Bebe! Ogni perla è registrata.
+643	Cambia corsia
+644	Deserto d'Oro
+645	Stivali d'Oro
+646	Freccia Ringiovanente
+647	Torna alla mappa
+648	Mappa
+649	Recupera 20%
+650	Recupera 25%
+651	Recupera 30%, poi per 6 sec le mura subiscono −30% di danni
+652	Le mura recuperano il 20% dei PV massimi.
+653	Gli echi... non sanno controllarsi... fuu!
+654	Gli echi, certo, sono identici. Tempesta di sabbia, sollevati!
+655	Gli echi non sembrano farlo apposta. Sono solo svegliati ancora e ancora da quella frattura.
+656	Coro dell'Eco
+657	Boomerang
+658	Cambio
+659	Cambio (a senso unico, non si può annullare)
+660	Un lanciatore di palle di fuoco volante; ogni palla di fuoco fa molto più male di prima.
+661	Un draghetto volante, tinto di rosso dal caos.
+662	Un guaritore volante che sta lontano e cura i mostri vicini. Usa "Priorità minaccia" o Priorità volanti per colpirlo per primo.
+663	Ceppo Ambulante
+664	Uno scorpione che si scava nel terreno, rivestito di uno strato di armatura d'osso.
+665	Uno yeti coperto di piastre d'acciaio: quasi immune ai colpi fisici; solo la magia funziona.
+666	Coperto di elettricità. Se muore vicino alle mura scarica una scossa che stordisce brevemente gli eroi: eliminalo da lontano.
+667	Terminatore del Caos
+668	Cannone
+669	Pioggia di Palle di Fuoco
+670	Sotto il vulcano c'è una grande frattura da cui sgorga l'Inchiostro nero. Ho un po' di paura, ma non indietreggio.
+671	Mantello di Topo di Fuoco
+672	Fiamma
+673	Zone di fuoco e corsie di lava non hanno effetto sui mostri
+674	Punta di Freccia Infuocata
+675	Diavoletto di Fuoco
+676	I Diavoletti di Fuoco restano lontani e lanciano palle di fuoco. Prova "Priorità minaccia"!
+677	Cielo di Pioggia di Fuoco
+678	Ottenuto
+679	Ottieni 50 corone
+680	Ottieni tre stelle in tutti i livelli (anche i capitoli dal 6 al 10)
+681	Stelle ottenute {0} / {1}
+682	Sconfiggi {0}
+683	Sconfiggi {0}
+684	Sconfiggi Inky
+685	Sconfiggi tutti i 10 Boss (mini-Boss inclusi)
+686	Più sconfitti
+687	Più sconfitti: {0}
+688	Bottino delle uccisioni ({0} uccisi)
+689	Faretra Polare
+690	Stivali Rapidissimi
+691	Assalto Improvviso
+692	Marcia Forzata
+693	Impaziente
+694	Stivali del Fulmine
+695	Raffica
+696	Mantello della Raffica
+697	Stivali Veloci
+698	Mantello d'Ombra Rapida
+699	Concentra il fuoco per interrompere la carica!
+700	Concentra il fuoco per interrompere la bufera!
+701	Concentra il fuoco per interrompere il fulmine!
+702	Concentra il fuoco per interrompere il colpo!
+703	Uno spirito quasi immune agli attacchi fisici: funziona solo il 15% dei danni fisici. Usa la magia.
+704	Record: ondata {0}
+705	Abilità
+706	Porta le abilità al Lv2 con l'argento; il Lv3 costa monete d'oro e porta un effetto trasformativo.
+707	Abilità congelata!
+708	Maestro delle Abilità
+709	Tutte le Abilità
+710	Sinergia di abilità
+711	Lancio automatico abilità
+712	Continua piano {0}
+713	Continua partita
+714	Continua a combattere
+715	Paguro
+716	Trasloco dei Paguri
+717	I Paguri si ritirano nel guscio ogni 4 colpi. Non concentrarti su uno solo: Balestra a ripetizione e Sfera Fulminea distribuiscono il fuoco su più bersagli!
+718	Tempo nel guscio dei Paguri −60%
+719	Rinforza
+720	Mattone Rinforzato
+721	Pozione di Velocità
+722	Spine
+723	Un cappuccio a punta con una piuma rossa e una faretra portata di traverso sulla schiena.
+724	Hai resistito {0} ondate!
+725	Rallenta 60%, 6 sec
+726	Rallenta 70%, 7 sec
+727	Rallenta 75%, 8 sec; alla fine congela l'intera corsia per 1,5 sec
+728	Gara di Tosatura delle Pecore
+729	Area
+730	Raggio d'area +20, i danni d'area non calano più (100%)
+731	La freccia trapassa fino a 5 mostri nella stessa corsia (80% dei danni ciascuno), ignorando il 20% dell'armatura.
+732	Faretra
+733	La freccia prosegue dopo il colpo e ne colpisce fino a 2 altri dietro nella corsia (40% dei danni)
+734	Pioggia di Frecce
+735	Lascia fare a me, Nonno Re! ...Ops, l'elmo è scivolato di nuovo.
+736	Bastione della Scogliera
+737	Personaggi
+738	Guardaroba
+739	Tutorial
+740	Antidoto
+741	Sblocca
+742	Sblocca la velocità x3: il pulsante velocità in basso a destra nella battaglia
+743	Sblocca "Città del Regno" (🏘 sulla mappa) e "Sfida giornaliera" (in basso a destra sulla mappa)
+744	Sblocca la "Modalità infinita" (in basso a destra sulla mappa)
+745	Sblocca {1} n. {0}
+746	Sblocca il capitolo 8 "Castello d'Ombra Lunare": dalla Frattura del Caos sono caduti mostri-eco
+747	Sblocca il capitolo 9 "Fornace di Ferro Rosso"
+748	Sblocca il capitolo 6 "Regno delle Nuvole"
+749	Sblocca il capitolo 7 "Baia dei Coralli" e la "Torre Demoniaca dei Nove Piani" (in basso a destra sulla mappa)
+750	Sblocca il capitolo 10 "Reame del Cielo Vuoto", l'ultimo capitolo
+751	Sblocca tutte le abilità attive e passive
+752	Sblocca l'arma consigliata "{0}": {1} ({2})
+753	Regola di oggi "{0}"
+754	Sfida giornaliera completata!
+755	Completata oggi
+756	Oggi ho saltato troppo in alto e ho preso in pieno un piccione.
+757	Oggi ho spazzato via tutte le foglie cadute sul prato, una per una!
+758	Il premio di oggi è già stato ritirato
+759	Oggi è il mio primo giorno sulle mura. I mostri del prato hanno tutti un po' di Inchiostro nero addosso. Che strano.
+760	Oro
+761	Monete d'oro
+762	Livello oro · carte vincenti che ribaltano la partita
+763	Le monete d'oro servono per comprare equipaggiamento leggendario, armi di alto livello e il Lv3 delle abilità.
+764	Lingotto d'Oro
+765	Scudo piramidale! Spezzalo con la magia!
+766	La piramide è stata affittata come biblioteca ed è molto frequentata.
+767	Progressi salvati. I browser non permettono a una pagina di chiudere la propria scheda, quindi chiudi tu questa scheda o finestra. (Se avvii il gioco dall'icona "The Last Bastion" sul desktop, questo pulsante chiude direttamente il gioco.)
+768	Evolvi
+769	Dopo l'evoluzione
+770	Rovi
+771	Vittoria sul filo
+772	Faretra d'Acciaio Fine
+773	Pregiato
+774	Sfida d'Élite
+775	Sfida d'Élite: i mini-Boss dei primi quattro capitoli tornano a due a due! Passa a "Priorità Boss" o "Priorità minaccia" e non lasciare che due Boss arrivino insieme alle mura.
+776	Preciso
+777	Statica
+778	Nove piani superati! Hai conquistato la torre demoniaca!
+779	Torre Demoniaca dei Nove Piani
+780	Torre Demoniaca dei Nove Piani · Piano {0}
+781	Un re demone della Torre Demoniaca dei Nove Piani: nessuna mossa speciale, carica dritto verso le mura.
+782	Regge un pesante scudo d'ossa ed è quasi immune di fronte: colpiscilo alle spalle con il Boomerang.
+783	Regge uno scudo di legno, molto resistente di fronte. Il ritorno del Boomerang e la Pioggia di Frecce aggirano lo scudo.
+784	Gigante
+785	Scrigno del Tesoro
+786	Scorpione Beccamorto
+787	Equilibrato
+788	Corona dell'Equilibrio
+789	Snip... in realtà volevo solo qualcuno che mi tagliasse le unghie.
+790	Snip snip, oggi ho tagliato venti frangette.
+791	Snip snip! Le mie grosse chele schiacciano qualsiasi cosa!
+792	Clac... grazie per avermi lasciato andare in pezzi una volta. Le ossa si sono ben stirate.
+793	Clac clac, il concerto di ossa va in scena ogni sabato sera!
+794	Clac clac, benvenuti al mio concerto di ossa!
+795	Sì
+796	Inizia
+797	Inizia sfida
+798	Inizia sfida ({0})
+799	Inizia partita
+800	Inizia battaglia
+801	Inizia battaglia ›
+802	Si applica all'inizio della battaglia
+803	Acquistabile
+804	Ma Re Bobo non ascolterà. Ha otto zampe, nel mare nessun guscio è abbastanza grande per lui, e sono giorni che ha messo gli occhi sulle vostre mura.
+805	Ma Rombo non ci crederà. È la nuvola più irascibile del cielo e da quando l'arcobaleno si è sporcato tuona da tre giorni.
+806	Ma avevano già fatto pace. Perché sono tornati?
+807	Ma questa è la casa di tutti!
+808	Vuoto
+809	Spazio mette in pausa, F alterna velocità x2, N chiama l'ondata in anticipo, T cambia la priorità del bersaglio.
+810	Raid Aereo
+811	Raid aereo! Un Drago di Brina tinto di rosso dal caos e una banda di diavoletti lanciafuoco.
+812	Raid aereo! Il Fantasma della Lanterna si nasconde dietro e si cura di continuo: trovalo per primo.
+813	Raid aereo! Tanti mostri in cielo, e a terra squadre scortate da Tartarughe Scudo. Non guardare solo il cielo.
+814	Raid aereo! I Palloni del Vuoto, atterrando, liberano quattro Goblin Soldato.
+815	Livello con raid aereo e tanti Spiritelli di Ghiaccio. Priorità volanti più Balestra a ripetizione o Sfera Fulminea!
+816	Livello con raid aereo: i diavoletti lanciano palle di fuoco da lontano. Prova "Priorità minaccia" o Priorità volanti!
+817	Livello con raid aereo! I pipistrelli cambiano corsia, quindi gli attacchi ad area sono meglio della mira.
+818	Livello con raid aereo! Prova a impostare la priorità su Priorità volanti, o equipaggia una Balestra a ripetizione.
+819	Livello con raid aereo! Gli avvoltoi volano veloci. Balestra a ripetizione e Priorità volanti sono buone scelte.
+820	Circo Aereo
+821	Un carretto guidato da uno scheletro che sperona a gran velocità e colpisce le mura molto forte.
+822	Guardia Scheletro
+823	Le Guardie Scheletro reggono pesanti scudi d'ossa, quasi immuni di fronte: Boomerang e Pioggia di Frecce possono raggiungere la schiena.
+824	Carro Scheletro
+825	Un coniglio troppo veloce per essere visto: cambia corsia e gli attacchi fisici lo mancano una volta su quattro.
+826	Attacco rapido · Controllo
+827	Mostri veloci: conigli, lupi, carri
+828	Furia
+829	Fervore
+830	Armatura
+831	Blu
+832	Ululato del Lupo
+833	Branco di Lupi
+834	Collana di Zanna di Lupo
+835	Sfera Fulminea
+836	Rombo
+837	Rombo sta caricando energia! Concentra il fuoco per interromperlo durante la carica!
+838	Rombo amava semplicemente troppo quell'arcobaleno. Ora, dopo ogni pioggia, lo appende bello alto. Le guardie del regno hanno difeso sia la terra sia il cielo.
+839	Rombo ha tre fasi: evoca Batuffoli di Tuono e Uccelli Arcobaleno, carica un fulmine (interrompilo!) e scatena la tempesta (tutto accelera, quindi finisci in fretta).
+840	Faretra del Tuono
+841	Sala del Tuono
+842	Sfera del Dio del Tuono
+843	Talismano del Tuono
+844	Stivali del Tuono
+845	Colpo di Tuono
+846	Colpo di Tuono infligge danni ×1,3 ai mostri nella Zona di Gelo (rallentati o congelati)
+847	Batuffolo di Tuono
+848	I Batuffoli di Tuono stordiscono Kael se muoiono vicino alle mura. Eliminali finché sono ancora lontani!
+849	Nube Temporalesca
+850	Attiva 50 volte in totale la Sinergia di abilità (Frantumaghiaccio, Pioggia di Frecce a Tamburo)
+851	Fai scoppiare 100 bolle in totale
+852	Interrompi 10 volte in totale le cariche dei Boss
+853	Ottieni 150 stelle in totale
+854	Ottieni 50 stelle in totale
+855	Totale sconfitti
+856	Sconfiggi 1000 mostri in totale
+857	Sconfiggi 10000 mostri in totale
+858	Chiama le ondate in anticipo 30 volte in totale
+859	Scegli 50 carte rifornimento in totale
+860	Ricarica {0} sec
+861	In ricarica, ancora {0} sec
+862	Corona dell'Alba
+863	Le mura recuperano subito il 20% dei PV, danni subiti dalle mura −8%
+864	Le mura recuperano subito il 45% dei PV
+865	Azzera subito la ricarica di tutte le abilità, ATT +35% per 30 sec
+866	Balestra a ripetizione
+867	Balestra a catena
+868	Fulmine a Catena
+869	Raffica
+870	Raffica!
+871	Faretra a Raffica
+872	Alleanza
+873	Livello alleanza: tutte le corsie generano mostri insieme e arrivano tutti gli abitanti della Baia!
+874	Livello alleanza: tutte le corsie generano mostri insieme e tutti gli operai della Fornace sono al lavoro!
+875	Livello alleanza: tutte le corsie generano mostri insieme. Preparati sia al fisico sia alla magia.
+876	Livello alleanza: tutte le corsie generano mostri insieme e tutti gli echi del Vuoto arrivano in massa!
+877	Livello alleanza: tutte le corsie generano mostri insieme e arrivano tutti gli abitanti di Ombra Lunare!
+878	Livello alleanza: tutte le corsie generano mostri insieme e arrivano tutti i mostri delle Nuvole!
+879	Livello alleanza: tutte le corsie generano mostri insieme! Gli attacchi su tutto il campo come Pioggia di Frecce e Sfera Fulminea funzionano meglio.
+880	Livello alleanza: tutte le corsie generano mostri insieme! Le abilità su tutto il campo e la Sfera Fulminea sono la chiave.
+881	Mantello del Purgatorio
+882	Elmo Cornuto del Purgatorio
+883	Armatura Pesante del Purgatorio
+884	Mi sto rinfrescando... che bello.
+885	Un pupazzetto di neve fatto di due palle di neve sovrapposte: quando muore diventa 2 piccoli mucchietti di neve.
+886	Cappello da Vedetta
+887	Stivali della Bufera
+888	Incantesimo di Fiamma
+889	Faretra Fiammeggiante
+890	Balestra Fiammeggiante
+891	Elmo del Sole Cocente
+892	Faretra del Cacciatore
+893	Cappuccio del Cacciatore
+894	Istinto del Cacciatore
+895	Stivali da Caccia
+896	Dall'altra parte della frattura c'è un posto ancora più caldo. Gli echi sono stati risvegliati dalle fiamme di laggiù.
+897	Dall'altra parte della frattura c'è un'enorme fornace. Nessuno la alimenta, eppure brucia più di un vulcano.
+898	La frattura si sta allargando. Kael, la fonte è nel cielo più in alto.
+899	Balestra Squarcia-Cielo
+900	Margine della Frattura
+901	Colpo della Frattura {0}
+902	Colpo della Frattura!
+903	Furia della frattura! Sconfiggi Inky entro 30 sec!
+904	La frattura si è richiusa lentamente e il cielo è tornato di un azzurro limpido.
+905	Ingresso della Frattura
+906	Vicini {0} / {1}
+907	Ranger del Bosco
+908	Faretra d'Erba Spirituale
+909	Stivali Agili
+910	Faretra del Bagliore
+911	Dita Agili
+912	Spirito
+913	Spirito: i danni fisici sono efficaci solo al 30%. Usa la magia contro di lui!
+914	Ritira {0}
+915	Come funziona: compri → va nella borsa → tocca "Equipaggia +1" per equipaggiarlo in battaglia (o sceglilo nella pagina Assetto). Slot attuali {0} / {1}{2}.
+916	Stivali di Luce Fluida
+917	Mantello della Meteora
+918	Faretra della Meteora
+919	Tornado e spinte, più feroci del vecchio Fuffo.
+920	Armatura a Scaglie di Drago
+921	Mantello a Scaglie di Drago
+922	Tesoro della Vena del Drago
+923	Stivali della Vena del Drago
+924	Cavaliere del Drago
+925	Collana di Zanna di Drago

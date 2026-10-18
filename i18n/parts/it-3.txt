@@ -1,0 +1,463 @@
+926	Focolare Spento
+927	Diavoletto di Brace
+928	Coro delle Scorie
+929	Grumo di Scorie
+930	Verde
+931	Massa Verde
+932	Faretra della Reincarnazione
+933	Atterrando libera quattro Goblin Soldato.
+934	Mancato
+935	Mantello di Passero
+936	Le abilità acquistate vanno messe negli slot abilità nella pagina Assetto per portarle in battaglia.
+937	Il prezzo di vendita è metà di quello d'acquisto
+938	Cannone pesante e lento, esplosione ad ampio raggio all'impatto; ignora il 40% dell'armatura del bersaglio.
+939	Arriva fluttuando lentamente; quando scoppia lascia cadere 3 Goblin Soldato.
+940	Gatto Sacerdote
+941	Non fa niente! Quando sono arrabbiati, tutti tuonano.
+942	Non fa niente! La prossima volta ricordati di usare la porta principale.
+943	Guardiano maleducato! Assaggia la mia zuppa velenosa!
+944	Nessuna statistica extra
+945	Nessuna abilità attiva equipaggiata
+946	Ogni 18s colpisce con un tentacolo il mostro più vicino alle mura (ATT ×3)
+947	Rifornimento ogni 2 ondate
+948	Ogni 20s scaglia un piccolo fulmine sul mostro con più PV (ATT ×4)
+949	Ogni 25s sputa una macchia d'inchiostro sul mostro più vicino (ATT ×3)
+950	Un mini-Boss ogni 5 ondate, un grande Boss ogni 10; rifornimento sul campo ogni 3 ondate.
+951	Dopo 4 colpi subiti si ritira per un attimo nel guscio, dove è quasi impossibile colpirlo. Non concentrarti su uno solo: Balestra a ripetizione e Sfera Fulminea distribuiscono meglio i danni.
+952	A fine ondata le mura si curano del {0}% in più
+953	Recupera il 2% dei PV massimi per livello a fine ondata.
+954	A fine ondata le mura si curano del 3%
+955	A inizio ondata le mura ottengono uno scudo del {0}% dei PV massimi
+956	A inizio ondata le mura ottengono uno scudo a bolla del 4% dei PV massimi
+957	A inizio ondata dà alle mura uno scudo a bolla che assorbe danni fino al 3% dei PV massimi
+958	Scocca 4 dardi alla volta
+959	Ogni sfida costa {0}.
+960	Ogni 6° attacco, un piccolo fulmine colpisce il bersaglio infliggendo danni magici extra pari ad ATT ×1,5
+961	Ogni tanto fa un grande balzo in avanti e non si può colpire a mezz'aria. Più veloce di quanto sembri!
+962	Ogni 5 attacchi, esegue subito un altro attacco.
+963	A fine livello ottieni rame, e argento alla prima vittoria. Vai al negozio per potenziare le statistiche e sbloccare armi e abilità, poi torna a combattere!
+964	Dopo ogni piano puoi ritirare i diamanti di quel piano e uscire, oppure salire ancora: superando un altro piano i diamanti raddoppiano; se fallisci non ottieni nulla.
+965	Ogni mostro ucciso cura le mura dello 0,3% dei PV massimi
+966	Sfida giornaliera
+967	Sfida giornaliera "{0}": {1}
+968	La prima vittoria di ogni giorno dà 3 argento, e puoi rigiocare quante volte vuoi. Non influisce sui record di stelle dei livelli.
+969	Promemoria di pausa ogni {0} minuti di gioco
+970	A ogni piano in più, PV dei mostri e danni d'assedio ×{0}. I PV delle mura continuano dal piano precedente, senza recupero (curano solo riparazioni, carte rifornimento, oggetti e abilità).
+971	Ogni personaggio ha un proprio aspetto e statistiche extra. Si compra con le monete d'oro e se ne indossa uno alla volta; quello scelto sta sulle mura (le statistiche extra valgono solo quando combatte Kael, quindi si torna automaticamente a Kael).
+972	All'inizio di ogni ondata le mura ottengono uno scudo pari al 12% dei PV massimi; le mura subiscono −10% di danni
+973	Palude Nebbiosa
+974	Armatura di Mithril
+975	Faretra di Mithril
+976	Elmo di Mithril
+977	Mantello di Mithril
+978	Orde fitte, spiriti
+979	Orde fitte, fantasmini, mostri con bassa resistenza magica
+980	Gratis
+981	Mantello Lancetta dei Secondi
+982	Estintore
+983	Faretra Spezzaarmature
+984	Stivali Agili
+985	Ciondolo del Destino
+986	Dadi del Destino
+987	Al colpo incendia il bersaglio, infliggendo in 3 secondi danni magici totali pari al 60% di ATT.
+988	Affila le punte
+989	Soldato Fungo
+990	I Soldati Fungo, quando muoiono, accelerano i mostri vicini. Prova a toccare l'abilità "Tamburo da guerra" qui sotto!
+991	Foresta dei Funghi
+992	Magia, grande esplosione (raggio 110, area 90%), più 2 salti di fulmine.
+993	Magia bloccata
+994	Il fulmine magico salta 5 volte, perdendo solo il 15% a ogni salto.
+995	Danni magici +12%, ricarica abilità −5%
+996	Danni magici +25%
+997	I danni magici ignorano l'armatura fisica
+998	{0} dei danni magici è stato bloccato dalla resistenza magica: i mostri di lava non temono la magia, passa alle armi fisiche (cannone, balestra a ripetizione).
+999	Bastone magico
+1000	Res. magica
+1001	Zanna del Re Demone
+1002	Forma di Re Demone! Concentra il fuoco per interrompere la carica!
+1003	Inky
+1004	Inky, torna a casa. Non ti lasceremo mai più solo.
+1005	Inky?
+1006	Inky... sei tu laggiù?
+1007	Inky ha fatto "pop" ed è tornato una pallina...
+1008	Inky è tornato una pallina. Era solo troppo solo, e ha sparso Inchiostro dappertutto. Ora vive vicino alle mura e mi guarda fare la guardia ogni giorno.
+1009	I cloni di Inky. Sconfiggi tutti e tre i cloni e comparirà quello vero.
+1010	Eco di Inky
+1011	Clone di Inky
+1012	Inky si è diviso! Sconfiggi i tre cloni!
+1013	Inky si è già scusato! Siamo qui per aiutare!
+1014	Inchiostro, cloni, visuale bloccata: questa è la fonte della Frattura del Caos. Sconfiggilo e sarà tutto finito.
+1015	L'Inchiostro è sceso dalle montagne innevate del nord. Lassù fa così freddo che anche l'Inchiostro si è congelato.
+1016	Macchia d'Inchiostro
+1017	Goblin con Scudo di Legno
+1018	I Goblin con Scudo di Legno sono duri di fronte. Ritorno del Boomerang, Pioggia di Frecce e "Perforante" li affrontano bene.
+1019	Armatura con Scudo di Legno
+1020	Arco di legno
+1021	Armata di Mummie
+1022	Faretra di legno
+1023	Bersaglio:
+1024	Priorità bersaglio
+1025	Fantasma del Cimitero
+1026	Quella zuppa sa di calzini sporchi!
+1027	Anche quei passi dovrebbero riposarsi.
+1028	Allora lasciamo che tutto... si raffreddi.
+1029	Allora difendiamo ancora una volta! Stavolta ho dei vestiti nuovi!
+1030	Lì vive una creaturina molto sola. Piccolo guardiano, vai a vederla al posto mio.
+1031	Allora riesci a schiacciare la sabbia? ...Direi di no.
+1032	Allora costruiamone una insieme! Gli artigiani del regno sono i migliori a costruire grandi case.
+1033	La zuppa di zucca è pronta! Oggi neanche una goccia di Inchiostro.
+1034	Campo di Zucche
+1035	Testa di Zucca
+1036	Zucchette nate da una Testa di Zucca spezzata.
+1037	La Testa di Zucca, quando muore, si divide in 3 zucchette. Abbattila da lontano per avere il tempo di ripulire.
+1038	Difficoltà
+1039	La difficoltà è calcolata sul livello più alto che hai superato (almeno livello 60, al massimo livello 70). 2 rifornimenti per piano. Uscire a metà o aggiornare la pagina conta come sconfitta.
+1040	Sì! Lo prometto!
+1041	Sì. Abbiamo difeso le mura e tenuto uniti tutti.
+1042	Sì. Stavolta torno da solo.
+1043	Il tuo registro di difesa
+1044	Le tue unghie sono chele!
+1045	Guarda, ho risucchiato tutto l'Inchiostro. L'arcobaleno ha di nuovo sette colori.
+1046	Stai proteggendo qualcuno là dentro?
+1047	Ne hai {0}
+1048	Lo sapevi? Lo xilofono è fatto con le mie costole. Scherzo.
+1049	Emblema del Nirvana
+1050	L'eco della Regina si è trasformato in un soffio di neve leggera ed è caduto sul fuoco con uno sfrigolio. Il fuoco finalmente si è un po' spento.
+1051	Scaldamani
+1052	Snap! Scusa, quando mi agito chiudo il guscio.
+1053	Snap... Va bene, i vostri gusci in effetti sono tutti occupati.
+1054	Corsie con lunghe file
+1055	Corsie con lunghe file, Goblin con Scudo di Legno
+1056	Faraone Grasso
+1057	Quando i PV del Faraone Grasso sono bassi alza uno scudo piramidale: gli attacchi fisici lo scalfiscono appena, quindi porta danni magici!
+1058	Eco del Faraone Grasso
+1059	Dopo il risveglio, il Faraone Grasso mi ha offerto un biscotto di tremila anni (non ho osato mangiarlo). Prossima tappa: Palude Nebbiosa.
+1060	Il Faraone Grasso ha evocato delle mummie!
+1061	Corre velocissimo, pochissimi PV.
+1062	Bolla
+1063	Quando una bolla viene scoppiata, il 50% dei danni passa comunque
+1064	Scudo a bolla infranto
+1065	Festa delle Bolle
+1066	Assetto
+1067	Bam!
+1068	Un tizio col mantello... l'hanno visto anche nella palude.
+1069	Mantello
+1070	Un mantello portato sulle spalle.
+1071	Un mostro volante in armatura di pietra: la maggior parte degli attacchi fisici viene bloccata.
+1072	Un carro rivestito di lastre di ferro, veloce nella carica.
+1073	Un pupazzo di neve in armatura di ferro; alla morte si divide in tre piccole palle di neve.
+1074	Armatura di cuoio
+1075	Faretra di cuoio
+1076	Berretto di cuoio
+1077	Stivali di cuoio
+1078	Bugiardo! Nessuno vuole giocare con l'Inchiostro!
+1079	Pipistrelli che cambiano spesso corsia, difficili da bersagliare in gruppo.
+1080	Esci al sicuro: raggiunto il piano {0}
+1081	Faretra Perforaarmature
+1082	Punta di Freccia Perforaarmature
+1083	Faretra Pesante Perforaarmature
+1084	Faretra Squarcia-Cielo
+1085	Glu glu... l'Inchiostro nero è stato scrollato via e questo principe si sente di nuovo lucido. Scusa se ho sporcato le tue mura.
+1086	Glu glu! Questo principe vuole saltare sulle mura come su un tappeto elastico!
+1087	Normale
+1088	Gli attacchi normali hanno il {0}% di probabilità di incendiare il bersaglio
+1089	Gli attacchi normali hanno il 25% di probabilità di lanciare un fulmine che salta su 3 bersagli, ognuno colpito da danni magici pari ad ATT ×0,6
+1090	Gli attacchi normali hanno il 30% di probabilità di incendiare il bersaglio
+1091	Gli attacchi normali incendiano il bersaglio al colpo
+1092	Gli attacchi normali rallentano il bersaglio del {0}%
+1093	Gli attacchi normali rallentano il bersaglio del 15% (1,5s)
+1094	Gli attacchi normali rallentano il bersaglio del 20% per 1,5 secondi
+1095	Armatura da Cavaliere
+1096	Scivolata del Pinguino
+1097	I pinguini scivolano velocissimi e infliggono molti danni quando colpiscono le mura. La Zona di Gelo può rallentarli.
+1098	Flotta di Palloni
+1099	Cannocchiale
+1100	Vai ›
+1101	Monete insufficienti per {0} livelli
+1102	Monete insufficienti per 2 livelli
+1103	Snap!
+1104	Chelo
+1105	Chelo scava sotto terra per cambiare corsia e attaccare di sorpresa. Quando vedi l'avviso di polvere, tieni pronte le abilità!
+1106	Chelo è un grosso scorpione che ha paura di restare solo. Dice che nella piramide qualcuno sta "raccogliendo l'Inchiostro nero".
+1107	Contro il Tempo
+1108	Cambia priorità bersaglio (T)
+1109	Cambia velocità (F)
+1110	Scarpe Leggere
+1111	Facile
+1112	Equipaggiamento Leggero
+1113	Viaggiare Leggeri
+1114	Cancella salvataggio
+1115	Gira il telefono in orizzontale per giocare a The Last Bastion
+1116	Attiva JavaScript per giocare a The Last Bastion.
+1117	Chiudi manualmente
+1118	Freccia dell'Esorcismo
+1119	Elmo Scacciabestie
+1120	Annulla
+1121	Sblocca nella pagina "Equipaggiamento"
+1122	Sblocca ({0})
+1123	Vai al negozio
+1124	Tutti {0}
+1125	Stordisce tutti i mostri per 2,5 secondi (1 secondo i Boss) e infligge danni pari ad ATT ×3,5.
+1126	I 4 mostri con più PV del campo vengono colpiti da un fulmine ciascuno, ogni fulmine infligge danni magici pari ad ATT ×5.
+1127	Potenziamento totale
+1128	Schermo intero (si attiva da solo al primo tocco dopo l'apertura del gioco)
+1129	Tutto vestito di nero, con solo una fessura per gli occhi; cammina senza fare rumore.
+1130	Occhio Onnisciente
+1131	OK
+1132	Vuoi davvero cancellare il salvataggio e ricominciare da capo? Non si può annullare.
+1133	Orde, mostri volanti
+1134	Molotov
+1135	Mongolfiera
+1136	Maestro delle Missioni
+1137	Fai evolvere un'arma qualsiasi
+1138	Porta una qualsiasi abilità attiva al Lv3
+1139	Diario
+1140	Diario Pieno
+1141	Un golem di ferro fuso: la magia lo scalfisce appena, usa armi fisiche.
+1142	Le pareti della fucina sono rosse. Ogni mostro-eco è rovente, come appena tolto dalla fornace.
+1143	Ingresso della Fucina
+1144	Guardiano della Fucina
+1145	Golem di Ferro Fuso
+1146	Mantello di Lava
+1147	I mostri di lava non temono la magia, ricordati di portare armi fisiche. Kael, torna sano e salvo.
+1148	I mostri di lava non temono la magia; usa cannoni pesanti fisici
+1149	Gigante di Lava
+1150	Golem di Lava
+1151	I Golem di Lava non temono quasi la magia! Passa ad Arco di legno, cannone o boomerang.
+1152	Frattura di Lava
+1153	Trecento anni... sono passati ancora una volta.
+1154	Il teschio sul tricorno ride, e solo un occhio ci vede.
+1155	Tre Sentieri
+1156	Arrivano in gruppi di tre, a gran velocità lungo la stessa corsia.
+1157	Il guardaboschi della foresta, con un arco lungo più alto di lui. ATT ×1,5, velocità d'attacco ×0,73; le frecce pesanti ignorano il 25% dell'armatura e spingono indietro i mostri normali di 12 pixel.
+1158	Tempesta di sabbia, evocazione, cura, scudo: il Faraone Grasso a tre fasi, più duro che mai.
+1159	Arriva la tempesta di sabbia! Velocità d'attacco ridotta
+1160	Vigilia della Tempesta di Sabbia
+1161	Ampolla di Sabbia
+1162	Il deserto? Pare che la faccenda non sia così semplice. Kael, vorresti andare a dare un'occhiata?
+1163	Il sole del deserto è cocente. I mostri qui sono avvolti di bende e le frecce li colpiscono mollemente. Dovremo pensare a qualcos'altro.
+1164	Le mummie del deserto non temono le frecce normali. Dicono che il Bastone magico possa aiutare: vai a dare un'occhiata al negozio!
+1165	Sono arrivati tutti i nemici del deserto. Elimina prima i piccoli sacerdoti e le palle di cactus!
+1166	Guardiano del Deserto
+1167	Avvoltoio del Deserto
+1168	L'Ombra sotto le Dune
+1169	Scorpione di Sabbia
+1170	Gli Scorpioni di Sabbia si scavano sotto terra per schivare gli attacchi e, quando riemergono, sono già vicini alle mura. Pioggia di Frecce e Zona di Gelo ti aiutano.
+1171	Stivali dell'Attimo
+1172	Baia dei Coralli
+1173	Schivata
+1174	Dopo il colpo, il fulmine salta 3 volte tra i mostri vicini, ogni salto infligge il 75% dei danni del precedente. Danni magici.
+1175	Salto del Fulmine
+1176	Il fulmine salta tra più paguri, quindi è difficile farne ritirare uno nel guscio
+1177	Elmo Splendente
+1178	Forte contro:
+1179	Danni ×1,8; il colpo rallenta il bersaglio del 30% (2 secondi).
+1180	Fonti di danno (totale {0})
+1181	Negozio
+1182	Negozio / Assetto
+1183	Stivali da Carovana
+1184	L'ultima salita fino a questo piano non è mai stata ritirata.
+1185	Elmo da Sentinella
+1186	L'esperienza prevista dal gioco
+1187	Impostazioni
+1188	Gittata
+1189	Gittata +{0}%
+1190	Gittata +10%
+1191	Gittata +10%, danni critici +30%
+1192	Gittata +12%
+1193	Gittata +20% (annulla esattamente il buio nei livelli notturni)
+1194	Gittata +5%
+1195	Gittata +6%, prob. critico +3%
+1196	Chi mai farebbe tutto questo ferro qui?
+1197	Avvolto da una folta lana: toglila per prima. Dopo la tosatura corre velocissimo!
+1198	Un elmo cornuto rosso scuro con due piccole ali di drago sul retro; si dice che sputi scintille.
+1199	Marea della Notte Fonda
+1200	Di che gusto?
+1201	Armi Leggendarie
+1202	Paladino del Tempio
+1203	Armatura della Grazia Divina
+1204	Protezione Divina
+1205	Potenzia di {0} livelli, totale {1}
+1206	Potenzia
+1207	Potenzia {0}
+1208	Potenzia livello mura: PV delle mura +10% ({0})
+1209	Evolvi
+1210	Armatura della Vita
+1211	Mantello della Vita
+1212	Luce Sacra
+1213	Armatura di Luce Sacra
+1214	Armatura del Paladino
+1215	Mantello della Fonte Sacra
+1216	Vittorie
+1217	% vittorie
+1218	Sconfitta
+1219	Premio di consolazione per la sconfitta
+1220	Corona Cuor di Leone
+1221	Ciondolo Dente di Leone
+1222	Il figlio del muratore, con un grande scudo di pietra. ATT ×0,97; le mura subiscono 12% di danni in meno e a fine ondata si riparano di un altro 3%.
+1223	Un piccolo gigante di sassi impilati; subisce il 75% di danni magici in meno. Colpiscilo con armi fisiche!
+1224	Gargoyle
+1225	Nido dei Gargoyle
+1226	I Gargoyle volano e indossano un'armatura di pietra, quindi gli attacchi magici funzionano meglio di quelli normali.
+1227	Mantello del Tempo
+1228	Clessidra del Tempo
+1229	Tempo Fermo
+1230	Mantello Spazio-Temporale
+1231	Bussola Spazio-Temporale
+1232	Stivali Cronologici
+1233	Ingranaggio del Tempo
+1234	Vortice del Tempo
+1235	Clessidra del Tempo
+1236	In uso
+1237	Mantello dell'Albero del Mondo
+1238	Armatura dell'Albero del Mondo
+1239	Inarrestabile
+1240	Inarrestabile!
+1241	Prova ad attivare il "Lancio automatico abilità" (in basso a destra in battaglia): le abilità partono da sole quando sono pronte
+1242	Accessorio
+1243	Accessorio 1
+1244	Accessorio 2
+1245	Accessorio 3
+1246	Siamo noi, Fuffo! Stavolta non soffiare troppo forte!
+1247	È stato un incidente! Siamo qui per ripulire!
+1248	Ammazzadei
+1249	Faretra Ammazzadei
+1250	Corona Ammazzadei
+1251	Faretra Assetata di Sangue
+1252	Raccogli
+1253	Difesa riuscita!
+1254	Archivio di difesa
+1255	Diario di difesa
+1256	Guardia delle Mura
+1257	Difendi le mura
+1258	Runa del Guardiano
+1259	Armatura del Guardiano
+1260	Mantello della Guardia
+1261	Premio prime 3 stelle
+1262	Premio prima vittoria
+1263	Prima vittoria +{0} argento
+1264	Statistiche
+1265	Potenziamenti statistiche (permanenti)
+1266	Mostro Ceppo
+1267	I Mostri Ceppo si curano quando non vengono colpiti. Non disperdere il fuoco: abbattili uno alla volta.
+1268	Faretra a Doppio Strato
+1269	Boomerang a Doppia Lama
+1270	Faretra a Due Piume
+1271	Drago di Brina
+1272	Raid dei Draghi di Brina
+1273	Regina Brina
+1274	La Regina Brina ha congelato le mura!
+1275	Eco della Regina Brina
+1276	La Regina Brina congela le mura, che nel frattempo non si possono riparare. Ripara le mura prima che si congelino!
+1277	In realtà la Regina Brina è molto gentile, solo che non è brava con le parole. Ultima destinazione: Frattura di Lava.
+1278	Un draghetto di ghiaccio evocato dalla Regina Brina.
+1279	Faretra di Piume di Brina
+1280	Bandiera del Vento in Poppa
+1281	Le sue spine, dopo la morte, fanno ancora più male.
+1282	Alla morte lascia una zona di fuoco più grande e duratura.
+1283	Alla morte lascia una zona di fuoco; i mostri che la attraversano accelerano.
+1284	Alla morte si divide in 3 zucchette velocissime.
+1285	Alla morte sprigiona una nube di spore che accelera i mostri vicini. Se puoi, abbattilo da lontano.
+1286	Quadrifoglio
+1287	Medaglia d'Argento Quadrifoglio
+1288	Lupi corazzati che arrivano in gruppi di quattro.
+1289	Attacco Rapido
+1290	Livello d'attacco rapido: i carri scheletro infliggono molti danni all'impatto; Zona di Gelo e Ampolla di Gelo sono la salvezza.
+1291	Livello d'attacco rapido: un'ondata ogni 13 secondi! Pinguini e branchi di lupi sono velocissimi, quindi usa in tempo Zona di Gelo e Pioggia di Frecce.
+1292	Livello d'attacco rapido: un'ondata ogni 14 secondi, senza aspettare che liberi il campo! La Zona di Gelo può fermare la marea di conigli.
+1293	Livello d'attacco rapido! Grandi greggi di pecore-nuvola ondata dopo ondata, e le pecore tosate corrono veloci. Zona di Gelo e Pioggia di Frecce sono utilissime.
+1294	Un piccolo oggetto da portare sempre con sé.
+1295	Ghiaccio Frantumato
+1296	Nel guscio
+1297	Resta più a lungo nel guscio.
+1298	Quindi la frattura è il tuo "non voglio stare solo"?
+1299	Velocità di tutti i mostri −3%
+1300	Cotta di maglia
+1301	Come il Signor Ossa, evoca scheletri e risorge una volta dopo essere stato sconfitto, solo che è più duro.
+1302	Sta dicendo grazie!
+1303	Stivali Calpestanuvole
+1304	Mantello del Sole
+1305	Fantasma della Lanterna
+1306	Chiama subito
+1307	Chiama subito (N)
+1308	Chiama subito +{0} rame
+1309	Chiama subito +{0} rame (N)
+1310	Rame dalla chiamata anticipata ×3
+1311	Aumenta i PV massimi delle mura (×1,1 per livello).
+1312	Un guaritore con la lanterna: raggio più ampio, più cure. Eliminalo per primo.
+1313	Rasato!
+1314	Bastone dell'Ira Celeste
+1315	Fuoco dal Cielo
+1316	Coro del Cielo
+1317	Stivali del Destino
+1318	Occhio dei Cieli
+1319	Corona dell'Occhio Celeste
+1320	Mantello Ali del Cielo
+1321	Sfida
+1322	Sfida superata!
+1323	Sfida fallita...
+1324	Salta ›
+1325	Salto
+1326	Salti 3 → 5
+1327	Muro di Ferro
+1328	Corona di Anelli di Ferro
+1329	L'armatura di ferro ha paura della magia? Provo io!
+1330	Un elmo di ferro con due corna ricurve e una barba arancione intrecciata in trecce.
+1331	Lupo di Ferro
+1332	I Lupi di Ferro arrivano a gruppi di quattro. Il fuoco lasciato dai Grumi di Scorie morenti accelera i mostri che lo attraversano.
+1333	Assalto dei Lupi di Ferro
+1334	Elmo di Lamiera
+1335	Armatura a Lamelle di Ferro
+1336	Pupazzo di Neve di Ferro
+1337	I Pupazzi di Neve di Ferro, morendo, si dividono in tre piccole palle di neve; le palle di fuoco dei Diavoletti di Brace fanno molto più male di prima.
+1338	Carro di Ferro
+1339	I Carri di Ferro colpiscono forte le mura e sono veloci: la Zona di Gelo è la salvezza.
+1340	Resta lontano e mette bolle sui mostri; una bolla blocca un attacco. Balestra a ripetizione e Sfera Fulminea scoppiano subito le bolle.
+1341	Supera il livello {0}
+1342	Dopo aver superato il livello {0}, qui arriverà un nuovo vicino
+1343	Gli slot consumabili si sbloccano dopo il livello {0}. Intanto puoi comprarne.
+1344	Si apre dopo il livello {0}
+1345	Dopo il livello {0} si apre "Equipaggiamento": elmi, mantelli, armature, faretre, accessori e stivali
+1346	Si sblocca dopo il livello {0}
+1347	Supera il livello 1
+1348	Supera il livello 100 e richiudi la Frattura del Caos
+1349	Supera il capitolo 8 e fai riposare in pace gli echi del Signor Ossa e del Faraone Grasso
+1350	Supera il capitolo 2
+1351	Supera il capitolo 9 e fai riposare in pace gli echi di Rocky e della Regina Brina
+1352	Supera il capitolo 6 e calma Rombo
+1353	Supera il capitolo 7 e aiuta Bobo a trovare una nuova casa
+1354	Supera il capitolo 3
+1355	Supera il capitolo 4
+1356	Supera il capitolo 1
+1357	Dopo la vittoria, ricordati di potenziare l'ATT al negozio!
+1358	Premio vittoria
+1359	Supera tutti i 9 piani della Torre Demoniaca dei Nove Piani
+1360	Supera tutti i 100 livelli!
+1361	Supera il piano 1 della Torre Demoniaca dei Nove Piani
+1362	Supera il piano 5 della Torre Demoniaca dei Nove Piani
+1363	Generale, Boss
+1364	Possiedi 5000 monete di rame contemporaneamente
+1365	Ne lancia 2 insieme: una sulla corsia bersaglio e una su quella adiacente
+1366	Rame
+1367	Monete di rame
+1368	Sacchetto di Monete di Rame
+1369	Livello rame · comune
+1370	Guadagno di rame +12%, fortuna +4%
+1371	Guadagno di rame +5%
+1372	Filo di Monete di Rame
+1373	Fortezza di Ferro
+1374	Elmo
+1375	Ali ai lati dell'elmo e un anello di luce calda sopra la testa.
+1376	Lente rivelatrice
+1377	Avvoltoi in Volo
+1378	Enciclopedia
+1379	Maestro dell'Enciclopedia
+1380	Studioso dell'Enciclopedia
+1381	Faretra Ammazzadraghi
+1382	Elmo Ammazzadraghi
+1383	Elmo Rompidei
+1384	Corsa dei Conigli
+1385	Corsa dei Conigli corre velocissima. I mostri si distribuiranno su corsie diverse.
+1386	Zampa di Coniglio
+1387	Grande Migrazione dei Conigli
+1388	Arrivano i conigli

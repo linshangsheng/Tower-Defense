@@ -1,0 +1,463 @@
+926	Lửa lò tắt
+927	Tiểu quỷ Than hồng
+928	Hợp xướng Xỉ lò
+929	Cục Xỉ lò
+930	Lục
+931	Cục Xanh
+932	Ống tên Luân hồi
+933	Khi đáp xuống sẽ thả ra bốn Lính Yêu tinh.
+934	Trượt
+935	Áo choàng Chim sẻ
+936	Kỹ năng đã mua phải được xếp vào ô kỹ năng ở trang "Phối đồ" mới mang vào trận được.
+937	Giá bán bằng một nửa giá mua
+938	Pháo hạng nặng bắn chậm, nổ diện rộng khi rơi xuống, bỏ qua 40% giáp của mục tiêu.
+939	Chậm rãi bay tới, khi bị bắn nổ sẽ thả 3 Lính Yêu tinh.
+940	Thầy tế Mèo
+941	Không sao đâu! Lúc tức giận ai cũng nổi sấm mà.
+942	Không sao đâu! Lần sau đến chơi nhớ đi cổng chính nhé.
+943	Lính gác nhỏ vô lễ! Nếm thử canh độc của ta đi!
+944	Không có thuộc tính thêm
+945	Chưa mang kỹ năng chủ động
+946	Cứ 18 giây dùng xúc tu quật con quái gần tường thành nhất (sức tấn công ×3)
+947	Tiếp tế mỗi 2 đợt
+948	Cứ 20 giây bổ một tia sét nhỏ vào con quái nhiều máu nhất (sức tấn công ×4)
+949	Cứ 25 giây phun một cục mực vào con quái gần nhất (sức tấn công ×3)
+950	Cứ 5 đợt có một Boss nhỏ, cứ 10 đợt có một Boss lớn; cứ 3 đợt có một lần tiếp tế chiến trường.
+951	Cứ bị đánh 4 lần là rụt vào vỏ một lúc, trong vỏ gần như đánh không nổi. Đừng chỉ nhắm một con: Nỏ Liên thanh và Cầu Sét chia hỏa lực hiệu quả hơn.
+952	Hết mỗi đợt tường thành hồi thêm {0}%
+953	Hết mỗi đợt hồi 2% máu tối đa / cấp.
+954	Hết mỗi đợt tường thành hồi 3%
+955	Đầu mỗi đợt tường thành nhận khiên bằng {0}% máu tối đa
+956	Đầu mỗi đợt tường thành nhận khiên bong bóng bằng 4% máu tối đa
+957	Đầu mỗi đợt tặng tường thành một khiên bong bóng, hấp thụ sát thương tối đa 3% máu tối đa
+958	Mỗi lần bắn 4 mũi tên nỏ
+959	Mỗi lần thử thách tốn {0}.
+960	Cứ mỗi đòn đánh thứ 6, một tia sét nhỏ giáng xuống mục tiêu, gây thêm sát thương phép ×1.5 sức tấn công
+961	Thỉnh thoảng nhảy một bước dài về phía trước, đang ở trên không thì không đánh trúng được. Chạy nhanh hơn vẻ ngoài!
+962	Cứ 5 đòn đánh, lập tức đánh thêm 1 đòn.
+963	Hết mỗi màn sẽ nhận xu đồng, lần đầu qua màn còn có bạc. Hãy ghé cửa hàng nâng cấp chỉ số, mở khóa vũ khí và kỹ năng rồi quay lại thử sức!
+964	Qua mỗi tầng có thể nhận kim cương của tầng đó rồi rời đi, hoặc leo tiếp: qua thêm một tầng, kim cương nhân đôi; thất bại thì không có gì.
+965	Mỗi con quái bị hạ, tường thành hồi 0.3% máu tối đa
+966	Thử thách hằng ngày
+967	Thử thách hằng ngày "{0}": {1}
+968	Lần qua màn đầu tiên mỗi ngày thưởng 3 bạc, có thể thử lại nhiều lần. Không ảnh hưởng đến kỷ lục sao của màn.
+969	Nhắc nghỉ ngơi sau mỗi {0} phút chơi
+970	Mỗi tầng lên cao, máu quái và sát thương công thành đều ×{0}; máu tường thành nối tiếp tầng trước, không hồi phục (chỉ sửa chữa, thẻ tiếp tế, vật phẩm và kỹ năng mới hồi máu được).
+971	Mỗi nhân vật có diện mạo và thuộc tính thêm riêng, mua bằng xu vàng, mỗi lần mặc một người; chọn ai thì người đó đứng trên tường thành (thuộc tính thêm chỉ có hiệu lực khi Kael ra trận, nên sẽ tự đổi về Kael).
+972	Đầu mỗi đợt, tường thành nhận khiên bằng 12% máu tối đa; sát thương tường thành chịu −10%
+973	Đầm lầy Sương mù
+974	Giáp Mithril
+975	Ống tên Mithril
+976	Mũ Mithril
+977	Áo choàng Mithril
+978	Đám quái dày đặc, linh thể
+979	Đám quái dày đặc, bóng ma nhỏ, quái kháng phép thấp
+980	Miễn phí
+981	Áo choàng Kim giây
+982	Bình Chữa cháy
+983	Ống tên Phá giáp
+984	Giày Nhanh nhẹn
+985	Mặt dây Nữ thần Vận mệnh
+986	Xúc xắc Vận mệnh
+987	Trúng đòn sẽ thiêu cháy mục tiêu, trong 3 giây gây tổng cộng sát thương phép bằng 60% sức tấn công.
+988	Mài đầu tên
+989	Binh Nấm
+990	Binh Nấm khi chết sẽ làm quái xung quanh chạy nhanh hơn. Thử bấm kỹ năng "Trống trận" bên dưới xem!
+991	Rừng Nấm
+992	Phép thuật, nổ diện rộng lớn (bán kính 110, lan 90%), thêm 2 lần sét nhảy.
+993	Phép bị chặn
+994	Sét phép nhảy 5 lần, mỗi lần nhảy chỉ giảm 15%.
+995	Sát thương phép +12%, hồi chiêu kỹ năng −5%
+996	Sát thương phép +25%
+997	Sát thương phép bỏ qua giáp vật lý
+998	Sát thương phép bị kháng phép chặn mất {0}: quái dung nham không sợ phép thuật, hãy đổi sang vũ khí vật lý (Pháo, Nỏ Liên thanh).
+999	Gậy phép
+1000	Kháng phép
+1001	Nanh Ma vương
+1002	Dạng Ma vương! Khi nó tích lực hãy tập trung hỏa lực để ngắt!
+1003	Mực Mực
+1004	Mực Mực, về nhà đi. Chúng tớ sẽ không để cậu một mình nữa.
+1005	Mực Mực?
+1006	Mực Mực... có phải ở đằng kia không?
+1007	Mực Mực "póp" một tiếng, co lại thành một cục nhỏ...
+1008	Mực Mực đã biến lại thành một cục nhỏ. Hóa ra nó chỉ quá cô đơn nên mới làm Mực vương vãi khắp nơi. Giờ nó sống cạnh tường thành, ngày nào cũng nhìn tôi đứng gác.
+1009	Phân thân của Mực Mực. Hạ cả ba phân thân thì bản thể mới lộ diện.
+1010	Tiếng vọng của Mực Mực
+1011	Phân thân Mực Mực
+1012	Mực Mực phân thân rồi! Hạ ba phân thân!
+1013	Mực Mực đã xin lỗi rồi! Chúng tôi đến để giúp!
+1014	Mực, phân thân, che khuất tầm nhìn — đây là nguồn gốc của Khe nứt Hỗn độn. Đánh bại nó là mọi chuyện kết thúc.
+1015	Mực chảy xuống từ núi tuyết phía bắc. Ở đó lạnh đến nỗi Mực cũng đóng băng thành đá.
+1016	Cục Mực
+1017	Yêu tinh Khiên gỗ
+1018	Yêu tinh Khiên gỗ chính diện rất cứng. Boomerang lượt về, Mưa Tên và "Xuyên giáp" đều trị được nó.
+1019	Giáp Khiên gỗ
+1020	Cung gỗ
+1021	Đại quân Xác ướp
+1022	Ống tên gỗ
+1023	Mục tiêu:
+1024	Ưu tiên mục tiêu
+1025	Ma Nghĩa địa
+1026	Nồi canh đó ngửi như tất chưa giặt!
+1027	Tiếng bước chân đó cũng nên nghỉ ngơi rồi.
+1028	Vậy thì hãy để mọi thứ... nguội đi.
+1029	Vậy cứ giữ thành thêm lần nữa! Lần này tôi có quần áo mới rồi!
+1030	Ở đó có một sinh vật nhỏ rất cô đơn. Lính gác nhỏ, hãy thay tôi đến thăm nó.
+1031	Thế cậu kẹp nát được cát không? ...Chắc là không nhỉ.
+1032	Vậy chúng ta cùng xây một cái nhé! Thợ của vương quốc giỏi xây nhà lớn nhất.
+1033	Canh bí ngô nấu xong rồi! Hôm nay không bỏ một giọt Mực nào.
+1034	Ruộng Bí ngô
+1035	Đầu Bí ngô
+1036	Những quả bí ngô nhỏ sau khi Đầu Bí ngô nứt ra.
+1037	Đầu Bí ngô khi chết sẽ nứt thành 3 quả bí ngô nhỏ. Hạ nó từ xa để có thời gian dọn dẹp.
+1038	Độ khó
+1039	Độ khó quy theo màn cao nhất bạn đã qua (tối thiểu tính theo màn 60, tối đa tính theo màn 70); mỗi tầng tiếp tế 2 lần; thoát giữa chừng hoặc tải lại trang tính là thất bại.
+1040	Ừ! Tớ hứa!
+1041	Ừ. Giữ được tường thành, cũng là giữ được mọi người.
+1042	Ừ. Lần này, tớ tự quay về.
+1043	Hồ sơ giữ thành của bạn
+1044	Móng tay của cậu chính là cái kìm mà!
+1045	Cậu xem, tớ hút hết Mực về rồi. Cầu vồng lại có bảy màu.
+1046	Cậu đang bảo vệ ai ở bên trong à?
+1047	Bạn có {0}
+1048	Cậu biết không? Đàn mộc cầm làm từ xương sườn của tôi đấy. Đùa thôi.
+1049	Huy hiệu Niết bàn
+1050	Tiếng vọng của Nữ hoàng hóa thành một làn tuyết nhẹ, rơi xuống lửa lò kêu "xèo" một tiếng. Lửa lò cuối cùng cũng dịu đi một chút.
+1051	Lò sưởi tay
+1052	Cạch—— xin lỗi, hễ căng thẳng là tôi lại khép vỏ.
+1053	Cạch... thôi được, vỏ của các cậu đúng là đã có chủ hết rồi.
+1054	Làn xếp hàng dài
+1055	Làn xếp hàng dài, Yêu tinh Khiên gỗ
+1056	Pharaoh Béo
+1057	Khi máu thấp, Pharaoh Béo sẽ dựng khiên kim tự tháp: đòn vật lý gần như vô dụng, nhất định phải mang sát thương phép!
+1058	Tiếng vọng của Pharaoh Béo
+1059	Sau khi Pharaoh Béo tỉnh dậy, ông ấy mời tôi một chiếc bánh quy ba nghìn năm tuổi (tôi không dám ăn). Điểm đến tiếp theo: Đầm lầy Sương mù.
+1060	Pharaoh Béo đã triệu hồi xác ướp!
+1061	Chạy rất nhanh, máu rất ít.
+1062	Bong bóng
+1063	Khi bong bóng bị chọc vỡ, vẫn có 50% sát thương có hiệu lực
+1064	Khiên bong bóng đã vỡ
+1065	Tiệc Bong bóng
+1066	Phối đồ
+1067	Bụp!
+1068	Kẻ khoác áo choàng... bên đầm lầy cũng có người từng thấy.
+1069	Áo choàng
+1070	Áo choàng khoác trên vai.
+1071	Quái bay khoác giáp đá: phần lớn đòn vật lý bị chặn.
+1072	Xe chiến bọc tấm sắt, lao rất nhanh.
+1073	Người tuyết khoác giáp sắt, khi chết vỡ thành ba cục tuyết nhỏ.
+1074	Giáp da
+1075	Ống tên da
+1076	Mũ da
+1077	Ủng da
+1078	Nói dối! Chẳng ai muốn chơi với Mực cả!
+1079	Dơi hay đổi làn, rất khó tập trung hỏa lực.
+1080	Rời đi an toàn: leo đến tầng {0}
+1081	Ống tên Xuyên giáp
+1082	Mũi tên Xuyên giáp
+1083	Ống tên nặng Xuyên giáp
+1084	Ống tên Phá thiên
+1085	Póp... Mực đen bị đánh văng rồi, bản hoàng tử hình như tỉnh táo lại. Xin lỗi, làm bẩn tường thành của cậu.
+1086	Póp póp! Hoàng tử này muốn nhảy bạt nhún trên tường thành!
+1087	Thường
+1088	Đòn đánh thường có {0}% cơ hội thiêu cháy mục tiêu
+1089	Đòn đánh thường có 25% cơ hội phóng một tia sét nhảy qua 3 mục tiêu, mỗi mục tiêu chịu sát thương phép ×0.6 sức tấn công
+1090	Đòn đánh thường có 30% cơ hội thiêu cháy mục tiêu
+1091	Đòn đánh thường trúng sẽ thiêu cháy mục tiêu
+1092	Đòn đánh thường làm chậm mục tiêu {0}%
+1093	Đòn đánh thường làm chậm mục tiêu 15% (1.5 giây)
+1094	Đòn đánh thường làm chậm mục tiêu 20% trong 1.5 giây
+1095	Giáp Hiệp sĩ
+1096	Chim cánh cụt Trượt
+1097	Chim cánh cụt trượt rất nhanh, đâm vào tường thành gây rất nhiều sát thương. Vùng Đóng băng làm chúng chậm lại.
+1098	Hạm đội Khinh khí cầu
+1099	Ống nhòm
+1100	Đi tới ›
+1101	Không đủ xu để nâng {0} cấp
+1102	Không đủ xu để nâng 2 cấp
+1103	Kẹp!
+1104	Càng Càng
+1105	Càng Càng chui xuống đất đổi làn tập kích. Thấy cảnh báo bụi cát thì chuẩn bị kỹ năng!
+1106	Càng Càng là một con bọ cạp lớn sợ cô đơn. Nó nói trong kim tự tháp có người đang "thu thập Mực đen".
+1107	Chạy đua thời gian
+1108	Đổi ưu tiên mục tiêu (T)
+1109	Đổi tốc độ (F)
+1110	Giày Nhẹ
+1111	Dễ
+1112	Gọn nhẹ
+1113	Ra trận gọn nhẹ
+1114	Xóa dữ liệu
+1115	Hãy xoay ngang điện thoại để chơi Pháo đài Cuối cùng
+1116	Hãy bật JavaScript để chơi Pháo đài Cuối cùng.
+1117	Hãy đóng thủ công
+1118	Tên Trừ tà
+1119	Mũ Xua thú
+1120	Hủy
+1121	Vào trang "Trang bị" để mở khóa
+1122	Mở khóa ({0})
+1123	Đến cửa hàng
+1124	Tất cả {0}
+1125	Làm choáng toàn bộ quái 2.5 giây (Boss 1 giây), và gây sát thương ×3.5 sức tấn công.
+1126	4 con quái nhiều máu nhất trên sân mỗi con bị một tia sét bổ trúng, mỗi tia gây sát thương phép ×5 sức tấn công.
+1127	Cường hóa toàn diện
+1128	Toàn màn hình (tự vào ở lần chạm đầu tiên sau khi mở game)
+1129	Toàn thân đồ đen, chỉ lộ một khe mắt; đi không phát ra tiếng.
+1130	Mắt Toàn tri
+1131	Đồng ý
+1132	Chắc chắn muốn xóa dữ liệu và chơi lại từ đầu? Không thể hoàn tác.
+1133	Đám quái, quái bay
+1134	Bình Xăng cháy
+1135	Khinh khí cầu
+1136	Cao thủ Nhiệm vụ
+1137	Tiến cấp một vũ khí bất kỳ
+1138	Nâng một kỹ năng chủ động bất kỳ lên Lv3
+1139	Nhật ký
+1140	Nhật ký đã đầy
+1141	Khôi lỗi làm từ sắt nung chảy: phép thuật gần như vô dụng, hãy dùng vũ khí vật lý.
+1142	Tường lò luyện đỏ rực. Con quái Tiếng vọng nào cũng nóng bỏng, như vừa được lấy ra khỏi lò.
+1143	Cửa Lò luyện
+1144	Người bảo vệ Lò luyện
+1145	Khôi lỗi Sắt nung
+1146	Áo choàng Dung nham
+1147	Quái dung nham không sợ phép thuật, nhớ mang vũ khí vật lý. Kael — nhất định phải trở về bình an.
+1148	Quái dung nham không sợ phép thuật, hãy dùng pháo hạng nặng vật lý
+1149	Người khổng lồ Dung nham
+1150	Khôi lỗi Dung nham
+1151	Khôi lỗi Dung nham gần như không sợ phép thuật! Hãy đổi sang Cung gỗ, Pháo hoặc Boomerang.
+1152	Khe nứt Dung nham
+1153	Ba trăm năm... lại trôi qua thêm một lượt nữa.
+1154	Cái đầu lâu trên mũ ba góc biết cười, chỉ có một mắt nhìn thấy được.
+1155	Ba con đường nhỏ
+1156	Đi theo nhóm ba, lao nhanh trên cùng một làn.
+1157	Người giữ rừng, đeo một cây trường cung cao hơn cả anh. Sức tấn công ×1.5, tốc độ đánh ×0.73; tên nặng bỏ qua 25% giáp và đẩy quái thường lùi 12 pixel.
+1158	Bão cát, triệu hồi, hồi máu, khiên — Pharaoh Béo ba giai đoạn, cứng hơn xưa.
+1159	Bão cát ập đến! Tốc độ đánh giảm
+1160	Đêm trước Bão cát
+1161	Bình Hạt cát
+1162	Sa mạc? Xem ra mọi chuyện không đơn giản. Kael, cậu có muốn đến xem không?
+1163	Mặt trời sa mạc nóng quá. Quái ở đây quấn băng gạc, tên bắn vào mềm nhũn, phải nghĩ cách khác.
+1164	Xác ướp sa mạc không sợ tên thường. Nghe nói Gậy phép giúp được, hãy ghé cửa hàng xem sao!
+1165	Toàn bộ kẻ địch của sa mạc đều đến rồi. Hãy dọn thầy tế nhỏ và cầu xương rồng trước!
+1166	Người bảo vệ Sa mạc
+1167	Kền kền Sa mạc
+1168	Cái bóng dưới Cồn cát
+1169	Bọ cạp Cát
+1170	Bọ cạp Cát chui xuống đất né đòn, lúc chui lên đã sát tường thành. Mưa Tên và Vùng Đóng băng giúp bạn đối phó.
+1171	Giày Chớp nhoáng
+1172	Vịnh San hô
+1173	Né
+1174	Sét trúng đích rồi nhảy 3 lần giữa các quái gần đó, mỗi lần nhảy gây 75% sát thương lần trước. Sát thương phép.
+1175	Sét nhảy
+1176	Sét nhảy giữa nhiều con ốc mượn hồn, khó làm một con rụt vào vỏ
+1177	Mũ Lấp lánh
+1178	Giỏi chống:
+1179	Sát thương ×1.8; trúng đòn làm chậm mục tiêu 30% (2 giây).
+1180	Nguồn sát thương (tổng {0})
+1181	Cửa hàng
+1182	Cửa hàng / Phối đồ
+1183	Giày Thương đoàn
+1184	Lần leo trước đến đây vẫn chưa nhận thưởng.
+1185	Mũ Lính gác
+1186	Trải nghiệm chuẩn
+1187	Cài đặt
+1188	Tầm bắn
+1189	Tầm bắn +{0}%
+1190	Tầm bắn +10%
+1191	Tầm bắn +10%, sát thương chí mạng +30%
+1192	Tầm bắn +12%
+1193	Tầm bắn +20% (vừa đủ bù bóng tối ở màn ban đêm)
+1194	Tầm bắn +5%
+1195	Tầm bắn +6%, tỉ lệ chí mạng +3%
+1196	Ai lại đi làm nhiều sắt thế này ở đây?
+1197	Bọc một lớp lông cừu dày, phải đánh rụng lông trước. Cạo xong lông thì chạy nhanh như bay!
+1198	Mũ sừng đỏ thẫm, sau lưng có đôi cánh rồng nhỏ, nghe nói biết phun tia lửa.
+1199	Triều đêm khuya
+1200	Vị gì thế?
+1201	Thần binh xuất thế
+1202	Thánh kỵ sĩ Thần điện
+1203	Giáp Thần ân
+1204	Thần hộ mệnh
+1205	Nâng {0} cấp, tổng cộng {1}
+1206	Nâng cấp
+1207	Nâng cấp {0}
+1208	Nâng cấp tường thành: máu tường thành +10% ({0})
+1209	Tiến cấp
+1210	Giáp Sinh mệnh
+1211	Áo choàng Sinh mệnh
+1212	Thánh quang
+1213	Giáp Thánh quang
+1214	Giáp Thánh kỵ sĩ
+1215	Áo choàng Suối thánh
+1216	Số lần thắng
+1217	Tỉ lệ thắng
+1218	Thất bại
+1219	Thưởng an ủi khi thất bại
+1220	Vương miện Sư tâm
+1221	Mặt dây Nanh sư tử
+1222	Con trai thợ nề, vác một tấm khiên đá lớn. Sức tấn công ×0.97; tường thành chịu ít hơn 12% sát thương, và hồi thêm 3% sau mỗi đợt.
+1223	Người khổng lồ nhỏ ghép từ đá, giảm 75% sát thương phép. Hãy dùng vũ khí vật lý!
+1224	Tượng Gargoyle
+1225	Tổ Gargoyle
+1226	Gargoyle biết bay, lại khoác giáp đá — đòn phép hiệu quả hơn đòn thường.
+1227	Áo choàng Thời gian
+1228	Đồng hồ cát Thời gian
+1229	Ngưng đọng Thời gian
+1230	Áo choàng Không-Thời gian
+1231	La bàn Không-Thời gian
+1232	Giày Thời tự
+1233	Bánh răng Thời gian
+1234	Vòng xoáy Thời gian
+1235	Đồng hồ cát của Thời gian
+1236	Đang dùng
+1237	Áo choàng Thế giới thụ
+1238	Giáp Thế giới thụ
+1239	Không thể ngăn cản
+1240	Không thể ngăn cản!
+1241	Thử bật "Tự động dùng kỹ năng" (góc dưới bên phải khi chiến đấu), kỹ năng hồi chiêu xong sẽ tự thi triển
+1242	Phụ kiện
+1243	Phụ kiện 1
+1244	Phụ kiện 2
+1245	Phụ kiện 3
+1246	Là chúng tôi đây, Vù Vù! Lần này đừng thổi gió mạnh quá nhé!
+1247	Là tai nạn thôi! Chúng tôi đến để lau sạch!
+1248	Diệt Thần
+1249	Ống tên Diệt Thần
+1250	Vương miện Diệt Thần
+1251	Ống tên Khát máu
+1252	Sưu tập
+1253	Giữ thành thành công!
+1254	Hồ sơ giữ thành
+1255	Nhật ký giữ thành
+1256	Lính giữ thành
+1257	Bảo vệ Tường thành
+1258	Phù văn Hộ mệnh
+1259	Giáp Hộ mệnh
+1260	Áo choàng Lính gác
+1261	Thưởng ba sao lần đầu
+1262	Thưởng qua màn lần đầu
+1263	Hoàn thành lần đầu +{0} bạc
+1264	Chỉ số
+1265	Nâng cấp chỉ số (vĩnh viễn)
+1266	Quái Gốc cây
+1267	Quái Gốc cây không bị đánh sẽ hồi máu. Đừng phân tán hỏa lực, hạ từng con một.
+1268	Ống tên Hai tầng
+1269	Boomerang Hai lưỡi
+1270	Ống tên Hai lông vũ
+1271	Rồng Sương
+1272	Rồng Sương Không kích
+1273	Nữ hoàng Sương Sương
+1274	Nữ hoàng Sương Sương đã đóng băng tường thành!
+1275	Tiếng vọng của Nữ hoàng Sương Sương
+1276	Nữ hoàng Sương Sương sẽ đóng băng tường thành, trong lúc đó không sửa được. Hãy sửa tường thành trước khi nó bị đóng băng!
+1277	Nữ hoàng Sương Sương thật ra rất dịu dàng, chỉ là không khéo ăn nói. Điểm đến cuối cùng: Khe nứt Dung nham.
+1278	Băng long nhỏ do Nữ hoàng Sương Sương triệu hồi.
+1279	Ống tên Lông Sương
+1280	Cờ Thuận gió
+1281	Gai của nó đâm đau hơn sau khi chết.
+1282	Khi chết để lại vùng lửa lớn hơn, cháy lâu hơn.
+1283	Khi chết để lại một vùng lửa, quái đi qua sẽ chạy nhanh hơn.
+1284	Khi chết vỡ thành 3 quả bí ngô nhỏ chạy rất nhanh.
+1285	Khi chết tung ra đám bào tử, làm quái xung quanh chạy nhanh hơn. Cố hạ nó từ xa.
+1286	Cỏ Bốn lá
+1287	Huy chương Bạc Bốn lá
+1288	Những con sói giáp sắt lao tới theo nhóm bốn.
+1289	Tốc công
+1290	Màn tốc công: xe chiến Xương đâm tường rất đau, Vùng Đóng băng và Bình Đóng băng là cứu tinh.
+1291	Màn tốc công: cứ 13 giây một đợt! Chim cánh cụt và bầy sói đều rất nhanh, hãy dùng Vùng Đóng băng và Mưa Tên kịp lúc.
+1292	Màn tốc công: cứ 14 giây một đợt, không chờ bạn dọn sân! Vùng Đóng băng cầm chân được đàn thỏ.
+1293	Màn tốc công! Từng đàn cừu mây hết đợt này đến đợt khác, cừu bị cạo lông chạy rất nhanh. Vùng Đóng băng và Mưa Tên rất hữu ích.
+1294	Món đồ nhỏ mang theo bên mình.
+1295	Vỡ băng
+1296	Rụt vỏ
+1297	Thời gian rụt vỏ lâu hơn.
+1298	Vậy khe nứt chính là "không muốn ở một mình" của cậu sao?
+1299	Tốc độ mọi quái −3%
+1300	Giáp xích
+1301	Nó cũng như Ông Xương, triệu hồi bộ xương và hồi sinh một lần sau khi bị hạ, chỉ là cứng hơn.
+1302	Nó đang nói cảm ơn kìa!
+1303	Giày Đạp mây
+1304	Áo choàng Mặt trời
+1305	Ma Đèn lồng
+1306	Gọi sớm
+1307	Gọi sớm (N)
+1308	Gọi sớm +{0} đồng
+1309	Gọi sớm +{0} đồng (N)
+1310	Xu đồng từ gọi sớm ×3
+1311	Tăng máu tối đa của tường thành (×1.1 mỗi cấp).
+1312	Bác sĩ xách đèn: phạm vi lớn hơn, hồi nhiều hơn, hãy hạ nó trước.
+1313	Cạo sạch rồi!
+1314	Trượng Thiên phạt
+1315	Hỏa Thiên giáng
+1316	Hợp xướng Bầu trời
+1317	Giày Thiên mệnh
+1318	Mắt Thiên khung
+1319	Vương miện Thiên nhãn
+1320	Áo choàng Cánh trời
+1321	Thử thách
+1322	Thử thách thành công!
+1323	Thử thách thất bại...
+1324	Bỏ qua ›
+1325	Nhảy
+1326	Nhảy 3 → 5 lần
+1327	Thành sắt
+1328	Vương miện Vòng sắt
+1329	Giáp sắt có sợ phép thuật không nhỉ? Để tôi thử!
+1330	Mũ sắt có hai chiếc sừng cong, bộ râu cam tết thành bím.
+1331	Sói Sắt
+1332	Sói Sắt lao tới theo nhóm bốn. Lửa do Cục Xỉ lò để lại khi chết làm quái đi qua chạy nhanh hơn.
+1333	Sói Sắt Tập kích
+1334	Mũ Tôn sắt
+1335	Giáp Mảnh sắt
+1336	Người Tuyết Sắt
+1337	Người Tuyết Sắt khi chết vỡ thành ba cục tuyết nhỏ; cầu lửa của Tiểu quỷ Than hồng đau hơn trước nhiều.
+1338	Xe Chiến Sắt
+1339	Xe Chiến Sắt đâm tường rất đau, lại lao nhanh — Vùng Đóng băng là cứu tinh.
+1340	Đậu ở xa, bọc bong bóng cho quái; bong bóng chặn được một đòn. Nỏ Liên thanh và Cầu Sét chọc vỡ bong bóng rất nhanh.
+1341	Qua màn {0}
+1342	Sau khi qua màn {0}, một người hàng xóm mới sẽ dọn đến đây
+1343	Ô vật phẩm tiêu hao mở sau khi qua màn {0}. Bạn có thể mua sẵn từ bây giờ.
+1344	Mở sau khi qua màn {0}
+1345	Sau khi qua màn {0} sẽ mở "Trang bị": mũ, áo choàng, giáp, ống tên, phụ kiện và giày
+1346	Mở khóa sau khi qua màn {0}
+1347	Qua màn 1
+1348	Qua màn 100, khép lại Khe nứt Hỗn độn
+1349	Qua chương 8, để tiếng vọng của Ông Xương và Pharaoh Béo yên nghỉ
+1350	Qua chương 2
+1351	Qua chương 9, để tiếng vọng của Nham Nham và Nữ hoàng Sương Sương yên nghỉ
+1352	Qua chương 6, giúp Đùng Đùng nguôi giận
+1353	Qua chương 7, giúp Bobo tìm nhà mới
+1354	Qua chương 3
+1355	Qua chương 4
+1356	Qua chương 1
+1357	Qua màn xong nhớ ghé cửa hàng nâng cấp sức tấn công!
+1358	Thưởng qua màn
+1359	Qua cả 9 tầng của Tháp Yêu Chín Tầng
+1360	Qua cả 100 màn!
+1361	Qua tầng 1 của Tháp Yêu Chín Tầng
+1362	Qua tầng 5 của Tháp Yêu Chín Tầng
+1363	Chung, Boss
+1364	Cùng lúc có 5000 xu đồng
+1365	Ném 2 cái cùng lúc: một vào làn mục tiêu, một vào làn bên cạnh
+1366	Đồng
+1367	Xu đồng
+1368	Túi xu đồng
+1369	Hạng đồng · Thông dụng
+1370	Thu nhập xu đồng +12%, may mắn +4%
+1371	Thu nhập xu đồng +5%
+1372	Xâu tiền đồng
+1373	Thành đồng vách sắt
+1374	Mũ giáp
+1375	Hai bên mũ có cánh, trên đầu có vòng sáng ấm áp.
+1376	Kính Thấu thị
+1377	Kền kền Lượn vòng
+1378	Sổ tay
+1379	Bậc thầy Sổ tay
+1380	Học giả Sổ tay
+1381	Ống tên Diệt Rồng
+1382	Mũ Diệt Rồng
+1383	Mũ Diệt Thần
+1384	Thỏ Xung Xung
+1385	Thỏ Xung Xung chạy rất nhanh. Quái sẽ phân tán ra các làn khác nhau.
+1386	Chân Thỏ
+1387	Đại di cư của Thỏ
+1388	Thỏ đến rồi

@@ -1,0 +1,463 @@
+0	, bisa memakai 3 sekaligus
+1	: gagal {0} kali berturut-turut. Serangan dan HP tembok naik di ronde ini. Direset setelah kamu menang.
+2	...Angin berhenti. Di depan sana, sumber Tinta itu.
+3	...Kakak. Kakak. Akhirnya kalian datang.
+4	...Dum. Tidak bisa memukul apa-apa.
+5	...Dum. Maaf ya. Akulah yang membuat hujan turun.
+6	...Langkah kaki itu berhenti.
+7	...Hari ini juga tenang. Bagus.
+8	...Cerminnya pecah, dan akhirnya aku bisa melihat jelas. Tinta itu merembes keluar dari celah gunung berapi di selatan.
+9	...Tapi aku tidak bisa berhenti. Tolong, kalahkan mereka semua, ya?
+10	...Retakannya menutup. Sudah tenang.
+11	...Baunya seperti Tinta.
+12	...Cangkang itu, jangan-jangan tembok kita?
+13	...Kamu benar-benar tidak membenciku?
+14	...Pohon-pohon di hutan bilang ada prajurit kecil yang bertahan sampai ke sini. Aku Rowan, penjaga hutan.
+15	...Aku ingat kamu. Aku ingat tembok ini. Tapi aku tidak ingat kenapa aku datang.
+16	...Terima kasih. Mengulang terus... capek sekali.
+17	...Terima kasih sudah meniup kabutnya. Aku Nova. Aku membawa lentera di rawa untuk menuntun hewan-hewan kecil yang tersesat.
+18	...Punya teman rasanya menyenangkan sekali.
+19	...Datang lagi untuk memukulku. Semua orang cuma bisa memukulku.
+20	...Benar. Cantik sekali. A-aku tadi tidak terlalu galak, kan?
+21	...Kael, lihat langit. Sisa Tinta terakhir yang kuhamburkan melayang ke pelangi.
+22	· Mengisi ulang
+23	· Rekor
+24	· Gelombang berikut {0} dtk
+25	‹ Judul
+26	‹ Kembali
+27	(Setelah Lv30, tiap level menambah +{0}% HP Lv30)
+28	(Hasil menurun tiap level setelah batas dasar)
+29	(Semua slot sudah terbuka)
+30	(Kosongkan)
+31	(Menangkan level {0} untuk membuka slot lagi)
+32	(Lepas {0}, {1} dikembalikan ke tas)
+33	(Lepas)
+34	(Melewati batas dasar Lv{0}: hasil menurun tiap level dan biaya terus naik)
+35	(Lengkap)
+36	(Sudah lengkap dipakai)
+37	(Sudah maksimal)
+38	(Ada di slot lain, akan ditukar)
+39	(Di bagian "Pahlawan" halaman perlengkapan, kamu bisa memasukkan Atlas: dia membuat tembok lebih kokoh.)
+40	(Di bagian "Pahlawan" halaman perlengkapan, kamu bisa memasukkan Lyra.)
+41	(Nova bergabung! Jangkauannya tidak berkurang di level malam.)
+42	(Rowan bergabung! Panah beratnya menembus baju zirah.)
+43	{0}\nJeda {1} dtk, dibawa {2}
+44	{0} gelombang
+45	{0} gelombang (termasuk Boss)
+46	{0}m {1}d
+47	Set {0} "{1}": {2} → {3}{4}
+48	{0} hari
+49	{0} tembaga → 1
+50	Sinergi {0} "{1}": {2}{3}
+51	HP {0} {1} →
+52	{0} raja iblis + {1} iblis kecil
+53	{0} perak → 1
+54	{0} jenis
+55	{0}; mulai Lv3, tiap naik level, damage / jumlah panah / pemulihan / durasi makin kuat dan jeda makin singkat
+56	{0}: tenaga +{1}% ({2})
+57	{0} (dimiliki {1} / {2}{3})
+58	Atribut {0}
+59	Kualitas {0}
+60	/dtk
+61	⏩ Kecepatan 2x
+62	⏭ Kecepatan 3x
+63	▶ Kecepatan 1x
+64	★ Keahlian
+65	♾ Mode Tanpa Akhir
+66	♾ Mode Tanpa Akhir {0}
+67	⚠ Boss datang!
+68	✔ Dipakai
+69	✔ Selesai
+70	✔ Dimiliki
+71	✦ Sudah naik tingkat
+72	✨ Set "{0}": {1}
+73	🎯 Misi level: {0}
+74	🎯 Misi level "{0}" selesai: +{1} perak
+75	🎺 Semangat bala bantuan +{0}%
+76	🏆 Pencapaian
+77	🏆 Pencapaian "{0}" tercapai: {1} (+{2})
+78	🏆 Pencapaian "{0}" tercapai +{1}
+79	🏘 Kota Kerajaan
+80	🏯 Menara Iblis Sembilan Lantai
+81	🏯 Menara Iblis Sembilan Lantai {0}
+82	👉 Tingkatkan "Serangan", dan Kael bisa membasmi monster lebih cepat!
+83	👑 Menang pertama di kesulitan Tantangan: dapat mahkota
+84	👑 Menang di kesulitan Tantangan untuk dapat mahkota
+85	👑 Sudah menang di kesulitan Tantangan
+86	👕 Lemari Karakter
+87	📅 Tantangan Harian
+88	📅 Tantangan Harian · {0}
+89	📅 Tantangan Harian ✔
+90	📊 Laporan Tempur
+91	📔 Buku Harian Penjaga Kael
+92	📜 Arsip Penjagaan
+93	📦 Perbekalan level ini:
+94	📦 Peti perbekalan tiba!
+95	Kombo 10 pukulan!
+96	12 meteor jatuh menimpa monster acak di seluruh medan, masing-masing menghasilkan damage ATK ×8. Monster dalam radius 110 piksel menerima 60%.
+97	16 panah × ATK 1,6
+98	Menjatuhkan 16 panah dalam 2 detik, masing-masing mengenai satu monster acak dalam jangkauan dengan damage ATK ×1,6, menembus perisai.
+99	20 panah × 1,7
+100	24 panah × 1,8, monster yang terkena terbakar
+101	3 panah bisa mengenai beberapa tentakel sekaligus; Busur Kayu dan Meriam yang sudah maksimal juga cocok melawan Bobo
+102	Kelima jalur terbuka! Kelelawar berkeliaran di antara jalur.
+103	Hatsyi! Helmku membeku.
+104	Aduh... ternyata yang kumasak itu Tinta, bukan sup. Pantas rasanya tidak enak.
+105	Hadiah Hiburan
+106	Malam
+107	Malam · Arwah
+108	Level malam: pandangan terbatas, jangkauan -30%. Perbekalan "Suar" dan "Mata Jauh" sangat berguna.
+109	Tampilkan mata monster saat malam (default mati, gelap gulita)
+110	Pembunuh Bayangan
+111	Pembunuh Bayangan muncul jauh lebih awal (x < 800)
+112	Pembunuh Bayangan bersembunyi dari jauh dan baru muncul saat dekat. Perbekalan "Teropong" membuat mereka terlihat lebih cepat.
+113	Ninja Bayangan
+114	Lonjakan Arkana
+115	Jual "{0}"? Harga jual {1} (setengah harga beli). Nanti bisa dibeli lagi dengan harga penuh.
+116	Tempel teks simpanan hasil ekspor di sini
+117	Salin dan simpan teks di bawah ini baik-baik. Setelah ganti perangkat atau menghapus data browser, tempel kembali lewat "Impor Simpanan" untuk memulihkan progres.
+118	Pembantai Seratus
+119	Parade Malam Iblis
+120	Zirah Pelat
+121	Spora
+122	Tabung Panah Es Tipis
+123	Lingkaran pelindungnya lebih besar dan mengurangi lebih banyak damage. Hancurkan dia dulu.
+124	Zirah Benteng
+125	Penjaga Benteng
+126	Badai salju! Kecepatan serang turun
+127	Gulungan Badai Salju
+128	Badai datang! Semua monster jadi lebih cepat!
+129	Krit
+130	Tabung Panah Krit
+131	Peluang krit
+132	Peluang krit +{0}%
+133	Peluang krit +10%.
+134	Peluang krit +3%
+135	Peluang krit +3%; damage fisik terhadap arwah +25%
+136	Peluang krit +4%; penalti jangkauan level malam berkurang setengah
+137	Peluang krit +8%
+138	Damage krit
+139	Damage krit +{0}%
+140	Damage krit +10%
+141	Damage krit +15%
+142	Damage krit +25%
+143	Damage krit +30%
+144	Mahkota Tiran
+145	Ledakan mendorong monster kecil dalam jangkauan mundur 60 piksel dan memperlambat 40% (1,5 dtk); damage +50% terhadap Boss dan tentakel
+146	Radius ledakan 60 → 85, damage percikan 60% → 75%
+147	Serigala Kutub
+148	Serigala Kutub menyerbu bertiga. Zona Beku bisa menahan seluruh kawanan sekaligus.
+149	Viking Utara
+150	Bebe
+151	Bebe mencatat setiap kerang di buku kecilnya. Katanya, tembok adalah "cangkang" terbesar yang pernah dia lihat, sayangnya tidak bisa dibagi ke siapa pun.
+152	Bebe nyaris tak bisa dipukul saat cangkangnya tertutup dan menyemburkan mutiara saat terbuka, tapi dia paling takut sakit. Serang dengan Sambaran Petir dan Hujan Panah saat cangkang terbuka!
+153	Bebe panik: cangkangnya membuka dan menutup lebih cepat!
+154	Jimat Kerang
+155	Tas
+156	Tas {0}
+157	Belum ada item di tas. Beli di halaman "Item".
+158	Item ini tidak ada di tasmu
+159	Tasmu kosong. Beli item di halaman "Item".
+160	Musik
+161	Lencana Terpojok
+162	Medali Terpojok
+163	Tabung panah yang disandang di punggung.
+164	Saat mati, ia menembakkan duri yang melukai monster di sekitar. Tunggu sampai ia masuk ke kerumunan baru dikalahkan! Saat tiba di tembok, ia menusuknya dulu.
+165	Kesetrum sampai kebas!
+166	Skill Pasif
+167	Skill Pasif (otomatis)
+168	Slot Skill Pasif
+169	Damage yang diblokir zirah / resistansi sihir
+170	Bola hijau yang terkikis cahaya bulan: HP tinggi, dan memulihkan diri saat tidak dipukul.
+171	Pingsan terkena guncangan!
+172	Kue-kue Firaun ini... belum selesai dipanggang!
+173	Firaun ini tidur tiga ribu tahun, lalu dibangunkan! Siapa yang berisik?!
+174	Firaun ini sedang meneliti rasa kue baru. Kali ini hanya tiga ratus tahun di oven.
+175	Saat tembok roboh pertama kali di level ini, langsung bangkit dengan 60% HP maks (hanya sekali)
+176	Pendapatan tembaga level ini +{0}%
+177	Pendapatan tembaga level ini +10%
+178	Pendapatan tembaga level ini +30%
+179	Pendapatan tembaga level ini +60%, dan langsung dapat sejumlah tembaga
+180	Kastilku... kok panas sekali? Siapa yang menyalakan tungku?
+181	Wujud asli muncul! Damage +50%
+182	Pangeran ini membuka toko trampolin di alun-alun. Lompatan pertama gratis!
+183	Mahkota bab (menang di kesulitan Tantangan)
+184	Mumi Perban
+185	Bola Perban
+186	Bola Perban, perisai, kerumunan monster kecil
+187	Bola Perban kebal serangan fisik. Buka "Tongkat Sihir" di toko dengan perak, atau bawa Sambaran Petir dan Bakar!
+188	Perbannya sudah dicuci bersih, wangi!
+189	Zirah Benteng Kokoh
+190	Penangkal Petir
+191	Penangkal petir!
+192	Kelelawar
+193	Gua Kelelawar
+194	Serbuan Kelelawar
+195	Standar
+196	Jangan takut, mereka hanya sedang sangat kesal gara-gara tinta hitam yang aneh. Jaga tembok, berarti menjaga semuanya.
+197	Beku, Badai Salju, Dinding Es: Ratu Frosty, lebih dingin dari sebelumnya.
+198	Zona Beku
+199	Zona Beku, Bom Mini, dan Botol Beku butuh jalur: ketuk skill, lalu ketuk satu jalur.
+200	Botol Beku
+201	Membekukan semua monster 6 dtk (Boss 3 dtk). Monster beku menerima damage +60%, lalu diperlambat 50% selama 4 dtk setelah mencair.
+202	Beku {0}
+203	Dekret Beku
+204	Membeku, tidak bisa diperbaiki
+205	Paman Es Lilin
+206	Paman Es Lilin membekukan skill-mu. Jangan menaruh semua harapan pada satu skill!
+207	Kata Paman Es Lilin, Ratu Frosty membekukan Tinta menjadi cermin raksasa, dan di dalamnya terlihat retakan merah.
+208	Paman Es Lilin berjalan menuju tembok!
+209	Badai Kristal Es
+210	Peri Kristal Es
+211	Selama Peri Kristal Es hidup, serangan pahlawan jadi lambat. Mereka bersembunyi jauh, jadi Hujan Panah dan Sambaran Petir adalah cara terbaik membereskannya.
+212	Cahaya Kristal Es
+213	Tabung Panah Roh Es
+214	Padang Salju Beku
+215	Bobo
+216	Tentakel Bobo. Selama masih ada 3 atau lebih, Bobo sangat sulit dilukai.
+217	Pengisap Bobo sedang menyerap tenaga! Cepat potong tentakelnya!
+218	Bobo dilindungi tentakel: potong tentakelnya dulu ("Prioritas Ancaman" dan "Prioritas Boss" sama-sama melakukannya). Di bawah 60% HP, tentakel juga memulihkannya, dan di akhir ia membuat pusaran raksasa!
+219	Pop
+220	Pop pop pop
+221	Pesta Perbekalan
+222	Ahli Perbekalan
+223	Tidak ada
+224	Menangkan level mana pun setelah level 10 tanpa skill aktif
+225	Satu gelombang tiap 14 detik, tanpa menunggu medan bersih
+226	Siapa pun mereka, manusia salju besi, serigala besi... semuanya berjalan ke arah kita dengan zirah besi.
+227	Tanpa Skill
+228	Zirah Abadi
+229	Tidak bisa memakai item
+230	Panji Pantang Menyerah
+231	Menangkan tanpa memakai item apa pun
+232	Bukan mereka sendiri, tapi "gema": bayangan dari retakan itu, diwarnai kekacauan menjadi biru keunguan. Mereka terus berjalan ke tembok.
+233	Bukan aku! Itu alarmmu sendiri... maksudku, pasukan kecilmu.
+234	Bukan kami! Dari seberang retakan!
+235	Tidak. Lihat, di helmku juga penuh bercak tintamu.
+236	Jubah Abadi
+237	Tidak usah, yang ketiga dari kiri selalu terpasang terbalik, aku sudah biasa.
+238	Ikat Kepala Kain
+239	Patung Dewa Rezeki
+240	Sepatu Rezeki
+241	Pelanginya menghitam sebagian! Kita harus naik dan membersihkannya.
+242	Burung Pelangi
+243	Burung Pelangi memulihkan HP monster di sekitar, dan balon yang pecah menjatuhkan goblin. "Prioritas Ancaman" menyerang Burung Pelangi dulu.
+244	Jembatan Pelangi
+245	Di ujung Jembatan Pelangi ada Kerajaan Awan. Katanya awan di sana bisa bertiup angin dan bergemuruh guntur... Kael, ajak Inky ya!
+246	Kontrol
+247	Slot {0}
+248	Slot {0}: pilih item dan jumlah
+249	Zirah Jerami
+250	Es lilin stroberi, satu koin tembaga per batang!
+251	Sandal Jerami
+252	Jubah Herbal
+253	Pertempuran Padang Rumput
+254	Penjaga Padang Rumput
+255	Lantai
+256	Terbungkus perban: pengurangan damage fisik 55%. Lawan dengan sihir!
+257	Peluru super berat, radius ledakan 100, menembus 60% zirah, damage +30% terhadap Boss.
+258	Pasang Surut
+259	Jubah Pasang Surut
+260	{0} jalur
+261	Kerumunan, arwah, monster dengan resistansi sihir rendah
+262	Berhasil dapat {0} berlian; gagal tidak dapat apa-apa
+263	Pencapaian
+264	Pencapaian {0} / {1}
+265	Terbang berkelompok, melewati monster lain langsung ke tembok.
+266	Tembok
+267	Tembok membeku! Sementara tidak bisa diperbaiki
+268	Tembok dijebol...
+269	Berakhir saat tembok dijebol. 15 tembaga per gelombang yang dibersihkan; saat memecahkan rekor, 1 perak untuk tiap 5 gelombang tambahan.
+270	Tembok bukan trampolin! ...Tapi kelihatannya memang seru.
+271	Cangkangnya... maksudku tembok, hari ini juga kokoh.
+272	Level Tembok
+273	Tembok tersisa {0}% HP. Jika lanjut, lantai berikutnya dimulai dengan HP ini tanpa pemulihan.
+274	Tembok memulihkan 15% HP maks.
+275	Tembok memulihkan 70% HP maks, lalu selama 8 detik menerima damage −60%.
+276	Pemulihan tembok +25%, damage yang diterima tembok −5%
+277	Efek pemulihan tembok +{0}%
+278	Tembok mendapat perisai yang menyerap damage hingga 35% HP maks, bertahan sampai level berakhir.
+279	Pengurangan damage tembok
+280	Sumber damage tembok (total {0})
+281	Damage tembok terbanyak berasal dari "{0}": {1}
+282	Tingkatkan tembok (HP maks saat ini {0})
+283	Tembok tersisa {0}%
+284	Tembok tersisa ≥50% dapat 2 bintang, ≥80% dapat 3 bintang.
+285	Menang dengan sisa HP tembok kurang dari 5%
+286	Tembok bertahan sampai gelombang {0} / {1}.
+287	Damage berkelanjutan pada tembok (racun, kabut beracun) −60%
+288	Damage yang diterima tembok −3% / level.
+289	Damage yang diterima tembok −{0}%
+290	Damage yang diterima tembok −12%
+291	Damage yang diterima tembok −3%
+292	Damage yang diterima tembok −6%; pemulihan tembok +25%
+293	Perbaikan Tembok
+294	HP Tembok
+295	ATK +20% saat HP tembok di bawah 50%
+296	ATK +{0}% saat HP tembok di bawah 50%
+297	Jaga HP tembok tetap 70% atau lebih dan menangkan level
+298	Tembok hanya punya setengah HP
+299	HP maks tembok +{0}%
+300	Sepatu Pengintai
+301	Tungku Besi Merah
+302	Jubah Membara
+303	Menyerbu? Sekarang aku cuma menyerbu sampah.
+304	Tabrak
+305	Dibuat oleh
+306	Jual
+307	Pemula
+308	Penjelajah Menara
+309	Salju Pertama
+310	Eksekusi
+311	Tentakel
+312	Semua tentakel mundur ke laut!
+313	Perisai tentakel: sisa {0}, serang tentakelnya dulu!
+314	Tamparan Tentakel
+315	Tentakel tinggal {0}, cepat serang Bobo!
+316	Pakai
+317	Dipakai
+318	Tembus
+319	Busur Panjang Penembus Hati
+320	Panah Penembus Awan
+321	Zirah yang dikenakan di badan, membuat tembok lebih stabil.
+322	Dipakai
+323	Legenda
+324	Mahkota Penciptaan
+325	Tabung Panah Penciptaan
+326	Zirah Penciptaan
+327	Busur Penciptaan
+328	Jarum Colek
+329	Jubah Kasar
+330	Padang Rumput Zamrud
+331	Teks simpanan tidak valid. Pastikan kamu menyalinnya secara lengkap
+332	Simpanan diimpor
+333	Simpanan dihapus
+334	Semua Boss yang kamu kalahkan pindah ke kota. Ketuk mereka untuk mendengar kabar terbaru.
+335	Raja Gulu kalah! Ternyata dia petugas kebersihan paling rajin di padang rumput. Angin hitam bertiup dari gurun, aku berangkat dulu.
+336	Semua monster di lantai ini sudah dikalahkan.
+337	Hentikan Boss
+338	Hentikan Boss minimal 2 kali dan menangkan level
+339	Dihentikan!
+340	Master Penghenti
+341	Ahli Penghenti
+342	Boss Besar
+343	Boss besar. Badai Salju memperlambat serangan, tembok beku tak bisa diperbaiki, dan saat HP rendah ia memanggil naga es kecil.
+344	Boss besar. Beku, Badai Salju, Dinding Es, lebih dingin dari sebelumnya.
+345	Boss besar. Kabut beracun menggerogoti tembok, merebus anak buah jadi versi lebih kuat, dan saat HP rendah menumpahkan kuali jadi kolam racun.
+346	Boss besar. Membuat badai pasir, memanggil mumi dan memulihkan mereka, dan saat HP rendah memasang perisai piramida yang hanya takut sihir.
+347	Boss besar. Memanggil anak buah; di bawah 60% HP ia menyerbu seperti babi hutan, dan memusatkan tembakan saat peringatan bisa menghentikannya.
+348	Boss besar. Badai pasir, pemanggilan, penyembuhan, perisai: tiga fase, jauh lebih merepotkan dari sebelumnya.
+349	Makhluk besar berbulu putih dengan zirah fisik sangat tinggi.
+350	Kuali tumpah! Kolam racun mempercepat monster!
+351	Pusaran raksasa! Semua tentakel tumbuh lagi dan semua monster jadi lebih cepat!
+352	Mode Teks Besar
+353	Bawa {0}
+354	Pelindung yang dikenakan di kepala.
+355	Tembakan tunggal, stabil, dengan peluang krit tambahan bawaan. Bagus untuk melawan Boss.
+356	Capai kombo 30 dalam satu ronde (kalahkan monster dalam selang 1,2 dtk)
+357	DPS Target Tunggal
+358	Dong... dong... (menggigil kedinginan)... Maaf, bunyinya sendiri.
+359	Sekarang: {0} →
+360	Ekspor Simpanan
+361	Impor
+362	Impor Simpanan
+363	Impor akan menimpa progres saat ini.
+364	Berhenti di sini, amankan hasil
+365	Capai gelombang 30 untuk membuka pencapaian "Tak Pernah Runtuh" (1 emas).
+366	Tabung Panah Berkait
+367	Gugur di lantai {0}, tidak dapat apa-apa. Tiket tidak dikembalikan.
+368	Item
+369	Maaf saja tidak cukup! Gedebum gedebum gedebum!
+370	Tanahnya melayang... seperti cermin pecah.
+371	Peta
+372	Jimat Gempa
+373	Puncak Kesempurnaan
+374	Tunggu! Aku Atlas, anak tukang batu. Semua bagian tembok yang rusak ditambal ayahku. Kamu pergi saja, aku yang jaga tembok!
+375	Level terlalu rendah, tingkatkan dulu
+376	Terbang rendah dan sangat cepat.
+377	Gelombang {0} / {1}
+378	Gelombang {0}
+379	Gelombang {0} · Rekor {1}
+380	Lantai {0}
+381	Lantai {0} · Gelombang {1} / {2} · sisa {3}
+382	Lantai {0}: {1} raja iblis + {2} iblis kecil menyerbu bersamaan (kekuatan ×{3}). HP tembok berlanjut dari lantai sebelumnya tanpa pemulihan. Mengalahkan monster tidak memberi hadiah; hanya menyelesaikan lantai yang memberi berlian!
+383	Lantai {0} selesai!
+384	Level {0}
+385	Level {0} · {1}
+386	Level {0} · {1} ({2})
+387	Mulai level 3, menangkan level mana pun dengan HP tembok penuh
+388	Bab {0}
+389	Bab {0} · {1}
+390	Bab {0} ▾
+391	Hadiah tiga bintang penuh Bab {0}
+392	Boss Bab 6. Awan petir raksasa yang pemarah: memanggil Pangsit Petir dan Burung Pelangi, mengumpulkan tenaga untuk sambaran petir, dan akhirnya membuat badai.
+393	Boss Bab 7. Raja Gurita: tentakel pelindung, pengisap penyembuh, dan pusaran raksasa di akhir. Serang tentakel dulu!
+394	Jalur Keempat
+395	Jalur Kelima
+396	Item baru bisa dipakai setelah gelombang monster pertama muncul
+397	Ketuk satu jalur untuk melepaskan (klik kanan atau Esc untuk batal)
+398	Ketuk untuk memakai
+399	Sentuhan Midas
+400	Ketuk aku untuk memakai skill!
+401	Sengatan menjangkau area lebih luas dan melumpuhkan lebih lama.
+402	Busur Panjang Ukir
+403	Ting!
+404	Duk... duk... tidak... boleh... lewat...
+405	Duk... Inky... hari ini... senang sekali...
+406	Duk... dia... selalu... sendirian... kamu... baik-baik... padanya...
+407	Duk... aku... sedang... menjaga... gerbang...
+408	Duk... terima... kasih... kamu...
+409	Membekukan semua monster 7 detik, termasuk Boss. Monster beku menerima damage ×2,2, dan kecepatan serang pahlawan +60% selama itu.
+410	Membekukan semua monster di jalur terpilih selama 3 detik.
+411	Nenek Ramuan
+412	Nenek Ramuan sudah mencuci kualinya sampai bersih dan bilang mulai sekarang hanya akan memasak sup labu. Padang salju di utara sepertinya salah satu sumber Tinta.
+413	Nenek Ramuan merebus anak buah jadi versi lebih kuat. Bersihkan medan secepatnya, dan bawa Perbaikan Tembok untuk menghadapi kabut beracun!
+414	Nenek Ramuan mulai memasak!
+415	Katak Beracun
+416	Katak Beracun berdiam jauh di belakang dan menyemburkan racun ke tembok. Ganti target ke "Prioritas Ancaman" dan pahlawan akan menyerang mereka lebih dulu saat tembok aman.
+417	Kabut beracun! Tembok terus rusak
+418	Gagal membaca simpanan
+419	Baca seluruh buku harian penjaga (bagian yang dilewati bisa dibaca ulang di buku harian)
+420	Meluncur cepat dengan perut dan memberi damage besar saat menabrak tembok.
+421	Sepatu Lari
+422	Damage terhadap Boss dan monster terbang +30%
+423	Damage terhadap Boss +{0}%
+424	Damage terhadap Boss +12%, damage yang diterima tembok −4%
+425	Damage terhadap Boss +50%, menembus 20% zirah
+426	Ma-maaf... itu aku.
+427	Damage terhadap monster yang diperlambat atau dibekukan +15%
+428	Memberi damage sihir ATK ×5 pada monster dengan HP saat ini tertinggi.
+429	Damage terhadap monster terbang +{0}%
+430	Memberi damage sihir ATK ×2,5 pada semua monster di jalur terpilih dan membuat mereka terbakar.
+431	Memberi damage ATK ×5 pada semua monster di jalur terpilih.
+432	Damage +60% terhadap monster dengan HP di bawah 30%
+433	Tukar {0}
+434	Kura-kura Perisai
+435	Pengawalan Kura-kura Perisai
+436	Kura-kura Perisai melindungi monster di sekitarnya. "Prioritas Ancaman" menyerang Kura-kura Perisai lebih dulu; skill tidak terpengaruh olehnya.
+437	Perisai
+438	Bersembunyi di barisan belakang dan terus memulihkan monster di sekitar. Habisi dulu!
+439	Kacamata tembaga di dahinya bersinar, dan uap mengepul dari ransel di punggungnya.
+440	Menembakkan peluru sihir yang meledak di area kecil saat mengenai sasaran. Damage sihir menembus zirah fisik.
+441	Saat gema Firaun menghilang, ia meninggalkan sepotong kue kecil. Aku tidak berani memakannya.
+442	Langit Penuh Bintang
+443	Saat kembali mengenai dari belakang, menembus perisai kayu
+444	Kembali
+445	Rumah-rumahnya hanyut? Lalu mereka tinggal di mana?
+446	Tinggalkan Level
+447	Tinggalkan Tantangan
+448	Tinggalkan tantangan ini? Tiket tidak dikembalikan dan kamu tidak dapat apa-apa.
+449	Terbang
+450	Terbang, dan berpindah ke jalur sebelah setiap beberapa saat.
+451	Terbang, melayang mengikuti angin: 35% serangan fisik biasa senjata akan dihindari. Sihir dan damage area tidak bisa dihindari.
+452	Prioritas Terbang
+453	Ikan Terbang
+454	Jarak lompat Ikan Terbang −50%
+455	Badai Ikan Terbang
+456	Ikan Terbang melompat jauh ke depan dan tak bisa diserang saat di udara. Mereka berlari lebih cepat dari kelihatannya, jadi Zona Beku sangat berguna!
+457	Lompatan Ikan Terbang
+458	Terbang di udara dan melempar bola api ke tembok dari jauh.
+459	Terbelah
+460	Jubah Badai
+461	Bola Badai
+462	Sepatu Pejalan Angin

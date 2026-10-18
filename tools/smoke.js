@@ -16,6 +16,8 @@ try {
   const errors = [];
   page.on('pageerror', (e) => errors.push('pageerror: ' + e.message));
   page.on('console', (m) => m.type() === 'error' && errors.push('console: ' + m.text()));
+  // 脚本里的点击都按中文文字找，所以用简体中文跑（默认语言是英语，设计书 83）；换语言用 SMOKE_LANG=en 并自己改选择器
+  await page.addInitScript((l) => localStorage.setItem('shouchengyingxiong.lang', l), process.env.SMOKE_LANG || 'zh');
   await page.goto('file://' + path.resolve(__dirname, '..', 'index.html'));
   await page.waitForTimeout(500);
   await page.screenshot({ path: `${out}/1-title.png` });

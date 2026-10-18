@@ -1,0 +1,463 @@
+926	Ocak Söndü
+927	Kor İfriti
+928	Cüruf Korosu
+929	Cüruf Topağı
+930	Yeşil
+931	Yeşil Yumak
+932	Reenkarnasyon Okluğu
+933	Yere inince dört goblin ufaklığı bırakır.
+934	Iska
+935	Serçe Pelerini
+936	Satın alınan yetenekler savaşa girmek için Donanım sayfasında yetenek yuvalarına yerleştirilmelidir.
+937	Satış fiyatı alış fiyatının yarısıdır
+938	Yavaş ağır top, isabette geniş alanda patlar; hedefin zırhının %40'ını yok sayar.
+939	Yavaşça süzülür; patlatılınca 3 goblin ufaklığı bırakır.
+940	Kedi Rahip
+941	Önemli değil! Öfkelenince herkes gürler.
+942	Önemli değil! Bir dahaki sefere ön kapıdan gelmeyi unutma.
+943	Terbiyesiz küçük nöbetçi! Zehirli çorbamın tadına bak!
+944	Ekstra özellik yok
+945	Aktif yetenek taşınmıyor
+946	Her 18 sn surlara en yakın canavara dokunaçla vurur (Saldırı ×3)
+947	Her 2 dalgada bir ikmal
+948	Her 20 sn en çok canı olan canavara küçük bir şimşek çaktırır (Saldırı ×4)
+949	Her 25 sn en yakın canavara bir Mürekkep topu tükürür (Saldırı ×3)
+950	Her 5 dalgada bir küçük Boss, her 10 dalgada bir büyük Boss; her 3 dalgada bir savaş alanı ikmali.
+951	4 darbe alınca kısa süre kabuğuna çekilir, içindeyken neredeyse vurulamaz. Tek birine odaklanma: Çoklu Arbalet ve Yıldırım Küreleri hasarı daha iyi dağıtır.
+952	Her dalga sonunda sur %{0} daha fazla iyileşir
+953	Her dalga sonunda seviye başına azami canın %2'sini iyileştirir.
+954	Her dalga sonunda sur %3 iyileşir
+955	Her dalga başında sur azami canının %{0}'si kadar kalkan kazanır
+956	Her dalga başında sur azami canın %4'ü kadar baloncuk kalkan kazanır
+957	Dalga başında surlara azami canın %3'üne kadar hasarı emen bir baloncuk kalkan verir
+958	Her seferinde 4 ok atar
+959	Her mücadele {0} tutar.
+960	Her 6. saldırıda hedefe küçük bir şimşek düşer ve Saldırı ×1,5 kadar ekstra büyü hasarı verir
+961	Ara sıra ileri doğru büyük bir sıçrayış yapar, havadayken vurulamaz. Göründüğünden hızlı!
+962	Her 5 saldırıda bir hemen bir saldırı daha yapar.
+963	Her bölüm sonunda bakır sikke kazanırsın, ilk geçişte gümüş de verilir. Mağazada özellikleri yükselt, silah ve yetenek aç, sonra tekrar gel!
+964	Her kattan sonra o katın elmaslarını alıp çıkabilir ya da yükselmeye devam edebilirsin: bir kat daha geçersen elmaslar ikiye katlanır; kaybedersen hiçbir şey alamazsın.
+965	Her yenilen canavar surun azami canının %0,3'ünü iyileştirir
+966	Günlük Meydan Okuma
+967	Günlük Meydan Okuma "{0}": {1}
+968	Her günün ilk geçişi 3 gümüş verir, istediğin kadar tekrar oynayabilirsin. Bölümün yıldız kaydını etkilemez.
+969	Her {0} dakikalık oyunda mola hatırlat
+970	Her yukarı katta canavar canı ve kuşatma hasarı ×{0}; sur canı önceki attan devam eder, iyileşmez (yalnızca onarım, ikmal kartları, eşyalar ve yetenekler iyileştirir).
+971	Her karakterin kendine özgü görünümü ve ekstra özellikleri var. Altın sikkeyle satın alınır ve tek seferde biri giyilir; seçtiğin kişi surlarda durur (ekstra özellikler yalnızca Kael savaşırken geçerli olduğundan otomatik olarak Kael'e geri döner).
+972	Her dalga başında sur azami canının %12'si kadar kalkan kazanır; sur %10 daha az hasar alır
+973	Sisli Bataklık
+974	Mitril Zırh
+975	Mitril Okluk
+976	Mitril Miğfer
+977	Mitril Pelerin
+978	Yoğun canavar sürüleri, hayaletler
+979	Yoğun canavar sürüleri, küçük hayaletler, büyü direnci düşük canavarlar
+980	Bedava
+981	Akrep Pelerini
+982	Yangın Söndürücü
+983	Zırh Parçalayan Okluk
+984	Çeviklik Botları
+985	Kader Tanrıçası Kolyesi
+986	Kader Zarı
+987	İsabet edince hedefi tutuşturur, 3 sn içinde toplam Saldırı ×%60 büyü hasarı verir.
+988	Ok Uçlarını Bile
+989	Mantar Asker
+990	Mantar Askerler ölünce yakındaki canavarları hızlandırır. Aşağıdaki "Savaş Davulu" yeteneğine dokunmayı dene!
+991	Mantar Ormanı
+992	Büyü, geniş patlama (yarıçap 110, sıçrama %90) ve 2 şimşek sıçraması ekler.
+993	Büyü Engellendi
+994	Büyü şimşeği 5 kez sıçrar, her sıçramada sadece %15 azalır.
+995	Büyü hasarı +%12, yetenek beklemesi −%5
+996	Büyü hasarı +%25
+997	Büyü hasarı fiziksel zırhı yok sayar
+998	Büyü hasarının {0} kadarı büyü direnci yüzünden engellendi: lav canavarları büyüden korkmaz, fiziksel silahlara (top, çoklu arbalet) geç.
+999	Büyü Asası
+1000	Büyü Direnci
+1001	İblis Kral Dişi
+1002	İblis Kral hali! Şarj sırasında ateşi yoğunlaştırıp kes!
+1003	Mürekkepçik
+1004	Mürekkepçik, eve dön. Seni bir daha yalnız bırakmayacağız.
+1005	Mürekkepçik?
+1006	Mürekkepçik... orada mısın?
+1007	Mürekkepçik "pop" diye küçük bir yumağa dönüştü...
+1008	Mürekkepçik küçük bir yumağa döndü. Meğer çok yalnızmış, o yüzden Mürekkebi her yere dökmüş. Şimdi surların yanında yaşıyor ve her gün nöbet tutuşumu izliyor.
+1009	Mürekkepçik'in klonları. Üç klonu da yenersen gerçeği ortaya çıkar.
+1010	Mürekkepçik'in Yankısı
+1011	Mürekkepçik Klonu
+1012	Mürekkepçik bölündü! Üç klonu yen!
+1013	Mürekkepçik zaten özür diledi! Biz yardıma geldik!
+1014	Mürekkep, klonlar, görüşü engelleme: Kaos Yarığı'nın kaynağı bu. Onu yenersen her şey biter.
+1015	Mürekkep kuzeydeki karlı dağlardan akıp geldi. Orası o kadar soğuk ki Mürekkep bile buza dönmüş.
+1016	Mürekkep Topu
+1017	Tahta Kalkanlı Goblin
+1018	Tahta Kalkanlı Goblinler önden sert. Bumerang dönüşü, Ok Yağmuru ve "Delici" onlara karşı işe yarar.
+1019	Tahta Kalkan Zırhı
+1020	Tahta Yay
+1021	Mumya Ordusu
+1022	Tahta Okluk
+1023	Hedef:
+1024	Hedef Önceliği
+1025	Mezarlık Hayaleti
+1026	O çorba kirli çorap gibi kokuyor!
+1027	O ayak seslerinin de dinlenme vakti geldi.
+1028	O zaman her şey... serinlesin.
+1029	O zaman bir kez daha koruyalım! Bu sefer yeni kıyafetlerim var!
+1030	Orada çok yalnız küçük bir şey yaşıyor. Küçük nöbetçi, benim yerime gidip ona bak.
+1031	Peki kumu ezebilir misin? ...Sanırım hayır.
+1032	O zaman birlikte bir tane yapalım! Krallığın ustaları büyük ev yapmakta en iyisidir.
+1033	Balkabağı çorbası hazır! Bugün tek damla Mürekkep koymadım.
+1034	Balkabağı Tarlası
+1035	Balkabağı Kafa
+1036	Bölünen Balkabağı Kafa'dan çıkan küçük balkabakları.
+1037	Balkabağı Kafa ölünce 3 küçük balkabağına bölünür. Temizlik için kendine zaman kazanmak üzere uzaktan devir.
+1038	Zorluk
+1039	Zorluk, geçtiğin en yüksek bölüme göre ayarlanır (en az 60., en çok 70. bölüm). Her katta 2 ikmal. Ortada çıkmak ya da sayfayı yenilemek yenilgi sayılır.
+1040	Evet! Söz veriyorum!
+1041	Evet. Surları da herkesi de koruduk.
+1042	Evet. Bu sefer kendi başıma döneceğim.
+1043	Nöbet Kaydın
+1044	Senin tırnakların zaten kıskaç!
+1045	Bak, Mürekkebin hepsini geri emdim. Gökkuşağı yine yedi renk.
+1046	İçerideki birini mi koruyorsun?
+1047	{0} tanen var
+1048	Biliyor musun? Ksilofon kaburgalarımdan yapıldı. Şaka yapıyorum.
+1049	Nirvana Nişanı
+1050	Kraliçe'nin yankısı hafif bir kar tanesine dönüşüp ateşin üzerine düştü, tısss. Ocak sonunda biraz karardı.
+1051	El Isıtıcısı
+1052	Tak! Pardon, heyecanlanınca kabuğumu kapatıyorum.
+1053	Tak... Peki, kabuklarınız gerçekten dolu.
+1054	Uzun kuyruklarla dolu şeritler
+1055	Uzun kuyruklarla dolu şeritler, Tahta Kalkanlı Goblinler
+1056	Şişman Firavun
+1057	Şişman Firavun'un canı azalınca piramit kalkanı açar: fiziksel saldırılar neredeyse işlemez, mutlaka büyü hasarı getir!
+1058	Şişman Firavun'un Yankısı
+1059	Şişman Firavun uyandıktan sonra bana 3000 yıllık bir kurabiye ikram etti (yemeye cesaret edemedim). Sıradaki durak: Sisli Bataklık.
+1060	Şişman Firavun mumyaları çağırdı!
+1061	Çok hızlı koşar, canı çok az.
+1062	Baloncuk
+1063	Baloncuk patlatıldığında hasarın %50'si yine de işler
+1064	Baloncuk kalkanı kırıldı
+1065	Baloncuk Partisi
+1066	Donanım
+1067	Güm!
+1068	Pelerinli biri... bataklıkta da görenler olmuş.
+1069	Pelerin
+1070	Omuzlara atılan bir pelerin.
+1071	Taş zırhlı uçan bir canavar: fiziksel saldırıların çoğu engellenir.
+1072	Demir plakalarla kaplı, hızlı hücum eden bir savaş arabası.
+1073	Demir zırhlı bir kardan adam, ölünce üç küçük kar yumağına bölünür.
+1074	Deri Zırh
+1075	Deri Okluk
+1076	Deri Başlık
+1077	Deri Çizme
+1078	Yalancı! Kimse Mürekkeple oynamak istemez!
+1079	Sık sık şerit değiştiren yarasalar, ateşi toplamak zor.
+1080	Güvenle ayrıl: {0}. kata çıkıldı
+1081	Zırh Delen Okluk
+1082	Zırh Delen Ok Ucu
+1083	Zırh Delen Ağır Okluk
+1084	Gök Yaran Okluk
+1085	Blub... Kara Mürekkep döküldü ve bu prens kendini berrak hissediyor. Surunu kirlettiğim için özür dilerim.
+1086	Blub blub! Bu prens surlarda trambolin gibi zıplamak istiyor!
+1087	Normal
+1088	Normal saldırıların %{0} ihtimalle hedefi tutuşturur
+1089	Normal saldırıların %25 ihtimalle 3 hedefe sıçrayan bir şimşek çaktırır, her biri Saldırı ×0,6 büyü hasarı alır
+1090	Normal saldırıların %30 ihtimalle hedefi tutuşturur
+1091	Normal saldırılar isabette hedefi tutuşturur
+1092	Normal saldırılar hedefi %{0} yavaşlatır
+1093	Normal saldırılar hedefi %15 yavaşlatır (1,5 sn)
+1094	Normal saldırılar hedefi 1,5 sn boyunca %20 yavaşlatır
+1095	Şövalye Zırhı
+1096	Penguen Kayışı
+1097	Penguenler çok hızlı kayar ve surlara çarpınca ağır hasar verir. Dondurma Alanı onları yavaşlatabilir.
+1098	Balon Filosu
+1099	Dürbün
+1100	Git ›
+1101	{0} seviye için yeterli sikke yok
+1102	2 seviye için yeterli sikke yok
+1103	Çıt!
+1104	Kıskaç
+1105	Kıskaç yer altına girip şerit değiştirerek pusu kurar. Toz uyarısını görünce yeteneklerini hazırla!
+1106	Kıskaç yalnız kalmaktan korkan koca bir akrep. Piramitte birinin "kara Mürekkep topladığını" söylüyor.
+1107	Zamanla Yarış
+1108	Hedef önceliğini değiştir (T)
+1109	Hızı değiştir (F)
+1110	Hafif Ayakkabı
+1111	Kolay
+1112	Hafif Donanım
+1113	Hafif Yolculuk
+1114	Kaydı Sil
+1115	"Son Kale"yi oynamak için telefonunu yan çevir
+1116	"Son Kale"yi oynamak için lütfen JavaScript'i etkinleştir.
+1117	Lütfen elle kapat
+1118	Şeytan Kovma Oku
+1119	Canavar Kovucu Miğfer
+1120	İptal
+1121	"Ekipman" sayfasında aç
+1122	Aç ({0})
+1123	Mağazaya Git
+1124	Tümü {0}
+1125	Sahadaki tüm canavarları 2,5 sn sersemletir (Boss'lar 1 sn) ve Saldırı ×3,5 hasar verir.
+1126	Sahadaki en yüksek canlı 4 canavara şimşek çarpar, her şimşek Saldırı ×5 büyü hasarı verir.
+1127	Tam Yükseltme
+1128	Tam ekran (oyun açıldıktan sonraki ilk dokunuşta otomatik girilir)
+1129	Baştan aşağı siyah, sadece gözleri için bir yarık var; sessizce yürür.
+1130	Her Şeyi Gören Göz
+1131	Tamam
+1132	Kaydı silip baştan başlamak istediğine emin misin? Bu geri alınamaz.
+1133	Sürüler, uçan canavarlar
+1134	Molotof
+1135	Sıcak Hava Balonu
+1136	Görev Ustası
+1137	Herhangi bir silahı terfi ettir
+1138	Herhangi bir aktif yeteneği Sv3'e yükselt
+1139	Günlük
+1140	Günlük Doldu
+1141	Erimiş demirden yapılmış bir golem: büyü neredeyse işlemez, fiziksel silah kullan.
+1142	Ocağın duvarları kırmızı. Her yankı canavarı sanki ocaktan yeni çıkmış gibi kızgın.
+1143	Ocak Girişi
+1144	Ocak Koruyucusu
+1145	Erimiş Demir Golem
+1146	Lav Pelerini
+1147	Lav canavarları büyüden korkmaz, fiziksel silah getirmeyi unutma. Kael, sağ salim dön.
+1148	Lav canavarları büyüden korkmaz; fiziksel ağır top kullan
+1149	Lav Devi
+1150	Lav Golemi
+1151	Lav Golemleri büyüden neredeyse hiç korkmaz! Tahta Yay, top ya da bumerang kuşan.
+1152	Lav Yarığı
+1153	Üç yüz yıl... bir kez daha geçti.
+1154	Üç köşeli şapkadaki kafatası gülüyor, sadece bir gözü görüyor.
+1155	Üç Yol
+1156	Üçerli gruplar halinde, aynı şeritten hızla saldırır.
+1157	Ormanın bekçisi, boyundan uzun bir yay taşır. Saldırı ×1,5, saldırı hızı ×0,73; ağır oklar zırhın %25'ini yok sayar ve normal canavarları 12 piksel geri iter.
+1158	Kum fırtınası, çağırma, iyileştirme, kalkan: üç aşamalı Şişman Firavun, her zamankinden sert.
+1159	Kum fırtınası geliyor! Saldırı hızı düştü
+1160	Kum Fırtınası Arifesi
+1161	Kum Şişesi
+1162	Çöl mü? Anlaşılan iş göründüğü kadar basit değil. Kael, gidip bakar mısın?
+1163	Çölün güneşi çok kavurucu. Buradaki canavarlar bandajlara sarılı, oklar onlara yumuşacık çarpıyor. Başka bir yol düşünmeliyiz.
+1164	Çöldeki mumyalar sıradan oklardan korkmaz. Büyü Asası yardımcı olurmuş, mağazaya bir göz at!
+1165	Çölün bütün düşmanları geldi. Önce küçük rahipleri ve kaktüs toplarını temizle!
+1166	Çöl Koruyucusu
+1167	Çöl Akbabası
+1168	Kum Tepelerinin Altındaki Gölge
+1169	Kum Akrebi
+1170	Kum Akrepleri saldırılardan kaçmak için yer altına girer, çıktıklarında surlara çok yakındır. Ok Yağmuru ve Dondurma Alanı baş etmene yardımcı olur.
+1171	An Botları
+1172	Mercan Koyu
+1173	Kaçınma
+1174	Şimşek isabet edince yakındaki canavarlar arasında 3 kez sıçrar, her sıçrama bir öncekinin %75 hasarını verir. Büyü hasarı.
+1175	Şimşek Sıçraması
+1176	Şimşek birkaç keşiş yengeç arasında sıçrar, birini kabuğa çekilmeye zorlamak zorlaşır
+1177	Parlak Miğfer
+1178	Güçlü olduğu:
+1179	Hasar ×1,8; isabet hedefi %30 yavaşlatır (2 sn).
+1180	Hasar Kaynakları (toplam {0})
+1181	Mağaza
+1182	Mağaza / Donanım
+1183	Kervan Botları
+1184	Son çıkışında bu kata ulaştın ama ödül alınmadı.
+1185	Nöbetçi Miğferi
+1186	Tasarlanan standart deneyim
+1187	Ayarlar
+1188	Menzil
+1189	Menzil +%{0}
+1190	Menzil +%10
+1191	Menzil +%10, kritik hasarı +%30
+1192	Menzil +%12
+1193	Menzil +%20 (gece bölümlerindeki karanlığı tam dengeler)
+1194	Menzil +%5
+1195	Menzil +%6, kritik oranı +%3
+1196	Burada bu kadar demiri kim yapar ki?
+1197	Kalın yünlere sarılı; önce yünleri dök. Kırkılınca çok hızlı koşar!
+1198	Koyu kırmızı boynuzlu miğfer, arkasında küçük ejderha kanatları var; kıvılcım saçtığı söylenir.
+1199	Gece Yarısı Gelgiti
+1200	Hangi tadı?
+1201	Efsanevi Silahlar
+1202	Tapınak Paladini
+1203	İlahi Lütuf Zırhı
+1204	İlahi Koruma
+1205	{0} seviye yükselt, toplam {1}
+1206	Yükselt
+1207	{0} Yükselt
+1208	Sur seviyesini yükselt: sur canı +%10 ({0})
+1209	Terfi
+1210	Can Zırhı
+1211	Can Pelerini
+1212	Kutsal Işık
+1213	Kutsal Işık Zırhı
+1214	Paladin Zırhı
+1215	Kutsal Pınar Pelerini
+1216	Galibiyet
+1217	Galibiyet Oranı
+1218	Yenilgi
+1219	Yenilgi Teselli Ödülü
+1220	Aslan Yürek Tacı
+1221	Aslan Dişi Kolye
+1222	Bir taşçının oğlu, büyük bir taş kalkan taşır. Saldırı ×0,97; sur %12 daha az hasar alır ve her dalga sonunda fazladan %3 onarılır.
+1223	Üst üste dizilmiş taşlardan küçük bir dev, büyü hasarını %75 azaltır. Ona fiziksel silahlarla vur!
+1224	Gargoyl
+1225	Gargoyl Yuvası
+1226	Gargoyllar uçar ve taş zırh giyer, bu yüzden büyü saldırıları normal saldırılardan daha etkilidir.
+1227	Zaman Pelerini
+1228	Zaman Kum Saati
+1229	Zamanı Durdur
+1230	Zaman-Uzay Pelerini
+1231	Zaman-Uzay Pusulası
+1232	Zaman Sırası Botları
+1233	Zamanın Çarkı
+1234	Zaman Girdabı
+1235	Zamanın Kum Saati
+1236	Kullanımda
+1237	Dünya Ağacı Pelerini
+1238	Dünya Ağacı Zırhı
+1239	Durdurulamaz
+1240	Durdurulamaz!
+1241	"Yetenekleri otomatik kullan"ı aç (savaşta sağ alt), yetenekler hazır olunca kendiliğinden kullanılır
+1242	Aksesuar
+1243	Aksesuar 1
+1244	Aksesuar 2
+1245	Aksesuar 3
+1246	Biziz, Fısıl! Bu sefer fazla sert esme!
+1247	Kaza oldu! Biz temizlemeye geldik!
+1248	Tanrı Katili
+1249	Tanrı Katili Okluğu
+1250	Tanrı Katili Tacı
+1251	Kan Susuzluğu Okluğu
+1252	Topla
+1253	Savunma başarılı!
+1254	Nöbet Kayıtları
+1255	Nöbet Günlüğü
+1256	Sur Muhafızı
+1257	Surları Koru
+1258	Koruyucu Rün
+1259	Koruyucu Zırh
+1260	Muhafız Pelerini
+1261	İlk Üç Yıldız Ödülü
+1262	İlk Geçiş Ödülü
+1263	İlk tamamlama +{0} gümüş
+1264	Özellikler
+1265	Özellik Yükseltmeleri (Kalıcı)
+1266	Kütük Canavar
+1267	Kütük Canavarlar vurulmadıkça can yeniler. Ateşi dağıtma, tek tek devir.
+1268	Çift Katmanlı Okluk
+1269	Çift Bıçaklı Bumerang
+1270	Çift Tüylü Okluk
+1271	Don Ejderhası
+1272	Don Ejderhası Baskını
+1273	Kraliçe Frosty
+1274	Kraliçe Frosty surları dondurdu!
+1275	Kraliçe Frosty'nin Yankısı
+1276	Kraliçe Frosty surları dondurur ve bu sırada onarılamaz. Donmadan önce surları onar!
+1277	Kraliçe Frosty aslında çok kibar, sadece konuşmayı pek beceremiyor. Son durak: Lav Yarığı.
+1278	Kraliçe Frosty'nin çağırdığı küçük buz ejderhası.
+1279	Don Tüyü Okluğu
+1280	Rüzgar Arkası Bayrağı
+1281	Öldükten sonra dikenleri daha çok acıtır.
+1282	Ölünce daha büyük ve daha uzun süren bir ateş alanı bırakır.
+1283	Ölünce bir ateş alanı bırakır; içinden geçen canavarlar hızlanır.
+1284	Ölünce çok hızlı 3 küçük balkabağına bölünür.
+1285	Ölünce bir spor bulutu püskürtür ve yakındaki canavarları hızlandırır. Mümkünse uzaktan devir.
+1286	Dört Yapraklı Yonca
+1287	Dört Yapraklı Gümüş Madalya
+1288	Dörderli gruplar halinde saldıran zırhlı kurtlar.
+1289	Hızlı Saldırı
+1290	Hızlı saldırı bölümü: iskelet savaş arabaları çarpınca ağır hasar verir, Dondurma Alanı ve Buz Şişesi can simidi.
+1291	Hızlı saldırı bölümü: her 13 saniyede bir dalga! Penguenler ve kurt sürüleri çok hızlı, Dondurma Alanı ve Ok Yağmuru'nu zamanında kullan.
+1292	Hızlı saldırı bölümü: her 14 saniyede bir dalga, sahayı temizlemeni beklemez! Dondurma Alanı tavşan seline karşı işe yarar.
+1293	Hızlı saldırı bölümü! Büyük bulut koyunu sürüleri dalga dalga geliyor, kırkılan koyunlar çok hızlı koşar. Dondurma Alanı ve Ok Yağmuru çok işe yarar.
+1294	Yanında taşıdığın küçük bir eşya.
+1295	Buz Kırığı
+1296	Kabuğa Çekil
+1297	Kabuğunda daha uzun kalır.
+1298	Demek yarık senin "yalnız kalmak istemiyorum" halin?
+1299	Tüm canavar hızları −%3
+1300	Zincir Zırh
+1301	Bay Kemik gibi iskeletler çağırır ve yenilince bir kez diriliyor, sadece daha sert.
+1302	Teşekkür ediyor!
+1303	Bulut Yürüyüşü Botları
+1304	Güneş Pelerini
+1305	Fener Hayaleti
+1306	Erken Çağır
+1307	Erken Çağır (N)
+1308	Erken Çağır +{0} bakır
+1309	Erken Çağır +{0} bakır (N)
+1310	Erken çağırmadan gelen bakır sikke ×3
+1311	Surun azami canını artırır (seviye başına ×1,1).
+1312	Fenerli bir şifacı: daha geniş alan, daha çok iyileştirme. Önce onu devir.
+1313	Kırkıldı!
+1314	Göksel Gazap Asası
+1315	Gökten Ateş
+1316	Gökyüzü Korosu
+1317	Kader Botları
+1318	Gök Kubbe Gözü
+1319	Gök Gözü Tacı
+1320	Gök Kanadı Pelerini
+1321	Meydan Okuma
+1322	Meydan okuma geçildi!
+1323	Meydan okuma başarısız...
+1324	Atla ›
+1325	Sıçrama
+1326	Sıçrama 3 → 5
+1327	Demir Duvar
+1328	Demir Halka Tacı
+1329	Demir zırh büyüden korkar mı? Bir deneyeyim!
+1330	İki kıvrık boynuzlu demir miğfer, turuncu sakal örgü yapılmış.
+1331	Demir Kurt
+1332	Demir Kurtlar dörderli gruplar halinde saldırır. Ölen Cüruf Topaklarının bıraktığı ateş, içinden geçen canavarları hızlandırır.
+1333	Demir Kurt Baskını
+1334	Sac Miğfer
+1335	Demir Plaka Zırh
+1336	Demir Kardan Adam
+1337	Demir Kardan Adamlar ölünce üç küçük kar yumağına bölünür; Kor İfriti'nin ateş topları eskisinden çok daha acıtır.
+1338	Demir Savaş Arabası
+1339	Demir Savaş Arabaları surlara sert vurur ve hızlı saldırır; Dondurma Alanı can simidi.
+1340	Uzakta durup canavarlara baloncuk takar; baloncuk bir saldırıyı engeller. Çoklu Arbalet ve Yıldırım Küreleri baloncukları çabuk patlatır.
+1341	{0}. bölümü geç
+1342	{0}. bölümü geçince buraya yeni bir komşu taşınacak
+1343	{0}. bölümü geçince tüketim eşyası yuvaları açılır. Şimdiden alabilirsin.
+1344	{0}. bölümü geçince açılır
+1345	{0}. bölümü geçince "Ekipman" açılır: miğferler, pelerinler, zırhlar, okluklar, aksesuarlar ve botlar
+1346	{0}. bölümü geçince açılır
+1347	1. bölümü geç
+1348	100. bölümü geç ve Kaos Yarığı'nı kapat
+1349	8. Dünya'yı geç ve Bay Kemik ile Şişman Firavun'un yankılarını huzura kavuştur
+1350	2. Dünya'yı geç
+1351	9. Dünya'yı geç ve Kaya ile Kraliçe Frosty'nin yankılarını huzura kavuştur
+1352	6. Dünya'yı geç ve Gümbür'ü sakinleştir
+1353	7. Dünya'yı geç ve Bobo'ya yeni bir ev bulmasına yardım et
+1354	3. Dünya'yı geç
+1355	4. Dünya'yı geç
+1356	1. Dünya'yı geç
+1357	Geçtikten sonra mağazada Saldırı'yı yükseltmeyi unutma!
+1358	Geçiş Ödülü
+1359	Dokuz Katlı İblis Kulesi'nin 9 katını da geç
+1360	100 bölümün hepsini geç!
+1361	Dokuz Katlı İblis Kulesi'nin 1. katını geç
+1362	Dokuz Katlı İblis Kulesi'nin 5. katını geç
+1363	Genel, Boss
+1364	Aynı anda 5000 bakır sikke tut
+1365	Aynı anda 2 tane fırlatır: biri hedef şeride, biri yan şeride
+1366	Bakır
+1367	Bakır Sikke
+1368	Bakır Sikke Kesesi
+1369	Bakır kademe · Yaygın
+1370	Bakır sikke geliri +%12, Şans +%4
+1371	Bakır sikke geliri +%5
+1372	Bakır Sikke Dizisi
+1373	Demir Kale
+1374	Miğfer
+1375	Miğferin iki yanında kanatlar, üstünde sıcak parlayan bir halka var.
+1376	Röntgen Merceği
+1377	Akbabalar Daireler Çiziyor
+1378	Ansiklopedi
+1379	Ansiklopedi Ustası
+1380	Ansiklopedi Âlimi
+1381	Ejderha Avcısı Okluğu
+1382	Ejderha Avcısı Miğferi
+1383	Tanrı Avcısı Miğferi
+1384	Tavşan Koşusu
+1385	Tavşan Koşusu çok hızlı koşar. Canavarlar farklı şeritlere dağılır.
+1386	Tavşan Ayağı
+1387	Büyük Tavşan Göçü
+1388	Tavşanlar geldi

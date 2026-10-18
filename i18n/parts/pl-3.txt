@@ -1,0 +1,463 @@
+926	Wygasłe Ognisko
+927	Ognisty Chochlik
+928	Chór Żużlu
+929	Bryła Żużlu
+930	Zielony
+931	Zielona Kulka
+932	Kołczan Samsary
+933	Po wylądowaniu wypuszcza czterech goblinków.
+934	Pudło
+935	Peleryna Wróbla
+936	Kupione umiejętności trzeba umieścić w miejscach umiejętności na stronie Ekwipunku, by zabrać je do bitwy.
+937	Cena sprzedaży to połowa ceny zakupu
+938	Powolna ciężka armata, po upadku wielki wybuch; ignoruje 40% pancerza celu.
+939	Wolno nadlatuje; po przebiciu zrzuca 3 goblinki.
+940	Kot Kapłan
+941	Nic nie szkodzi! Kiedy się złościmy, wszyscy grzmimy.
+942	Nic nie szkodzi! Następnym razem wchodź głównym wejściem.
+943	Niegrzeczny strażniczku! Spróbuj mojej trującej zupy!
+944	Brak dodatkowych statystyk
+945	Brak wybranych umiejętności aktywnych
+946	Co 18 s uderza mackę w potwora najbliżej muru (ATK ×3)
+947	Zaopatrzenie co 2 fale
+948	Co 20 s razi małą błyskawicą potwora z największym HP (ATK ×4)
+949	Co 25 s pluje plamą atramentu w najbliższego potwora (ATK ×3)
+950	Mały Boss co 5 fal, wielki Boss co 10; zaopatrzenie na polu bitwy co 3 fale.
+951	Po 4 trafieniach chowa się na chwilę w skorupie i wtedy prawie nie da się go zranić. Nie celuj w jednego: kusze powtarzalne i kule piorunów lepiej rozkładają obrażenia.
+952	Po każdej fali mur leczy się dodatkowo o {0}%
+953	Na koniec fali leczy 2% maks. HP / poziom.
+954	Na koniec każdej fali mur leczy 3%
+955	Na początku fali mur dostaje tarczę o wartości {0}% maks. HP
+956	Na początku fali mur dostaje bańkową tarczę o wartości 4% maks. HP
+957	Na początku fali daje murowi bańkową tarczę pochłaniającą obrażenia do 3% maks. HP
+958	Strzela 4 bełtami naraz
+959	Każde wyzwanie kosztuje {0}.
+960	Co 6. atak mała błyskawica uderza w cel, zadając dodatkowe obrażenia magiczne ATK ×1,5
+961	Co jakiś czas skacze daleko do przodu i w powietrzu nie można go trafić. Szybszy, niż wygląda!
+962	Co 5 ataków natychmiast wykonuje jeszcze jeden.
+963	Po każdym etapie dostajesz miedziaki, a za pierwsze przejście także srebro. Idź do sklepu ulepszyć statystyki, odblokować broń i umiejętności, a potem wracaj!
+964	Po każdym piętrze możesz odebrać diamenty z tego piętra i wyjść albo iść wyżej: po kolejnym piętrze diamenty się podwajają, a po porażce nie dostajesz nic.
+965	Za każdego pokonanego potwora mur leczy 0,3% maks. HP
+966	Wyzwanie dnia
+967	Wyzwanie dnia „{0}”: {1}
+968	Pierwsze przejście każdego dnia daje 3 srebra, a można powtarzać do woli. Nie wpływa na rekordy gwiazdek etapów.
+969	Przypomnienie o przerwie co {0} min gry
+970	Z każdym piętrem w górę HP potworów i obrażenia oblężnicze rosną ×{0}. HP muru przechodzi z poprzedniego piętra bez odnowienia (leczą tylko naprawy, karty zaopatrzenia, przedmioty i umiejętności).
+971	Każda postać ma własny wygląd i dodatkowe statystyki. Kup za złoto i noś po jednej; wybrana stoi na murze (dodatkowe statystyki działają tylko gdy walczy Kael, więc gra sama wraca do Kaela).
+972	Na początku każdej fali mur dostaje tarczę równą 12% maks. HP; mur otrzymuje o 10% mniej obrażeń
+973	Mglisty Moczar
+974	Zbroja z Mithrilu
+975	Kołczan z Mithrilu
+976	Hełm z Mithrilu
+977	Peleryna z Mithrilu
+978	Gęste roje, duchy
+979	Gęste roje, małe duszki, potwory o niskiej odporności magicznej
+980	Za darmo
+981	Peleryna Sekundnika
+982	Gaśnica
+983	Kołczan Niszczący Pancerz
+984	Zwinne Buty
+985	Wisiorek Fortuny
+986	Kości Losu
+987	Po trafieniu podpala cel, zadając w 3 s łącznie 60% ATK jako obrażenia magiczne.
+988	Naostrz Groty
+989	Grzybowy Żołnierz
+990	Grzybowi Żołnierze po śmierci przyspieszają pobliskie potwory. Spróbuj dotknąć umiejętności „Bęben Wojenny” poniżej!
+991	Grzybowy Las
+992	Magia, wielki wybuch (promień 110, rozbryzg 90%), plus 2 skoki błyskawicy.
+993	Magia Zablokowana
+994	Magiczna błyskawica skacze 5 razy, tracąc tylko 15% przy każdym skoku.
+995	Obrażenia magiczne +12%, odnowienie umiejętności −5%
+996	Obrażenia magiczne +25%
+997	Obrażenia magiczne ignorują pancerz fizyczny
+998	Odporność magiczna zablokowała {0} obrażeń magicznych: lawowe potwory nie boją się magii, więc przełącz się na broń fizyczną (armata, kusza powtarzalna).
+999	Magiczna Różdżka
+1000	Odp. magiczna
+1001	Kieł Króla Demonów
+1002	Forma Króla Demonów! Gdy się ładuje, skup ogień, by go przerwać!
+1003	Kleks
+1004	Kleksie, wracaj do domu. Już nigdy nie zostawimy cię samego.
+1005	Kleks?
+1006	Kleks... to ty tam jesteś?
+1007	Kleks zrobił „pop” i skurczył się do małej kulki...
+1008	Kleks znów stał się małą kulką. Był po prostu zbyt samotny i rozlał atrament wszędzie. Teraz mieszka przy murze i codziennie patrzy, jak stoję na straży.
+1009	Klony Kleksa. Pokonaj wszystkie trzy, a pojawi się prawdziwy.
+1010	Echo Kleksa
+1011	Klon Kleksa
+1012	Kleks się rozdzielił! Pokonaj trzy klony!
+1013	Kleks już przeprosił! Przyszliśmy pomóc!
+1014	Atrament, klony, zasłonięty wzrok: to źródło Szczeliny Chaosu. Pokonaj go, a wszystko się skończy.
+1015	Atrament spłynął z ośnieżonych gór na północy. Jest tam tak zimno, że nawet Atrament zamarzł w lód.
+1016	Plama Atramentu
+1017	Goblin z Drewnianą Tarczą
+1018	Gobliny z drewnianymi tarczami są twarde z przodu. Powracający bumerang, Deszcz Strzał i „Przebicie” sobie z nimi poradzą.
+1019	Zbroja z Drewnianą Tarczą
+1020	Drewniany Łuk
+1021	Armia Mumii
+1022	Drewniany Kołczan
+1023	Cel:
+1024	Priorytet celu
+1025	Cmentarny Duch
+1026	Ta zupa pachnie jak niepranie skarpetki!
+1027	Te kroki też powinny odpocząć.
+1028	To niech wszystko... ostygnie.
+1029	To bronimy jeszcze raz! Tym razem mam nowe ubranie!
+1030	Mieszka tam bardzo samotne maleństwo. Mały strażniku, zajrzyj do niego za mnie.
+1031	To zgnieciesz piasek? ...Chyba nie.
+1032	To zbudujmy taki razem! Rzemieślnicy królestwa najlepiej budują wielkie domy.
+1033	Zupa dyniowa gotowa! Dziś ani kropli Atramentu.
+1034	Dyniowe Pole
+1035	Dyniogłowy
+1036	Małe dynie z rozłupanego Dyniogłowego.
+1037	Dyniogłowy po śmierci rozpada się na 3 małe dynie. Zabij go z daleka, by mieć czas na sprzątanie.
+1038	Trudność
+1039	Trudność jest dopasowana do najwyższego ukończonego etapu (co najmniej etap 60, co najwyżej 70). 2 zaopatrzenia na piętro. Wyjście w trakcie lub odświeżenie strony liczy się jako porażka.
+1040	Mhm! Obiecuję!
+1041	Mhm. Obroniliśmy mur i obroniliśmy wszystkich razem.
+1042	Mhm. Tym razem wrócę sam.
+1043	Twój rekord obrony
+1044	Twoje paznokcie to szczypce!
+1045	Patrz, wciągnąłem cały Atrament z powrotem. Tęcza znów ma siedem kolorów.
+1046	Chronisz tam kogoś?
+1047	Masz: {0}
+1048	Wiesz, że ksylofon zrobiono z moich żeber? Żartuję.
+1049	Godło Nirwany
+1050	Echo Królowej zamieniło się w lekki śnieżek i z sykiem spadło na ogień. Ogień w końcu trochę przygasł.
+1051	Ogrzewacz do Rąk
+1052	Trzask! Przepraszam, jak się denerwuję, zamykam skorupę.
+1053	Trzask... No dobrze, wasze skorupy rzeczywiście są już zajęte.
+1054	Tory z długimi kolejkami
+1055	Tory z długimi kolejkami, Gobliny z Drewnianymi Tarczami
+1056	Gruby Faraon
+1057	Gdy Gruby Faraon ma mało HP, wznosi piramidalną tarczę: ataki fizyczne prawie jej nie ruszają, więc zabierz magię!
+1058	Echo Grubego Faraona
+1059	Gdy Gruby Faraon się obudził, poczęstował mnie trzytysiącletnim ciasteczkiem (nie odważyłem się zjeść). Następny przystanek: Mglisty Moczar.
+1060	Gruby Faraon przywołał mumie!
+1061	Biega bardzo szybko, ma bardzo mało HP.
+1062	Bąbelek
+1063	Gdy bąbelek zostanie przebity, nadal przechodzi 50% obrażeń
+1064	Bańkowa tarcza pękła
+1065	Bąbelkowa Impreza
+1066	Ekwipunek
+1067	Bum!
+1068	Typ w pelerynie... ktoś go widział też na bagnach.
+1069	Peleryna
+1070	Peleryna zarzucona na ramiona.
+1071	Latający potwór w kamiennej zbroi: większość ataków fizycznych jest blokowana.
+1072	Rydwan pokryty żelaznymi płytami, szarżuje szybko.
+1073	Bałwan w żelaznej zbroi; po śmierci rozpada się na trzy małe śnieżki.
+1074	Skórzana Zbroja
+1075	Skórzany Kołczan
+1076	Skórzana Czapka
+1077	Skórzane Buty
+1078	Kłamiesz! Nikt nie chce bawić się z Atramentem!
+1079	Nietoperze często zmieniające tory, trudno skupić na nich ogień.
+1080	Wyjdź bezpiecznie: dotarłeś na piętro {0}
+1081	Kołczan Przeciwpancerny
+1082	Grot Przeciwpancerny
+1083	Ciężki Kołczan Przeciwpancerny
+1084	Kołczan Rozdzierający Niebo
+1085	Blub... Czarny Atrament odpadł i ten książę znów myśli jasno. Przepraszam, że ubrudziłem twój mur.
+1086	Blub blub! Ten książę chce skakać na murze jak na trampolinie!
+1087	Zwykły
+1088	Zwykłe ataki mają {0}% szans na podpalenie celu
+1089	Zwykłe ataki mają 25% szans na błyskawicę skaczącą na 3 cele, każdy dostaje obrażenia magiczne ATK ×0,6
+1090	Zwykłe ataki mają 30% szans na podpalenie celu
+1091	Zwykłe ataki podpalają cel po trafieniu
+1092	Zwykłe ataki spowalniają cel o {0}%
+1093	Zwykłe ataki spowalniają cel o 15% (1,5 s)
+1094	Zwykłe ataki spowalniają cel o 20% na 1,5 s
+1095	Zbroja Rycerza
+1096	Pingwi Ślizg
+1097	Pingwiny ślizgają się bardzo szybko i mocno uderzają w mur. Strefa Mrozu może je spowolnić.
+1098	Flota Balonów
+1099	Teleskop
+1100	Idź ›
+1101	Za mało monet na {0} poziomów
+1102	Za mało monet na 2 poziomy
+1103	Chrup!
+1104	Szczypek
+1105	Szczypek zakopuje się, zmienia tor i atakuje z zaskoczenia. Gdy zobaczysz ostrzeżenie o pyle, przygotuj umiejętności!
+1106	Szczypek to wielki skorpion, który boi się samotności. Mówi, że ktoś w piramidzie „zbiera czarny Atrament”.
+1107	Wyścig z Czasem
+1108	Zmień priorytet celu (T)
+1109	Zmień prędkość (F)
+1110	Lekkie Buty
+1111	Łatwy
+1112	Lekki Ekwipunek
+1113	Lekko w Drogę
+1114	Usuń zapis
+1115	Obróć telefon poziomo, aby zagrać w The Last Bastion
+1116	Włącz JavaScript, aby zagrać w The Last Bastion.
+1117	Zamknij ręcznie
+1118	Strzała Egzorcysty
+1119	Hełm Odstraszający Zwierzęta
+1120	Anuluj
+1121	Odblokuj na stronie „Ekwipunek”
+1122	Odblokuj ({0})
+1123	Do sklepu
+1124	Wszystkie {0}
+1125	Ogłusza wszystkie potwory na 2,5 s (Bossy na 1 s) i zadaje obrażenia równe ATK ×3,5.
+1126	Błyskawice trafiają 4 potwory z największym HP na polu, każda zadaje obrażenia magiczne ATK ×5.
+1127	Pełne Ulepszenie
+1128	Pełny ekran (włącza się automatycznie przy pierwszym dotknięciu po otwarciu gry)
+1129	Cały na czarno, tylko z wąską szparą na oczy; chodzi bezszelestnie.
+1130	Wszechwidzące Oko
+1131	OK
+1132	Na pewno usunąć zapis i zacząć od nowa? Tego nie można cofnąć.
+1133	Roje, latające potwory
+1134	Koktajl Mołotowa
+1135	Balon na Gorące Powietrze
+1136	Mistrz Zadań
+1137	Awansuj dowolną broń
+1138	Podnieś dowolną umiejętność aktywną do poz. 3
+1139	Dziennik
+1140	Dziennik Pełny
+1141	Golem ze stopionego żelaza: magia prawie go nie rusza, użyj broni fizycznej.
+1142	Ściany kuźni są czerwone. Każdy potwór-echo jest rozpalony, jakby świeżo wyjęty z pieca.
+1143	Wejście do Kuźni
+1144	Strażnik Kuźni
+1145	Golem ze Stopionego Żelaza
+1146	Lawowa Peleryna
+1147	Lawowe potwory nie boją się magii, pamiętaj o broni fizycznej. Kael, wróć cały i zdrowy.
+1148	Lawowe potwory nie boją się magii; użyj fizycznych ciężkich armat
+1149	Lawowy Olbrzym
+1150	Lawowy Golem
+1151	Lawowe Golemy prawie nie boją się magii! Przełącz się na Drewniany Łuk, armatę lub bumerang.
+1152	Lawowa Szczelina
+1153	Trzysta lat... minęło po raz kolejny.
+1154	Czaszka na trójrożnym kapeluszu się śmieje, a widzi tylko jedno oko.
+1155	Trzy Ścieżki
+1156	Przychodzą w trójkach, szybko szarżując tym samym torem.
+1157	Leśny strażnik niosący długi łuk wyższy od siebie. ATK ×1,5, szybkostrzelność ×0,73; ciężkie strzały ignorują 25% pancerza i odpychają zwykłe potwory o 12 pikseli.
+1158	Burza piaskowa, przywoływanie, leczenie, tarcze: trzyfazowy Gruby Faraon, twardszy niż kiedykolwiek.
+1159	Nadciąga burza piaskowa! Szybkostrzelność spada
+1160	Przed Burzą Piaskową
+1161	Butelka Piasku
+1162	Pustynia? Wygląda na to, że sprawa nie jest taka prosta. Kael, rzucisz tam okiem?
+1163	Pustynne słońce strasznie praży. Tutejsze potwory są owinięte bandażami, a strzały uderzają miękko. Trzeba wymyślić coś innego.
+1164	Pustynne mumie nie boją się zwykłych strzał. Podobno pomoże Magiczna Różdżka, zajrzyj do sklepu!
+1165	Przyszli wszyscy wrogowie pustyni. Najpierw wyczyść małych kapłanów i kaktusowe kule!
+1166	Strażnik Pustyni
+1167	Pustynny Sęp
+1168	Cień pod Wydmami
+1169	Piaskowy Skorpion
+1170	Piaskowe Skorpiony zakopują się, by unikać ataków, a gdy wyjdą, są już blisko muru. Pomogą Deszcz Strzał i Strefa Mrozu.
+1171	Buty Chwili
+1172	Koralowa Zatoka
+1173	Unik
+1174	Po trafieniu błyskawica skacze 3 razy między pobliskimi potworami, a każdy skok zadaje 75% obrażeń poprzedniego. Obrażenia magiczne.
+1175	Skok Błyskawicy
+1176	Błyskawica skacze między kilkoma krabami pustelnikami, więc trudno zmusić jednego do schowania się w skorupie
+1177	Lśniący Hełm
+1178	Najlepszy na:
+1179	Obrażenia ×1,8; trafienie spowalnia cel o 30% (2 s).
+1180	Źródła obrażeń (łącznie {0})
+1181	Sklep
+1182	Sklep / Ekwipunek
+1183	Buty Karawany
+1184	Ostatnia wspinaczka na to piętro nie została odebrana.
+1185	Hełm Wartownika
+1186	Zamierzone doświadczenie
+1187	Ustawienia
+1188	Zasięg
+1189	Zasięg +{0}%
+1190	Zasięg +10%
+1191	Zasięg +10%, obrażenia krytyczne +30%
+1192	Zasięg +12%
+1193	Zasięg +20% (dokładnie znosi ciemność w nocnych etapach)
+1194	Zasięg +5%
+1195	Zasięg +6%, szansa na krytyk +3%
+1196	Kto robi tu tyle żelaza?
+1197	Owinięty grubą wełną; najpierw trzeba ją zbić. Po ostrzyżeniu biega bardzo szybko!
+1198	Ciemnoczerwony rogaty hełm z małymi smoczymi skrzydłami z tyłu; podobno pluje iskrami.
+1199	Przypływ Głębokiej Nocy
+1200	Jaki smak?
+1201	Narodziny Legendarnej Broni
+1202	Paladyn Świątyni
+1203	Zbroja Łaski Bożej
+1204	Boska Ochrona
+1205	Ulepsz o {0} poz., łącznie {1}
+1206	Ulepsz
+1207	Ulepsz: {0}
+1208	Ulepsz poziom muru: HP muru +10% ({0})
+1209	Awansuj
+1210	Zbroja Życia
+1211	Peleryna Życia
+1212	Święte Światło
+1213	Zbroja Świętego Światła
+1214	Zbroja Paladyna
+1215	Peleryna Świętego Źródła
+1216	Wygrane
+1217	Współczynnik wygranych
+1218	Porażka
+1219	Nagroda pocieszenia za porażkę
+1220	Korona Lwie Serce
+1221	Wisior z Lwim Kłem
+1222	Syn kamieniarza z wielką kamienną tarczą. ATK ×0,97; mur otrzymuje o 12% mniej obrażeń i leczy się dodatkowo o 3% na koniec każdej fali.
+1223	Mały olbrzym ułożony z kamieni, otrzymuje o 75% mniej obrażeń magicznych. Bij go bronią fizyczną!
+1224	Gargulec
+1225	Gniazdo Gargulców
+1226	Gargulce latają i noszą kamienną zbroję, więc ataki magiczne działają lepiej niż zwykłe.
+1227	Peleryna Czasu
+1228	Klepsydra Czasu
+1229	Zatrzymanie Czasu
+1230	Peleryna Czasoprzestrzeni
+1231	Kompas Czasoprzestrzeni
+1232	Buty Chronosa
+1233	Tryb Czasu
+1234	Wir Czasu
+1235	Klepsydra Czasu
+1236	W użyciu
+1237	Peleryna Drzewa Świata
+1238	Zbroja Drzewa Świata
+1239	Nie do Zatrzymania
+1240	Nie do zatrzymania!
+1241	Spróbuj włączyć „Automatyczne użycie umiejętności” (prawy dolny róg w bitwie); umiejętności same się użyją, gdy będą gotowe
+1242	Dodatek
+1243	Dodatek 1
+1244	Dodatek 2
+1245	Dodatek 3
+1246	To my, Wiaterku! Tym razem nie dmuchaj za mocno!
+1247	To był wypadek! Przyszliśmy to wyczyścić!
+1248	Zabójca Bogów
+1249	Kołczan Zabójcy Bogów
+1250	Korona Zabójcy Bogów
+1251	Kołczan Krwiożercy
+1252	Zbierz
+1253	Obrona udana!
+1254	Kronika obrony
+1255	Dziennik obrony
+1256	Strażnik Muru
+1257	Strzeż Muru
+1258	Runa Strażnika
+1259	Zbroja Strażnika
+1260	Peleryna Strażnika
+1261	Nagroda za Pierwsze 3 Gwiazdki
+1262	Nagroda za Pierwsze Przejście
+1263	Pierwsze ukończenie +{0} srebra
+1264	Statystyki
+1265	Ulepszenia statystyk (stałe)
+1266	Pniak
+1267	Pniaki regenerują HP, gdy nikt ich nie bije. Nie rozpraszaj ognia, eliminuj je po kolei.
+1268	Podwójny Kołczan
+1269	Bumerang Dwuostrzowy
+1270	Kołczan z Dwoma Piórami
+1271	Lodowy Smok
+1272	Nalot Lodowych Smoków
+1273	Królowa Mrozu
+1274	Królowa Mrozu zamroziła mur!
+1275	Echo Królowej Mrozu
+1276	Królowa Mrozu zamraża mur i w tym czasie nie można go naprawiać. Napraw mur, zanim zamarznie!
+1277	Królowa Mrozu jest tak naprawdę bardzo łagodna, tylko nie umie mówić. Ostatni cel: Lawowa Szczelina.
+1278	Mały lodowy smok przywołany przez Królową Mrozu.
+1279	Kołczan z Szronowych Piór
+1280	Flaga Pomyślnego Wiatru
+1281	Po śmierci jego kolce bolą bardziej.
+1282	Po śmierci zostawia większą i dłużej trwającą strefę ognia.
+1283	Po śmierci zostawia płomienie; potwory przechodzące przez nie przyspieszają.
+1284	Po śmierci rozpada się na 3 bardzo szybkie małe dynie.
+1285	Po śmierci wypuszcza chmurę zarodników, która przyspiesza pobliskie potwory. Jeśli możesz, zabij go z daleka.
+1286	Czterolistna Koniczyna
+1287	Czterolistny Srebrny Medal
+1288	Opancerzone wilki szarżujące po cztery.
+1289	Szturm
+1290	Etap szturmu: szkieletowe rydwany mocno uderzają w mur, a Strefa Mrozu i Mrożona Butelka ratują życie.
+1291	Etap szturmu: fala co 13 sekund! Pingwiny i wilcze watahy są szybkie, więc używaj Strefy Mrozu i Deszczu Strzał na czas.
+1292	Etap szturmu: fala co 14 sekund, bez czekania na oczyszczenie pola! Strefa Mrozu zatrzyma falę królików.
+1293	Etap szturmu! Wielkie stada chmurowych owiec fala za falą, a ostrzyżone owce biegną szybko. Bardzo przydają się Strefa Mrozu i Deszcz Strzał.
+1294	Drobiazg, który zawsze nosisz przy sobie.
+1295	Rozbity Lód
+1296	Do Skorupy
+1297	Dłużej siedzi w skorupie.
+1298	Czyli szczelina to twoje „nie chcę być sam”?
+1299	Prędkość wszystkich potworów −3%
+1300	Kolczuga
+1301	Podobnie jak Pan Kostka przywołuje szkielety i wstaje raz po pokonaniu, tylko jest twardszy.
+1302	Mówi dziękuję!
+1303	Buty Chodzącego po Chmurach
+1304	Słoneczna Peleryna
+1305	Latarniowy Duch
+1306	Przywołaj wcześniej
+1307	Przywołaj wcześniej (N)
+1308	Przywołaj wcześniej +{0} miedzi
+1309	Przywołaj wcześniej +{0} miedzi (N)
+1310	Miedziaki za wcześniejsze przywołanie ×3
+1311	Zwiększa maks. HP muru (×1,1 za poziom).
+1312	Uzdrowiciel z latarnią: większy zasięg, więcej leczenia. Zniszcz go najpierw.
+1313	Ostrzyżone!
+1314	Różdżka Gniewu Niebios
+1315	Ogień z Nieba
+1316	Niebiański Chór
+1317	Buty Przeznaczenia
+1318	Oko Niebios
+1319	Korona Niebiańskiego Oka
+1320	Peleryna Niebiańskich Skrzydeł
+1321	Wyzwanie
+1322	Wyzwanie ukończone!
+1323	Wyzwanie nieudane...
+1324	Pomiń ›
+1325	Skok
+1326	Skoki 3 → 5
+1327	Żelazny Mur
+1328	Korona z Żelaznego Pierścienia
+1329	Czy żelazna zbroja boi się magii? Sprawdzę!
+1330	Żelazny hełm z dwoma zakrzywionymi rogami i pomarańczową brodą splecioną w warkocze.
+1331	Żelazny Wilk
+1332	Żelazne Wilki szarżują po cztery. Płomienie po zabitych Bryłach Żużlu przyspieszają przechodzące potwory.
+1333	Szturm Żelaznych Wilków
+1334	Hełm z Blachy
+1335	Zbroja z Żelaznych Płyt
+1336	Żelazny Bałwan
+1337	Żelazne Bałwany po śmierci rozpadają się na trzy małe śnieżki; kule ognia Ognistych Chochlików bolą znacznie bardziej niż wcześniej.
+1338	Żelazny Rydwan
+1339	Żelazne Rydwany mocno uderzają w mur i szybko szarżują; Strefa Mrozu ratuje życie.
+1340	Siedzi daleko i zakłada potworom bąbelki; bąbelek blokuje jeden atak. Kusze powtarzalne i kule piorunów szybko je przebijają.
+1341	Przejdź etap {0}
+1342	Po przejściu etapu {0} wprowadzi się tu nowy sąsiad
+1343	Miejsca na przedmioty odblokowują się po przejściu etapu {0}. Możesz już teraz coś kupić.
+1344	Otwiera się po przejściu etapu {0}
+1345	Po przejściu etapu {0} otwiera się „Ekwipunek”: hełmy, peleryny, zbroje, kołczany, dodatki i buty
+1346	Odblokowuje się po przejściu etapu {0}
+1347	Przejdź etap 1
+1348	Przejdź etap 100 i zamknij Szczelinę Chaosu
+1349	Przejdź rozdział 8 i pozwól echom Pana Kostki i Grubego Faraona odpocząć w spokoju
+1350	Przejdź rozdział 2
+1351	Przejdź rozdział 9 i pozwól echom Skałka i Królowej Mrozu odpocząć w spokoju
+1352	Przejdź rozdział 6 i uspokój Grzmotka
+1353	Przejdź rozdział 7 i pomóż Bobo znaleźć nowy dom
+1354	Przejdź rozdział 3
+1355	Przejdź rozdział 4
+1356	Przejdź rozdział 1
+1357	Po przejściu pamiętaj ulepszyć ATK w sklepie!
+1358	Nagroda za przejście
+1359	Przejdź wszystkie 9 pięter Dziewięciopiętrowej Wieży Demonów
+1360	Przejdź wszystkie 100 etapów!
+1361	Przejdź piętro 1 Dziewięciopiętrowej Wieży Demonów
+1362	Przejdź piętro 5 Dziewięciopiętrowej Wieży Demonów
+1363	Ogólne, Boss
+1364	Posiadaj naraz 5000 miedziaków
+1365	Rzuca 2 naraz: jedną w wybrany tor, drugą w sąsiedni
+1366	Miedź
+1367	Miedziaki
+1368	Sakiewka Miedziaków
+1369	Półka miedziaków · często używane
+1370	Dochód z miedziaków +12%, szczęście +4%
+1371	Dochód z miedziaków +5%
+1372	Sznur Miedziaków
+1373	Miedziana Forteca
+1374	Hełm
+1375	Po bokach hełmu są skrzydła, a nad nim ciepła świecąca obręcz.
+1376	Luneta
+1377	Krążące Sępy
+1378	Kodeks
+1379	Mistrz Kodeksu
+1380	Uczony Kodeksu
+1381	Kołczan Zabójcy Smoków
+1382	Hełm Zabójcy Smoków
+1383	Hełm Zabójcy Bogów
+1384	Króliczy Pęd
+1385	Króliczy Pęd biegnie bardzo szybko. Potwory rozproszą się po różnych torach.
+1386	Króliczy Pazur
+1387	Wielka Wędrówka Królików
+1388	Nadchodzą króliki

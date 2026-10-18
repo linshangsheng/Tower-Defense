@@ -1,0 +1,463 @@
+1389	Polecane
+1390	Polecane ulepszenie
+1391	Polecane po przejściu etapu {0}
+1392	Polecana broń: {0}
+1393	Polecana broń „{0}” ma niski poziom, najpierw ją ulepsz: {1} ({2})
+1394	Zalecana siła {0} · Twoja siła {1}
+1395	Wyjdź z gry
+1396	Wyjść z gry? Postęp został zapisany automatycznie.
+1397	Wykonaj 20 zadań etapu
+1398	Wykonaj wszystkie zadania etapu
+1399	Jak grać
+1400	Wróg Tysiąca Potworów
+1401	Korona Gwiazdozbioru
+1402	Echo Wszechrzeczy
+1403	Panorama
+1404	Korona
+1405	Kolekcjoner Koron
+1406	Standardowy strój strażnika królestwa. Hełm jest trochę za duży.
+1407	Miasteczko
+1408	Najmniejszy strażnik muru w królestwie, atakuje stabilnie.
+1409	Najmniejszy strażnik muru w królestwie, który powstrzymał największy kryzys.
+1410	Prototyp webowy {0} · rozdziałów: {1}, etapów: {2}
+1411	Soczewka Teleskopu
+1412	Zagrożony Mur
+1413	Zagrożenie najpierw
+1414	Bzyczek
+1415	Bzyczki latają i mijają inne potwory, lecąc prosto na mur. Kusza Powtarzalna zadaje latającym więcej obrażeń.
+1416	Bzzz bzzz
+1417	Ja... ja wciągnę Atrament z powrotem.
+1418	Wypuściłem wszystkie latawce w niebo. W nocy wyglądają jak gwiazdy.
+1419	Zostawiłem tu własny atrament. Kiedy nie chcę być sam, wyrastają z niego echa, coraz liczniejsze i coraz większe.
+1420	Przeprowadziłem się obok muru, żeby codziennie patrzeć, jak Kael stoi na straży.
+1421	Nie wierzę! Najpierw was przewieję!
+1422	Obiecuję ci.
+1423	Mój łuk jest ciężki i wolny, ale każda strzała odpycha potwory. Przy wulkanie liczcie na mnie.
+1424	Mój nowy dom jest nie-sa-mo-wi-cie duży. Zapraszam do zabawy!
+1425	Na moich śnieżnych polach wolno tylko być cicho. Twój hełm jest za głośny.
+1426	Ja zapisuję! Numer jeden: Król Bobo, osiem nóg, potrzebuje bardzo, bardzo wielkiej skorupy.
+1427	Weszliśmy na niebo Tęczowym Mostem. Chmury były miękkie, jak chodzenie po piankach. Kleks cały czas chował się za moim hełmem.
+1428	Obroniliśmy się!
+1429	Zbudowaliśmy nad morzem „Muszlowe Miasteczko”. Dom Bobo jest największy, a jego dach postawiło wspólnie osiem nóg. Okazuje się, że ochrona domu może też znaczyć pomoc w budowie cudzego.
+1430	Zapraszam na truskawkowego!
+1431	Ojej! ...Najpierw poprawię hełm.
+1432	Jestem Bebe, opiekunka muszli w zatoce! Tak wielką skorupę trzeba najpierw zarejestrować, zanim ją przydzielimy!
+1433	Jestem Echem. Echo tylko powtarza. Szkielety, naprzód.
+1434	Przyszedłem pilnować muru. Gdy skończysz marudzić, możemy pobawić się razem.
+1435	Nauczyłem się rysować atramentem! To ty, a to ja.
+1436	Ja też chcę mieć dom! Blub, macki, trzymajcie go mocno!
+1437	Widziałem w lustrze wszystkich. Może ten gwar wcale nie jest zły.
+1438	Ćwiczę ciche grzmoty. Bum. (Bardzo cicho)
+1439	Otworzyłem w miasteczku zakład fryzjerski. Spokojnie, jestem bardzo ostrożny.
+1440	Słyszałem tylko koncert stukania w hełm...
+1441	Ciemne chmury zasłaniają widok: zasięg −30%. Kluski Gromu można trafić dopiero z bliska. Uważaj na ładunki statyczne!
+1442	Ciemne Chmury
+1443	Korytarz bez Lamp
+1444	Nie można umieścić
+1445	Kuźnia bez Światła
+1446	Morze bez Światła
+1447	Tryb nieskończony
+1448	Tryb nieskończony: im dłużej wytrzymasz, tym lepiej! Zaopatrzenie co 3 fale, Boss co 5 fal.
+1449	Dotrzyj do fali 30 w Trybie nieskończonym
+1450	Rekord nieskończony
+1451	Nikt ich nie zatrzyma!
+1452	Ignorowanie pancerza 40% → 70%, obrażenia rozbryzgu 70% → 85%
+1453	Ignoruje {0}% pancerza celu
+1454	Ignoruje 20% pancerza celu
+1455	Ignoruje 25% pancerza celu
+1456	Ignoruje 50% pancerza celu (także tarcz).
+1457	Noc bez Księżyca
+1458	Broń
+1459	Broń: {0}
+1460	Broń (odblokowana na stałe, +8% obrażeń za poziom, +4% za poziom po 10.; wyższa jakość to więcej siły, wyższa cena i droższe ulepszenia)
+1461	Obrażenia broni
+1462	Kolekcjoner Broni
+1463	Fizyczne Zablokowane
+1464	Obrażenia fizyczne wobec duchów +{0}% skuteczniejsze
+1465	Skuteczność obrażeń fizycznych wobec duchów 30% → 70%
+1466	Pancerz, drewniane tarcze lub duchy zablokowały {0} obrażeń fizycznych: spróbuj Magicznej Różdżki, bumerangu lub „Przebicia”.
+1467	Taka mgła, nic nie widać...
+1468	Oczy we Mgle
+1469	Nietoperz Wampir
+1470	Hihi, dodałem do zupy odrobinkę miodu.
+1471	Hihihi, jeszcze łyżka czarnego atramentu i moja zupa gotowa!
+1472	Następnym razem, zanim zawieje silny wiatr, najpierw się przywitam.
+1473	10 s po starcie następnej fali zamraża wszystkie potwory na 4 s (Bossy 1,5 s)
+1474	8 s po starcie następnej fali zadaje wszystkim potworom obrażenia magiczne ATK ×6
+1475	Następny etap ›
+1476	Nadeszło lato, a ja jestem w miasteczku najpopularniejszy.
+1477	Kaktusowa Kula
+1478	Kaktusowe Kule wybuchają, gdy dotoczą się do muru! Zabij je z daleka.
+1479	Najpierw przejdź etap {0}
+1480	Przedmioty jednorazowe (używane w bitwie, po jednym na użycie; do {0} rodzajów, do {1} sztuk każdego; po użyciu każdy rodzaj ma odnowienie)
+1481	Przedmioty jednorazowe (do {0} rodzajów, do {1} sztuk każdego; jedno na użycie, każdy ma odnowienie)
+1482	Miejsca na przedmioty jednorazowe
+1483	Mały Boss
+1484	Mały Boss. Ciągle przywołuje małe duszki, a po pierwszym pokonaniu wstaje!
+1485	Mały Boss. Kamienny olbrzym z wiatrakiem zamiast głowy: puszcza latawce i wzbudza wichury, które zdmuchują potwory na mur. Gdy ostrzega, skup ogień, by go przerwać!
+1486	Mały Boss. Tupie, ogłuszając bohatera, a po pokonaniu wybucha. Nie pozwól mu zbliżyć się do muru!
+1487	Mały Boss. Zakopuje się, zmienia tor i atakuje z zaskoczenia, a przy murze mocno szczypie wielkimi szczypcami.
+1488	Mały Boss. Wielka perłowa małża: zamknięta jest prawie nie do ruszenia, a otwarta pokazuje perłę. Używaj umiejętności, gdy się otworzy!
+1489	Mały Boss. Tornada i odpychanie, groźniejsze niż wcześniej.
+1490	Mały Boss. Co jakiś czas zamraża jedno z miejsc umiejętności bohatera.
+1491	Mały Boss. Działa jak Pan Kostka: przywołuje szkielety i rzuca magiczną tarczę, ale jest twardszy.
+1492	Mały Boss. Działa jak Skałek, ale ma dwa razy więcej HP.
+1493	Mały Boss. Przy każdym spadku HP o 15% wyrzuca małe galaretki, a po śmierci dzieli się jeszcze raz.
+1494	Mały Lodowy Smok
+1495	Mały Lodowy Smok nadlatuje! Atak z powietrza i z ziemi naraz!
+1496	Mała Galaretka
+1497	Mały Kapłan
+1498	Mali Kapłani chowają się z tyłu i leczą potwory. Uderzenie Pioruna i wybuch Magicznej Różdżki mogą trafić także ich.
+1499	Mały Skarbiec
+1500	Mała Dynia
+1501	Mały Łom
+1502	Mała Klepsydra
+1503	Mała Błyskawica
+1504	Mała Śnieżka
+1505	Mały Duszek
+1506	Małe Duszki prawie nie boją się ataków fizycznych
+1507	Małe Duszki prawie nie boją się ataków fizycznych. Ich zmorą są Magiczna Różdżka, Kula Piorunów, Uderzenie Pioruna i podpalenie!
+1508	Mała Bomba
+1509	Sąsiedzi z Miasteczka
+1510	Mistrz Synergii
+1511	Buty
+1512	Nie udało się zapisać danych
+1513	Zdejmij
+1514	Zdejmij −1
+1515	Dziękuję, że nie znienawidziliście mnie, gdy się złościłem.
+1516	Dziękuję, że doszliście aż tutaj.
+1517	Dziękuję, że obroniłeś królestwo!
+1518	Nowe
+1519	Pojawia się nowy wróg!
+1520	Nowy rekord! Fale: {0} → {1}
+1521	Gwiezdny Wybuch
+1522	Gwiezdny Mag
+1523	Gwiezdna Różdżka
+1524	Gwiezdna Zbroja
+1525	Gwiezdna Korona
+1526	Peleryna Gwiezdnego Blasku
+1527	Migoczące
+1528	Kołczan Gwiezdnego Szlaku
+1529	Lśniąca Galaktyka
+1530	Gwiazdka
+1531	Buty Gwiezdnego Szczęścia
+1532	Buty Wędrownego Kupca
+1533	Szczęście
+1534	Szczęście +{0}%
+1535	Szczęście +15%
+1536	Amulet Szczęścia
+1537	Premia Szczęścia
+1538	Szczęśliwe Buty
+1539	Szczęśliwa Moneta
+1540	Przypomnienie o Przerwie
+1541	Zrób Przerwę
+1542	Zestaw Naprawczy
+1543	Zbroja Mnicha
+1544	Naprawa
+1545	Żółw z Tarczą Pustki
+1546	Żółw z Tarczą Pustki ma większy krąg ochronny, więc zniszcz go najpierw; kolce jeżowców też bolą mocniej.
+1547	Szyk Tarcz Pustki
+1548	Latająca Ryba Pustki
+1549	Latające Ryby Pustki skaczą dalej i w powietrzu nie można ich trafić.
+1550	Latawiec Pustki
+1551	Jeżowiec Pustki
+1552	Kluska Gromu Pustki
+1553	Kluski Gromu Pustki mają większy zasięg porażenia. Zabijaj je z daleka.
+1554	W Pustce nie ma wiatru, a mimo to latawce unoszą się, a owce beczą. Jest tu wszystko, co znajome, tylko całe fioletowe.
+1555	Ptak Pustki
+1556	Balon Pustki
+1557	Niebiosa Pustki
+1558	Krab Pustki
+1559	Owca Pustki
+1560	Owce Pustki mają grubszą wełnę, a Latawce Pustki unikają połowy ataków fizycznych.
+1561	Wymaga: {0} (najpierw wymień srebro na złoto w kantorze w sklepie)
+1562	Wymaga: {0} (najpierw wymień srebro na złoto w kantorze w sklepie).
+1563	Potwory na wybranym torze i torach obok dostają obrażenia ATK ×7.
+1564	Wybierz tor. Potwory na nim zostają spowolnione o 60% na 6 sekund.
+1565	Wybierz kartę zaopatrzenia (do końca etapu) · Zaopatrzenie nr {0}
+1566	Wybierz
+1567	Wybierz zaopatrzenie
+1568	Wybierz trudność
+1569	Wybierz rozdział
+1570	Wybierz ekwipunek
+1571	Opaska Ucznia
+1572	Peleryna Ucznia
+1573	Lawina
+1574	Yeti
+1575	Yeti są odporne na ataki fizyczne, a Lawowe Golemy na magię. Przygotuj oba rodzaje obrażeń.
+1576	Yeti na Wolności
+1577	Yeti boją się magii, Lawowe Golemy ataków fizycznych, a Żółwie z Tarczą ich chronią. Najpierw zniszcz żółwie!
+1578	Śnieżka
+1579	Śnieżki po śmierci rozpadają się na dwie małe. Obrażenia obszarowe czyszczą je łatwiej.
+1580	Małe śnieżki, które zostają po rozpadzie Śnieżki.
+1581	Śnieżna kraina jest taka biała i jasna. Pingwiny sunął po lodzie i fiu, już są pod murem.
+1582	Pęd po Śniegu
+1583	Pingwiny na śniegu ślizgają się szybko, a Yeti są grube i twarde. Kael, ubierz się cieplej.
+1584	Strażnik Śnieżnej Krainy
+1585	Pierścień Krwawej Przysięgi
+1586	Maska Krwawego Oka
+1587	Zbroja Krwawego Rodu
+1588	Szybka Peleryna
+1589	Szybkie Buty
+1590	Magmowa Kulka
+1591	Magmowe Kulki po śmierci zostawiają płomienie, a potwory za nimi przyspieszają, gdy w nie wejdą. Zabijaj je z daleka.
+1592	Skałek
+1593	Skałek wybuchł! Tor zmienia się w lawę
+1594	Skałek wybucha po pokonaniu! Zabij go, zanim zbliży się do muru. Jest odporny na magię, więc weź broń fizyczną.
+1595	Echo Skałka
+1596	Echo Skałka: tupie i kruszy skały. Działa jak Skałek, ale ma dwa razy więcej HP.
+1597	Echo Skałka rozsypało się w stos kamyków. Atlas ułożył je u stóp muru.
+1598	Skałek jest strażnikiem szczeliny. Mówi, że maluch w środku nigdy nie miał przyjaciela.
+1599	Skałek wybuchł przy murze!
+1600	Leci wzdłuż toru i wraca, trafiając każdego potwora raz w każdą stronę. Trafienie w drodze powrotnej jest od tyłu i ignoruje tarcze.
+1601	Wełna
+1602	Grubsza wełna: najpierw pochłania 70% HP, zanim HP zacznie spadać.
+1603	Nożyce do Wełny
+1604	Wojownik Wieży
+1605	Królowie demonów {0}% · Siła ×{1}
+1606	Zaraz tupnie!
+1607	Nadciąga wichura!
+1608	Pomóc ci się poskładać?
+1609	Możesz też w „Ustawieniach” przełączyć łatwy poziom trudności
+1610	W nocy stary zamek jaśnieje niebieskim blaskiem księżyca. Księżycowe Kulki, które wypadły ze szczeliny, nadal pamiętają, jak gryźć mur.
+1611	Nocą zasięg −30%. Nietoperze Wampiry często zmieniają tory, a Cieniści Zabójcy pojawiają się nagle.
+1612	Nocą zasięg −30%. Latające Ryby są przed tobą po jednym skoku, a Cieniści Zabójcy pojawiają się nagle!
+1613	Nocą zasięg −30%. Kolce jeżowców ranią własnych, więc poczekaj, aż się zbiją w kupę.
+1614	Nocą zasięg −30%. Ogniste Chochliki siedzą daleko i rzucają kulami ognia, nie pozwól im powoli niszczyć muru.
+1615	Nocą zasięg −30%. Zjawy dostają tylko 15% obrażeń fizycznych. Najlepsze są czary i podpalenie.
+1616	Nocą zasięg −30%. Rydwany i wilki wypadają z ciemności i w mgnieniu oka są pod murem.
+1617	Hełm Nocnej Sowy
+1618	Bitwa Nocna
+1619	Sto etapów, sto obron. Kleks wrócił, a szczelina się zamknęła. Mur jest wciąż tym samym murem, ale dom za nim stał się taki wielki, wielki. (The Last Bastion, koniec)
+1620	Połowa ataków fizycznych dryfuje obok niego.
+1621	Gdy cała fala się pojawi, dotknij „Przywołaj wcześniej”, by od razu wezwać następną. Pozostałe sekundy odliczania zamienią się w miedziaki.
+1622	Rzuca naraz dwa bumerangi (ten tor + sąsiedni). Trafienia spowalniają cel o 40%.
+1623	Strzela 3 naraz, +50% obrażeń wobec latających potworów
+1624	Strzela 3 płonącymi bełtami naraz, każdy podpala cel, +50% obrażeń wobec latających potworów.
+1625	Strzela 3 bełtami naraz w 3 różne cele, +50% obrażeń wobec latających potworów. Przy mniejszej liczbie celów słabsze.
+1626	Strzela 5 strzałami naraz, +60% obrażeń wobec latających potworów, ignoruje 20% pancerza.
+1627	To na pewno ostatni odcinek. Broń muru. Tym razem za wszystkie echa.
+1628	Jeden Dwa Trzy Cztery Pięć Sześć Siedem Osiem Dziewięć Dziesięć
+1629	Zalecane Wyposażenie
+1630	Dobra para butów: szybkie nogi i pewny krok.
+1631	Skacze dalej.
+1632	Zbroja Medyka
+1633	Założono polecane wyposażenie na ten etap:
+1634	Osiągnięto limit
+1635	Przeczytano {0} / {1}
+1636	Skopiowano do schowka
+1637	Zmieniono na „{0}”, do walki wychodzi Kael
+1638	Bronisz już od {0} minut!
+1639	Maks. poziom
+1640	Wybrano:
+1641	Posiadane
+1642	Przeszedłeś na trudnym
+1643	Założone
+1644	Założone {0} · Plecak {1}
+1645	Próbki muzyki: bank dźwięków FluidR3_GM (Frank Wen), CC BY 3.0, via gleitz/midi-js-soundfonts
+1646	Głośność muzyki
+1647	Efekty dźwiękowe
+1648	Głośność efektów
+1649	Srebro
+1650	Srebrne monety
+1651	Półka srebra · celowane
+1652	Srebrem odblokowujesz umiejętności i dobry ekwipunek.
+1653	Srebrna Korona
+1654	Kołczan Prowadzący Dusze
+1655	Niewidzialność
+1656	Bohater
+1657	Bohater nie może zostać porażony ani ogłuszony
+1658	ATK bohatera +25% przez 8 sekund.
+1659	Spowolnienie szybkostrzelności bohatera −60%
+1660	Wisior Orlego Oka
+1661	Peleryna Orlich Skrzydeł
+1662	Zawieszka z Orlego Pióra
+1663	Kapelusz z Orlego Pióra
+1664	Orle Oko
+1665	Świetlik
+1666	Maska Cienistego Ostrza
+1667	Nóż w Cieniu
+1668	Zdobądź wszystkie 6 rodzajów broni
+1669	Nigdy nie Upadły
+1670	Kołczan Wiecznego Mrozu
+1671	Wieczna Twierdza
+1672	Wieczna Peleryna
+1673	Wieczna Klepsydra
+1674	Serce Bohatera
+1675	Kołczan Widmo
+1676	Projekt gry · Programowanie · Grafika · Dźwięk
+1677	Buty Łucznika
+1678	Więc tak wygląda uczucie domu: ciepłe i przytulne.
+1679	Spełniacz Życzeń
+1680	Ktoś tu mieszka? To tym bardziej trzeba się zarejestrować! Trzask! (zamyka skorupę)
+1681	Gruby i twardy. Po 2 sekundach bez trafienia powoli się leczy. Skup ogień i zabij go od razu.
+1682	Peleryna Żaru
+1683	Sieć Rybacka
+1684	Spotkaj 30 rodzajów potworów
+1685	Spotkane potwory
+1686	Spotkaj wszystkie potwory
+1687	Peleryna Gojenia
+1688	Prymitywna Broń
+1689	Posiłki
+1690	Wsparcie posiłków: w następnej próbie tego etapu ATK i mur +{0}%
+1691	Dystansowy
+1692	Dystansowy: zatrzymuje się daleko i pluje trucizną w mur, który się zatruwa.
+1693	Z daleka jest niewidzialny i nie można go zaatakować. Skrada się też między torami i pojawia się dopiero przy murze.
+1694	Hełm Dalekowidzenia
+1695	Dalekowidzenie
+1696	Zjawa
+1697	Kołczan Księżycowego Blasku
+1698	Pierwsza Wizyta w Blasku Księżyca
+1699	Księżycowa Wichura
+1700	Zamek Księżycowego Cienia
+1701	Strażnik Księżycowego Cienia
+1702	Królik Księżycowego Cienia
+1703	Królik Księżycowego Cienia i Nietoperz Wampir migają tu i tam, nie licz na to, że będziesz bić tego samego.
+1704	Księżycowa Kulka
+1705	Księżycowe Kulki same się leczą, gdy nikt ich nie bije. Nie dawaj im odetchnąć.
+1706	Czytaj
+1707	Strażnik Chmur
+1708	Królestwo Chmur
+1709	Chmurowa Owca
+1710	Wełna Chmurowej Owcy −60%
+1711	Chmurowe Owce trzeba najpierw ostrzyc, a potem biegną bardzo szybko. Zabij ją od razu!
+1712	Peleryna Skowronka
+1713	Deszcz Meteorytów
+1714	Armata Meteorytowa
+1715	Jeszcze raz
+1716	Regeneracja
+1717	Zagraj jeszcze chwilę
+1718	Przejdź 10 etapów na trudnym (zdobądź 10 koron)
+1719	Odbierz tutaj
+1720	Pauza
+1721	Zamrugaj, popatrz w dal i napij się wody. Dziadek Król popilnuje muru przez chwilę.
+1722	Hełm Pogromcy Smoków
+1723	Pole bitwy ma teraz 4 tory. Ataki obszarowe i umiejętności na całe pole stają się coraz ważniejsze.
+1724	Szarża Rydwanów
+1725	Powódź Rydwanów
+1726	Szpital Polowy
+1727	Bitwa
+1728	Bitwy: {0} · Wygrane: {1} · Pokonanych: {2} · Przerwań: {3} · Wczesnych wezwań: {4}
+1729	Bitwy: {0} · Wygrane: {1} · Pokonanych potworów: {2}
+1730	Liczba bitew
+1731	Działa automatycznie na początku bitwy: +30% miedziaków w tym etapie.
+1732	Ustawienia bitwy
+1733	Bitwa wstrzymana. Wybierz kartę zaopatrzenia; jej efekt trwa do końca etapu (kolory od najniższego: niebieski, fioletowy, czerwony, złoty; wyższy to silniejszy). Możesz też nacisnąć 1 / 2 / 3.
+1734	W bitwie dotknij przycisku umiejętności (lub naciśnij 1 / 2 / 3), by użyć umiejętności aktywnych, a Q / W / E / R / Z / X / C, by użyć przedmiotów (do 3 sztuk każdego, jedno na użycie, po użyciu odnowienie; przedmioty najpierw kup w sklepie, potem załóż).
+1735	Bęben Wojenny
+1736	Grzmiące Bębny Wojenne
+1737	Deszcz Strzał użyty podczas działania Bębna Wojennego: +30% strzał
+1738	Samuraj Sengoku
+1739	Po bitwie
+1740	Siła
+1741	Sztandar Bojowy
+1742	Przed bitwą
+1743	Przygotowanie do bitwy · Etap {0}
+1744	Hełm Wojownika
+1745	Otworzyła się! Bij szybko!
+1746	Otwarta! Bij przez {0} s
+1747	Rozdział
+1748	Długa kolejka, gobliny z drewnianymi tarczami
+1749	Gwiazdy na szacie migoczą same, a kapelusz jest wyższy od właściciela.
+1750	Wisior Fortuny
+1751	Na bagnach wszędzie mgła i rechoczące trujące żaby. Pierwszy raz mur wydaje mi się trochę zimny.
+1752	Małe Duszki z bagien prawie nie boją się ataków fizycznych, a trujące żaby plują jadem z daleka. Pamiętaj użyć na nich „Zagrożenie najpierw”!
+1753	Dziewczyna z latarnią ze świetlików z bagien. ATK ×0,92, szybkostrzelność ×1,05; w nocy zasięg się nie zmniejsza, obrażenia fizyczne wobec duchów +20%; co 12. atak wypuszcza 3 świetliki (każdy zadaje obrażenia magiczne ATK ×0,6).
+1754	Strażnik Bagien
+1755	Raca
+1756	To nie skorupa, to mur! Mieszka w nim mnóstwo ludzi!
+1757	Tym razem nie będę padać. ...Tylko troszeczkę, żeby wykąpać nowy dom.
+1758	To brzmi dokładnie tak samo jak wcześniej.
+1759	To najgłębsza część szczeliny, gdzie nawet niebo i ziemię trudno odróżnić.
+1760	Skończył ci się ten przedmiot
+1761	Dzieci w miasteczku mówią do mnie Babciu Zupo i bardzo to lubię.
+1762	Strażnik Wieży
+1763	Armata Trzęsienia Ziemi
+1764	Parowy Rzemieślnik
+1765	Cały etap w ciemnej nocy: zasięg −30%
+1766	Możesz to później zmienić w „Ustawieniach”.
+1767	Potem 6 s po starcie każdej fali z nieba spada ogień, zadając wszystkim potworom obrażenia magiczne ATK ×4
+1768	Rozumiem
+1769	Rozumiem (spacja)
+1770	Dozwolony tylko Drewniany Łuk
+1771	Jak tylko tor poczerwienieje, skupię ogień, by przerwać twoją szarżę!
+1772	Przywołaj wcześniej co najmniej 3 razy i przejdź etap
+1773	Leczenie
+1774	Leczy więcej latających ptaków.
+1775	Zbroja Uzdrowienia
+1776	Kieł Zagłady
+1777	Oko Zagłady
+1778	Ciężka Bomba
+1779	Powtórka: nagroda za przejście o połowę mniejsza (miedziaki)
+1780	Ciężka Zbroja
+1781	Ciężko opancerzone potwory, skupiska potworów, Bossy
+1782	Ciężko opancerzone potwory, Bossy
+1783	Szturm Ciężkiej Zbroi
+1784	Szturm Ciężkiej Zbroi! Magiczna Różdżka, armata i „Przebicie” to klucz w tym etapie.
+1785	Szturm Ciężkiej Zbroi! Yeti mają wysoki pancerz fizyczny. Kluczem są magia, armata i „Przebicie”.
+1786	Ciężka Strzała · Łamanie Pancerza
+1787	Obejrzyj ponownie
+1788	Zacznij od nowa
+1789	Szkarłatna zbroja, świecący półksiężyc na hełmie i mała flaga na plecach.
+1790	Umiejętności aktywne
+1791	Umiejętności aktywne (dotknij, by użyć w bitwie)
+1792	Miejsca umiejętności aktywnych
+1793	Odnowienie umiejętności aktywnych −{0}%
+1794	Odnowienie umiejętności aktywnych −15%
+1795	Odnowienie umiejętności aktywnych −20% i natychmiast odnawia wszystkie
+1796	Odnowienie umiejętności aktywnych −40% i natychmiast odnawia wszystkie
+1797	Odnowienie umiejętności aktywnych −5%
+1798	Odnowienie umiejętności aktywnych −8%, ignorowanie pancerza +10%
+1799	Gotowanie zupy! Wzmocnionych potworów: {0}
+1800	Sojusznicy w Bitwie
+1801	Ekwipunek
+1802	Ekwipunek +1
+1803	Buty Gonitwy za Gwiazdami
+1804	Przygotuj się... {0}
+1805	Podpalenie
+1806	Fioletowy
+1807	Samozniszczenie
+1808	Auto (włączone na telefonie)
+1809	Automatyczne użycie: wył.
+1810	Automatyczne użycie: wł.
+1811	W połowie drogi zakopuje się w ziemi (nie można go trafić) i wychodzi dopiero blisko muru.
+1812	Wiertło
+1813	Zakopanie
+1814	Diamenty
+1815	Diamenty (zdobywane tylko w Dziewięciopiętrowej Wieży Demonów)
+1816	Kołczan Wiertło
+1817	Maks.
+1818	Najlepsze piętro {0} · Łącznie diamentów: {1}
+1819	Rekord: piętro {0} · diamentów: {1}
+1820	Najlepsze combo
+1821	Najlepsze combo {0}
+1822	The Last Bastion
+1823	Ostatnia fala!
+1824	Najprostszy mały potwór, powolny i ociężały.
+1825	Najbliższy najpierw
+1826	Najsilniejszy najpierw
+1827	Najsłabszy najpierw
+1828	Najrzadsza waluta, zdobywana tylko w „Dziewięciopiętrowej Wieży Demonów”, bez możliwości wymiany. Kupisz za nią złoty ekwipunek na stronie Ekwipunek (poza pierwszym z każdego rodzaju kosztuje tylko diamenty, od 10 diamentów) oraz ulepszenia na bardzo wysokich poziomach (po kilku tysiącach).
+1829	Ostateczny Boss. Atrament, klony, zasłonięty wzrok: źródło Szczeliny Chaosu.
+1830	Ostateczny Boss. Rosnąca atramentowa kulka: przywołuje atramentowe cienie, klony, formę Władcy Demonów i szał szczeliny.
+1831	Ostateczne starcie! Kleks ma cztery fazy: czyszczenie sług, bicie klonów, przerwanie ciężkiego ciosu, zabicie w limicie czasu.
+1832	Trzecia kość od lewej znów jest założona odwrotnie, ale nic nie szkodzi.
+1833	Umiejętność Bossa
+1834	Pogromca Bossów
+1835	Boss najpierw
+1836	Claude (razem z tobą)
+1837	Kael, Kleks, wracajcie na obiad! Królestwo wyprawia dziś dla was ucztę zwycięstwa!
+1838	Kael, pożyczysz mi hełm na trampolinę?
+1839	Kael, to ostatni odcinek. Całe królestwo stoi za murem i ci kibicuje.
+1840	Kael, Lyro, coś się stało. Nocą w Muszlowym Miasteczku na niebie pękła fioletowa szczelina, a wypadły z niej potwory, które już pokonaliśmy.
+1841	Kael, Lyro, list znad morza! Trzydniowy deszcz Grzmotka podniósł przypływ i woda porwała domy mieszkańców zatoki.
+1842	Kael! Na łące pojawiło się mnóstwo lepkich potworów i idą w stronę muru!
+1843	Siostra Kaela. ATK ×0,82, szybkostrzelność ×1,2; co 10. atak dzwoni dzwonkiem, ogłuszając małe potwory wokół celu na 0,5 s.
+1844	Hełm Kaela nadal dzwoni. ...Już się przyzwyczaiłem.
+1845	Kael atakuje automatycznie. Zielone Kulki zaczynają gryźć mur, gdy tylko do niego dojdą!
+1846	Kael podbiegł i wziął go na ręce. Hełm zadźwięczał „dzyń”.
+1847	Kael strzela automatycznie z muru, a potwory nadchodzą torami z prawej strony. Przegrywasz, gdy HP muru spadnie do zera.
+1848	Poz.{0} · Odnowienie {1} s
+1849	Poz.{0} odblokowuje mistrzostwo
+1850	Poz.{0} pozwala awansować
+1851	Lyra? ...No dobrze, będziemy się zmieniać na warcie.

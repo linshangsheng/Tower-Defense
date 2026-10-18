@@ -1,0 +1,463 @@
+463	Latawcowy Potwór
+464	Szansa uniku Latawcowego Potwora −25%
+465	Latawcowe Potwory nie unikną błyskawicy, a skoki mogą przeskakiwać przez kilka z nich
+466	Latawcowe Potwory unikają fizycznych ataków broni. Różdżka, Kula Piorunów, Deszcz Strzał i Uderzenie Pioruna są nie do uniknięcia!
+467	Festiwal Latawców
+468	Nalot Pszczół
+469	Peleryna z Pióra Feniksa
+470	Latająca Forteca
+471	Runiczna Zbroja Płytowa
+472	Runiczna Korona
+473	Szczęśliwe Buty
+474	Kopiuj
+475	Stalowa Zbroja
+476	Stalowy Hełm
+477	Druciana Peleryna
+478	Stalowy Yeti
+479	Stalowe Yeti boją się magii, Roztopione Golemy — ataków fizycznych. Zmień broń albo użyj umiejętności, wybór należy do ciebie.
+480	Stalowe Yeti boją się magii, a Żółwie z Tarczą chronią pobliskie potwory. Najpierw zniszcz Żółwia z Tarczą, potem użyj magii na Stalowym Yeti.
+481	Stal i Roztopione Żelazo
+482	Duże obrażenia, szansa na krytyk +12%; strzały przebijają 3 potwory i podpalają cel.
+483	Szybki
+484	Goblińska Strażnica
+485	Goblinek
+486	Braciszku! Ja też chcę bronić muru! Jak zadzwonię dzwonkiem, wszystkie małe potwory podskoczą ze strachu!
+487	Rekord osobisty: fala {0} · pokonanych {1}
+488	Automatycznie wybiera broń, umiejętności i przedmioty zależnie od potworów w tym etapie.
+489	Więcej broni: odblokuj je w zakładce Broń na stronie Ekwipunek
+490	Co gorsza, usłyszały, że na lądzie jest „wielka, mocna skorupa”, i ustawiają się w kolejce, by się wprowadzić—
+491	Armata Oblężnicza
+492	Potwory atakujące mur otrzymują odbite obrażenia równe ATK bohatera ×20% / poziom.
+493	ATK
+494	ATK +{0}
+495	ATK +{0}%
+496	ATK +12%
+497	ATK +15%, szansa na krytyk +10%, obrażenia krytyczne +25%
+498	ATK +20%, szybkostrzelność +15%, szansa na krytyk +8%
+499	ATK +3
+500	ATK +3; czas trwania Strefy Mrozu i Mrożonej Butelki +30%
+501	ATK +3; obrażenia wobec Bossów (z mackami) +20%
+502	ATK +3%
+503	ATK +35%, szybkostrzelność +25%, szansa na krytyk +15%, obrażenia krytyczne +50%
+504	ATK +5, szansa na krytyk +5%
+505	ATK +5%
+506	ATK +6%, obrażenia krytyczne +20%
+507	ATK +8%, zwykłe ataki mają 15% szans na podpalenie celu
+508	ATK ×5
+509	ATK ×6
+510	ATK ×7 i łańcuch na 3 pobliskie potwory (po 50%)
+511	Szybkostrzelność
+512	Szybkostrzelność +{0}%
+513	Szybkostrzelność +10%
+514	Szybkostrzelność +12%
+515	Szybkostrzelność +15%, obrażenia otrzymywane przez mur −10%
+516	Szybkostrzelność +3%
+517	Szybkostrzelność +35% przez 9 s.
+518	Szybkostrzelność +50% przez 8 s.
+519	Szybkostrzelność +6%; obrażenia wobec latających potworów +15%
+520	Szybkostrzelność +8%, obrażenia otrzymywane przez mur −8%; po każdej fali mur leczy się dodatkowo o 2%
+521	Szybkostrzelność +8%, zasięg +3%
+522	Szybkostrzelność +8%; zwykłe ataki mają 20% szans na podpalenie celu
+523	Szyb. +50%, 8 s
+524	Szyb. +65%, 10 s
+525	Szyb. +80%, 10 s, w tym czasie szansa na krytyk +10%
+526	Szyb. −{0}%
+527	Gratulacje, „{0}” ukończone! Obroniłeś wszystkie rozdziały: {1}. Wróć po trzy gwiazdki i korony albo pobij rekordy w Trybie nieskończonym.
+528	Gratulacje, „{0}” ukończone! Otwarto nowy rozdział „{1}”.
+529	Kup
+530	Rechoczująca Trująca Żaba
+531	Chrum? Skąd wiedziałeś, że zaszarżuję?
+532	Blub! Dziś naprawiłem ośmioma nogami dachy ośmiu domów naraz.
+533	Blub... Nie mogę już tego unieść. Przepraszam, chciałem tylko domu, w którym się zmieszczę.
+534	Blub blub! Ta skorupa jest taka wielka i mocna, akurat na moje osiem nóg!
+535	Chrum... już nie kręci mi się w głowie. Pamiętam tylko czarny wiatr z pustyni, a potem nic mnie już nie obchodziło i chciałem tylko szarżować.
+536	Chrum... maluchy mówią, że ładnie wyglądam, gdy zamiatam.
+537	Król Gulu
+538	Poplecznik Króla Gulu.
+539	Król Gulu wpadł w gniew: Szarża Dzika!
+540	Król Gulu wpadł w szał!
+541	Król Gulu szarżuje, gdy jego HP spadnie poniżej 60%. Gdy tor poczerwienieje, skup ogień, by przerwać szarżę!
+542	Chrum chrum! Odtąd łąka należy do mnie! Sługusy, naprzód!
+543	Zamkowy Chór
+544	Kościany Strażnik z Tarczą
+545	Pan Kostka
+546	Panie Kostka? Przecież ty już...
+547	Pan Kostka wstaje raz po pokonaniu. Zostaw umiejętność na moment, gdy się podniesie!
+548	Echo Pana Kostki
+549	Pan Kostka powstał!
+550	Pan Kostka jest tak naprawdę bardzo zabawny. Mówi, że w kotle Babci Wywar warzy się wielka porcja czarnego Atramentu.
+551	Deszcz Strzał w Rytmie Bębna
+552	Potwory
+553	Potwory pojawiają się losowo z odblokowanych rozdziałów, z każdą falą silniejsze.
+554	Potworny Przypływ
+555	Wszystkie potwory są fioletowe.
+556	Liczba potworów +50%
+557	Liczba potworów −40%, ale HP +80%
+558	Szybkość potworów +30%
+559	Potwory nadciągają naraz, a za ich pokonywanie nic nie dostajesz; diamenty daje tylko przejście piętra. Diamenty można zdobyć tylko tutaj. Im wyżej, tym więcej królów demonów: 10% na piętrze 1, 50% na piętrze 9.
+560	Bestiariusz
+561	Bestiariusz {0} / {1}
+562	HP potworów +30%, obrażenia oblężnicze +15%, dochód z miedziaków +20%
+563	HP potworów +40%, HP muru +40%
+564	HP potworów i obrażenia oblężnicze −25%, dla graczy, którzy chcą spokojnie poznać historię
+565	Zamknij
+566	Zadania etapu
+567	Zadanie etapu wykonane
+568	Kołczan Przebijający
+569	Aura
+570	Aura: dopóki żyje, szybkostrzelność bohaterów jest zmniejszona. Zniszcz go najpierw!
+571	Po dotarciu do muru wybucha i naraz zadaje ogromne obrażenia. Koniecznie zabij go z daleka.
+572	Toczący się Kaktus
+573	Dziadek Król
+574	Książę Galaretka
+575	Książę Galaretka dzieli się po trafieniu. Obrażenia obszarowe (Deszcz Strzał, Bumerang) szybko czyszczą małe galaretki.
+576	Małe galaretki oddzielone od Księcia Galaretki.
+577	Okazuje się, że Książę Galaretka to skoczny maluch. Mówi, że czarny Atrament spłynął z bardzo, bardzo daleka.
+578	To jeszcze nie koniec...
+579	Nie ma jeszcze dostępnych umiejętności. Odblokuj je za srebro na stronie Umiejętności.
+580	Jeszcze nie spotkano.
+581	Nie ma jeszcze ekwipunku na to miejsce. Kup go na stronie Ekwipunek.
+582	Nadal nikt nie obetnie mi paznokci.
+583	Są też kraby pustelniki, konik morski, Żółwie z Tarczą... każdy potrzebuje nowego domu!
+584	Masz jeszcze nierozliczone wyzwanie.
+585	Piasek nad morzem jest ciepły. Kraby pustelniki niosą muszle w rzędzie w stronę muru, jakby naprawdę uważały go za nowy dom.
+586	Jeżowiec
+587	Jeżowce ranią pobliskie potwory po śmierci, więc bij je, gdy wejdą w tłum! Bańki konika morskiego blokują jeden atak; Kusza Powtarzalna i Kula Piorunów rozbijają je najszybciej.
+588	Kapitan Piratów
+589	Konik Morski
+590	Cieśnina Mew
+591	Chór Zatoki
+592	Strażnik Zatoki
+593	Mróz
+594	Mroźny Łuk
+595	Mroźny Kołczan
+596	Mroźny Grot
+597	Hełm z Zimnego Żelaza
+598	Bez Draśnięcia
+599	OK
+600	Gotowe
+601	No dobrze, Kael, Lyro. Wracajmy do miasta. Dziś wieczorem w królestwie największa uczta zwycięstwa, przyjdą wszyscy przyjaciele. Nawet cienie ech przyniosą ciasteczka.
+602	Jak gorąco, jak gorąco... nawet hełm parzy.
+603	Jak gorąco... pęknięcia w ziemi są pełne czarnego Atramentu.
+604	Razem
+605	Zamknięta muszla... otworzy się za {0} s
+606	Zamknij dziennik
+607	Obsydianowa Zbroja
+608	Obsydianowa Cegła
+609	Tam, gdzie w ciemności sięga moja lampa, sięgają też moje strzały. Pozwól mi iść z wami!
+610	Zmiećcie ich wszystkich!
+611	Bum!
+612	Bum... dziś popadał mały deszczyk, a tęcza wisiała wysoko.
+613	Bum. Bum. ...Nie jestem Skałkiem. Jestem echem kroków, które po nim zostały.
+614	Hurrr! To wy zabrudziliście moją tęczę!
+615	Czerwony
+616	Czerwona Wstążka
+617	Czerwona Peleryna
+618	Powódź
+619	Powódź przetacza się przez pole bitwy: wszystkie potwory cofają się o 350 px (Bossy o 100 px), dostają obrażenia ATK ×3, a przemoczone dostają +40% obrażeń przez 5 s i są spowolnione o 60%.
+620	Gruba Zbroja z Płótna
+621	Fiuuu! Ostudzę ci zupę.
+622	Fiuuu! Wichura zdmuchnęła potwory na mur!
+623	Fiuuu! Mąka z wiatraka zamieniła się w chleb dla całego miasta.
+624	Fiuu, fiuu! Kto woła mnie po imieniu?
+625	Fiuu, fiuu! Wy, z ziemi! To wy zabrudziliście moją tęczę?
+626	Fiuuu! Zamienię cały mur w lody na patyku!
+627	Uff... lody o smaku Atramentu są okropne. Truskawkowe są lepsze.
+628	Uff... te bandaże strasznie uwierają. Jakiś typ w pelerynie dał mi butelkę Atramentu i powiedział, że po wypiciu będę silny.
+629	Uff... od tego kręcenia zakręciło mi się w głowie. No dobra, wierzę wam.
+630	Wiaterek
+631	Echo Wiaterka
+632	Echo Wiaterka zostawiło nam swój ostatni podmuch. Popchnął nas w głąb szczeliny.
+633	Wiaterek zapowiada wichurę na 2 s przed atakiem: skup ogień, by go przerwać, albo wszystkie potwory zostaną zdmuchnięte pod mur!
+634	Wiaterek to właściwie wiatrak, który miele mąkę dla chmur. Mówi, że żeby uspokoić Grzmotka, trzeba najpierw złapać jego piorun.
+635	Wiaterek kręci się szybciej!
+636	Wisior z Tygrysim Kłem
+637	Tarcza pękła!
+638	Strażnik
+639	Strażnik: pobliskie potwory dostają o 40% mniej obrażeń od ataków bohaterów. Zniszcz go najpierw albo użyj umiejętności.
+640	Wydać {0}, by kupić „{1}”?\nDodatkowe statystyki: {2}
+641	Śliski
+642	Witamy w perłowym sklepiku Bebe! Każda perła jest zarejestrowana.
+643	Zmień tor
+644	Złota Pustynia
+645	Złote Buty
+646	Strzała Odmłodzenia
+647	Wróć do mapy
+648	Mapa
+649	Leczy 20%
+650	Leczy 25%
+651	Leczy 30%, a przez 6 s mur otrzymuje o 30% mniej obrażeń
+652	Leczy mur o 20% maks. HP.
+653	Echa... nie panują nad sobą... fiuu!
+654	Echo jest oczywiście identyczne. Burzo piaskowa, powstań!
+655	Echa chyba nie robią tego specjalnie. Po prostu szczelina budzi je w kółko.
+656	Chór Echa
+657	Bumerang
+658	Kantor
+659	Kantor (wymiana w jedną stronę, bez cofania)
+660	Latający miotacz kul ognia, każda kula boli znacznie mocniej niż wcześniej.
+661	Latający smoczek, zabarwiony chaosem na czerwono.
+662	Latający uzdrowiciel, który zatrzymuje się daleko i leczy pobliskie potwory. Użyj „Zagrożenie najpierw” albo „Latające najpierw”, by uderzyć go pierwszego.
+663	Chodzący Pień
+664	Skorpion zakopujący się w ziemi, w warstwie kościanego pancerza.
+665	Yeti pokryty stalowymi płytami: ataki fizyczne prawie go nie ruszają, działa tylko magia.
+666	Cały naelektryzowany. Zabity przy murze wyładowuje się i na chwilę ogłusza bohaterów, więc zabij go z daleka.
+667	Kres Chaosu
+668	Armata
+669	Deszcz Kul Ognia
+670	Pod wulkanem jest ogromna szczelina, z której bulgocze czarny Atrament. Trochę się boję, ale się nie cofnę.
+671	Peleryna Ognistego Szczura
+672	Płomień
+673	Strefy ognia i lawowe tory nie działają na potwory
+674	Płomienny Grot
+675	Ognisty Diabełek
+676	Ogniste Diabełki siedzą daleko i rzucają kulami ognia. Spróbuj „Zagrożenie najpierw”!
+677	Niebo Ognistego Deszczu
+678	Zdobyto
+679	Zdobądź 50 koron
+680	Zdobądź trzy gwiazdki na każdym etapie (rozdziały 6–10 też się liczą)
+681	Zdobyte gwiazdki {0} / {1}
+682	Pokonaj: {0}
+683	Pokonaj: {0}
+684	Pokonaj Kleksa
+685	Pokonaj wszystkie 10 Bossów (z małymi Bossami)
+686	Najwięcej pokonanych
+687	Najwięcej pokonanych: {0}
+688	Łupy z pokonanych (pokonanych: {0})
+689	Polarny Kołczan
+690	Buty Szybkiego Kroku
+691	Nagły Atak
+692	Marsz Forsowny
+693	Niecierpliwy
+694	Buty Błyskawicy
+695	Wichura
+696	Peleryna Wichury
+697	Buty Szybkiego Biegu
+698	Peleryna Cienia
+699	Skup ogień, by przerwać szarżę!
+700	Skup ogień, by przerwać wichurę!
+701	Skup ogień, by przerwać uderzenie pioruna!
+702	Skup ogień, by przerwać uderzenie!
+703	Duch prawie odporny na ataki fizyczne: działa tylko 15% obrażeń fizycznych. Użyj magii.
+704	Rekord: fala {0}
+705	Umiejętności
+706	Umiejętności na poz. 2 ulepszasz srebrem, a na poz. 3 złotem, co daje przełomowy efekt.
+707	Umiejętność zamrożona!
+708	Mistrz Umiejętności
+709	Wszystkie Umiejętności
+710	Synergia Umiejętności
+711	Automatyczne użycie umiejętności
+712	Kontynuuj piętro {0}
+713	Kontynuuj grę
+714	Walcz dalej
+715	Krab Pustelnik
+716	Wprowadzka Krabów Pustelników
+717	Kraby pustelniki chowają się w skorupach po każdych 4 trafieniach. Nie celuj w jednego. Kusza Powtarzalna i Kula Piorunów rozkładają ogień na kilka!
+718	Czas schowania kraba pustelnika w skorupie −60%
+719	Wzmocnij
+720	Wzmocniona Cegła
+721	Eliksir Przyspieszenia
+722	Kolce
+723	Spiczasty kaptur z czerwonym piórkiem i kołczan przewieszony przez plecy.
+724	Przetrwano fal: {0}!
+725	Spowolnienie 60%, 6 s
+726	Spowolnienie 70%, 7 s
+727	Spowolnienie 75%, 8 s; na końcu zamraża cały tor na 1,5 s
+728	Konkurs Strzyżenia Owiec
+729	Rozbryzg
+730	Promień rozbryzgu +20, obrażenia rozbryzgu już nie maleją (100%)
+731	Strzała przebija do 5 potworów na tym samym torze (po 80% obrażeń), ignorując 20% pancerza.
+732	Kołczan
+733	Strzała po trafieniu leci dalej i trafia do 2 kolejnych potworów za nim na torze (40% obrażeń)
+734	Deszcz Strzał
+735	Zostaw to mnie, Dziadku Królu! ...Ojej, hełm znów mi się zsunął.
+736	Rafowy Bastion
+737	Postacie
+738	Garderoba
+739	Samouczek
+740	Antidotum
+741	Odblokuj
+742	Odblokuj prędkość 3×: przycisk prędkości w prawym dolnym rogu bitwy
+743	Odblokowuje „Miasteczko” (🏘 na mapie) i „Wyzwanie dnia” (prawy dolny róg mapy)
+744	Odblokowuje „Tryb nieskończony” (prawy dolny róg mapy)
+745	Odblokuj {1} nr {0}
+746	Odblokowuje rozdział 8 „Zamek Księżycowego Cienia”. Z Szczeliny Chaosu wypadły potwory-echa
+747	Odblokowuje rozdział 9 „Kuźnia Czerwonego Żelaza”
+748	Odblokowuje rozdział 6 „Królestwo Chmur”
+749	Odblokowuje rozdział 7 „Koralowa Zatoka” i „Dziewięciopiętrową Wieżę Demonów” (prawy dolny róg mapy)
+750	Odblokowuje rozdział 10 „Niebiosa Pustki”, ostatni rozdział
+751	Odblokowuje wszystkie umiejętności aktywne i pasywne
+752	Odblokowuje polecaną broń „{0}”: {1} ({2})
+753	Dzisiejsza zasada: „{0}”
+754	Wyzwanie dnia ukończone!
+755	Dziś zrobione
+756	Dziś skoczyłem za wysoko i uderzyłem w gołębia.
+757	Dziś zamiotłem na łące każdy opadły liść, jeden po drugim!
+758	Dzisiejsza nagroda już odebrana
+759	Dziś pierwszy dzień na murze. Wszystkie potwory na łące mają na sobie odrobinę czarnego Atramentu. Dziwne.
+760	Złoto
+761	Złoto
+762	Złota półka · atuty zmieniające bieg bitwy
+763	Złotem kupujesz legendarny ekwipunek, broń wyższej klasy i umiejętności poz. 3.
+764	Złota Sztabka
+765	Piramidalna tarcza! Rozbij ją magią!
+766	Piramidę wynajęto na bibliotekę i cieszy się wielką popularnością.
+767	Postęp zapisany. Przeglądarka nie pozwala stronie zamknąć własnej karty, więc zamknij tę kartę lub okno samodzielnie. (Gdy uruchamiasz grę ikoną „The Last Bastion” z pulpitu, ten przycisk zamyka grę od razu.)
+768	Awansuj
+769	Po awansie
+770	Ciernie
+771	Na Włosku
+772	Kołczan z Cienkiej Stali
+773	Dobry
+774	Wyzwanie Elit
+775	Wyzwanie Elit: małe Bossy z pierwszych czterech rozdziałów wracają parami! Przełącz na „Boss najpierw” lub „Zagrożenie najpierw” i nie pozwól obu Bossom dojść naraz pod mur.
+776	Precyzja
+777	Statyczny
+778	Wszystkie dziewięć pięter zaliczone! Podbiłeś Wieżę Demonów!
+779	Dziewięciopiętrowa Wieża Demonów
+780	Dziewięciopiętrowa Wieża Demonów · Piętro {0}
+781	Król demonów z Dziewięciopiętrowej Wieży Demonów: bez specjalnych zagrywek, po prostu szarżuje na mur.
+782	Nosi ciężką kościaną tarczę i z przodu prawie nie da się go zranić: bij go Bumerangiem od tyłu.
+783	Nosi drewnianą tarczę, z przodu jest bardzo twardy. Powrót Bumerangu i Deszcz Strzał omijają tarczę.
+784	Olbrzym
+785	Misa Skarbów
+786	Skorpion Grabarz
+787	Zrównoważony
+788	Korona Równowagi
+789	Chrup... tak naprawdę chciałem tylko, żeby ktoś obciął mi paznokcie.
+790	Chrup chrup, dziś ostrzygłem dwadzieścia grzywek.
+791	Chrup chrup! Moje wielkie szczypce zgniotą wszystko!
+792	Klak... dzięki, że pozwoliłeś mi się raz rozsypać. Kości w końcu się rozprostowały.
+793	Klak klak, koncert kości co sobotę wieczorem!
+794	Klak klak, witajcie na moim koncercie kości!
+795	Wł.
+796	Start
+797	Rozpocznij wyzwanie
+798	Rozpocznij wyzwanie ({0})
+799	Rozpocznij grę
+800	Rozpocznij bitwę
+801	Rozpocznij bitwę ›
+802	Działa automatycznie na początku bitwy
+803	Do kupienia
+804	Ale Król Bobo nie posłucha. Ma osiem nóg, w morzu nie ma skorupy, która by go pomieściła, a na wasz mur patrzy już od kilku dni.
+805	Ale Grzmotek w to nie uwierzy. To najbardziej gniewna chmura na niebie, a od czasu zabrudzenia tęczy grzmi już trzeci dzień.
+806	Przecież już się pogodziły. Czemu znów tu są?
+807	Ale to dom nas wszystkich!
+808	Puste
+809	Spacja pauzuje, F przełącza prędkość 2×, N przywołuje falę wcześniej, T zmienia priorytet celu.
+810	Nalot
+811	Nalot! Lodowy Smok zabarwiony chaosem na czerwono i banda diabełków rzucających kulami ognia.
+812	Nalot! Latarniowy Duch chowa się z tyłu i ciągle się leczy. Znajdź go najpierw.
+813	Nalot! Dużo potworów na niebie, a na ziemi oddziały eskortowane przez Żółwie z Tarczą. Nie patrz tylko w niebo.
+814	Nalot! Balony Pustki po wylądowaniu wypuszczają czterech Goblinków.
+815	Etap z nalotem i mnóstwem Lodowych Duszków. „Latające najpierw” plus Kusza Powtarzalna albo Kula Piorunów!
+816	Etap z nalotem, diabełki rzucają kule ognia z daleka. Spróbuj „Zagrożenie najpierw” albo „Latające najpierw”!
+817	Etap z nalotem! Nietoperze zmieniają tory, więc ataki obszarowe są pewniejsze niż celowanie.
+818	Etap z nalotem! Spróbuj ustawić priorytet na „Latające najpierw” albo załóż Kuszę Powtarzalną.
+819	Etap z nalotem! Sępy latają szybko. Kusza Powtarzalna i „Latające najpierw” to dobry wybór.
+820	Cyrk Powietrzny
+821	Wózek prowadzony przez szkielet taranuje z dużą prędkością i bardzo mocno uderza w mur.
+822	Szkielet Strażnik
+823	Szkielety Strażnicy noszą ciężkie kościane tarcze, z przodu prawie nie da się ich zranić. Bumerang i Deszcz Strzał sięgną ich pleców.
+824	Szkieletowy Rydwan
+825	Królik tak szybki, że go nie widać; zmienia tory, a ataki fizyczne chybiają w jednej czwartej przypadków.
+826	Szybki atak · Kontrola
+827	Szybkie potwory: króliki, wilki, rydwany
+828	Szał
+829	Gorączka
+830	Zbroja
+831	Niebieski
+832	Wycie Wilka
+833	Wilcza Wataha
+834	Naszyjnik z Wilczego Kła
+835	Kula Piorunów
+836	Grzmotek
+837	Grzmotek zaczyna się ładować! Gdy się ładuje, skup ogień, by go przerwać!
+838	Grzmotek po prostu za bardzo kochał tę tęczę. Teraz po każdym deszczu wiesza ją wysoko. Strażnicy muru królestwa obronili i ziemię, i niebo.
+839	Grzmotek ma trzy fazy: przywołuje Kluski Gromu i Tęczowe Ptaki, ładuje piorun (przerwij go!) i burza (wszystko przyspiesza, więc kończ szybko).
+840	Kołczan Gromu
+841	Komnata Gromu
+842	Kula Boga Gromu
+843	Amulet Gromu
+844	Buty Gromu
+845	Uderzenie Pioruna
+846	Uderzenie Pioruna zadaje ×1,3 obrażeń potworom w Strefie Mrozu (spowolnionym lub zamrożonym)
+847	Kluska Gromu
+848	Kluski Gromu ogłuszają Kaela, jeśli zginą blisko muru. Załatw je, póki są daleko!
+849	Burzowa Chmura
+850	Wywołaj łącznie 50 razy Synergię Umiejętności (Rozbicie Lodu, Deszcz Strzał w Rytmie Bębna)
+851	Przebij łącznie 100 bąbelków
+852	Przerwij łącznie 10 razy ładowanie Bossa
+853	Zdobądź łącznie 150 gwiazdek
+854	Zdobądź łącznie 50 gwiazdek
+855	Pokonanych łącznie
+856	Pokonaj łącznie 1000 potworów
+857	Pokonaj łącznie 10000 potworów
+858	Przywołaj fale wcześniej łącznie 30 razy
+859	Wybierz łącznie 50 kart zaopatrzenia
+860	Odnowienie {0} s
+861	Odnawia się, jeszcze {0} s
+862	Korona Świtu
+863	Natychmiast leczy mur o 20%, obrażenia otrzymywane przez mur −8%
+864	Natychmiast leczy mur o 45%
+865	Natychmiast odnawia wszystkie umiejętności, ATK +35% przez 30 s
+866	Kusza Powtarzalna
+867	Kusza Łańcuchowa
+868	Błyskawica Łańcuchowa
+869	Seria
+870	Seria!
+871	Kołczan Serii
+872	Sojusz
+873	Etap sojuszu: wszystkie tory wypuszczają potwory naraz, a przychodzą wszyscy mieszkańcy zatoki!
+874	Etap sojuszu: wszystkie tory wypuszczają potwory naraz, a do pracy staje cała załoga kuźni!
+875	Etap sojuszu: wszystkie tory wypuszczają potwory naraz. Przygotuj się na fizyczne i magiczne.
+876	Etap sojuszu: wszystkie tory wypuszczają potwory naraz, a wszystkie echa z Pustki nadciągają razem!
+877	Etap sojuszu: wszystkie tory wypuszczają potwory naraz, a przychodzą wszyscy mieszkańcy Księżycowego Cienia!
+878	Etap sojuszu: wszystkie tory wypuszczają potwory naraz, a przychodzą wszystkie potwory z chmur!
+879	Etap sojuszu: wszystkie tory wypuszczają potwory naraz! Najlepiej działają ataki na całe pole, jak Deszcz Strzał i Kula Piorunów!
+880	Etap sojuszu: wszystkie tory wypuszczają potwory naraz! Kluczowe są umiejętności na całe pole i Kula Piorunów!
+881	Peleryna Czyśćca
+882	Rogaty Hełm Czyśćca
+883	Ciężka Zbroja Czyśćca
+884	Chłodzę się... jak przyjemnie.
+885	Mały bałwanek z dwóch śnieżek; po śmierci zamienia się w 2 małe śnieżki.
+886	Czapka Obserwatora
+887	Buty Wichury
+888	Płomienny Urok
+889	Płomienny Kołczan
+890	Płomienna Kusza
+891	Hełm Żarzącego Słońca
+892	Kołczan Myśliwego
+893	Kaptur Łowcy
+894	Instynkt Łowcy
+895	Buty Łowieckie
+896	Po drugiej stronie szczeliny jest jeszcze goręcej. Tam, w ogniu pieców, zbudziły się echa.
+897	Po drugiej stronie szczeliny stoi gigantyczna kuźnia. Nikt nie dokłada do ognia, a płonie goręcej niż wulkan.
+898	Szczelina się powiększa. Kael, źródło jest na niebie, na samej górze.
+899	Kusza Rozdzierająca Niebo
+900	Skraj Szczeliny
+901	Uderzenie Szczeliny {0}
+902	Uderzenie Szczeliny!
+903	Szał szczeliny! Pokonaj Kleksa w 30 s!
+904	Szczelina powoli się zamknęła, a niebo znów stało się błękitne.
+905	Wejście do Szczeliny
+906	Sąsiedzi {0} / {1}
+907	Leśny Łucznik
+908	Kołczan Magicznych Ziół
+909	Zwinne Buty
+910	Kołczan Blasku
+911	Zwinne Palce
+912	Duch
+913	Duch: obrażenia fizyczne działają tylko w 30%. Użyj przeciw niemu magii!
+914	Odbierz {0}
+915	Jak to działa: kup → trafia do plecaka → dotknij „Ekwipunek +1”, by wziąć do bitwy (lub wybierz na stronie Ekwipunku). Miejsca teraz {0} / {1}{2}.
+916	Buty Strumienia Światła
+917	Peleryna Meteoru
+918	Kołczan Meteoru
+919	Tornada i odpychanie, o wiele groźniejsze niż dawny Wiaterek.
+920	Zbroja ze Smoczych Łusek
+921	Peleryna ze Smoczych Łusek
+922	Skarb Smoczej Żyły
+923	Buty Smoczej Żyły
+924	Smoczy Rycerz
+925	Naszyjnik ze Smoczego Kła

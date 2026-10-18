@@ -1,0 +1,463 @@
+0	, se ne possono indossare 3 insieme
+1	: {0} sconfitte di fila. Questa volta attacchi e PV delle mura sono potenziati. Si azzera dopo la vittoria.
+2	...Il vento si è fermato. Più avanti c'è la fonte dell'Inchiostro.
+3	...Fratello. Sorella. Finalmente siete arrivati.
+4	...Bum. Non riesco a colpire nulla.
+5	...Bum. Mi dispiace. La pioggia l'ho fatta io.
+6	...I passi si sono fermati.
+7	...Anche oggi è tutto tranquillo. Bene.
+8	...Lo specchio si è rotto e ora vedo finalmente chiaro. L'Inchiostro esce da una crepa nel vulcano del sud.
+9	...Ma non riesco a fermarmi. Vi prego, sconfiggeteli tutti, va bene?
+10	...La crepa si è richiusa. Ora c'è silenzio.
+11	...Sa di Inchiostro.
+12	...Quel guscio... non sarà mica le nostre mura?
+13	...Davvero non mi odi?
+14	...Gli alberi della foresta mi hanno detto che un piccolo guardiano ha resistito fin qui. Io sono Rowan, il guardaboschi.
+15	...Mi ricordo di te. Mi ricordo di queste mura. Ma non ricordo perché sono venuto.
+16	...Grazie. Ripetere sempre la stessa cosa... è così faticoso.
+17	...Grazie per aver spazzato via la nebbia. Sono Nova, e porto una lanterna nella palude per guidare i cuccioli smarriti.
+18	...Avere degli amici è proprio bello.
+19	...Un altro che viene a picchiarmi. Tutti sanno solo picchiarmi.
+20	...Davvero. Che bello. I-io prima non sono stata troppo cattiva, vero?
+21	...Kael, guarda il cielo. L'ultimo po' di Inchiostro che ho sparso è volato fino all'arcobaleno.
+22	· Rifornimento
+23	· Record
+24	· Prossima ondata tra {0}s
+25	‹ Titolo
+26	‹ Indietro
+27	(Dopo il Lv30, ogni livello aggiunge +{0}% dei PV al Lv30)
+28	(Oltre il limite base, i bonus per livello diminuiscono)
+29	(Tutti gli slot sbloccati)
+30	(Svuota)
+31	(Supera il livello {0} per sbloccare un altro slot)
+32	(Togli {0}; {1} tornano nella borsa)
+33	(Togli)
+34	(Oltre il limite base Lv{0}: i bonus diminuiscono a ogni livello e i costi salgono)
+35	(Completo)
+36	(Tutto equipaggiato)
+37	(Limite raggiunto)
+38	(In un altro slot; verrà spostato qui)
+39	(Nella sezione "Eroe" della pagina Assetto puoi schierare Atlas: rende le mura più robuste.)
+40	(Nella sezione "Eroe" della pagina Assetto puoi schierare Lyra.)
+41	(Nova si è unita! Nei livelli notturni la sua gittata non si riduce.)
+42	(Rowan si è unito! Le sue frecce pesanti ignorano l'armatura.)
+43	{0}\nRicarica {1}s, ne porti {2}
+44	{0} ondate
+45	{0} ondate (con Boss)
+46	{0}m {1}s
+47	Set {0} "{1}": {2} → {3}{4}
+48	{0} giorni
+49	{0} rame → 1
+50	Sinergia {0} "{1}": {2}{3}
+51	PV {0} {1} →
+52	{0} re demone + {1} servitori
+53	{0} argento → 1
+54	{0} tipi
+55	{0}; dal Lv3 in poi, a ogni livello danni / frecce / cura / durata crescono un po' e la ricarica si accorcia
+56	{0}: potenza +{1}% ({2})
+57	{0} (posseduti {1} / {2}{3})
+58	Statistiche di {0}
+59	Qualità {0}
+60	/s
+61	⏩ Velocità x2
+62	⏭ Velocità x3
+63	▶ Velocità x1
+64	★ Maestria
+65	♾ Modalità infinita
+66	♾ Modalità infinita {0}
+67	⚠ Arriva il Boss!
+68	✔ In uso
+69	✔ Completato
+70	✔ Posseduto
+71	✦ Evoluto
+72	✨ Set "{0}": {1}
+73	🎯 Missione del livello: {0}
+74	🎯 Missione del livello "{0}" completata: +{1} argento
+75	🎺 Incoraggiamento rinforzi +{0}%
+76	🏆 Traguardi
+77	🏆 Traguardo "{0}" ottenuto: {1} (+{2})
+78	🏆 Traguardo "{0}" ottenuto +{1}
+79	🏘 Città del Regno
+80	🏯 Torre Demoniaca dei Nove Piani
+81	🏯 Torre Demoniaca dei Nove Piani {0}
+82	👉 Potenzia "Attacco" e Kael sconfiggerà i mostri più in fretta!
+83	👑 Prima vittoria in difficoltà Sfida: ottieni una corona
+84	👑 Vinci in difficoltà Sfida per ottenere una corona
+85	👑 Superato in difficoltà Sfida
+86	👕 Guardaroba
+87	📅 Sfida giornaliera
+88	📅 Sfida giornaliera · {0}
+89	📅 Sfida giornaliera ✔
+90	📊 Rapporto di battaglia
+91	📔 Diario di guardia di Kael
+92	📜 Archivio della guardia
+93	📦 Rifornimenti del livello:
+94	📦 È arrivata la cassa di rifornimenti!
+95	Combo da 10!
+96	12 meteore cadono su mostri casuali del campo, ognuna infligge danni pari ad ATT ×8. I mostri entro 110 px subiscono il 60%.
+97	16 frecce × ATT 1,6
+98	In 2 secondi cadono 16 frecce, ognuna colpisce un mostro a caso nella gittata con danni pari ad ATT ×1,6, ignorando gli scudi.
+99	20 frecce × 1,7
+100	24 frecce × 1,8, i mostri colpiti prendono fuoco
+101	3 frecce possono colpire più tentacoli insieme; anche Arco di legno e Cannone al massimo sono ottimi contro Bobo
+102	Tutte e 5 le corsie aperte! I pipistrelli sfrecciano tra le corsie.
+103	Etciù! Il mio elmo si è ghiacciato dentro.
+104	Oh cielo... quello che stavo facendo bollire era Inchiostro, non zuppa. Ecco perché non ha nessun sapore.
+105	Premio di consolazione
+106	Notte
+107	Notte · Spirito
+108	Livello notturno: non si vede lontano, gittata -30%. I rifornimenti "Razzo di segnalazione" e "Lungavista" sono molto utili.
+109	Mostra gli occhi dei mostri di notte (disattivato di default, buio totale)
+110	Assassino d'Ombra
+111	Gli Assassini d'Ombra compaiono molto più lontano (x < 800)
+112	Gli Assassini d'Ombra restano nascosti da lontano e appaiono solo da vicino. Il rifornimento "Lente rivelatrice" li fa comparire prima.
+113	Ninja d'Ombra
+114	Impeto Arcano
+115	Vendere "{0}"? Prezzo di vendita {1} (metà del prezzo d'acquisto). Potrai ricomprarlo più tardi a prezzo pieno.
+116	Incolla qui il testo del salvataggio esportato
+117	Copia e conserva il testo qui sotto. Dopo aver cambiato dispositivo o cancellato i dati del browser, incollalo con "Importa salvataggio" per ripristinare i progressi.
+118	Cento Sconfitti
+119	Parata Notturna dei Mostri
+120	Armatura a piastre
+121	Spora
+122	Faretra di ghiaccio sottile
+123	Il suo cerchio di protezione è più grande e riduce più danni. Abbattilo per primo.
+124	Armatura del Bastione
+125	Guardia del Bastione
+126	Bufera! Velocità d'attacco ridotta
+127	Pergamena della Bufera
+128	Sta arrivando una tempesta! Tutti i mostri sono più veloci!
+129	Critico
+130	Faretra critica
+131	Prob. critico
+132	Prob. critico +{0}%
+133	Prob. critico +10%.
+134	Prob. critico +3%
+135	Prob. critico +3%; danni fisici contro gli spiriti +25%
+136	Prob. critico +4%; penalità di gittata dei livelli notturni dimezzata
+137	Prob. critico +8%
+138	Danni critici
+139	Danni critici +{0}%
+140	Danni critici +10%
+141	Danni critici +15%
+142	Danni critici +25%
+143	Danni critici +30%
+144	Corona del Tiranno
+145	L'esplosione respinge i mostri piccoli nel raggio di 60 px e li rallenta del 40% (1,5s); +50% di danni a Boss e tentacoli
+146	Raggio dell'esplosione 60 → 85, danni ad area 60% → 75%
+147	Lupo Artico
+148	I Lupi Artici arrivano a branchi di tre. La Zona di Gelo può bloccare l'intero branco in un colpo solo.
+149	Vichingo del Nord
+150	Bebe
+151	Bebe annota ogni conchiglia sul suo taccuino. Dice che le mura sono il "guscio" più grande che abbia mai visto, ma purtroppo non si può dividere con nessuno.
+152	Bebe è quasi impossibile da colpire col guscio chiuso e sputa perle quando lo apre, ma teme il dolore. Colpiscila con Colpo di Tuono e Pioggia di Frecce quando apre il guscio!
+153	Bebe è in agitazione: il guscio si apre e si chiude più in fretta!
+154	Amuleto di Conchiglia
+155	Borsa
+156	Borsa {0}
+157	Nella borsa non ci sono ancora oggetti. Vai alla pagina "Oggetti" per comprarne.
+158	Non hai questo oggetto nella borsa
+159	La borsa è vuota. Compra oggetti nella pagina "Oggetti".
+160	Musica
+161	Distintivo dell'Ultima Difesa
+162	Medaglia dell'Ultima Difesa
+163	Una faretra portata sulla schiena.
+164	Quando muore lancia spine che feriscono i mostri vicini. Aspetta che sia in mezzo alla folla per ucciderlo! Quando arriva alle mura le punge subito.
+165	Intontito dalla scossa!
+166	Abilità passive
+167	Abilità passive (automatiche)
+168	Slot abilità passive
+169	Danni bloccati da armatura / resistenza magica
+170	Una massa verde corrosa dal chiaro di luna: molti PV, e si cura da sola quando non viene colpita.
+171	Stordito!
+172	I miei biscotti... non sono ancora cotti!
+173	Questo Faraone ha dormito tremila anni e ora è stato svegliato! Chi fa tutto questo rumore?!
+174	Questo Faraone sta studiando un nuovo gusto di biscotti. Stavolta solo trecento anni di forno.
+175	La prima volta che le mura cadono in questo livello, tornano subito in vita con il 60% dei PV massimi (una sola volta)
+176	Guadagno di rame del livello +{0}%
+177	Guadagno di rame del livello +10%
+178	Guadagno di rame del livello +30%
+179	Guadagno di rame del livello +60% e ricevi subito una somma di rame
+180	Il mio castello... perché fa così caldo? Chi ha acceso la fornace?
+181	Il vero corpo appare! Danni +50%
+182	Questo Principe ha aperto un negozio di tappeti elastici in piazza. Il primo salto è gratis!
+183	Corona del capitolo (vinci in difficoltà Sfida)
+184	Mummia Bendata
+185	Palla di Bende
+186	Palle di Bende, scudi, orde di mostri piccoli
+187	Le Palle di Bende ignorano gli attacchi fisici. Sblocca il "Bastone magico" nel negozio con l'argento, oppure porta Colpo di Tuono e Bruciatura!
+188	Le bende sono state lavate. Hanno un buon profumo!
+189	Armatura del Baluardo
+190	Parafulmine
+191	Parafulmine!
+192	Pipistrello
+193	Grotta dei Pipistrelli
+194	Assalto di Pipistrelli
+195	Standard
+196	Non temere, sono solo di pessimo umore per colpa di uno strano inchiostro nero. Difendi le mura e difenderai tutti.
+197	Gelo, Bufera, Muro di Ghiaccio: la Regina Brina, ancora più fredda di prima.
+198	Zona di Gelo
+199	Zona di Gelo, Mini Bomba e Ampolla di Gelo richiedono una corsia: tocca l'abilità, poi tocca una corsia.
+200	Ampolla di Gelo
+201	Congela tutti i mostri per 6s (Boss 3s). I mostri congelati subiscono +60% di danni, poi dopo lo scongelamento sono rallentati del 50% per 4s.
+202	Congelato {0}
+203	Decreto di Brina
+204	Congelate, non si riparano
+205	Zio Ghiacciolo
+206	Zio Ghiacciolo congela le tue abilità. Non puntare tutto su una sola abilità!
+207	Zio Ghiacciolo dice che la Regina Brina ha congelato l'Inchiostro in un grande specchio, e dentro si vede una crepa rossa.
+208	Zio Ghiacciolo avanza verso le mura!
+209	Tempesta di Cristalli di Ghiaccio
+210	Spiritello di Cristallo di Ghiaccio
+211	Finché uno Spiritello di Cristallo di Ghiaccio è vivo, gli eroi attaccano più lentamente. Si nascondono lontano: Pioggia di Frecce e Colpo di Tuono sono il modo migliore per eliminarli.
+212	Luce di Cristallo di Ghiaccio
+213	Faretra Anima di Ghiaccio
+214	Pianura Innevata
+215	Bobo
+216	Un tentacolo di Bobo. Finché ne restano 3 o più, Bobo è molto difficile da ferire.
+217	Le ventose di Bobo assorbono energia! Abbatti i tentacoli!
+218	Bobo è protetto dai tentacoli: abbattili per primi (sia "Priorità minaccia" sia "Priorità Boss" lo fanno). Sotto il 60% di PV i tentacoli lo curano, e alla fine scatena un enorme vortice!
+219	Pop
+220	Pop pop pop
+221	Festa dei Rifornimenti
+222	Esperto di Rifornimenti
+223	Nessuno
+224	Supera un livello qualsiasi dopo il livello 10 senza abilità attive
+225	Un'ondata ogni 14 secondi, senza aspettare che il campo sia libero
+226	Chiunque siano, pupazzi di neve di ferro, lupi di ferro... avanzano tutti verso di noi in armatura di ferro.
+227	Senza abilità
+228	Armatura Indistruttibile
+229	Non si possono usare oggetti
+230	Stendardo Indomito
+231	Supera il livello senza usare alcun oggetto
+232	Non sono davvero loro, sono "echi": ombre uscite da quella crepa, tinte di blu-viola dal caos. Continuano a marciare verso le mura.
+233	Non sono stato io! È la tua sveglia... cioè, i tuoi soldatini.
+234	Non siamo noi! Viene dall'altro lato della crepa!
+235	No. Guarda, anche il mio elmo è pieno delle tue macchie d'inchiostro.
+236	Mantello Immortale
+237	No, la terza a sinistra è sempre montata al contrario. Ci sono abituato.
+238	Fascia di stoffa
+239	Statua della Fortuna
+240	Stivali della Fortuna
+241	Un tratto dell'arcobaleno è diventato nero! Dobbiamo salire a ripulirlo.
+242	Uccello Arcobaleno
+243	Gli Uccelli Arcobaleno curano i mostri vicini e le mongolfiere, quando scoppiano, lasciano cadere dei goblin. "Priorità minaccia" colpisce prima gli Uccelli Arcobaleno.
+244	Ponte Arcobaleno
+245	Dall'altra parte del Ponte Arcobaleno c'è il Regno delle Nuvole. Dicono che lì le nuvole soffiano vento e fanno tuonare... Kael, porta con te Inky!
+246	Comandi
+247	Slot {0}
+248	Slot {0}: scegli oggetto e quantità
+249	Armatura di paglia
+250	Ghiaccioli alla fragola, uno per una moneta di rame!
+251	Sandali di paglia
+252	Mantello d'erbe
+253	Prima Scaramuccia nel Prato
+254	Guardiano del Prato
+255	Piano
+256	Avvolto di bende: riduzione dei danni fisici del 55%. Usa la magia contro di lui!
+257	Proiettile superpesante, raggio dell'esplosione 100, ignora il 60% dell'armatura, +30% di danni ai Boss.
+258	Marea
+259	Mantello della Marea
+260	{0} corsie
+261	Orde, spiriti, mostri con bassa resistenza magica
+262	Se vinci ottieni {0} diamanti; se fallisci niente
+263	Traguardi
+264	Traguardi {0} / {1}
+265	Vola in stormi, superando gli altri mostri per puntare dritto alle mura.
+266	Mura
+267	Le mura sono congelate! Per ora non si possono riparare
+268	Le mura sono state sfondate...
+269	Finisce quando le mura vengono sfondate. 15 rame per ogni ondata superata; se batti il record, 1 argento ogni 5 ondate in più.
+270	Le mura non sono un tappeto elastico! ...Però sembra proprio divertente.
+271	Il guscio... cioè le mura, oggi sono belle robuste.
+272	Livello delle mura
+273	Alle mura resta il {0}% dei PV: se prosegui, il piano successivo parte con questi PV, senza recupero.
+274	Le mura recuperano il 15% dei PV massimi.
+275	Le mura recuperano il 70% dei PV massimi, poi per 8 secondi subiscono −60% di danni.
+276	Cura delle mura +25%, danni subiti dalle mura −5%
+277	Cura delle mura +{0}%
+278	Le mura ottengono uno scudo che assorbe danni fino al 35% dei PV massimi, fino alla fine del livello.
+279	Riduzione danni delle mura
+280	Fonti di danno alle mura (totale {0})
+281	La maggior parte dei danni alle mura viene da "{0}": {1}
+282	Potenziamento mura (PV massimi attuali {0})
+283	Mura al {0}%
+284	Con mura ≥50% ottieni 2 stelle, con ≥80% 3 stelle.
+285	Vinci con meno del 5% dei PV delle mura
+286	Le mura hanno retto fino all'ondata {0} / {1}.
+287	Danni nel tempo alle mura (veleno, nebbia tossica) −60%
+288	Danni subiti dalle mura −3% / livello.
+289	Danni subiti dalle mura −{0}%
+290	Danni subiti dalle mura −12%
+291	Danni subiti dalle mura −3%
+292	Danni subiti dalle mura −6%; cura delle mura +25%
+293	Riparazione mura
+294	PV delle mura
+295	Con i PV delle mura sotto il 50%, ATT +20%
+296	Con i PV delle mura sotto il 50%, ATT +{0}%
+297	Mantieni i PV delle mura almeno al 70% e supera il livello
+298	Le mura hanno solo metà dei PV
+299	PV massimi delle mura +{0}%
+300	Stivali da Esploratore
+301	Fornace di Ferro Rosso
+302	Mantello Fiammeggiante
+303	Caricare? Adesso carico solo contro la spazzatura.
+304	Speronata
+305	Realizzato da
+306	Vendi
+307	Recluta
+308	Primi Passi nella Torre
+309	Prima Neve
+310	Esecuzione
+311	Tentacolo
+312	I tentacoli si sono ritirati tutti nel mare!
+313	Scudo di tentacoli: ne restano {0}, colpisci prima i tentacoli!
+314	Schiaffo di Tentacolo
+315	Restano solo {0} tentacoli, colpisci Bobo ora!
+316	Equipaggia
+317	Equipaggiato
+318	Perforante
+319	Arco Lungo Trafiggicuore
+320	Freccia Squarcianuvole
+321	Un'armatura indossata sul corpo che rende le mura più salde.
+322	Indossato
+323	Leggendario
+324	Corona della Genesi
+325	Faretra della Genesi
+326	Armatura della Genesi
+327	Arco della Genesi
+328	Ago Pungente
+329	Mantello grezzo
+330	Prato di Smeraldo
+331	Testo del salvataggio non valido. Controlla di averlo copiato per intero
+332	Salvataggio importato
+333	Salvataggio cancellato
+334	I Boss che hai sconfitto si sono trasferiti tutti in città. Toccali per sentire come se la passano ora.
+335	Hai sconfitto Re Gulu! In realtà è il netturbino più laborioso del prato. Il vento nero soffia dal deserto, quindi io parto.
+336	Hai sconfitto tutti i mostri di questo piano.
+337	Interrompi il Boss
+338	Interrompi un Boss almeno 2 volte e supera il livello
+339	Interrotto!
+340	Maestro delle Interruzioni
+341	Esperto delle Interruzioni
+342	Grande Boss
+343	Grande Boss. La Bufera rallenta la velocità d'attacco, le mura congelate non si riparano e con pochi PV evoca piccoli draghi di ghiaccio.
+344	Grande Boss. Gelo, Bufera, Muro di Ghiaccio, ancora più freddo di prima.
+345	Grande Boss. La nebbia tossica corrode le mura, trasforma i servitori in versioni potenziate e con pochi PV rovescia il calderone creando pozze di veleno.
+346	Grande Boss. Scatena tempeste di sabbia, evoca mummie e le cura, e con pochi PV alza uno scudo piramidale che teme solo la magia.
+347	Grande Boss. Evoca servitori; sotto il 60% di PV lancia la carica del cinghiale, e concentrando il fuoco durante l'avviso si può interrompere.
+348	Grande Boss. Tempesta di sabbia, evocazione, cura, scudo: tre fasi, molto più ostico di prima.
+349	Un grosso bestione dal pelo bianco con armatura fisica altissima.
+350	Il calderone si rovescia! La pozza di veleno accelera i mostri!
+351	Enorme vortice! Tutti i tentacoli sono ricresciuti e tutti i mostri sono più veloci!
+352	Modalità testo grande
+353	Ne porti {0}
+354	Protezione indossata sul capo.
+355	Colpo singolo, stabile, con prob. critico extra integrata. Ottimo contro i Boss.
+356	Raggiungi un combo di 30 in una partita (sconfiggi mostri a meno di 1,2s l'uno dall'altro)
+357	DPS su bersaglio singolo
+358	Clang... clang... (tremando dal freddo)... Scusa, suona da sola.
+359	Attuale: {0} →
+360	Esporta salvataggio
+361	Importa
+362	Importa salvataggio
+363	L'importazione sovrascrive i progressi attuali.
+364	Fermati qui e metti al sicuro
+365	Raggiungi l'ondata 30 per sbloccare il traguardo "Mai Caduti" (1 oro).
+366	Faretra Uncinata
+367	Sei caduto al piano {0} senza ottenere nulla. I biglietti non vengono rimborsati.
+368	Oggetti
+369	A che serve scusarsi! Brrum brrum brrum!
+370	Il terreno galleggia... come uno specchio rotto.
+371	Mappa
+372	Talismano del Terremoto
+373	Apice della Perfezione
+374	Aspetta! Sono Atlas, il figlio del muratore. Mio padre ha rattoppato ogni punto delle mura che è stato sfondato. Tu vai in viaggio, io difendo le mura!
+375	Livello troppo basso, vai a potenziare
+376	Vola a bassa quota e molto veloce.
+377	Ondata {0} / {1}
+378	Ondata {0}
+379	Ondata {0} · Record {1}
+380	Piano {0}
+381	Piano {0} · Ondata {1} / {2} · {3} rimasti
+382	Piano {0}: {1} re demoni + {2} servitori arrivano insieme (forza ×{3}). I PV delle mura continuano dal piano precedente, senza recupero. Sconfiggere mostri non dà nulla: solo superare i piani dà diamanti!
+383	Piano {0} superato!
+384	Livello {0}
+385	Livello {0} · {1}
+386	Livello {0} · {1} ({2})
+387	Dal livello 3 in poi, supera un livello qualsiasi con le mura a PV pieni
+388	Capitolo {0}
+389	Capitolo {0} · {1}
+390	Capitolo {0} ▾
+391	Premio per tutte le tre stelle del capitolo {0}
+392	Boss del capitolo 6. Una grande nuvola temporalesca irascibile: evoca Batuffoli di Tuono e Uccelli Arcobaleno, carica fulmini e infine scatena una tempesta.
+393	Boss del capitolo 7. Il Re Polpo: scudo di tentacoli, cura con le ventose e un enorme vortice alla fine. Colpisci prima i tentacoli!
+394	Quarta corsia
+395	Quinta corsia
+396	Gli oggetti si possono usare solo dopo l'arrivo della prima ondata di mostri
+397	Tocca una corsia per lanciare (clic destro o Esc per annullare)
+398	Tocca per equipaggiare
+399	Tocco di Mida
+400	Toccami per usare un'abilità!
+401	La scossa copre un'area più ampia e paralizza più a lungo.
+402	Arco Lungo Intagliato
+403	Ding!
+404	Tum... tum... non... potete... passare...
+405	Tum... Inky... oggi... è stato... bello...
+406	Tum... lui... è... sempre... solo... sii... gentile... con lui...
+407	Tum... io... sto... facendo... la guardia... al cancello...
+408	Tum... grazie... a... te...
+409	Congela tutti i mostri per 7s, Boss inclusi. I mostri congelati subiscono danni ×2,2 e in questo tempo la velocità d'attacco degli eroi è +60%.
+410	Congela per 3 secondi tutti i mostri nella corsia scelta.
+411	Nonna Pozione
+412	Nonna Pozione ha lavato il calderone e dice che da ora farà solo zuppa di zucca. La pianura innevata del nord sembra essere una delle fonti dell'Inchiostro.
+413	Nonna Pozione trasforma i servitori in versioni potenziate. Libera il campo in fretta e porta Riparazione mura contro la nebbia tossica!
+414	Nonna Pozione comincia a cucinare!
+415	Rana Velenosa
+416	Le Rane Velenose restano lontane e sputano veleno sulle mura. Imposta il bersaglio su "Priorità minaccia" e gli eroi le colpiranno per prime quando le mura sono al sicuro.
+417	Nebbia tossica! Le mura subiscono danni continui
+418	Lettura del salvataggio non riuscita
+419	Leggi l'intero diario di guardia (i brani saltati si possono rileggere nel diario)
+420	Scivola veloce sulla pancia e infligge molti danni quando colpisce le mura.
+421	Scarpe da Corsa
+422	Danni a Boss e mostri volanti +30%
+423	Danni ai Boss +{0}%
+424	Danni ai Boss +12%, danni subiti dalle mura −4%
+425	Danni ai Boss +50%, ignora il 20% dell'armatura
+426	S-scusa... sono stata io.
+427	Danni ai mostri rallentati o congelati +15%
+428	Infligge danni magici pari ad ATT ×5 al mostro con più PV attuali.
+429	Danni ai mostri volanti +{0}%
+430	Infligge danni magici pari ad ATT ×2,5 a tutti i mostri nella corsia scelta e li incendia.
+431	Infligge danni pari ad ATT ×5 a tutti i mostri nella corsia scelta.
+432	Danni +60% contro i mostri sotto il 30% di PV
+433	Riscatta {0}
+434	Tartaruga Scudo
+435	Scorta di Tartarughe Scudo
+436	Le Tartarughe Scudo proteggono i mostri vicini. "Priorità minaccia" colpisce prima le Tartarughe Scudo; le abilità non ne sono influenzate.
+437	Scudo
+438	Si nasconde nelle retrovie e cura di continuo i mostri vicini. Eliminalo per primo!
+439	Gli occhialoni di rame sulla fronte brillano e dallo zaino sbuffa vapore.
+440	Spara proiettili magici che esplodono in una piccola area. I danni magici ignorano l'armatura fisica.
+441	Quando l'eco del Faraone è svanito, ha lasciato un biscottino. Non ho osato mangiarlo.
+442	Cielo Stellato
+443	Al ritorno colpisce alle spalle, ignorando gli scudi di legno
+444	Indietro
+445	Le case sono state portate via? E allora dove vivranno?
+446	Abbandona livello
+447	Abbandona sfida
+448	Abbandonare questa sfida? I biglietti non vengono rimborsati e non ottieni nulla.
+449	Volante
+450	Vola e ogni tanto passa a una corsia adiacente.
+451	Vola, trasportato dal vento: il 35% degli attacchi fisici normali delle armi viene schivato. Magia e danni ad area non si schivano.
+452	Priorità volanti
+453	Pesce Volante
+454	Distanza di salto dei Pesci Volanti −50%
+455	Tempesta di Pesci Volanti
+456	I Pesci Volanti fanno un grande balzo in avanti e non si possono colpire a mezz'aria. Corrono più veloci di quanto sembri: la Zona di Gelo è utilissima!
+457	Salti dei Pesci Volanti
+458	Vola in aria e lancia palle di fuoco sulle mura da lontano.
+459	Divisione
+460	Mantello della Tempesta
+461	Sfera della Tempesta
+462	Stivali del Vento

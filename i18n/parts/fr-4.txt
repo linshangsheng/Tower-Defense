@@ -310,3 +310,154 @@
 1698	Première visite sous la lune
 1699	Bourrasque lunaire
 1700	Château d'ombre-lune
+1701	Gardien d'ombre-lune
+1702	Lapin d'ombre-lune
+1703	Les Lapins et les Chauves-souris vampires d'ombre-lune virevoltent, n'espérez pas viser toujours le même.
+1704	Boule d'ombre-lune
+1705	Les Boules d'ombre-lune se soignent seules quand on ne les frappe pas : ne les laissez pas souffler.
+1706	Lire
+1707	Gardien des nuages
+1708	Royaume des nuages
+1709	Mouton-nuage
+1710	Laine des Moutons-nuages −60 %
+1711	Le Mouton-nuage doit d'abord être tondu, puis il court très vite une fois nu. Abattez-le d'un seul coup !
+1712	Cape d'alouette
+1713	Pluie de météorites
+1714	Canon météore
+1715	Réessayer
+1716	Régén.
+1717	Jouer encore un peu
+1718	Terminer 10 niveaux en difficulté Défi (gagner 10 couronnes)
+1719	Récupérer ici
+1720	Pause
+1721	Cligne des yeux, regarde au loin et bois un peu d'eau. Papy Roi surveille le rempart un moment.
+1722	Heaume tueur de dragon
+1723	Le champ de bataille a maintenant 4 voies. Les attaques de zone et les compétences globales comptent de plus en plus.
+1724	Charge de chars
+1725	Déluge de chars
+1726	Hôpital de campagne
+1727	Combat
+1728	Combats {0} · Victoires {1} · Vaincus {2} · Interruptions {3} · Appels anticipés {4}
+1729	Combats {0} · Victoires {1} · Monstres vaincus {2}
+1730	Nombre de combats
+1731	Effet automatique au début du combat : gain de cuivre du niveau +30 %.
+1732	Réglages de combat
+1733	Combat en pause. Choisissez une carte de ravitaillement, son effet dure jusqu'à la fin du niveau (couleurs du plus faible au plus fort : bleu, violet, rouge, or). Vous pouvez aussi appuyer sur 1 / 2 / 3.
+1734	En combat, touchez un bouton de compétence (ou appuyez sur 1 / 2 / 3) pour lancer les compétences actives, et sur Q / W / E / R / Z / X / C pour utiliser les objets (jusqu'à 3 de chaque, un de moins à chaque usage, avec une recharge ; achetez d'abord les objets à la boutique, puis équipez-les).
+1735	Tambour de guerre
+1736	Tambours de guerre tonitruants
+1737	Pluie de flèches lancée pendant le Tambour de guerre : flèches +30 %
+1738	Samouraï des provinces en guerre
+1739	Après le combat
+1740	Puissance
+1741	Bannière de guerre
+1742	Avant le combat
+1743	Préparation · Niveau {0}
+1744	Heaume de guerrier
+1745	Elle s'ouvre ! Frappez vite !
+1746	Ouverte ! Frappez pendant {0} s
+1747	Chapitre
+1748	Longue file, gobelins au bouclier de bois
+1749	Les étoiles de la robe scintillent toutes seules, et le chapeau est plus haut que celui qui le porte.
+1750	Pendentif de fortune
+1751	Le marais est plein de brouillard et de grenouilles venimeuses qui coassent. Pour la première fois, le rempart me semble un peu froid.
+1752	Les Petits fantômes du marais ne craignent presque pas le physique, et les grenouilles venimeuses crachent du venin de loin. Pensez à utiliser « Menace d'abord » sur elles !
+1753	Une fille à la lanterne de lucioles dans le marais. ATQ ×0,92, vitesse d'attaque ×1,05 ; portée non réduite la nuit, dégâts physiques +20 % contre les esprits ; toutes les 12 attaques, libère 3 lucioles (chacune inflige ATQ ×0,6 de dégâts magiques).
+1754	Gardien du marais
+1755	Fusée éclairante
+1756	Ce n'est pas une coquille, c'est le rempart ! Il y a plein de monde dedans !
+1757	Cette fois, je ne ferai pas pleuvoir. … Juste un tout petit peu, pour donner un bain à la nouvelle maison.
+1758	Ça sonne exactement comme avant.
+1759	Nous voici au plus profond de la faille, où l'on ne distingue même plus le ciel de la terre.
+1760	Vous n'avez plus de cet objet
+1761	Les enfants de la ville m'appellent Mamie Soupe, et j'adore ça.
+1762	Gardien de la tour
+1763	Canon séisme
+1764	Artisan à vapeur
+1765	Nuit noire tout le niveau : portée −30 %
+1766	Vous pourrez le modifier à tout moment dans les Réglages.
+1767	Ensuite, 6 secondes après le début de chaque vague, le feu du ciel tombe et inflige ATQ ×4 de dégâts magiques à tous les monstres
+1768	Compris
+1769	Compris (Espace)
+1770	Seul l'Arc en bois est autorisé
+1771	Dès qu'une voie devient rouge, je concentre mes tirs pour arrêter ta charge !
+1772	Appeler en avance au moins 3 fois et terminer le niveau
+1773	Soin
+1774	Soigne davantage les oiseaux volants.
+1775	Armure de guérison
+1776	Croc de la fin
+1777	Œil de la fin
+1778	Bombe lourde
+1779	Rejouer : le cuivre de victoire est réduit de moitié
+1780	Armure lourde
+1781	Monstres lourdement blindés, monstres en groupe, Boss
+1782	Monstres lourdement blindés, Boss
+1783	Assaut blindé
+1784	Assaut blindé ! La Baguette magique, le canon et « Perforation » sont la clé de ce niveau.
+1785	Assaut blindé ! Les Yétis ont une armure physique élevée. La magie, les canons et « Perforation » sont la clé.
+1786	Flèche lourde · Brise-armure
+1787	Revoir
+1788	Recommencer
+1789	Une armure vermillon, un croissant de lune lumineux sur le heaume et un petit drapeau dans le dos.
+1790	Compétences actives
+1791	Compétences actives (touchez pour lancer en combat)
+1792	Emplacements actifs
+1793	Recharge des compétences actives −{0} %
+1794	Recharge des compétences actives −15 %
+1795	Recharge des compétences actives −20 %, et réinitialise aussitôt toutes les recharges
+1796	Recharge des compétences actives −40 %, et réinitialise aussitôt toutes les recharges
+1797	Recharge des compétences actives −5 %
+1798	Recharge des compétences actives −8 %, armure ignorée +10 %
+1799	Soupe ! {0} monstres renforcés
+1800	Alliés de combat
+1801	Équipement
+1802	Équipement +1
+1803	Bottes de chasseur d'étoiles
+1804	Préparez-vous… {0}
+1805	Brûlure
+1806	Violet
+1807	Autodestruction
+1808	Auto (activé sur mobile)
+1809	Lancement auto : désactivé
+1810	Lancement auto : activé
+1811	À mi-chemin, il s'enfouit sous terre (intouchable) et ne ressort que près du rempart.
+1812	Foreuse
+1813	Enfouissement
+1814	Diamants
+1815	Diamants (obtenus uniquement dans la tour démoniaque à neuf étages)
+1816	Carquois foreur
+1817	Max
+1818	Meilleur étage {0} · Total {1} diamants
+1819	Record : étage {0} · {1} diamants
+1820	Meilleur combo
+1821	Meilleur combo {0}
+1822	The Last Bastion
+1823	Dernière vague !
+1824	Le monstre le plus basique, lent et pataud.
+1825	Plus proche d'abord
+1826	Plus fort d'abord
+1827	Plus faible d'abord
+1828	La monnaie la plus rare, obtenue uniquement dans la « Tour démoniaque à neuf étages », non échangeable. Elle permet d'acheter l'équipement doré de la page Équipement (sauf la 1re pièce de chaque type, uniquement en diamants, dès 10 diamants) et les améliorations de très haut niveau (après plusieurs milliers de niveaux).
+1829	Boss final. Encre, clones, vue obstruée : la source de la Faille du chaos.
+1830	Boss final. Une petite boule couleur d'encre qui grossit : invoque des ombres d'encre, des clones, une forme de seigneur démon et une frénésie de faille.
+1831	Combat final ! Tachou a quatre phases : éliminer les sbires, frapper les clones, interrompre le coup puissant, vaincre en temps limité.
+1832	Le troisième os en partant de la gauche est encore à l'envers, mais ce n'est pas grave.
+1833	Compétence de Boss
+1834	Fléau des Boss
+1835	Boss d'abord
+1836	Claude (avec vous)
+1837	Kael, Tachou, rentrez dîner ! Aujourd'hui, le royaume vous offre un festin de victoire !
+1838	Kael, tu me prêtes ton heaume comme trampoline ?
+1839	Kael, c'est la dernière ligne droite. Tout le royaume est derrière le rempart et t'encourage.
+1840	Kael, Lyra, il y a un problème. La nuit, à Ville-Coquillage, une fente violette s'est ouverte dans le ciel, et ce qui en est tombé, ce sont des monstres que nous avons déjà vaincus.
+1841	Kael, Lyra, une lettre du bord de mer ! Les trois jours de pluie de Grondin ont fait monter la marée et emporté les maisons des habitants de la baie.
+1842	Kael ! Plein de monstres visqueux ont surgi dans la prairie et viennent vers le rempart !
+1843	La petite sœur de Kael. ATQ ×0,82, vitesse d'attaque ×1,2 ; toutes les 10 attaques, elle sonne une clochette qui étourdit les petits monstres autour de la cible 0,5 seconde.
+1844	Le heaume de Kael résonne toujours. … Je m'y suis habitué.
+1845	Kael attaque automatiquement. Les Boules vertes se mettent à grignoter le rempart dès qu'elles y arrivent !
+1846	Kael a couru la prendre dans ses bras. Le heaume a fait « bong ».
+1847	Kael tire automatiquement depuis le rempart, et les monstres arrivent par les voies depuis la droite. Vous perdez quand les PV du rempart tombent à zéro.
+1848	Nv{0} · Recharge {1} s
+1849	Nv{0} débloque la spécialisation
+1850	Nv{0} : évolution possible
+1851	Lyra ? … Bon, montons la garde à tour de rôle.

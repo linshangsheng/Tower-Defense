@@ -60,7 +60,7 @@
           l = localStorage.getItem('shouchengyingxiong.lang') || 'en';
         } catch (e) {}
         if (!/^[A-Za-z-]+$/.test(l) || (TD.i18n.codes.indexOf(l) < 0)) l = 'en';
-        if (l !== 'zh') document.write('<script src="src/i18n/' + l + '.js"><\/script>');
+        if (l !== 'zh') document.write("<script src='src/i18n/" + l + ".js'><\/script>"); // 单引号：不让 sw.js 按双引号 src 找文件时误认
       })();
     </script>
     <script src="src/data/config.js"></script>

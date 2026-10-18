@@ -1,0 +1,463 @@
+1389	Consigliato
+1390	Potenziamento consigliato
+1391	Consigliato dopo il livello {0}
+1392	Arma consigliata: {0}
+1393	L'arma consigliata "{0}" è di livello basso, potenziala prima: {1} ({2})
+1394	Potenza consigliata {0} · La tua potenza {1}
+1395	Esci dal gioco
+1396	Uscire dal gioco? I progressi sono già salvati automaticamente.
+1397	Completa 20 missioni di livello
+1398	Completa tutte le missioni di livello
+1399	Come si gioca
+1400	Nemico dei Mille Mostri
+1401	Corona dell'Osservatore di Stelle
+1402	Eco di Tutte le Cose
+1403	Panorama
+1404	Corona
+1405	Collezionista di Corone
+1406	L'uniforme standard delle guardie del regno. L'elmo è un po' grande.
+1407	Città del Regno
+1408	La più piccola guardia delle mura del regno, dagli attacchi costanti.
+1409	La più piccola guardia delle mura del regno, che ha respinto la sua crisi più grande.
+1410	Prototipo web {0} · {1} capitoli {2} livelli
+1411	Lente del Cannocchiale
+1412	Mura in Pericolo
+1413	Priorità minaccia
+1414	Ape Ronzante
+1415	Le Api Ronzanti volano oltre gli altri mostri dritte verso le mura. Le balestre a ripetizione infliggono più danni ai volanti.
+1416	Bzz bzz
+1417	Io... io risucchierò l'Inchiostro.
+1418	Ho fatto volare tutti gli aquiloni in cielo. Di notte sembrano stelle.
+1419	Ho lasciato qui un po' del mio Inchiostro. Quando non voglio restare solo, genera echi: sempre più numerosi, sempre più grandi.
+1420	Mi sono trasferito vicino alle mura, così posso guardare Kael di guardia ogni giorno.
+1421	Non ci credo! Prima vi faccio cadere con una soffiata!
+1422	Te lo prometto.
+1423	Il mio arco è pesante e lento, ma ogni freccia respinge i mostri. Per il vulcano, contate su di me.
+1424	La mia nuova casa è gran-dis-sima. Venite a giocare!
+1425	Nella mia pianura innevata è permesso solo il silenzio. Il tuo elmo è troppo rumoroso.
+1426	Faccio io le registrazioni! Numero uno: Re Bobo, otto zampe, serve un guscio gran-dis-simo.
+1427	Siamo saliti al cielo sul ponte arcobaleno. Le nuvole erano morbide, come camminare sui marshmallow. Inky è rimasto nascosto dietro il mio elmo per tutto il tempo.
+1428	Ce l'abbiamo fatta!
+1429	Sulla riva del mare abbiamo costruito una "Città delle Conchiglie": la casa di Bobo è la più grande e il tetto l'hanno costruito tutte e otto le sue zampe insieme. Proteggere una casa può significare anche aiutare gli altri a costruirne una.
+1430	Ti offro un gelato alla fragola!
+1431	Accidenti! ...Prima fammi raddrizzare l'elmo.
+1432	Sono Bebe, la custode delle conchiglie della baia! Un guscio così grande va registrato prima di essere assegnato!
+1433	Sono l'Eco. Un'eco sa solo ripetere. Scheletri, all'attacco.
+1434	Sono qui per difendere le mura. Quando avrai finito di fare i capricci, potremo giocare insieme.
+1435	Ho imparato a disegnare con l'Inchiostro! Questo sei tu, questo sono io.
+1436	Voglio una casa anch'io! Glu glu, tentacoli, tenetelo stretto!
+1437	Nello specchio ho visto tutti. Forse un po' di allegria non è male.
+1438	Mi sto allenando a tuonare piano. Bum. (Pianissimo)
+1439	Ho aperto un barbiere in città. Non preoccuparti, sono molto attento.
+1440	Io ho sentito solo il concerto a colpi di elmo...
+1441	Le nuvole nere bloccano la vista: gittata −30%. I Batuffoli di Tuono si colpiscono solo da più vicino. Attenzione alla statica!
+1442	Nuvole Nere
+1443	Corridoio Senza Lampade
+1444	Impossibile inserire
+1445	Fucina Senza Luce
+1446	Mare Senza Luce
+1447	Modalità infinita
+1448	Modalità infinita: più resisti, meglio è! Un rifornimento ogni 3 ondate, un Boss ogni 5.
+1449	Raggiungi l'ondata 30 in Modalità infinita
+1450	Record infinito
+1451	Nessuno può fermarti!
+1452	Ignora armatura 40% → 70%, danni ad area 70% → 85%
+1453	Ignora il {0}% dell'armatura del bersaglio
+1454	Ignora il 20% dell'armatura del bersaglio
+1455	Ignora il 25% dell'armatura del bersaglio
+1456	Ignora il 50% dell'armatura del bersaglio (scudi inclusi).
+1457	Notte Senza Luna
+1458	Arma
+1459	Arma: {0}
+1460	Armi (sblocco permanente, danni +8% per livello, +4% per livello dopo il 10; qualità più alta significa più forte, più cara e potenziamenti più costosi)
+1461	Danni arma
+1462	Collezionista di Armi
+1463	Fisico bloccato
+1464	Efficacia dei danni fisici contro gli spiriti +{0}%
+1465	Efficacia dei danni fisici sugli spiriti 30% → 70%
+1466	{0} dei danni fisici è stato bloccato da armatura, scudi di legno o spiriti: prova Bastone magico, Boomerang o "Perforante".
+1467	C'è così tanta nebbia, non vedo niente...
+1468	Occhi nella Nebbia
+1469	Pipistrello Vampiro
+1470	Hihi, ho aggiunto un pochino di miele alla zuppa.
+1471	Hihihi, ancora un cucchiaio di Inchiostro nero e la mia zuppa è pronta!
+1472	La prossima volta che soffia un forte vento, prima vi saluto.
+1473	10 secondi dopo l'inizio dell'ondata successiva, congela tutti i mostri per 4 secondi (Boss 1,5 secondi)
+1474	8 secondi dopo l'inizio dell'ondata successiva, infligge danni magici pari ad ATT ×6 a tutti i mostri
+1475	Livello successivo ›
+1476	È arrivata l'estate, e sono la persona più popolare della città.
+1477	Palla di Cactus
+1478	Le Palle di Cactus esplodono quando rotolano fino alle mura! Abbattile da lontano.
+1479	Prima supera il livello {0}
+1480	Consumabili (si usano in battaglia, uno per volta; massimo {0} tipi, massimo {1} per tipo; dopo l'uso ogni tipo ha una ricarica)
+1481	Consumabili (massimo {0} tipi, massimo {1} per tipo; uno per uso, ognuno ha una ricarica)
+1482	Slot consumabili
+1483	Mini Boss
+1484	Mini Boss. Evoca di continuo fantasmini e, dopo la prima sconfitta, risorge!
+1485	Mini Boss. Un gigante di pietra con la testa a mulino a vento: fa volare aquiloni e scatena bufere che spingono i mostri verso le mura. Concentra il fuoco per interromperlo quando avvisa!
+1486	Mini Boss. Pesta i piedi per stordire l'eroe ed esplode quando viene sconfitto: non farlo avvicinare alle mura!
+1487	Mini Boss. Scava per cambiare corsia e attaccare di sorpresa, poi alle mura pinza forte con le grandi chele.
+1488	Mini Boss. Un'enorme ostrica perlifera: quasi indistruttibile a guscio chiuso, ma mostra la perla quando si apre. Usa le abilità quando si apre!
+1489	Mini Boss. Tornado e spinte, più feroce di prima.
+1490	Mini Boss. Ogni tanto congela uno slot abilità dell'eroe.
+1491	Mini Boss. Si comporta come il Signor Ossa: evoca scheletri e usa uno scudo magico, ma è più duro.
+1492	Mini Boss. Si comporta come Rocky, con PV doppi.
+1493	Mini Boss. Genera gelatine piccole ogni volta che i PV calano del 15% e si divide ancora una volta alla morte.
+1494	Draghetto di Ghiaccio
+1495	È arrivato il Draghetto di Ghiaccio! Attacco insieme da cielo e terra!
+1496	Gelatina Piccola
+1497	Piccolo Sacerdote
+1498	I Piccoli Sacerdoti si nascondono nelle retrovie a curare i mostri. Colpo di Tuono e l'esplosione del Bastone magico possono colpire anche loro.
+1499	Piccolo Forziere
+1500	Zucchetta
+1501	Piccolo Piede di Porco
+1502	Piccola Clessidra
+1503	Piccolo Fulmine
+1504	Palla di Neve Piccola
+1505	Fantasmino
+1506	I Fantasmini non temono quasi gli attacchi fisici
+1507	I Fantasmini non temono quasi gli attacchi fisici. Bastone magico, Sfera Fulminea, Colpo di Tuono e Bruciatura sono i loro nemici naturali!
+1508	Mini Bomba
+1509	Vicini di città
+1510	Maestro delle Sinergie
+1511	Scarpe
+1512	Scrittura del salvataggio non riuscita
+1513	Togli
+1514	Togli −1
+1515	Grazie per non avermi odiato quando ero arrabbiato.
+1516	Grazie per essere arrivati fin qui.
+1517	Grazie per aver salvato il regno!
+1518	Nuovo
+1519	Appare un nuovo nemico!
+1520	Nuovo record! {0} → {1} ondate
+1521	Esplosione Stellare
+1522	Mago delle Stelle
+1523	Bastone Stellare
+1524	Armatura Stellare
+1525	Corona Stellare
+1526	Mantello di Luce Stellare
+1527	Scintillante
+1528	Faretra della Scia Stellare
+1529	Galassia Splendente
+1530	Stella
+1531	Stivali della Stella Fortunata
+1532	Stivali del Venditore Ambulante
+1533	Fortuna
+1534	Fortuna +{0}%
+1535	Fortuna +15%
+1536	Portafortuna
+1537	Bonus Fortuna
+1538	Stivali Fortunati
+1539	Moneta Fortunata
+1540	Promemoria di pausa
+1541	Fai una pausa
+1542	Kit di Riparazione
+1543	Armatura da Monaco
+1544	Riparazione
+1545	Tartaruga Scudo del Vuoto
+1546	Il cerchio di protezione della Tartaruga Scudo del Vuoto è più grande: eliminala per prima. Anche le spine dei ricci fanno più male.
+1547	Formazione a Scudo del Vuoto
+1548	Pesce Volante del Vuoto
+1549	I Pesci Volanti del Vuoto saltano più lontano e a mezz'aria non si possono colpire.
+1550	Aquilone del Vuoto
+1551	Riccio di Mare del Vuoto
+1552	Batuffolo di Tuono del Vuoto
+1553	I Batuffoli di Tuono del Vuoto hanno un raggio di scossa più ampio: eliminali da lontano.
+1554	Nel vuoto non c'è vento, eppure gli aquiloni fluttuano e le pecore belano. C'è tutto ciò che conosciamo, solo che è diventato viola.
+1555	Uccello del Vuoto
+1556	Pallone del Vuoto
+1557	Reame del Cielo Vuoto
+1558	Granchio del Vuoto
+1559	Pecora del Vuoto
+1560	Le Pecore del Vuoto hanno lana più spessa e gli Aquiloni del Vuoto schivano metà degli attacchi fisici.
+1561	Serve {0} (prima cambia argento in oro al cambio del negozio)
+1562	Serve {0} (prima cambia argento in oro al cambio del negozio).
+1563	I mostri nella corsia scelta e in quelle adiacenti subiscono danni pari ad ATT ×7.
+1564	Scegli una corsia. I mostri al suo interno sono rallentati del 60% per 6 secondi.
+1565	Scegli una carta rifornimento (vale per questo livello) · Rifornimento n. {0}
+1566	Seleziona
+1567	Scegli rifornimento
+1568	Scegli difficoltà
+1569	Scegli capitolo
+1570	Scegli equipaggiamento
+1571	Fascia da Apprendista
+1572	Mantello da Apprendista
+1573	Valanga
+1574	Yeti
+1575	Gli Yeti resistono al fisico, i Golem di Lava alla magia. Prepara entrambi i tipi di danno.
+1576	Yeti in Giro
+1577	Gli Yeti temono la magia, i Golem di Lava il fisico e le Tartarughe Scudo li proteggono. Abbatti prima le tartarughe!
+1578	Palla di Neve
+1579	Le Palle di Neve, morendo, si spezzano in due palline di neve. I danni ad area le eliminano con meno fatica.
+1580	Le palline di neve rimaste quando una Palla di Neve si rompe.
+1581	La pianura innevata è così bianca e luminosa. I pinguini scivolano sul ghiaccio e zac, sono già sotto le mura.
+1582	Corsa sulla Neve
+1583	I pinguini della pianura innevata scivolano veloci e gli Yeti sono spessi e duri. Kael, copriti di più.
+1584	Guardiano della Pianura Innevata
+1585	Anello del Giuramento di Sangue
+1586	Maschera dell'Occhio di Sangue
+1587	Armatura del Sangue
+1588	Mantello Rapido
+1589	Stivali Rapidi
+1590	Grumo di Magma
+1591	I Grumi di Magma lasciano fuoco quando muoiono e i mostri che ci passano sopra accelerano. Abbattili da lontano.
+1592	Rocky
+1593	Rocky è esploso! La corsia si trasforma in lava
+1594	Rocky esplode quando viene sconfitto! Abbattilo prima che si avvicini alle mura. Resiste alla magia, porta armi fisiche.
+1595	Eco di Rocky
+1596	Eco di Rocky: pesta i piedi e frantuma le rocce. Si comporta come Rocky, con PV doppi.
+1597	L'Eco di Rocky si è sbriciolato in un mucchio di sassolini. Atlas li ha impilati ai piedi delle mura.
+1598	Rocky è il guardiano della frattura. Dice che la creaturina là dentro non ha mai avuto un amico.
+1599	Rocky è esploso vicino alle mura!
+1600	Vola lungo la corsia e torna indietro, colpendo ogni mostro una volta all'andata e una al ritorno. Il colpo di ritorno arriva alle spalle e ignora gli scudi.
+1601	Lana
+1602	Lana più spessa: assorbe prima il 70% dei PV in lana, poi iniziano a calare i PV.
+1603	Forbici da Lana
+1604	Guerriero della Torre
+1605	Re demoni {0}% · Forza ×{1}
+1606	Sta per pestare i piedi!
+1607	Sta arrivando un forte vento!
+1608	Vuoi che ti rimetta insieme?
+1609	Puoi anche passare alla difficoltà Facile nelle Impostazioni
+1610	Di notte il vecchio castello brilla di luce lunare azzurra. Le Masse d'Ombra Lunare cadute dalla frattura si ricordano ancora come rosicchiare le mura.
+1611	Gittata −30% di notte. I Pipistrelli Vampiro cambiano spesso corsia e gli Assassini d'Ombra compaiono all'improvviso.
+1612	Gittata −30% di notte. I Pesci Volanti ti sono addosso con un salto e gli Assassini d'Ombra compaiono all'improvviso!
+1613	Gittata −30% di notte. Le spine dei ricci feriscono i loro stessi compagni, quindi aspetta che si ammassino.
+1614	Gittata −30% di notte. I Diavoletti di Brace restano lontani e lanciano palle di fuoco: non lasciare che consumino le mura a poco a poco.
+1615	Gittata −30% di notte. Gli Spettri subiscono solo il 15% dei danni fisici. Incantesimi e bruciatura funzionano meglio.
+1616	Gittata −30% di notte. Carri e lupi sbucano dal buio e in un attimo sono alle mura.
+1617	Elmo del Gufo Notturno
+1618	Battaglia Notturna
+1619	Cento livelli, cento difese. Inky è tornato e la frattura si è chiusa. Le mura sono sempre le stesse, ma la casa dietro di loro è diventata grandissima. (The Last Bastion, fine)
+1620	Metà degli attacchi fisici viene deviata e schivata.
+1621	Quando un'ondata è comparsa per intero, tocca "Chiama subito" per evocare subito la successiva: i secondi rimasti del conto alla rovescia diventano rame come premio.
+1622	Lancia due boomerang insieme (questa corsia + quella adiacente). I colpi rallentano il bersaglio del 40%.
+1623	Ne scocca 3 insieme, +50% di danni ai mostri volanti
+1624	Scocca 3 dardi infuocati insieme, ognuno incendia il bersaglio, +50% di danni ai mostri volanti.
+1625	Scocca 3 dardi insieme su 3 bersagli diversi, +50% di danni ai mostri volanti. Meno potente con pochi bersagli.
+1626	Scocca 5 frecce insieme, +60% di danni ai mostri volanti, ignora il 20% dell'armatura.
+1627	Dev'essere l'ultimo tratto. Difendi le mura: stavolta, per tutti gli echi.
+1628	Uno Due Tre Quattro Cinque Sei Sette Otto Nove Dieci
+1629	Equipaggia consigliato
+1630	Un buon paio di scarpe: veloci nella corsa, saldi in piedi.
+1631	Salta più lontano.
+1632	Armatura del Medico
+1633	Assetto consigliato equipaggiato per questo livello:
+1634	Limite raggiunto
+1635	Letti {0} / {1}
+1636	Copiato negli appunti
+1637	Passato a "{0}", combatte Kael
+1638	Difendi le mura da {0} minuti!
+1639	Livello massimo
+1640	Selezionato:
+1641	Posseduto
+1642	Superato in difficoltà Sfida
+1643	Equipaggiato
+1644	Equipaggiati {0} · Borsa {1}
+1645	Campioni musicali: soundfont FluidR3_GM (Frank Wen), CC BY 3.0, tramite gleitz/midi-js-soundfonts
+1646	Volume musica
+1647	Effetti sonori
+1648	Volume effetti
+1649	Argento
+1650	Monete d'argento
+1651	Livello argento · mirato
+1652	Le monete d'argento sbloccano abilità ed equipaggiamento pregiato.
+1653	Corona d'Argento
+1654	Faretra Guidaanime
+1655	Invisibilità
+1656	Eroe
+1657	L'eroe non può essere folgorato né stordito
+1658	ATT dell'eroe +25% per 8 secondi.
+1659	Riduzione della velocità d'attacco subita dall'eroe −60%
+1660	Ciondolo Occhio d'Aquila
+1661	Mantello Ali d'Aquila
+1662	Ciondolo di Piuma d'Aquila
+1663	Cappello di Piuma d'Aquila
+1664	Occhio d'Aquila
+1665	Lucciola
+1666	Maschera della Lama d'Ombra
+1667	Lama nell'Ombra
+1668	Possiedi tutte e 6 le armi
+1669	Mai Caduti
+1670	Faretra del Ghiaccio Eterno
+1671	Baluardo Eterno
+1672	Mantello Eterno
+1673	Clessidra Eterna
+1674	Cuore dell'Eroe
+1675	Faretra Spettrale
+1676	Game design · Programmazione · Grafica · Suono
+1677	Stivali da Ranger
+1678	Ecco com'è avere una casa, calda e accogliente.
+1679	Esaudisci Desideri
+1680	Qualcuno ci abita? Allora bisogna proprio registrare! Snap! (chiude il guscio)
+1681	Spesso e duro. Si cura lentamente dopo 2 secondi senza essere colpito. Concentra il fuoco per abbatterlo in un colpo.
+1682	Mantello di Braci
+1683	Rete da Pesca
+1684	Incontra 30 tipi di mostri
+1685	Mostri incontrati
+1686	Incontra tutti i mostri
+1687	Mantello Rigenerante
+1688	Arma Primitiva
+1689	Rinforzi
+1690	Incoraggiamento dei rinforzi: al prossimo tentativo di questo livello, ATT e mura +{0}%
+1691	A distanza
+1692	A distanza: resta lontano e sputa veleno sulle mura, avvelenandole nel tempo.
+1693	Da lontano è invisibile e non si può colpire. Cambia anche corsia di nascosto e compare solo vicino alle mura.
+1694	Elmo della Lungavista
+1695	Lungavista
+1696	Spettro
+1697	Faretra al Chiaro di Luna
+1698	Prima Visita al Chiaro di Luna
+1699	Bufera al Chiaro di Luna
+1700	Castello d'Ombra Lunare
+1701	Guardiano dell'Ombra Lunare
+1702	Coniglio d'Ombra Lunare
+1703	I Conigli d'Ombra Lunare e i Pipistrelli Vampiro saltellano di continuo, quindi non aspettarti di colpire sempre lo stesso.
+1704	Massa d'Ombra Lunare
+1705	Le Masse d'Ombra Lunare si curano da sole quando non vengono colpite: non lasciare che riprendano fiato.
+1706	Leggi
+1707	Guardiano delle Nuvole
+1708	Regno delle Nuvole
+1709	Pecora-Nuvola
+1710	Lana della Pecora-Nuvola −60%
+1711	Le Pecore-Nuvola vanno prima tosate, poi da rasate corrono velocissime. Abbattile in un colpo solo!
+1712	Mantello di Allodola
+1713	Pioggia di Meteore
+1714	Cannone Stellare
+1715	Riprova
+1716	Rigenerazione
+1717	Gioca ancora un po'
+1718	Supera 10 livelli in difficoltà Sfida (ottieni 10 corone)
+1719	Ritira qui
+1720	Pausa
+1721	Batti le palpebre, guarda in lontananza e bevi un po' d'acqua. Nonno Re farà la guardia alle mura per un po'.
+1722	Elmo Ammazzadraghi
+1723	Il campo di battaglia ora ha 4 corsie. Gli attacchi ad area e le abilità su tutto il campo contano sempre di più.
+1724	Carica dei Carri
+1725	Fiumana di Carri
+1726	Ospedale da Campo
+1727	Battaglia
+1728	Battaglie {0} · Vittorie {1} · Sconfitti {2} · Interruzioni {3} · Chiamate anticipate {4}
+1729	Battaglie {0} · Vittorie {1} · Mostri sconfitti {2}
+1730	Battaglie
+1731	Si applica da solo all'inizio della battaglia: +30% di rame in questo livello.
+1732	Impostazioni di battaglia
+1733	Battaglia in pausa. Scegli una carta rifornimento: l'effetto dura fino alla fine del livello (colori dal più basso al più alto: blu, viola, rosso, oro; più alto significa più forte). Puoi scegliere anche con 1 / 2 / 3.
+1734	In battaglia tocca un pulsante abilità (o premi 1 / 2 / 3) per lanciare le abilità attive, e premi Q / W / E / R / Z / X / C per usare gli oggetti (massimo 3 per tipo, uno per uso, con ricarica dopo ogni uso; prima compra gli oggetti al negozio, poi equipaggiali).
+1735	Tamburo da guerra
+1736	Tamburi da Guerra Tonanti
+1737	Pioggia di Frecce lanciata mentre il Tamburo da guerra è attivo: frecce +30%
+1738	Samurai Sengoku
+1739	Dopo la battaglia
+1740	Potenza
+1741	Stendardo da Guerra
+1742	Prima della battaglia
+1743	Preparativi · Livello {0}
+1744	Elmo da Guerriero
+1745	Si è aperta! Colpiscila!
+1746	Aperta! Colpisci per {0}s
+1747	Capitolo
+1748	Lunga fila, Goblin con Scudo di Legno
+1749	Le stelle sulla veste brillano da sole e il cappello è più alto di chi lo indossa.
+1750	Ciondolo Portafortuna
+1751	La palude è piena di nebbia e di rane velenose che gracidano. Per la prima volta le mura mi sembrano un po' fredde.
+1752	I Fantasmini della palude non temono quasi gli attacchi fisici e le rane velenose sputano veleno da lontano. Ricorda di usare "Priorità minaccia" per colpirli per primi!
+1753	Una ragazza con una lanterna di lucciole nella palude. ATT ×0,92, velocità d'attacco ×1,05; la gittata non cala di notte, danni fisici +20% contro gli spiriti; ogni 12° attacco libera 3 lucciole (ognuna infligge danni magici pari ad ATT ×0,6).
+1754	Guardiano della Palude
+1755	Razzo di segnalazione
+1756	Questo non è un guscio, sono le mura! Dentro ci vivono tante persone!
+1757	Stavolta non farò piovere. ...Solo un pochino, per fare il bagno alla casa nuova.
+1758	Suona identico a prima.
+1759	Questo è il punto più profondo della frattura, dove si fatica perfino a distinguere cielo e terra.
+1760	Hai finito questo oggetto
+1761	I bambini della città mi chiamano Nonna Zuppa e mi piace tanto.
+1762	Custode della Torre
+1763	Cannone Scuoti-Terra
+1764	Artigiano del Vapore
+1765	Notte per tutto il livello: gittata −30%
+1766	Potrai cambiarlo in qualsiasi momento nelle Impostazioni.
+1767	Da allora, 6 secondi dopo l'inizio di ogni ondata, cade fuoco dal cielo e infligge danni magici pari ad ATT ×4 a tutti i mostri
+1768	Ho capito
+1769	Ho capito (Spazio)
+1770	È consentito solo l'Arco di legno
+1771	Appena la corsia diventa rossa, concentrerò il fuoco per fermare la tua carica!
+1772	Chiama in anticipo almeno 3 volte e supera il livello
+1773	Cura
+1774	Cura di più gli uccelli volanti.
+1775	Armatura Curativa
+1776	Zanna della Fine
+1777	Occhio della Fine
+1778	Bomba Pesante
+1779	Replay: premio ridotto a metà (monete di rame)
+1780	Armatura pesante
+1781	Mostri corazzati, mostri raggruppati, Boss
+1782	Mostri corazzati, Boss
+1783	Assalto Corazzato
+1784	Assalto corazzato! Bastone magico, cannone e "Perforante" sono la chiave di questo livello.
+1785	Assalto corazzato! Gli Yeti hanno un'alta armatura fisica. Magia, cannoni e "Perforante" sono la chiave.
+1786	Freccia pesante · Rompiarmatura
+1787	Rivedi
+1788	Ricomincia
+1789	Un'armatura vermiglia, una luna crescente luminosa sull'elmo e una bandierina sulla schiena.
+1790	Abilità attive
+1791	Abilità attive (tocca per lanciare in battaglia)
+1792	Slot abilità attive
+1793	Ricarica abilità attive −{0}%
+1794	Ricarica abilità attive −15%
+1795	Ricarica abilità attive −20% e azzera subito tutte le ricariche
+1796	Ricarica abilità attive −40% e azzera subito tutte le ricariche
+1797	Ricarica abilità attive −5%
+1798	Ricarica abilità attive −8%, armatura ignorata +10%
+1799	Ora della zuppa! {0} mostri potenziati
+1800	Alleati di battaglia
+1801	Equipaggiamento
+1802	Equipaggia +1
+1803	Stivali Cacciastelle
+1804	Pronti... {0}
+1805	Bruciatura
+1806	Viola
+1807	Autodistruzione
+1808	Auto (attivo su cellulare)
+1809	Lancio automatico: no
+1810	Lancio automatico: sì
+1811	A metà strada si scava sotto terra (non si può colpire) e riemerge solo vicino alle mura.
+1812	Diam.
+1813	Scavo
+1814	Diamanti
+1815	Diamanti (si ottengono solo nella Torre Demoniaca dei Nove Piani)
+1816	Faretra Trivella
+1817	Max
+1818	Piano massimo {0} · Totale {1} diamanti
+1819	Record: piano {0} · {1} diamanti
+1820	Combo massimo
+1821	Combo massimo {0}
+1822	The Last Bastion
+1823	Ultima ondata!
+1824	Il mostro piccolo più semplice, lento e pigro.
+1825	Più vicino
+1826	Più forte
+1827	Più debole
+1828	La valuta più rara, si ottiene solo nella "Torre Demoniaca dei Nove Piani" e non si può cambiare. Serve per l'equipaggiamento dorato della pagina Equipaggiamento (tranne il 1° di ogni tipo, costa solo diamanti, da 10 diamanti) e per i potenziamenti a livelli altissimi (dopo migliaia di livelli).
+1829	Boss finale. Inchiostro, cloni, visuale bloccata: la fonte della Frattura del Caos.
+1830	Boss finale. Una pallina color inchiostro che cresce: evoca ombre d'inchiostro, cloni, forma di Re Demone e furia della frattura.
+1831	Scontro finale! Inky ha quattro fasi: elimina i servitori, colpisci i cloni, interrompi il colpo pesante, sconfiggilo entro il tempo limite.
+1832	Il terzo osso da sinistra è di nuovo montato al contrario, ma va bene così.
+1833	Abilità del Boss
+1834	Ammazza-Boss
+1835	Priorità Boss
+1836	Claude (insieme a te)
+1837	Kael, Inky, tornate a casa per cena! Oggi il regno dà una festa di vittoria per voi!
+1838	Kael, mi presti l'elmo come tappeto elastico?
+1839	Kael, questo è l'ultimo tratto. Tutto il regno è dietro le mura a fare il tifo per te.
+1840	Kael, Lyra, è successo qualcosa. Di notte, nella Città delle Conchiglie, si è aperta nel cielo una crepa viola e ne sono usciti... mostri che abbiamo già sconfitto.
+1841	Kael, Lyra, è arrivata una lettera dal mare! I tre giorni di pioggia battente di Rombo hanno fatto salire la marea e hanno portato via le case degli abitanti della baia.
+1842	Kael! Nel prato sono comparsi un sacco di mostri appiccicosi e vanno verso le mura!
+1843	La sorellina di Kael. ATT ×0,82, velocità d'attacco ×1,2; ogni 10° attacco suona un campanello e stordisce per 0,5 secondi i mostri piccoli attorno al bersaglio.
+1844	L'elmo di Kael suona ancora. ...Ormai ci ho fatto l'abitudine.
+1845	Kael attacca in automatico. Le Masse Verdi cominciano a rosicchiare le mura appena ci arrivano!
+1846	Kael è corso lì e l'ha preso in braccio. L'elmo ha fatto "clang".
+1847	Kael spara in automatico dalle mura e i mostri arrivano da destra lungo le corsie. Perdi quando i PV delle mura arrivano a zero.
+1848	Lv{0} · Ricarica {1}s
+1849	Lv{0} sblocca la maestria
+1850	Lv{0} si può far evolvere
+1851	Lyra? ...Va bene, facciamo i turni di guardia.

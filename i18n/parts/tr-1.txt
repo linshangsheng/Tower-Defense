@@ -1,0 +1,463 @@
+0	, aynı anda 3 tane takılabilir
+1	: art arda {0} kez yenildin. Bu seferki saldırılar ve sur canı güçlendi. Geçince sıfırlanır.
+2	...Rüzgar durdu. İleride Mürekkebin kaynağı var.
+3	...Abi. Abla. Sonunda geldiniz.
+4	...Güm. Vuramıyorum.
+5	...Güm. Özür dilerim, yağmuru ben yağdırdım.
+6	...Ayak sesleri durdu.
+7	...Bugün de sessiz. İyi.
+8	...Ayna kırıldı, sonunda net görebiliyorum. Mürekkep güneydeki yanardağın yarığından sızıyor.
+9	...Ama duramıyorum. Lütfen hepsini yenin, olur mu?
+10	...Yarık kapandı. Ortalık sessiz.
+11	...Mürekkep kokuyor.
+12	...O kabuk bizim surumuz olamaz, değil mi?
+13	...Sen gerçekten benden nefret etmiyor musun?
+14	...Ormandaki ağaçlar küçük bir nöbetçinin buraya kadar dayandığını söyledi. Ben orman bekçisi Rowan.
+15	...Seni hatırlıyorum. Bu surları da hatırlıyorum. Ama neden geldiğimi hatırlamıyorum.
+16	...Teşekkürler. Aynı şeyi tekrar tekrar yapmak... çok yorucu.
+17	...Sisi dağıttığınız için sağ olun. Ben Nova. Bataklıkta fener taşıyıp kaybolan küçük hayvanlara yol gösteririm.
+18	...Arkadaşlarım olması çok güzel.
+19	...Yine biri bana vurmaya geldi. Herkes sadece bana vuruyor.
+20	...Gerçekten. Çok güzel. B-ben az önce çok kaba değildim, değil mi?
+21	...Kael, gökyüzüne bak. En son saçtığım biraz Mürekkep gökkuşağına uçup gitti.
+22	· İkmal yapılıyor
+23	· Rekor
+24	· Sonraki dalga {0} sn
+25	‹ Başlık
+26	‹ Geri
+27	(30. seviyeden sonra her seviye 30. seviye canının %{0} kadarını ekler)
+28	(Temel sınırdan sonra her seviyede kazanç azalır)
+29	(Tüm yuvalar açıldı)
+30	(Temizle)
+31	({0}. bölümü geçince bir yuva daha açılır)
+32	({0} çıkarılır, {1} tanesi çantaya döner)
+33	(Çıkar)
+34	(Temel sınır Sv{0} aşıldı: her seviyede kazanç azalır, maliyet artar)
+35	(Tamamlandı)
+36	(Tam donanımlı)
+37	(Sınıra ulaşıldı)
+38	(Başka yuvada, yer değiştirecek)
+39	(Donanım sayfasındaki "Kahraman" bölümünden Atlas'ı sahaya sürebilirsin: surları daha sağlam yapar.)
+40	(Donanım sayfasındaki "Kahraman" bölümünden Lyra'yı sahaya sürebilirsin.)
+41	(Nova katıldı! Gece bölümlerinde menzili kısalmaz.)
+42	(Rowan katıldı! Ağır okları zırhı deler.)
+43	{0}\nBekleme {1} sn, {2} tane taşınıyor
+44	{0} dalga
+45	{0} dalga (Boss dahil)
+46	{0} dk {1} sn
+47	{0} takımı "{1}": {2} → {3}{4}
+48	{0} gün
+49	{0} bakır → 1
+50	{0} sinerjisi "{1}": {2}{3}
+51	{0} Can {1} →
+52	{0} iblis kral + {1} yardakçı
+53	{0} gümüş → 1
+54	{0} çeşit
+55	{0}; Sv3'ten sonra her seviyede hasar / ok / iyileştirme / süre biraz daha artar, bekleme biraz daha kısalır
+56	{0}: güç +%{1} ({2})
+57	{0} (sahip: {1} / {2}{3})
+58	{0} özellikleri
+59	{0} renkli kalite
+60	/sn
+61	⏩ 2x Hız
+62	⏭ 3x Hız
+63	▶ 1x Hız
+64	★ Ustalık
+65	♾ Sonsuz Mod
+66	♾ Sonsuz Mod {0}
+67	⚠ Boss geliyor!
+68	✔ Kullanımda
+69	✔ Tamamlandı
+70	✔ Sahipsin
+71	✦ Yükseltildi
+72	✨ Takım "{0}": {1}
+73	🎯 Bölüm görevi: {0}
+74	🎯 Bölüm görevi "{0}" tamam: +{1} gümüş
+75	🎺 Takviye morali +%{0}
+76	🏆 Başarımlar
+77	🏆 Başarım "{0}" kazanıldı: {1} (+{2})
+78	🏆 Başarım "{0}" kazanıldı +{1}
+79	🏘 Krallık Kasabası
+80	🏯 Dokuz Katlı İblis Kulesi
+81	🏯 Dokuz Katlı İblis Kulesi {0}
+82	👉 "Saldırı"yı yükselt, Kael canavarları daha hızlı yok eder!
+83	👑 Zor seviyede ilk geçiş: taç kazan
+84	👑 Zor seviyede geçince taç kazanılır
+85	👑 Zor seviyede geçildi
+86	👕 Kıyafet Dolabı
+87	📅 Günlük Meydan Okuma
+88	📅 Günlük Meydan Okuma · {0}
+89	📅 Günlük Meydan Okuma ✔
+90	📊 Savaş Raporu
+91	📔 Kael'in Nöbet Günlüğü
+92	📜 Nöbet Kayıtları
+93	📦 Bu bölümün ikmali:
+94	📦 İkmal sandığı geldi!
+95	10'lu seri!
+96	Sahadaki rastgele canavarların üzerine 12 meteor düşer, her biri Saldırı ×8 hasar verir. 110 piksel çevresindeki canavarlar %60 hasar alır.
+97	16 ok × Saldırı 1,6
+98	2 saniyede 16 ok yağar, her biri menzildeki rastgele bir canavara Saldırı ×1,6 hasar verir, kalkanı yok sayar.
+99	20 ok × 1,7
+100	24 ok × 1,8, isabet alan canavarlar tutuşur
+101	3 ok aynı anda birkaç dokunaca vurabilir; tam geliştirilmiş Tahta Yay ve Top da Bobo'ya karşı çok iyidir
+102	5 şeridin hepsi açık! Yarasalar şeritler arasında zıplar.
+103	Hapşu! Miğferimin içi buz tuttu.
+104	Aman aman... Kaynattığım çorba değil Mürekkepmiş. Pek lezzetli olmaması şaşırtıcı değil.
+105	Teselli Ödülü
+106	Gece
+107	Gece · Hayalet
+108	Gece bölümü: fazla uzağı göremezsin, menzil %30 azalır. İkmaldeki "Işık Fişeği" ve "Uzak Görüş" çok işe yarar.
+109	Geceleri canavarların gözlerini göster (varsayılan kapalı, zifiri karanlık)
+110	Gölge Suikastçı
+111	Gölge Suikastçılar çok daha uzakta (x < 800) belirir
+112	Gölge Suikastçılar uzakta görünmez, yaklaşınca belirir. İkmaldeki "Dürbün" onları daha erken gösterir.
+113	Gölge Ninja
+114	Büyülü Dalga
+115	"{0}" satılsın mı? Satış fiyatı {1} (alış fiyatının yarısı). Sonra istersen tam fiyatla geri alabilirsin.
+116	Dışa aktardığın kayıt metnini buraya yapıştır
+117	Aşağıdaki metni kopyalayıp sakla. Cihaz değiştirince ya da tarayıcı verilerini silince, "Kaydı İçe Aktar" ile yapıştırarak ilerlemeni geri yükleyebilirsin.
+118	Yüz Canavar Avcısı
+119	Hayaletler Geçidi
+120	Plaka Zırh
+121	Spor
+122	İnce Buz Okluğu
+123	Koruma halkası daha büyük ve hasarı daha çok azaltıyor. Önce onu yık.
+124	Kale Zırhı
+125	Kale Muhafızı
+126	Kar fırtınası! Saldırı hızı düştü
+127	Kar Fırtınası Parşömeni
+128	Fırtına geliyor! Tüm canavarlar hızlandı!
+129	Kritik
+130	Kritik Okluk
+131	Kritik oranı
+132	Kritik oranı +%{0}
+133	Kritik oranı +%10.
+134	Kritik oranı +%3
+135	Kritik oranı +%3; hayaletlere fiziksel hasar +%25
+136	Kritik oranı +%4; gece bölümlerindeki menzil cezası yarıya iner
+137	Kritik oranı +%8
+138	Kritik hasarı
+139	Kritik hasarı +%{0}
+140	Kritik hasarı +%10
+141	Kritik hasarı +%15
+142	Kritik hasarı +%25
+143	Kritik hasarı +%30
+144	Zalim Tacı
+145	Patlama, alandaki küçük canavarları 60 piksel geri iter ve %40 yavaşlatır (1,5 sn); Boss'lara ve dokunaçlara hasar +%50
+146	Patlama yarıçapı 60 → 85, sıçrama hasarı %60 → %75
+147	Kutup Kurdu
+148	Kutup Kurtları üçerli sürüler halinde saldırır. Dondurma Alanı bütün sürüyü bir anda yavaşlatabilir.
+149	Kuzey Vikingi
+150	Bebe
+151	Bebe her deniz kabuğunu küçük defterine yazar. Ona göre sur, gördüğü en büyük "kabuk"; ne yazık ki kimseyle paylaşılamaz.
+152	Bebe kabuğu kapalıyken neredeyse vurulamaz, açıkken inci tükürür ama acıya dayanamaz. Kabuk açılınca Yıldırım Darbesi ve Ok Yağmuru kullan!
+153	Bebe telaşlandı: kabuğu daha hızlı açılıp kapanıyor!
+154	Kabuk Tılsımı
+155	Çanta
+156	Çanta {0}
+157	Çantanda henüz eşya yok. "Eşyalar" sayfasından satın al.
+158	Çantanda bu eşya yok
+159	Çanta boş. "Eşyalar" sayfasından satın al.
+160	Müzik
+161	Son Direniş Rozeti
+162	Son Direniş Madalyası
+163	Sırta asılan bir okluk.
+164	Ölünce etrafındaki canavarları yaralayan dikenler fırlatır. Kalabalığa girene kadar bekle! Surlara varınca da bir diken batırır.
+165	Elektrik çarptı!
+166	Pasif Yetenekler
+167	Pasif Yetenekler (otomatik)
+168	Pasif Yetenek Yuvaları
+169	Zırh / büyü direncinin engellediği hasar
+170	Ay ışığıyla yozlaşmış yeşil bir yumak: canı yüksek, vurulmadığında kendini iyileştirir.
+171	Sersemledi!
+172	Bu Firavun'un kurabiyeleri... daha pişmedi!
+173	Bu Firavun üç bin yıl uyudu, şimdi uyandırıldı! Kim gürültü yapıyor?!
+174	Bu Firavun yeni bir kurabiye tarifi deniyor. Bu sefer fırında sadece üç yüz yıl kaldı.
+175	Bu bölümde sur ilk kez yıkılınca anında dirilir ve azami canın %60'ını geri kazanır (yalnızca bir kez)
+176	Bu bölümde bakır geliri +%{0}
+177	Bu bölümde bakır geliri +%10
+178	Bu bölümde bakır geliri +%30
+179	Bu bölümde bakır geliri +%60 ve hemen bir miktar bakır kazanırsın
+180	Benim şatom... neden bu kadar sıcak? Ocağı kim yaktı?
+181	Gerçek hali ortaya çıktı! Hasar +%50
+182	Bu Prens meydanda bir trambolin dükkanı açtı. İlk zıplayış bedava!
+183	Bölüm tacı (Zor seviyede geçince)
+184	Bandajlı Mumya
+185	Bandaj Topu
+186	Bandaj Topları, kalkanlar, küçük canavar sürüleri
+187	Bandaj Topları fiziksel saldırıdan etkilenmez. Mağazadan gümüşle "Büyü Asası"nın kilidini aç ya da Yıldırım Darbesi ve Yakma getir!
+188	Bandajlar yıkandı. Güzel kokuyor!
+189	Siper Zırhı
+190	Paratoner
+191	Paratoner!
+192	Yarasa
+193	Yarasa Mağarası
+194	Yarasa Sürüsü Baskını
+195	Standart
+196	Korkma, onlar sadece garip bir kara mürekkep yüzünden huysuzlaştı. Surları korursan herkesi korursun.
+197	Dondur, Kar Fırtınası, Buz Duvarı: öncekinden daha soğuk Kraliçe Frosty.
+198	Dondurma Alanı
+199	Dondurma Alanı, Mini Bomba ve Buz Şişesi için şerit seçmelisin: yeteneğe dokun, sonra bir şeride dokun.
+200	Buz Şişesi
+201	Tüm canavarları 6 sn dondurur (Boss'lar 3 sn). Donmuşken +%60 hasar alırlar, çözülünce 4 sn %50 yavaşlarlar.
+202	Donmuş {0}
+203	Buz Fermanı
+204	Donmuş, onarılamaz
+205	Buzlu Dondurma Amca
+206	Buzlu Dondurma Amca yeteneklerini dondurur. Bütün umudunu tek bir yeteneğe bağlama!
+207	Buzlu Dondurma Amca, Kraliçe Frosty'nin Mürekkebi dev bir aynaya dondurduğunu söylüyor; içinde kırmızı bir çatlak görünüyor.
+208	Buzlu Dondurma Amca surlara doğru yürüyor!
+209	Buz Kristali Fırtınası
+210	Buz Kristali Perisi
+211	Buz Kristali Perileri hayattayken kahramanlarının saldırı hızı düşer. Uzakta saklanırlar; Ok Yağmuru ve Yıldırım Darbesi ile temizlemek en kârlısı.
+212	Buz Kristali Işığı
+213	Buz Ruhu Okluğu
+214	Buzul Kar Ovası
+215	Bobo
+216	Bobo'nun dokunacı. 3 veya daha fazlası kaldıkça Bobo'ya zarar vermek çok zor.
+217	Bobo'nun vantuzları güç emiyor! Dokunaçları kes!
+218	Bobo'yu dokunaçlar koruyor: önce dokunaçları kes ("Tehdit Önce" ve "Boss Önce" de bunu yapar). Canı %60'ın altına inince dokunaçlar onu iyileştirir, sonunda dev bir girdap çıkarır!
+219	Pop
+220	Pop pop pop
+221	İkmal Çılgınlığı
+222	İkmal Uzmanı
+223	Yok
+224	10. bölümden sonraki herhangi bir bölümü hiç aktif yetenek taşımadan geç
+225	Alan temizlenmeyi beklemeden her 14 saniyede bir dalga gelir
+226	Kim olursa olsun, demir kardan adamlar, demir kurtlar... hepsi demir zırhlarıyla bize doğru yürüyor.
+227	Yeteneksiz
+228	Ölümsüz Zırh
+229	Eşya kullanılamaz
+230	Yılmaz Savaş Sancağı
+231	Hiç eşya kullanmadan bölümü geç
+232	Bunlar onların kendisi değil, "yankılar": o çatlaktan gelen, kaosun mavi-mora boyadığı gölgeler. Durmadan surlara yürüyorlar.
+233	Ben değilim! Kendi çalar saatin... yani küçük askerlerin.
+234	Biz değiliz! Çatlağın öbür ucundan geliyor!
+235	Hayır. Bak, benim miğferim de senin mürekkep lekeleriyle dolu.
+236	Ölümsüz Pelerin
+237	Hayır, soldan üçüncüsü hep ters takılıyor, alıştım.
+238	Kumaş Başlık
+239	Servet Heykeli
+240	Servet Botları
+241	Gökkuşağı bir yerinden kararmış! Çıkıp silmemiz lazım.
+242	Gökkuşağı Kuşu
+243	Gökkuşağı Kuşları yakındaki canavarları iyileştirir, balonlar patlayınca goblin bırakır. "Tehdit Önce" önce Gökkuşağı Kuşlarını vurur.
+244	Gökkuşağı Köprüsü
+245	Gökkuşağı Köprüsü'nün öbür ucu Bulut Krallığı. Oradaki bulutlar rüzgar estirir, gök gürletirmiş... Kael, Mürekkepçik'i de al, gidelim!
+246	Kontroller
+247	Yuva {0}
+248	Yuva {0}: eşya ve adet seç
+249	Hasır Zırh
+250	Çilekli dondurma, tanesi bir bakır sikke!
+251	Hasır Sandalet
+252	Şifalı Ot Pelerini
+253	Çayır İlk Savaş
+254	Çayır Koruyucusu
+255	Kat
+256	Bandajlara sarılı: fiziksel hasar azaltma %55. Ona büyüyle saldır!
+257	Aşırı ağır gülle, patlama yarıçapı 100, zırhın %60'ını yok sayar, Boss'lara hasar +%30.
+258	Gelgit
+259	Gelgit Pelerini
+260	{0} şerit
+261	Küçük canavar sürüleri, hayaletler, büyü direnci düşük canavarlar
+262	Başarırsan {0} elmas; başaramazsan hiçbir şey yok
+263	Başarımlar
+264	Başarımlar {0} / {1}
+265	Sürüler halinde uçar, diğer canavarların üstünden geçip doğrudan surlara saldırır.
+266	Sur
+267	Sur donduruldu! Şimdilik onarılamaz
+268	Sur yıkıldı...
+269	Sur yıkılınca biter. Her temizlenen dalga için 15 bakır; yeni rekor kırınca fazladan her 5 dalga için 1 gümüş.
+270	Sur trambolin değil! ...Ama gerçekten eğlenceli görünüyor.
+271	Kabuk... yani sur, bugün de çok sağlam.
+272	Sur Seviyesi
+273	Surun canı %{0} kaldı: devam edersen sonraki kat bu canla başlar, iyileşme olmaz.
+274	Sur azami canın %15'ini geri kazanır.
+275	Sur azami canın %70'ini geri kazanır, sonraki 8 saniye boyunca aldığı hasar −%60.
+276	Sur iyileşmesi +%25, surun aldığı hasar −%5
+277	Sur iyileşmesi +%{0}
+278	Sur, azami canının %35'ine kadar hasarı emen bir kalkan kazanır; bölüm bitene dek sürer.
+279	Sur hasar azaltma
+280	Sura hasar kaynakları (toplam {0})
+281	Sura en çok hasarı "{0}" verdi: {1}
+282	Sur yükseltme (güncel azami can {0})
+283	Sur %{0} kaldı
+284	Sur ≥%50 kalırsa 2 yıldız, ≥%80 kalırsa 3 yıldız.
+285	Sur canı %5'in altındayken bölümü geç
+286	Sur {0} / {1}. dalgaya kadar dayandı.
+287	Surun aldığı süregelen hasar (zehir, zehirli sis) −%60
+288	Surun aldığı hasar −%3 / seviye.
+289	Surun aldığı hasar −%{0}
+290	Surun aldığı hasar −%12
+291	Surun aldığı hasar −%3
+292	Surun aldığı hasar −%6; sur iyileşmesi +%25
+293	Sur Onarımı
+294	Sur Canı
+295	Sur canı %50'nin altındayken Saldırı +%20
+296	Sur canı %50'nin altındayken Saldırı +%{0}
+297	Sur canını hep %70 veya üstünde tut ve bölümü geç
+298	Surun canı yarı yarıya
+299	Azami sur canı +%{0}
+300	Keşif Botları
+301	Kızıl Demir Ocağı
+302	Alevli Pelerin
+303	Hücum mu? Şu an sadece çöpe hücum ediyorum.
+304	Çarpma
+305	Yapım
+306	Sat
+307	Çaylak
+308	Kuleye İlk Adım
+309	İlk Kar
+310	İnfaz
+311	Dokunaç
+312	Dokunaçların hepsi denize çekildi!
+313	Dokunaç kalkanı: {0} kaldı, önce dokunaçlara vur!
+314	Dokunaç Şaplağı
+315	Sadece {0} dokunaç kaldı, hemen Bobo'ya vur!
+316	Kuşan
+317	Kuşanıldı
+318	Delici
+319	Kalpleyen Uzun Yay
+320	Bulut Delen Ok
+321	Vücuda giyilen, surları daha dayanıklı yapan zırh.
+322	Giyilen
+323	Efsanevi
+324	Yaratılış Tacı
+325	Yaratılış Okluğu
+326	Yaratılış Zırhı
+327	Yaratılış Yayı
+328	Dürtme İğnesi
+329	Kaba Pelerin
+330	Zümrüt Çayır
+331	Kayıt metni geçersiz, tamamını kopyaladığından emin ol
+332	Kayıt içe aktarıldı
+333	Kayıt temizlendi
+334	Yendiğin Boss'ların hepsi kasabaya taşındı. Dokun ve şimdi nasıl olduklarını dinle.
+335	Gulu Kral'ı yendin! Aslında çayırın en çalışkan temizlikçisiymiş. Kara rüzgar çölden esiyor, ben yola çıkıyorum.
+336	Bu kattaki bütün canavarları yendin.
+337	Boss'u Kes
+338	Bir Boss'u en az 2 kez kes ve bölümü geç
+339	Kesildi!
+340	Kesme Ustası
+341	Kesme Uzmanı
+342	Büyük Boss
+343	Büyük Boss. Kar fırtınası saldırı hızını düşürür, donmuş sur onarılamaz, canı azalınca küçük buz ejderhaları çağırır.
+344	Büyük Boss. Dondur, Kar Fırtınası, Buz Duvarı; öncekinden daha soğuk.
+345	Büyük Boss. Zehirli sis surları aşındırır, yardakçıları güçlendirilmiş hallerine kaynatır, canı azalınca kazanı devirip zehir havuzları oluşturur.
+346	Büyük Boss. Kum fırtınası estirir, mumyalar çağırıp onları iyileştirir, canı azalınca yalnızca büyüden korkan bir piramit kalkanı açar.
+347	Büyük Boss. Yardakçılar çağırır; canı %60'ın altına inince yaban domuzu hücumu yapar, uyarı sırasında ateşi yoğunlaştırırsan kesebilirsin.
+348	Büyük Boss. Kum fırtınası, çağırma, iyileştirme, kalkan: üç aşama, öncekinden çok daha zorlu.
+349	Zırhı çok yüksek, iri, beyaz tüylü bir hergele.
+350	Kazan devrildi! Zehir havuzu canavarları hızlandırıyor!
+351	Dev girdap! Bütün dokunaçlar geri büyüdü, tüm canavarlar hızlandı!
+352	Büyük Yazı Modu
+353	{0} tane taşı
+354	Başa takılan koruyucu teçhizat.
+355	Tek atış, dengeli, yerleşik ekstra kritik oranı var. Boss'lara karşı harika.
+356	Tek oyunda 30'luk seri yap (canavarları arka arkaya 1,2 sn içinde yen)
+357	Tek hedef DPS
+358	Çın... çın... (soğuktan titriyor)... Pardon, kendi kendine çalıyor.
+359	Şimdiki: {0} →
+360	Kaydı Dışa Aktar
+361	İçe Aktar
+362	Kaydı İçe Aktar
+363	İçe aktarma mevcut ilerlemenin üzerine yazar.
+364	Burada dur, kazancı cebe at
+365	30. dalgaya ulaşırsan "Asla Düşmeyen" başarımı açılır (1 altın).
+366	Çengelli Okluk
+367	{0}. katta yenildin ve hiçbir şey kazanamadın. Bilet iade edilmez.
+368	Eşyalar
+369	Özür neye yarar! Gürrr gürrr gürrr!
+370	Zemin havada süzülüyor... kırık bir ayna gibi.
+371	Harita
+372	Deprem Tılsımı
+373	Zirve Ustalığı
+374	Dur! Ben taşçının oğlu Atlas. Surun ezilen yerlerini babam yamadı. Sen uzun yolculuğa çık, surları ben korurum!
+375	Seviye düşük, yükselt
+376	Alçaktan uçar ve çok hızlıdır.
+377	Dalga {0} / {1}
+378	Dalga {0}
+379	Dalga {0} · Rekor {1}
+380	{0}. Kat
+381	{0}. Kat · Dalga {1} / {2} · {3} kaldı
+382	{0}. Kat: {1} iblis kral + {2} yardakçı birlikte saldırıyor (güç ×{3}). Sur canı önceki attan devam eder, iyileşmez. Canavar yenmek bir şey kazandırmaz; yalnızca katı geçince elmas kazanılır!
+383	{0}. Kat geçildi!
+384	Bölüm {0}
+385	Bölüm {0} · {1}
+386	Bölüm {0} · {1} ({2})
+387	3. bölümden sonra, herhangi bir bölümü sur canı tam doluyken geç
+388	Dünya {0}
+389	Dünya {0} · {1}
+390	Dünya {0} ▾
+391	Dünya {0} üç yıldız ödülü
+392	6. Dünya Boss'u. Huysuz dev bir gök gürültüsü bulutu: Yıldırım Topaklarını ve Gökkuşağı Kuşlarını çağırır, yıldırım biriktirip düşürür, sonunda fırtına koparır.
+393	7. Dünya Boss'u. Ahtapot Kral: dokunaç kalkanı, vantuzla iyileşme ve sonunda dev bir girdap. Önce dokunaçlara vur!
+394	Dördüncü Şerit
+395	Beşinci Şerit
+396	Eşyalar yalnızca ilk canavar dalgası çıktıktan sonra kullanılabilir
+397	Bir şeride dokunarak kullan (sağ tık veya Esc ile iptal)
+398	Kuşanmak için dokun
+399	Midas Dokunuşu
+400	Yetenek kullanmak için bana dokun!
+401	Elektrik daha geniş alana yayılır ve daha uzun felç eder.
+402	Oymalı Uzun Yay
+403	Ding!
+404	Güm... güm... geçemezsin...
+405	Güm... Mürekkepçik... bugün... çok eğlendim...
+406	Güm... o... hep... yalnız... ona... iyi... davran...
+407	Güm... ben... kapıyı... bekliyorum...
+408	Güm... teşekkür... ederim...
+409	Tüm canavarları 7 sn dondurur, Boss'lar da dahil. Donmuşken aldıkları hasar ×2,2; bu sürede kahraman saldırı hızı +%60.
+410	Seçilen şeritteki tüm canavarları 3 saniye dondurur.
+411	Çorbacı Nine
+412	Çorbacı Nine kazanını tertemiz yıkadı ve bundan sonra sadece balkabağı çorbası yapacağını söyledi. Kuzeydeki kar ovası Mürekkebin kaynaklarından biri gibi görünüyor.
+413	Çorbacı Nine yardakçıları güçlendirilmiş hallerine kaynatır. Alanı çabuk temizle ve zehirli sis için Sur Onarımı getir!
+414	Çorbacı Nine yemek yapmaya başladı!
+415	Zehirli Kurbağa
+416	Zehirli Kurbağalar uzakta durup surlara zehir tükürür. Hedefi "Tehdit Önce" yap, sur güvendeyken kahramanlar önce onlara saldırır.
+417	Zehirli sis! Sur sürekli hasar alıyor
+418	Kayıt okunamadı
+419	Tüm nöbet günlüğünü oku (atlanan bölümler günlükten tekrar okunabilir)
+420	Karnının üstünde hızla kayar, surlara çarpınca ağır hasar verir.
+421	Sprint Ayakkabısı
+422	Boss'lara ve uçan canavarlara hasar +%30
+423	Boss'lara hasar +%{0}
+424	Boss'lara hasar +%12, surun aldığı hasar −%4
+425	Boss'lara hasar +%50, zırhın %20'sini yok sayar
+426	P-pardon... bendim.
+427	Yavaşlayan veya donan canavarlara hasar +%15
+428	Canı en yüksek canavara Saldırı ×5 büyü hasarı verir.
+429	Uçan canavarlara hasar +%{0}
+430	Seçilen şeritteki tüm canavarlara Saldırı ×2,5 büyü hasarı verir ve onları tutuşturur.
+431	Seçilen şeritteki tüm canavarlara Saldırı ×5 hasar verir.
+432	Canı %30'un altındaki canavarlara hasar +%60
+433	{0} Bozdur
+434	Kalkan Kaplumbağa
+435	Kalkan Kaplumbağa Eskortu
+436	Kalkan Kaplumbağalar yanındaki canavarları korur. "Tehdit Önce" önce onları vurur; yetenekler kaplumbağalardan etkilenmez.
+437	Kalkan
+438	Arka sırada saklanıp yakındaki canavarları durmadan iyileştirir. Önce onu devir!
+439	Alnındaki bakır gözlükler parlıyor, sırtındaki çantadan buhar fışkırıyor.
+440	Büyü mermisi atar, isabet edince küçük alanda patlar. Büyü hasarı fiziksel zırhı yok sayar.
+441	Firavun'un yankısı kaybolurken geride küçük bir kurabiye bıraktı. Yemeye cesaret edemedim.
+442	Yıldızlı Gökyüzü
+443	Dönüş yolunda arkadan vurur, tahta kalkanları yok sayar
+444	Geri
+445	Evler sürüklenip gitti mi? Peki onlar nerede yaşayacak?
+446	Bölümden Vazgeç
+447	Mücadeleden Vazgeç
+448	Bu mücadeleden vazgeçilsin mi? Bilet iade edilmez ve hiçbir şey kazanamazsın.
+449	Uçan
+450	Uçar ve ara sıra yan şeride geçer.
+451	Uçar, rüzgarla savrulur: silahların normal fiziksel saldırılarının %35'i ıskalar. Büyü ve alan hasarı ıskalanmaz.
+452	Uçanlar Önce
+453	Uçan Balık
+454	Uçan Balığın zıplama mesafesi −%50
+455	Uçan Balık Fırtınası
+456	Uçan Balıklar ileri doğru büyük bir sıçrayış yapar ve havadayken vurulamaz. Göründüğünden hızlı koşarlar, Dondurma Alanı çok işe yarar!
+457	Uçan Balık Sıçraması
+458	Havada uçar, uzaktan surlara ateş topu fırlatır.
+459	Bölünme
+460	Fırtına Pelerini
+461	Fırtına Küresi
+462	Rüzgar Yürüyüşçüsü Botları

@@ -1,0 +1,463 @@
+1389	Rekomendasi
+1390	Peningkatan disarankan
+1391	Disarankan dibeli setelah menamatkan level {0}
+1392	Senjata rekomendasi: {0}
+1393	Senjata rekomendasi "{0}" levelnya rendah, tingkatkan dulu: {1} ({2})
+1394	Tenaga rekomendasi {0} · Tenagamu {1}
+1395	Keluar Game
+1396	Keluar dari game? Progres sudah tersimpan otomatis.
+1397	Selesaikan 20 misi level
+1398	Selesaikan semua misi level
+1399	Cara Bermain
+1400	Musuh Sejuta Monster
+1401	Mahkota Pengamat Bintang
+1402	Gema Segala Hal
+1403	Panorama
+1404	Mahkota
+1405	Kolektor Mahkota
+1406	Pakaian standar penjaga kerajaan. Helmnya agak kebesaran.
+1407	Kota Kerajaan
+1408	Penjaga tembok terkecil di kerajaan, dengan serangan stabil.
+1409	Penjaga tembok terkecil di kerajaan, yang menahan krisis terbesarnya.
+1410	Prototipe web {0} · {1} bab {2} level
+1411	Lensa Teleskop
+1412	Tembok Terancam
+1413	Prioritas Ancaman
+1414	Lebah Dengung
+1415	Lebah Dengung terbang melewati monster lain langsung ke tembok. Panah Beruntun memberi damage ekstra pada monster terbang.
+1416	Dengung dengung
+1417	Aku... aku akan menghisap Tinta itu kembali.
+1418	Semua layang-layangku kuterbangkan ke langit. Malam hari mereka seperti bintang.
+1419	Aku meninggalkan Tintaku sendiri di sini. Kalau aku tidak mau sendirian, ia menumbuhkan gema, makin banyak, makin besar.
+1420	Aku pindah ke dekat tembok, jadi tiap hari bisa melihat Kael berjaga.
+1421	Aku tidak percaya! Kutiup dulu kalian sampai jatuh!
+1422	Aku berjanji padamu.
+1423	Busurku berat dan lambat, tapi setiap panah mendorong monster mundur. Untuk gunung berapi, hitung aku.
+1424	Rumah baruku besar sekali. Silakan main!
+1425	Padang salju milikku hanya boleh tenang. Helmmu terlalu berisik.
+1426	Aku yang mendaftar! Nomor satu: Raja Bobo, delapan kaki, butuh cangkang yang besar sekali.
+1427	Kami menginjak jembatan pelangi naik ke langit. Awannya lembut, seperti menginjak marshmallow. Inky bersembunyi di balik helmku sepanjang jalan.
+1428	Kita bertahan!
+1429	Kami membangun "Kota Kerang" di tepi laut. Rumah Bobo paling besar, dan atapnya dibangun delapan kaki bersama-sama. Ternyata menjaga rumah juga bisa berarti membantu orang lain membangun rumah.
+1430	Kutraktir yang rasa stroberi!
+1431	Wah! ...Biar kuluruskan helmku dulu.
+1432	Aku Bebe, pengurus kerang di teluk! Cangkang sebesar ini harus didaftarkan dulu sebelum dibagikan!
+1433	Aku adalah Gema. Gema hanya bisa mengulang. Kerangka-kerangka, maju.
+1434	Aku datang untuk menjaga tembok. Kalau kamu sudah tidak rewel, kita bisa main bersama.
+1435	Aku belajar menggambar dengan Tinta! Ini kamu, ini aku.
+1436	Aku juga mau rumah! Glug! Tentakel, peluk erat-erat!
+1437	Aku melihat semua orang di cermin. Ternyata ramai itu tidak buruk juga.
+1438	Aku sedang berlatih guntur kecil. Dum. (Pelan sekali)
+1439	Aku membuka salon di kota. Tenang, aku hati-hati.
+1440	Aku cuma pernah dengar konser ketuk helm...
+1441	Awan gelap menghalangi pandangan: jangkauan −30%. Pangsit Petir baru terkena saat lebih dekat. Awas listrik statis!
+1442	Awan Gelap Pekat
+1443	Lorong Tanpa Lampu
+1444	Tidak Bisa Dipasang
+1445	Bengkel Tanpa Cahaya
+1446	Lautan Tanpa Cahaya
+1447	Mode Tanpa Akhir
+1448	Mode Tanpa Akhir: makin lama bertahan makin bagus! Perbekalan tiap 3 gelombang, Boss tiap 5 gelombang.
+1449	Capai gelombang 30 di Mode Tanpa Akhir
+1450	Rekor Tanpa Akhir
+1451	Tak ada yang bisa menghentikan!
+1452	Menembus zirah 40% → 70%, damage percikan 70% → 85%
+1453	Menembus {0}% zirah sasaran
+1454	Menembus 20% zirah sasaran
+1455	Menembus 25% zirah sasaran
+1456	Menembus 50% zirah sasaran (termasuk perisai).
+1457	Malam Tanpa Bulan
+1458	Senjata
+1459	Senjata: {0}
+1460	Senjata (dibuka permanen, damage +8% per level, +4% per level setelah level 10; makin tinggi kualitas makin kuat, mahal, dan mahal pula peningkatannya)
+1461	Damage Senjata
+1462	Kolektor Senjata
+1463	Fisik Diblokir
+1464	Damage fisik +{0}% lebih efektif terhadap arwah
+1465	Efek damage fisik pada arwah 30% → 70%
+1466	{0} damage fisik diblokir zirah, perisai kayu, atau arwah: coba tongkat sihir, bumerang, atau "Tembus".
+1467	Kabutnya tebal, tidak kelihatan apa-apa...
+1468	Mata di Dalam Kabut
+1469	Kelelawar Penghisap Darah
+1470	Hihi, aku menambahkan sedikit madu ke dalam sup.
+1471	Hihihi, satu sendok Tinta hitam lagi, dan supku selesai!
+1472	Lain kali sebelum angin kencang bertiup, aku akan menyapa dulu.
+1473	10 detik setelah gelombang berikutnya mulai, membekukan semua monster 4 detik (Boss 1,5 detik)
+1474	8 detik setelah gelombang berikutnya mulai, memberi damage sihir ATK ×6 pada semua monster
+1475	Level Berikut ›
+1476	Musim panas tiba, dan aku orang paling populer di kota.
+1477	Bola Kaktus
+1478	Bola Kaktus meledak saat menggelinding ke tembok! Kalahkan dari jauh.
+1479	Tamatkan level {0} dulu
+1480	Barang habis pakai (dipakai saat bertarung, sekali pakai berkurang satu; bawa maksimal {0} jenis, maksimal {1} tiap jenis; tiap jenis punya jeda setelah dipakai)
+1481	Barang habis pakai (maksimal {0} jenis, maksimal {1} tiap jenis; sekali pakai berkurang satu, tiap jenis ada jeda)
+1482	Slot Habis Pakai
+1483	Boss Kecil
+1484	Boss kecil. Terus memanggil hantu kecil, dan bangkit lagi setelah kalah pertama kali!
+1485	Boss kecil. Raksasa batu berkepala kincir angin: menerbangkan layangan dan membuat angin kencang yang meniup monster ke tembok. Pusatkan tembakan untuk menghentikannya saat ada peringatan!
+1486	Boss kecil. Menghentak untuk memingsankan pahlawan, dan meledak saat dikalahkan. Jangan biarkan dekat tembok!
+1487	Boss kecil. Menggali tanah untuk berpindah jalur menyergap, lalu menjepit keras dengan capit besar di tembok.
+1488	Boss kecil. Kerang mutiara raksasa: hampir tak bisa dipecahkan saat tertutup, tapi memperlihatkan mutiara saat terbuka. Gunakan skill saat cangkang terbuka!
+1489	Boss kecil. Tornado dan dorongan, lebih ganas dari sebelumnya.
+1490	Boss kecil. Sesekali membekukan satu slot skill pahlawan.
+1491	Boss kecil. Bergerak seperti Tuan Tulang: memanggil kerangka dan memasang perisai sihir, tapi lebih tangguh.
+1492	Boss kecil. Bergerak seperti Batu, dengan HP dua kali lipat.
+1493	Boss kecil. Memecah jeli kecil setiap HP turun 15%, dan terbelah sekali lagi saat mati.
+1494	Naga Es Kecil
+1495	Naga Es Kecil datang! Udara dan darat menyerang bersamaan!
+1496	Jeli Kecil
+1497	Pendeta Kecil
+1498	Pendeta Kecil bersembunyi di barisan belakang untuk memulihkan monster. Sambaran Petir dan ledakan tongkat sihir bisa mengenai mereka juga.
+1499	Brankas Kecil
+1500	Labu Kecil
+1501	Linggis Kecil
+1502	Jam Pasir Kecil
+1503	Petir Kecil
+1504	Bola Salju Kecil
+1505	Hantu Kecil
+1506	Hantu Kecil hampir tidak takut serangan fisik
+1507	Hantu Kecil hampir tidak takut serangan fisik. Tongkat sihir, bola petir, Sambaran Petir, dan Bakar adalah lawan mereka!
+1508	Bom Kecil
+1509	Tetangga Kota
+1510	Master Sinergi
+1511	Sepatu
+1512	Gagal menulis data simpanan
+1513	Lepas
+1514	Lepas −1
+1515	Terima kasih sudah tidak membenciku saat aku marah.
+1516	Terima kasih sudah datang sejauh ini.
+1517	Terima kasih sudah menjaga kerajaan!
+1518	Baru
+1519	Musuh baru muncul!
+1520	Rekor baru! Gelombang {0} → {1}
+1521	Ledakan Bintang
+1522	Penyihir Bintang
+1523	Tongkat Bintang
+1524	Zirah Bintang
+1525	Mahkota Bintang
+1526	Jubah Cahaya Bintang
+1527	Berkelap-kelip
+1528	Tabung Panah Jejak Bintang
+1529	Galaksi Gemerlap
+1530	Bintang
+1531	Sepatu Bintang Keberuntungan
+1532	Sepatu Pedagang Keliling
+1533	Keberuntungan
+1534	Keberuntungan +{0}%
+1535	Keberuntungan +15%
+1536	Jimat Keberuntungan
+1537	Bonus Keberuntungan
+1538	Sepatu Beruntung
+1539	Koin Keberuntungan
+1540	Pengingat Istirahat
+1541	Istirahat Sebentar
+1542	Paket Perbaikan
+1543	Zirah Biksu
+1544	Perbaikan
+1545	Kura-kura Perisai Hampa
+1546	Lingkaran pelindung Kura-kura Perisai Hampa lebih besar, habisi dulu. Duri bulu babi juga lebih sakit.
+1547	Formasi Perisai Hampa
+1548	Ikan Terbang Hampa
+1549	Ikan Terbang Hampa melompat lebih jauh dan tak bisa diserang di udara.
+1550	Layangan Hampa
+1551	Bulu Babi Hampa
+1552	Pangsit Petir Hampa
+1553	Sengatan Pangsit Petir Hampa lebih luas. Kalahkan dari jauh.
+1554	Di dalam Hampa tak ada angin, tapi layangan melayang dan domba mengembik. Semua yang akrab ada di sini, hanya semuanya berubah ungu.
+1555	Burung Hampa
+1556	Balon Hampa
+1557	Wilayah Langit Hampa
+1558	Kepiting Hampa
+1559	Domba Hampa
+1560	Wol Domba Hampa lebih tebal, dan Layangan Hampa menghindari setengah serangan fisik.
+1561	Butuh {0} (tukar dulu koin perak jadi koin emas di penukaran toko)
+1562	Butuh {0} (tukar dulu koin perak jadi koin emas di penukaran toko).
+1563	Monster di jalur terpilih dan jalur sebelahnya menerima damage ATK ×7.
+1564	Pilih satu jalur. Monster di dalamnya diperlambat 60% selama 6 detik.
+1565	Pilih satu kartu perbekalan (berlaku di level ini) · Perbekalan ke-{0}
+1566	Pilih
+1567	Pilih Perbekalan
+1568	Pilih Kesulitan
+1569	Pilih Bab
+1570	Pilih Perlengkapan
+1571	Ikat Rambut Murid
+1572	Jubah Murid
+1573	Longsor Salju
+1574	Yeti
+1575	Yeti tahan fisik, Golem Lava tahan sihir. Siapkan kedua jenis damage.
+1576	Yeti Berkeliaran
+1577	Yeti takut sihir, Golem Lava takut fisik, dan Kura-kura Perisai melindungi mereka. Habisi kura-kuranya dulu!
+1578	Bola Salju
+1579	Bola Salju pecah jadi dua bola salju kecil saat mati. Damage area membersihkannya lebih mudah.
+1580	Bola salju kecil sisa Bola Salju yang pecah.
+1581	Padang salju putih dan terang sekali. Pinguin meluncur di atas es, wus, dan sudah sampai di tembok.
+1582	Lari di Padang Salju
+1583	Pinguin di padang salju meluncur cepat, dan Yeti tebal serta keras. Kael, pakai baju lebih hangat.
+1584	Penjaga Padang Salju
+1585	Cincin Sumpah Darah
+1586	Topeng Mata Darah
+1587	Zirah Garis Darah
+1588	Jubah Gesit
+1589	Sepatu Tempur Gesit
+1590	Gumpalan Magma
+1591	Gumpalan Magma meninggalkan api saat mati, dan monster yang menginjaknya jadi lebih cepat. Kalahkan dari jauh.
+1592	Batu
+1593	Batu meledak! Jalur berubah jadi lava
+1594	Batu meledak saat dikalahkan! Kalahkan sebelum mendekati tembok. Ia tahan sihir, jadi bawa senjata fisik.
+1595	Gema Batu
+1596	Gema Batu: menghentak dan menghancurkan batu. Bergerak seperti Batu dengan HP dua kali lipat.
+1597	Gema Batu hancur jadi tumpukan kerikil. Atlas menumpuknya di kaki tembok.
+1598	Batu adalah penjaga gerbang retakan. Katanya makhluk kecil di dalam tak pernah punya teman.
+1599	Batu meledak di dekat tembok!
+1600	Terbang di sepanjang jalur lalu kembali, mengenai tiap monster sekali pergi dan sekali pulang. Pukulan kembali mengenai dari belakang dan menembus perisai.
+1601	Wol
+1602	Wol lebih tebal: menyerap 70% HP dalam bentuk wol sebelum HP mulai berkurang.
+1603	Gunting Wol
+1604	Pendekar Menara
+1605	Raja iblis {0}% · Kekuatan ×{1}
+1606	Akan menghentak!
+1607	Angin kencang akan datang!
+1608	Mau kubantu menyusun dirimu lagi?
+1609	Kamu juga bisa pindah ke kesulitan Mudah di Pengaturan
+1610	Di malam hari kastil tua bercahaya biru rembulan. Bola Bayangan Bulan yang jatuh dari retakan ternyata masih ingat cara menggigit tembok.
+1611	Jangkauan −30% di malam hari. Kelelawar Penghisap Darah sering pindah jalur, dan Pembunuh Bayangan muncul tiba-tiba.
+1612	Jangkauan −30% di malam hari. Ikan Terbang sudah di depan mata dalam sekali lompat, dan Pembunuh Bayangan muncul tiba-tiba!
+1613	Jangkauan −30% di malam hari. Duri bulu babi melukai kawan sendiri, jadi tunggu mereka berkumpul.
+1614	Jangkauan −30% di malam hari. Imp Bara berdiam jauh dan melempar bola api. Jangan biarkan mereka menggerogoti tembok pelan-pelan.
+1615	Jangkauan −30% di malam hari. Arwah Dendam hanya menerima 15% damage fisik. Mantra dan pembakaran paling ampuh.
+1616	Jangkauan −30% di malam hari. Kereta dan serigala menyerbu keluar dari kegelapan, sampai di tembok dalam sekejap.
+1617	Helm Burung Hantu
+1618	Pertempuran Malam
+1619	Seratus level, seratus penjagaan. Inky sudah kembali dan retakan tertutup. Tembok masih tembok yang sama, tapi rumah di baliknya tumbuh begitu besar. (The Last Bastion, tamat)
+1620	Setengah serangan fisik melayang melewatinya.
+1621	Setelah satu gelombang muncul penuh, ketuk "Panggil Lebih Awal" untuk langsung memanggil gelombang berikut. Sisa detik hitung mundur berubah jadi hadiah koin tembaga.
+1622	Melempar dua bumerang sekaligus (jalur ini + jalur sebelah). Kena memperlambat sasaran 40%.
+1623	Menembak 3 sekaligus, damage +50% terhadap monster terbang
+1624	Menembakkan 3 panah api sekaligus, masing-masing membakar sasaran, damage +50% terhadap monster terbang.
+1625	Menembakkan 3 panah sekaligus ke 3 sasaran berbeda, damage +50% terhadap monster terbang. Lebih lemah jika sasaran sedikit.
+1626	Menembakkan 5 panah sekaligus, damage +60% terhadap monster terbang, menembus 20% zirah.
+1627	Pasti ini jalan terakhir. Jaga tembok. Kali ini, demi semua gema.
+1628	Satu Dua Tiga Empat Lima Enam Tujuh Delapan Sembilan Sepuluh
+1629	Pasang Rekomendasi Otomatis
+1630	Sepasang sepatu bagus: cepat berlari, mantap berdiri.
+1631	Melompat lebih jauh.
+1632	Zirah Tabib
+1633	Perlengkapan rekomendasi untuk level ini sudah dipasang:
+1634	Batas Tercapai
+1635	Dibaca {0} / {1}
+1636	Disalin ke papan klip
+1637	Diganti ke "{0}", Kael maju bertarung
+1638	Sudah menjaga tembok {0} menit!
+1639	Level Maks
+1640	Dipilih:
+1641	Dimiliki
+1642	Sudah menang di kesulitan Tantangan
+1643	Terpasang
+1644	Terpasang {0} · Tas {1}
+1645	Sampel musik: soundfont FluidR3_GM (Frank Wen), CC BY 3.0, melalui gleitz/midi-js-soundfonts
+1646	Volume Musik
+1647	Efek Suara
+1648	Volume Efek
+1649	Perak
+1650	Koin Perak
+1651	Tingkat perak · Tepat sasaran
+1652	Koin perak untuk membuka skill dan perlengkapan bagus.
+1653	Mahkota Perak
+1654	Tabung Panah Penuntun Jiwa
+1655	Siluman
+1656	Pahlawan
+1657	Pahlawan tidak bisa tersetrum atau pingsan
+1658	ATK pahlawan +25% selama 8 detik.
+1659	Pengurangan kecepatan serang pada pahlawan −60%
+1660	Liontin Mata Elang
+1661	Jubah Sayap Elang
+1662	Liontin Bulu Elang
+1663	Topi Bulu Elang
+1664	Mata Elang
+1665	Kunang-kunang
+1666	Masker Bilah Bayangan
+1667	Pisau di Dalam Bayangan
+1668	Miliki semua 6 senjata
+1669	Tak Pernah Runtuh
+1670	Tabung Panah Es Abadi
+1671	Benteng Abadi
+1672	Jubah Abadi
+1673	Jam Pasir Abadi
+1674	Hati Sang Pemberani
+1675	Tabung Panah Hantu
+1676	Desain Game · Pemrograman · Seni · Suara
+1677	Sepatu Penjelajah
+1678	Jadi begini rasanya punya rumah, hangat dan nyaman.
+1679	Pengabul Permintaan
+1680	Ada yang tinggal di sini? Kalau begitu harus didaftar! Klap! (menutup cangkang)
+1681	Tebal dan keras. Pulih pelan-pelan jika 2 detik tidak dipukul. Pusatkan tembakan untuk menghabisinya sekaligus.
+1682	Jubah Bara
+1683	Jaring Ikan
+1684	Temui 30 jenis monster
+1685	Monster yang Ditemui
+1686	Temui semua monster
+1687	Jubah Penyembuh
+1688	Senjata Purba
+1689	Bala Bantuan
+1690	Semangat bala bantuan: percobaan berikut di level ini, ATK dan tembok +{0}%
+1691	Jarak Jauh
+1692	Jarak jauh: berdiam jauh dan menyemburkan racun ke tembok, meracuni tembok terus-menerus.
+1693	Siluman dan tak bisa diserang dari jauh. Juga diam-diam berpindah jalur dan baru muncul dekat tembok.
+1694	Helm Penglihatan Jauh
+1695	Mata Jauh
+1696	Arwah Dendam
+1697	Tabung Panah Cahaya Bulan
+1698	Kunjungan Pertama di Bawah Bulan
+1699	Angin Kencang Malam Bulan
+1700	Kastil Bayangan Bulan
+1701	Penjaga Bayangan Bulan
+1702	Kelinci Bayangan Bulan
+1703	Kelinci Bayangan Bulan dan Kelelawar Penghisap Darah sama-sama berkelebat, jadi jangan berharap bisa terus memukul yang sama.
+1704	Bola Bayangan Bulan
+1705	Bola Bayangan Bulan pulih sendiri saat tidak dipukul. Jangan beri mereka kesempatan bernapas.
+1706	Baca
+1707	Penjaga Awan
+1708	Kerajaan Awan
+1709	Domba Awan
+1710	Wol Domba Awan −60%
+1711	Domba Awan harus dicukur dulu, dan setelah gundul larinya cepat sekali. Habisi sekali serang!
+1712	Jubah Burung Lark
+1713	Hujan Meteor
+1714	Meriam Meteor
+1715	Coba Lagi
+1716	Regenerasi
+1717	Main Sebentar Lagi
+1718	Menangkan 10 level di kesulitan Tantangan (dapat 10 mahkota)
+1719	Ambil di sini
+1720	Jeda
+1721	Kedipkan mata, lihat ke kejauhan, dan minum air. Kakek Raja akan menjaga tembok sebentar.
+1722	Helm Pemenggal Naga
+1723	Medan kini punya 4 jalur. Serangan area dan skill seluruh medan makin penting.
+1724	Serbuan Kereta
+1725	Banjir Kereta
+1726	Rumah Sakit Lapangan
+1727	Pertempuran
+1728	Bertarung {0} kali · Menang {1} kali · Dikalahkan {2} · Dihentikan {3} kali · Panggil awal {4} kali
+1729	Bertarung {0} kali · Menang {1} kali · Monster dikalahkan {2}
+1730	Jumlah Pertempuran
+1731	Aktif otomatis saat pertempuran dimulai: koin tembaga level ini +30%.
+1732	Pengaturan Pertempuran
+1733	Pertempuran dijeda. Pilih satu kartu perbekalan, efeknya bertahan sampai level berakhir (warna dari rendah ke tinggi: biru, ungu, merah, emas; makin tinggi makin kuat). Bisa juga tekan 1 / 2 / 3.
+1734	Saat bertarung, ketuk tombol skill (atau tekan 1 / 2 / 3) untuk memakai skill aktif, dan tekan Q / W / E / R / Z / X / C untuk memakai item (bawa maksimal 3 tiap jenis, sekali pakai berkurang satu, ada jeda setelah dipakai; beli item di toko dulu, lalu pasang).
+1735	Genderang Perang
+1736	Genderang Perang Menggelegar
+1737	Hujan Panah yang dilepas saat Genderang Perang aktif: jumlah panah +30%
+1738	Samurai Zaman Perang
+1739	Setelah Bertarung
+1740	Tenaga
+1741	Panji Perang
+1742	Sebelum Bertarung
+1743	Persiapan · Level {0}
+1744	Helm Prajurit
+1745	Terbuka! Cepat serang!
+1746	Terbuka! Serang {0} dtk
+1747	Bab
+1748	Antrean panjang, goblin perisai kayu
+1749	Bintang di jubahnya berkelip sendiri, dan topinya lebih tinggi dari pemakainya.
+1750	Liontin Pemanggil Harta
+1751	Rawa penuh kabut dan katak beracun yang berkoak. Untuk pertama kalinya, tembok terasa sedikit dingin.
+1752	Hantu Kecil di rawa hampir tidak takut serangan fisik, dan katak beracun menyemburkan racun dari jauh. Ingat pakai "Prioritas Ancaman" untuk menyerang mereka dulu!
+1753	Gadis berlentera kunang-kunang di rawa. ATK ×0,92, kecepatan serang ×1,05; jangkauan tidak berkurang di malam hari, damage fisik +20% terhadap arwah; setiap serangan ke-12 melepas 3 kunang-kunang (masing-masing damage sihir ATK ×0,6).
+1754	Penjaga Rawa
+1755	Suar
+1756	Ini bukan cangkang, ini tembok! Banyak orang tinggal di dalamnya!
+1757	Kali ini aku tidak akan menurunkan hujan. ...Sedikit saja, untuk memandikan rumah baru.
+1758	Kedengarannya persis seperti dulu.
+1759	Ini bagian terdalam retakan, tempat langit dan tanah pun sulit dibedakan.
+1760	Item ini sudah habis
+1761	Anak-anak di kota memanggilku Nenek Sup, dan aku suka sekali.
+1762	Penjaga Menara
+1763	Meriam Pengguncang Tanah
+1764	Pengrajin Uap
+1765	Level ini malam sepanjang waktu: jangkauan −30%
+1766	Kamu bisa mengubahnya kapan saja di Pengaturan nanti.
+1767	Setelah itu, 6 detik setelah tiap gelombang mulai, api turun dari langit, memberi damage sihir ATK ×4 pada semua monster
+1768	Mengerti
+1769	Mengerti (Spasi)
+1770	Hanya boleh memakai Busur Kayu
+1771	Begitu jalur memerah, aku akan memusatkan tembakan untuk menghentikan serbuanmu!
+1772	Panggil lebih awal minimal 3 kali, dan menangkan level
+1773	Sembuhkan
+1774	Menyembuhkan lebih banyak burung terbang.
+1775	Zirah Penyembuh
+1776	Taring Kehancuran
+1777	Mata Kehancuran
+1778	Bom Berat
+1779	Mengulang: hadiah koin tembaga berkurang setengah
+1780	Zirah Berat
+1781	Monster zirah berat, monster bergerombol, Boss
+1782	Monster zirah berat, Boss
+1783	Serbuan Zirah Berat
+1784	Serbuan Zirah Berat! Tongkat sihir, meriam, dan "Tembus" adalah kunci di level ini.
+1785	Serbuan Zirah Berat! Yeti punya zirah fisik tinggi. Sihir, meriam, dan "Tembus" adalah kuncinya.
+1786	Panah Berat · Pemecah Zirah
+1787	Tonton Ulang
+1788	Mulai Ulang
+1789	Zirah merah menyala, bulan sabit bercahaya di helm, dan bendera kecil terpasang di punggung.
+1790	Skill Aktif
+1791	Skill Aktif (ketuk untuk memakai saat bertarung)
+1792	Slot Skill Aktif
+1793	Jeda skill aktif −{0}%
+1794	Jeda skill aktif −15%
+1795	Jeda skill aktif −20% dan langsung mereset semua jeda
+1796	Jeda skill aktif −40% dan langsung mereset semua jeda
+1797	Jeda skill aktif −5%
+1798	Jeda skill aktif −8%, tembus zirah +10%
+1799	Waktunya sup! {0} monster diperkuat
+1800	Sekutu Tempur
+1801	Perlengkapan
+1802	Pakai +1
+1803	Sepatu Pengejar Bintang
+1804	Bersiap... {0}
+1805	Bakar
+1806	Ungu
+1807	Bom Bunuh Diri
+1808	Otomatis (aktif di ponsel)
+1809	Otomatis: Mati
+1810	Otomatis: Nyala
+1811	Di tengah jalan masuk ke bawah tanah (tak bisa diserang), dan baru muncul dekat tembok.
+1812	Bor
+1813	Menggali
+1814	Berlian
+1815	Berlian (hanya didapat di Menara Iblis Sembilan Lantai)
+1816	Tabung Panah Bor
+1817	Maks
+1818	Tertinggi lantai {0} · Total {1} berlian
+1819	Rekor tertinggi: lantai {0} · berlian {1}
+1820	Kombo Tertinggi
+1821	Kombo tertinggi {0}
+1822	The Last Bastion
+1823	Gelombang terakhir!
+1824	Monster kecil paling dasar, lamban.
+1825	Terdekat Dulu
+1826	Terkuat Dulu
+1827	Terlemah Dulu
+1828	Mata uang paling langka, hanya didapat di "Menara Iblis Sembilan Lantai" dan tidak bisa ditukar. Bisa membeli perlengkapan emas di halaman Perlengkapan (kecuali yang pertama tiap jenis, semuanya hanya bisa dibeli dengan berlian, termurah 10 berlian) dan peningkatan di level yang sangat tinggi (ribuan level ke atas).
+1829	Boss terakhir. Tinta, klon, pandangan terhalang: sumber Retakan Kekacauan.
+1830	Boss terakhir. Gumpalan kecil berwarna tinta yang terus membesar: memanggil bayangan tinta, klon, wujud Raja Iblis, dan amukan retakan.
+1831	Pertarungan terakhir! Inky punya empat fase: bersihkan anak buah, serang klon, hentikan pukulan berat, kalahkan dalam batas waktu.
+1832	Tulang ketiga dari kiri terpasang terbalik lagi, tapi tidak apa-apa.
+1833	Skill Boss
+1834	Penakluk Boss
+1835	Prioritas Boss
+1836	Claude (bersamamu)
+1837	Kael, Inky, ayo pulang makan malam! Hari ini kerajaan mengadakan pesta kemenangan untuk kalian!
+1838	Kael, boleh pinjam helmmu buat trampolin?
+1839	Kael, ini jalan terakhir. Seluruh kerajaan ada di balik tembok menyemangatimu.
+1840	Kael, Lyra, ada masalah. Di malam hari di Kota Kerang, langit terbelah jadi celah ungu, dan yang jatuh dari dalamnya... monster yang pernah kita kalahkan.
+1841	Kael, Lyra, ada surat dari tepi laut! Hujan deras tiga hari dari Gelegar membuat air laut pasang dan menghanyutkan rumah-rumah penghuni teluk.
+1842	Kael! Banyak monster lengket muncul di padang rumput dan menuju tembok!
+1843	Adik perempuan Kael. ATK ×0,82, kecepatan serang ×1,2; setiap serangan ke-10 membunyikan lonceng, memingsankan monster kecil di sekitar sasaran 0,5 detik.
+1844	Helm Kael masih berbunyi. ...Aku sudah terbiasa.
+1845	Kael menyerang otomatis. Bola Hijau mulai menggigit tembok begitu sampai di depannya!
+1846	Kael berlari menghampiri dan mengangkatnya. Helmnya berbunyi "dang".
+1847	Kael menembak otomatis dari atas tembok, dan monster datang dari kanan lewat jalur. Kamu kalah jika HP tembok mencapai nol.
+1848	Lv{0} · Jeda {1} dtk
+1849	Lv{0} membuka keahlian
+1850	Lv{0} bisa naik tingkat
+1851	Lyra? ...Baiklah, kita bergantian berjaga.

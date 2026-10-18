@@ -1,0 +1,463 @@
+0	, có thể đeo cùng lúc 3 món
+1	: đã thua liên tiếp {0} lần, lần này đòn tấn công và máu tường thành được tăng, qua màn sẽ xóa
+2	...Gió đã ngừng. Phía trước chính là nguồn gốc của Mực.
+3	...Anh ơi. Chị ơi. Cuối cùng hai người cũng đến rồi.
+4	...Ầm. Đánh không nổi nữa.
+5	...Ầm. Em xin lỗi, chính em đã làm mưa rơi.
+6	...Tiếng bước chân đã dừng.
+7	...Hôm nay cũng yên tĩnh. Tốt lắm.
+8	...Gương vỡ rồi, cuối cùng em cũng nhìn rõ. Mực tuôn ra từ khe nứt của ngọn núi lửa phía nam.
+9	...Nhưng em không dừng lại được. Xin hai người, hãy đánh bại hết bọn chúng nhé?
+10	...Khe nứt đã khép lại. Yên tĩnh rồi.
+11	...Có mùi Mực.
+12	...Cái vỏ đó, không phải là tường thành của chúng ta chứ?
+13	...Cậu thật sự không ghét tớ sao?
+14	...Cây trong rừng bảo với tôi có một lính gác nhỏ đã giữ vững đến tận đây. Tôi là Rowan, người giữ rừng.
+15	...Tôi nhớ cậu. Tôi nhớ bức tường này. Nhưng tôi không nhớ vì sao mình lại đến.
+16	...Cảm ơn. Lặp đi lặp lại... mệt quá.
+17	...Cảm ơn mọi người đã thổi tan sương mù. Tôi là Nova, luôn xách đèn lồng dẫn đường cho các con vật nhỏ lạc lối trong đầm lầy.
+18	...Có bạn bè thật là tuyệt.
+19	...Lại đến đánh tôi nữa. Ai cũng chỉ biết đánh tôi.
+20	...Thật đấy. Đẹp quá. Lúc nãy tôi có dữ quá không?
+21	...Kael, nhìn lên trời kìa. Chút Mực cuối cùng tôi tung ra đã bay lên cầu vồng rồi.
+22	· Đang tiếp tế
+23	· Kỷ lục
+24	· Đợt sau {0} giây
+25	‹ Tiêu đề
+26	‹ Quay lại
+27	(Sau Lv30, mỗi cấp +{0}% máu Lv30)
+28	(Vượt giới hạn gốc, mỗi cấp lợi ích giảm dần)
+29	(Đã mở hết ô)
+30	(Xóa)
+31	(Qua màn {0} để mở thêm một ô)
+32	(Tháo {0}, {1} món trả về túi)
+33	(Tháo)
+34	(Đã vượt giới hạn gốc Lv{0}, mỗi cấp lợi ích giảm dần, chi phí ngày càng cao)
+35	(Đã đủ bộ)
+36	(Đã mang đủ)
+37	(Đã đạt tối đa)
+38	(Đang ở ô khác, sẽ được hoán đổi)
+39	(Ở mục "Anh hùng" trong trang Phối đồ, bạn có thể cho Atlas ra trận: anh ấy giúp tường thành vững chắc hơn.)
+40	(Ở mục "Anh hùng" trong trang Phối đồ, bạn có thể cho Lyra ra trận.)
+41	(Nova đã gia nhập! Ở màn ban đêm tầm bắn của cô ấy không bị ngắn đi.)
+42	(Rowan đã gia nhập! Mũi tên nặng của anh ấy xuyên giáp.)
+43	{0}\nHồi chiêu {1} giây, mang theo {2}
+44	{0} đợt
+45	{0} đợt (gồm Boss)
+46	{0} phút {1} giây
+47	Bộ {0} "{1}": {2} → {3}{4}
+48	{0} ngày
+49	{0} đồng → 1
+50	Phối hợp {0} "{1}": {2}{3}
+51	Máu {0} {1} →
+52	{0} yêu vương + {1} tiểu yêu
+53	{0} bạc → 1
+54	{0} loại
+55	{0}; từ Lv3 trở đi, mỗi cấp tăng thêm sát thương / số tên / hồi phục / thời gian hiệu lực và giảm thêm hồi chiêu
+56	{0}: sức mạnh +{1}% ({2})
+57	{0} (đã có {1} / {2}{3})
+58	Chỉ số {0}
+59	Phẩm chất màu {0}
+60	/giây
+61	⏩ Tốc độ x2
+62	⏭ Tốc độ x3
+63	▶ Tốc độ x1
+64	★ Tinh thông
+65	♾ Chế độ Vô tận
+66	♾ Chế độ Vô tận {0}
+67	⚠ Boss xuất hiện!
+68	✔ Đang dùng
+69	✔ Đã hoàn thành
+70	✔ Đã có
+71	✦ Đã tiến cấp
+72	✨ Bộ "{0}": {1}
+73	🎯 Nhiệm vụ màn: {0}
+74	🎯 Hoàn thành nhiệm vụ màn "{0}": +{1} bạc
+75	🎺 Viện binh cổ vũ +{0}%
+76	🏆 Thành tựu
+77	🏆 Đạt thành tựu "{0}": {1} (+{2})
+78	🏆 Đạt thành tựu "{0}" +{1}
+79	🏘 Thị trấn Vương quốc
+80	🏯 Tháp Yêu Chín Tầng
+81	🏯 Tháp Yêu Chín Tầng {0}
+82	👉 Nâng cấp "Tấn công" để Kael diệt quái nhanh hơn!
+83	👑 Lần đầu qua màn ở độ khó Thử thách: nhận vương miện
+84	👑 Qua màn ở độ khó Thử thách để nhận vương miện
+85	👑 Đã qua màn ở độ khó Thử thách
+86	👕 Tủ đồ nhân vật
+87	📅 Thử thách hằng ngày
+88	📅 Thử thách hằng ngày · {0}
+89	📅 Thử thách hằng ngày ✔
+90	📊 Báo cáo trận đấu
+91	📔 Nhật ký giữ thành của Kael
+92	📜 Hồ sơ giữ thành
+93	📦 Tiếp tế màn này:
+94	📦 Hòm tiếp tế đã đến!
+95	Liên hoàn 10 đòn!
+96	12 thiên thạch rơi xuống những con quái ngẫu nhiên trên chiến trường, mỗi viên gây sát thương ×8 sức tấn công, quái trong phạm vi 110 pixel xung quanh chịu 60%.
+97	16 mũi tên × sức tấn công 1.6
+98	Trong 2 giây bắn xuống 16 mũi tên, mỗi mũi trúng ngẫu nhiên một con quái trong tầm, gây sát thương ×1.6 sức tấn công, xuyên khiên.
+99	20 mũi tên × 1.7
+100	24 mũi tên × 1.8, quái trúng đòn bị thiêu cháy
+101	3 mũi tên có thể đánh trúng nhiều xúc tu cùng lúc; Cung gỗ và Pháo đã nâng tối đa cũng rất hợp để đánh Bobo
+102	Mở cả 5 làn! Dơi sẽ bay loạn giữa các làn.
+103	Hắt xì! Mũ giáp đóng băng hết rồi.
+104	Ối chao... hóa ra tôi nấu là Mực chứ không phải canh. Bảo sao chẳng ngon chút nào.
+105	Phần thưởng an ủi
+106	Ban đêm
+107	Ban đêm · Linh thể
+108	Màn ban đêm: nhìn không xa, tầm bắn giảm 30%. "Pháo sáng" và "Viễn kính" trong tiếp tế rất hữu ích.
+109	Hiện mắt quái vật vào ban đêm (mặc định tắt, tối đen)
+110	Sát thủ Bóng đêm
+111	Sát thủ Bóng đêm sẽ lộ diện ở xa hơn nhiều (x < 800)
+112	Sát thủ Bóng đêm ẩn thân ở xa, lại gần mới lộ diện. "Kính soi" trong tiếp tế giúp chúng lộ hình sớm hơn.
+113	Nhẫn giả Bóng đêm
+114	Ma lực dâng trào
+115	Bán "{0}" không? Giá bán {1} (một nửa giá mua). Sau này muốn có thể mua lại với giá gốc.
+116	Dán đoạn văn bản lưu game đã xuất vào đây
+117	Hãy sao chép và giữ kỹ đoạn văn bản bên dưới. Khi đổi thiết bị hoặc xóa dữ liệu trình duyệt, dùng "Nhập dữ liệu" dán lại là khôi phục được tiến trình.
+118	Trảm Bách Quái
+119	Bách Quỷ Dạ Hành
+120	Giáp tấm
+121	Bào tử
+122	Ống tên băng mỏng
+123	Vòng bảo vệ lớn hơn, giảm sát thương nhiều hơn, hãy phá nó trước.
+124	Giáp Pháo đài
+125	Lính gác Pháo đài
+126	Bão tuyết! Tốc độ đánh giảm
+127	Cuộn giấy Bão tuyết
+128	Bão đến rồi! Tất cả quái vật nhanh hơn!
+129	Chí mạng
+130	Ống tên chí mạng
+131	Tỉ lệ chí mạng
+132	Tỉ lệ chí mạng +{0}%
+133	Tỉ lệ chí mạng +10%.
+134	Tỉ lệ chí mạng +3%
+135	Tỉ lệ chí mạng +3%; sát thương vật lý lên linh thể +25%
+136	Tỉ lệ chí mạng +4%; giảm một nửa phạt tầm bắn ở màn ban đêm
+137	Tỉ lệ chí mạng +8%
+138	Sát thương chí mạng
+139	Sát thương chí mạng +{0}%
+140	Sát thương chí mạng +10%
+141	Sát thương chí mạng +15%
+142	Sát thương chí mạng +25%
+143	Sát thương chí mạng +30%
+144	Vương miện Bạo chúa
+145	Vụ nổ hất lùi quái nhỏ trong phạm vi 60 pixel và làm chậm 40% (1.5 giây); sát thương lên Boss và xúc tu +50%
+146	Bán kính nổ 60 → 85, sát thương lan 60% → 75%
+147	Sói Bắc Cực
+148	Sói Bắc Cực lao tới theo đàn ba con. Vùng Đóng băng có thể giữ chân cả đàn sói cùng lúc.
+149	Viking Bắc Cảnh
+150	Bebe
+151	Bebe ghi từng chiếc vỏ sò vào cuốn sổ nhỏ. Bạn ấy nói tường thành là cái "vỏ" lớn nhất bạn ấy từng thấy, tiếc là không thể chia cho ai.
+152	Khi khép vỏ Bebe gần như đánh không nổi, khi mở vỏ sẽ nhả ngọc trai, nhưng cũng sợ đau nhất. Hãy tung Sấm Sét và Mưa Tên lúc vỏ mở!
+153	Bebe cuống lên: vỏ mở đóng nhanh hơn rồi!
+154	Bùa Vỏ sò
+155	Túi đồ
+156	Túi đồ {0}
+157	Túi đồ chưa có vật phẩm nào, hãy sang trang "Vật phẩm" để mua.
+158	Túi đồ không có vật phẩm này
+159	Túi đồ trống, hãy sang trang "Vật phẩm" để mua.
+160	Nhạc nền
+161	Huy hiệu Tử thủ
+162	Huân chương Tử thủ
+163	Ống tên đeo sau lưng.
+164	Khi bị hạ sẽ bắn gai làm bị thương quái xung quanh. Chờ nó chen vào đám quái rồi hẵng đánh! Đến tường thành nó cũng sẽ đâm một cái trước.
+165	Bị điện giật tê rần!
+166	Kỹ năng bị động
+167	Kỹ năng bị động (tự động kích hoạt)
+168	Ô kỹ năng bị động
+169	Sát thương bị giáp / kháng phép chặn
+170	Cục xanh bị ánh trăng ăn mòn: máu cao, khi không bị đánh sẽ tự hồi máu.
+171	Bị choáng rồi!
+172	Bánh quy của Pharaoh này... chưa nướng xong đâu!
+173	Pharaoh này ngủ ba nghìn năm mà bị đánh thức! Ai làm ồn đấy?!
+174	Pharaoh này đang nghiên cứu vị bánh quy mới. Lần này chỉ nướng ba trăm năm thôi.
+175	Lần đầu tường thành bị hạ trong màn này, lập tức hồi sinh với 60% máu tối đa (chỉ một lần)
+176	Thu nhập xu đồng màn này +{0}%
+177	Thu nhập xu đồng màn này +10%
+178	Thu nhập xu đồng màn này +30%
+179	Thu nhập xu đồng màn này +60%, và nhận ngay một khoản xu đồng
+180	Lâu đài của Nữ hoàng này... sao nóng thế? Ai nhóm lò vậy?
+181	Bản thể lộ diện! Sát thương +50%
+182	Hoàng tử này mở tiệm bạt nhún ngoài quảng trường, lần đầu miễn phí!
+183	Vương miện chương này (qua màn ở độ khó Thử thách)
+184	Xác ướp Băng gạc
+185	Cuộn băng gạc
+186	Cuộn băng gạc, khiên, đám quái nhỏ đông đúc
+187	Cuộn băng gạc không sợ đòn vật lý. Hãy dùng bạc mở khóa "Gậy phép" ở cửa hàng, hoặc mang theo Sấm Sét và Thiêu Đốt!
+188	Băng gạc đã giặt sạch, thơm phức.
+189	Giáp Thành lũy
+190	Cột thu lôi
+191	Cột thu lôi!
+192	Dơi
+193	Hang Dơi
+194	Bầy Dơi tập kích
+195	Tiêu chuẩn
+196	Đừng sợ, chúng chỉ đang cáu kỉnh vì thứ mực đen kỳ lạ thôi. Giữ vững tường thành là bảo vệ mọi người.
+197	Đóng băng, Bão tuyết, Tường băng: Nữ hoàng Sương Sương còn lạnh hơn xưa.
+198	Vùng Đóng băng
+199	Vùng Đóng băng, Bom nhỏ và Bình Đóng băng cần chọn làn: bấm kỹ năng rồi bấm một làn.
+200	Bình Đóng băng
+201	Đóng băng toàn bộ quái 6 giây (Boss 3 giây), trong lúc bị đóng băng chúng chịu thêm 60% sát thương, tan băng xong còn bị làm chậm 50% trong 4 giây.
+202	Đóng băng {0}
+203	Lệnh Băng phong
+204	Đang đóng băng, không thể sửa
+205	Chú Kem Que
+206	Chú Kem Que sẽ đóng băng kỹ năng của bạn. Đừng đặt hết hy vọng vào một kỹ năng!
+207	Chú Kem Que nói Nữ hoàng Sương Sương đã đóng băng Mực thành một chiếc gương lớn, trong gương có thể thấy một khe nứt đỏ.
+208	Chú Kem Que đang tiến về phía tường thành!
+209	Bão Tinh thể Băng
+210	Tiểu tinh Tinh thể Băng
+211	Khi Tiểu tinh Tinh thể Băng còn sống, tốc độ đánh của anh hùng sẽ chậm lại. Chúng trốn ở xa, dùng Mưa Tên và Sấm Sét tiện tay dọn là lời nhất.
+212	Ánh sáng Tinh thể Băng
+213	Ống tên Hàn Phách
+214	Đồng tuyết Băng giá
+215	Bobo
+216	Xúc tu của Bobo. Chừng nào còn từ 3 cái trở lên, Bobo rất khó bị thương.
+217	Giác hút của Bobo đang hấp thụ sức mạnh! Mau chặt xúc tu!
+218	Bobo được xúc tu bảo vệ: hãy chặt xúc tu trước (cả "Ưu tiên mối đe dọa" và "Ưu tiên Boss" đều làm vậy). Khi máu dưới 60%, xúc tu còn hồi máu cho nó, cuối cùng nó sẽ cuộn lên một xoáy nước lớn!
+219	Póp
+220	Póp póp póp
+221	Tiếp tế bùng nổ
+222	Chuyên gia tiếp tế
+223	Không mang
+224	Không mang kỹ năng chủ động nào, qua bất kỳ màn nào sau màn 10
+225	Không chờ dọn sân, cứ 14 giây lại một đợt
+226	Dù là ai, người tuyết sắt, sói sắt... chúng đều mặc giáp sắt tiến về phía chúng ta.
+227	Không dùng kỹ năng
+228	Giáp Bất diệt
+229	Không thể dùng vật phẩm
+230	Chiến kỳ Bất khuất
+231	Không dùng vật phẩm nào và qua màn
+232	Không phải chính họ, mà là "tiếng vọng": những cái bóng từ khe nứt đó, bị hỗn độn nhuộm màu xanh tím. Chúng sẽ cứ thế tiến về tường thành.
+233	Không phải tôi! Là đồng hồ báo thức của cậu... ý tôi là, đám lính nhỏ của cậu.
+234	Không phải chúng ta! Là từ phía bên kia khe nứt!
+235	Không ghét đâu. Cậu xem, mũ giáp của tớ cũng đầy vết mực của cậu mà.
+236	Áo choàng Bất tử
+237	Không cần, cái thứ ba bên trái lúc nào cũng gắn ngược, tôi quen rồi.
+238	Khăn vải
+239	Tượng Thần Tài
+240	Giày Tài lộc
+241	Cầu vồng bị đen mất một đoạn! Chúng ta phải leo lên lau sạch.
+242	Chim Cầu vồng
+243	Chim Cầu vồng hồi máu cho quái xung quanh, khinh khí cầu bị bắn nổ sẽ thả yêu tinh ra. "Ưu tiên mối đe dọa" sẽ đánh Chim Cầu vồng trước.
+244	Cầu Vồng
+245	Bên kia Cầu Vồng là Vương quốc Mây. Nghe nói mây ở đó biết nổi gió, biết đánh sấm... Kael, dắt Mực Mực đi cùng nhé.
+246	Điều khiển
+247	Ô {0}
+248	Ô {0}: chọn vật phẩm và số lượng
+249	Giáp rơm
+250	Kem que vị dâu, một cây một xu đồng!
+251	Dép rơm
+252	Áo choàng Thảo dược
+253	Trận đầu ở Thảo nguyên
+254	Người bảo vệ Thảo nguyên
+255	Tầng
+256	Quấn đầy băng gạc, giảm 55% sát thương vật lý. Hãy dùng phép thuật đánh nó!
+257	Đạn pháo siêu nặng, bán kính nổ 100, bỏ qua 60% giáp, sát thương lên Boss +30%.
+258	Thủy triều
+259	Áo choàng Thủy triều
+260	{0} làn
+261	Đám quái đông, linh thể, quái kháng phép thấp
+262	Thành công nhận {0} kim cương; thất bại thì không có gì
+263	Thành tựu
+264	Thành tựu {0} / {1}
+265	Bay thành đàn, vượt qua quái khác lao thẳng đến tường thành.
+266	Tường thành
+267	Tường thành bị đóng băng! Tạm thời không thể sửa
+268	Tường thành đã bị phá...
+269	Kết thúc khi tường thành bị phá. Mỗi đợt dọn xong được 15 đồng; khi phá kỷ lục, cứ thêm 5 đợt thưởng 1 bạc.
+270	Tường thành không phải bạt nhún! ...Nhưng trông có vẻ vui thật.
+271	Cái vỏ... ý tôi là tường thành, hôm nay cũng chắc chắn lắm.
+272	Cấp tường thành
+273	Tường thành còn {0}% máu: nếu đi tiếp, tầng sau sẽ bắt đầu với lượng máu này, không hồi phục.
+274	Tường thành hồi 15% máu tối đa.
+275	Tường thành hồi 70% máu tối đa, sau đó trong 8 giây chịu sát thương −60%.
+276	Hiệu quả hồi tường thành +25%, sát thương tường thành chịu −5%
+277	Hiệu quả hồi máu tường thành +{0}%
+278	Tường thành nhận một lớp khiên hấp thụ sát thương tối đa 35% máu tối đa, kéo dài đến hết màn.
+279	Giảm sát thương tường thành
+280	Nguồn sát thương lên tường thành (tổng {0})
+281	Tường thành chịu nhiều sát thương nhất từ "{0}": {1}
+282	Nâng cấp tường thành (máu tối đa hiện tại {0})
+283	Tường thành còn {0}%
+284	Tường thành còn ≥50% được 2 sao, ≥80% được 3 sao.
+285	Qua màn khi tường thành còn dưới 5% máu
+286	Tường thành giữ được đến đợt {0} / {1}.
+287	Sát thương theo thời gian lên tường thành (độc, sương độc) −60%
+288	Sát thương tường thành chịu −3% / cấp.
+289	Sát thương tường thành chịu −{0}%
+290	Sát thương tường thành chịu −12%
+291	Sát thương tường thành chịu −3%
+292	Sát thương tường thành chịu −6%; hiệu quả hồi máu tường thành +25%
+293	Sửa tường thành
+294	Máu tường thành
+295	Khi máu tường thành dưới 50%, sức tấn công +20%
+296	Khi máu tường thành dưới 50%, sức tấn công +{0}%
+297	Luôn giữ máu tường thành từ 70% trở lên và qua màn
+298	Tường thành chỉ có một nửa máu
+299	Máu tối đa tường thành +{0}%
+300	Giày Trinh sát
+301	Lò luyện Thiết đỏ
+302	Áo choàng Lửa rực
+303	Xung phong? Giờ tôi chỉ xông vào đống rác thôi.
+304	Húc
+305	Sản xuất bởi
+306	Bán
+307	Tân binh
+308	Thăm dò Yêu Tháp
+309	Tuyết đầu mùa
+310	Xử quyết
+311	Xúc tu
+312	Các xúc tu đều rụt xuống biển rồi!
+313	Xúc tu hộ thân: còn {0} cái, đánh xúc tu trước!
+314	Xúc tu quật
+315	Xúc tu chỉ còn {0} cái, mau đánh Bobo!
+316	Trang bị
+317	Đang trang bị
+318	Xuyên giáp
+319	Trường cung Xuyên tâm
+320	Tên Xuyên mây
+321	Giáp mặc trên người, giúp tường thành vững hơn.
+322	Đang mặc
+323	Huyền thoại
+324	Vương miện Sáng thế
+325	Ống tên Sáng thế
+326	Chiến giáp Sáng thế
+327	Cung Sáng thế
+328	Kim chọc
+329	Áo choàng vải thô
+330	Thảo nguyên Xanh biếc
+331	Văn bản lưu game không đúng, hãy kiểm tra xem đã sao chép đầy đủ chưa
+332	Đã nhập dữ liệu
+333	Đã xóa dữ liệu
+334	Các Boss đã đánh bại đều chuyển về thị trấn. Chạm vào để nghe xem giờ chúng sống thế nào.
+335	Đã đánh bại Vua Gulu! Thực ra nó là người dọn dẹp chăm chỉ nhất thảo nguyên. Gió đen thổi từ sa mạc tới, tôi phải lên đường rồi.
+336	Đã đánh bại toàn bộ yêu quái tầng này.
+337	Ngắt Boss
+338	Ngắt Boss ít nhất 2 lần và qua màn
+339	Ngắt!
+340	Bậc thầy Ngắt đòn
+341	Chuyên gia Ngắt đòn
+342	Boss lớn
+343	Boss lớn. Bão tuyết làm chậm tốc độ đánh, tường thành bị đóng băng không thể sửa, khi máu thấp sẽ gọi băng long nhỏ.
+344	Boss lớn. Đóng băng, Bão tuyết, Tường băng, còn lạnh hơn xưa.
+345	Boss lớn. Sương độc ăn mòn tường thành, nấu quái nhỏ thành bản mạnh hơn, khi máu thấp lật đổ vạc tạo vũng độc.
+346	Boss lớn. Gọi bão cát, triệu hồi xác ướp và hồi máu cho chúng, khi máu thấp dựng khiên kim tự tháp, khiên chỉ sợ phép thuật.
+347	Boss lớn. Triệu hồi lính nhỏ; khi máu dưới 60% sẽ phát động heo rừng xung phong, tập trung hỏa lực lúc báo trước có thể ngắt được.
+348	Boss lớn. Bão cát, triệu hồi, hồi máu, khiên, ba giai đoạn, khó nhằn hơn xưa nhiều.
+349	Gã to xác lông trắng, giáp vật lý rất cao.
+350	Vạc đổ rồi! Vũng độc làm quái chạy nhanh hơn!
+351	Xoáy nước lớn! Xúc tu mọc lại hết, tất cả quái đều nhanh hơn!
+352	Chế độ chữ lớn
+353	Mang {0}
+354	Đồ bảo hộ đội trên đầu.
+355	Bắn đơn, ổn định, tự có thêm tỉ lệ chí mạng. Đánh Boss rất tốt.
+356	Đạt liên hoàn 30 trong một ván (hạ quái liên tiếp trong vòng 1.2 giây)
+357	DPS đơn mục tiêu
+358	Keng... keng... (run lập cập vì lạnh)... Xin lỗi, nó tự kêu đấy.
+359	Hiện tại: {0} →
+360	Xuất dữ liệu
+361	Nhập
+362	Nhập dữ liệu
+363	Nhập sẽ ghi đè tiến trình hiện tại.
+364	Dừng ở đây, chắc ăn
+365	Đến đợt 30 sẽ mở thành tựu "Không bao giờ thất thủ" (1 vàng).
+366	Ống tên Móc ngược
+367	Gục ngã ở tầng {0}, không nhận được gì. Vé không hoàn lại.
+368	Vật phẩm
+369	Xin lỗi thì có ích gì! Ầm ầm ầm——!
+370	Mặt đất đang lơ lửng... như tấm gương vỡ.
+371	Bản đồ
+372	Bùa Động đất
+373	Đỉnh cao
+374	Khoan đã! Tôi là Atlas, con nhà thợ nề. Chỗ nào tường thành bị đâm hỏng đều do bố tôi vá — cậu cứ đi xa, để tôi giữ tường thành!
+375	Cấp hơi thấp, hãy đi nâng cấp
+376	Bay thấp, tốc độ rất nhanh.
+377	Đợt {0} / {1}
+378	Đợt {0}
+379	Đợt {0} · Kỷ lục {1}
+380	Tầng {0}
+381	Tầng {0} · Đợt {1} / {2} · Còn {3}
+382	Tầng {0}: {1} yêu vương + {2} tiểu yêu cùng ập đến (sức mạnh ×{3}). Máu tường thành nối tiếp tầng trước, không hồi phục; đánh quái không có thưởng, chỉ qua tầng mới được kim cương!
+383	Qua tầng {0}!
+384	Màn {0}
+385	Màn {0} · {1}
+386	Màn {0} · {1} ({2})
+387	Từ màn 3 trở đi, qua bất kỳ màn nào khi tường thành đầy máu
+388	Chương {0}
+389	Chương {0} · {1}
+390	Chương {0} ▾
+391	Thưởng ba sao toàn chương {0}
+392	Boss chương 6. Đám mây sấm lớn hay cáu: triệu hồi Bánh bao Sấm và Chim Cầu vồng, tích lực giáng sét, cuối cùng nổi cơn bão.
+393	Boss chương 7. Vua Bạch tuộc: xúc tu hộ thân, giác hút hồi máu, cuối cùng cuộn lên xoáy nước lớn. Đánh xúc tu trước!
+394	Làn thứ tư
+395	Làn thứ năm
+396	Chỉ dùng được vật phẩm sau khi đợt quái đầu tiên xuất hiện
+397	Bấm một làn để thi triển (chuột phải hoặc Esc để hủy)
+398	Bấm để trang bị
+399	Chạm đá thành vàng
+400	Bấm vào tôi để dùng kỹ năng!
+401	Điện giật phạm vi rộng hơn, gây tê lâu hơn.
+402	Trường cung Chạm khắc
+403	Keng!
+404	Thịch... thịch... không... được... qua...
+405	Thịch... Mực Mực... hôm nay... vui quá...
+406	Thịch... nó... luôn... một mình... cậu... đối xử... tốt... với nó...
+407	Thịch... tôi... đang... gác... cổng...
+408	Thịch... cảm... ơn... cậu...
+409	Đóng băng toàn bộ quái 7 giây, cả Boss cũng bị đóng băng, trong lúc đó chúng chịu sát thương ×2.2; trong thời gian này tốc độ đánh anh hùng +60%.
+410	Đóng băng mọi quái trong làn đã chọn 3 giây.
+411	Bà Canh Độc
+412	Bà Canh Độc đã rửa sạch vạc, nói từ nay chỉ nấu canh bí ngô. Đồng tuyết phía bắc có vẻ là một trong những nguồn của Mực.
+413	Bà Canh Độc sẽ nấu quái nhỏ thành bản mạnh hơn. Hãy dọn sân nhanh, mang theo Sửa tường thành để đối phó sương độc!
+414	Bà Canh Độc bắt đầu nấu canh!
+415	Ếch độc
+416	Ếch độc đậu ở xa phun nọc vào tường thành. Chuyển mục tiêu sang "Ưu tiên mối đe dọa", anh hùng sẽ đánh chúng trước khi tường thành an toàn.
+417	Sương độc! Tường thành liên tục bị hại
+418	Đọc dữ liệu thất bại
+419	Đọc hết nhật ký giữ thành (đoạn đã bỏ qua có thể xem lại trong nhật ký)
+420	Trượt bằng bụng với tốc độ cao, đâm vào tường thành gây rất nhiều sát thương.
+421	Giày Chạy nước rút
+422	Sát thương lên Boss và quái bay +30%
+423	Sát thương lên Boss +{0}%
+424	Sát thương lên Boss +12%, sát thương tường thành chịu −4%
+425	Sát thương lên Boss +50%, bỏ qua 20% giáp
+426	X-xin lỗi... là tôi.
+427	Sát thương lên quái bị làm chậm hoặc đóng băng +15%
+428	Gây sát thương phép ×5 sức tấn công lên con quái có máu hiện tại cao nhất.
+429	Sát thương lên quái bay +{0}%
+430	Gây sát thương phép ×2.5 sức tấn công lên mọi quái trong làn đã chọn và thiêu cháy chúng.
+431	Gây sát thương ×5 sức tấn công lên mọi quái trong làn đã chọn.
+432	Sát thương +60% lên quái dưới 30% máu
+433	Đổi {0}
+434	Rùa Khiên
+435	Rùa Khiên hộ tống
+436	Rùa Khiên bảo vệ quái xung quanh. "Ưu tiên mối đe dọa" sẽ đánh Rùa Khiên trước; kỹ năng không bị Rùa Khiên ảnh hưởng.
+437	Khiên
+438	Trốn ở hàng sau, liên tục hồi máu cho quái xung quanh. Hãy hạ nó trước!
+439	Kính bảo hộ đồng trên trán phát sáng, hơi nước phì phò bốc ra từ ba lô trên lưng.
+440	Bắn đạn phép, trúng thì nổ trong phạm vi nhỏ. Sát thương phép bỏ qua giáp vật lý.
+441	Khi tiếng vọng của Pharaoh tan biến, nó để lại một chiếc bánh quy nhỏ. Tôi không dám ăn.
+442	Trời đầy sao
+443	Lượt về bắn trúng từ phía sau, xuyên khiên gỗ
+444	Quay lại
+445	Nhà bị cuốn trôi rồi sao? Vậy chúng sẽ ở đâu?
+446	Bỏ màn này
+447	Bỏ thử thách
+448	Bỏ thử thách này? Vé không hoàn lại, bạn sẽ không nhận được gì.
+449	Bay
+450	Biết bay, và cứ một lúc lại chuyển sang làn bên cạnh.
+451	Biết bay, bay lượn theo gió: 35% đòn đánh thường vật lý của vũ khí bị né. Phép thuật và sát thương diện rộng không né được.
+452	Ưu tiên quái bay
+453	Cá Bay
+454	Khoảng nhảy của Cá Bay −50%
+455	Bão Cá Bay
+456	Cá Bay nhảy một bước dài về phía trước, đang ở trên không thì không đánh trúng được. Chúng chạy nhanh hơn vẻ ngoài, Vùng Đóng băng rất hữu ích!
+457	Cá Bay nhảy nhót
+458	Bay trên không, đậu ở xa ném cầu lửa vào tường thành.
+459	Phân thân
+460	Áo choàng Bão táp
+461	Quả cầu Bão táp
+462	Giày Gió lướt

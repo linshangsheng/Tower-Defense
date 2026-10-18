@@ -101,3 +101,11 @@ test('setLang 记住语言，不认识的代码回到英语', () => {
   I.setLang('klingon');
   assert.strictEqual(I.lang, 'en');
 });
+
+test('index.html 里的词典加载脚本不会被 sw.js 的 src="…js" 正则误认成文件', () => {
+  const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  const files = [...html.matchAll(/(?:src|href)="([^"]+\.(?:js|css))"/g)].map((m) => m[1]);
+  for (const f of files) assert.ok(fs.existsSync(path.join(ROOT, f)), `index.html 里的 ${f} 不存在（会让 Service Worker 安装失败）`);
+  const sw = fs.readFileSync(path.join(ROOT, 'sw.js'), 'utf8');
+  for (const code of I.codes.filter((c) => c !== 'zh')) assert.ok(sw.includes(`'${code}'`), `sw.js 没缓存语言 ${code}`);
+});

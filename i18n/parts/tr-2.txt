@@ -1,0 +1,463 @@
+463	Uçurtma Canavarı
+464	Uçurtma Canavarı kaçınma şansı −%25
+465	Uçurtma Canavarları şimşekten kaçamaz, sıçrama birkaçına birden zincirleme vurur
+466	Uçurtma Canavarları silahların fiziksel saldırılarından kaçar. Asa, Yıldırım Küresi, Ok Yağmuru ve Yıldırım Darbesi'nden kaçamazlar!
+467	Uçurtma Festivali
+468	Arı Sürüsü Baskını
+469	Anka Tüyü Pelerini
+470	Uçan Kale
+471	Rün Plaka Zırh
+472	Rün Tacı
+473	Şans Botları
+474	Kopyala
+475	Çelik Zırh
+476	Çelik Miğfer
+477	Tel Pelerin
+478	Çelik Yeti
+479	Çelik Yetiler büyüden, Erimiş Demir Golemler fiziksel saldırıdan korkar. Silah mı değiştirirsin, yetenek mi kullanırsın, sen seç.
+480	Çelik Yetiler büyüden korkar, Kalkan Kaplumbağalar da yanındaki canavarları korur. Önce Kalkan Kaplumbağayı devir, sonra Çelik Yeti'ye büyü kullan.
+481	Çelik ve Erimiş Demir
+482	Yüksek hasar, kritik oranı +%12; oklar 3 canavarı deler ve hedefi tutuşturur.
+483	Hızlı
+484	Goblin Karakolu
+485	Goblin Ufaklığı
+486	Abi! Ben de surları korumak istiyorum! Çanım çalınca bütün küçük canavarlar korkuyla sıçrıyor!
+487	Kişisel rekor: dalga {0} · {1} yenildi
+488	Bu bölümün canavarlarına göre silah, yetenek ve eşyaları otomatik seçer.
+489	Daha fazla silah: Ekipman sayfasındaki Silahlar sekmesinden aç
+490	Daha kötüsü, karada "kocaman, sağlam bir kabuk" olduğunu duyup sıraya girerek taşınmaya geliyorlar...
+491	Kuşatma Topu
+492	Surlara saldıran canavarlar, kahraman Saldırısı ×%20 / seviye kadar yansıyan hasar alır.
+493	Saldırı
+494	Saldırı +{0}
+495	Saldırı +%{0}
+496	Saldırı +%12
+497	Saldırı +%15, kritik oranı +%10, kritik hasarı +%25
+498	Saldırı +%20, saldırı hızı +%15, kritik oranı +%8
+499	Saldırı +3
+500	Saldırı +3; Dondurma Alanı ve Buz Şişesi süresi +%30
+501	Saldırı +3; Boss'lara (dokunaçlar dahil) hasar +%20
+502	Saldırı +%3
+503	Saldırı +%35, saldırı hızı +%25, kritik oranı +%15, kritik hasarı +%50
+504	Saldırı +5, kritik oranı +%5
+505	Saldırı +%5
+506	Saldırı +%6, kritik hasarı +%20
+507	Saldırı +%8, normal saldırıların %15 ihtimalle hedefi tutuşturur
+508	Saldırı ×5
+509	Saldırı ×6
+510	Saldırı ×7 ve yakındaki 3 canavara zincirleme geçer (her biri %50)
+511	Saldırı Hızı
+512	Saldırı hızı +%{0}
+513	Saldırı hızı +%10
+514	Saldırı hızı +%12
+515	Saldırı hızı +%15, surun aldığı hasar −%10
+516	Saldırı hızı +%3
+517	Saldırı hızı +%35, 9 sn sürer.
+518	Saldırı hızı +%50, 8 sn sürer.
+519	Saldırı hızı +%6; uçan canavarlara hasar +%15
+520	Saldırı hızı +%8, surun aldığı hasar −%8; her dalga sonunda sur fazladan %2 iyileşir
+521	Saldırı hızı +%8, menzil +%3
+522	Saldırı hızı +%8; normal saldırıların %20 ihtimalle hedefi tutuşturur
+523	SH +%50, 8 sn
+524	SH +%65, 10 sn
+525	SH +%80, 10 sn, bu sürede kritik oranı +%10
+526	SH −%{0}
+527	"{0}" bölümünü geçtiğin için tebrikler! {1} dünyanın hepsini korudun. Üç yıldız ve taçlar için geri dönebilir ya da Sonsuz Mod'da yeni rekorlar kırabilirsin.
+528	"{0}" bölümünü geçtiğin için tebrikler! Yeni dünya "{1}" açıldı.
+529	Satın Al
+530	Vıraklayan Zehirli Kurbağa
+531	Gurr? Hücum edeceğimi nereden bildin?
+532	Glug! Bugün sekiz bacağımla aynı anda sekiz evin çatısını onardım.
+533	Glug... Artık taşıyamıyorum. Özür dilerim, ben sadece bana yetecek büyüklükte bir ev istemiştim.
+534	Glug glug! Bu kabuk çok büyük ve sağlam, sekiz bacağıma tam göre!
+535	Gurr... Başım artık dönmüyor. Tek hatırladığım çölden esen kara bir rüzgar, sonra hiçbir şeyi umursamadım, sadece hücum etmek istedim.
+536	Gurr... Ufaklıklar süpürürken havalı göründüğümü söylüyor.
+537	Gulu Kral
+538	Gulu Kral'ın yardakçısı.
+539	Gulu Kral öfkelendi: Yaban Domuzu Hücumu!
+540	Gulu Kral çıldırdı!
+541	Gulu Kral'ın canı %60'ın altına inince hücum eder. Şerit kızarınca ateşi ona yoğunlaştır, hücumu kesersin!
+542	Gurr gurr! Çayır artık benim! Ufaklıklar, hücum!
+543	Kale Korosu
+544	Kemik Kalkanlı Muhafız
+545	Bay Kemik
+546	Bay Kemik? Sen zaten...
+547	Bay Kemik yenilince bir kez dirilir. O ayağa kalktığında bir yetenek sakla!
+548	Bay Kemik'in Yankısı
+549	Bay Kemik dirildi!
+550	Bay Kemik aslında çok esprili. Çorbacı Nine'nin kazanında kocaman bir kazan kara Mürekkep kaynadığını söylüyor.
+551	Davul Ritimli Ok Yağmuru
+552	Canavarlar
+553	Canavarlar açılmış dünyalardan rastgele çıkar, her dalga bir öncekinden güçlüdür.
+554	Canavar Seli
+555	Canavarların hepsinin rengi mor.
+556	Canavar sayısı +%50
+557	Canavar sayısı −%40 ama canları +%80
+558	Canavar hızı +%30
+559	Canavarlar bir anda üşüşür, canavar yenmek bir şey kazandırmaz; yalnızca "katı geçince" elmas verir. Elmas sadece burada kazanılır. Yükseldikçe iblis kral oranı artar: 1. katta %10, 9. katta %50.
+560	Canavar Ansiklopedisi
+561	Canavar Ansiklopedisi {0} / {1}
+562	Canavar canı +%30, kuşatma hasarı +%15, bakır sikke geliri +%20
+563	Canavar canı +%40, sur canı +%40
+564	Canavar canı ve kuşatma hasarı −%25, hikayenin tadını rahatça çıkarmak isteyenler için
+565	Kapat
+566	Bölüm Görevleri
+567	Bölüm görevi tamamlandı
+568	Delici Okluk
+569	Aura
+570	Aura: yaşadığı sürece kahraman saldırı hızı düşer. Önce onu devir!
+571	Surlara varınca patlar ve bir anda ağır hasar verir. Mutlaka uzaktan vur.
+572	Yuvarlanan Kaktüs
+573	Kral Dede
+574	Jöle Prens
+575	Jöle Prens vurulunca bölünür. Alan hasarı (Ok Yağmuru, Bumerang) küçük jöleleri çabuk temizler.
+576	Jöle Prens'ten bölünen küçük jöleler.
+577	Meğer Jöle Prens zıplamayı seven küçük biriymiş. Kara Mürekkebin çok ama çok uzaklardan aktığını söylüyor.
+578	Daha bitmedi...
+579	Henüz kullanılabilir yetenek yok. Yetenekler sayfasından gümüşle aç.
+580	Henüz karşılaşılmadı.
+581	Bu yuva için henüz ekipman yok. Ekipman sayfasından satın al.
+582	Hâlâ tırnaklarımı kesen yok.
+583	Bir de keşiş yengeçler, denizatları, Kalkan Kaplumbağalar... herkesin yeni bir eve ihtiyacı var!
+584	Sonuçlandırılmamış bir mücadelen var.
+585	Deniz kenarındaki kum sıcak. Keşiş yengeçler kabuklarını sırtlayıp sıra sıra surlara yürüyor; sanki surları gerçekten yeni evleri sanıyorlar.
+586	Deniz Kestanesi
+587	Deniz Kestaneleri ölünce yakındaki canavarları yaralar, kalabalığa girince vur! Denizatı baloncukları bir saldırıyı engeller; Çoklu Arbalet ve Yıldırım Küresi onları en hızlı patlatır.
+588	Korsan Kaptan
+589	Denizatı
+590	Martı Boğazı
+591	Koy Korosu
+592	Koy Koruyucusu
+593	Don
+594	Don Yayı
+595	Don Okluğu
+596	Don Ok Ucu
+597	Soğuk Demir Miğfer
+598	Çiziksiz
+599	Tamam
+600	Tamam
+601	Tamam Kael, Lyra. Şehre dönelim. Bu gece krallık en büyük zafer şölenini veriyor, tüm dostlarımız geliyor. Yankıların gölgeleri bile kurabiye getiriyor.
+602	Çok sıcak çok sıcak... miğferim bile yanıyor.
+603	Çok sıcak... yerdeki çatlaklar kara Mürekkeple dolu.
+604	Toplam
+605	Kabuğa girdi... {0} sn sonra açılacak
+606	Günlüğü Kapat
+607	Obsidyen Zırh
+608	Obsidyen Tuğla
+609	Karanlıkta fenerimin aydınlattığı yere okum da ulaşır. Ben de geleyim!
+610	Hepsini süpür!
+611	Güm!
+612	Güm... Bugün biraz yağmur yağdı, gökkuşağı yüksekte asılı kaldı.
+613	Güm. Güm. ...Ben Kaya değilim. Kaya'nın geride bıraktığı... ayak sesleriyim.
+614	Gürr gürr! Gökkuşağımı kirleten sizlersiniz!
+615	Kırmızı
+616	Kırmızı Şerit
+617	Kırmızı Pelerin
+618	Sel
+619	Sel savaş alanını basar: tüm canavarlar 350 piksel geri itilir (Boss'lar 100 piksel), Saldırı ×3 hasar alır; ıslanan canavarlar 5 sn boyunca +%40 hasar alır ve %60 yavaşlar.
+620	Kalın Kumaş Zırh
+621	Fuuu, çorbanı üfleyip soğutayım.
+622	Fuuu! Şiddetli rüzgar canavarları surlara doğru üfledi!
+623	Fuuu! Yel değirmeninin unu bütün kasabanın ekmeği oldu.
+624	Fuuu, fuuu! Kim adımı çağırıyor?
+625	Fuuu, fuuu! Yerdeki ufaklıklar! Gökkuşağımı kirleten siz misiniz?
+626	Fuuu! Bütün surları dondurmaya çevireceğim!
+627	Fuuu... Mürekkep tadındaki dondurma çok kötü. Çilekli daha güzel.
+628	Fuuu... Bu bandajlar çok sıkı. Pelerinli biri bana bir şişe Mürekkep verdi, içersem güçleneceğimi söyledi.
+629	Fuuu... Dönmekten başım döndü. Peki, size inanıyorum.
+630	Fısıl
+631	Fısıl'ın Yankısı
+632	Fısıl'ın Yankısı son rüzgarını bize bıraktı. Bizi iterek çatlağın en derin yerine götürdü.
+633	Fısıl fırtınadan 2 sn önce uyarır: ateşi yoğunlaştırıp kes, yoksa sahadaki bütün canavarlar surların önüne üflenir!
+634	Fısıl aslında bulutlar için un öğüten bir yel değirmeni. Gümbür'ün öfkesini dindirmek için önce onun yıldırımını yakalamak gerektiğini söylüyor.
+635	Fısıl daha hızlı dönüyor!
+636	Kaplan Dişi Kolye
+637	Kalkan kırıldı!
+638	Muhafız
+639	Muhafız: yakındaki canavarlar kahraman saldırılarından %40 az hasar alır. Önce onu devir ya da yetenek kullan.
+640	"{1}" için {0} harcansın mı?\nEkstra özellik: {2}
+641	Kaygan
+642	Bebe'nin İnci Dükkanı'na hoş geldiniz! Her inci kayıtlı.
+643	Şerit Değiştir
+644	Altın Çöl
+645	Altın Botlar
+646	Gençleştirme Oku
+647	Haritaya Dön
+648	Harita
+649	%20 iyileştirir
+650	%25 iyileştirir
+651	%30 iyileştirir, sonra 6 sn boyunca surun aldığı hasar −%30
+652	Surun azami canının %20'sini iyileştirir.
+653	Yankılar... kendilerini kontrol edemiyor... fuuu!
+654	Yankı dediğin birebir aynıdır tabii. Kum fırtınası, kalk!
+655	Yankılar bunu bilerek yapmıyor gibi. O çatlak onları tekrar tekrar uyandırıp duruyor.
+656	Yankı Korosu
+657	Bumerang
+658	Döviz Bürosu
+659	Döviz Bürosu (tek yönlü, geri çevrilemez)
+660	Uçan bir ateş topu atıcısı; her ateş topu eskisinden çok daha acıtır.
+661	Uçan küçük bir ejderha, kaosun kırmızıya boyadığı.
+662	Uçan bir şifacı, uzakta durup yakındaki canavarları iyileştirir. Önce vurmak için "Tehdit Önce" ya da "Uçanlar Önce" kullan.
+663	Yürüyen Kütük
+664	Yere gömülebilen, kemik zırh giymiş bir akrep.
+665	Çelik plakalara bürünmüş bir yeti: fiziksel saldırıdan neredeyse etkilenmez; yalnızca büyü işe yarar.
+666	Baştan aşağı elektrik dolu. Surların yakınında ölürse boşalır ve kahramanları kısa süre sersemletir, uzaktan hallet.
+667	Kaos Yok Edici
+668	Top
+669	Ateş Topu Yağmuru
+670	Yanardağın altında kocaman bir yarık var, kara Mürekkep buradan fışkırıyor. Biraz korkuyorum ama geri adım atmayacağım.
+671	Ateş Faresi Pelerini
+672	Alev
+673	Ateş bölgeleri ve lav şeritleri canavarlara etki etmez
+674	Alev Ok Ucu
+675	Ateş İfriti
+676	Ateş İfritleri uzakta durup ateş topu atar. "Tehdit Önce"yi dene!
+677	Ateş Yağmuru Göğü
+678	Kazanıldı
+679	50 taç kazan
+680	Tüm bölümlerde üç yıldız kazan (6. ila 10. dünyalar dahil)
+681	Kazanılan yıldız {0} / {1}
+682	{0} yen
+683	{0} tane yen
+684	Mürekkepçik'i yen
+685	10 Boss'un hepsini yen (küçük Boss'lar dahil)
+686	En çok yenilen
+687	En çok yenilen: {0}
+688	Düşen ganimet ({0} yenildi)
+689	Kutup Okluğu
+690	Çevik Savaş Botları
+691	Ani Baskın
+692	Zorunlu Yürüyüş
+693	Sabırsız
+694	Şimşek Savaş Botları
+695	Bora
+696	Bora Pelerini
+697	Hızlı Botlar
+698	Hızlı Gölge Pelerini
+699	Hücumu kesmek için ateşi yoğunlaştır!
+700	Fırtınayı kesmek için ateşi yoğunlaştır!
+701	Yıldırımı kesmek için ateşi yoğunlaştır!
+702	Ezmeyi kesmek için ateşi yoğunlaştır!
+703	Fiziksel saldırıdan neredeyse etkilenmeyen bir hayalet: fiziksel hasarın yalnızca %15'i işe yarar, büyü kullan.
+704	Rekor: {0} dalga
+705	Yetenekler
+706	Yetenekler gümüşle Sv2'ye yükseltilir; Sv3 altın sikke ister ve köklü bir etki getirir.
+707	Yetenek donduruldu!
+708	Yetenek Ustası
+709	Tüm Yetenekler Açık
+710	Yetenek Sinerjisi
+711	Yetenekleri Otomatik Kullan
+712	{0}. Kata Devam Et
+713	Oyuna Devam Et
+714	Savaşa Devam Et
+715	Keşiş Yengeç
+716	Keşiş Yengeç Taşınması
+717	Keşiş Yengeçler her 4 darbede bir kabuğuna çekilir. Tek birine odaklanma. Çoklu Arbalet ve Yıldırım Küresi ateşi birkaçına dağıtır!
+718	Keşiş Yengecin kabuğa çekilme süresi −%60
+719	Güçlendir
+720	Güçlendirilmiş Tuğla
+721	Hız İksiri
+722	Dikenler
+723	Sivri başlığın üstünde kırmızı bir tüy, sırtında çapraz asılı bir okluk var.
+724	{0} dalga dayandın!
+725	%60 yavaşlatır, 6 sn
+726	%70 yavaşlatır, 7 sn
+727	%75 yavaşlatır, 8 sn, sonunda tüm şeridi 1,5 sn dondurur
+728	Koyun Kırkma Yarışması
+729	Sıçrama
+730	Sıçrama yarıçapı +20, sıçrama hasarı azalmaz (%100)
+731	Oklar aynı şeritte en fazla 5 canavarı deler (her biri %80 hasar), zırhın %20'sini yok sayar.
+732	Okluk
+733	Oklar isabetten sonra uçmaya devam eder, şeritte arkadaki en fazla 2 canavara daha vurur (%40 hasar)
+734	Ok Yağmuru
+735	Bana bırakın, Kral Dede! ...Eyvah, miğferim yine kaydı.
+736	Resif Kalesi
+737	Karakterler
+738	Kıyafet Dolabı
+739	Eğitim
+740	Panzehir
+741	Aç
+742	3x hızı aç: savaşın sağ altındaki hız düğmesi
+743	"Krallık Kasabası"nı (haritada 🏘) ve "Günlük Meydan Okuma"yı (haritanın sağ altı) açar
+744	"Sonsuz Mod"u açar (haritanın sağ altı)
+745	{0}. {1} aç
+746	8. Dünya "Ay Gölgesi Kalesi"ni açar. Kaos Yarığı'ndan yankı canavarları düştü
+747	9. Dünya "Kızıl Demir Ocağı"nı açar
+748	6. Dünya "Bulut Krallığı"nı açar
+749	7. Dünya "Mercan Koyu"nu ve "Dokuz Katlı İblis Kulesi"ni açar (haritanın sağ altı)
+750	10. Dünya "Boşluk Gökyüzü"nü açar, son dünya
+751	Tüm aktif ve pasif yetenekleri açar
+752	Önerilen silah "{0}" açıldı: {1} ({2})
+753	Bugünün kuralı: "{0}"
+754	Günlük meydan okuma tamam!
+755	Bugün tamamlandı
+756	Bugün çok yükseğe zıpladım ve bir güvercine çarptım.
+757	Bugün çayırdaki düşen yaprakların hepsini tek tek süpürdüm!
+758	Bugünün ödülü zaten alındı
+759	Bugün surlardaki ilk günüm. Çayırdaki canavarların hepsinde azıcık kara Mürekkep var. Ne garip.
+760	Altın
+761	Altın sikke
+762	Altın kademe · savaşın gidişatını değiştiren kozlar
+763	Altın sikkeyle efsanevi ekipman, üst seviye silahlar ve Yetenek Sv3 satın alınır.
+764	Altın Külçe
+765	Piramit kalkanı! Büyüyle kır!
+766	Piramit kütüphane olarak kiraya verildi, çok rağbet görüyor.
+767	İlerleme kaydedildi. Tarayıcılar sayfaların kendi sekmesini kapatmasına izin vermez, lütfen bu sekmeyi veya pencereyi kendin kapat. (Oyunu masaüstündeki "Son Kale" simgesinden açtıysan bu düğme oyunu doğrudan kapatır.)
+768	Terfi
+769	Terfiden sonra
+770	Dikenler
+771	Kıl Payı
+772	İnce Çelik Okluk
+773	Kaliteli
+774	Elit Meydan Okuma
+775	Elit Meydan Okuma: ilk dört dünyanın küçük Boss'ları ikişer ikişer geri döndü! "Boss Önce" ya da "Tehdit Önce"ye geç, iki Boss'un aynı anda surlara varmasına izin verme.
+776	İsabetli
+777	Statik
+778	Dokuz kat geçildi! İblis kulesini fethettin!
+779	Dokuz Katlı İblis Kulesi
+780	Dokuz Katlı İblis Kulesi · {0}. Kat
+781	Dokuz Katlı İblis Kulesi'nin iblis kralı: özel hareketi yok, doğrudan surlara saldırır.
+782	Ağır bir kemik kalkan taşır, önden neredeyse vurulamaz: Bumerang'la arkadan vur.
+783	Tahta kalkan taşır, önden çok sert. Bumerang dönüşü ve Ok Yağmuru kalkanı aşar.
+784	Dev
+785	Hazine Kasesi
+786	Mezar Akrebi
+787	Dengeli
+788	Denge Tacı
+789	Çıt... aslında sadece birinin tırnaklarımı kesmesini istemiştim.
+790	Çıt çıt, bugün yirmi kakül kestim.
+791	Çıt çıt! Koca kıskaçlarım her şeyi ezebilir!
+792	Tak... Bir kez dağılmama izin verdiğin için sağ ol, kemiklerim bir güzel gerindi.
+793	Tak tak, kemik konseri her cumartesi akşamı başlıyor!
+794	Tak tak, kemik konseri'me hoş geldiniz!
+795	Açık
+796	Başla
+797	Mücadeleyi Başlat
+798	Mücadeleyi Başlat ({0})
+799	Oyuna Başla
+800	Savaşa Başla
+801	Savaşa Başla ›
+802	Savaş başında otomatik devreye girer
+803	Satın alınabilir
+804	Ama Kral Bobo dinlemez. Sekiz bacağı var, denizde onu alacak büyüklükte kabuk yok ve günlerdir sizin surlarınıza göz dikmiş durumda.
+805	Ama Gümbür inanmaz. Gökyüzünün en öfkeli bulutu, gökkuşağı kirlendiğinden beri üç gündür gürlüyor.
+806	Ama barışmışlardı ki, neden yine geldiler?
+807	Ama burası herkesin evi!
+808	Boş
+809	Boşluk tuşu duraklatır, F ile 2x hız, N ile sonraki dalgayı erken çağırırsın, T ile hedef önceliğini değiştirirsin.
+810	Hava Saldırısı
+811	Hava saldırısı! Kaosun kırmızıya boyadığı bir Don Ejderhası ve ateş topu atan bir ufaklık çetesi.
+812	Hava saldırısı! Fener Hayaleti arkada saklanıp durmadan iyileşiyor. Önce onu bul.
+813	Hava saldırısı! Gökte çok canavar var, yerde de Kalkan Kaplumbağaların eşlik ettiği birlikler. Sadece göğe bakma.
+814	Hava saldırısı! Boşluk Balonları yere inince dört Goblin Ufaklığı bırakır.
+815	Hava saldırısı bölümü ve çok sayıda Buz Perisi var. "Uçanlar Önce" ile Çoklu Arbalet ya da Yıldırım Küresi!
+816	Hava saldırısı bölümü, ifritler uzaktan ateş topu atar. "Tehdit Önce" ya da "Uçanlar Önce"yi dene!
+817	Hava saldırısı bölümü! Yarasalar şerit değiştirir, alan saldırıları nişan almaktan daha güvenilir.
+818	Hava saldırısı bölümü! Hedef önceliğini "Uçanlar Önce"ye çevirmeyi ya da Çoklu Arbalet kuşanmayı dene.
+819	Hava saldırısı bölümü! Akbabalar hızlı uçar. Çoklu Arbalet ve "Uçanlar Önce" iyi seçimler.
+820	Gökyüzü Sirki
+821	İskeletin sürdüğü küçük bir araba, hızla çarpar ve surlara çok sert vurur.
+822	İskelet Muhafız
+823	İskelet Muhafızlar ağır kemik kalkan taşır, önden neredeyse vurulamaz. Bumerang ve Ok Yağmuru arkalarına ulaşabilir.
+824	İskelet Savaş Arabası
+825	Gözle görülmeyecek kadar hızlı bir tavşan; şerit değiştirir, fiziksel saldırıların dörtte biri ıskalar.
+826	Hızlı saldırı · Kontrol
+827	Hızlı canavarlar: tavşanlar, kurtlar, savaş arabaları
+828	Çılgınlık
+829	Coşku
+830	Zırh
+831	Mavi
+832	Kurt Ulumasi
+833	Kurt Sürüsü
+834	Kurt Dişi Kolye
+835	Yıldırım Küresi
+836	Gümbür
+837	Gümbür şarj olmaya başladı! Şarj sırasında ateşi yoğunlaştırıp kes!
+838	Gümbür sadece o gökkuşağını çok seviyormuş. Artık her yağmurdan sonra gökkuşağını yüksekte asılı tutuyor. Krallığın sur muhafızları hem yeri hem göğü korudu.
+839	Gümbür'ün üç aşaması var: Yıldırım Topakları ve Gökkuşağı Kuşları çağırmak, yıldırım biriktirmek (kes!) ve fırtına (her şey hızlanır, çabuk bitir).
+840	Gök Gürültüsü Okluğu
+841	Gök Gürültüsü Salonu
+842	Yıldırım Tanrısı Küresi
+843	Yıldırım Tılsımı
+844	Yıldırım Botları
+845	Yıldırım Darbesi
+846	Yıldırım Darbesi, Dondurma Alanı'ndaki (yavaşlamış veya donmuş) canavarlara ×1,3 hasar verir
+847	Yıldırım Topağı
+848	Yıldırım Topakları surların yakınında ölürse Kael'i sersemletir. Hâlâ uzaktayken hallet!
+849	Fırtına Bulutu
+850	Toplamda 50 kez Yetenek Sinerjisi tetikle (Buz Kırığı, Davul Ritimli Ok Yağmuru)
+851	Toplamda 100 baloncuk patlat
+852	Toplamda 10 kez Boss şarjını kes
+853	Toplamda 150 yıldız kazan
+854	Toplamda 50 yıldız kazan
+855	Toplam yenilen
+856	Toplamda 1000 canavar yen
+857	Toplamda 10000 canavar yen
+858	Toplamda 30 kez dalgayı erken çağır
+859	Toplamda 50 ikmal kartı seç
+860	Bekleme {0} sn
+861	Beklemede, {0} sn kaldı
+862	Şafak Tacı
+863	Surun canını anında %20 iyileştirir, surun aldığı hasar −%8
+864	Surun canını anında %45 iyileştirir
+865	Tüm yetenek beklemelerini anında sıfırlar, Saldırı +%35, 30 sn sürer
+866	Çoklu Arbalet
+867	Zincir Arbalet
+868	Zincirleme Şimşek
+869	Seri Atış
+870	Seri Atış!
+871	Seri Atış Okluğu
+872	İttifak
+873	İttifak bölümü: tüm şeritlerden aynı anda canavar çıkar, Koy'un bütün sakinleri burada!
+874	İttifak bölümü: tüm şeritlerden aynı anda canavar çıkar, Ocak'ın bütün işçileri başta!
+875	İttifak bölümü: tüm şeritlerden aynı anda canavar çıkar, hem fiziksel hem büyü hazırlığı yap.
+876	İttifak bölümü: tüm şeritlerden aynı anda canavar çıkar, Boşluk'taki bütün yankılar birden akın ediyor!
+877	İttifak bölümü: tüm şeritlerden aynı anda canavar çıkar, Ay Gölgesi'nin bütün sakinleri burada!
+878	İttifak bölümü: tüm şeritlerden aynı anda canavar çıkar, Bulutlar'ın bütün canavarları burada!
+879	İttifak bölümü: tüm şeritlerden aynı anda canavar çıkar! Ok Yağmuru ve Yıldırım Küresi gibi tüm sahaya vuran saldırılar en işe yarar.
+880	İttifak bölümü: tüm şeritlerden aynı anda canavar çıkar! Tüm sahaya vuran yetenekler ve Yıldırım Küresi anahtar.
+881	Araf Pelerini
+882	Araf Boynuzlu Miğferi
+883	Araf Ağır Zırhı
+884	Serinliyorum... çok rahat.
+885	Üst üste iki kar topundan yapılmış küçük bir kardan adam, ölünce 2 küçük kar yumağına dönüşür.
+886	Gözcü Şapkası
+887	Kasırga Savaş Botları
+888	Alev Büyüsü
+889	Alev Okluğu
+890	Alev Arbaleti
+891	Kavurucu Güneş Miğferi
+892	Avcı Okluğu
+893	Avcı Başlığı
+894	Avcı İçgüdüsü
+895	Avcı Botları
+896	Yarığın öbür ucunda daha da sıcak bir yer var. Yankılar oradaki ocak ateşlerinden uyandırıldı.
+897	Yarığın öbür ucunda devasa bir ocak duruyor. Ateşi kimse yakmıyor ama yanardağdan bile sıcak yanıyor.
+898	Yarık büyüyor. Kael, kaynak en tepedeki gökyüzünde.
+899	Gök Yaran Arbalet
+900	Yarık Kenarı
+901	Yarık Darbesi {0}
+902	Yarık Darbesi!
+903	Yarık çılgınlığı! Mürekkepçik'i 30 sn içinde yen!
+904	Yarık yavaşça kapandı ve gökyüzü yine masmavi oldu.
+905	Yarık Girişi
+906	Komşular {0} / {1}
+907	Orman Gezgini
+908	Şifalı Ot Okluğu
+909	Çevik Botlar
+910	Pırıltı Okluğu
+911	Becerikli Parmaklar
+912	Hayalet
+913	Hayalet: fiziksel hasar yalnızca %30 etkilidir. Ona büyü kullan!
+914	{0} Al
+915	Nasıl işler: satın al → çantana girer → savaşta kuşanmak için "Kuşan +1"e dokun (ya da Donanım sayfasından seç). Yuvalar şimdi {0} / {1}{2}.
+916	Akan Işık Botları
+917	Meteor Pelerini
+918	Meteor Okluğu
+919	Kasırgalar ve itmeler, eski Fısıl'dan daha vahşi.
+920	Ejderha Pulu Zırh
+921	Ejderha Pulu Pelerin
+922	Ejderha Damarı Hazinesi
+923	Ejderha Damarı Botları
+924	Ejderha Şövalyesi
+925	Ejderha Dişi Kolye

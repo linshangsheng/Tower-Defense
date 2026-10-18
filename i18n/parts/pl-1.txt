@@ -1,0 +1,463 @@
+0	, można nosić 3 naraz
+1	: porażek z rzędu: {0}. W tej próbie ataki i HP muru są wzmocnione. Znika po przejściu etapu.
+2	...Wiatr ucichł. Przed nami źródło Atramentu.
+3	...Braciszku. Siostrzyczko. W końcu przyszliście.
+4	...Bum. Nie da się trafić.
+5	...Bum. Przepraszam. To ja sprowadziłem deszcz.
+6	...Kroki ucichły.
+7	...Dziś też jest cicho. Dobrze.
+8	...Lustro pękło i wreszcie widzę jasno. Atrament wycieka ze szczeliny w południowym wulkanie.
+9	...Ale nie mogę przestać. Proszę, pokonajcie je wszystkie, dobrze?
+10	...Szczelina się zamknęła. Teraz jest cicho.
+11	...Pachnie Atramentem.
+12	...Ta skorupa... to chyba nie nasz mur?
+13	...Naprawdę mnie nie nienawidzisz?
+14	...Drzewa w lesie mówiły, że mały strażnik dotrwał aż tutaj. Jestem Rowan, leśny strażnik.
+15	...Pamiętam cię. Pamiętam ten mur. Ale nie pamiętam, po co przyszedłem.
+16	...Dziękuję. Powtarzanie w kółko jest takie męczące.
+17	...Dzięki, że rozwialiście mgłę. Jestem Nova. Z latarnią chodzę po bagnach i prowadzę zagubione zwierzątka.
+18	...Mieć przyjaciół jest tak miło.
+19	...Znowu ktoś przyszedł mnie bić. Wszyscy tylko mnie biją.
+20	...Naprawdę. Jak pięknie. Czy ja... byłam przed chwilą zbyt groźna?
+21	...Kael, spójrz na niebo. Ostatnia odrobina Atramentu, którą rozsypałem, uniosła się na tęczę.
+22	· Zaopatrzenie
+23	· Rekord
+24	· Następna fala za {0} s
+25	‹ Tytuł
+26	‹ Wróć
+27	(Po poz. 30 każdy poziom daje +{0}% HP z poz. 30)
+28	(Po przekroczeniu bazowego limitu zyski z poziomu maleją)
+29	(Wszystkie miejsca odblokowane)
+30	(Wyczyść)
+31	(Przejdź etap {0}, by odblokować kolejne miejsce)
+32	(Zdejmij {0}; {1} wraca do plecaka)
+33	(Zdejmij)
+34	(Przekroczono bazowy limit poz. {0}: zyski maleją, a koszty rosną)
+35	(Komplet)
+36	(W pełni wyposażony)
+37	(Osiągnięto limit)
+38	(W innym miejscu; zostanie zamieniony)
+39	(W sekcji „Bohater” na ekranie ekwipunku możesz wystawić Atlasa: wzmacnia mur.)
+40	(W sekcji „Bohater” na ekranie ekwipunku możesz wystawić Lyrę.)
+41	(Nova dołączyła! Jej zasięg nie maleje w nocnych etapach.)
+42	(Rowan dołączył! Jego ciężkie strzały ignorują pancerz.)
+43	{0}\nOdnowienie {1} s, zabrano: {2}
+44	Fale: {0}
+45	Fale: {0} (z Bossem)
+46	{0} min {1} s
+47	Zestaw {0} „{1}”: {2} → {3}{4}
+48	Dni: {0}
+49	{0} miedzi → 1
+50	Synergia {0} „{1}”: {2}{3}
+51	{0} HP {1} →
+52	Król demonów ×{0} + sługi ×{1}
+53	{0} srebra → 1
+54	Rodzaje: {0}
+55	{0}; od poz. 3 każdy poziom zwiększa obrażenia / liczbę strzał / leczenie / czas trwania i skraca odnowienie
+56	{0}: siła +{1}% ({2})
+57	{0} (posiadane {1} / {2}{3})
+58	Statystyki: {0}
+59	Jakość: {0}
+60	/s
+61	⏩ Prędkość 2x
+62	⏭ Prędkość 3x
+63	▶ Prędkość 1x
+64	★ Mistrzostwo
+65	♾ Tryb nieskończony
+66	♾ Tryb nieskończony {0}
+67	⚠ Nadchodzi Boss!
+68	✔ W użyciu
+69	✔ Ukończone
+70	✔ Posiadane
+71	✦ Awansowano
+72	✨ Zestaw „{0}”: {1}
+73	🎯 Zadanie etapu: {0}
+74	🎯 Zadanie etapu „{0}” wykonane: +{1} srebra
+75	🎺 Wsparcie posiłków +{0}%
+76	🏆 Osiągnięcia
+77	🏆 Osiągnięcie „{0}”: {1} (+{2})
+78	🏆 Osiągnięcie „{0}” +{1}
+79	🏘 Miasteczko
+80	🏯 Dziewięciopiętrowa Wieża Demonów
+81	🏯 Dziewięciopiętrowa Wieża Demonów {0}
+82	👉 Ulepsz „Atak”, a Kael szybciej pokona potwory!
+83	👑 Pierwsze przejście na trudnym: zdobywasz koronę
+84	👑 Przejdź na trudnym, by zdobyć koronę
+85	👑 Przeszedłeś na trudnym
+86	👕 Garderoba
+87	📅 Wyzwanie dnia
+88	📅 Wyzwanie dnia · {0}
+89	📅 Wyzwanie dnia ✔
+90	📊 Raport z bitwy
+91	📔 Dziennik strażnika Kaela
+92	📜 Kronika obrony
+93	📦 Zaopatrzenie na etap:
+94	📦 Przyszła skrzynia z zapasami!
+95	Combo 10 trafień!
+96	12 meteorytów spada na losowe potwory na polu, każdy zadaje obrażenia równe ATK ×8. Potwory w promieniu 110 px dostają 60%.
+97	16 strzał × ATK 1,6
+98	W 2 sekundy spada 16 strzał, każda trafia losowego potwora w zasięgu i zadaje obrażenia równe ATK ×1,6, ignorując tarcze.
+99	20 strzał × 1,7
+100	24 strzały × 1,8, trafione potwory zapalają się
+101	3 strzały mogą trafić kilka macek naraz; w pełni ulepszony Drewniany Łuk i Armata też świetnie sprawdzają się przeciw Bobo
+102	Wszystkie 5 torów otwarte! Nietoperze latają między torami.
+103	Apsik! Hełm cały zamarzł.
+104	Ojej... Okazuje się, że gotowałem Atrament, nie zupę. Nic dziwnego, że jest niesmaczna.
+105	Nagroda pocieszenia
+106	Noc
+107	Noc · Duch
+108	Etap nocny: widzisz niedaleko, zasięg −30%. Przydatne zapasy: „Raca” i „Dalekowidzenie”.
+109	Pokaż oczy potworów w nocy (domyślnie wył., całkiem ciemno)
+110	Cienisty Zabójca
+111	Cieniści Zabójcy pojawiają się znacznie dalej (x < 800)
+112	Cieniści Zabójcy ukrywają się z dala i pojawiają się dopiero z bliska. Zapas „Luneta” ujawni ich wcześniej.
+113	Cienisty Ninja
+114	Arkaniczny Przypływ
+115	Sprzedać „{0}”? Cena sprzedaży: {1} (połowa ceny zakupu). Możesz odkupić za pełną cenę.
+116	Wklej tutaj wyeksportowany tekst zapisu
+117	Skopiuj i zachowaj poniższy tekst. Po zmianie urządzenia lub wyczyszczeniu danych przeglądarki wklej go przez „Importuj zapis”, by odzyskać postęp.
+118	Pogromca Setki
+119	Nocny Pochód
+120	Zbroja płytowa
+121	Zarodnik
+122	Cienki Lodowy Kołczan
+123	Jego krąg ochronny jest większy i osłabia więcej obrażeń. Zniszcz go najpierw.
+124	Zbroja Bastionu
+125	Strażnik Bastionu
+126	Zamieć! Szybkostrzelność spada
+127	Zwój Zamieci
+128	Nadchodzi burza! Wszystkie potwory są szybsze!
+129	Krytyk
+130	Kołczan Krytyczny
+131	Szansa na krytyk
+132	Szansa na krytyk +{0}%
+133	Szansa na krytyk +10%.
+134	Szansa na krytyk +3%
+135	Szansa na krytyk +3%; obrażenia fizyczne wobec duchów +25%
+136	Szansa na krytyk +4%; kara do zasięgu w nocy o połowę mniejsza
+137	Szansa na krytyk +8%
+138	Obrażenia krytyczne
+139	Obrażenia krytyczne +{0}%
+140	Obrażenia krytyczne +10%
+141	Obrażenia krytyczne +15%
+142	Obrażenia krytyczne +25%
+143	Obrażenia krytyczne +30%
+144	Korona Tyrana
+145	Wybuch odrzuca małe potwory w zasięgu o 60 px i spowalnia je o 40% (1,5 s); +50% obrażeń wobec Bossów i macek
+146	Promień wybuchu 60 → 85, obrażenia obszarowe 60% → 75%
+147	Wilk Polarny
+148	Wilki polarne szarżują w trójkach. Strefa Mrozu zatrzyma całą watahę naraz.
+149	Wiking z Północy
+150	Bebe
+151	Bebe zapisuje w notesiku każdą muszelkę. Mówi, że mur to największa „muszla”, jaką widziała, ale niestety nie da się go nikomu podarować.
+152	Bebe z zamkniętą muszlą prawie nie da się trafić, a z otwartą pluje perłami, ale bardzo boi się bólu. Gdy muszla się otworzy, użyj Uderzenia Pioruna i Deszczu Strzał!
+153	Bebe się denerwuje: muszla otwiera się i zamyka szybciej!
+154	Muszlowy Amulet
+155	Plecak
+156	Plecak {0}
+157	W plecaku nie ma jeszcze przedmiotów. Kup je na stronie „Przedmioty”.
+158	Nie masz tego przedmiotu w plecaku
+159	Plecak jest pusty. Kup przedmioty na stronie „Przedmioty”.
+160	Muzyka
+161	Odznaka Ostatniej Szansy
+162	Medal Ostatniej Szansy
+163	Kołczan zarzucony na plecy.
+164	Po zabiciu wystrzeliwuje kolce, które ranią pobliskie potwory. Zabij go, gdy wejdzie w tłum! Gdy dotrze do muru, najpierw go ukłuje.
+165	Porażony prądem!
+166	Umiejętności pasywne
+167	Umiejętności pasywne (automatyczne)
+168	Miejsca umiejętności pasywnych
+169	Obrażenia zablokowane przez pancerz / odporność magiczną
+170	Zielona kulka nadjedzona przez księżyc: dużo HP, a gdy nikt jej nie bije, sama się leczy.
+171	Ogłuszony!
+172	Moje ciasteczka... jeszcze się nie upiekły!
+173	Ten faraon spał trzy tysiące lat i ktoś go obudził! Kto tak hałasuje?!
+174	Ten faraon pracuje nad nowym smakiem ciasteczek. Tym razem tylko trzysta lat w piecu.
+175	Gdy mur po raz pierwszy padnie w tym etapie, natychmiast wstaje z 60% maks. HP (tylko raz)
+176	Dochód z miedziaków w tym etapie +{0}%
+177	Dochód z miedziaków w tym etapie +10%
+178	Dochód z miedziaków w tym etapie +30%
+179	Dochód z miedziaków w tym etapie +60% i od razu dostajesz garść miedziaków
+180	Mój zamek... czemu tu tak gorąco? Kto rozpalił piec?
+181	Prawdziwa postać! Obrażenia +50%
+182	Ten książę otworzył na placu sklep z trampolinami. Pierwszy skok gratis!
+183	Korona rozdziału (przejście na trudnym)
+184	Mumia w Bandażach
+185	Kula z Bandaży
+186	Kule z bandaży, tarcze, roje małych potworów
+187	Kule z bandaży nie boją się ataków fizycznych. Odblokuj w sklepie „Magiczną Różdżkę” za srebro albo weź Uderzenie Pioruna i Podpalenie!
+188	Bandaże wyprane i ładnie pachną!
+189	Zbroja Szańca
+190	Piorunochron
+191	Piorunochron!
+192	Nietoperz
+193	Jaskinia Nietoperzy
+194	Nalot Nietoperzy
+195	Standard
+196	Nie bój się, są po prostu w okropnym humorze przez dziwny czarny atrament. Broń muru, a obronisz wszystkich.
+197	Zamrożenie, Zamieć, Lodowy Mur: Królowa Mrozu, jeszcze zimniejsza niż wcześniej.
+198	Strefa Mrozu
+199	Strefa Mrozu, Mała Bomba i Mrożona Butelka wymagają wybrania toru: dotknij umiejętności, a potem toru.
+200	Mrożona Butelka
+201	Zamraża wszystkie potwory na 6 s (Bossy 3 s). Zamrożone potwory dostają +60% obrażeń, a po rozmrożeniu są spowolnione o 50% przez 4 s.
+202	Zamrożone {0}
+203	Dekret Mrozu
+204	Zamarznięty, nie można naprawiać
+205	Wujek Lodzik
+206	Wujek Lodzik zamraża twoje umiejętności. Nie stawiaj wszystkiego na jedną umiejętność!
+207	Wujek Lodzik mówi, że Królowa Mrozu zamroziła Atrament w wielkie lustro, a w nim widać czerwoną szczelinę.
+208	Wujek Lodzik idzie w stronę muru!
+209	Burza Lodowych Kryształów
+210	Duszek Lodowych Kryształów
+211	Gdy żyją Duszki Lodowych Kryształów, twoi bohaterowie atakują wolniej. Chowają się daleko, więc najlepiej wyczyścić je Deszczem Strzał i Uderzeniem Pioruna.
+212	Światło Lodowych Kryształów
+213	Kołczan Lodowej Duszy
+214	Mroźna Śnieżna Kraina
+215	Bobo
+216	Macka Bobo. Dopóki zostały 3 lub więcej, Bobo jest bardzo trudny do zranienia.
+217	Przyssawki Bobo wysysają moc! Szybko tnij macki!
+218	Bobo chronią macki: najpierw je ścinaj (tryby „Zagrożenie najpierw” i „Boss najpierw” robią to same). Poniżej 60% HP macki też go leczą, a na koniec wzbudza wielki wir!
+219	Pop
+220	Pop pop pop
+221	Szał Zaopatrzenia
+222	Ekspert od Zapasów
+223	Brak
+224	Przejdź dowolny etap po 10. bez żadnych umiejętności aktywnych
+225	Nowa fala co 14 sekund, bez czekania na oczyszczenie pola
+226	Kimkolwiek są, żelazne bałwany, żelazne wilki... wszystkie idą na nas w żelaznych zbrojach.
+227	Bez Umiejętności
+228	Nieśmiertelna Zbroja
+229	Nie można używać przedmiotów
+230	Niezłomny Sztandar
+231	Przejdź bez używania żadnych przedmiotów
+232	To nie oni sami, to „echa”: cienie ze szczeliny, zabarwione chaosem na niebiesko-fioletowo. Będą szły na mur bez końca.
+233	To nie ja! To twój własny budzik... to znaczy, twoi mali żołnierze.
+234	To nie my! To dochodzi z drugiej strony szczeliny!
+235	Nie. Patrz, na moim hełmie też masz pełno kleksów.
+236	Nieśmiertelna Peleryna
+237	Nie trzeba, trzeci po lewej zawsze jest założony odwrotnie. Przyzwyczaiłem się.
+238	Płócienna Opaska
+239	Posąg Fortuny
+240	Buty Fortuny
+241	Kawałek tęczy poczerniał! Musimy się wspiąć i go wytrzeć.
+242	Tęczowy Ptak
+243	Tęczowe Ptaki leczą pobliskie potwory, a balony po przebiciu zrzucają gobliny. „Zagrożenie najpierw” celuje najpierw w Tęczowe Ptaki.
+244	Tęczowy Most
+245	Drugi koniec Tęczowego Mostu to Królestwo Chmur. Podobno tamtejsze chmury wiatr gna i grzmią... Kael, zabierz Kleksa!
+246	Sterowanie
+247	Miejsce {0}
+248	Miejsce {0}: wybierz przedmiot i ilość
+249	Słomiana Zbroja
+250	Truskawkowe lody na patyku, jeden za miedziaka!
+251	Słomiane Sandały
+252	Ziołowa Peleryna
+253	Pierwsza Potyczka na Łące
+254	Strażnik Łąki
+255	Piętro
+256	Owinięta bandażami: 55% redukcji obrażeń fizycznych. Użyj magii!
+257	Superciężki pocisk, promień wybuchu 100, ignoruje 60% pancerza, +30% obrażeń wobec Bossów.
+258	Przypływ
+259	Peleryna Przypływu
+260	Torów: {0}
+261	Roje, duchy, potwory o niskiej odporności magicznej
+262	Wygrana: {0} diamentów; porażka: nic
+263	Osiągnięcia
+264	Osiągnięcia {0} / {1}
+265	Lata stadem, mija inne potwory i leci prosto na mur.
+266	Mur
+267	Mur jest zamarznięty! Na razie nie można go naprawiać
+268	Mur został przełamany...
+269	Kończy się, gdy mur zostanie przełamany. 15 miedziaków za każdą oczyszczoną falę; przy nowym rekordzie 1 srebro za każde dodatkowe 5 fal.
+270	Mur to nie trampolina! ...Chociaż wygląda na świetną zabawę.
+271	Skorupa... to znaczy mur, jest dziś ładnie mocny.
+272	Poziom muru
+273	Murowi zostało {0}% HP: jeśli pójdziesz dalej, następne piętro zacznie się z tym HP, bez odnowienia.
+274	Mur odzyskuje 15% maks. HP.
+275	Mur odzyskuje 70% maks. HP, a przez następne 8 s otrzymuje o 60% mniej obrażeń.
+276	Leczenie muru +25%, obrażenia otrzymywane przez mur −5%
+277	Leczenie muru +{0}%
+278	Mur dostaje tarczę pochłaniającą obrażenia do 35% maks. HP, trwającą do końca etapu.
+279	Redukcja obrażeń muru
+280	Źródła obrażeń muru (łącznie {0})
+281	Najwięcej obrażeń muru zadał „{0}”: {1}
+282	Ulepszenie muru (obecne maks. HP {0})
+283	Mur: zostało {0}%
+284	Mur ≥50% daje 2 gwiazdki, ≥80% daje 3 gwiazdki.
+285	Przejdź, gdy murowi zostanie mniej niż 5% HP
+286	Mur wytrzymał do fali {0} / {1}.
+287	Obrażenia w czasie otrzymywane przez mur (zatrucie, trujący opar) −60%
+288	Obrażenia otrzymywane przez mur −3% / poziom.
+289	Obrażenia otrzymywane przez mur −{0}%
+290	Obrażenia otrzymywane przez mur −12%
+291	Obrażenia otrzymywane przez mur −3%
+292	Obrażenia otrzymywane przez mur −6%; leczenie muru +25%
+293	Naprawa muru
+294	HP muru
+295	ATK +20%, gdy HP muru jest poniżej 50%
+296	ATK +{0}%, gdy HP muru jest poniżej 50%
+297	Utrzymaj HP muru na poziomie co najmniej 70% i przejdź etap
+298	Mur ma tylko połowę HP
+299	Maks. HP muru +{0}%
+300	Buty Zwiadowcy
+301	Piec z Czerwonego Żelaza
+302	Płomienna Peleryna
+303	Szarża? Teraz szarżuję tylko na śmieci.
+304	Taran
+305	Wydał
+306	Sprzedaj
+307	Nowicjusz
+308	Pierwsze Kroki w Wieży
+309	Pierwszy Śnieg
+310	Egzekucja
+311	Macka
+312	Wszystkie macki schowały się w morzu!
+313	Ochrona z macek: zostało {0}, najpierw bij macki!
+314	Uderzenie Macką
+315	Zostało tylko macek: {0}, bij Bobo!
+316	Załóż
+317	Założone
+318	Przebicie
+319	Długi Łuk Przeszywacz Serc
+320	Strzała Przebijająca Chmury
+321	Pancerz noszony na ciele, dzięki któremu mur jest stabilniejszy.
+322	Noszone
+323	Legendarny
+324	Korona Genesis
+325	Kołczan Genesis
+326	Zbroja Genesis
+327	Łuk Genesis
+328	Szturchająca Igła
+329	Gruba Peleryna
+330	Szmaragdowa Łąka
+331	Nieprawidłowy tekst zapisu. Sprawdź, czy skopiowano całość
+332	Zapis zaimportowany
+333	Zapis wyczyszczony
+334	Pokonane Bossy przeprowadziły się do miasteczka. Dotknij ich, by usłyszeć, jak im się teraz wiedzie.
+335	Pokonałeś Króla Gulu! Okazuje się, że to najpilniejszy sprzątacz na łące. Czarny wiatr wieje z pustyni, ruszam w drogę.
+336	Pokonałeś wszystkie potwory na tym piętrze.
+337	Przerwij Bossa
+338	Przerwij Bossa co najmniej 2 razy i przejdź etap
+339	Przerwano!
+340	Mistrz Przerywania
+341	Ekspert Przerywania
+342	Wielki Boss
+343	Wielki Boss. Zamieć spowalnia szybkostrzelność, zamarznięty mur nie da się naprawić, a przy niskim HP przywołuje małe lodowe smoki.
+344	Wielki Boss. Zamrożenie, Zamieć, Lodowy Mur, jeszcze zimniej niż wcześniej.
+345	Wielki Boss. Trujący opar niszczy mur, przemienia sługi w mocniejsze wersje, a przy niskim HP przewraca kocioł i tworzy trujące kałuże.
+346	Wielki Boss. Wzbudza burze piaskowe, przywołuje mumie i je leczy, a przy niskim HP wznosi piramidalną tarczę, której boi się tylko magia.
+347	Wielki Boss. Przywołuje sługi; poniżej 60% HP szarżuje jak dzik, a skupiony ogień w czasie ostrzeżenia może go przerwać.
+348	Wielki Boss. Burza piaskowa, przywoływanie, leczenie, tarcza: trzy fazy, dużo trudniejszy niż wcześniej.
+349	Wielki biały włochacz z bardzo wysokim pancerzem fizycznym.
+350	Kocioł się przewrócił! Trujące kałuże przyspieszają potwory!
+351	Wielki wir! Wszystkie macki odrosły, a potwory są szybsze!
+352	Tryb dużego tekstu
+353	Zabierz: {0}
+354	Ochrona noszona na głowie.
+355	Pojedynczy strzał, stabilny, z dodatkową wbudowaną szansą na krytyk. Świetny na Bossy.
+356	Osiągnij combo 30 w jednej grze (pokonuj potwory w odstępach do 1,2 s)
+357	DPS na jeden cel
+358	Dzyń... dzyń... (trzęsąc się z zimna)... Przepraszam, samo dzwoni.
+359	Obecnie: {0} →
+360	Eksportuj zapis
+361	Importuj
+362	Importuj zapis
+363	Import nadpisze obecny postęp.
+364	Zatrzymaj się tu i zachowaj nagrodę
+365	Dotrzyj do fali 30, by odblokować osiągnięcie „Nigdy nie upadły” (1 złoto).
+366	Kołczan z Hakami
+367	Polegliśmy na piętrze {0} i nic nie zdobyliśmy. Bilet nie wraca.
+368	Przedmioty
+369	Co mi po przeprosinach! Bum bum bum!
+370	Ziemia unosi się... jak rozbite lustro.
+371	Mapa
+372	Amulet Trzęsienia
+373	Szczyt Doskonałości
+374	Czekaj! Jestem Atlas, syn kamieniarza. Mój tata łatał każde miejsce na murze, które zostało rozbite. Ty ruszaj w drogę, a ja będę pilnował muru!
+375	Za niski poziom, idź ulepszyć
+376	Leci nisko i bardzo szybko.
+377	Fala {0} / {1}
+378	Fala {0}
+379	Fala {0} · Rekord {1}
+380	Piętro {0}
+381	Piętro {0} · Fala {1} / {2} · zostało {3}
+382	Piętro {0}: naraz nadciąga królów demonów: {1} i sług: {2} (siła ×{3}). HP muru przechodzi z poprzedniego piętra bez odnowienia. Za pokonywanie potworów nic nie dostajesz, diamenty tylko za przejście pięter!
+383	Piętro {0} zaliczone!
+384	Etap {0}
+385	Etap {0} · {1}
+386	Etap {0} · {1} ({2})
+387	Od etapu 3: przejdź dowolny etap z pełnym HP muru
+388	Rozdział {0}
+389	Rozdział {0} · {1}
+390	Rozdział {0} ▾
+391	Nagroda za 3 gwiazdki w rozdziale {0}
+392	Boss rozdziału 6. Gburowata wielka chmura burzowa: przywołuje Kluski Gromu i Tęczowe Ptaki, ładuje pioruny, a na końcu wzbudza burzę.
+393	Boss rozdziału 7. Król Ośmiornic: ochrona z macek, leczenie przyssawkami i wielki wir na koniec. Najpierw bij macki!
+394	Czwarty tor
+395	Piąty tor
+396	Przedmiotów można używać dopiero po pojawieniu się pierwszej fali potworów
+397	Dotknij toru, by użyć (prawy przycisk lub Esc, by anulować)
+398	Dotknij, by założyć
+399	Dotyk Midasa
+400	Dotknij mnie, by użyć umiejętności!
+401	Porażenie obejmuje większy obszar i paraliżuje dłużej.
+402	Rzeźbiony Długi Łuk
+403	Dzyń!
+404	Bum... bum... nie... przejdziesz...
+405	Bum... Kleks... dziś... było... wesoło...
+406	Bum... on... zawsze... sam... bądź... dla niego... miły...
+407	Bum... ja... pilnuję... bramy...
+408	Bum... dziękuję... ci...
+409	Zamraża wszystkie potwory na 7 s, także Bossy. Zamrożone potwory dostają obrażenia ×2,2, a szybkostrzelność bohaterów rośnie o 60%.
+410	Zamraża wszystkie potwory na wybranym torze na 3 sekundy.
+411	Babcia Wywar
+412	Babcia Wywar wyszorowała kocioł i mówi, że odtąd będzie gotować tylko zupę dyniową. Północna kraina śniegu to chyba jedno ze źródeł Atramentu.
+413	Babcia Wywar przemienia sługi w mocniejsze wersje. Szybko czyść pole i weź Naprawę Muru na trujący opar!
+414	Babcia Wywar zaczyna gotować!
+415	Trująca Żaba
+416	Trujące Żaby siedzą z tyłu i plują jadem w mur. Ustaw cel na „Zagrożenie najpierw”, a bohaterowie będą je bić w pierwszej kolejności, gdy mur jest bezpieczny.
+417	Trujący opar! Mur ciągle traci HP
+418	Nie udało się wczytać zapisu
+419	Przeczytaj cały dziennik obrony (pominięte fragmenty możesz przeczytać ponownie w dzienniku)
+420	Ślizga się z dużą prędkością na brzuchu i mocno uderza w mur.
+421	Buty Sprintera
+422	Obrażenia wobec Bossów i latających potworów +30%
+423	Obrażenia wobec Bossów +{0}%
+424	Obrażenia wobec Bossów +12%, obrażenia otrzymywane przez mur −4%
+425	Obrażenia wobec Bossów +50%, ignoruje 20% pancerza
+426	P-przepraszam... to byłem ja.
+427	Obrażenia wobec spowolnionych lub zamrożonych potworów +15%
+428	Zadaje obrażenia magiczne ATK ×5 potworowi z największym aktualnym HP.
+429	Obrażenia wobec latających potworów +{0}%
+430	Zadaje obrażenia magiczne ATK ×2,5 wszystkim potworom na wybranym torze i je podpala.
+431	Zadaje obrażenia ATK ×5 wszystkim potworom na wybranym torze.
+432	Obrażenia +60% wobec potworów z HP poniżej 30%
+433	Wymień {0}
+434	Żółw z Tarczą
+435	Eskorta Żółwia z Tarczą
+436	Żółwie z Tarczą chronią pobliskie potwory. „Zagrożenie najpierw” celuje najpierw w nie; umiejętności nie podlegają ich ochronie.
+437	Tarcza
+438	Chowa się z tyłu i ciągle leczy pobliskie potwory. Zniszcz go najpierw!
+439	Miedziane gogle na jego czole świecą, a w plecaku bucha para.
+440	Wystrzeliwuje magiczne pociski, które po trafieniu wybuchają na małym obszarze. Obrażenia magiczne ignorują pancerz fizyczny.
+441	Gdy echo faraona zniknęło, zostało po nim małe ciasteczko. Nie odważyłem się go zjeść.
+442	Rozgwieżdżone Niebo
+443	W drodze powrotnej trafia od tyłu, ignorując drewniane tarcze
+444	Wróć
+445	Domy porwała woda? To gdzie oni teraz zamieszkają?
+446	Porzuć etap
+447	Porzuć wyzwanie
+448	Porzucić wyzwanie? Bilet nie wraca i nic nie dostaniesz.
+449	Latający
+450	Lata i co jakiś czas przeskakuje na sąsiedni tor.
+451	Lata, dryfując z wiatrem: 35% zwykłych ataków fizycznych broni jest unikanych. Magii i obrażeń obszarowych nie da się uniknąć.
+452	Latające najpierw
+453	Latająca Ryba
+454	Dystans skoku Latającej Ryby −50%
+455	Burza Latających Ryb
+456	Latające Ryby robią duży skok do przodu i w powietrzu nie można ich trafić. Biegną szybciej, niż wyglądają, więc Strefa Mrozu bardzo się przydaje!
+457	Skoki Latającej Ryby
+458	Lata w powietrzu i z daleka rzuca w mur kulami ognia.
+459	Podział
+460	Peleryna Burzy
+461	Kula Burzy
+462	Buty Wiatru
