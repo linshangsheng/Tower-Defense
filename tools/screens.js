@@ -15,9 +15,9 @@ if (outDir) fs.mkdirSync(outDir, { recursive: true });
 // [名字, 在页面里执行的步骤（返回 true 表示关键元素存在）, 传给步骤的参数]
 // 步骤函数会被序列化到浏览器里执行，不能引用外层变量，参数要通过第三项传进去
 const STEPS = [
-  ['title', () => (TD.ui.showTitle(), !!document.querySelector('.title-foot'))],
+  ['title', () => (TD.ui.showTitle(), !!document.querySelector('.title-foot') && [...document.querySelectorAll('.title-buttons .btn')].some((b) => b.textContent === '退出游戏'))],
   ['difficulty', () => (TD.ui.chooseDifficulty(() => {}), !!document.querySelector('.diff-card'))],
-  ['settings', () => (TD.ui.showSettings(), document.querySelectorAll('.volume-row').length === 2)],
+  ['settings', () => (TD.ui.showSettings(), document.querySelectorAll('.volume-row').length === 2 && ![...document.querySelectorAll('.modal button')].some((b) => b.textContent.includes('测试')))],
   ['help', () => (TD.ui.showHelp(), !!document.querySelector('.modal'))],
   ['export', () => (TD.ui.showExport(), !!document.querySelector('textarea'))],
   ['import', () => (TD.ui.showImport(), !!document.querySelector('textarea'))],

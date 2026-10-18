@@ -170,11 +170,44 @@
         h('button', { class: 'btn big primary', onclick: () => (sfx('click'), has || game.save.settings.diffChosen ? UI.showMap() : UI.chooseDifficulty(() => UI.showMap())) }, has ? '继续游戏' : '开始游戏'),
         h('div', { class: 'btn-row' }, h('button', { class: 'btn', style: { flex: 1 }, onclick: () => (sfx('click'), UI.showBestiary()) }, '图鉴'), h('button', { class: 'btn', style: { flex: 1 }, onclick: () => (sfx('click'), UI.showAchievements()) }, '成就')),
         h('button', { class: 'btn', onclick: () => (sfx('click'), UI.showSettings()) }, '设置'),
-        h('button', { class: 'btn', onclick: () => (sfx('click'), UI.showHelp()) }, '玩法说明')
+        h('button', { class: 'btn', onclick: () => (sfx('click'), UI.showHelp()) }, '玩法说明'),
+        h('button', { class: 'btn quit', onclick: () => (sfx('click'), UI.quitGame()) }, '退出游戏')
       ),
       h('div', { class: 'title-foot' }, `网页原型 ${C.version} · ${D.chapters.length} 章 ${Object.keys(D.levels).length} 关`)
     );
     root.appendChild(screenEl);
+  };
+
+  // 退出游戏（v0.73）：存好档、停掉音乐、退出全屏，然后关闭窗口。
+  // 用启动图标（独立窗口）打开的游戏能直接关掉；在普通浏览器标签页里网页没有权限关自己，只能提示玩家关标签页。
+  UI.quitGame = function () {
+    UI.confirm('退出游戏吗？进度已经自动保存。', () => {
+      game.persist();
+      try {
+        TD.music.stop && TD.music.stop();
+      } catch (e) {}
+      const d = document;
+      if (d.fullscreenElement && d.exitFullscreen) {
+        try {
+          d.exitFullscreen();
+        } catch (e) {}
+      }
+      window.close();
+      // 关得掉的话页面已经没了；还在，说明是普通标签页，网页不能关它
+      setTimeout(() => {
+        UI.closeModal();
+        modal(
+          h(
+            'div',
+            null,
+            h('h2', null, '请手动关闭'),
+            h('p', { class: 'hint' }, '进度已保存。浏览器不允许网页关闭自己所在的标签页，请直接关闭这个标签页或窗口。（用桌面上的「最后的堡垒」图标打开游戏时，这个按钮可以直接关闭游戏。）'),
+            h('div', { class: 'modal-buttons' }, h('button', { class: 'btn primary', onclick: UI.closeModal }, '好的'))
+          ),
+          { closeOnBack: true }
+        );
+      }, 400);
+    });
   };
 
   UI.chooseDifficulty = function (onDone) {
@@ -365,27 +398,6 @@
         )
       ),
       h('div', { class: 'hint credits' }, '音乐采样：FluidR3_GM 音色库（Frank Wen），CC BY 3.0，经 gleitz/midi-js-soundfonts 取得'),
-      // 测试工具（设计书 68.4）：想试装备、武器时用；只改当前浏览器里的存档
-      h(
-        'div',
-        { class: 'row' },
-        h(
-          'button',
-          {
-            class: 'btn small',
-            title: '测试用：铜、银、金、钻石都设成最大值',
-            onclick: () =>
-              UI.confirm(`测试工具：把铜币、银币、金币都设成 ${P.MAX_CURRENCY.toLocaleString()}，钻石设成 ${P.MAX_DIAMOND.toLocaleString()}？（只改这个浏览器里的存档，可以随时在上面「清空存档」重来）`, () => {
-                P.maxResources(game.save);
-                game.persist();
-                sfx('coin');
-                UI.toast('资源已拉满');
-                UI.refreshShop && UI.refreshShop();
-              }),
-          },
-          '测试：资源拉满'
-        )
-      ),
       h(
         'div',
         { class: 'row' },
