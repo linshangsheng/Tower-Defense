@@ -275,6 +275,19 @@
         }),
         ' 全屏（打开游戏后第一次点击自动进入）'
       ),
+      h(
+        'label',
+        { class: 'row' },
+        h('input', {
+          type: 'checkbox',
+          checked: s.darkEyes ? true : null,
+          onchange: (e) => {
+            s.darkEyes = e.target.checked;
+            game.persist();
+          },
+        }),
+        ' 暗夜里显示怪物的眼睛（默认关，全黑）'
+      ),
       // 音量（设计书 49）
       ...[
         ['sfxVolume', '音效音量', (v) => (TD.audio.setVolume(v / 100), sfx('click'))],

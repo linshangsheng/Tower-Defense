@@ -514,8 +514,10 @@
       if (b && b.time < this.fogUntil) this.drawFog(b);
       if (b && b.level.dark) this.drawDarkness(b);
       else if (this.theme.swamp) this.drawMist();
-      if (this.theme.snow) this.drawSnowfall(b && b.time < this.blizzardUntil);
-      if (this.theme.lava) this.drawEmbers();
+      // 暗夜里不画雪和飘浮的火星（它们会在黑暗里发亮，破坏全黑，设计书 69.2）
+      const night = !!(b && b.level.dark);
+      if (this.theme.snow && !night) this.drawSnowfall(b && b.time < this.blizzardUntil);
+      if (this.theme.lava && !night) this.drawEmbers();
       if (b && b.storm) this.drawStormRain();
       if (b && b.whirl) this.drawWhirl();
       if (b && b.wallShield > 0) {
@@ -1930,7 +1932,7 @@
       }
       if (dark) {
         // 黑暗中只看得见一双发光的眼睛（在黑幕之后画）
-        if (!m.hidden && !m.stealthed) this.darkEyes.push({ x, y, size: def.size, id: m.id, flying: def.flying });
+        if (!m.hidden && !m.stealthed && this.showDarkEyes()) this.darkEyes.push({ x, y, size: def.size, id: m.id, flying: def.flying });
         ctx.restore();
         return;
       }
@@ -2537,6 +2539,12 @@
     }
 
     // 暗夜（设计书 57.2）：一块几乎全黑的幕布，只有火把、飞行中的箭、命中火花、爆炸和闪电能在上面"挖"出光
+    // 暗夜里是否显示怪物的眼睛：默认不显示（真正的全黑，设计书 69），设置里可以打开
+    showDarkEyes() {
+      const g = TD.game;
+      return !!(g && g.save && g.save.settings && g.save.settings.darkEyes);
+    }
+
     drawDarkness(b) {
       const ctx = this.ctx;
       const K = 0.5; // 半分辨率画遮罩，放大后边缘本来就是柔的
@@ -2552,7 +2560,7 @@
       // 全屏闪光（雷霆等）会让黑幕整体变薄
       let flash = 0;
       for (const f of this.fx) if (f.kind === 'flash' && f.age >= 0) flash = Math.max(flash, (1 - f.age / f.life) * 0.55);
-      dc.fillStyle = `rgba(3,2,10,${0.98 - flash})`;
+      dc.fillStyle = `rgba(0,0,0,${1 - flash})`;
       dc.fillRect(0, 0, C.width * K, C.height * K);
       dc.scale(K, K);
       dc.globalCompositeOperation = 'destination-out';
