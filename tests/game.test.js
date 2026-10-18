@@ -2313,25 +2313,28 @@ test('补给：每 3 波一次（最多 4 次）；三档品质；越往后稀�
   assert.deepStrictEqual(mk(12).supplyWaves, [1, 4, 7, 10]);
   assert.strictEqual(mk(20).supplyWaves.length, 4);
   for (const [id, sup] of Object.entries(D.supplies)) assert.ok(!sup.rarity || D.supplyRarity[sup.rarity], id);
-  const count = (r) => Object.values(D.supplies).filter((x) => (x.rarity || 'common') === r).length;
-  assert.ok(count('common') >= 8 && count('rare') >= 6 && count('epic') >= 4);
-  // 统计：第 1 次和第 4 次补给里，史诗的比例
-  const share = (k) => {
-    let epic = 0;
-    let total = 0;
-    for (let seed = 1; seed <= 400; seed++) {
+  const count = (r) => Object.values(D.supplies).filter((x) => (x.rarity || 'blue') === r).length;
+  assert.deepStrictEqual(Object.keys(D.supplyRarity), ['blue', 'purple', 'red', 'gold'], '四档，从低到高');
+  assert.ok(count('blue') >= 8 && count('purple') >= 6 && count('red') >= 4 && count('gold') >= 4);
+  // 权重：每次补给都是 蓝 > 紫 > 红 > 金，而且越往后高品质越多
+  for (const w of D.supplyWeights) assert.ok(w[0] > w[1] && w[1] > w[2] && w[2] > w[3], '品质越高概率越低：' + w);
+  for (let k = 1; k < D.supplyWeights.length; k++) assert.ok(D.supplyWeights[k][3] > D.supplyWeights[k - 1][3] && D.supplyWeights[k][0] < D.supplyWeights[k - 1][0]);
+  // 统计：第 1 次补给里各档出现的次数递减；第 4 次补给的红 + 金明显更多
+  const tally = (k) => {
+    const t = { blue: 0, purple: 0, red: 0, gold: 0 };
+    for (let seed = 1; seed <= 1500; seed++) {
       const b = mk(10);
       b.rng = TD.util.rng(seed);
       b.supplyPicked = new Array(k).fill('x');
       b.offerSupply();
-      for (const id of b.pendingSupply) {
-        total++;
-        if (D.supplies[id].rarity === 'epic') epic++;
-      }
+      for (const id of b.pendingSupply) t[D.supplies[id].rarity || 'blue']++;
     }
-    return epic / total;
+    return t;
   };
-  assert.ok(share(3) > share(0) + 0.1, `第 4 次补给的史诗比例应明显更高：${share(0)} → ${share(3)}`);
+  const t0 = tally(0);
+  assert.ok(t0.blue > t0.purple && t0.purple > t0.red && t0.red > t0.gold && t0.gold > 0, `第 1 次补给各档次数应递减：${JSON.stringify(t0)}`);
+  const t3 = tally(3);
+  assert.ok(t3.red + t3.gold > (t0.red + t0.gold) * 2, `第 4 次补给红 + 金应明显更多：${JSON.stringify(t0)} → ${JSON.stringify(t3)}`);
 });
 
 function supplyBattle(extra) {
@@ -2429,4 +2432,37 @@ test('补给：所有补给卡都能被机器人选中并跑完整场战斗不�
     b.pendingSupply = null;
     assert.ok(b.runToEnd(), id);
   }
+});
+
+test('补给卡（金）：神圣庇佑复活一次；狂暴全属性；时光沙漏刷新冷却；天火降临每波开始后落下', () => {
+  const take = (b, id) => {
+    b.pendingSupply = [id];
+    assert.ok(b.chooseSupply(id));
+  };
+  let b = supplyBattle();
+  take(b, 'aegis');
+  b.hitWall(b.wall.max * 5);
+  assert.ok(!b.over, '第一次被打倒时复活');
+  assert.ok(Math.abs(b.wall.hp - b.wall.max * 0.6) < 1e-6);
+  b.hitWall(b.wall.max * 5);
+  assert.ok(b.over, '只复活一次');
+
+  b = supplyBattle();
+  const a0 = b.atk;
+  const asp0 = b.currentAspd();
+  take(b, 'frenzy');
+  assert.ok(Math.abs(b.atk / a0 - 1.35) < 1e-9 && Math.abs(b.currentAspd() / asp0 - 1.25) < 0.01);
+
+  b = supplyBattle();
+  b.skills[0].cd = 60;
+  take(b, 'hourglass');
+  assert.strictEqual(b.skills[0].cd, 0);
+  assert.ok(Math.abs(b.mods.cdMult + 0.4) < 1e-9);
+
+  b = supplyBattle();
+  take(b, 'skyfire');
+  assert.ok(b.mods.waveStrike);
+  const n0 = b.delayed.length;
+  b.startWave(b.waveIndex + 1);
+  assert.ok(b.delayed.length > n0, '每波开始时安排一次天火');
 });

@@ -89,7 +89,7 @@
       this.waveStartTime = 0;
 
       // 战场补给（设计书 2.7）
-      this.mods = { atkMult: 0, aspdMult: 0, crit: 0, critDmg: 0, cdMult: 0, copperBonus: 0, wallDr: 0, range: 0, slowOnHit: 0, magicMult: 0, armorIgnore: 0, dotReduce: 0, spiritPierce: 0, chillResist: 0, igniteOnHit: 0, fireproof: 0, reveal: 0, woolCut: 0, stunImmune: 0, dodgeCut: 0, slowAll: 0, shellCut: 0, pinPop: 0, leapCut: 0, bossDmg: 0, flyDmg: 0, slowedDmg: 0, igniteChance: 0, darkSight: 0, frostExt: 0, mendBonus: 0, lowWallAtk: 0, healBonus: 0, waveShield: 0, execute: 0, killHeal: 0, chainChance: 0 };
+      this.mods = { atkMult: 0, aspdMult: 0, crit: 0, critDmg: 0, cdMult: 0, copperBonus: 0, wallDr: 0, range: 0, slowOnHit: 0, magicMult: 0, armorIgnore: 0, dotReduce: 0, spiritPierce: 0, chillResist: 0, igniteOnHit: 0, fireproof: 0, reveal: 0, woolCut: 0, stunImmune: 0, dodgeCut: 0, slowAll: 0, shellCut: 0, pinPop: 0, leapCut: 0, bossDmg: 0, flyDmg: 0, slowedDmg: 0, igniteChance: 0, darkSight: 0, frostExt: 0, mendBonus: 0, lowWallAtk: 0, healBonus: 0, waveShield: 0, execute: 0, killHeal: 0, chainChance: 0, revive: 0, waveStrike: 0 };
       // 装备和套装的特殊效果（设计书 58）
       const gm = this.stats.gearMods || {};
       for (const k of Object.keys(gm)) this.mods[k] = (this.mods[k] || 0) + gm[k];
@@ -183,17 +183,22 @@
         if (D.supplies[id].minLevel && this.stage < D.supplies[id].minLevel) return false;
         return true;
       });
-      // 按档抽卡：越往后的补给，稀有 / 史诗越多；抽不到的档位回退到别的档（设计书 71.5）
+      // 按档抽卡（设计书 73）：蓝 / 紫 / 红 / 金，品质越高概率越低；抽不到的档位回退到别的档
       const W = D.supplyWeights[Math.min(D.supplyWeights.length - 1, this.supplyPicked.length)];
-      const tiers = ['common', 'rare', 'epic'];
+      const tiers = ['blue', 'purple', 'red', 'gold'];
       const choices = [];
       while (choices.length < 3 && all.length) {
         let r = this.rng() * W.reduce((a, b) => a + b, 0);
         let tier = 0;
-        while (tier < 2 && r >= W[tier]) r -= W[tier++];
-        let pool = all.filter((id) => (D.supplies[id].rarity || 'common') === tiers[tier]);
+        while (tier < tiers.length - 1 && r >= W[tier]) r -= W[tier++];
+        let pool = all.filter((id) => (D.supplies[id].rarity || 'blue') === tiers[tier]);
         if (!pool.length) pool = all;
-        const id = pool[this.rng.int(pool.length)];
+        // 章节专用克制卡被抽到的机会减半，免得蓝档里全是它们
+        const wts = pool.map((id) => (D.supplies[id].minLevel ? 0.5 : 1));
+        let x = this.rng() * wts.reduce((a, b) => a + b, 0);
+        let k = 0;
+        while (k < pool.length - 1 && x >= wts[k]) x -= wts[k++];
+        const id = pool[k];
         all.splice(all.indexOf(id), 1);
         choices.push(id);
       }
@@ -263,6 +268,8 @@
     startWave(i) {
       this.waveIndex = i;
       for (const d of this.delayed) if (d.at === null) d.at = this.time + d.def.after;
+      // 天火降临：之后每一波开始 6 秒后落下
+      if (this.mods.waveStrike) this.delayed.push({ kind: 'airstrike', def: { after: 6, atkMult: 4 }, at: this.time + 6 });
       const wave = this.level.waves[i];
       if (wave.D) this.D = wave.D; // 无尽模式：每波有自己的难度
       // countMult：自动平衡工具（tools/tune.js）写入的每关数量倍率，Boss 不受影响
@@ -720,7 +727,14 @@
       const by = who || (m && m.type) || 'boss';
       this.report.wallBy[by] = (this.report.wallBy[by] || 0) + dmg;
       this.emit('wallHit', { amount: dmg, m, big: !!big, kind });
-      if (this.wall.hp <= 0) this.finish(false);
+      if (this.wall.hp <= 0) {
+        // 神圣庇佑：第一次被打倒时复活（只有一次）
+        if (this.mods.revive && !this.revived) {
+          this.revived = true;
+          this.wall.hp = this.wall.max * 0.6;
+          this.emit('wallHeal', { amount: this.wall.hp, src: 'aegis' });
+        } else this.finish(false);
+      }
     }
 
     healWall(amount, src) {

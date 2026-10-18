@@ -2629,11 +2629,18 @@ select option {
   font-weight: bold;
   color: #0b1020;
 }
-.supply-card.rar-rare {
-  box-shadow: 0 0 14px rgba(90, 168, 255, 0.35);
+.supply-card.rar-blue {
+  box-shadow: 0 0 10px rgba(90, 168, 255, 0.3);
 }
-.supply-card.rar-epic {
-  box-shadow: 0 0 18px rgba(192, 122, 255, 0.5);
+.supply-card.rar-purple {
+  box-shadow: 0 0 14px rgba(192, 122, 255, 0.45);
+}
+.supply-card.rar-red {
+  box-shadow: 0 0 18px rgba(255, 90, 79, 0.55);
+}
+.supply-card.rar-gold {
+  box-shadow: 0 0 24px rgba(255, 200, 58, 0.75);
+  background: linear-gradient(180deg, rgba(255, 200, 58, 0.14), transparent 60%);
 }
 
 /* ---------- 角色衣柜（设计书 72） ---------- */

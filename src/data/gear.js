@@ -294,7 +294,7 @@
     shineHelm: {
       name: '闪光盔',
       slot: 'helm',
-      rarity: 'rare',
+      rarity: 'purple',
       cost: { silver: 6 },
       stats: { atkFlat: 5, crit: 0.05 },
       desc: '攻击力 +5，暴击率 +5%',
@@ -311,32 +311,32 @@
     starCape: {
       name: '星光披风',
       slot: 'cape',
-      rarity: 'rare',
+      rarity: 'purple',
       cost: { silver: 8 },
       stats: { aspdPct: 0.15, wallDr: 0.1 },
       desc: '攻击速度 +15%，城墙受到伤害 −10%',
     },
     clover: { name: '四叶草', slot: 'trinket', rarity: 'common', cost: { copper: 100 }, stats: { luck: 0.15 }, desc: '幸运 +15%' },
     fang: { name: '狼牙项链', slot: 'trinket', rarity: 'common', cost: { copper: 140 }, stats: { critDmg: 0.25 }, desc: '暴击伤害 +25%' },
-    eagleEye: { name: '鹰眼坠', slot: 'trinket', rarity: 'rare', cost: { silver: 6 }, stats: { rangePct: 0.1 }, desc: '射程 +10%' },
+    eagleEye: { name: '鹰眼坠', slot: 'trinket', rarity: 'purple', cost: { silver: 6 }, stats: { rangePct: 0.1 }, desc: '射程 +10%' },
 
     // ---- v0.50 装备扩充（设计书 58）：minLevel = 推荐关卡（只是提示，买得起就能买，设计书 66）；mods 进入战斗时并入战场修正 ----
-    dragonHelm: { name: '屠龙盔', slot: 'helm', rarity: 'rare', cost: { silver: 7 }, minLevel: 10, stats: { atkFlat: 3 }, mods: { bossDmg: 0.2 }, desc: '攻击力 +3；对 Boss（含触手）伤害 +20%' },
-    owlHelm: { name: '夜枭盔', slot: 'helm', rarity: 'rare', cost: { silver: 6 }, minLevel: 20, stats: { crit: 0.04 }, mods: { darkSight: 0.5 }, desc: '暴击率 +4%；暗夜关的射程惩罚减半' },
-    frostHelm: { name: '寒铁盔', slot: 'helm', rarity: 'rare', cost: { silver: 7 }, minLevel: 30, stats: { atkFlat: 3 }, mods: { frostExt: 0.3 }, set: 'frost', desc: '攻击力 +3；冰冻领域、冰冻瓶持续时间 +30%' },
+    dragonHelm: { name: '屠龙盔', slot: 'helm', rarity: 'purple', cost: { silver: 7 }, minLevel: 10, stats: { atkFlat: 3 }, mods: { bossDmg: 0.2 }, desc: '攻击力 +3；对 Boss（含触手）伤害 +20%' },
+    owlHelm: { name: '夜枭盔', slot: 'helm', rarity: 'purple', cost: { silver: 6 }, minLevel: 20, stats: { crit: 0.04 }, mods: { darkSight: 0.5 }, desc: '暴击率 +4%；暗夜关的射程惩罚减半' },
+    frostHelm: { name: '寒铁盔', slot: 'helm', rarity: 'purple', cost: { silver: 7 }, minLevel: 30, stats: { atkFlat: 3 }, mods: { frostExt: 0.3 }, set: 'frost', desc: '攻击力 +3；冰冻领域、冰冻瓶持续时间 +30%' },
     windCape: { name: '疾风披风', slot: 'cape', rarity: 'common', cost: { copper: 260 }, minLevel: 4, stats: { aspdPct: 0.06 }, mods: { flyDmg: 0.15 }, desc: '攻击速度 +6%；对飞行怪伤害 +15%' },
-    emberCape: { name: '余烬斗篷', slot: 'cape', rarity: 'rare', cost: { silver: 8 }, minLevel: 40, stats: { aspdPct: 0.08 }, mods: { igniteChance: 0.2 }, desc: '攻击速度 +8%；普通攻击 20% 几率点燃目标' },
-    tideCape: { name: '潮汐斗篷', slot: 'cape', rarity: 'rare', cost: { silver: 8 }, minLevel: 60, stats: { aspdPct: 0.08, wallDr: 0.08 }, mods: { mendBonus: 0.02 }, set: 'tide', desc: '攻击速度 +8%，城墙受到伤害 −8%；每波结束城墙多回复 2%' },
+    emberCape: { name: '余烬斗篷', slot: 'cape', rarity: 'purple', cost: { silver: 8 }, minLevel: 40, stats: { aspdPct: 0.08 }, mods: { igniteChance: 0.2 }, desc: '攻击速度 +8%；普通攻击 20% 几率点燃目标' },
+    tideCape: { name: '潮汐斗篷', slot: 'cape', rarity: 'purple', cost: { silver: 8 }, minLevel: 60, stats: { aspdPct: 0.08, wallDr: 0.08 }, mods: { mendBonus: 0.02 }, set: 'tide', desc: '攻击速度 +8%，城墙受到伤害 −8%；每波结束城墙多回复 2%' },
     leatherQuiver: { name: '皮箭袋', slot: 'quiver', rarity: 'common', cost: { copper: 500 }, minLevel: 15, stats: { critDmg: 0.15 }, desc: '暴击伤害 +15%' },
     barbQuiver: { name: '倒钩箭袋', slot: 'quiver', rarity: 'common', cost: { copper: 700 }, minLevel: 15, stats: { atkPct: 0.05 }, desc: '攻击力 +5%' },
-    pierceQuiver: { name: '破甲箭袋', slot: 'quiver', rarity: 'rare', cost: { silver: 6 }, minLevel: 15, stats: {}, mods: { armorIgnore: 0.2 }, desc: '无视目标 20% 护甲' },
-    spiritQuiver: { name: '灵光箭袋', slot: 'quiver', rarity: 'rare', cost: { silver: 6 }, minLevel: 21, stats: { crit: 0.03 }, mods: { spiritPierce: 0.25 }, desc: '暴击率 +3%；物理伤害对灵体的效果 +25%' },
-    frostQuiver: { name: '霜羽箭袋', slot: 'quiver', rarity: 'rare', cost: { silver: 6 }, minLevel: 30, stats: {}, mods: { slowOnHit: 0.15 }, set: 'frost', desc: '普通攻击使目标减速 15%（1.5 秒）' },
+    pierceQuiver: { name: '破甲箭袋', slot: 'quiver', rarity: 'purple', cost: { silver: 6 }, minLevel: 15, stats: {}, mods: { armorIgnore: 0.2 }, desc: '无视目标 20% 护甲' },
+    spiritQuiver: { name: '灵光箭袋', slot: 'quiver', rarity: 'purple', cost: { silver: 6 }, minLevel: 21, stats: { crit: 0.03 }, mods: { spiritPierce: 0.25 }, desc: '暴击率 +3%；物理伤害对灵体的效果 +25%' },
+    frostQuiver: { name: '霜羽箭袋', slot: 'quiver', rarity: 'purple', cost: { silver: 6 }, minLevel: 30, stats: {}, mods: { slowOnHit: 0.15 }, set: 'frost', desc: '普通攻击使目标减速 15%（1.5 秒）' },
     thunderQuiver: { name: '雷鸣箭袋', slot: 'quiver', rarity: 'legend', cost: { gold: 3 }, minLevel: 25, stats: {}, zap: { every: 6, atkMult: 1.5 }, desc: '每第 6 次攻击，一道小闪电落在目标身上，额外造成攻击力 ×1.5 的魔法伤害' },
     coinCharm: { name: '招财坠', slot: 'trinket', rarity: 'common', cost: { copper: 180 }, minLevel: 6, stats: {}, mods: { copperBonus: 0.1 }, desc: '本关铜币收益 +10%' },
-    rageBadge: { name: '背水徽章', slot: 'trinket', rarity: 'rare', cost: { silver: 6 }, minLevel: 15, stats: {}, mods: { lowWallAtk: 0.2 }, desc: '城墙血量低于 50% 时，攻击力 +20%' },
+    rageBadge: { name: '背水徽章', slot: 'trinket', rarity: 'purple', cost: { silver: 6 }, minLevel: 15, stats: {}, mods: { lowWallAtk: 0.2 }, desc: '城墙血量低于 50% 时，攻击力 +20%' },
     hourglass: { name: '时之沙漏', slot: 'trinket', rarity: 'legend', cost: { gold: 3 }, minLevel: 35, stats: {}, mods: { cdMult: -0.15 }, desc: '主动技能冷却 −15%' },
-    shellCharm: { name: '贝壳护符', slot: 'trinket', rarity: 'rare', cost: { silver: 6 }, minLevel: 61, stats: { wallDr: 0.06 }, mods: { healBonus: 0.25 }, set: 'tide', desc: '城墙受到伤害 −6%；城墙回血效果 +25%' },
+    shellCharm: { name: '贝壳护符', slot: 'trinket', rarity: 'purple', cost: { silver: 6 }, minLevel: 61, stats: { wallDr: 0.06 }, mods: { healBonus: 0.25 }, set: 'tide', desc: '城墙受到伤害 −6%；城墙回血效果 +25%' },
   };
 
   TD.data.equipSlots = { helm: '头盔', cape: '披风', quiver: '箭袋', trinket: '饰品' };
@@ -358,21 +358,22 @@
   };
 
   // 战场补给卡（设计书 2.7、18.12、71.5）：mods 中的字段由战斗逻辑读取
-  // rarity：common 普通 / rare 稀有 / epic 史诗；instant：选完立即生效的一次性效果；minLevel：到这一章才会出现的专用克制卡
+  // rarity：blue 蓝 / purple 紫 / red 红 / gold 金（从低到高，越高越强、越难遇到）；instant：选完立即生效的一次性效果；minLevel：到这一章才会出现的专用克制卡
   TD.data.supplyRarity = {
-    common: { name: '普通', color: '#cfd8e6' },
-    rare: { name: '稀有', color: '#5aa8ff' },
-    epic: { name: '史诗', color: '#c07aff' },
+    blue: { name: '蓝', color: '#5aa8ff' },
+    purple: { name: '紫', color: '#c07aff' },
+    red: { name: '红', color: '#ff5a4f' },
+    gold: { name: '金', color: '#ffc83a' },
   };
-  // 第 1、2、3、4 次补给时，出普通 / 稀有 / 史诗的权重
+  // 第 1、2、3、4 次补给时，出蓝 / 紫 / 红 / 金的权重：品质越高概率越低；越往后高品质的比例略升，但永远是蓝 > 紫 > 红 > 金
   TD.data.supplyWeights = [
-    [60, 32, 8],
-    [45, 40, 15],
-    [30, 45, 25],
-    [20, 45, 35],
+    [62, 27, 9, 2],
+    [52, 29, 14, 5],
+    [43, 30, 18, 9],
+    [36, 30, 21, 13],
   ];
   TD.data.supplies = {
-    // —— 普通：稳定的小强化 ——
+    // —— 蓝：稳定的小强化（没写 rarity 的都是蓝）——
     sharp: { name: '磨利箭头', desc: '攻击力 +12%', mods: { atkMult: 0.12 }, icon: 'arrowUp' },
     quick: { name: '灵巧手指', desc: '攻击速度 +12%', mods: { aspdMult: 0.12 }, icon: 'haste' },
     eagle: { name: '鹰之眼', desc: '暴击率 +8%', mods: { crit: 0.08 }, icon: 'eye' },
@@ -384,22 +385,27 @@
     farsight: { name: '远望', desc: '射程 +12%', mods: { range: 0.12 }, icon: 'eye' },
     arcane: { name: '奥术涌动', desc: '魔法伤害 +25%', mods: { magicMult: 0.25 }, icon: 'staff', minLevel: 11 },
     breaker: { name: '破甲箭头', desc: '无视目标 25% 护甲', mods: { armorIgnore: 0.25 }, icon: 'cannon', minLevel: 11 },
-    // —— 稀有：效果明显的强化，或立刻生效的一次性好处 ——
-    hospital: { name: '战地医院', desc: '立刻回复城墙 45%', mods: {}, heal: 0.45, rarity: 'rare', icon: 'patch' },
-    airstrike: { name: '空袭', desc: '下一波开始 8 秒后，对全场所有怪造成攻击力 ×6 的魔法伤害', mods: {}, delayed: { kind: 'airstrike', after: 8, atkMult: 6 }, rarity: 'rare', icon: 'cannon' },
-    coldSnap: { name: '冰封令', desc: '下一波开始 10 秒后，冻住全场怪物 4 秒（Boss 1.5 秒）', mods: {}, delayed: { kind: 'coldSnap', after: 10, dur: 4, bossDur: 1.5 }, rarity: 'rare', icon: 'freeze' },
-    warDrum: { name: '战鼓雷鸣', desc: '立刻刷新全部技能冷却，攻击力 +35%，持续 30 秒', mods: {}, refresh: true, buff: { atk: 0.35, dur: 30 }, needSkills: true, rarity: 'rare', icon: 'master' },
-    executioner: { name: '处决', desc: '对血量低于 30% 的怪，伤害 +60%', mods: { execute: 0.6 }, rarity: 'rare', icon: 'fury' },
-    mender: { name: '回春箭', desc: '每击杀一只怪，城墙回复 0.3% 最大血量', mods: { killHeal: 0.003 }, rarity: 'rare', icon: 'repair' },
-    hunter: { name: '猎手本能', desc: '对 Boss 和飞行怪伤害 +30%', mods: { bossDmg: 0.3, flyDmg: 0.3 }, rarity: 'rare', icon: 'eye' },
-    ember: { name: '烈焰附魔', desc: '普通攻击 30% 几率点燃目标', mods: { igniteChance: 0.3 }, rarity: 'rare', icon: 'fury' },
-    // —— 史诗：改变打法的强力卡 ——
-    fortress: { name: '铜墙铁壁', desc: '每一波开始时，城墙获得相当于 12% 最大血量的护盾；城墙受到伤害 −10%', mods: { waveShield: 0.12, wallDr: 0.1 }, rarity: 'epic', icon: 'repair' },
-    chain: { name: '连锁闪电', desc: '普通攻击 25% 几率放出一道闪电，跳 3 个目标，各造成攻击力 ×0.6 的魔法伤害', mods: { chainChance: 0.25 }, rarity: 'epic', icon: 'staff' },
-    godslayer: { name: '弑神', desc: '对 Boss 伤害 +50%，无视 20% 护甲', mods: { bossDmg: 0.5, armorIgnore: 0.2 }, rarity: 'epic', icon: 'cannon' },
-    overdrive: { name: '全面强化', desc: '攻击力 +20%，攻击速度 +15%，暴击率 +8%', mods: { atkMult: 0.2, aspdMult: 0.15, crit: 0.08 }, rarity: 'epic', icon: 'arrowUp' },
-    midas: { name: '点石成金', desc: '本关铜币收益 +60%，并立刻获得一笔铜币', mods: { copperBonus: 0.6 }, copperNow: true, rarity: 'epic', icon: 'purse' },
-    // —— 章节专用克制卡（普通档，到对应章节才会出现） ——
+    // —— 紫：效果明显的强化，或立刻生效的一次性好处 ——
+    hospital: { name: '战地医院', desc: '立刻回复城墙 45%', mods: {}, heal: 0.45, rarity: 'purple', icon: 'patch' },
+    airstrike: { name: '空袭', desc: '下一波开始 8 秒后，对全场所有怪造成攻击力 ×6 的魔法伤害', mods: {}, delayed: { kind: 'airstrike', after: 8, atkMult: 6 }, rarity: 'purple', icon: 'cannon' },
+    coldSnap: { name: '冰封令', desc: '下一波开始 10 秒后，冻住全场怪物 4 秒（Boss 1.5 秒）', mods: {}, delayed: { kind: 'coldSnap', after: 10, dur: 4, bossDur: 1.5 }, rarity: 'purple', icon: 'freeze' },
+    warDrum: { name: '战鼓雷鸣', desc: '立刻刷新全部技能冷却，攻击力 +35%，持续 30 秒', mods: {}, refresh: true, buff: { atk: 0.35, dur: 30 }, needSkills: true, rarity: 'purple', icon: 'master' },
+    executioner: { name: '处决', desc: '对血量低于 30% 的怪，伤害 +60%', mods: { execute: 0.6 }, rarity: 'purple', icon: 'fury' },
+    mender: { name: '回春箭', desc: '每击杀一只怪，城墙回复 0.3% 最大血量', mods: { killHeal: 0.003 }, rarity: 'purple', icon: 'repair' },
+    hunter: { name: '猎手本能', desc: '对 Boss 和飞行怪伤害 +30%', mods: { bossDmg: 0.3, flyDmg: 0.3 }, rarity: 'purple', icon: 'eye' },
+    ember: { name: '烈焰附魔', desc: '普通攻击 30% 几率点燃目标', mods: { igniteChance: 0.3 }, rarity: 'purple', icon: 'fury' },
+    // —— 红：改变打法的强力卡 ——
+    fortress: { name: '铜墙铁壁', desc: '每一波开始时，城墙获得相当于 12% 最大血量的护盾；城墙受到伤害 −10%', mods: { waveShield: 0.12, wallDr: 0.1 }, rarity: 'red', icon: 'repair' },
+    chain: { name: '连锁闪电', desc: '普通攻击 25% 几率放出一道闪电，跳 3 个目标，各造成攻击力 ×0.6 的魔法伤害', mods: { chainChance: 0.25 }, rarity: 'red', icon: 'staff' },
+    godslayer: { name: '弑神', desc: '对 Boss 伤害 +50%，无视 20% 护甲', mods: { bossDmg: 0.5, armorIgnore: 0.2 }, rarity: 'red', icon: 'cannon' },
+    overdrive: { name: '全面强化', desc: '攻击力 +20%，攻击速度 +15%，暴击率 +8%', mods: { atkMult: 0.2, aspdMult: 0.15, crit: 0.08 }, rarity: 'red', icon: 'arrowUp' },
+    midas: { name: '点石成金', desc: '本关铜币收益 +60%，并立刻获得一笔铜币', mods: { copperBonus: 0.6 }, copperNow: true, rarity: 'red', icon: 'purse' },
+    // —— 金：传说级，一局里最多遇到一两张 ——
+    aegis: { name: '神圣庇佑', desc: '本关城墙第一次被打倒时，立刻复活并回复 60% 最大血量（只有一次）', mods: { revive: 1 }, rarity: 'gold', icon: 'repair' },
+    frenzy: { name: '狂暴', desc: '攻击力 +35%，攻击速度 +25%，暴击率 +15%，暴击伤害 +50%', mods: { atkMult: 0.35, aspdMult: 0.25, crit: 0.15, critDmg: 0.5 }, rarity: 'gold', icon: 'fury' },
+    hourglass: { name: '时光沙漏', desc: '主动技能冷却 −40%，并立刻刷新全部冷却', mods: { cdMult: -0.4 }, refresh: true, needSkills: true, rarity: 'gold', icon: 'master' },
+    skyfire: { name: '天火降临', desc: '之后每一波开始 6 秒后，天火落下，对全场所有怪造成攻击力 ×4 的魔法伤害', mods: { waveStrike: 1 }, rarity: 'gold', icon: 'cannon' },
+    // —— 章节专用克制卡（蓝档，到对应章节才会出现，被抽到的机会减半） ——
     flare: { name: '照明弹', desc: '射程 +20%（暗夜关里正好抵消黑暗）', mods: { range: 0.2 }, icon: 'eye', minLevel: 21 },
     antidote: { name: '解毒剂', desc: '城墙受到的持续伤害（中毒、毒雾）−60%', mods: { dotReduce: 0.6 }, icon: 'patch', minLevel: 21 },
     exorcism: { name: '驱魔之箭', desc: '物理伤害对灵体的效果 30% → 70%', mods: { spiritPierce: 0.4 }, icon: 'arrowUp', minLevel: 21 },
@@ -417,7 +423,7 @@
     net: { name: '渔网', desc: '飞鱼的跳跃距离 −50%', mods: { leapCut: 0.5 }, icon: 'freeze', minLevel: 61 },
   };
   // 机器人选卡顺序：先挑立刻见效的强卡，再挑通用强化，最后是克制卡
-  TD.data.supplyBotOrder = ['overdrive', 'fortress', 'chain', 'godslayer', 'warDrum', 'executioner', 'hunter', 'ember', 'mender', 'sharp', 'quick', 'master', 'handWarmer', 'fireTip', 'obsidian', 'lens', 'extinguisher', 'lightningRod', 'windFlag', 'shears', 'pin', 'crowbar', 'net', 'arcane', 'breaker', 'exorcism', 'antidote', 'flare', 'eagle', 'fury', 'frostTip', 'farsight', 'hospital', 'airstrike', 'coldSnap', 'bricks', 'purse', 'midas'];
+  TD.data.supplyBotOrder = ['frenzy', 'aegis', 'skyfire', 'hourglass', 'overdrive', 'fortress', 'chain', 'godslayer', 'warDrum', 'executioner', 'hunter', 'ember', 'mender', 'sharp', 'quick', 'master', 'handWarmer', 'fireTip', 'obsidian', 'lens', 'extinguisher', 'lightningRod', 'windFlag', 'shears', 'pin', 'crowbar', 'net', 'arcane', 'breaker', 'exorcism', 'antidote', 'flare', 'eagle', 'fury', 'frostTip', 'farsight', 'hospital', 'airstrike', 'coldSnap', 'bricks', 'purse', 'midas'];
 
   TD.data.targetModes = {
     nearest: '最近优先',

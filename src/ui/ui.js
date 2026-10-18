@@ -1482,10 +1482,10 @@
     const first = !game.save.stats.seenSupply;
     const cards = choices.map((id, i) => {
       const sup = D.supplies[id];
-      const rar = D.supplyRarity[sup.rarity || 'common'];
+      const rar = D.supplyRarity[sup.rarity || 'blue'];
       return h(
         'button',
-        { class: 'supply-card rar-' + (sup.rarity || 'common'), style: { borderColor: rar.color }, onclick: () => game.pickSupply(id) },
+        { class: 'supply-card rar-' + (sup.rarity || 'blue'), style: { borderColor: rar.color }, onclick: () => game.pickSupply(id) },
         h('span', { class: 'key' }, i + 1),
         h('span', { class: 'supply-rar', style: { background: rar.color } }, rar.name),
         TD.sprites.iconCanvas(sup.icon, 64),
@@ -1498,7 +1498,7 @@
         'div',
         { class: 'supply' },
         h('h2', null, '📦 补给箱到了！'),
-        h('div', { class: 'hint' }, first ? '战斗暂停中。选一张补给卡，效果持续到本关结束（蓝色稀有、紫色史诗更强）。按 1 / 2 / 3 也可以选。' : `选一张补给卡（本关有效） · 第 ${battle.supplyPicked.length + 1} 次补给`),
+        h('div', { class: 'hint' }, first ? '战斗暂停中。选一张补给卡，效果持续到本关结束（颜色从低到高：蓝、紫、红、金，越高越强）。按 1 / 2 / 3 也可以选。' : `选一张补给卡（本关有效） · 第 ${battle.supplyPicked.length + 1} 次补给`),
         h('div', { class: 'supply-row' }, cards),
         battle.supplyPicked.length ? h('div', { class: 'hint' }, '已选：' + battle.supplyPicked.map((x) => D.supplies[x].name).join('、')) : null
       ),
