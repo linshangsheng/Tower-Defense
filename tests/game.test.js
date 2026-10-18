@@ -2081,8 +2081,8 @@ test('新武器的弹道带品质色；射出的弹道种类跟基础形状一�
 // ---------- 音乐与音效（设计书 64） ----------
 function mockAudioCtx() {
   const calls = { osc: 0, noise: 0 };
-  const param = () => ({ value: 0, setValueAtTime() {}, linearRampToValueAtTime() {}, exponentialRampToValueAtTime() {}, cancelScheduledValues() {} });
-  const node = () => ({ connect() {}, disconnect() {}, start() {}, stop() {}, playbackRate: param(), pan: param(), gain: param(), frequency: param(), detune: param(), Q: param(), threshold: param(), knee: param(), ratio: param(), attack: param(), release: param() });
+  const param = () => ({ value: 0, setTargetAtTime() {}, setValueAtTime() {}, linearRampToValueAtTime() {}, exponentialRampToValueAtTime() {}, cancelScheduledValues() {} });
+  const node = () => ({ setTargetAtTime() {}, connect() {}, disconnect() {}, start() {}, stop() {}, playbackRate: param(), pan: param(), gain: param(), frequency: param(), detune: param(), Q: param(), threshold: param(), knee: param(), ratio: param(), attack: param(), release: param() });
   return {
     calls,
     currentTime: 0,
@@ -2164,15 +2164,15 @@ test('音效：每个道具都有专属音效，城墙破损 / 坍塌 / 陨石�
   for (const n of ['meteorHit', 'scrollBolt', 'barrierBreak', 'wallBreak', 'wallCollapse']) assert.ok(src.includes(`${n}:`), `缺少音效 ${n}`);
 });
 
-test('采样乐器：16 种乐器都有采样，持续音带循环区间，每个乐器覆盖足够的音高范围', () => {
+test('采样乐器：25 种乐器 / 鼓件都有采样，持续音带循环区间，每个乐器覆盖足够的音高范围', () => {
   delete require.cache[require.resolve('../src/render/samples.js')];
   require('../src/render/samples.js');
   const S = TD.samples;
-  const names = ['cello', 'contrabass', 'string_ensemble_1', 'tremolo_strings', 'pizzicato_strings', 'french_horn', 'brass_section', 'choir_aahs', 'timpani', 'taiko_drum', 'tubular_bells', 'celesta', 'orchestral_harp', 'marimba', 'oboe', 'flute'];
+  const names = ['cello', 'contrabass', 'string_ensemble_1', 'tremolo_strings', 'pizzicato_strings', 'french_horn', 'brass_section', 'choir_aahs', 'timpani', 'taiko_drum', 'tubular_bells', 'celesta', 'orchestral_harp', 'marimba', 'oboe', 'flute', 'violin', 'drum_kick', 'drum_snare', 'drum_hat', 'drum_ohat', 'drum_crash', 'drum_tom_hi', 'drum_tom_mid', 'drum_tom_lo', 'drum_tom_floor'];
   for (const n of names) {
     assert.ok(S[n], `缺少乐器 ${n}`);
     const keys = Object.keys(S[n].notes).map(Number);
-    assert.ok(keys.length >= 5, `${n} 采样太少`);
+    assert.ok(keys.length >= (n.startsWith('drum_') ? 1 : 5), `${n} 采样太少`);
     for (const v of Object.values(S[n].notes)) assert.ok(v.length > 2000, `${n} 有空采样`);
   }
   for (const n of ['cello', 'string_ensemble_1', 'french_horn', 'choir_aahs', 'flute', 'oboe']) assert.deepStrictEqual(S[n].loop, [0.8, 2.4]);
@@ -2210,4 +2210,36 @@ test('采样乐器：解码后用采样演奏（振荡器变少、播放源变�
   // 最近采样 + 变速：不会越界
   assert.strictEqual(samp.eng.samp('cello', 40, 0, 1, 0.1), true);
   assert.strictEqual(synth.eng.samp('cello', 40, 0, 1, 0.1), false);
+});
+
+test('战斗曲子：32 小节分四段（主题 / 弦乐 / 间奏 / 高潮），段与段配器不同；所有曲子所有紧张度都能排完整个循环', async () => {
+  const M = TD.music;
+  // 每段 8 小节的声音事件数（用合成声音的模拟环境按时间切段）
+  const perSection = (id, tension, withSamples) => {
+    const ctx = mockAudioCtx();
+    const eng = new M.Engine(ctx, ctx.destination);
+    const th = M.THEMES[id];
+    const secSec = ((60 / th.bpm) * 4 * 8) / M.TEMPO_OF(tension);
+    const counts = [];
+    eng.tension = tension;
+    eng.setTheme(id, 'battle');
+    let last = 0;
+    const read = () => ctx.calls.osc + ctx.calls.noise;
+    const run = async () => {
+      if (withSamples) await eng.loadSamples(M.Engine.instrumentsFor(id));
+      for (let q = 1; q <= 4; q++) {
+        eng.schedule(secSec * q);
+        counts.push(read() - last);
+        last = read();
+      }
+      return counts;
+    };
+    return run();
+  };
+  for (const withSamples of [false, true]) {
+    const c = await perSection(1, 1, withSamples);
+    assert.ok(Math.max(...c) / Math.min(...c) > 1.05, `四段的配器应有差别：${c}`);
+    assert.ok(c.every((n) => n > 50), `每段都要有足够的声音：${c}`);
+  }
+  for (let id = 1; id <= 7; id++) for (let t = 0; t <= 3; t++) assert.ok((await perSection(id, t, true)).every((n) => n > 30), `第 ${id} 首 ${t} 档某一段几乎没声音`);
 });

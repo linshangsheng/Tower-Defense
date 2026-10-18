@@ -31,6 +31,7 @@ INST = {
     'brass_section': dict(notes=notes(36, 84, 4), dur=2.4, loop=True),
     'choir_aahs': dict(notes=notes(48, 84, 4), dur=2.4, loop=True),
     'flute': dict(notes=notes(60, 96, 4), dur=2.4, loop=True),
+    'violin': dict(notes=notes(56, 96, 4), dur=2.4, loop=True),
     'oboe': dict(notes=notes(58, 94, 4), dur=2.4, loop=True),
     'timpani': dict(notes=notes(36, 60, 3), dur=2.2, loop=False),
     'taiko_drum': dict(notes=notes(36, 60, 6), dur=1.8, loop=False),
@@ -40,6 +41,20 @@ INST = {
     'pizzicato_strings': dict(notes=notes(48, 84, 4), dur=0.9, loop=False),
     'celesta': dict(notes=notes(72, 100, 4), dur=2.0, loop=False),
 }
+
+# 鼓组（设计书 69）：WebAudioFont 数据里的 FluidR3_GM「Power」鼓组（同一音色库，CC BY 3.0），每件鼓一个采样
+DRUM_BASE = 'https://raw.githubusercontent.com/surikov/webaudiofontdata/master/sound/'
+DRUMS = {  # 名字: (鼓号, 保留秒数)
+    'drum_kick': (36, 0.7), 'drum_snare': (38, 0.6), 'drum_hat': (42, 0.2), 'drum_ohat': (46, 0.7), 'drum_crash': (49, 3.0),
+    'drum_tom_hi': (50, 0.9), 'drum_tom_mid': (47, 0.9), 'drum_tom_lo': (43, 1.0), 'drum_tom_floor': (41, 1.1),
+}
+
+def fetch_drum(num):
+    p = os.path.join(cache, f'drum_{num}_16.js')
+    if not os.path.exists(p) or os.path.getsize(p) < 1000:
+        print('下载鼓', num)
+        urllib.request.urlretrieve(f'{DRUM_BASE}128{num}_16_FluidR3_GM_sf2_file.js', p)
+    return re.search(r"file:'([^']+)'", open(p).read()).group(1)
 
 def fetch(name):
     p = os.path.join(cache, name + '.js')
@@ -88,6 +103,17 @@ for name, spec in INST.items():
     total += size
     print(f'{name:20s} {len(inst["notes"]):2d} 个采样 {size / 1024:7.0f} KB (base64)')
     out[name] = inst
+
+for name, (num, dur) in DRUMS.items():
+    x = decode(fetch_drum(num))
+    n = int(SR * dur)
+    x = x[:n] if len(x) >= n else np.pad(x, (0, n - len(x)))
+    fo = int(SR * min(0.15, dur / 4))
+    x[-fo:] *= np.linspace(1, 0, fo, dtype=np.float32)
+    x = np.clip(x * (0.5 / (np.max(np.abs(x)) + 1e-9)), -0.99, 0.99)
+    out[name] = {'loop': None, 'notes': {'60': encode(x)}}
+    total += len(out[name]['notes']['60'])
+    print(f'{name:20s}  1 个采样 {len(out[name]["notes"]["60"]) / 1024:7.0f} KB (base64)')
 
 js = '''// 乐器采样（自动生成，请勿手改：python3 tools/build-samples.py）
 // 来源：gleitz/midi-js-soundfonts 里的 FluidR3_GM 音色库（Frank Wen），CC BY 3.0 许可，见设计书第 68 章。

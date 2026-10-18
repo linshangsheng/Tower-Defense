@@ -76,6 +76,8 @@ const SCENES = [
   { name: 'battle-ch1-t3-boss-low', theme: 1, mode: 'battle', tension: 3, dur: 20 },
   { name: 'battle-ch5-t0', theme: 5, mode: 'battle', tension: 0, dur: 16 },
   { name: 'battle-ch5-t3', theme: 5, mode: 'battle', tension: 3, dur: 16 },
+  { name: 'form-ch1-t0', theme: 1, mode: 'battle', tension: 0, dur: 82 },
+  { name: 'form-ch1-t2', theme: 1, mode: 'battle', tension: 2, dur: 76 },
   { name: 'stinger-win', theme: 1, mode: 'calm', tension: 0, dur: 5, stinger: 'win', mute: true },
   { name: 'stinger-lose', theme: 1, mode: 'calm', tension: 0, dur: 6, stinger: 'lose', mute: true },
 ];
@@ -115,6 +117,12 @@ const calibrate = process.argv.includes('--calibrate');
         marimba: (e) => [72, 76, 79].forEach((m, i) => e.marimba(m, 0.2 + i * 1.2, 0.12)),
         oboe: (e) => [69, 72, 76].forEach((m, i) => e.reed(m, 0.2 + i * 1.8, 1.6, 0.08)),
         flute: (e) => [72, 76, 79].forEach((m, i) => e.flute(m, 0.2 + i * 1.8, 1.6, 0.1)),
+        violin: (e) => [72, 76, 79].forEach((m, i) => e.violin(m, 0.2 + i * 2, 1.8, 0.1)),
+        drum_kick: (e) => [0, 1, 2, 3].forEach((i) => e.kick(0.2 + i * 0.8, 0.45)),
+        drum_snare: (e) => [0, 1, 2, 3].forEach((i) => e.snare(0.2 + i * 0.8, 0.3)),
+        drum_hat: (e) => [0, 1, 2, 3, 4, 5, 6, 7].forEach((i) => e.hat(0.2 + i * 0.4, 0.05, false)),
+        drum_crash: (e) => [0, 1].forEach((i) => e.crash(0.2 + i * 3, 0.15)),
+        drum_tom_mid: (e) => [0, 1, 2, 3].forEach((i) => e.tom('mid', 0.2 + i * 0.8, 0.25)),
       };
       async function rms(inst, useSamples) {
         const ctx = new OfflineAudioContext(1, SR * 7, SR);
@@ -175,6 +183,11 @@ const calibrate = process.argv.includes('--calibrate');
     const i16 = new Int16Array(Uint8Array.from(Buffer.from(b64, 'base64')).buffer);
     const x = Float32Array.from(i16, (v) => v / 32767);
     const a = analyse(x);
+    if (sc.name.startsWith('form-')) {
+      const secLen = Math.floor(x.length / 4);
+      const per = [0, 1, 2, 3].map((q) => { let sum = 0; for (let i = q * secLen; i < (q + 1) * secLen; i++) sum += x[i] * x[i]; return (10 * Math.log10(sum / secLen + 1e-12)).toFixed(1); });
+      console.log('  ' + sc.name + ' 四段（A/B/C/D）RMS dB：' + per.join(' / '));
+    }
     rows.push({ name: sc.name, ...a, vps: Math.round(voices / sc.dur), sec: ((Date.now() - t0) / 1000).toFixed(1) });
     if (writeWav) fs.writeFileSync(path.join(out, sc.name + '.wav'), wav(x));
   }

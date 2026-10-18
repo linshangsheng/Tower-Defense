@@ -107,12 +107,13 @@
   const ARP = [0, 2, 1, 3, 2, 3, 1, 2]; // 琶音在 [根, 三, 五, 高八度根] 里的取音顺序
 
   // 采样乐器（设计书 68.3）：每首曲子要预先解码的乐器 = 共用的 + 这一首的主奏
-  const SHARED = ['cello', 'contrabass', 'string_ensemble_1', 'tremolo_strings', 'pizzicato_strings', 'french_horn', 'brass_section', 'choir_aahs', 'timpani', 'taiko_drum'];
+  const SHARED = ['cello', 'contrabass', 'string_ensemble_1', 'tremolo_strings', 'pizzicato_strings', 'french_horn', 'brass_section', 'choir_aahs', 'timpani', 'taiko_drum', 'violin', 'orchestral_harp', 'drum_kick', 'drum_snare', 'drum_hat', 'drum_ohat', 'drum_crash', 'drum_tom_hi', 'drum_tom_mid', 'drum_tom_lo', 'drum_tom_floor'];
   const LEAD_INST = { bell: ['tubular_bells', 'celesta'], pluck: ['orchestral_harp'], marimba: ['marimba'], reed: ['oboe'], flute: ['flute'], horn: [] };
   // 采样音量相对旧合成声音的倍率（由 tools/music.js --calibrate 标定，设计书 68.3）
   const GAIN = {
     cello: 7.2, contrabass: 7.2, string_ensemble_1: 10.2, tremolo_strings: 7.3, pizzicato_strings: 2.7, french_horn: 9, brass_section: 10.2, choir_aahs: 4.5,
     timpani: 1.4, taiko_drum: 1.4, tubular_bells: 6.8, celesta: 4.5, orchestral_harp: 4.5, marimba: 2.1, oboe: 8.8, flute: 13,
+    violin: 7.8, drum_kick: 2.3, drum_snare: 1.5, drum_hat: 1.9, drum_ohat: 1.9, drum_crash: 2.5, drum_tom_hi: 3.5, drum_tom_mid: 3.5, drum_tom_lo: 3.5, drum_tom_floor: 3.5,
   };
 
   class Engine {
@@ -135,7 +136,11 @@
       this.comp.release.value = 0.25;
       this.mix = ctx.createGain();
       this.mix.gain.value = 1;
-      this.mix.connect(this.comp);
+      // 段落力度：间奏轻、高潮重（战斗里每段开头调整，设计书 69.3）
+      this.secGain = ctx.createGain();
+      this.secGain.gain.value = 1;
+      this.mix.connect(this.secGain);
+      this.secGain.connect(this.comp);
       this.comp.connect(this.out);
       this.out.connect(dest);
       this.reverb = ctx.createConvolver();
@@ -265,7 +270,7 @@
         out = pn;
       }
       out.connect(o.bus || this.bus.strings);
-      src.start(t);
+      src.start(t, o.off || 0);
       src.stop(t + end + r + 0.05);
       return true;
     }
@@ -402,6 +407,17 @@
       if (this.samp('tremolo_strings', m, t, dur, vol, { attack: 0.35, release: 0.7, pan: (Math.random() - 0.5) * 0.8, bus: this.bus.strings })) return;
       this.strings(m, t, dur, vol * 0.7);
     }
+    // 小提琴：战斗里第二段、第四段的旋律
+    violin(m, t, dur, vol) {
+      if (this.samp('violin', m, t, dur, vol, { attack: 0.07, release: 0.25, pan: 0.25, bus: this.bus.strings })) return;
+      this.strings(m, t, dur, vol * 0.8);
+    }
+    // 有节奏的低音：从采样中段起奏（跳过缓慢的拉弓起音），否则短音只剩模糊的起音
+    bassHit(m, t, dur, vol) {
+      const a = this.samp('contrabass', m, t, dur, vol, { attack: 0.01, release: 0.08, off: 0.5, bus: this.bus.bass });
+      const b = this.samp('cello', m + 12, t, dur, vol * 0.7, { attack: 0.01, release: 0.08, off: 1.0, bus: this.bus.strings });
+      this.tone({ type: 'sine', f: hz(m), t, dur, vol: vol * (a || b ? 0.5 : 1), attack: 0.012, release: 0.1, bus: this.bus.bass });
+    }
     // 铜管组：Boss 的重音和弦
     brass(m, t, dur, vol) {
       if (this.samp('brass_section', m, t, dur, vol, { attack: 0.05, release: 0.25, bus: this.bus.brass })) return;
@@ -470,17 +486,29 @@
       this.tone({ type: 'triangle', f: f * 1.7, slideTo: f * 0.85, slideTime: 0.25, t, dur: 0.35, vol: vol * 0.45, attack: 0.003, release: 0.3, bus: this.bus.perc });
       this.noiseHit({ filter: 'bandpass', f: 240, q: 1, t, dur: 0.07, vol: vol * 0.7 });
     }
+    // 鼓组：先用真实鼓采样（FluidR3「Power」鼓组），没有就退回合成
+    kick(t, vol) {
+      if (this.samp('drum_kick', 60, t, 1, vol, { attack: 0.001, release: 0.05, bus: this.bus.perc })) return;
+      this.taiko(t, vol, 62);
+    }
+    tom(which, t, vol) {
+      if (this.samp('drum_tom_' + which, 60, t, 1.2, vol, { attack: 0.001, release: 0.05, bus: this.bus.perc })) return;
+      this.taiko(t, vol * 0.8, { hi: 120, mid: 96, lo: 78, floor: 64 }[which]);
+    }
     snare(t, vol) {
+      if (this.samp('drum_snare', 60 + (Math.random() - 0.5) * 0.3, t, 1, vol, { attack: 0.001, release: 0.05, bus: this.bus.perc })) return;
       this.noiseHit({ filter: 'bandpass', f: 1900, q: 0.9, t, dur: 0.17, vol });
       this.tone({ type: 'triangle', f: 200, slideTo: 130, slideTime: 0.1, t, dur: 0.12, vol: vol * 0.8, attack: 0.002, release: 0.1, bus: this.bus.perc });
     }
     hat(t, vol, open) {
+      if (this.samp(open ? 'drum_ohat' : 'drum_hat', 60 + (Math.random() - 0.5) * 0.5, t, open ? 0.7 : 0.2, vol, { attack: 0.001, release: 0.04, bus: this.bus.perc })) return;
       this.noiseHit({ filter: 'highpass', f: 7500, t, dur: open ? 0.16 : 0.04, vol });
     }
     cymbalSwell(t, dur, vol) {
       this.noiseHit({ filter: 'highpass', f: 3600, t, dur, vol, swell: true, attack: dur * 0.85, q: 0.5 });
     }
     crash(t, vol) {
+      if (this.samp('drum_crash', 60, t, 3, vol, { attack: 0.002, release: 0.3, bus: this.bus.perc })) return;
       this.noiseHit({ filter: 'highpass', f: 3000, t, dur: 1.5, vol, q: 0.5 });
     }
     riser(t, dur, vol) {
@@ -520,7 +548,7 @@
     }
     sub(m, t, dur, vol) {
       const f = hz(m);
-      this.samp('contrabass', m + 12, t, dur, vol * 0.8, { attack: 0.02, release: 0.12, bus: this.bus.bass });
+      this.samp('contrabass', m, t, dur, vol * 0.8, { attack: 0.02, release: 0.12, off: 0.5, bus: this.bus.bass });
       this.tone({ type: 'sine', f, t, dur, vol, attack: 0.012, release: 0.1, bus: this.bus.bass });
       this.tone({ type: 'sawtooth', f, t, dur, vol: vol * 0.5, lp: 190, attack: 0.012, release: 0.1, bus: this.bus.bass });
     }
@@ -580,15 +608,17 @@
       const mel = notes[bar * 8 + Math.floor(pos / 2)];
       const onBeat8 = pos % 2 === 0;
 
+      if (battle) return this.scheduleBattle(i, t);
+      if (i === 0) this.secGain.gain.setTargetAtTime(1, t, 0.3);
+
       // —— 铺底：低音弦乐、弦乐群（每小节一次）——
       if (pos === 0) {
-        this.cello(ch.root, t, barLen, battle ? 0.2 : title ? 0.24 : 0.17);
+        this.cello(ch.root, t, barLen, title ? 0.24 : 0.17);
         if (bar % 2 === 0) this.cello(ch.root + 7, t, barLen * 2, 0.07);
-        const sv = battle ? 0.045 : 0.05;
-        for (const m of ch.tones.slice(0, 3)) this.strings(m, t, barLen, sv);
+        for (const m of ch.tones.slice(0, 3)) this.strings(m, t, barLen, 0.05);
       }
 
-      if (!battle) {
+      {
         // —— 菜单 / 地图 / 标题：深沉、缓慢 ——
         if (pos === 0 && (title || bar % 2 === 0)) this.taiko(t, title ? 0.42 : 0.2, 55);
         if (title && pos === 8 && bar % 2 === 1) this.taiko(t, 0.22, 62);
@@ -603,58 +633,128 @@
         return;
       }
 
-      // —— 战斗 ——
+      return this.scheduleBattle(i, t);
+    }
+
+    // 战斗：32 小节一个大循环，分四段（设计书 69.3）：
+    //   A 主题（圆号）→ B 弦乐（小提琴唱旋律）→ C 间奏（本章主奏乐器，鼓减半）→ D 高潮（圆号 + 小提琴 + 铜管）
+    // 每段 8 小节沿用同一套和声和旋律，靠配器、鼓点和力度变化，不会像原来 19 秒一遍地重复。
+    scheduleBattle(i, t) {
+      const th = this.theme;
+      const sd = 60 / th.bpm / 4;
+      const bar32 = Math.floor(i / 16) % 32;
+      const sec = Math.floor(bar32 / 8);
+      const bar = bar32 % 8;
+      const pos = i % 16;
+      const ch = th.chords[bar];
+      const L = Math.min(3, this.tension);
+      const barLen = sd * 16;
+      const mel = th.notes[bar * 8 + Math.floor(pos / 2)];
+      const onBeat8 = pos % 2 === 0;
+      const brk = sec === 2; // 间奏
+      const top = sec === 3; // 高潮
+      const dyn = [1, 0.9, 0.65, 1.15][sec];
       const D = DRUMS[L];
-      // 低音脉冲
-      const pulse = L === 0 ? pos === 0 || pos === 6 || pos === 8 || pos === 14 : L === 3 ? true : onBeat8;
-      if (pulse) this.sub(ch.root, t, sd * (L === 3 ? 1.5 : 2.6), L === 3 && pos % 4 !== 0 ? 0.1 : 0.17);
-      // 短弓琶音
-      if (L >= 1 || onBeat8) {
+      if (pos === 0 && bar === 0) this.secGain.gain.setTargetAtTime([1, 0.95, 0.62, 1.18][sec], t, 0.5);
+
+      // —— 铺底 ——
+      if (pos === 0) {
+        this.cello(ch.root, t, barLen, 0.2);
+        if (bar % 2 === 0) this.cello(ch.root + 7, t, barLen * 2, 0.07);
+        for (const m of ch.tones.slice(0, 3)) this.strings(m, t, barLen, 0.045 * dyn);
+        if (top) for (const m of ch.tones.slice(0, 3)) this.strings(m + 12, t, barLen, 0.03);
+        // 每段开头一记镲 + 定音鼓
+        if (bar === 0) {
+          this.crash(t, sec === 0 ? 0.12 : 0.2);
+          this.taiko(t, 0.35, 55);
+        }
+      }
+
+      // —— 低音节奏 ——
+      if (brk) {
+        if (pos === 0 || pos === 8) this.bassHit(ch.root, t, sd * 6, 0.16);
+      } else {
+        const pulse = L === 0 ? pos === 0 || pos === 6 || pos === 8 || pos === 14 : L === 3 ? onBeat8 || pos % 4 === 3 : onBeat8;
+        if (pulse) this.bassHit(ch.root + (L >= 2 && pos % 4 === 2 ? 12 : 0), t, sd * (L === 3 ? 1.3 : 2.2), pos % 4 === 0 ? 0.17 : 0.12);
+      }
+
+      // —— 琶音：间奏用竖琴，其余用拨弦 ——
+      if (brk) {
+        if (onBeat8) this.pluck(ch.tones[ARP[pos % 8]] + 12, t, 0.1);
+      } else if (L >= 1 || onBeat8) {
         const idx = ARP[pos % 8];
-        const accent = pos % 4 === 0;
-        this.spiccato(ch.tones[idx], t, (L >= 1 ? 0.04 : 0.032) * (accent ? 1.4 : 1));
-        if (L >= 2 && pos % 4 === 2) this.spiccato(ch.tones[idx] + 12, t, 0.025);
+        this.spiccato(ch.tones[idx], t, (L >= 1 ? 0.04 : 0.032) * (pos % 4 === 0 ? 1.4 : 1));
+        if ((L >= 2 || top) && pos % 4 === 2) this.spiccato(ch.tones[idx] + 12, t, 0.025);
       }
-      // 鼓
-      const k = D.kick[pos];
-      if (k === 'K') this.taiko(t, L >= 2 ? 0.46 : 0.36, L === 3 && bar % 2 ? 58 : 62);
-      else if (k === 'k') this.taiko(t, 0.17, 78);
-      const sn = D.snare[pos];
-      if (sn === 'S') this.snare(t, 0.22);
-      else if (sn === 's') this.snare(t, 0.1);
-      else if (sn === 't') this.taiko(t, 0.2, 98);
-      if (D.hat[pos] === 'h') this.hat(t, L === 0 ? 0.022 : pos % 4 === 2 ? 0.045 : 0.026, L >= 2 && pos === 14);
-      // 通鼓过门（每四小节的最后一小节）
-      if (L >= 2 && bar % 4 === 3 && pos >= 12) this.taiko(t, 0.2 + (pos - 12) * 0.05, 100 - (pos - 12) * 8);
-      if (L === 3 && bar % 4 === 3 && pos >= 12) this.snare(t, 0.12 + (pos - 12) * 0.05);
-      // 圆号：主旋律（正常档只奏偶数小节，之后每小节）
-      if (mel && (L >= 1 || bar % 2 === 0)) {
-        this.horn(mel.midi, t, mel.len * sd * 2 * 0.95, L >= 2 ? 0.15 : 0.12);
-        if (L === 3) this.horn(mel.midi + 12, t, mel.len * sd * 2 * 0.9, 0.07);
-        if (th.lead !== 'horn') this.leadNote(th.lead, mel.midi, t, mel.len * sd * 2, 0.05);
+
+      // —— 旋律 ——
+      if (mel) {
+        const len = mel.len * sd * 2;
+        if (sec === 0) {
+          if (L >= 1 || bar % 2 === 0) {
+            this.horn(mel.midi, t, len * 0.95, (L >= 2 ? 0.15 : 0.12) * dyn);
+            if (th.lead !== 'horn') this.leadNote(th.lead, mel.midi, t, len, 0.05);
+          }
+        } else if (sec === 1) {
+          this.violin(mel.midi, t, len * 0.98, 0.1 * dyn);
+        } else if (brk) {
+          this.leadNote(th.lead, mel.midi, t, len, 0.1);
+        } else {
+          this.horn(mel.midi, t, len * 0.95, 0.14);
+          this.violin(mel.midi + 12, t, len * 0.98, 0.07);
+          if (L >= 2) this.brass(mel.midi - 12, t, len * 0.9, 0.05);
+        }
+        if (L === 3 && sec !== 2) this.horn(mel.midi + 12, t, len * 0.9, 0.07);
       }
-      // 圆号长音渐强（危险以上）
-      if (pos === 0 && L >= 1) {
+      // 圆号长音渐强（危险以上；第二段让给小提琴，间奏不要）
+      if (pos === 0 && L >= 1 && sec !== 1 && !brk) {
         this.horn(ch.root + 12, t, barLen * 0.98, 0.05, barLen * 0.5);
         this.horn(ch.root + 19, t, barLen * 0.98, 0.04, barLen * 0.5);
       }
-      // 颤音弦乐：危险档偶数小节、Boss 档每小节，铺一层"发抖"的紧张感
-      if (pos === 0 && L >= 1 && (L >= 2 || bar % 2 === 0)) for (const m of ch.tones.slice(0, 3)) this.trem(m + (L === 3 ? 12 : 0), t, barLen, L >= 2 ? 0.05 : 0.035);
-      // 合唱：危险时偶数小节，Boss 档每小节
-      if (pos === 0 && L >= 1 && (L >= 2 || bar % 2 === 0)) for (const m of ch.tones.slice(0, 3)) this.choir(m + 12, t, barLen, L >= 2 ? 0.05 : 0.025);
-      // Boss 档：铜管重音 + 低频压迫 + 增四度不和谐音 + 镲渐强
+      // 颤音弦乐、合唱：紧张度越高越多；间奏里合唱常驻，托住空下来的鼓
+      if (pos === 0) {
+        if (L >= 1 && (L >= 2 || bar % 2 === 0)) for (const m of ch.tones.slice(0, 3)) this.trem(m + (L === 3 ? 12 : 0), t, barLen, L >= 2 ? 0.05 : 0.035);
+        if ((L >= 1 && (L >= 2 || bar % 2 === 0)) || brk) for (const m of ch.tones.slice(0, 3)) this.choir(m + 12, t, barLen, brk ? 0.035 : L >= 2 ? 0.05 : 0.025);
+      }
+
+      // —— 鼓 ——
+      const k = D.kick[pos];
+      const sn = D.snare[pos];
+      if (brk) {
+        // 间奏：半速感，只有第一拍的底鼓和第三拍的军鼓
+        if (pos === 0) this.kick(t, 0.5);
+        if (pos === 0 && bar % 2 === 0) this.taiko(t, 0.3, 58);
+        if (pos === 8) this.snare(t, 0.3);
+      } else {
+        if (k === 'K') {
+          this.kick(t, L >= 2 ? 0.55 : 0.45);
+          if (L >= 1 || bar % 2 === 0) this.taiko(t, L >= 2 ? 0.34 : 0.26, L === 3 && bar % 2 ? 58 : 62);
+        } else if (k === 'k') this.kick(t, 0.2);
+        if (sn === 'S') this.snare(t, 0.3);
+        else if (sn === 's') this.snare(t, 0.13);
+        else if (sn === 't') this.tom('hi', t, 0.25);
+        if (D.hat[pos] === 'h' && (sec !== 0 || L >= 1 || onBeat8)) this.hat(t, L === 0 ? 0.04 : pos % 4 === 2 ? 0.075 : 0.045, L >= 2 && pos === 14);
+      }
+      // 每段最后一小节：过门（军鼓 + 通鼓滚下来），接着下一段的镲
+      if (bar === 7 && pos >= 8) {
+        const seq = ['hi', 'hi', 'mid', 'mid', 'lo', 'lo', 'floor', 'floor'];
+        const j = pos - 8;
+        if (L >= 1 && pos % 2 === 0) this.tom(seq[j], t, 0.22 + j * 0.03);
+        if (L === 0 && pos >= 12 && pos % 2 === 0) this.snare(t, 0.12 + (pos - 12) * 0.03);
+        if (L === 3 && pos >= 12) this.snare(t, 0.1 + (pos - 12) * 0.05);
+      }
+      if (bar === 7 && pos === 0 && L >= 1) this.cymbalSwell(t, barLen * 0.95, 0.05);
+
+      // —— Boss 档：铜管重音、低频压迫、增四度、镲渐强 ——
       if (L >= 2) {
         if (pos === 0 || pos === 10 || (L === 3 && pos === 6)) {
-          for (const m of [ch.root + 12, ch.root + 19, ch.root + 24]) this.brass(m, t, sd * 3, 0.085);
+          for (const m of [ch.root + 12, ch.root + 19, ch.root + 24]) this.brass(m, t, sd * 3, 0.085 * (brk ? 0.6 : 1));
         }
         if (pos === 0 && bar % 2 === 0) {
           this.cello(ch.root - 12 + 6, t, barLen * 2, 0.05);
           this.sub(ch.root - 12, t, barLen * 2, 0.12);
         }
-        if (pos === 0 && (L === 3 || bar % 2 === 1)) {
-          this.cymbalSwell(t, barLen * 0.95, 0.045);
-          this.crash(t + barLen, 0.06);
-        }
+        if (pos === 0 && bar % 4 === 0 && bar !== 0) this.crash(t, 0.14);
         if (L === 3 && pos === 0 && bar % 4 === 0) this.riser(t, sd * 14, 0.05);
       }
     }
@@ -693,7 +793,7 @@
     }
   }
 
-  const M = (TD.music = { enabled: true, theme: null, mode: 'calm', tension: 0, playing: false, Engine, THEMES, DRUMS, GAIN });
+  const M = (TD.music = { enabled: true, theme: null, mode: 'calm', tension: 0, playing: false, Engine, THEMES, DRUMS, GAIN, TEMPO_OF: (t) => TEMPO[Math.max(0, Math.min(3, t | 0))] });
 
   let engine = null;
   let timer = null;
