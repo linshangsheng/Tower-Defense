@@ -33,9 +33,8 @@
     octoKing: 'updateOctoKing',
   };
 
-  // 能当"小怪潮"的怪（设计书 84）
-  const SWARM_DENY = ['boss', 'healer', 'ranged', 'chill', 'bubbler', 'towerOf', 'bossPart', 'ai', 'fireZone', 'onDeath', 'staticShock', 'stealth', 'guard', 'shell', 'leap', 'burrow', 'wool', 'spikes'];
-  const isSwarmType = (d) => !SWARM_DENY.some((k) => d[k]);
+  // 不当"多出来的小怪"的怪（设计书 84）：Boss、妖塔分身，要停在远处的，会影响别的怪或英雄的
+  const FODDER_DENY = ['boss', 'towerOf', 'bossPart', 'ai', 'healer', 'ranged', 'chill', 'bubbler', 'fireZone', 'onDeath', 'staticShock', 'stealth'];
 
   class Battle extends TD.Emitter {
     // opts: { level, stats, loadout: {active, items, target, autoCast}, seed, autoItems }
@@ -95,7 +94,6 @@
       this.waveState = 'prepare'; // prepare | spawning | waiting | final
       this.countdown = 3;
       this.spawnQueue = [];
-      this.swarmQueue = [];
       this.spawnTimer = 0;
       this.waveStartTime = 0;
 
@@ -158,18 +156,15 @@
       this.report = { bySource: {}, raw: { phys: 0, magic: 0 }, real: { phys: 0, magic: 0 }, wallBy: {} };
     }
 
-    // 主线第 N 关多出的小怪（设计书 84）：每波每组各多几只。总数 = N × C.extraMonstersPerLevel，
-    // 先按各波原有小怪数量的比例分给各波，再在波内按各组数量的比例分给各组（最大余数法，保证加起来正好）。
-    // 无尽模式、每日挑战、九层妖塔（自带关卡定义）不加；没有小怪的关卡也不加。
+    // 主线第 N 关多出的小怪（设计书 84）：总数 = N × C.extraMonstersPerLevel，先按各波原有小怪数量的比例分给各波（最大余数法，
+    // 保证加起来正好），每一波里再分给各组。返回每一波的 [[怪物, 数量], …]。无尽模式、每日挑战、九层妖塔（自带关卡定义）不加。
     planExtraMonsters(opts) {
       const none = this.level.waves.map(() => null);
-      this.swarmStrength = 1;
-      this.swarmCopper = 1;
       if (opts.levelDef || typeof opts.level !== 'number' || !D.levels[opts.level] || this.level.tower || this.level.endless) return none;
-      const total = opts.level * (C.extraMonstersPerLevel || 0);
+      const total = Math.round(opts.level * (C.extraMonstersPerLevel || 0));
       const cm = (this.level.countMult || 1) * (1 + (this.rules.countBonus || 0));
-      // 各波原有小怪（不含 Boss）的数量，多出来的按这个比例分给各波
-      const waveSums = this.level.waves.map((w) => w.groups.reduce((a, [type, count]) => a + (D.monsters[type].boss ? 0 : Math.max(1, Math.round(count * cm))), 0));
+      const minions = this.level.waves.map((w) => w.groups.map(([type, count]) => (D.monsters[type].boss ? 0 : Math.max(1, Math.round(count * cm)))));
+      const waveSums = minions.map((g) => g.reduce((a, b) => a + b, 0));
       if (!total || !waveSums.some((x) => x > 0)) return none;
       const share = (weights, amount) => {
         const sum = weights.reduce((a, b) => a + b, 0);
@@ -180,31 +175,21 @@
         for (let k = 0; rest > 0 && k < order.length; k++, rest--) out[order[k][1]]++;
         return out;
       };
-      // 能当潮的怪：只有"普通"小怪——治疗、远程、冰冻、吹泡泡的要停在远处，火焰区域 / 孢子 / 静电会影响别的怪或英雄，不适合成百上千地出；
-      // 本关没有这样的怪时，借本章别的关卡里有的；还没有就用史莱姆
-      const ok = (type) => isSwarmType(D.monsters[type]);
-      const own = [];
-      for (const w of this.level.waves) for (const [type] of w.groups) if (ok(type) && !own.includes(type)) own.push(type);
-      let pool = own;
-      if (!pool.length) {
-        for (const n of D.chapterOf(opts.level).levels)
-          for (const w of D.levels[n].waves) for (const [type] of w.groups) if (ok(type) && !pool.includes(type)) pool.push(type);
-      }
-      if (!pool.length) pool = ['slime'];
-      pool = pool.slice(0, 3);
       const perWave = share(waveSums, total);
-      // 多出来的小怪的强度（撞上城墙造成的伤害）：关卡里的 swarm 是 tools/tune-swarm.js 逐关调出来的，没写就用默认值
-      const strength = this.level.swarm !== undefined ? this.level.swarm : C.swarmDefault;
-      this.swarmStrength = strength;
-      this.swarmCopper = Math.max(C.swarmCopperFloor || 0, strength);
-      return this.level.waves.map((w, wi) => {
-        if (!perWave[wi]) return null;
-        // 波内按本关原有各组的数量分给能当潮的那几组；一组都没有时（借来的怪）平均分
-        const own = w.groups.filter(([type]) => ok(type));
-        const types = own.length ? own.map(([type]) => type) : pool;
-        const weights = own.length ? own.map(([, count]) => Math.max(1, Math.round(count * cm))) : pool.map(() => 1);
-        return share(weights, perWave[wi]).map((count, k) => [types[k], count]).filter(([, count]) => count > 0);
-      });
+      // 多出来的都是本关最弱的普通小怪（和原有的同类怪一模一样，不削弱）：同样数量下，弱怪对关卡难度的影响最小。
+      // 要停在远处的（治疗、远程、冰冻、吹泡泡）和会影响别的怪或英雄的（火焰区域、孢子、静电、隐身）不当候选；
+      // 本关没有候选时，用本章别的关卡里最弱的候选，再没有就用史莱姆
+      const cheapOf = (types) => types.reduce((a, b) => (a === null || D.monsters[b].hp < D.monsters[a].hp ? b : a), null);
+      const fodder = (type) => !FODDER_DENY.some((k) => D.monsters[type][k]);
+      const levelTypes = [];
+      for (const w of this.level.waves) for (const [type] of w.groups) if (fodder(type) && !levelTypes.includes(type)) levelTypes.push(type);
+      let cheap = cheapOf(levelTypes);
+      if (!cheap) {
+        const chapterTypes = [];
+        for (const n of D.chapterOf(opts.level).levels) for (const w of D.levels[n].waves) for (const [type] of w.groups) if (fodder(type) && !chapterTypes.includes(type)) chapterTypes.push(type);
+        cheap = cheapOf(chapterTypes) || 'slime';
+      }
+      return minions.map((g, wi) => (perWave[wi] ? [[cheap, perWave[wi]]] : null));
     }
 
     // 补给出现在哪几波之后（波序号从 0 开始）
@@ -335,10 +320,16 @@
       if (wave.D) this.D = wave.D; // 无尽模式：每波有自己的难度
       // countMult：自动平衡工具（tools/tune.js）写入的每关数量倍率，Boss 不受影响
       const cm = (this.level.countMult || 1) * (1 + (this.rules.countBonus || 0));
-      // 关卡越靠后小怪越多（设计书 84）：第 N 关总共多出 N × 20 只小怪，按每波原有的小怪数量摊到各波、各组里，Boss 还是一只
-      const extra = this.extraPlan[i];
-      const base = wave.groups.map(([type, count]) => ({ type, left: D.monsters[type].boss ? count : Math.max(1, Math.round(count * cm)) }));
-      const groups = base;
+      // 主线关卡越靠后小怪越多（设计书 84）：整关总共多出 关卡号 × C.extraMonstersPerLevel 只小怪，和原有的怪一模一样，Boss 还是一只
+      const extra = this.extraPlan[i] || [];
+      const groups = wave.groups.map(([type, count]) => ({ type, left: D.monsters[type].boss ? count : Math.max(1, Math.round(count * cm)) }));
+      for (const [type, count] of extra) {
+        const g = groups.find((o) => o.type === type);
+        if (g) g.left += count;
+        else groups.push({ type, left: count });
+      }
+      const baseMinions = wave.groups.reduce((a, [type, count]) => a + (D.monsters[type].boss ? 0 : Math.max(1, Math.round(count * cm))), 0);
+      const extraNow = extra.reduce((a, [, c]) => a + c, 0);
       const queue = [];
       let any = true;
       while (any) {
@@ -353,25 +344,8 @@
       }
       this.spawnQueue = queue;
       // 数量倍率提高时出怪更密集，避免关卡时间被拉长
-      this.spawnGap = cm > 1 ? wave.gap / Math.pow(cm, 0.75) : wave.gap;
-      // 多出来的小怪另走一条队列，在这一波原有怪物出场的时间里均匀涌出，不挤占原有怪物的节奏
-      this.swarmQueue = [];
-      if (extra) {
-        const sg = extra.map(([type, left]) => ({ type, left }));
-        let more = true;
-        while (more) {
-          more = false;
-          for (const g of sg) {
-            if (g.left > 0) {
-              this.swarmQueue.push(g.type);
-              g.left--;
-              more = true;
-            }
-          }
-        }
-      }
-      this.swarmGap = this.swarmQueue.length ? Math.max(0.04, Math.max(15, queue.length * this.spawnGap) / this.swarmQueue.length) : 0;
-      this.swarmTimer = 0;
+      const crowd = (cm > 1 ? cm : 1) * (baseMinions > 0 ? (baseMinions + extraNow) / baseMinions : 1);
+      this.spawnGap = crowd > 1 ? wave.gap / Math.pow(crowd, 0.75) : wave.gap;
       this.spawnTimer = 0;
       this.waveState = 'spawning';
       this.waveStartTime = this.time;
@@ -415,12 +389,7 @@
           } else this.spawnMonster(this.spawnQueue.shift());
           this.spawnTimer += this.spawnGap;
         }
-        this.swarmTimer -= dt;
-        while (this.swarmTimer <= 0 && this.swarmQueue.length) {
-          this.spawnMonster(this.swarmQueue.shift(), undefined, undefined, true);
-          this.swarmTimer += this.swarmGap;
-        }
-        if (!this.spawnQueue.length && !this.swarmQueue.length) {
+        if (!this.spawnQueue.length) {
           if (this.waveIndex >= this.totalWaves - 1) {
             this.waveState = 'final';
           } else {
@@ -462,7 +431,7 @@
     }
 
     // ---------- 怪物 ----------
-    spawnMonster(type, lane, x, swarm) {
+    spawnMonster(type, lane, x) {
       const def = D.monsters[type];
       if (lane === undefined && def.pack) {
         // 狼群：同一组从同一条车道出来
@@ -480,8 +449,7 @@
       if (lane === undefined) lane = this.rng.int(this.lanes);
       // bossHp：精英挑战里回归的小 Boss 是强化版（设计书 29.2）
       const bossMult = def.boss ? 1 + (this.level.bossHp || 0) : 1;
-      const sw = swarm ? this.swarmStrength : 1;
-      const hp = Math.max(1, Math.round(def.hp * this.D * (1 + (this.rules.monsterHp || 0)) * this.diffHp * bossMult * sw));
+      const hp = Math.round(def.hp * this.D * (1 + (this.rules.monsterHp || 0)) * this.diffHp * bossMult);
       const m = {
         id: nextId++,
         type,
@@ -494,7 +462,6 @@
         maxHp: hp,
         pending: 0,
         dps: def.dps * this.D,
-        swarm: !!swarm,
         state: 'walk',
         attackTimer: 0.3 + this.rng() * 0.5,
         hasteUntil: 0,
@@ -535,12 +502,6 @@
       this.monsters.push(m);
       this.emit('spawn', m);
       return m;
-    }
-
-    // 随机挑目标的技能：射程里有原有的怪就只在它们里挑，只剩多出来的小怪时才打小怪（设计书 84）
-    realFirst(pool) {
-      const real = pool.filter((m) => !m.swarm);
-      return real.length ? real : pool;
     }
 
     isTargetable(m) {
@@ -718,11 +679,6 @@
               if (ranged.poison) this.addWallDot(ranged.poison.dps * this.D, ranged.poison.duration, 'poison', true, m.type);
             }
           }
-        } else if (m.swarm) {
-          // 多出来的小怪（设计书 84）：撞上城墙留下一点伤害就消失，不会堆在城墙前啃个没完，也不掉铜币
-          this.hitWall(m.def.explode ? m.def.explode.damage * this.D : Math.max(m.dps, (m.def.slam || 0) * this.D), m, true);
-          this.emit('swarmHit', { m });
-          this.kill(m, true);
         } else if (m.def.explode) {
           // 自爆型：到达城墙立即爆炸，不掉铜币
           this.hitWall(m.def.explode.damage * this.D, m, true);
@@ -805,7 +761,6 @@
 
     hitWall(amount, m, big, kind, who) {
       amount *= this.diffDmg;
-      if (m && m.swarm) amount *= this.swarmStrength; // 多出来的小怪（设计书 84）：啃城墙、自爆、猛击都按强度折算
       const temp = this.time < this.tempDr.until ? this.tempDr.amt : 0;
       let dmg = amount * (1 - Math.min(temp > 0.5 ? 0.95 : 0.8, this.stats.wallDr + this.mods.wallDr + temp));
       // 守护符文（设计书 62.3）：整场有效的护盾，先于泡泡护盾被打
@@ -1008,7 +963,7 @@
           lane = TD.util.clamp(m.lane + dir, 0, this.lanes - 1);
           if (lane === m.lane) lane = TD.util.clamp(m.lane - dir, 0, this.lanes - 1);
         }
-        const c = this.spawnMonster(sp.child, lane, m.x + 20 + this.rng() * 30, m.swarm);
+        const c = this.spawnMonster(sp.child, lane, m.x + 20 + this.rng() * 30);
         c.splitFrom = { x: m.x, y: m.y };
       }
       this.emit('split', { m, count });
@@ -1018,7 +973,7 @@
       m.dead = true;
       m.hp = 0;
       m.diedAt = this.time;
-      const copper = noReward ? 0 : m.swarm ? m.def.copper * this.swarmCopper : m.def.copper;
+      const copper = noReward ? 0 : m.def.copper;
       if (!noReward) {
         // 连击：1.2 秒内连续击败
         this.streak = this.time - this.lastKillAt <= 1.2 ? this.streak + 1 : 1;
@@ -1088,7 +1043,7 @@
       const ds = m.def.deathSpawn;
       if (ds) {
         for (let i = 0; i < ds.count; i++) {
-          const c = this.spawnMonster(ds.type, m.lane, m.x + (i - 1) * 22, m.swarm);
+          const c = this.spawnMonster(ds.type, m.lane, m.x + (i - 1) * 22);
           c.splitFrom = { x: m.x, y: m.y };
         }
         this.emit('split', { m, count: ds.count });
@@ -1139,11 +1094,6 @@
         const support = (m) => !!(m.def.healer || m.def.chill || m.def.ranged || m.def.guard || m.def.bubbler);
         list.sort((a, b) => (danger(b) ? 1 : 0) - (danger(a) ? 1 : 0) || (support(b) ? 1 : 0) - (support(a) ? 1 : 0) || byX(a, b));
       } else list.sort(byX);
-      // 多出来的小怪（设计书 84）排在后面：射程里还有原有的怪时先打原有的，只剩小怪潮时才打小怪（稳定排序，各自的次序不变）
-      if (this.swarmStrength < 1 || this.monsters.some((m) => m.swarm)) {
-        const real = list.filter((m) => !m.swarm);
-        if (real.length && real.length < list.length) return real.concat(list.filter((m) => m.swarm));
-      }
       return list;
     }
 
@@ -1331,16 +1281,14 @@
       let cur = first;
       let dmg = p.dmg;
       for (let i = 0; i < p.chain.count; i++) {
-        // 原有的怪优先于多出来的小怪（设计书 84）：范围内有原有的怪，就算更远也先跳过去
         let best = null;
-        let bd = Infinity;
+        let bd = p.chain.range;
         for (const o of this.monsters) {
           if (hit.has(o.id) || !this.isTargetable(o)) continue;
           const d = Math.hypot(o.x - cur.x, o.y + o.yOffset - (cur.y + cur.yOffset));
-          if (d > p.chain.range) continue;
-          if (!best || (best.swarm && !o.swarm) || (!!best.swarm === !!o.swarm && d < bd)) {
-            best = o;
+          if (d <= bd) {
             bd = d;
+            best = o;
           }
         }
         if (!best) break;
@@ -1521,7 +1469,7 @@
       const shot = this.buddy.perk.shot;
       this.buddyTimer -= dt;
       if (this.buddyTimer > 0) return;
-      const pool = this.realFirst(this.monsters.filter((m) => this.isTargetable(m) && this.inRange(m)));
+      const pool = this.monsters.filter((m) => this.isTargetable(m) && this.inRange(m));
       if (!pool.length) {
         this.buddyTimer = 0.5;
         return;
@@ -1673,7 +1621,7 @@
       const def = D.items.meteor;
       for (const mt of this.meteors) {
         if (mt.at !== null && this.time >= mt.at && mt.landAt === null) {
-          const pool = this.realFirst(this.monsters.filter((m) => this.isTargetable(m)));
+          const pool = this.monsters.filter((m) => this.isTargetable(m));
           if (!pool.length) {
             mt.done = true;
             continue;
@@ -1706,7 +1654,7 @@
       while (r.timer <= 0 && r.left > 0) {
         r.timer += r.every;
         r.left--;
-        const pool = this.realFirst(this.monsters.filter((m) => this.isTargetable(m) && this.inRange(m)));
+        const pool = this.monsters.filter((m) => this.isTargetable(m) && this.inRange(m));
         if (!pool.length) continue;
         const m = this.rng.pick(pool);
         this.emit('rainArrow', { x: m.x, y: m.y + m.yOffset });

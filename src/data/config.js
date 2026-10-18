@@ -89,12 +89,8 @@
       [1, 0],
     ],
 
-    // 主线第 N 关总共多出 N × 20 只小怪（设计书 84）
-    extraMonstersPerLevel: 20,
-    // 多出来的小怪的强度（血量、撞城墙的伤害，1 = 和同类怪一样）：逐关调过的写在关卡的 swarm 里，没写的用默认值；
-    // 它们撞上城墙就消失，被击杀给的铜币按强度折算，但不低于 swarmCopperFloor
-    swarmDefault: 0.03,
-    swarmCopperFloor: 0.2,
+    // 主线第 N 关整关总共多出 N × 这个数 只小怪（设计书 84）
+    extraMonstersPerLevel: 1,
 
     exchange: {
       copperPerSilver: 100,
