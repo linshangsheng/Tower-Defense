@@ -161,7 +161,7 @@
     planExtraMonsters(opts) {
       const none = this.level.waves.map(() => null);
       if (opts.levelDef || typeof opts.level !== 'number' || !D.levels[opts.level] || this.level.tower || this.level.endless) return none;
-      const total = Math.round(opts.level * (C.extraMonstersPerLevel || 0));
+      const total = Math.round(opts.level * (C.extraMonstersPerLevel || 0) * (this.level.extraMult === undefined ? 1 : this.level.extraMult)); // extraMult：怪物本身已经压到数量下限、多出的怪还是过不去的关卡，由 tools/tune-count.js 调小
       const cm = (this.level.countMult || 1) * (1 + (this.rules.countBonus || 0));
       const minions = this.level.waves.map((w) => w.groups.map(([type, count]) => (D.monsters[type].boss ? 0 : Math.max(1, Math.round(count * cm)))));
       const waveSums = minions.map((g) => g.reduce((a, b) => a + b, 0));

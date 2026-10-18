@@ -571,11 +571,14 @@ test('countMult 按倍率调整小怪数量，Boss 不变', () => {
   const lvl = TD.data.levels[40];
   const old = lvl.countMult;
   lvl.countMult = 2;
+  const extra = TD.config.extraMonstersPerLevel;
+  TD.config.extraMonstersPerLevel = 0; // 这里只测 countMult，多出的小怪另有测试
   const b = new TD.Battle({ level: 40, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 1 });
   b.startWave(2);
   assert.strictEqual(b.spawnQueue.filter((x) => x === 'frostQueen').length, 1);
   assert.strictEqual(b.spawnQueue.filter((x) => x === 'wolf').length, 12);
   lvl.countMult = old;
+  TD.config.extraMonstersPerLevel = extra;
 });
 
 // ---------- 第五章机制 ----------
@@ -3019,37 +3022,49 @@ test('汇兑所：一次可换 1 / 10 / 100 / 1000，铜换银、银换金都按
 function queuedTotals(n, opts) {
   const s = P.newSave();
   const b = new TD.Battle(Object.assign({ level: n, stats: P.heroStats(s), seed: 5, loadout: { active: [], items: [] } }, opts));
+  const types = {};
   let minions = 0;
   let bosses = 0;
-  let swarm = 0;
   for (let i = 0; i < b.level.waves.length; i++) {
     b.startWave(i);
     for (const t of b.spawnQueue) {
+      types[t] = (types[t] || 0) + 1;
       if (D.monsters[t].boss) bosses++;
       else minions++;
     }
-    for (const t of b.swarmQueue) {
-      assert.ok(!D.monsters[t].boss, '潮里没有 Boss');
-      swarm++;
-    }
   }
-  return { minions, bosses, swarm, b };
+  return { minions, bosses, types, b };
 }
 
-test('主线第 N 关总共多出 N × 20 只小怪，Boss 数量不变', () => {
-  for (const n of [1, 5, 10, 25, 50, 60, 100]) {
-    const base = D.levels[n].waves.reduce((a, w) => a + w.groups.reduce((x, [t, c]) => x + (D.monsters[t].boss ? 0 : Math.max(1, Math.round(c * (D.levels[n].countMult || 1)))), 0), 0);
-    const bossBase = D.levels[n].waves.reduce((a, w) => a + w.groups.reduce((x, [t, c]) => x + (D.monsters[t].boss ? c : 0), 0), 0);
-    const r = queuedTotals(n);
-    assert.strictEqual(r.swarm, n * 20, `第 ${n} 关多出的小怪数`);
-    assert.strictEqual(r.minions, base, `第 ${n} 关原有小怪不变`);
-    assert.strictEqual(r.bosses, bossBase, `第 ${n} 关 Boss 数量不变`);
-  }
-  assert.strictEqual(queuedTotals(100).swarm, 2000, '第 100 关多 2000 只');
-  // 100 关一关不落：每一关都正好多 N × 20
+const baseCounts = (n) => {
+  const lv = D.levels[n];
+  const cm = lv.countMult || 1;
+  return {
+    minions: lv.waves.reduce((a, w) => a + w.groups.reduce((x, [t, c]) => x + (D.monsters[t].boss ? 0 : Math.max(1, Math.round(c * cm))), 0), 0),
+    bosses: lv.waves.reduce((a, w) => a + w.groups.reduce((x, [t, c]) => x + (D.monsters[t].boss ? c : 0), 0), 0),
+  };
+};
+const expectedExtra = (n) => Math.round(n * TD.config.extraMonstersPerLevel * (D.levels[n].extraMult === undefined ? 1 : D.levels[n].extraMult));
+
+test('主线第 N 关总共多出 N × 系数 只小怪（和原有的同类怪一模一样），Boss 数量不变', () => {
+  assert.ok(TD.config.extraMonstersPerLevel > 0);
   for (let n = 1; n <= 100; n++) {
-    const b = queuedTotals(n).b;
-    assert.strictEqual(b.extraPlan.reduce((a, p) => a + (p ? p.reduce((x, [, c]) => x + c, 0) : 0), 0), n * 20, `第 ${n} 关`);
+    const base = baseCounts(n);
+    const r = queuedTotals(n);
+    assert.strictEqual(r.minions - base.minions, expectedExtra(n), `第 ${n} 关多出的小怪数`);
+    assert.strictEqual(r.bosses, base.bosses, `第 ${n} 关 Boss 数量不变`);
+  }
+});
+
+test('多出的小怪是本关最弱的普通小怪：不是 Boss、不是要停在远处或会影响别的怪的类型，且全是同一种', () => {
+  const deny = ['boss', 'towerOf', 'bossPart', 'ai', 'healer', 'ranged', 'chill', 'bubbler', 'fireZone', 'onDeath', 'staticShock', 'stealth'];
+  for (const n of [5, 30, 50, 65, 87, 100]) {
+    const own = queuedTotals(n);
+    const b = own.b;
+    const extraTypes = new Set();
+    for (const p of b.extraPlan) if (p) for (const [t] of p) extraTypes.add(t);
+    assert.ok(extraTypes.size <= 1, `第 ${n} 关只用一种`);
+    for (const t of extraTypes) assert.ok(!deny.some((k) => D.monsters[t][k]), `第 ${n} 关的 ${t} 不该当小怪`);
   }
 });
 
@@ -3057,32 +3072,24 @@ test('多出的小怪：只在主线关卡里加（自定义关卡不加），�
   const a = queuedTotals(40).b.extraPlan;
   const b = queuedTotals(40).b.extraPlan;
   assert.deepStrictEqual(a, b);
-  const lv = Object.assign({}, D.levels[40]);
-  const custom = queuedTotals(40, { levelDef: lv });
-  assert.strictEqual(custom.swarm, 0, '自定义关卡（无尽、每日挑战、妖塔）不加');
-  // 各波分到的多出数量和各波原有小怪数大致成比例
+  const custom = queuedTotals(40, { levelDef: Object.assign({}, D.levels[40]) });
+  assert.strictEqual(custom.minions, baseCounts(40).minions, '自定义关卡（无尽、每日挑战、妖塔）不加');
   const cm = D.levels[40].countMult || 1;
   const sums = D.levels[40].waves.map((w) => w.groups.reduce((x, [t, c]) => x + (D.monsters[t].boss ? 0 : Math.max(1, Math.round(c * cm))), 0));
   const extra = a.map((p) => (p ? p.reduce((x, [, c]) => x + c, 0) : 0));
   const tot = sums.reduce((x, y) => x + y, 0);
-  assert.strictEqual(extra.reduce((x, y) => x + y, 0), 800);
-  extra.forEach((e, i) => assert.ok(Math.abs(e - (800 * sums[i]) / tot) <= 1.5, `第 ${i + 1} 波分摊`));
+  const want = expectedExtra(40);
+  assert.strictEqual(extra.reduce((x, y) => x + y, 0), want);
+  extra.forEach((e, i) => assert.ok(Math.abs(e - (want * sums[i]) / tot) <= 1.5, `第 ${i + 1} 波分摊`));
 });
 
-test('多出的小怪撞上城墙就消失（造成按强度折算的伤害），不堆在城墙前、不掉铜币；分裂出的小怪也是潮的一员', () => {
+test('多出的小怪和原有的同类怪完全一样：血量、伤害、铜币都不打折，会停在城墙前啃', () => {
   const s = P.newSave();
   const b = new TD.Battle({ level: 3, stats: P.heroStats(s), seed: 9, loadout: { active: [], items: [] } });
-  const m = b.spawnMonster('slime', 1, TD.config.wallX + 5, true);
-  assert.ok(m.swarm);
-  assert.ok(m.maxHp < D.monsters.slime.hp * b.D, '血量按强度折算');
+  const m = b.spawnMonster('bunny', 1, TD.config.wallX + 5);
+  assert.strictEqual(m.maxHp, Math.round(D.monsters.bunny.hp * b.D), '血量和原有的一样');
   const hp0 = b.wall.hp;
-  b.step(1 / 60);
-  b.step(1 / 60);
-  assert.ok(m.dead, '撞上城墙就消失');
-  assert.ok(b.wall.hp < hp0 && hp0 - b.wall.hp < D.monsters.slime.dps * b.D, '造成的伤害比同类怪小得多');
-  assert.strictEqual(b.killCopper, 0, '撞墙消失不掉铜币');
-  const k = b.spawnMonster('pumpkin', 2, 600, true);
-  b.kill(k);
-  const kids = b.monsters.filter((o) => o.type === 'minipumpkin');
-  assert.ok(kids.length && kids.every((o) => o.swarm), '南瓜分裂出的小南瓜也是潮');
+  for (let i = 0; i < 60 * 3; i++) b.step(1 / 60);
+  assert.ok(!m.dead && b.wall.hp < hp0, '停在城墙前继续啃，不会消失');
+  assert.ok(!('swarm' in m), '没有特殊身份');
 });

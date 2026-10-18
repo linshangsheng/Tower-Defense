@@ -67,24 +67,38 @@ for (let n = from; n <= to; n++) {
       }
     return { s, winRate: wins / runs, wall: wall / runs, time: time / runs };
   };
-  // 在对数刻度上二分：lo 是"够简单"（城墙剩余 ≥ 目标）的倍率，hi 是"太难"的倍率；倍率越大怪越多
-  let lo = 0.3;
-  let hi = 3.5;
+  // 只往少调、不往多调：多出了小怪，原有怪物才要少一点；没问题的关卡保持原来的 countMult。
+  // 在 [0.3, 原倍率] 里二分："够简单"是胜率 ≥ 75%、用时 ≤ 330 秒、城墙剩余不比目标低 10% 以上
+  const good = (r) => r.winRate >= 0.75 && r.time <= 330 && r.wall >= target - 0.1;
   let best = null;
-  for (let it = 0; it < 8; it++) {
-    const m = it === 0 ? Math.min(3.5, Math.max(0.3, start)) : Math.sqrt(lo * hi);
-    const r = measure(+m.toFixed(3));
-    const ok = r.winRate >= 0.75 && r.time <= 330;
-    if (ok && r.wall >= target) {
-      lo = m; // 这个倍率城墙剩余够多：还可以更难一点
-      if (!best || r.s > best.s) best = r;
-      if (r.wall - target < 0.06) break;
-    } else hi = m;
+  let first = measure(+Math.max(0.3, start).toFixed(3));
+  if (good(first)) best = first;
+  else {
+    let lo = 0.3;
+    let hi = Math.max(0.3, start);
+    for (let it = 0; it < 7; it++) {
+      const m = Math.sqrt(lo * hi);
+      const r = measure(+m.toFixed(3));
+      if (good(r)) {
+        best = r;
+        lo = m; // 够简单：看看能不能多留一点怪
+      } else hi = m;
+    }
   }
-  if (!best) best = measure(0.3); // 最低倍率都不行（说明是别的原因）：照最低
+  let extraMult = lvl.extraMult === undefined ? 1 : lvl.extraMult;
+  if (!best) {
+    // 原有怪物已经压到最低数量还过不去：多出的小怪数量逐步调小（最少 0）
+    for (const f of [0.75, 0.5, 0.25, 0]) {
+      lvl.extraMult = f;
+      const r = measure(0.3);
+      extraMult = f;
+      best = r;
+      if (r.winRate >= 0.75 && r.time <= 330) break;
+    }
+  }
   const mult = +best.s.toFixed(2);
-  results[n] = mult;
-  console.log(`第${n}关（${lvl.type}）目标城墙 ${Math.round(target * 100)}% → countMult ${mult}（原 ${start}）  胜率 ${Math.round(best.winRate * 100)}%  城墙 ${Math.round(best.wall * 100)}%  用时 ${Math.round(best.time)}s`);
+  results[n] = { mult, extraMult };
+  console.log(`第${n}关（${lvl.type}）目标城墙 ${Math.round(target * 100)}% → countMult ${mult}（原 ${start}）多出数量 ×${extraMult}  胜率 ${Math.round(best.winRate * 100)}%  城墙 ${Math.round(best.wall * 100)}%  用时 ${Math.round(best.time)}s`);
 }
 
 if (!dry) {
@@ -95,8 +109,11 @@ if (!dry) {
     const start = src.indexOf(`\n    ${n}: {`) + 1;
     const end = src.indexOf('\n    },\n', start);
     let block = src.slice(start, end);
-    if (/countMult: [\d.]+,/.test(block)) block = block.replace(/countMult: [\d.]+,/, `countMult: ${results[n]},`);
-    else block = block.replace(/(\n      type: '\w+',)/, `$1\n      countMult: ${results[n]},`);
+    const { mult, extraMult } = results[n];
+    if (/countMult: [\d.]+,/.test(block)) block = block.replace(/countMult: [\d.]+,/, `countMult: ${mult},`);
+    else block = block.replace(/(\n      type: '\w+',)/, `$1\n      countMult: ${mult},`);
+    block = block.replace(/\n      extraMult: [\d.]+,/, '');
+    if (extraMult !== 1) block = block.replace(/(\n      countMult: [\d.]+,)/, `$1\n      extraMult: ${extraMult},`);
     src = src.slice(0, start) + block + src.slice(end);
   }
   fs.writeFileSync(file, src);
