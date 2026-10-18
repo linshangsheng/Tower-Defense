@@ -832,9 +832,10 @@
       if (r > 0) out.notes.push(`援军鼓舞：下次挑战本关攻击和城墙 +${Math.round(r * 100)}%`);
     }
     out.baseCopper = Math.round(base);
-    out.killCopper = result.killCopper || 0;
+    const killCopper = result.killCopper || 0;
+    out.killCopper = Math.round(killCopper);
     out.earlyCopper = result.earlyCopper || 0;
-    out.copper = Math.round((base + out.killCopper + out.earlyCopper) * copperMult);
+    out.copper = Math.round((base + killCopper + out.earlyCopper) * copperMult);
     out.copperMult = copperMult;
     save.levels[n] = rec;
 
