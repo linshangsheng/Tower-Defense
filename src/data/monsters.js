@@ -921,13 +921,13 @@
   echo('bloodBat', 'bat', '吸血蝠', TINT_MOON, { hp: 70, dps: 9, copper: 3, laneHop: { every: 1.8 } }, '频繁换车道的蝙蝠，很难集火。');
   // 第九章 · 赤铁熔炉（第四、五章怪物的回声）
   echo('ironSnowman', 'snowman', '铁雪人', TINT_FORGE, { hp: 110, dps: 16, armor: 60, copper: 4, deathSpawn: Object.assign({}, M.snowman.deathSpawn, { count: 3 }) }, '披着铁甲的雪人，死后裂成三个小雪团。');
-  echo('ironWolf', 'wolf', '铁狼', TINT_FORGE, { hp: 70, speed: 105, dps: 12, armor: 25, copper: 4, pack: 4 }, '四只一组冲过来的铁甲狼。');
-  echo('forgeImp', 'imp', '炉火小鬼', TINT_FORGE, { hp: 70, copper: 5, ranged: Object.assign({}, M.imp.ranged, { damage: Math.round(M.imp.ranged.damage * 1.4) }) }, '会飞的火球手，一发火球比原来疼得多。');
-  echo('steelYeti', 'yeti', '钢雪怪', TINT_FORGE, { hp: 300, dps: 26, armor: 180, copper: 7 }, '浑身钢板的雪怪：物理几乎打不动，魔法才有效。');
-  echo('moltenGolem', 'lavaGolem', '熔铁傀儡', TINT_FORGE, { hp: 340, dps: 28, mres: 360, copper: 8 }, '熔化的铁做的傀儡：魔法几乎打不动，用物理武器。');
-  echo('slagMagma', 'magma', '炉渣团', TINT_FORGE, { hp: 85, dps: 14, copper: 4, fireZone: Object.assign({}, M.magma.fireZone, { radius: 90, duration: 6 }) }, '死后留下更大、更久的火焰地带。');
-  echo('ironChariot', 'chariot', '铁战车', TINT_FORGE, { hp: 110, speed: 140, dps: 14, armor: 60, copper: 5, slam: 28 }, '披着铁板的战车，冲得很快。');
-  echo('frostWyrm', 'iceDragon', '霜龙', TINT_FORGE, { hp: 105, speed: 64, dps: 14, copper: 4 }, '会飞的小龙，被混沌染成了红色。');
+  echo('ironWolf', 'wolf', '铁狼', TINT_FORGE, { hp: 65, speed: 100, dps: 11, armor: 20, copper: 4, pack: 4 }, '四只一组冲过来的铁甲狼。');
+  echo('forgeImp', 'imp', '炉火小鬼', TINT_FORGE, { hp: 60, copper: 5, ranged: Object.assign({}, M.imp.ranged, { damage: Math.round(M.imp.ranged.damage * 1.4) }) }, '会飞的火球手，一发火球比原来疼得多。');
+  echo('steelYeti', 'yeti', '钢雪怪', TINT_FORGE, { hp: 280, dps: 24, armor: 140, copper: 7 }, '浑身钢板的雪怪：物理几乎打不动，魔法才有效。');
+  echo('moltenGolem', 'lavaGolem', '熔铁傀儡', TINT_FORGE, { hp: 300, dps: 24, mres: 300, copper: 8 }, '熔化的铁做的傀儡：魔法几乎打不动，用物理武器。');
+  echo('slagMagma', 'magma', '炉渣团', TINT_FORGE, { hp: 70, dps: 12, copper: 4, fireZone: Object.assign({}, M.magma.fireZone, { radius: 90, duration: 6 }) }, '死后留下更大、更久的火焰地带。');
+  echo('ironChariot', 'chariot', '铁战车', TINT_FORGE, { hp: 100, speed: 130, dps: 12, armor: 50, copper: 5, slam: 22 }, '披着铁板的战车，冲得很快。');
+  echo('frostWyrm', 'iceDragon', '霜龙', TINT_FORGE, { hp: 85, speed: 62, dps: 12, copper: 4 }, '会飞的小龙，被混沌染成了红色。');
   // 第十章 · 虚空天域（第六、七章怪物的回声）
   echo('voidSheep', 'cloudSheep', '虚空羊', TINT_VOID, { hp: 110, dps: 14, copper: 5, wool: Object.assign({}, M.cloudSheep.wool, { ratio: 0.7 }) }, '羊毛更厚：先扣掉 70% 血量的羊毛才开始掉血。');
   echo('voidKite', 'kite', '虚空风筝', TINT_VOID, { hp: 56, dps: 9, copper: 4, dodge: 0.5 }, '一半的物理攻击都会被它飘走躲开。');
