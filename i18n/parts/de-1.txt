@@ -1,0 +1,463 @@
+0	, bis zu 3 gleichzeitig tragbar
+1	: {0} Niederlagen in Folge. Angriff und Mauer-LP sind diesmal erhöht. Wird nach dem Sieg zurückgesetzt.
+2	…Der Wind hat sich gelegt. Vor uns liegt die Quelle der Tinte.
+3	…Großer Bruder. Große Schwester. Ihr seid endlich da.
+4	…Bumm. Ich kann nichts treffen.
+5	…Bumm. Es tut mir leid. Ich habe den Regen gemacht.
+6	…Die Schritte sind verstummt.
+7	…Heute ist es wieder ruhig. Gut so.
+8	…Der Spiegel ist zerbrochen, jetzt sehe ich endlich klar. Die Tinte sickert aus einem Riss im Vulkan im Süden.
+9	…Aber ich kann nicht aufhören. Bitte besiegt sie alle, ja?
+10	…Der Riss hat sich geschlossen. Es ist still.
+11	…Das riecht nach Tinte.
+12	…Dieser Panzer da, das ist doch nicht etwa unsere Mauer?
+13	…Hasst du mich wirklich nicht?
+14	…Die Bäume im Wald haben mir erzählt, dass ein kleiner Wächter sich bis hierher durchgekämpft hat. Ich bin Rowan, der Waldhüter.
+15	…Ich erinnere mich an dich. Ich erinnere mich an diese Mauer. Aber ich weiß nicht mehr, warum ich gekommen bin.
+16	…Danke. Immer dasselbe zu tun… ist so anstrengend.
+17	…Danke, dass ihr den Nebel weggeblasen habt. Ich bin Nova. Ich trage eine Laterne durch den Sumpf und führe verirrte Tierchen heim.
+18	…Freunde zu haben fühlt sich so gut an.
+19	…Wieder einer, der mich schlagen will. Alle schlagen immer nur mich.
+20	…Wirklich. So schön. War ich eben nicht zu gemein?
+21	…Kael, schau mal zum Himmel. Die letzten Tintentropfen, die ich verstreut habe, sind zum Regenbogen hinaufgeschwebt.
+22	· Nachschub läuft
+23	· Rekord
+24	· Nächste Welle in {0} s
+25	‹ Titel
+26	‹ Zurück
+27	(Ab Lv30 gibt jede Stufe +{0}% der LP von Lv30)
+28	(Jenseits der Grenze sinkt der Gewinn pro Stufe)
+29	(Alle Plätze freigeschaltet)
+30	(Leeren)
+31	(Schließe Level {0} ab, um einen weiteren Platz freizuschalten)
+32	({0} ablegen; {1} zurück in die Tasche)
+33	(Ablegen)
+34	(Über der Grenze Lv{0}: Gewinn sinkt pro Stufe, Kosten steigen weiter)
+35	(Vollständig)
+36	(Voll ausgerüstet)
+37	(Maximum erreicht)
+38	(In einem anderen Platz, wird getauscht)
+39	(Im Bereich „Helden“ der Ausrüstungsseite kannst du Atlas einsetzen: Er macht die Mauer robuster.)
+40	(Im Bereich „Helden“ der Ausrüstungsseite kannst du Lyra einsetzen.)
+41	(Nova ist dabei! Ihre Reichweite sinkt in Nachtlevels nicht.)
+42	(Rowan ist dabei! Seine schweren Pfeile durchdringen Rüstung.)
+43	{0}\nAbklingzeit {1} s, {2} dabei
+44	{0} Wellen
+45	{0} Wellen (inkl. Boss)
+46	{0} Min. {1} Sek.
+47	{0}-Set „{1}“: {2} → {3}{4}
+48	{0} Tage
+49	{0} Kupfer → 1
+50	{0}-Synergie „{1}“: {2}{3}
+51	{0} LP {1} →
+52	{0} Dämonenkönig + {1} Schergen
+53	{0} Silber → 1
+54	{0} Arten
+55	{0}; ab Lv3 werden mit jeder Stufe Schaden / Pfeile / Heilung / Dauer etwas stärker und die Abklingzeit kürzer
+56	{0}: Kampfkraft +{1}% ({2})
+57	{0} (im Besitz {1} / {2}{3})
+58	Werte von {0}
+59	Qualität {0}
+60	/s
+61	⏩ 2x Tempo
+62	⏭ 3x Tempo
+63	▶ 1x Tempo
+64	★ Meisterschaft
+65	♾ Endlosmodus
+66	♾ Endlosmodus {0}
+67	⚠ Boss naht!
+68	✔ Im Einsatz
+69	✔ Erledigt
+70	✔ Im Besitz
+71	✦ Aufgestiegen
+72	✨ Set „{0}“: {1}
+73	🎯 Levelaufgabe: {0}
+74	🎯 Levelaufgabe „{0}“ erledigt: +{1} Silber
+75	🎺 Verstärkung spornt an +{0}%
+76	🏆 Erfolge
+77	🏆 Erfolg „{0}“ erreicht: {1} (+{2})
+78	🏆 Erfolg „{0}“ erreicht +{1}
+79	🏘 Königsstädtchen
+80	🏯 Neunstöckiger Dämonenturm
+81	🏯 Neunstöckiger Dämonenturm {0}
+82	👉 Verbessere „Angriff“, dann erledigt Kael Monster schneller!
+83	👑 Erster Sieg im Herausforderungsmodus: Krone erhalten
+84	👑 Siege im Herausforderungsmodus für eine Krone
+85	👑 Im Herausforderungsmodus gewonnen
+86	👕 Kleiderschrank
+87	📅 Tagesaufgabe
+88	📅 Tagesaufgabe · {0}
+89	📅 Tagesaufgabe ✔
+90	📊 Kampfbericht
+91	📔 Kaels Wächtertagebuch
+92	📜 Wächterarchiv
+93	📦 Nachschub in diesem Level:
+94	📦 Nachschubkiste ist da!
+95	10er-Kombo!
+96	12 Meteore treffen zufällige Monster auf dem ganzen Feld, jeder mit ANG ×8 Schaden. Monster im Umkreis von 110 Pixeln erleiden 60%.
+97	16 Pfeile × ANG 1,6
+98	Lässt 2 Sekunden lang 16 Pfeile regnen. Jeder trifft ein zufälliges Monster in Reichweite mit ANG ×1,6 Schaden und ignoriert Schilde.
+99	20 Pfeile × 1,7
+100	24 Pfeile × 1,8, getroffene Monster fangen Feuer
+101	3 Pfeile können mehrere Tentakel gleichzeitig treffen; voll ausgebauter Holzbogen und Kanone sind auch gegen Bobo super
+102	Alle 5 Bahnen offen! Fledermäuse flattern zwischen den Bahnen umher.
+103	Hatschi! Mein Helm ist ganz vereist.
+104	Ach du meine Güte… Ich habe Tinte gekocht statt Suppe. Kein Wunder, dass sie nicht schmeckt.
+105	Trostpreis
+106	Nacht
+107	Nacht · Geist
+108	Nachtlevel: Sicht gering, Reichweite -30%. Die Nachschübe „Leuchtkugel“ und „Fernblick“ helfen sehr.
+109	Augen der Monster nachts anzeigen (standardmäßig aus, stockdunkel)
+110	Schattenassassine
+111	Schattenassassinen erscheinen schon viel weiter draußen (x < 800)
+112	Schattenassassinen bleiben in der Ferne unsichtbar und zeigen sich erst aus der Nähe. Der Nachschub „Spähglas“ enttarnt sie früher.
+113	Schattenninja
+114	Arkane Woge
+115	„{0}“ verkaufen? Verkaufspreis {1} (die Hälfte des Kaufpreises). Du kannst es später zum vollen Preis zurückkaufen.
+116	Füge hier den exportierten Spielstandtext ein
+117	Kopiere den Text unten und bewahre ihn gut auf. Nach einem Gerätewechsel oder dem Löschen der Browserdaten kannst du ihn mit „Spielstand importieren“ einfügen und deinen Fortschritt wiederherstellen.
+118	Hundertfach-Besieger
+119	Nacht der Geister
+120	Plattenpanzer
+121	Spore
+122	Dünner Eisköcher
+123	Sein Schutzkreis ist größer und senkt mehr Schaden. Erledige ihn zuerst.
+124	Bollwerkpanzer
+125	Bollwerkwächter
+126	Schneesturm! Angriffstempo gesenkt
+127	Schneesturm-Schriftrolle
+128	Ein Sturm zieht auf! Alle Monster sind schneller!
+129	Krit.
+130	Krit-Köcher
+131	Krit.-Chance
+132	Krit.-Chance +{0}%
+133	Krit.-Chance +10%.
+134	Krit.-Chance +3%
+135	Krit.-Chance +3%; physischer Schaden gegen Geister +25%
+136	Krit.-Chance +4%; Reichweitenmalus in Nachtlevels halbiert
+137	Krit.-Chance +8%
+138	Krit.-Schaden
+139	Krit.-Schaden +{0}%
+140	Krit.-Schaden +10%
+141	Krit.-Schaden +15%
+142	Krit.-Schaden +25%
+143	Krit.-Schaden +30%
+144	Tyrannenkrone
+145	Die Explosion stößt kleine Monster in Reichweite 60 Pixel zurück und verlangsamt sie um 40% (1,5 s); +50% Schaden gegen Bosse und Tentakel
+146	Explosionsradius 60 → 85, Flächenschaden 60% → 75%
+147	Polarwolf
+148	Polarwölfe stürmen im Dreierrudel heran. Die Frostzone hält das ganze Rudel auf einmal auf.
+149	Nordland-Wikinger
+150	Bebe
+151	Bebe schreibt jede Muschel in ihr Notizbuch. Sie sagt, die Mauer sei die größte „Muschel“, die sie je gesehen hat, aber leider kann man sie mit niemandem teilen.
+152	Bebe ist mit geschlossener Schale fast unverwundbar und spuckt bei geöffneter Schale Perlen, hasst aber Schmerzen. Setze Donnerschlag und Pfeilregen ein, wenn sich die Schale öffnet!
+153	Bebe wird hektisch: Ihre Schale öffnet und schließt sich schneller!
+154	Muschelamulett
+155	Tasche
+156	Tasche {0}
+157	Deine Tasche ist noch leer. Kaufe Items auf der Seite „Items“.
+158	Dieses Item ist nicht in deiner Tasche
+159	Deine Tasche ist leer. Kaufe Items auf der Seite „Items“.
+160	Musik
+161	Letzte-Chance-Abzeichen
+162	Letzte-Chance-Medaille
+163	Ein Köcher, auf den Rücken geschnallt.
+164	Beim Tod schießt es Stacheln ab, die nahe Monster verletzen. Warte, bis es mitten im Gedränge ist! Es sticht auch die Mauer, wenn es sie erreicht.
+165	Vom Strom gelähmt!
+166	Passive Fähigkeiten
+167	Passive Fähigkeiten (automatisch)
+168	Plätze für passive Fähigkeiten
+169	Von Rüstung / Magieresistenz geblockter Schaden
+170	Ein vom Mondlicht zerfressener grüner Klumpen: viele LP, und er heilt sich selbst, solange er nicht getroffen wird.
+171	Betäubt!
+172	Meine Kekse… sind noch nicht fertig gebacken!
+173	Dieser Pharao hat dreitausend Jahre geschlafen und wurde geweckt! Wer macht hier Lärm?!
+174	Dieser Pharao tüftelt an einer neuen Keks-Sorte. Diesmal nur dreihundert Jahre im Ofen.
+175	Fällt die Mauer in diesem Level zum ersten Mal, wird sie sofort mit 60% der max. LP wiederbelebt (nur einmal)
+176	Kupfereinnahmen in diesem Level +{0}%
+177	Kupfereinnahmen in diesem Level +10%
+178	Kupfereinnahmen in diesem Level +30%
+179	Kupfereinnahmen in diesem Level +60% und sofort eine Menge Kupfer
+180	Meine Burg… warum ist es hier so heiß? Wer hat den Ofen angezündet?
+181	Wahre Gestalt enthüllt! Schaden +50%
+182	Dieser Prinz hat auf dem Platz einen Trampolinladen eröffnet. Der erste Sprung ist gratis!
+183	Krone dieses Kapitels (im Herausforderungsmodus abschließen)
+184	Bandagen-Mumie
+185	Bandagenknäuel
+186	Bandagenknäuel, Schilde, Schwärme kleiner Monster
+187	Bandagenknäuel sind gegen physische Angriffe immun. Schalte im Shop mit Silber den „Zauberstab“ frei oder nimm Donnerschlag und Verbrennen mit!
+188	Die Bandagen sind gewaschen. Sie riechen gut!
+189	Wallpanzer
+190	Blitzableiter
+191	Blitzableiter!
+192	Fledermaus
+193	Fledermaushöhle
+194	Fledermausschwarm
+195	Standard
+196	Keine Angst, sie sind nur wegen einer seltsamen schwarzen Tinte so schlecht gelaunt. Wer die Mauer beschützt, beschützt alle.
+197	Frieren, Schneesturm, Eiswand: Königin Frosti, noch kälter als zuvor.
+198	Frostzone
+199	Frostzone, Mini-Bombe und Frostflasche brauchen eine Bahn: Tippe die Fähigkeit an, dann eine Bahn.
+200	Frostflasche
+201	Friert alle Monster 6 Sekunden ein (Bosse 3 Sekunden). Eingefrorene Monster erleiden +60% Schaden und sind nach dem Auftauen 4 Sekunden lang um 50% verlangsamt.
+202	Eingefroren {0}
+203	Eisbefehl
+204	Eingefroren, Reparatur nicht möglich
+205	Onkel Eisstiel
+206	Onkel Eisstiel friert deine Fähigkeiten ein. Setze nicht alles auf eine einzige Fähigkeit!
+207	Onkel Eisstiel sagt, Königin Frosti habe die Tinte zu einem riesigen Spiegel gefroren, in dem man einen roten Riss sieht.
+208	Onkel Eisstiel marschiert auf die Mauer zu!
+209	Eiskristallsturm
+210	Eiskristall-Geist
+211	Solange Eiskristall-Geister leben, greifen deine Helden langsamer an. Sie verstecken sich weit hinten, mit Pfeilregen und Donnerschlag räumst du sie am besten nebenbei ab.
+212	Eiskristalllicht
+213	Eisseelen-Köcher
+214	Frost-Schneefeld
+215	Bobo
+216	Bobos Tentakel. Solange noch 3 oder mehr übrig sind, ist Bobo kaum zu verletzen.
+217	Bobos Saugnäpfe saugen Kraft auf! Schlag die Tentakel ab!
+218	Bobo wird von Tentakeln geschützt: Schlage sie zuerst ab („Bedrohung zuerst“ und „Boss zuerst“ tun das beide). Unter 60% LP heilen die Tentakel ihn auch, und am Ende wirbelt er einen riesigen Strudel auf!
+219	Plopp
+220	Plopp plopp plopp
+221	Nachschub-Rausch
+222	Nachschub-Experte
+223	Keine
+224	Schließe ein beliebiges Level nach Level 10 ohne aktive Fähigkeiten ab
+225	Alle 14 Sekunden eine Welle, ohne aufs Räumen des Feldes zu warten
+226	Egal wer sie sind, eiserne Schneemänner, eiserne Wölfe… Sie marschieren alle in Eisenpanzern auf uns zu.
+227	Ohne Fähigkeiten
+228	Unsterbliche Rüstung
+229	Items nicht erlaubt
+230	Unbeugsames Kriegsbanner
+231	Schließe ab, ohne ein Item zu benutzen
+232	Das sind nicht sie selbst, sondern „Echos“: Schatten aus dem Riss, vom Chaos blauviolett gefärbt. Sie marschieren unaufhörlich auf die Mauer zu.
+233	Das war nicht ich! Das ist dein eigener Wecker… ich meine, deine kleinen Soldaten.
+234	Das waren nicht wir! Das kam von der anderen Seite des Risses!
+235	Nein. Siehst du? Auf meinem Helm sind auch lauter Tintenflecken von dir.
+236	Unvergänglicher Umhang
+237	Nein, der dritte links ist immer verkehrt herum angebracht, daran bin ich gewöhnt.
+238	Stoffstirnband
+239	Glücksgott-Statue
+240	Glücksstiefel
+241	Ein Stück vom Regenbogen ist schwarz geworden! Wir müssen hinaufklettern und ihn sauber wischen.
+242	Regenbogenvogel
+243	Regenbogenvögel heilen Monster in der Nähe, und Ballons setzen Goblins ab, wenn sie platzen. „Bedrohung zuerst“ nimmt Regenbogenvögel zuerst ins Visier.
+244	Regenbogenbrücke
+245	Am anderen Ende der Regenbogenbrücke liegt das Wolkenreich. Man sagt, die Wolken dort wehen Wind und rollen Donner… Kael, nimm Tinti mit!
+246	Steuerung
+247	Platz {0}
+248	Platz {0}: Item und Anzahl wählen
+249	Strohrüstung
+250	Erdbeer-Eis am Stiel, eine Kupfermünze das Stück!
+251	Strohsandalen
+252	Kräuterumhang
+253	Wiesen-Scharmützel
+254	Wiesenwächter
+255	Etage
+256	Ganz in Bandagen gewickelt: 55% weniger physischer Schaden. Greif es mit Magie an!
+257	Überschwere Kugel, Explosionsradius 100, ignoriert 60% Rüstung, +30% Schaden gegen Bosse.
+258	Gezeiten
+259	Gezeitenumhang
+260	{0} Bahnen
+261	Monsterhorden, Geister, Monster mit niedriger Magieresistenz
+262	Bei Erfolg {0} Diamanten; bei Misserfolg nichts
+263	Erfolge
+264	Erfolge {0} / {1}
+265	Fliegt im Schwarm, über andere Monster hinweg direkt zur Mauer.
+266	Mauer
+267	Die Mauer ist eingefroren! Vorerst keine Reparatur möglich
+268	Die Mauer wurde durchbrochen…
+269	Endet, wenn die Mauer durchbrochen wird. 15 Kupfer pro besiegter Welle; bei neuem Rekord 1 Silber pro 5 weitere Wellen.
+270	Die Mauer ist kein Trampolin! …Obwohl es echt lustig aussieht.
+271	Der Panzer… ich meine die Mauer, ist heute schön robust.
+272	Mauerstufe
+273	Die Mauer hat noch {0}% LP. Wenn du weitermachst, startet die nächste Etage mit diesen LP, ohne Erholung.
+274	Mauer heilt 15% der max. LP.
+275	Mauer heilt 70% der max. LP und erleidet danach 8 Sekunden lang −60% Schaden.
+276	Mauerheilung +25%, Schaden an der Mauer −5%
+277	Mauerheilung +{0}%
+278	Die Mauer erhält einen Schild, der Schaden bis zu 35% der max. LP absorbiert und bis zum Levelende hält.
+279	Mauer-Schadensminderung
+280	Schadensquellen der Mauer (gesamt {0})
+281	Den meisten Schaden an der Mauer verursachte „{0}“: {1}
+282	Mauer-Upgrade (aktuelle max. LP {0})
+283	Mauer {0}% übrig
+284	Mauer ≥50% übrig: 2 Sterne, ≥80%: 3 Sterne.
+285	Schließe ab, wenn weniger als 5% Mauer-LP übrig sind
+286	Die Mauer hielt bis Welle {0} / {1}.
+287	Dauerschaden an der Mauer (Gift, Giftnebel) −60%
+288	Schaden an der Mauer −3% / Stufe.
+289	Schaden an der Mauer −{0}%
+290	Schaden an der Mauer −12%
+291	Schaden an der Mauer −3%
+292	Schaden an der Mauer −6%; Mauerheilung +25%
+293	Mauerreparatur
+294	Mauer-LP
+295	ANG +20%, solange die Mauer-LP unter 50% liegen
+296	ANG +{0}%, solange die Mauer-LP unter 50% liegen
+297	Halte die Mauer-LP durchgehend bei mindestens 70% und schließe ab
+298	Mauer hat nur halbe LP
+299	Max. Mauer-LP +{0}%
+300	Späherstiefel
+301	Roteisen-Schmelzofen
+302	Flammenumhang
+303	Angriff? Ich greife gerade nur Müll an.
+304	Rammen
+305	Von
+306	Verkaufen
+307	Neuling
+308	Turm-Anfänger
+309	Erster Schnee
+310	Hinrichten
+311	Tentakel
+312	Die Tentakel sind alle ins Meer zurückgewichen!
+313	Tentakelschutz: noch {0} übrig, schlag zuerst die Tentakel!
+314	Tentakelhieb
+315	Nur noch {0} Tentakel, schnell, triff Bobo!
+316	Anlegen
+317	Angelegt
+318	Durchschlag
+319	Herzdurchbohrer-Langbogen
+320	Wolkendurchbohrer
+321	Eine Rüstung am Körper, die die Mauer stabiler macht.
+322	Trägt
+323	Legendär
+324	Schöpfungskrone
+325	Schöpfungsköcher
+326	Schöpfungsrüstung
+327	Schöpfungsbogen
+328	Stupsnadel
+329	Grober Umhang
+330	Smaragdwiese
+331	Spielstandtext ungültig. Prüfe, ob du alles kopiert hast
+332	Spielstand importiert
+333	Spielstand gelöscht
+334	Alle besiegten Bosse sind ins Städtchen gezogen. Tippe sie an und hör, wie es ihnen jetzt geht.
+335	Du hast König Gulu besiegt! Er ist eigentlich der fleißigste Putzer der Wiese. Der schwarze Wind weht aus der Wüste, ich breche auf.
+336	Du hast alle Monster dieser Etage besiegt.
+337	Boss unterbrechen
+338	Unterbrich einen Boss mindestens 2-mal und schließe ab
+339	Unterbrochen!
+340	Unterbrechungs-Meister
+341	Unterbrechungs-Experte
+342	Großer Boss
+343	Großer Boss. Der Schneesturm senkt das Angriffstempo, die eingefrorene Mauer lässt sich nicht reparieren, und bei niedrigen LP ruft er kleine Eisdrachen.
+344	Großer Boss. Frieren, Schneesturm, Eiswand, noch kälter als zuvor.
+345	Großer Boss. Giftnebel zersetzt die Mauer, kocht Schergen zu stärkeren Versionen und kippt bei niedrigen LP den Kessel um, wodurch Giftpfützen entstehen.
+346	Großer Boss. Entfesselt Sandstürme, ruft Mumien und heilt sie, und erhebt bei niedrigen LP einen Pyramidenschild, der nur Magie fürchtet.
+347	Großer Boss. Ruft Schergen; unter 60% LP startet er einen Wildschwein-Sturm, den du mit gebündeltem Feuer während der Warnung unterbrechen kannst.
+348	Großer Boss. Sandsturm, Beschwörung, Heilung, Schild: drei Phasen, viel kniffliger als zuvor.
+349	Ein großes weißes Fellmonster mit sehr hoher physischer Rüstung.
+350	Der Kessel kippt um! Die Giftpfütze macht Monster schneller!
+351	Riesiger Strudel! Alle Tentakel sind nachgewachsen und alle Monster sind schneller!
+352	Großschrift-Modus
+353	{0} dabei
+354	Eine Schutzausrüstung für den Kopf.
+355	Einzelschuss, stabil, mit eingebauter zusätzlicher Krit.-Chance. Gut gegen Bosse.
+356	Erreiche in einem Durchgang eine 30er-Kombo (Monster innerhalb von 1,2 s nacheinander besiegen)
+357	Einzelziel-DPS
+358	Bong… bong… (zittert vor Kälte)… Entschuldigung, sie läutet von allein.
+359	Aktuell: {0} →
+360	Spielstand exportieren
+361	Importieren
+362	Spielstand importieren
+363	Der Import überschreibt deinen aktuellen Fortschritt.
+364	Hier aufhören und sichern
+365	Erreiche Welle 30, um den Erfolg „Nie gefallen“ freizuschalten (1 Gold).
+366	Widerhaken-Köcher
+367	Du bist auf Etage {0} gefallen und hast nichts erhalten. Tickets werden nicht erstattet.
+368	Items
+369	Was nützt eine Entschuldigung! Rumms rumms rumms!
+370	Der Boden schwebt… wie ein zerbrochener Spiegel.
+371	Karte
+372	Beben-Talisman
+373	Gipfel der Vollendung
+374	Warte! Ich bin Atlas, der Sohn des Steinmetzes. Mein Vater hat jede kaputte Stelle der Mauer geflickt. Du gehst auf Reisen, ich bewache die Mauer!
+375	Level zu niedrig, werde stärker
+376	Fliegt tief und sehr schnell.
+377	Welle {0} / {1}
+378	Welle {0}
+379	Welle {0} · Rekord {1}
+380	Etage {0}
+381	Etage {0} · Welle {1} / {2} · noch {3}
+382	Etage {0}: {1} Dämonenkönige + {2} Schergen stürmen gleichzeitig heran (Stärke ×{3}). Die Mauer-LP übernehmen sich von der letzten Etage ohne Erholung. Monster zu besiegen bringt nichts, nur das Abschließen von Etagen gibt Diamanten!
+383	Etage {0} geschafft!
+384	Level {0}
+385	Level {0} · {1}
+386	Level {0} · {1} ({2})
+387	Ab Level 3: Schließe ein beliebiges Level mit voller Mauer-LP ab
+388	Kapitel {0}
+389	Kapitel {0} · {1}
+390	Kapitel {0} ▾
+391	Belohnung für alle drei Sterne in Kapitel {0}
+392	Boss von Kapitel 6. Eine launische riesige Gewitterwolke: Sie ruft Donnerknödel und Regenbogenvögel, lädt Blitzschläge auf und entfesselt am Ende einen Sturm.
+393	Boss von Kapitel 7. Der Krakenkönig: Tentakelschutz, Heilung durch Saugnäpfe und am Ende ein riesiger Strudel. Schlag zuerst die Tentakel!
+394	Vierte Bahn
+395	Fünfte Bahn
+396	Items sind erst nutzbar, nachdem die erste Monsterwelle erscheint
+397	Tippe auf eine Bahn zum Wirken (Rechtsklick oder Esc zum Abbrechen)
+398	Tippen zum Anlegen
+399	Midas-Berührung
+400	Tipp mich an, um eine Fähigkeit zu nutzen!
+401	Der Schock trifft ein größeres Gebiet und lähmt länger.
+402	Verzierter Langbogen
+403	Ding!
+404	Bumm… bumm… ihr… dürft… nicht… vorbei…
+405	Bumm… Tinti… heute… war… schön…
+406	Bumm… es… ist… immer… allein… sei… nett… zu ihm…
+407	Bumm… ich… bewache… das… Tor…
+408	Bumm… danke… dir…
+409	Friert alle Monster 7 Sekunden ein, auch Bosse. Eingefrorene Monster erleiden ×2,2 Schaden, und das Angriffstempo der Helden ist in dieser Zeit +60%.
+410	Friert alle Monster auf der gewählten Bahn 3 Sekunden ein.
+411	Oma Brau
+412	Oma Brau hat ihren Kessel blitzblank geschrubbt und sagt, sie koche künftig nur noch Kürbissuppe. Das Schneefeld im Norden scheint eine der Quellen der Tinte zu sein.
+413	Oma Brau kocht Schergen zu stärkeren Versionen. Räume das Feld schnell und nimm Mauerreparatur gegen den Giftnebel mit!
+414	Oma Brau fängt an zu kochen!
+415	Giftfrosch
+416	Giftfrösche bleiben weit hinten und spucken Gift auf die Mauer. Stelle das Ziel auf „Bedrohung zuerst“, dann greifen die Helden sie zuerst an, wenn die Mauer sicher ist.
+417	Giftnebel! Die Mauer nimmt dauerhaft Schaden
+418	Spielstand konnte nicht gelesen werden
+419	Lies das gesamte Wächtertagebuch (übersprungene Abschnitte kannst du im Tagebuch erneut lesen)
+420	Rutscht auf dem Bauch mit hohem Tempo und richtet beim Aufprall auf die Mauer großen Schaden an.
+421	Sprintschuhe
+422	Schaden gegen Bosse und fliegende Monster +30%
+423	Schaden gegen Bosse +{0}%
+424	Schaden gegen Bosse +12%, Schaden an der Mauer −4%
+425	Schaden gegen Bosse +50%, ignoriert 20% Rüstung
+426	E-entschuldigung… das war ich.
+427	Schaden gegen verlangsamte oder eingefrorene Monster +15%
+428	Verursacht ANG ×5 Magieschaden am Monster mit den höchsten aktuellen LP.
+429	Schaden gegen fliegende Monster +{0}%
+430	Verursacht allen Monstern auf der gewählten Bahn ANG ×2,5 Magieschaden und setzt sie in Brand.
+431	Verursacht allen Monstern auf der gewählten Bahn ANG ×5 Schaden.
+432	Schaden +60% gegen Monster unter 30% LP
+433	{0} einlösen
+434	Schildkröte
+435	Schildkröten-Eskorte
+436	Schildkröten beschützen Monster in ihrer Nähe. „Bedrohung zuerst“ nimmt Schildkröten zuerst ins Visier; Fähigkeiten werden von ihnen nicht beeinflusst.
+437	Schild
+438	Versteckt sich in der hinteren Reihe und heilt ständig Monster in der Nähe. Schalte sie zuerst aus!
+439	Die Kupferbrille auf seiner Stirn leuchtet, und aus dem Rucksack auf seinem Rücken dampft es.
+440	Verschießt Magiegeschosse, die beim Treffer in einem kleinen Bereich explodieren. Magieschaden ignoriert physische Rüstung.
+441	Als das Echo des Pharaos verblasste, ließ es einen kleinen Keks zurück. Ich habe mich nicht getraut, ihn zu essen.
+442	Sternenhimmel
+443	Beim Rückweg trifft er von hinten und ignoriert Holzschilde
+444	Zurück
+445	Die Häuser wurden weggespült? Wo sollen sie dann wohnen?
+446	Level aufgeben
+447	Herausforderung aufgeben
+448	Diese Herausforderung aufgeben? Tickets werden nicht erstattet, und du erhältst nichts.
+449	Fliegend
+450	Fliegt und wechselt von Zeit zu Zeit auf eine benachbarte Bahn.
+451	Fliegt und treibt mit dem Wind: 35% der normalen physischen Angriffe von Waffen werden ausgewichen. Magie und Flächenschaden lassen sich nicht ausweichen.
+452	Fliegende zuerst
+453	Fliegender Fisch
+454	Sprungweite der Fliegenden Fische −50%
+455	Fliegende-Fische-Sturm
+456	Fliegende Fische springen einen großen Satz nach vorn und sind in der Luft nicht zu treffen. Sie sind schneller, als sie aussehen, die Frostzone ist da sehr nützlich!
+457	Fliegende-Fische-Hüpfer
+458	Fliegt in der Luft und wirft aus der Ferne Feuerbälle auf die Mauer.
+459	Teilung
+460	Sturmumhang
+461	Sturmkugel
+462	Windwanderer-Stiefel

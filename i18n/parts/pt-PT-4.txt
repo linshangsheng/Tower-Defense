@@ -318,3 +318,146 @@
 1706	Ler
 1707	Guardião das Nuvens
 1708	Reino das Nuvens
+1709	Ovelha-Nuvem
+1710	Lã da Ovelha-Nuvem −60%
+1711	A Ovelha-Nuvem tem de ser tosquiada primeiro e depois de pelada corre muito depressa. Mata-a de uma só vez!
+1712	Capa de Cotovia
+1713	Chuva de Meteoros
+1714	Canhão de Meteoros
+1715	Tentar de Novo
+1716	Regeneração
+1717	Jogar Mais Um Bocado
+1718	Passa 10 níveis em dificuldade Desafio (ganha 10 coroas)
+1719	Receber aqui
+1720	Pausa
+1721	Pisca os olhos, olha ao longe e bebe um pouco de água. O Avô Rei vigia a muralha por um bocado.
+1722	Elmo Mata-Dragões
+1723	O campo de batalha tem agora 4 vias. Os ataques em área e as habilidades de campo são cada vez mais importantes.
+1724	Carga dos Carros de Guerra
+1725	Torrente de Carros de Guerra
+1726	Hospital de Campanha
+1727	Batalha
+1728	Batalhas {0} · Vitórias {1} · Derrotados {2} · Interrupções {3} · Chamadas antecipadas {4}
+1729	Batalhas {0} · Vitórias {1} · Monstros derrotados {2}
+1730	Número de Batalhas
+1731	Aplica-se automaticamente no início da batalha: +30% de moedas de cobre neste nível.
+1732	Definições de Batalha
+1733	Batalha em pausa. Escolhe uma carta de provisões; o efeito dura até ao fim do nível (cores de menor a maior: azul, roxo, vermelho, dourado; quanto mais alta, mais forte). Também podes carregar em 1 / 2 / 3.
+1734	Na batalha, toca num botão de habilidade (ou carrega em 1 / 2 / 3) para lançar habilidades ativas, e carrega em Q / W / E / R / Z / X / C para usar objetos (leva até 3 de cada, um por utilização, com recarga depois de cada uso; compra primeiro os objetos na loja e depois equipa-os).
+1735	Tambor de Guerra
+1736	Tambores de Guerra Trovejantes
+1737	Chuva de Setas lançada com o Tambor de Guerra ativo: +30% de setas
+1738	Samurai Sengoku
+1739	Depois da Batalha
+1740	Poder
+1741	Estandarte de Guerra
+1742	Antes da Batalha
+1743	Preparação · Nível {0}
+1744	Elmo de Guerreiro
+1745	Abriu! Ataca depressa!
+1746	Aberta! Ataca durante {0} s
+1747	Capítulo
+1748	Fila longa, goblins do escudo de madeira
+1749	As estrelas do manto brilham sozinhas e o chapéu é mais alto do que quem o usa.
+1750	Pendente da Riqueza
+1751	O pântano está cheio de nevoeiro e de rãs venenosas a coaxar. Pela primeira vez, sinto a muralha um pouco fria.
+1752	As fantasminhas do pântano quase não temem ataques físicos, e as rãs venenosas cospem veneno ao longe. Lembra-te de usar «Ameaça Primeiro» contra elas!
+1753	Uma rapariga com uma lanterna de pirilampos no pântano. ATQ ×0,92, velocidade de ataque ×1,05; o alcance não diminui à noite, dano físico +20% contra espíritos; a cada 12.º ataque liberta 3 pirilampos (cada um causa dano mágico de ATQ ×0,6).
+1754	Guardião do Pântano
+1755	Sinalizador
+1756	Isto não é uma concha, é a muralha! Vive aqui muita gente!
+1757	Desta vez não vou fazer chover. …Só um bocadinho, para dar um banho à casa nova.
+1758	Isso soa exatamente como antes.
+1759	Este é o ponto mais fundo da fenda, onde até o céu e a terra são difíceis de distinguir.
+1760	Este objeto acabou
+1761	As crianças da vila chamam-me Avó Sopa e eu adoro.
+1762	Guardião da Torre
+1763	Canhão Sísmico
+1764	Artesão a Vapor
+1765	Noite escura o nível todo: alcance −30%
+1766	Depois podes mudar isto a qualquer momento nas Definições.
+1767	Depois disso, 6 segundos após o início de cada vaga cai fogo do céu, causando dano mágico de ATQ ×4 a todos os monstros
+1768	Entendido
+1769	Entendido (Espaço)
+1770	Só se pode usar o arco de madeira
+1771	Assim que uma via ficar vermelha, concentro o fogo para travar a tua carga!
+1772	Chama antecipadamente pelo menos 3 vezes e passa o nível
+1773	Curar
+1774	Cura mais as aves voadoras.
+1775	Armadura Curativa
+1776	Presa do Fim
+1777	Olho do Fim
+1778	Bomba Pesada
+1779	Repetição: recompensa de vitória reduzida a metade (moedas de cobre)
+1780	Armadura Pesada
+1781	Monstros de armadura pesada, monstros em grupo, Bosses
+1782	Monstros de armadura pesada, Bosses
+1783	Assalto Blindado
+1784	Assalto Blindado! O cajado mágico, o canhão e «Perfurar» são essenciais neste nível.
+1785	Assalto Blindado! Os Yetis têm armadura física elevada. Magia, canhões e «Perfurar» são essenciais.
+1786	Seta Pesada · Quebra-Armadura
+1787	Rever
+1788	Recomeçar
+1789	Armadura vermelhão, uma lua crescente a brilhar no elmo e uma pequena bandeira às costas.
+1790	Habilidades Ativas
+1791	Habilidades Ativas (toca para lançar na batalha)
+1792	Ranhuras de Habilidades Ativas
+1793	Recarga das habilidades ativas −{0}%
+1794	Recarga das habilidades ativas −15%
+1795	Recarga das habilidades ativas −20% e repõe de imediato todas as recargas
+1796	Recarga das habilidades ativas −40% e repõe de imediato todas as recargas
+1797	Recarga das habilidades ativas −5%
+1798	Recarga das habilidades ativas −8%, armadura ignorada +10%
+1799	Hora da sopa! {0} monstros foram fortalecidos
+1800	Aliados de Batalha
+1801	Equipamento
+1802	Equipar +1
+1803	Botas Caça-Estrelas
+1804	Prepara-te… {0}
+1805	Queimadura
+1806	Roxo
+1807	Autodestruição
+1808	Automático (ativado no telemóvel)
+1809	Lançamento automático: Desligado
+1810	Lançamento automático: Ligado
+1811	A meio do caminho enterra-se (não pode ser atingido) e só sai junto à muralha.
+1812	Broca
+1813	Escavar
+1814	Diamantes
+1815	Diamantes (só se ganham na Torre Demoníaca de Nove Andares)
+1816	Aljava de Broca
+1817	Máx.
+1818	Melhor andar {0} · Total {1} diamantes
+1819	Melhor registo: andar {0} · {1} diamantes
+1820	Melhor Combo
+1821	Melhor combo {0}
+1822	O Último Bastião
+1823	Última vaga!
+1824	O monstrinho mais básico, lento e arrastado.
+1825	Mais Próximo Primeiro
+1826	Mais Forte Primeiro
+1827	Mais Fraco Primeiro
+1828	A moeda mais rara, só se ganha na «Torre Demoníaca de Nove Andares» e não se pode trocar. Serve para comprar equipamento dourado na página Equipamento (exceto o 1.º de cada tipo, todos custam só diamantes, a partir de 10 diamantes) e melhorias em níveis muito altos (depois de milhares de níveis).
+1829	Boss Final. Tinta, clones e visão bloqueada: a origem da Fenda do Caos.
+1830	Boss Final. Uma bolinha cor de tinta que cresce: invoca sombras de tinta, clones, forma de Rei Demónio e fúria da fenda.
+1831	Confronto final! O Inky tem quatro fases: eliminar capangas, atacar clones, interromper o golpe pesado, matar dentro do tempo limite.
+1832	O terceiro osso da esquerda voltou a ficar ao contrário, mas não faz mal.
+1833	Habilidade de Boss
+1834	Mata-Bosses
+1835	Boss Primeiro
+1836	Claude (contigo)
+1837	Kael, Inky, venham para casa jantar! Hoje o reino oferece-vos um banquete de vitória!
+1838	Kael, posso pedir o teu elmo emprestado para usar de trampolim?
+1839	Kael, esta é a última etapa. O reino inteiro está atrás da muralha a torcer por ti.
+1840	Kael, Lyra, aconteceu uma coisa grave. De noite, na Vila das Conchas, abriu-se no céu uma fenda roxa e o que caiu de lá… foram monstros que já derrotámos.
+1841	Kael, Lyra, chegou uma carta da costa! Os três dias de chuva forte do Trovão fizeram subir a maré e levaram as casas dos habitantes da baía.
+1842	Kael! Apareceram no prado muitos monstros pegajosos e vêm a caminho da muralha!
+1843	A irmã do Kael. ATQ ×0,82, velocidade de ataque ×1,2; a cada 10.º ataque toca um sino, atordoando durante 0,5 segundos os monstros pequenos à volta do alvo.
+1844	O elmo do Kael continua a tocar. …Já me habituei.
+1845	O Kael ataca automaticamente. As Bolinhas Verdes começam a roer a muralha assim que lá chegam!
+1846	O Kael correu até lá e pegou-lhe ao colo. O elmo fez «dão».
+1847	O Kael dispara automaticamente da muralha e os monstros vêm pelas vias, da direita. Perdes quando a vida da muralha chegar a zero.
+1848	Nv{0} · Recarga {1} s
+1849	Nv{0} desbloqueia mestria
+1850	Nv{0} pode evoluir
+1851	Lyra? …Está bem, fazemos a guarda à vez.

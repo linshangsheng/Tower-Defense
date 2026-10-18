@@ -1,0 +1,463 @@
+463	Monstre cerf-volant
+464	Esquive du Monstre cerf-volant −25 %
+465	Les Monstres cerfs-volants ne peuvent esquiver la foudre, et les rebonds en touchent plusieurs d'affilée
+466	Les Monstres cerfs-volants esquivent les attaques physiques des armes. Bâton, Orbe de foudre, Pluie de flèches et Coup de foudre sont inesquivables !
+467	Fête des cerfs-volants
+468	Raid d'essaim d'abeilles
+469	Cape en plume de phénix
+470	Forteresse volante
+471	Armure de plates runique
+472	Couronne runique
+473	Bottes porte-bonheur
+474	Copier
+475	Armure d'acier
+476	Heaume d'acier
+477	Cape en fil de fer
+478	Yéti d'acier
+479	Les Yétis d'acier craignent la magie, les Golems de fer fondu craignent le physique : changer d'arme ou utiliser des compétences, à vous de choisir.
+480	Les Yétis d'acier craignent la magie, et les Tortues-boucliers protègent les monstres proches. Éliminez d'abord la Tortue-bouclier, puis utilisez la magie contre le Yéti d'acier.
+481	Acier et fer fondu
+482	Gros dégâts, taux de critique +12 % ; les flèches transpercent 3 monstres et enflamment la cible.
+483	Rapide
+484	Avant-poste gobelin
+485	Sbire gobelin
+486	Grand frère ! Moi aussi je veux défendre le rempart ! Quand ma clochette sonne, tous les petits monstres sursautent de peur !
+487	Record personnel : vague {0} · {1} vaincus
+488	Choisit automatiquement armes, compétences et objets selon les monstres du niveau.
+489	Plus d'armes : débloquez-les dans l'onglet Armes de la page Équipement
+490	Pire encore, ils ont entendu dire qu'il y a sur la terre ferme une « grande coquille solide », et ils font la queue pour s'y installer—
+491	Canon de siège
+492	Les monstres qui attaquent le rempart subissent des dégâts renvoyés égaux à ATQ des héros ×20 % / niveau.
+493	ATQ
+494	ATQ +{0}
+495	ATQ +{0} %
+496	ATQ +12 %
+497	ATQ +15 %, taux de critique +10 %, dégâts critiques +25 %
+498	ATQ +20 %, vitesse d'attaque +15 %, taux de critique +8 %
+499	ATQ +3
+500	ATQ +3 ; durée de Zone de gel et Fiole de gel +30 %
+501	ATQ +3 ; dégâts contre les Boss (tentacules compris) +20 %
+502	ATQ +3 %
+503	ATQ +35 %, vitesse d'attaque +25 %, taux de critique +15 %, dégâts critiques +50 %
+504	ATQ +5, taux de critique +5 %
+505	ATQ +5 %
+506	ATQ +6 %, dégâts critiques +20 %
+507	ATQ +8 %, les attaques normales ont 15 % de chances d'enflammer la cible
+508	ATQ ×5
+509	ATQ ×6
+510	ATQ ×7, enchaîne sur 3 monstres proches (50 % chacun)
+511	Vitesse d'attaque
+512	Vitesse d'attaque +{0} %
+513	Vitesse d'attaque +10 %
+514	Vitesse d'attaque +12 %
+515	Vitesse d'attaque +15 %, dégâts subis par le rempart −10 %
+516	Vitesse d'attaque +3 %
+517	Vitesse d'attaque +35 % pendant 9 s.
+518	Vitesse d'attaque +50 % pendant 8 s.
+519	Vitesse d'attaque +6 % ; dégâts contre les monstres volants +15 %
+520	Vitesse d'attaque +8 %, dégâts subis par le rempart −8 % ; le rempart récupère 2 % de plus à la fin de chaque vague
+521	Vitesse d'attaque +8 %, portée +3 %
+522	Vitesse d'attaque +8 % ; les attaques normales ont 20 % de chances d'enflammer la cible
+523	Vit. att. +50 %, 8 s
+524	Vit. att. +65 %, 10 s
+525	Vit. att. +80 %, 10 s, taux de critique +10 % pendant ce temps
+526	Vit. att. −{0} %
+527	Bravo, « {0} » est terminé ! Les {1} chapitres sont sauvés. Retournez chercher les trois étoiles et les couronnes, ou battez des records en mode infini.
+528	Bravo, « {0} » est terminé ! Le nouveau chapitre « {1} » est ouvert.
+529	Acheter
+530	Grenouille venimeuse coassante
+531	Gro ? Comment as-tu su que j'allais charger ?
+532	Glou ! Aujourd'hui, avec mes huit pattes, j'ai réparé en même temps les toits de huit maisons.
+533	Glou… je ne peux plus le porter. Pardon, je voulais juste une maison assez grande pour moi.
+534	Glou glou ! Cette coquille est si grande et solide, juste pour mes huit pattes !
+535	Gro… ma tête ne tourne plus. Je me souviens seulement d'un vent noir venu du désert, et ensuite plus rien ne m'importait, je voulais juste charger.
+536	Gro… les petits disent que j'ai fière allure quand je balaie.
+537	Roi Gulu
+538	Un acolyte du roi Gulu.
+539	Le roi Gulu est furieux : charge de sanglier !
+540	Le roi Gulu est en rage !
+541	Le roi Gulu charge quand ses PV tombent sous 60 %. Quand la voie devient rouge, concentrez vos tirs sur lui pour interrompre la charge !
+542	Gro gro ! La prairie est à moi désormais ! Mes petits, à l'attaque !
+543	Chœur du vieux château
+544	Garde au bouclier d'os
+545	M. Os
+546	M. Os ? Tu n'étais pas déjà…
+547	M. Os revient à la vie une fois après avoir été vaincu. Gardez une compétence pour quand il se relèvera !
+548	Écho de M. Os
+549	M. Os est revenu à la vie !
+550	@M. Os est en fait très drôle. Il dit que dans la marmite de Mamie Soupe-Poison, on fait mijoter un énorme chaudron d'Encre noire.
+551	Pluie de flèches au rythme du tambour
+552	Monstres
+553	Les monstres apparaissent au hasard parmi les chapitres débloqués, de plus en plus forts à chaque vague.
+554	Marée de monstres
+555	Les monstres sont tous violets.
+556	Nombre de monstres +50 %
+557	Nombre de monstres −40 %, mais PV +80 %
+558	Vitesse des monstres +30 %
+559	Les monstres déferlent tous en même temps et les vaincre ne rapporte rien ; seul « franchir » un étage donne des diamants. Les diamants ne s'obtiennent qu'ici. Plus on monte, plus il y a de rois démons : 10 % à l'étage 1, 50 % à l'étage 9.
+560	Bestiaire
+561	Bestiaire {0} / {1}
+562	PV des monstres +30 %, dégâts de siège +15 %, gain de cuivre +20 %
+563	PV des monstres +40 %, PV du rempart +40 %
+564	PV des monstres et dégâts de siège −25 %, pour ceux qui veulent profiter de l'histoire
+565	Fermer
+566	Quêtes du niveau
+567	Quête du niveau accomplie
+568	Carquois perforant
+569	Aura
+570	Aura : tant qu'il vit, la vitesse d'attaque des héros est réduite. Éliminez-le en premier !
+571	Explose en arrivant au rempart, infligeant d'un coup de lourds dégâts. Abattez-le impérativement de loin.
+572	Cactus roulant
+573	Papy Roi
+574	Prince Gelée
+575	Le Prince Gelée se divise quand on le frappe. Les dégâts de zone (Pluie de flèches, Boomerang) nettoient vite les petites gelées.
+576	Les petites gelées issues du Prince Gelée.
+577	Le Prince Gelée est en fait un petit bondissant. Il dit que l'Encre noire a coulé de très, très loin.
+578	Ce n'est pas fini…
+579	Aucune compétence disponible. Allez dans la page Compétences et débloquez-en avec de l'argent.
+580	Pas encore rencontré.
+581	Pas encore d'équipement pour cet emplacement, achetez-en dans la page Équipement.
+582	Toujours personne pour me couper les ongles.
+583	Il y a aussi les bernard-l'ermite, les hippocampes, les Tortues-boucliers… tout le monde a besoin d'une nouvelle maison !
+584	Un défi n'est pas encore réglé.
+585	Le sable du bord de mer est chaud. Les bernard-l'ermite portent leur coquille en file vers le rempart, comme s'ils le prenaient vraiment pour leur nouvelle maison.
+586	Oursin
+587	Les Oursins blessent les monstres proches à leur mort : frappez-les quand ils entrent dans la foule ! Les bulles d'hippocampe bloquent une attaque ; l'Arbalète à répétition et l'Orbe de foudre les crèvent le plus vite.
+588	Capitaine pirate
+589	Hippocampe
+590	Détroit des mouettes
+591	Grand chœur de la baie
+592	Gardien de la baie
+593	Givre
+594	Arc de givre
+595	Carquois de givre
+596	Pointe de flèche de givre
+597	Heaume de fer glacé
+598	Sans une égratignure
+599	OK
+600	Terminé
+601	Voilà, Kael, Lyra. Rentrons : ce soir, le royaume donne son plus grand banquet de victoire, et tous nos amis viennent. Même les ombres des échos apportent des biscuits.
+602	Il fait si chaud, si chaud… même mon casque brûle.
+603	Ça brûle… les fissures du sol sont pleines d'Encre noire.
+604	Total
+605	Coquille fermée… ouverture dans {0} s
+606	Fermer le journal
+607	Armure d'obsidienne
+608	Brique d'obsidienne
+609	Partout où ma lampe éclaire dans le noir, mes flèches arrivent aussi. Laissez-moi venir avec vous !
+610	Balayez-les tous !
+611	Boum !
+612	Boum… il a un peu plu aujourd'hui, et l'arc-en-ciel était bien haut.
+613	Boum. Boum. …Je ne suis pas Rochon. Je suis le bruit de pas… que Rochon a laissé.
+614	Grrroumm ! C'est vous qui avez noirci mon arc-en-ciel !
+615	Rouge
+616	Ruban rouge
+617	Cape rouge
+618	Inondation
+619	Une inondation balaie le champ de bataille : tous les monstres reculent de 350 px (Boss 100 px), subissent ATQ ×3 de dégâts, et les monstres trempés subissent +40 % de dégâts pendant 5 s et sont ralentis de 60 %.
+620	Armure de tissu épais
+621	Fouuu ! Je souffle sur ta soupe pour la refroidir.
+622	Fouuu ! Un grand vent a poussé les monstres vers le rempart !
+623	Fouuu ! La farine du moulin à vent est devenue le pain de toute la ville.
+624	Fouuu, fouuu ! Qui prononce mon nom ?
+625	Fouuu, fouuu ! Toi, là-bas, sur le sol ! C'est toi qui as sali mon arc-en-ciel ?
+626	Fouuu ! Je vais transformer tout le rempart en glace à l'eau !
+627	Pfff… Les glaces à l'Encre sont affreuses. Celles à la fraise sont meilleures.
+628	Pfff… Ces bandelettes sont trop serrées. Un type en cape m'a donné une bouteille d'Encre en disant qu'en la buvant, je deviendrais fort.
+629	Pfff… J'ai la tête qui tourne à force de tourbillonner. Bon, d'accord, je vous crois.
+630	Fouuuf
+631	Écho de Fouuuf
+632	L'Écho de Fouuuf nous a laissé son dernier souffle. Il nous a poussés vers le fond de la faille.
+633	Fouuuf annonce une bourrasque 2 s avant : concentrez vos tirs pour l'interrompre, sinon tous les monstres seront soufflés jusqu'au rempart !
+634	Fouuuf est en fait un moulin à vent qui moud la farine des nuages. Il dit que pour calmer Grondin, il faut d'abord attraper son tonnerre.
+635	Fouuuf tourne plus vite !
+636	Pendentif croc de tigre
+637	Bouclier brisé !
+638	Garde
+639	Garde : les monstres proches subissent −40 % de dégâts des attaques des héros. Abattez-le d'abord, ou utilisez des compétences.
+640	Dépenser {0} pour acheter « {1} » ?\nStats bonus : {2}
+641	Glissant
+642	Bienvenue à la boutique de perles de Bébé ! Chaque perle est enregistrée.
+643	Changer de voie
+644	Désert doré
+645	Bottes dorées
+646	Flèche de jouvence
+647	Retour à la carte
+648	Carte
+649	Rend 20 %
+650	Rend 25 %
+651	Rend 30 %, puis −30 % de dégâts subis par le rempart pendant 6 s
+652	Rend 20 % des PV max du rempart.
+653	Les échos… ne se contrôlent pas… fouuu !
+654	Les échos, c'est tout pareil, bien sûr. Tempête de sable, lève-toi !
+655	Les échos n'ont pas l'air méchants. Ils sont juste réveillés encore et encore par cette faille.
+656	Chœur d'échos
+657	Boomerang
+658	Change
+659	Change (à sens unique, pas de retour possible)
+660	Un lanceur de boules de feu volant ; chaque boule fait bien plus mal qu'avant.
+661	Un petit dragon volant, teint en rouge par le chaos.
+662	Un soigneur volant qui reste au loin et soigne les monstres alentour. Utilisez « Menace d'abord » ou « Volants d'abord » pour le frapper en premier.
+663	Souche ambulante
+664	Un scorpion fouisseur recouvert d'une carapace d'os.
+665	Un yéti bardé de plaques d'acier : presque immunisé au physique, seule la magie fonctionne.
+666	Il est plein d'électricité. S'il meurt près du rempart, il se décharge et étourdit brièvement les héros : éliminez-le de loin.
+667	Terminator du chaos
+668	Canon
+669	Pluie de boules de feu
+670	Il y a une énorme faille sous le volcan, et l'Encre noire en jaillit. J'ai un peu peur, mais je ne reculerai pas.
+671	Cape de rat de feu
+672	Flamme
+673	Les zones de feu et les voies de lave n'ont aucun effet sur les monstres
+674	Pointe de flèche enflammée
+675	Petit diable de feu
+676	Les Petits diables de feu restent au loin et lancent des boules de feu. Essayez « Menace d'abord » !
+677	Ciel de pluie de feu
+678	Obtenu
+679	Gagner 50 couronnes
+680	Obtenir trois étoiles à tous les niveaux (chapitres 6 à 10 inclus)
+681	Étoiles obtenues {0} / {1}
+682	Vaincre {0}
+683	Vaincre {0} monstres
+684	Vaincre Tachou
+685	Vaincre les 10 Boss (mini-Boss compris)
+686	Le plus vaincu
+687	Le plus vaincu : {0}
+688	Butin des victoires ({0} vaincus)
+689	Carquois polaire
+690	Bottes de vitesse
+691	Attaque éclair
+692	Marche forcée
+693	Impatient
+694	Bottes d'éclair
+695	Bourrasque
+696	Cape de bourrasque
+697	Bottes rapides
+698	Cape d'ombre vive
+699	Concentrez vos tirs pour interrompre la charge !
+700	Concentrez vos tirs pour interrompre la bourrasque !
+701	Concentrez vos tirs pour interrompre la foudre !
+702	Concentrez vos tirs pour interrompre le coup !
+703	Un esprit presque immunisé au physique : seuls 15 % des dégâts physiques passent. Utilisez la magie.
+704	Record : vague {0}
+705	Compétences
+706	Compétence Nv2 : améliorez-la avec de l'argent ; Nv3 coûte de l'or et apporte un effet transformé.
+707	Compétence gelée !
+708	Maître des compétences
+709	Toutes compétences activées
+710	Synergie de compétences
+711	Compétences auto
+712	Continuer l'étage {0}
+713	Continuer
+714	Continuer le combat
+715	Bernard-l'ermite
+716	Déménagement de bernard-l'ermite
+717	Les Bernard-l'ermite rentrent dans leur coquille tous les 4 coups. Ne vous acharnez pas sur un seul : l'Arbalète à répétition et la Sphère de foudre répartissent les tirs sur plusieurs !
+718	Durée de coquille des Bernard-l'ermite −60 %
+719	Renforcer
+720	Brique renforcée
+721	Potion de hâte
+722	Piques
+723	Un capuchon pointu orné d'une plume rouge, et un carquois en bandoulière dans le dos.
+724	Vous avez tenu {0} vagues !
+725	Ralentit de 60 %, 6 s
+726	Ralentit de 70 %, 7 s
+727	Ralentit de 75 %, 8 s ; à la fin, gèle toute la voie 1,5 s
+728	Concours de tonte de moutons
+729	Éclaboussure
+730	Rayon d'éclaboussure +20, dégâts d'éclaboussure constants (100 %)
+731	Les flèches traversent jusqu'à 5 monstres de la même voie (80 % de dégâts chacun) et ignorent 20 % d'armure.
+732	Carquois
+733	Après un impact, les flèches continuent et touchent jusqu'à 2 monstres de plus derrière dans la voie (40 % de dégâts)
+734	Pluie de flèches
+735	Laissez-moi faire, Papy Roi ! … Oups, mon casque a encore glissé.
+736	Bastion de récifs
+737	Personnages
+738	Garde-robe
+739	Tutoriel
+740	Antidote
+741	Débloquer
+742	Débloque la vitesse ×3 : le bouton de vitesse en bas à droite du combat
+743	Débloque la « Ville du royaume » (🏘 sur la carte) et le « Défi du jour » (en bas à droite de la carte)
+744	Débloque le « Mode infini » (en bas à droite de la carte)
+745	Débloquer {1} n° {0}
+746	Débloque le chapitre 8 « Château d'ombre-lune » : des monstres-échos sont tombés de la Faille du chaos
+747	Débloque le chapitre 9 « Fournaise de fer rouge »
+748	Débloque le chapitre 6 « Royaume des nuages »
+749	Débloque le chapitre 7 « Baie de corail » et la « Tour démoniaque à neuf étages » (en bas à droite de la carte)
+750	Débloque le chapitre 10 « Royaume du ciel vide », le dernier
+751	Débloque toutes les compétences actives et passives
+752	Débloque l'arme conseillée « {0} » : {1} ({2})
+753	Règle du jour « {0} »
+754	Défi du jour terminé !
+755	Fait aujourd'hui
+756	J'ai sauté trop haut aujourd'hui et j'ai heurté un pigeon.
+757	Aujourd'hui, j'ai balayé toutes les feuilles mortes de la prairie, une par une !
+758	Récompense du jour déjà récupérée
+759	C'est mon premier jour sur le rempart. Tous les monstres de la prairie ont un peu d'Encre noire sur eux. Comme c'est étrange.
+760	Or
+761	Pièces d'or
+762	Niveau or · l'atout qui renverse la partie
+763	Les pièces d'or servent à acheter l'équipement légendaire, les armes de haut niveau et les compétences Nv3.
+764	Lingot d'or
+765	Bouclier pyramide ! Brisez-le avec la magie !
+766	La pyramide a été louée comme bibliothèque, et elle a beaucoup de succès.
+767	Progression sauvegardée. Les navigateurs ne permettent pas à une page de fermer son propre onglet : fermez vous-même cet onglet ou cette fenêtre. (Si vous lancez le jeu depuis l'icône « The Last Bastion » du bureau, ce bouton ferme directement le jeu.)
+768	Évoluer
+769	Après évolution
+770	Épines
+771	Victoire de justesse
+772	Carquois d'acier fin
+773	Fin
+774	Défi d'élite
+775	Défi d'élite : les mini-Boss des quatre premiers chapitres reviennent, deux par deux ! Passez sur « Boss d'abord » ou « Menace d'abord », et ne laissez pas deux Boss arriver ensemble au rempart.
+776	Précis
+777	Statique
+778	Neuf étages franchis ! Vous avez conquis la tour démoniaque !
+779	Tour démoniaque à neuf étages
+780	Tour démoniaque à neuf étages · Étage {0}
+781	Un roi démon de la tour à neuf étages : aucune action spéciale, il fonce droit sur le rempart.
+782	Il porte un lourd bouclier d'os, presque intouchable de face : frappez-le dans le dos avec le Boomerang.
+783	Il porte un bouclier en bois, très résistant de face. Le retour du Boomerang et la Pluie de flèches contournent le bouclier.
+784	Géant
+785	Bol aux trésors
+786	Scorpion fossoyeur
+787	Équilibré
+788	Couronne d'équilibre
+789	Clic-clac… En fait, je voulais juste que quelqu'un me coupe les ongles.
+790	Clic-clac, j'ai coupé vingt franges aujourd'hui.
+791	Clic-clac ! Mes grosses pinces broient n'importe quoi !
+792	Cliquetis… Merci de m'avoir fait tomber en morceaux une fois, mes os se sont bien dégourdis.
+793	Cliquetis, cliquetis, le concert d'os a lieu tous les samedis soir !
+794	Cliquetis, cliquetis, bienvenue à mon concert d'os !
+795	Activé
+796	Démarrer
+797	Lancer le défi
+798	Lancer le défi ({0})
+799	Lancer la partie
+800	Lancer le combat
+801	Lancer le combat ›
+802	S'applique seul au début du combat
+803	Achetable
+804	Mais le roi Bobo n'écoutera pas. Il a huit pattes, aucune coquille de la mer n'est assez grande pour lui, et il lorgne votre rempart depuis des jours.
+805	Mais Grondin ne vous croira pas. C'est le nuage le plus colérique du ciel, et depuis que l'arc-en-ciel a été sali, il fait gronder le tonnerre depuis trois jours.
+806	Pourtant ils s'étaient réconciliés. Pourquoi sont-ils de retour ?
+807	Mais c'est la maison de tout le monde !
+808	Vide
+809	Espace : pause. F : vitesse ×2. N : appeler la vague suivante. T : changer la priorité de cible.
+810	Raid aérien
+811	Raid aérien ! Un Dragon de givre teint en rouge par le chaos, et une bande de diablotins lanceurs de boules de feu.
+812	Raid aérien ! Le Fantôme à lanterne se cache à l'arrière et se soigne sans cesse. Trouvez-le d'abord.
+813	Raid aérien ! Beaucoup de monstres dans le ciel, et au sol des escouades escortées par des Tortues-boucliers. Ne regardez pas que le ciel.
+814	Raid aérien ! Les Ballons du vide lâchent quatre petits gobelins en atterrissant.
+815	Niveau de raid aérien avec beaucoup de Lutins de cristal. « Volants d'abord » avec l'Arbalète à répétition ou la Sphère de foudre !
+816	Niveau de raid aérien : les diablotins lancent des boules de feu de loin. Essayez « Menace d'abord » ou « Volants d'abord » !
+817	Niveau de raid aérien ! Les chauves-souris changent de voie : les attaques de zone valent mieux que viser.
+818	Niveau de raid aérien ! Passez la priorité de cible sur « Volants d'abord », ou équipez une Arbalète à répétition.
+819	Niveau de raid aérien ! Les vautours volent vite. L'Arbalète à répétition et « Volants d'abord » sont de bons choix.
+820	Cirque céleste
+821	Une charrette conduite par un squelette, qui fonce à toute vitesse et frappe très fort le rempart.
+822	Garde squelette
+823	Les Gardes squelettes portent de lourds boucliers d'os, presque intouchables de face : le Boomerang et la Pluie de flèches passent dans leur dos.
+824	Char squelette
+825	Un lapin si rapide qu'on le voit à peine ; il change de voie, et les attaques physiques le ratent une fois sur quatre.
+826	Attaque rapide · Contrôle
+827	Monstres rapides : lapins, loups, chars
+828	Berserk
+829	Ferveur
+830	Armure
+831	Bleu
+832	Hurlement du loup
+833	Meute de loups
+834	Collier de croc de loup
+835	Sphère de foudre
+836	Grondin
+837	Grondin commence à se charger ! Concentrez vos tirs pour l'interrompre pendant la charge !
+838	Grondin aimait juste trop cet arc-en-ciel. Maintenant, après chaque pluie, il veille à le suspendre bien haut. Les gardes du rempart du royaume ont protégé la terre, et aussi le ciel.
+839	Grondin a trois phases : invocation de Boules de tonnerre et d'Oiseaux arc-en-ciel, éclair chargé (interrompez-le !), puis tempête (tout s'accélère, finissez vite).
+840	Carquois du tonnerre
+841	Salle du tonnerre
+842	Sphère du dieu du tonnerre
+843	Talisman de foudre
+844	Bottes de foudre
+845	Coup de foudre
+846	Le Coup de foudre inflige ×1,3 de dégâts aux monstres dans une Zone de gel (ralentis ou gelés)
+847	Boule de tonnerre
+848	Les Boules de tonnerre étourdissent Kael si elles meurent près du rempart. Éliminez-les tant qu'elles sont encore loin !
+849	Nuage d'orage
+850	Déclencher 50 fois la synergie de compétences au total (Éclat de glace, Pluie de flèches en rythme)
+851	Éclater 100 bulles au total
+852	Interrompre 10 fois la charge d'un Boss au total
+853	Obtenir 150 étoiles au total
+854	Obtenir 50 étoiles au total
+855	Total vaincus
+856	Vaincre 1000 monstres au total
+857	Vaincre 10000 monstres au total
+858	Appeler 30 fois une vague en avance au total
+859	Choisir 50 cartes de ravitaillement au total
+860	Recharge {0} s
+861	En recharge, encore {0} s
+862	Couronne de l'aube
+863	Rend aussitôt 20 % des PV du rempart ; dégâts subis par le rempart −8 %
+864	Rend aussitôt 45 % des PV du rempart
+865	Réinitialise aussitôt toutes les recharges, ATQ +35 % pendant 30 s
+866	Arbalète à répétition
+867	Arbalète en chaîne
+868	Éclair en chaîne
+869	Rafale
+870	Rafale !
+871	Carquois de rafale
+872	Alliance
+873	Niveau Alliance : toutes les voies produisent des monstres à la fois, et tous les habitants de la baie sont là !
+874	Niveau Alliance : toutes les voies produisent des monstres à la fois, et tous les ouvriers de la fournaise sont à leur poste !
+875	Niveau Alliance : toutes les voies produisent des monstres à la fois. Préparez le physique et la magie.
+876	Niveau Alliance : toutes les voies produisent des monstres à la fois, et tous les échos du Vide déferlent ensemble !
+877	Niveau Alliance : toutes les voies produisent des monstres à la fois, et tous les habitants d'ombre-lune sont là !
+878	Niveau Alliance : toutes les voies produisent des monstres à la fois, et tous les monstres des nuages sont là !
+879	Niveau Alliance : toutes les voies produisent des monstres à la fois ! Les frappes sur tout le terrain, comme la Pluie de flèches et la Sphère de foudre, sont les plus efficaces.
+880	Niveau Alliance : toutes les voies produisent des monstres à la fois ! Les compétences de zone et la Sphère de foudre sont la clé.
+881	Cape du purgatoire
+882	Heaume cornu du purgatoire
+883	Lourde armure du purgatoire
+884	Ça refroidit… quel bien-être.
+885	Un petit bonhomme de neige fait de deux boules de neige empilées ; il se change en 2 petites boules de neige à sa mort.
+886	Chapeau de vigie
+887	Bottes de tempête
+888	Enchantement de flammes
+889	Carquois de flammes
+890	Arbalète de flammes
+891	Heaume du soleil ardent
+892	Carquois du chasseur
+893	Capuche de chasseur
+894	Instinct du chasseur
+895	Bottes de chasse
+896	De l'autre côté de la faille, il y a un endroit encore plus chaud. Les échos y ont été réveillés par les feux d'une fournaise.
+897	De l'autre côté de la faille se dresse une fournaise géante. Personne n'attise le feu, et pourtant il brûle plus fort qu'un volcan.
+898	La faille s'agrandit. Kael, la source est dans le ciel tout en haut.
+899	Arbalète fend-ciel
+900	Bord de la faille
+901	Frappe de faille {0}
+902	Frappe de faille !
+903	Frénésie de la faille ! Vainquez Tachou en 30 s !
+904	La faille s'est refermée doucement, et le ciel est redevenu bleu azur.
+905	Entrée de la faille
+906	Voisins {0} / {1}
+907	Rôdeur des bois
+908	Carquois d'herbe spirituelle
+909	Bottes agiles
+910	Carquois de lueur
+911	Doigts agiles
+912	Esprit
+913	Esprit : les dégâts physiques ne sont efficaces qu'à 30 %. Utilisez la magie !
+914	Récupérer {0}
+915	Marche à suivre : achetez → dans le sac → touchez « Équiper +1 » pour équiper en combat (ou choisissez dans la page Équipement). Emplacements : {0} / {1}{2}.
+916	Bottes de lumière filante
+917	Cape d'étoile filante
+918	Carquois d'étoile filante
+919	Tornades et bousculades, plus féroces que le Fouuuf d'origine.
+920	Armure d'écailles de dragon
+921	Cape d'écailles de dragon
+922	Trésor de la veine du dragon
+923	Bottes de la veine du dragon
+924	Chevalier dragon
+925	Collier de croc de dragon

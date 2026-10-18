@@ -1,0 +1,463 @@
+463	Papierdrachen
+464	Ausweichchance der Papierdrachen −25%
+465	Papierdrachen können Blitzen nicht ausweichen, und der Blitzsprung trifft gleich mehrere
+466	Papierdrachen weichen physischen Waffenangriffen aus. Stab, Blitzkugel, Pfeilregen und Donnerschlag treffen immer!
+467	Drachenfest
+468	Bienenschwarm-Angriff
+469	Phönixfeder-Umhang
+470	Schwebende Festung
+471	Runen-Plattenpanzer
+472	Runenkrone
+473	Glückspilz-Stiefel
+474	Kopieren
+475	Stahlpanzer
+476	Stahlhelm
+477	Drahtumhang
+478	Stahl-Yeti
+479	Stahl-Yetis fürchten Magie, Schmelzeisen-Golems fürchten physische Angriffe. Waffen wechseln oder Fähigkeiten nutzen, du entscheidest.
+480	Stahl-Yetis fürchten Magie, und Schildkröten beschützen Monster in der Nähe. Schalte zuerst die Schildkröte aus, dann bekämpfe den Stahl-Yeti mit Magie.
+481	Stahl und Schmelzeisen
+482	Hoher Schaden, Krit.-Chance +12%; Pfeile durchbohren 3 Monster und setzen das Ziel in Brand.
+483	Schnell
+484	Goblin-Vorposten
+485	Goblin-Schergen
+486	Großer Bruder! Ich will auch die Mauer verteidigen! Wenn meine Glocke klingelt, erschrecken sich alle kleinen Monster!
+487	Persönlicher Rekord: Welle {0} · {1} besiegt
+488	Wählt automatisch Waffen, Fähigkeiten und Items passend zu den Monstern dieses Levels.
+489	Mehr Waffen: Schalte sie auf der Ausrüstungsseite in der Kategorie „Waffen“ frei
+490	Schlimmer noch: Sie haben gehört, dass es an Land einen „großen, robusten Panzer“ gibt, und stellen sich schon an, um einzuziehen…
+491	Belagerungskanone
+492	Monster, die die Mauer angreifen, erleiden Rückschlagschaden in Höhe von Helden-ANG ×20% pro Stufe.
+493	ANG
+494	ANG +{0}
+495	ANG +{0}%
+496	ANG +12%
+497	ANG +15%, Krit.-Chance +10%, Krit.-Schaden +25%
+498	ANG +20%, Angriffstempo +15%, Krit.-Chance +8%
+499	ANG +3
+500	ANG +3; Dauer von Frostzone und Frostflasche +30%
+501	ANG +3; Schaden gegen Bosse (inkl. Tentakel) +20%
+502	ANG +3%
+503	ANG +35%, Angriffstempo +25%, Krit.-Chance +15%, Krit.-Schaden +50%
+504	ANG +5, Krit.-Chance +5%
+505	ANG +5%
+506	ANG +6%, Krit.-Schaden +20%
+507	ANG +8%, normale Angriffe setzen das Ziel mit 15% Chance in Brand
+508	ANG ×5
+509	ANG ×6
+510	ANG ×7, springt auf 3 nahe Monster über (je 50%)
+511	Angriffstempo
+512	Angriffstempo +{0}%
+513	Angriffstempo +10%
+514	Angriffstempo +12%
+515	Angriffstempo +15%, Schaden an der Mauer −10%
+516	Angriffstempo +3%
+517	Angriffstempo +35% für 9 Sek.
+518	Angriffstempo +50% für 8 Sek.
+519	Angriffstempo +6%; Schaden gegen fliegende Monster +15%
+520	Angriffstempo +8%, Schaden an der Mauer −8%; die Mauer heilt nach jeder Welle zusätzlich 2%
+521	Angriffstempo +8%, Reichweite +3%
+522	Angriffstempo +8%; normale Angriffe setzen das Ziel mit 20% Chance in Brand
+523	AT +50%, 8 Sek.
+524	AT +65%, 10 Sek.
+525	AT +80%, 10 Sek., dabei Krit.-Chance +10%
+526	AT −{0}%
+527	Glückwunsch zum Abschluss von „{0}“! Du hast alle {1} Kapitel verteidigt. Hol dir drei Sterne und Kronen oder stelle im Endlosmodus neue Rekorde auf.
+528	Glückwunsch zum Abschluss von „{0}“! Das neue Kapitel „{1}“ ist jetzt offen.
+529	Kaufen
+530	Quak-Giftfrosch
+531	Grunz? Woher weißt du, dass ich angreifen wollte?
+532	Blubb! Heute habe ich mit meinen acht Beinen gleichzeitig die Dächer von acht Häusern repariert.
+533	Blubb… ich kann nicht mehr tragen. Entschuldigung, ich wollte nur ein Zuhause, in das ich passe.
+534	Blubb blubb! Dieser Panzer ist so groß und robust, genau richtig für meine acht Beine!
+535	Grunz… mein Kopf ist wieder klar. Ich weiß nur noch, dass ein schwarzer Wind aus der Wüste wehte und mir dann alles egal war und ich nur noch losstürmen wollte.
+536	Grunz… die Kleinen sagen, ich sehe beim Fegen cool aus.
+537	König Gulu
+538	Gefolgsmann von König Gulu.
+539	König Gulu ist wütend: Wildschwein-Sturm!
+540	König Gulu ist in Raserei geraten!
+541	König Gulu stürmt los, wenn seine LP unter 60% fallen. Wird die Bahn rot, bündle das Feuer auf ihn, um den Sturm zu unterbrechen!
+542	Grunz grunz! Die Wiese gehört ab jetzt mir! Schergen, angriff!
+543	Burgchor
+544	Knochenschild-Wache
+545	Herr Knochen
+546	Herr Knochen? Warst du nicht schon…
+547	Herr Knochen steht nach seiner Niederlage einmal wieder auf. Spar dir eine Fähigkeit für den Moment, wenn er sich erhebt!
+548	Echo von Herrn Knochen
+549	Herr Knochen ist wiederauferstanden!
+550	Herr Knochen ist eigentlich ziemlich witzig. Er sagt, in Oma Braus Kessel brodelt gerade eine riesige Menge schwarzer Tinte.
+551	Trommelschlag-Pfeilregen
+552	Monster
+553	Monster erscheinen zufällig aus freigeschalteten Kapiteln und werden mit jeder Welle stärker.
+554	Monsterflut
+555	Die Monster sind alle lila.
+556	Monsteranzahl +50%
+557	Monsteranzahl −40%, aber LP +80%
+558	Monstertempo +30%
+559	Monster strömen alle auf einmal heran, und sie zu besiegen bringt nichts; nur das Abschließen einer Etage gibt Diamanten. Diamanten gibt es nur hier. Je höher du kommst, desto mehr Dämonenkönige: 10% auf Etage 1, 50% auf Etage 9.
+560	Monsterlexikon
+561	Monsterlexikon {0} / {1}
+562	Monster-LP +30%, Belagerungsschaden +15%, Kupfereinnahmen +20%
+563	Monster-LP +40%, Mauer-LP +40%
+564	Monster-LP und Belagerungsschaden −25%, für Spieler, die die Geschichte entspannt genießen wollen
+565	Schließen
+566	Levelaufgaben
+567	Levelaufgabe erledigt
+568	Durchschlags-Köcher
+569	Aura
+570	Aura: Solange es lebt, ist das Angriffstempo der Helden gesenkt. Schalte es zuerst aus!
+571	Explodiert, sobald es die Mauer erreicht, und richtet auf einmal großen Schaden an. Erledige es unbedingt aus der Ferne.
+572	Rollender Kaktus
+573	Opa König
+574	Gelee-Prinz
+575	Der Gelee-Prinz teilt sich, wenn er getroffen wird. Flächenschaden (Pfeilregen, Bumerang) räumt die kleinen Gelees schnell ab.
+576	Kleine Gelees, die sich vom Gelee-Prinzen abgespalten haben.
+577	Der Gelee-Prinz ist eigentlich ein hüpfender Kerl. Er sagt, die schwarze Tinte sei von sehr, sehr weit her geflossen.
+578	Noch nicht vorbei…
+579	Noch keine Fähigkeiten verfügbar. Schalte sie auf der Seite „Fähigkeiten“ mit Silber frei.
+580	Noch nicht begegnet.
+581	Noch keine Ausrüstung für diesen Platz. Kaufe welche auf der Ausrüstungsseite.
+582	Mir schneidet immer noch niemand die Nägel.
+583	Dazu Einsiedlerkrebse, Seepferdchen, Schildkröten… alle brauchen ein neues Zuhause!
+584	Eine Herausforderung ist noch nicht abgerechnet.
+585	Der Sand am Meer ist warm. Einsiedlerkrebse tragen ihre Muscheln in einer Reihe zur Mauer, als hielten sie sie wirklich für ihr neues Zuhause.
+586	Seeigel
+587	Seeigel verletzen beim Tod Monster in der Nähe, also triff sie, wenn sie im Gedränge sind! Seepferdchen-Blasen blocken einen Angriff; Schnellfeuer-Armbrust und Blitzkugel zerplatzen sie am schnellsten.
+588	Piratenkapitän
+589	Seepferdchen
+590	Möwen-Meerenge
+591	Buchtchor
+592	Buchtwächter
+593	Frost
+594	Frostbogen
+595	Frostköcher
+596	Frostpfeilspitze
+597	Kalteisenhelm
+598	Makellos
+599	OK
+600	Fertig
+601	Gut, Kael, Lyra. Gehen wir nach Hause. Heute Abend gibt das Königreich das größte Siegesfest, und alle Freunde kommen. Sogar die Schatten der Echos bringen Kekse mit.
+602	So heiß, so heiß… sogar mein Helm glüht.
+603	So heiß… die Risse im Boden sind voller schwarzer Tinte.
+604	Gesamt
+605	Schale zu… öffnet sich in {0} s
+606	Tagebuch schließen
+607	Obsidianpanzer
+608	Obsidianziegel
+609	Wo in der Dunkelheit meine Lampe hinleuchtet, reichen auch meine Pfeile hin. Lass mich mitkommen!
+610	Fegt sie alle weg!
+611	Bumm!
+612	Bumm… heute gab es einen kleinen Regenschauer, und der Regenbogen hing schön hoch.
+613	Bumm. Bumm. …Ich bin nicht Felsi. Ich bin die Schritte, die Felsi hinterlassen hat.
+614	Rums! Ihr habt meinen Regenbogen schmutzig gemacht!
+615	Rot
+616	Rotes Band
+617	Roter Umhang
+618	Flut
+619	Eine Flut rollt übers Schlachtfeld: Alle Monster werden 350 Pixel zurückgedrängt (Bosse 100 Pixel), erleiden ANG ×3 Schaden, und durchnässte Monster erleiden 5 Sek. lang +40% Schaden und sind um 60% verlangsamt.
+620	Dicker Stoffpanzer
+621	Puh, ich puste deine Suppe kalt.
+622	Huuuh! Ein Sturm hat die Monster zur Mauer geweht!
+623	Huuuh! Das Mehl der Windmühle wurde zu Brot für die ganze Stadt.
+624	Huuh, huuh! Wer ruft meinen Namen?
+625	Huuh, huuh! Ihr da unten vom Boden! Habt ihr meinen Regenbogen schmutzig gemacht?
+626	Huuuh! Ich verwandle die ganze Mauer in Eis am Stiel!
+627	Puh… Eis am Stiel mit Tintengeschmack schmeckt furchtbar. Erdbeere ist besser.
+628	Puh… diese Bandagen sind so eng. Ein Kerl im Umhang hat mir eine Flasche Tinte gegeben und gesagt, davon würde ich stark.
+629	Puh… von dem ganzen Drehen ist mir ganz schwindelig. Na gut, ich glaube euch.
+630	Husch
+631	Echo von Husch
+632	Huschs Echo hat uns seinen letzten Windstoß hinterlassen. Er schob uns weiter, in die tiefste Tiefe des Risses.
+633	Husch kündigt einen Sturm 2 Sek. vorher an: Bündle das Feuer, um ihn zu unterbrechen, sonst werden alle Monster auf dem Feld vor die Mauer geweht!
+634	Husch ist eigentlich eine Windmühle, die Mehl für die Wolken mahlt. Er sagt, um Donni zu besänftigen, müsse man zuerst seinen Donner auffangen.
+635	Husch dreht sich schneller!
+636	Tigerzahn-Anhänger
+637	Schild zerbrochen!
+638	Leibwächter
+639	Leibwächter: Monster in der Nähe erleiden 40% weniger Schaden durch Heldenangriffe. Schalte ihn zuerst aus oder nutze Fähigkeiten.
+640	{0} ausgeben und „{1}“ kaufen?\nZusatzwerte: {2}
+641	Glitschig
+642	Willkommen in Bebes Perlenladen! Jede Perle ist eingetragen.
+643	Bahn wechseln
+644	Goldene Wüste
+645	Goldstiefel
+646	Verjüngungspfeil
+647	Zurück zur Karte
+648	Zur Karte
+649	20% heilen
+650	25% heilen
+651	30% heilen, danach 6 Sek. lang Schaden an der Mauer −30%
+652	Heilt 20% der max. LP der Mauer.
+653	Echos… können sich nicht beherrschen… huuuh!
+654	Ein Echo ist natürlich genau gleich. Sandsturm, erhebe dich!
+655	Die Echos scheinen es nicht böse zu meinen. Sie werden nur von diesem Riss immer wieder geweckt.
+656	Echochor
+657	Bumerang
+658	Wechselstube
+659	Wechselstube (nur einseitig, nicht rückgängig zu machen)
+660	Ein fliegender Feuerballwerfer; jeder Feuerball tut viel mehr weh als zuvor.
+661	Ein kleiner fliegender Drache, vom Chaos rot gefärbt.
+662	Ein fliegender Heiler, der weit hinten schwebt und Monster in der Nähe heilt. Nutze „Bedrohung zuerst“ oder „Fliegende zuerst“, um ihn zuerst zu treffen.
+663	Laufender Baumstumpf
+664	Ein Skorpion, der sich eingräbt und eine Schicht Knochenpanzer trägt.
+665	Ein Yeti voller Stahlplatten: Gegen physische Treffer fast immun, nur Magie wirkt.
+666	Voller Strom. Wird es nahe der Mauer besiegt, entlädt es sich und betäubt Helden kurz, also erledige es aus der Ferne.
+667	Chaos-Vollstrecker
+668	Kanone
+669	Feuerballregen
+670	Unter dem Vulkan ist ein riesiger Riss, aus dem die schwarze Tinte quillt. Ich habe ein bisschen Angst, aber ich weiche nicht zurück.
+671	Feuerratten-Umhang
+672	Flamme
+673	Feuerzonen und Lavabahnen wirken nicht auf Monster
+674	Flammenpfeilspitze
+675	Feuer-Kobold
+676	Feuer-Kobolde bleiben weit hinten und werfen Feuerbälle. Probiere „Bedrohung zuerst“!
+677	Feuerregen-Himmel
+678	Erhalten
+679	Erhalte 50 Kronen
+680	Erhalte drei Sterne in jedem Level (Kapitel 6 bis 10 zählen auch)
+681	Gesammelte Sterne {0} / {1}
+682	{0} besiegen
+683	{0} besiegen
+684	Tinti besiegen
+685	Besiege alle 10 Bosse (inkl. Mini-Bosse)
+686	Am meisten besiegt
+687	Am meisten besiegt: {0}
+688	Beute durch Besiegen ({0} besiegt)
+689	Polarköcher
+690	Schnellschritt-Stiefel
+691	Überraschungsangriff
+692	Eilmarsch
+693	Ungeduldig
+694	Blitzstiefel
+695	Sturmwind
+696	Sturmwind-Umhang
+697	Eilstiefel
+698	Schattenhuscher-Umhang
+699	Bündle das Feuer, um den Sturm zu unterbrechen!
+700	Bündle das Feuer, um den Wind zu unterbrechen!
+701	Bündle das Feuer, um den Blitzschlag zu unterbrechen!
+702	Bündle das Feuer, um den Schlag zu unterbrechen!
+703	Ein Geist, der gegen physische Angriffe fast immun ist: Nur 15% des physischen Schadens wirken. Nutze Magie.
+704	Rekord: Welle {0}
+705	Fähigkeiten
+706	Fähigkeiten auf Lv2 verbesserst du mit Silber, Lv3 kostet Gold und bringt einen grundlegenden Effekt.
+707	Fähigkeit eingefroren!
+708	Fähigkeiten-Meister
+709	Alle Fähigkeiten
+710	Fähigkeiten-Synergie
+711	Fähigkeiten automatisch wirken
+712	Etage {0} fortsetzen
+713	Spiel fortsetzen
+714	Kampf fortsetzen
+715	Einsiedlerkrebs
+716	Einsiedlerkrebs-Umzug
+717	Einsiedlerkrebse ziehen sich nach jedem 4. Treffer in ihren Panzer zurück. Konzentriere dich nicht auf einen einzigen. Schnellfeuer-Armbrust und Blitzkugel verteilen das Feuer auf mehrere!
+718	Panzer-Zeit der Einsiedlerkrebse −60%
+719	Verstärken
+720	Verstärkter Ziegel
+721	Eiltrank
+722	Stacheln
+723	Eine spitze Kapuze mit einer roten Feder und ein schräg auf dem Rücken getragener Köcher.
+724	{0} Wellen überstanden!
+725	Verlangsamung 60%, 6 Sek.
+726	Verlangsamung 70%, 7 Sek.
+727	Verlangsamung 75%, 8 Sek.; friert am Ende die ganze Bahn 1,5 Sek. lang ein
+728	Schafschur-Wettbewerb
+729	Flächenwirkung
+730	Flächenradius +20, Flächenschaden lässt nicht mehr nach (100%)
+731	Pfeile durchbohren bis zu 5 Monster auf derselben Bahn (je 80% Schaden) und ignorieren 20% Rüstung.
+732	Köcher
+733	Pfeile fliegen nach einem Treffer weiter und treffen bis zu 2 weitere Monster dahinter auf der Bahn (40% Schaden)
+734	Pfeilregen
+735	Überlass das mir, Opa König! …Hoppla, mein Helm ist schon wieder gerutscht.
+736	Riffbollwerk
+737	Charaktere
+738	Kleiderschrank
+739	Tutorial
+740	Gegengift
+741	Freischalten
+742	Schalte 3x Tempo frei: die Tempo-Taste unten rechts im Kampf
+743	Schaltet „Königsstädtchen“ (🏘 auf der Karte) und „Tagesaufgabe“ (unten rechts auf der Karte) frei
+744	Schaltet den „Endlosmodus“ frei (unten rechts auf der Karte)
+745	Schalte {1} Nr. {0} frei
+746	Schaltet Kapitel 8 „Mondschatten-Burg“ frei. Echo-Monster sind aus dem Chaosriss gefallen
+747	Schaltet Kapitel 9 „Roteisen-Schmiede“ frei
+748	Schaltet Kapitel 6 „Wolkenreich“ frei
+749	Schaltet Kapitel 7 „Korallenbucht“ und den „Neunstöckigen Dämonenturm“ frei (unten rechts auf der Karte)
+750	Schaltet Kapitel 10 „Leere Himmelsweiten“ frei, das letzte Kapitel
+751	Schaltet alle aktiven und passiven Fähigkeiten frei
+752	Schaltet die empfohlene Waffe „{0}“ frei: {1} ({2})
+753	Heutige Regel „{0}“
+754	Tagesaufgabe geschafft!
+755	Heute erledigt
+756	Heute zu hoch gehüpft und gegen eine Taube geknallt.
+757	Heute habe ich auf der Wiese jedes einzelne Blatt weggefegt!
+758	Die heutige Belohnung wurde schon abgeholt
+759	Heute ist mein erster Tag auf der Mauer. Die Monster auf der Wiese haben alle ein bisschen schwarze Tinte an sich. Wie seltsam.
+760	Gold
+761	Goldmünzen
+762	Goldstufe · Trümpfe, die das Blatt wenden
+763	Mit Goldmünzen kaufst du legendäre Ausrüstung, hochstufige Waffen und Fähigkeiten auf Lv3.
+764	Goldbarren
+765	Pyramidenschild! Durchbrich es mit Magie!
+766	Die Pyramide wurde als Bibliothek vermietet und ist sehr beliebt.
+767	Fortschritt gespeichert. Browser erlauben einer Seite nicht, den eigenen Tab zu schließen, bitte schließe diesen Tab oder dieses Fenster selbst. (Startest du das Spiel über das „The Last Bastion“-Symbol auf dem Desktop, schließt diese Taste das Spiel direkt.)
+768	Aufsteigen
+769	Nach dem Aufstieg
+770	Dornen
+771	Knapp geschafft
+772	Feinstahl-Köcher
+773	Edel
+774	Elite-Herausforderung
+775	Elite-Herausforderung: Die Mini-Bosse der ersten vier Kapitel kehren zurück, je zwei auf einmal! Wechsle zu „Boss zuerst“ oder „Bedrohung zuerst“ und lass nicht beide Bosse gleichzeitig zur Mauer gelangen.
+776	Präzise
+777	Statik
+778	Neun Etagen geschafft! Du hast den Dämonenturm bezwungen!
+779	Neunstöckiger Dämonenturm
+780	Neunstöckiger Dämonenturm · Etage {0}
+781	Ein Dämonenkönig aus dem Neunstöckigen Dämonenturm: keine Spezialzüge, er stürmt einfach auf die Mauer zu.
+782	Trägt einen schweren Knochenschild und ist von vorn fast immun: Triff ihn mit dem Bumerang von hinten.
+783	Trägt einen Holzschild und ist von vorn sehr zäh. Der Rückflug des Bumerangs und der Pfeilregen umgehen den Schild.
+784	Riese
+785	Schatzschale
+786	Gräberskorpion
+787	Ausgewogen
+788	Krone der Balance
+789	Knips… eigentlich wollte ich nur jemanden finden, der mir die Nägel schneidet.
+790	Knips knips, heute zwanzig Pony-Frisuren geschnitten.
+791	Knips knips! Meine große Schere kann alles zerquetschen!
+792	Klack… danke, dass du mich einmal auseinanderfallen lässt. Meine Knochen haben sich richtig gestreckt.
+793	Klack klack, das Knochenkonzert beginnt jeden Samstagabend!
+794	Klack klack, willkommen zu meinem Knochenkonzert!
+795	An
+796	Start
+797	Herausforderung starten
+798	Herausforderung starten ({0})
+799	Spiel starten
+800	Kampf starten
+801	Kampf starten ›
+802	Wirkt automatisch bei Kampfbeginn
+803	Kaufbar
+804	Aber König Bobo wird nicht zuhören. Er hat acht Beine, keine Muschel im Meer ist groß genug für ihn, und er hat schon seit Tagen ein Auge auf eure Mauer geworfen.
+805	Aber Donni wird das nicht glauben. Er ist die zornigste Wolke am Himmel, und seit der Regenbogen schmutzig wurde, donnert er schon drei Tage lang.
+806	Aber sie hatten sich doch schon vertragen. Warum sind sie wieder da?
+807	Aber das ist doch das Zuhause von uns allen!
+808	Leer
+809	Leertaste pausiert, F schaltet 2x Tempo um, N ruft die nächste Welle früher, T wechselt die Zielpriorität.
+810	Luftangriff
+811	Luftangriff! Ein vom Chaos rot gefärbter Frostdrache und eine Bande feuerballwerfender Kobolde.
+812	Luftangriff! Der Laternengeist versteckt sich hinten und heilt unaufhörlich. Finde ihn zuerst.
+813	Luftangriff! Viele Monster am Himmel, dazu am Boden Trupps mit Schildkröten-Eskorte. Schau nicht nur nach oben.
+814	Luftangriff! Leere-Ballons setzen bei der Landung vier Goblin-Schergen frei.
+815	Luftangriff-Level mit vielen Eiskristall-Geistern. „Fliegende zuerst“ plus Schnellfeuer-Armbrust oder Blitzkugel!
+816	Luftangriff-Level, die Kobolde werfen aus der Ferne Feuerbälle. Probiere „Bedrohung zuerst“ oder „Fliegende zuerst“!
+817	Luftangriff-Level! Fledermäuse wechseln die Bahn, Flächenangriffe sind verlässlicher als Zielen.
+818	Luftangriff-Level! Stelle die Zielpriorität auf „Fliegende zuerst“ oder rüste eine Schnellfeuer-Armbrust aus.
+819	Luftangriff-Level! Geier fliegen schnell. Schnellfeuer-Armbrust und „Fliegende zuerst“ sind gute Wahlen.
+820	Himmelszirkus
+821	Ein von einem Skelett gelenkter Karren, der mit hohem Tempo rammt und die Mauer sehr hart trifft.
+822	Skelettwache
+823	Skelettwachen tragen schwere Knochenschilde und sind von vorn fast immun: Bumerang und Pfeilregen kommen an ihren Rücken heran.
+824	Skelett-Streitwagen
+825	Ein Hase, zu schnell, um ihn zu sehen; er wechselt die Bahn, und physische Angriffe gehen in einem Viertel der Fälle daneben.
+826	Schneller Angriff · Kontrolle
+827	Schnelle Monster: Hasen, Wölfe, Streitwagen
+828	Raserei
+829	Fieber
+830	Rüstung
+831	Blau
+832	Wolfsgeheul
+833	Wolfsrudel
+834	Wolfszahn-Kette
+835	Blitzkugel
+836	Donni
+837	Donni lädt sich auf! Bündle das Feuer, um ihn während des Aufladens zu unterbrechen!
+838	Donni mochte den Regenbogen einfach zu sehr. Jetzt hängt er ihn nach jedem Regen extra schön hoch. Die Wächter des Königreichs haben den Boden und auch den Himmel beschützt.
+839	Donni hat drei Phasen: Donnerknödel und Regenbogenvögel rufen, einen Blitzschlag aufladen (unterbrich ihn!) und Sturm (alles wird schneller, also beende es zügig).
+840	Donner-Köcher
+841	Donnerhalle
+842	Donnergott-Kugel
+843	Donner-Talisman
+844	Donnerstiefel
+845	Donnerschlag
+846	Donnerschlag verursacht ×1,3 Schaden an Monstern in einer Frostzone (verlangsamt oder eingefroren)
+847	Donnerknödel
+848	Donnerknödel betäuben Kael, wenn sie nahe der Mauer besiegt werden. Erledige sie, solange sie noch weit weg sind!
+849	Gewitterwolke
+850	Löse insgesamt 50-mal Fähigkeiten-Synergie aus (Eissplitter, Trommelschlag-Pfeilregen)
+851	Zerplatze insgesamt 100 Blasen
+852	Unterbrich insgesamt 10-mal das Aufladen eines Bosses
+853	Erhalte insgesamt 150 Sterne
+854	Erhalte insgesamt 50 Sterne
+855	Insgesamt besiegt
+856	Besiege insgesamt 1000 Monster
+857	Besiege insgesamt 10000 Monster
+858	Rufe insgesamt 30-mal Wellen früher
+859	Wähle insgesamt 50 Nachschubkarten
+860	Abklingzeit {0} Sek.
+861	Lädt auf, noch {0} Sek.
+862	Morgenröte-Krone
+863	Heilt sofort 20% der Mauer, Schaden an der Mauer −8%
+864	Heilt sofort 45% der Mauer
+865	Setzt sofort alle Fähigkeiten-Abklingzeiten zurück, ANG +35% für 30 Sek.
+866	Schnellfeuer-Armbrust
+867	Ketten-Armbrust
+868	Kettenblitz
+869	Salve
+870	Salve!
+871	Salven-Köcher
+872	Bündnis
+873	Bündnis-Level: Auf allen Bahnen erscheinen gleichzeitig Monster, und alle Bewohner der Bucht sind da!
+874	Bündnis-Level: Auf allen Bahnen erscheinen gleichzeitig Monster, und alle Arbeiter der Schmiede sind im Dienst!
+875	Bündnis-Level: Auf allen Bahnen erscheinen gleichzeitig Monster. Bereite dich auf physisch und magisch vor.
+876	Bündnis-Level: Auf allen Bahnen erscheinen gleichzeitig Monster, und alle Echos der Leere strömen gemeinsam heran!
+877	Bündnis-Level: Auf allen Bahnen erscheinen gleichzeitig Monster, und alle Bewohner von Mondschatten sind da!
+878	Bündnis-Level: Auf allen Bahnen erscheinen gleichzeitig Monster, und alle Wolkenmonster sind da!
+879	Bündnis-Level: Auf allen Bahnen erscheinen gleichzeitig Monster! Angriffe auf das ganze Feld wie Pfeilregen und Blitzkugel wirken am besten.
+880	Bündnis-Level: Auf allen Bahnen erscheinen gleichzeitig Monster! Fähigkeiten für das ganze Feld und die Blitzkugel sind entscheidend.
+881	Fegefeuer-Umhang
+882	Fegefeuer-Hörnerhelm
+883	Fegefeuer-Schwerpanzer
+884	Es kühlt ab… so angenehm.
+885	Ein kleiner Schneemann aus zwei aufeinandergesetzten Schneebällen; wird beim Besiegen zu 2 kleinen Schneeklumpen.
+886	Ausguck-Hut
+887	Orkanstiefel
+888	Flammenverzauberung
+889	Flammenköcher
+890	Flammenarmbrust
+891	Glutsonnen-Helm
+892	Jäger-Köcher
+893	Jägerkapuze
+894	Jägerinstinkt
+895	Jagdstiefel
+896	Auf der anderen Seite des Risses gibt es einen noch heißeren Ort. Dort wurden die Echos vom Feuer des Ofens geweckt.
+897	Auf der anderen Seite des Risses steht ein gewaltiger Schmelzofen. Niemand schürt ihn, und doch brennt er heißer als ein Vulkan.
+898	Der Riss wird größer. Kael, die Quelle liegt im Himmel ganz oben.
+899	Himmelsbrecher-Armbrust
+900	Rissrand
+901	Risschlag {0}
+902	Risschlag!
+903	Risswut! Besiege Tinti innerhalb von 30 Sek.!
+904	Der Riss schloss sich langsam, und der Himmel wurde wieder strahlend blau.
+905	Risseingang
+906	Nachbarn {0} / {1}
+907	Waldläufer
+908	Geisterkraut-Köcher
+909	Flinke Stiefel
+910	Schimmer-Köcher
+911	Flinke Finger
+912	Geist
+913	Geist: Physischer Schaden wirkt nur zu 30%. Nutze Magie dagegen!
+914	{0} abholen
+915	So geht's: kaufen → landet in der Tasche → „Anlegen +1“ tippen, um es für den Kampf auszurüsten (oder auf der Ausrüstungsseite wählen). Plätze jetzt {0} / {1}{2}.
+916	Lichtfluss-Stiefel
+917	Meteor-Umhang
+918	Meteor-Köcher
+919	Tornados und Stöße, heftiger als der alte Husch.
+920	Drachenschuppen-Panzer
+921	Drachenschuppen-Umhang
+922	Drachenader-Schatz
+923	Drachenader-Stiefel
+924	Drachenritter
+925	Drachenzahn-Kette

@@ -1,0 +1,463 @@
+0	, peut en porter 3 à la fois
+1	 : {0} échecs d'affilée. Attaque et PV du rempart augmentés cette fois, remis à zéro après la victoire.
+2	…Le vent est tombé. Devant nous, la source de l'Encre.
+3	…Grand frère. Grande sœur. Vous voilà enfin.
+4	…Boum. Impossible de frapper.
+5	…Boum. Pardon, c'est moi qui ai fait pleuvoir.
+6	…Les pas se sont arrêtés.
+7	…Encore une journée calme. C'est bien.
+8	…Le miroir s'est brisé et je vois enfin clair. L'Encre sort d'une fissure du volcan, au sud.
+9	…Mais je n'arrive pas à m'arrêter. Battez-les tous, d'accord ?
+10	…La fissure s'est refermée. Le calme est revenu.
+11	…Ça sent l'Encre.
+12	…Cette carapace, ce n'est pas notre rempart, dites ?
+13	…Tu ne me détestes vraiment pas ?
+14	…Les arbres de la forêt m'ont dit qu'un petit garde a tenu bon jusqu'ici. Je suis Rowan, le gardien de la forêt.
+15	…Je me souviens de toi. Je me souviens de ce rempart. Mais je ne sais plus pourquoi je suis venu.
+16	…Merci. Refaire toujours la même chose… c'est si fatigant.
+17	…Merci d'avoir chassé la brume. Je m'appelle Nova, je promène ma lanterne dans le marais pour guider les petits animaux perdus.
+18	…Avoir des amis, c'est si agréable.
+19	…Encore un qui vient me frapper. Tout le monde ne sait que me frapper.
+20	…C'est vrai. Si joli. J-j'étais trop méchant tout à l'heure, non ?
+21	…Kael, regarde le ciel. Les dernières gouttes d'Encre que j'ai répandues se sont envolées jusqu'à l'arc-en-ciel.
+22	· Ravitaillement
+23	· Record
+24	· Prochaine vague dans {0} s
+25	‹ Titre
+26	‹ Retour
+27	(Après le niv. 30, chaque niveau ajoute +{0} % des PV du niv. 30)
+28	(Les gains diminuent à chaque niveau au-delà de la limite de base)
+29	(Tous les emplacements sont débloqués)
+30	(Vider)
+31	(Terminez le niveau {0} pour débloquer un autre emplacement)
+32	(Retirer {0} ; {1} retourné(s) au sac)
+33	(Retirer)
+34	(Au-delà de la limite de base niv. {0} : gains réduits à chaque niveau, coûts toujours plus élevés)
+35	(Complet)
+36	(Entièrement équipé)
+37	(Maximum atteint)
+38	(Dans un autre emplacement, sera échangé)
+39	(Dans la section « Héros » de la page d'équipement, vous pouvez faire entrer Atlas : il rend le rempart plus solide.)
+40	(Dans la section « Héros » de la page d'équipement, vous pouvez faire entrer Lyra.)
+41	(Nova nous rejoint ! Sa portée ne diminue pas dans les niveaux de nuit.)
+42	(Rowan nous rejoint ! Ses lourdes flèches ignorent l'armure.)
+43	{0}\nRecharge {1} s, {2} emporté(s)
+44	{0} vagues
+45	{0} vagues (Boss compris)
+46	{0} min {1} s
+47	Panoplie {0} « {1} » : {2} → {3}{4}
+48	{0} jours
+49	{0} cuivre → 1
+50	Synergie {0} « {1} » : {2}{3}
+51	PV de {0} : {1} →
+52	{0} roi démon + {1} sbires
+53	{0} argent → 1
+54	{0} types
+55	{0} ; à partir du niv. 3, chaque niveau renforce un peu plus les dégâts / flèches / soins / durée et réduit la recharge
+56	{0} : puissance +{1} % ({2})
+57	{0} (possédé {1} / {2}{3})
+58	Stats de {0}
+59	Qualité {0}
+60	/s
+61	⏩ Vitesse ×2
+62	⏭ Vitesse ×3
+63	▶ Vitesse ×1
+64	★ Maîtrise
+65	♾ Mode infini
+66	♾ Mode infini {0}
+67	⚠ Boss en approche !
+68	✔ Utilisé
+69	✔ Terminé
+70	✔ Possédé
+71	✦ Évolué
+72	✨ Panoplie « {0} » : {1}
+73	🎯 Quête du niveau : {0}
+74	🎯 Quête du niveau « {0} » accomplie : +{1} argent
+75	🎺 Renforts galvanisants +{0} %
+76	🏆 Succès
+77	🏆 Succès « {0} » obtenu : {1} (+{2})
+78	🏆 Succès « {0} » obtenu +{1}
+79	🏘 Ville du royaume
+80	🏯 Tour démoniaque à neuf étages
+81	🏯 Tour démoniaque à neuf étages {0}
+82	👉 Améliorez « Attaque » et Kael éliminera les monstres plus vite !
+83	👑 Première victoire en difficulté Défi : vous gagnez une couronne
+84	👑 Gagnez une couronne en finissant en difficulté Défi
+85	👑 Terminé en difficulté Défi
+86	👕 Garde-robe
+87	📅 Défi du jour
+88	📅 Défi du jour · {0}
+89	📅 Défi du jour ✔
+90	📊 Rapport de combat
+91	📔 Journal de garde de Kael
+92	📜 Archives de garde
+93	📦 Ravitaillement du niveau :
+94	📦 Caisse de ravitaillement arrivée !
+95	Combo de 10 !
+96	12 météorites s'abattent sur des monstres au hasard sur tout le terrain, chacune infligeant ATQ ×8 de dégâts. Les monstres dans un rayon de 110 px en subissent 60 %.
+97	16 flèches × ATQ 1,6
+98	16 flèches tombent en 2 secondes, chacune touchant un monstre au hasard à portée pour ATQ ×1,6 de dégâts, en ignorant les boucliers.
+99	20 flèches × 1,7
+100	24 flèches × 1,8, les monstres touchés prennent feu
+101	3 flèches peuvent toucher plusieurs tentacules à la fois ; l'Arc en bois et le Canon au maximum conviennent aussi très bien contre Bobo
+102	Les 5 voies sont ouvertes ! Les chauves-souris zigzaguent entre les voies.
+103	Atchoum ! Mon casque est tout gelé.
+104	Oh là là… ce que je faisais mijoter, c'était de l'Encre, pas de la soupe. Pas étonnant que ce soit si mauvais.
+105	Prix de consolation
+106	Nuit
+107	Nuit · Esprit
+108	Niveau de nuit : on voit mal, portée −30 %. Les ravitaillements « Fusée éclairante » et « Longue-vue » sont très utiles.
+109	Afficher les yeux des monstres la nuit (désactivé par défaut, noir complet)
+110	Assassin de l'ombre
+111	Les Assassins de l'ombre apparaissent bien plus loin (x < 800)
+112	Les Assassins de l'ombre restent invisibles au loin et n'apparaissent que de près. Le ravitaillement « Lunette » les révèle plus tôt.
+113	Ninja de l'ombre
+114	Déferlante arcanique
+115	Vendre « {0} » ? Prix de vente {1} (la moitié du prix d'achat). Vous pourrez le racheter plus tard au prix normal.
+116	Collez ici le texte de sauvegarde exporté
+117	Copiez et conservez bien le texte ci-dessous. Après un changement d'appareil ou un effacement des données du navigateur, collez-le avec « Importer la sauvegarde » pour retrouver votre progression.
+118	Pourfendeur de cent
+119	Défilé nocturne
+120	Armure de plates
+121	Spore
+122	Carquois de glace fine
+123	Son cercle de protection est plus grand et réduit davantage les dégâts. Éliminez-le en premier.
+124	Armure du bastion
+125	Garde du bastion
+126	Blizzard ! Vitesse d'attaque réduite
+127	Parchemin de blizzard
+128	La tempête arrive ! Tous les monstres vont plus vite !
+129	Critique
+130	Carquois critique
+131	Taux de critique
+132	Taux de critique +{0} %
+133	Taux de critique +10 %.
+134	Taux de critique +3 %
+135	Taux de critique +3 % ; dégâts physiques contre les esprits +25 %
+136	Taux de critique +4 % ; malus de portée des niveaux de nuit réduit de moitié
+137	Taux de critique +8 %
+138	Dégâts critiques
+139	Dégâts critiques +{0} %
+140	Dégâts critiques +10 %
+141	Dégâts critiques +15 %
+142	Dégâts critiques +25 %
+143	Dégâts critiques +30 %
+144	Couronne du tyran
+145	L'explosion repousse les petits monstres de 60 px et les ralentit de 40 % (1,5 s) ; dégâts +50 % contre les Boss et les tentacules
+146	Rayon d'explosion 60 → 85, dégâts de zone 60 % → 75 %
+147	Loup arctique
+148	Les Loups arctiques chargent par trois. La Zone de gel peut retenir toute la meute d'un coup.
+149	Viking du Nord
+150	Bébé
+151	Bébé note chaque coquillage dans son petit carnet. Elle dit que le rempart est la plus grande « coquille » qu'elle ait jamais vue, mais qu'hélas on ne peut la partager avec personne.
+152	Bébé est presque impossible à toucher coquille fermée et crache des perles coquille ouverte, mais elle craint la douleur. Lancez Coup de foudre et Pluie de flèches quand elle s'ouvre !
+153	Bébé s'affole : sa coquille s'ouvre et se ferme plus vite !
+154	Amulette de coquillage
+155	Sac
+156	Sac {0}
+157	Aucun objet dans le sac pour l'instant, allez en acheter dans la page « Objets ».
+158	Vous n'avez pas cet objet dans votre sac
+159	Le sac est vide, achetez des objets dans la page « Objets ».
+160	Musique
+161	Insigne du dernier rempart
+162	Médaille du dernier rempart
+163	Un carquois porté dans le dos.
+164	À sa mort, il projette des piques qui blessent les monstres alentour. Attendez qu'il soit au milieu de la foule pour l'abattre ! Il pique aussi le rempart à son arrivée.
+165	Paralysé par la foudre !
+166	Compétences passives
+167	Compétences passives (automatiques)
+168	Emplacements passifs
+169	Dégâts bloqués par l'armure / la résistance magique
+170	Une boule verte rongée par la lune : beaucoup de PV, et elle se soigne seule quand on ne la frappe pas.
+171	Étourdi !
+172	Mes biscuits… ne sont pas encore cuits !
+173	Ce Pharaon dormait depuis trois mille ans et on l'a réveillé ! Qui fait ce vacarme ?!
+174	Ce Pharaon met au point une nouvelle saveur de biscuit. Cette fois, seulement trois cents ans au four.
+175	La première fois que le rempart tombe dans ce niveau, il revient aussitôt à la vie avec 60 % de ses PV max (une seule fois)
+176	Gain de cuivre du niveau +{0} %
+177	Gain de cuivre du niveau +10 %
+178	Gain de cuivre du niveau +30 %
+179	Gain de cuivre du niveau +60 %, et un gros paquet de cuivre immédiatement
+180	Mon château… pourquoi fait-il si chaud ? Qui a allumé la fournaise ?
+181	Forme véritable révélée ! Dégâts +50 %
+182	Ce Prince a ouvert une boutique de trampolines sur la place. Le premier rebond est gratuit !
+183	Couronne du chapitre (terminer en difficulté Défi)
+184	Momie bandelette
+185	Boule de bandelettes
+186	Boules de bandelettes, boucliers, hordes de petits monstres
+187	Les boules de bandelettes résistent aux attaques physiques. Débloquez la « Baguette magique » à la boutique avec de l'argent, ou apportez Coup de foudre et Brûlure !
+188	Les bandelettes sont lavées. Elles sentent bon !
+189	Armure de rempart
+190	Paratonnerre
+191	Paratonnerre !
+192	Chauve-souris
+193	Grotte aux chauves-souris
+194	Assaut de chauves-souris
+195	Standard
+196	N'ayez pas peur, elles sont juste de très mauvaise humeur à cause d'une étrange encre noire. Protégez le rempart, c'est protéger tout le monde.
+197	Gel, Blizzard, Mur de glace : la Reine Givrée, encore plus froide qu'avant.
+198	Zone de gel
+199	Zone de gel, Mini-bombe et Fiole de gel demandent une voie : touchez la compétence, puis une voie.
+200	Fiole de gel
+201	Gèle tous les monstres 6 s (Boss 3 s). Les monstres gelés subissent +60 % de dégâts, puis sont ralentis de 50 % pendant 4 s après le dégel.
+202	Gelé {0}
+203	Décret de givre
+204	Gelé, réparation impossible
+205	Tonton Esquimau
+206	Tonton Esquimau gèle vos compétences. Ne misez pas tout sur une seule compétence !
+207	Tonton Esquimau dit que la Reine Givrée a gelé l'Encre en un grand miroir, et qu'on y voit une fissure rouge.
+208	Tonton Esquimau marche vers le rempart !
+209	Tempête de cristaux
+210	Esprit de cristal de glace
+211	Tant que des Esprits de cristal de glace vivent, vos héros attaquent plus lentement. Ils se cachent au loin : Pluie de flèches et Coup de foudre sont le plus rentable pour les éliminer.
+212	Lumière de cristal de glace
+213	Carquois d'âme de givre
+214	Plaine neigeuse glacée
+215	Bobo
+216	Un tentacule de Bobo. Tant qu'il en reste 3 ou plus, Bobo est très difficile à blesser.
+217	Les ventouses de Bobo absorbent de la puissance ! Abattez les tentacules !
+218	Bobo est protégé par ses tentacules : abattez-les d'abord (« Menace d'abord » et « Boss d'abord » le font tous deux). Sous 60 % de PV, les tentacules le soignent aussi, et à la fin il déclenche un énorme tourbillon !
+219	Pop
+220	Pop pop pop
+221	Frénésie de ravitaillement
+222	Expert en ravitaillement
+223	Aucun
+224	Terminer n'importe quel niveau après le niveau 10 sans aucune compétence active
+225	Une vague toutes les 14 secondes, sans attendre que le terrain soit nettoyé
+226	Peu importe qui ils sont, bonshommes de neige de fer, loups de fer… ils marchent tous vers nous en armure de fer.
+227	Sans compétences
+228	Armure impérissable
+229	Objets interdits
+230	Étendard indomptable
+231	Terminer sans utiliser aucun objet
+232	Ce ne sont pas eux, mais des « échos » : des ombres venues de cette fissure, teintées de bleu-violet par le chaos. Elles marchent sans cesse vers le rempart.
+233	Pas moi ! C'est votre propre réveil… je veux dire, vos petits soldats.
+234	Pas nous ! Ça vient de l'autre côté de la fissure !
+235	Non. Regarde, mon casque aussi est couvert de tes taches d'encre.
+236	Cape immortelle
+237	Non, la troisième à gauche est toujours à l'envers, j'ai l'habitude.
+238	Bandeau de tissu
+239	Statue de la fortune
+240	Bottes de fortune
+241	Un morceau de l'arc-en-ciel est devenu noir ! Il faut monter l'essuyer.
+242	Oiseau arc-en-ciel
+243	Les Oiseaux arc-en-ciel soignent les monstres alentour, et les ballons lâchent des gobelins quand ils éclatent. « Menace d'abord » cible les Oiseaux arc-en-ciel en premier.
+244	Pont arc-en-ciel
+245	Au bout du Pont arc-en-ciel se trouve le Royaume des nuages. On dit que les nuages y soufflent le vent et font gronder le tonnerre… Kael, emmène Tachou avec toi !
+246	Commandes
+247	Empl. {0}
+248	Empl. {0} : choisir l'objet et la quantité
+249	Armure de paille
+250	Glaces à la fraise, une pièce de cuivre chacune !
+251	Sandales de paille
+252	Cape d'herbes médicinales
+253	Premier combat dans la prairie
+254	Gardien de la prairie
+255	Étage
+256	Enveloppée de bandelettes : réduction des dégâts physiques de 55 %. Utilisez la magie !
+257	Obus surchargé, rayon d'explosion 100, ignore 60 % de l'armure, dégâts +30 % contre les Boss.
+258	Marée
+259	Manteau des marées
+260	{0} voies
+261	Hordes, esprits, monstres à faible résistance magique
+262	Réussite : {0} diamants ; échec : rien
+263	Succès
+264	Succès {0} / {1}
+265	Vole en groupe, passe au-dessus des autres monstres et fonce droit sur le rempart.
+266	Rempart
+267	Le rempart est gelé ! Impossible de le réparer pour l'instant
+268	Le rempart a été percé…
+269	Se termine quand le rempart est percé. 15 cuivre par vague terminée ; en cas de nouveau record, 1 argent pour chaque tranche de 5 vagues en plus.
+270	Le rempart n'est pas un trampoline ! …Mais ça a l'air vraiment amusant.
+271	La carapace… je veux dire le rempart, est bien solide aujourd'hui.
+272	Niveau du rempart
+273	Il reste {0} % de PV au rempart : si vous continuez, l'étage suivant commence avec ces PV, sans récupération.
+274	Le rempart récupère 15 % de ses PV max.
+275	Le rempart récupère 70 % de ses PV max, puis subit −60 % de dégâts pendant 8 secondes.
+276	Soin du rempart +25 %, dégâts subis par le rempart −5 %
+277	Soin du rempart +{0} %
+278	Le rempart gagne un bouclier qui absorbe jusqu'à 35 % de ses PV max, jusqu'à la fin du niveau.
+279	Réduction des dégâts du rempart
+280	Sources de dégâts au rempart (total {0})
+281	Le rempart a surtout été blessé par « {0} » : {1}
+282	Amélioration du rempart (PV max actuels {0})
+283	Rempart {0} % restant
+284	Rempart ≥ 50 % restant : 2 étoiles ; ≥ 80 % : 3 étoiles.
+285	Terminer avec moins de 5 % de PV au rempart
+286	Le rempart a tenu jusqu'à la vague {0} / {1}.
+287	Dégâts continus subis par le rempart (poison, brume toxique) −60 %
+288	Dégâts subis par le rempart −3 % / niveau.
+289	Dégâts subis par le rempart −{0} %
+290	Dégâts subis par le rempart −12 %
+291	Dégâts subis par le rempart −3 %
+292	Dégâts subis par le rempart −6 % ; soin du rempart +25 %
+293	Réparation du rempart
+294	PV du rempart
+295	ATQ +20 % quand les PV du rempart sont sous 50 %
+296	ATQ +{0} % quand les PV du rempart sont sous 50 %
+297	Garder les PV du rempart à 70 % ou plus et terminer le niveau
+298	Le rempart n'a que la moitié de ses PV
+299	PV max du rempart +{0} %
+300	Bottes d'éclaireur
+301	Fournaise de fer rouge
+302	Cape flamboyante
+303	Charger ? Pour l'instant je ne charge que les ordures.
+304	Charge
+305	Réalisé par
+306	Vendre
+307	Débutant
+308	Premiers pas dans la tour
+309	Première neige
+310	Exécution
+311	Tentacule
+312	Les tentacules se sont tous retirés dans la mer !
+313	Bouclier de tentacules : il en reste {0}, frappez-les d'abord !
+314	Gifle tentaculaire
+315	Plus que {0} tentacules, frappez Bobo vite !
+316	Équiper
+317	Équipé
+318	Perforation
+319	Arc long perce-cœur
+320	Flèche perce-nuage
+321	Une armure portée sur le corps, qui rend le rempart plus stable.
+322	Porté
+323	Légendaire
+324	Couronne de la Genèse
+325	Carquois de la Genèse
+326	Armure de la Genèse
+327	Arc de la Genèse
+328	Aiguille piquante
+329	Cape en toile grossière
+330	Prairie d'émeraude
+331	Texte de sauvegarde invalide, vérifiez qu'il est copié en entier
+332	Sauvegarde importée
+333	Sauvegarde effacée
+334	Les Boss que vous avez vaincus ont tous emménagé en ville. Touchez-les pour savoir comment ils vont.
+335	Le roi Gulu est vaincu ! C'est en fait le nettoyeur le plus travailleur de la prairie. Le vent noir vient du désert, je pars.
+336	Vous avez vaincu tous les monstres de cet étage.
+337	Interrompre un Boss
+338	Interrompre un Boss au moins 2 fois et terminer le niveau
+339	Interrompu !
+340	Maître des interruptions
+341	Expert des interruptions
+342	Grand Boss
+343	Grand Boss. Le Blizzard ralentit l'attaque, le rempart gelé ne peut être réparé, et à faible PV il invoque des petits dragons de glace.
+344	Grand Boss. Gel, Blizzard, Mur de glace, encore plus froid qu'avant.
+345	Grand Boss. La brume toxique ronge le rempart, il transforme les sbires en versions renforcées, et à faible PV il renverse la marmite pour créer des mares de poison.
+346	Grand Boss. Déclenche des tempêtes de sable, invoque des momies et les soigne, et à faible PV dresse un bouclier pyramide, qui ne craint que la magie.
+347	Grand Boss. Invoque des sbires ; sous 60 % de PV, il lance une charge de sanglier : concentrez vos tirs pendant l'alerte pour l'interrompre.
+348	Grand Boss. Tempête de sable, invocation, soin, bouclier : trois phases, bien plus coriace qu'avant.
+349	Une grosse brute au pelage blanc, à l'armure physique très élevée.
+350	La marmite se renverse ! La mare de poison accélère les monstres !
+351	Énorme tourbillon ! Tous les tentacules ont repoussé et tous les monstres vont plus vite !
+352	Mode gros texte
+353	En prendre {0}
+354	Une protection portée sur la tête.
+355	Tir unique, stable, avec un taux de critique supplémentaire intégré. Excellent contre les Boss.
+356	Atteindre un combo de 30 en une partie (vaincre des monstres à moins de 1,2 s d'intervalle)
+357	DPS cible unique
+358	Dong… dong… (grelottant de froid)… Pardon, elle sonne toute seule.
+359	Actuel : {0} →
+360	Exporter la sauvegarde
+361	Importer
+362	Importer la sauvegarde
+363	L'importation écrasera votre progression actuelle.
+364	S'arrêter ici et encaisser
+365	Atteignez la vague 30 pour débloquer le succès « Jamais tombé » (1 or).
+366	Carquois à barbelures
+367	Vous êtes tombé à l'étage {0} sans rien obtenir. Les billets ne sont pas remboursés.
+368	Objets
+369	À quoi bon s'excuser ! Grrroumm !
+370	Le sol flotte… comme un miroir brisé.
+371	Carte
+372	Talisman sismique
+373	Sommet de la perfection
+374	Attendez ! Je suis Atlas, le fils du maçon. Mon père a réparé chaque endroit du rempart qui avait été défoncé. Pars en voyage, moi je garde le rempart !
+375	Niveau trop bas, améliorez
+376	Vole bas et très vite.
+377	Vague {0} / {1}
+378	Vague {0}
+379	Vague {0} · Record {1}
+380	Étage {0}
+381	Étage {0} · Vague {1} / {2} · {3} restants
+382	Étage {0} : {1} rois démons + {2} sbires déferlent ensemble (puissance ×{3}). Les PV du rempart sont repris de l'étage précédent, sans récupération. Vaincre des monstres ne rapporte rien : seuls les étages franchis donnent des diamants !
+383	Étage {0} franchi !
+384	Niveau {0}
+385	Niveau {0} · {1}
+386	Niveau {0} · {1} ({2})
+387	À partir du niveau 3, terminer n'importe quel niveau avec le rempart à pleins PV
+388	Chapitre {0}
+389	Chapitre {0} · {1}
+390	Chapitre {0} ▾
+391	Récompense 3 étoiles partout, chapitre {0}
+392	Boss du chapitre 6. Un grand nuage d'orage grincheux : invoque des Boules de tonnerre et des Oiseaux arc-en-ciel, charge des éclairs, et déclenche enfin une tempête.
+393	Boss du chapitre 7. Le Roi Poulpe : bouclier de tentacules, soin par ventouses et énorme tourbillon final. Frappez d'abord les tentacules !
+394	Quatrième voie
+395	Cinquième voie
+396	Les objets ne s'utilisent qu'après l'apparition de la première vague
+397	Touchez une voie pour lancer (clic droit ou Échap pour annuler)
+398	Toucher pour équiper
+399	Toucher d'or
+400	Touchez-moi pour utiliser une compétence !
+401	La décharge couvre une zone plus large et paralyse plus longtemps.
+402	Arc long sculpté
+403	Ding !
+404	Dong… dong… vous… ne… passerez… pas…
+405	Dong… Tachou… aujourd'hui… c'était… chouette…
+406	Dong… il… est… toujours… seul… soyez… gentil… avec lui…
+407	Dong… je… garde… la porte…
+408	Dong… merci… à… vous…
+409	Gèle tous les monstres 7 s, Boss compris. Les monstres gelés subissent ×2,2 de dégâts, et la vitesse d'attaque des héros est +60 % pendant ce temps.
+410	Gèle tous les monstres de la voie choisie pendant 3 secondes.
+411	Mamie Soupe-Poison
+412	Mamie Soupe-Poison a bien récuré sa marmite et dit qu'elle ne fera plus que de la soupe de citrouille. La plaine neigeuse du nord semble être l'une des sources de l'Encre.
+413	Mamie Soupe-Poison transforme les sbires en versions renforcées. Nettoyez vite le terrain et apportez Réparation du rempart contre la brume toxique !
+414	Mamie Soupe-Poison se met à cuisiner !
+415	Grenouille venimeuse
+416	Les Grenouilles venimeuses restent au loin et crachent du venin sur le rempart. Passez le ciblage sur « Menace d'abord » et les héros les frapperont en priorité quand le rempart est en sécurité.
+417	Brume toxique ! Le rempart subit des dégâts continus
+418	Échec de lecture de la sauvegarde
+419	Lire tout le journal de garde (les passages sautés peuvent être relus dans le journal)
+420	Glisse très vite sur le ventre et inflige de lourds dégâts en heurtant le rempart.
+421	Chaussures de sprint
+422	Dégâts contre les Boss et les monstres volants +30 %
+423	Dégâts contre les Boss +{0} %
+424	Dégâts contre les Boss +12 %, dégâts subis par le rempart −4 %
+425	Dégâts contre les Boss +50 %, ignore 20 % de l'armure
+426	P-pardon… c'était moi.
+427	Dégâts +15 % contre les monstres ralentis ou gelés
+428	Inflige ATQ ×5 de dégâts magiques au monstre qui a le plus de PV actuels.
+429	Dégâts contre les monstres volants +{0} %
+430	Inflige ATQ ×2,5 de dégâts magiques à tous les monstres de la voie choisie et les enflamme.
+431	Inflige ATQ ×5 de dégâts à tous les monstres de la voie choisie.
+432	Dégâts +60 % contre les monstres sous 30 % de PV
+433	Échanger {0}
+434	Tortue-bouclier
+435	Escorte de tortues-boucliers
+436	Les Tortues-boucliers protègent les monstres autour d'elles. « Menace d'abord » vise les Tortues-boucliers en premier ; les compétences ne sont pas affectées par elles.
+437	Bouclier
+438	Reste à l'arrière et soigne sans cesse les monstres alentour. Éliminez-le en premier !
+439	Les lunettes de cuivre sur son front brillent, et la vapeur s'échappe en soufflant de son sac à dos.
+440	Tire des projectiles magiques qui explosent sur une petite zone à l'impact. Les dégâts magiques ignorent l'armure physique.
+441	Quand l'écho du Pharaon s'est évanoui, il a laissé un petit biscuit. Je n'ai pas osé le manger.
+442	Ciel étoilé
+443	Au retour, touche par derrière et ignore les boucliers en bois
+444	Retour
+445	Les maisons ont été emportées ? Mais où vont-ils habiter ?
+446	Abandonner le niveau
+447	Abandonner le défi
+448	Abandonner ce défi ? Le billet n'est pas remboursé et vous n'obtenez rien.
+449	Volant
+450	Vole, et change de voie vers une voisine de temps en temps.
+451	Vole en se laissant porter par le vent : 35 % des attaques physiques normales des armes sont esquivées. La magie et les dégâts de zone ne s'esquivent pas.
+452	Volants d'abord
+453	Poisson volant
+454	Distance de saut du Poisson volant −50 %
+455	Tempête de poissons volants
+456	Les Poissons volants font un grand bond en avant et sont intouchables en l'air. Ils courent plus vite qu'il n'y paraît : la Zone de gel est très utile !
+457	Sauts de poissons volants
+458	Vole dans les airs et lance des boules de feu sur le rempart depuis le lointain.
+459	Division
+460	Cape de tempête
+461	Orbe de tempête
+462	Bottes du marcheur des vents

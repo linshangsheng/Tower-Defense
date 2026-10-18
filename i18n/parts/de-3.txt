@@ -1,0 +1,463 @@
+926	Herdfeuer aus
+927	Glutkobold
+928	Schlackenchor
+929	Schlackenklumpen
+930	Grün
+931	Grünklops
+932	Wiedergeburt-Köcher
+933	Setzt bei der Landung vier Goblin-Schergen frei.
+934	Verfehlt
+935	Spatzenumhang
+936	Gekaufte Fähigkeiten müssen auf der Ausrüstungsseite in Fähigkeitsplätze gelegt werden, damit sie in den Kampf mitkommen.
+937	Verkaufspreis ist die Hälfte des Kaufpreises
+938	Langsame schwere Kanone mit großer Explosion beim Aufprall; ignoriert 40% der Rüstung des Ziels.
+939	Schwebt langsam heran; lässt beim Zerplatzen 3 Goblin-Schergen fallen.
+940	Katzenpriester
+941	Schon gut! Wenn man wütend ist, donnert jeder mal.
+942	Schon gut! Denk nächstes Mal daran, durch die Vordertür zu kommen.
+943	Unhöflicher kleiner Wächter! Koste meine Giftsuppe!
+944	Keine Zusatzwerte
+945	Keine aktiven Fähigkeiten ausgerüstet
+946	Schlägt alle 18 s mit einem Tentakel auf das Monster, das der Mauer am nächsten ist (ANG ×3)
+947	Nachschub alle 2 Wellen
+948	Schleudert alle 20 s einen kleinen Blitz auf das Monster mit den meisten LP (ANG ×4)
+949	Spuckt alle 25 s einen Tintenklecks auf das nächste Monster (ANG ×3)
+950	Alle 5 Wellen ein Mini-Boss, alle 10 Wellen ein großer Boss; Nachschub auf dem Schlachtfeld alle 3 Wellen.
+951	Nach 4 Treffern zieht es sich kurz in den Panzer zurück und ist darin fast unverwundbar. Konzentriere dich nicht auf eines: Schnellfeuer-Armbrust und Blitzkugel verteilen den Schaden besser.
+952	Die Mauer heilt am Ende jeder Welle {0}% mehr
+953	Heilt am Ende jeder Welle 2% der max. LP pro Stufe.
+954	Die Mauer heilt am Ende jeder Welle 3%
+955	Zu Beginn jeder Welle erhält die Mauer einen Schild von {0}% der max. LP
+956	Zu Beginn jeder Welle erhält die Mauer einen Blasenschild von 4% der max. LP
+957	Gibt der Mauer zu Wellenbeginn einen Blasenschild, der Schaden bis zu 3% der max. LP absorbiert
+958	Schießt 4 Bolzen auf einmal
+959	Jede Herausforderung kostet {0}.
+960	Bei jedem 6. Angriff schlägt ein kleiner Blitz im Ziel ein und verursacht zusätzlich ANG ×1,5 Magieschaden
+961	Springt von Zeit zu Zeit einen großen Satz nach vorn und ist in der Luft nicht zu treffen. Schneller, als es aussieht!
+962	Nach jeweils 5 Angriffen folgt sofort ein weiterer Angriff.
+963	Nach jedem Level erhältst du Kupfermünzen, beim ersten Abschluss zusätzlich Silber. Geh in den Shop, verbessere Werte, schalte Waffen und Fähigkeiten frei und komm wieder!
+964	Nach jeder Etage kannst du die Diamanten dieser Etage abholen und gehen oder weiter hinaufsteigen: Schaffst du noch eine Etage, verdoppeln sich die Diamanten; scheiterst du, gibt es nichts.
+965	Jeder besiegte Gegner heilt die Mauer um 0,3% der max. LP
+966	Tagesaufgabe
+967	Tagesaufgabe „{0}“: {1}
+968	Der erste Abschluss jeden Tages bringt 3 Silber, beliebig oft wiederholbar. Beeinflusst die Sterne-Rekorde der Level nicht.
+969	Pausenerinnerung alle {0} Minuten Spielzeit
+970	Mit jeder Etage nach oben werden Monster-LP und Belagerungsschaden ×{0}. Die Mauer-LP übernehmen sich von der vorigen Etage ohne Erholung (nur Reparatur, Nachschubkarten, Items und Fähigkeiten heilen).
+971	Jeder Charakter hat sein eigenes Aussehen und Zusatzwerte. Kaufe sie mit Goldmünzen und trage immer einen; wen du wählst, der steht auf der Mauer (Zusatzwerte wirken nur, wenn Kael kämpft, daher wechselt es automatisch zurück zu Kael).
+972	Zu Beginn jeder Welle erhält die Mauer einen Schild von 12% der max. LP; Schaden an der Mauer −10%
+973	Nebelsumpf
+974	Mithril-Panzer
+975	Mithril-Köcher
+976	Mithril-Helm
+977	Mithril-Umhang
+978	Dichte Monsterhorden, Geister
+979	Dichte Monsterhorden, kleine Geister, Monster mit niedriger Magieresistenz
+980	Gratis
+981	Sekundenzeiger-Umhang
+982	Feuerlöscher
+983	Rüstungsbrecher-Köcher
+984	Flinke Stiefel
+985	Schicksalsgöttin-Anhänger
+986	Schicksalswürfel
+987	Setzt das Ziel beim Treffer in Brand und verursacht über 3 Sekunden insgesamt 60% ANG als Magieschaden.
+988	Pfeilspitzen schärfen
+989	Pilzsoldat
+990	Pilzsoldaten machen Monster in der Nähe schneller, wenn sie sterben. Tippe unten auf die Fähigkeit „Kriegstrommel“!
+991	Pilzwald
+992	Magie, große Explosion (Radius 110, 90% Flächenschaden), dazu 2 Blitzsprünge.
+993	Magie geblockt
+994	Der Magieblitz springt 5-mal und verliert pro Sprung nur 15%.
+995	Magieschaden +12%, Fähigkeiten-Abklingzeit −5%
+996	Magieschaden +25%
+997	Magieschaden ignoriert physische Rüstung
+998	{0} des Magieschadens wurden von Magieresistenz geblockt: Lavamonster fürchten Magie nicht, wechsle zu physischen Waffen (Kanone, Schnellfeuer-Armbrust).
+999	Zauberstab
+1000	Magieres.
+1001	Dämonenkönig-Hauer
+1002	Dämonenkönig-Form! Bündle das Feuer, um das Aufladen zu unterbrechen!
+1003	Tinti
+1004	Tinti, geh nach Hause. Wir lassen dich nie wieder allein.
+1005	Tinti?
+1006	Tinti… bist du da drüben?
+1007	Tinti machte „plopp“ und schrumpfte zu einem kleinen Klecks zusammen…
+1008	Tinti ist wieder ein kleiner Klecks geworden. Es war nur zu einsam und hat überall Tinte verspritzt. Jetzt wohnt es an der Mauer und sieht mir jeden Tag beim Wachestehen zu.
+1009	Tintis Klone. Besiege alle drei Klone, dann erscheint das echte Tinti.
+1010	Echo von Tinti
+1011	Tinti-Klon
+1012	Tinti hat sich geteilt! Besiege die drei Klone!
+1013	Tinti hat sich schon entschuldigt! Wir sind gekommen, um zu helfen!
+1014	Tinte, Klone, versperrte Sicht: Das ist die Quelle des Chaosrisses. Besiege es, dann ist alles vorbei.
+1015	Die Tinte ist von den verschneiten Bergen im Norden heruntergeflossen. Dort ist es so kalt, dass sogar die Tinte zu Eis gefroren ist.
+1016	Tintenklecks
+1017	Holzschild-Goblin
+1018	Holzschild-Goblins sind von vorn zäh. Der Rückflug des Bumerangs, Pfeilregen und „Durchschlag“ kommen gegen sie an.
+1019	Holzschild-Panzer
+1020	Holzbogen
+1021	Mumienarmee
+1022	Holzköcher
+1023	Ziel:
+1024	Zielpriorität
+1025	Friedhofsgeist
+1026	Diese Suppe riecht nach ungewaschenen Socken!
+1027	Diese Schritte sollten auch mal ausruhen.
+1028	Dann soll alles… abkühlen.
+1029	Dann verteidigen wir noch einmal! Diesmal habe ich neue Kleider!
+1030	Dort lebt ein ganz einsames kleines Wesen. Kleiner Wächter, sieh für mich nach ihm.
+1031	Dann kannst du auch Sand zerquetschen? …Wohl eher nicht.
+1032	Dann bauen wir gemeinsam eins! Die Handwerker des Königreichs bauen am besten große Häuser.
+1033	Die Kürbissuppe ist fertig! Heute keinen Tropfen Tinte hineingetan.
+1034	Kürbisfeld
+1035	Kürbiskopf
+1036	Kleine Kürbisse aus einem geplatzten Kürbiskopf.
+1037	Kürbisköpfe zerfallen beim Tod in 3 kleine Kürbisse. Erledige ihn aus der Ferne, damit du Zeit zum Aufräumen hast.
+1038	Schwierigkeit
+1039	Die Schwierigkeit richtet sich nach deinem höchsten abgeschlossenen Level (mindestens wie Level 60, höchstens wie Level 70). 2 Nachschübe pro Etage. Mittendrin beenden oder die Seite neu laden zählt als Niederlage.
+1040	Mhm! Versprochen!
+1041	Mhm. Wir haben die Mauer beschützt, und wir haben alle zusammengehalten.
+1042	Mhm. Diesmal komme ich allein zurück.
+1043	Deine Wächter-Bilanz
+1044	Deine Nägel sind doch Scheren!
+1045	Schau, ich habe die ganze Tinte zurückgesaugt. Der Regenbogen hat wieder sieben Farben.
+1046	Beschützt du da drin jemanden?
+1047	Du hast {0}
+1048	Wusstest du? Das Xylophon ist aus meinen Rippen gemacht. War nur ein Scherz.
+1049	Nirvana-Emblem
+1050	Das Echo der Königin wurde zu einem Hauch leichten Schnees und fiel zischend aufs Feuer. Das Feuer ist endlich ein klein wenig dunkler geworden.
+1051	Handwärmer
+1052	Klack! Entschuldigung, wenn ich nervös bin, klappe ich immer meine Schale zu.
+1053	Klack… Na gut, eure Panzer sind wirklich alle bewohnt.
+1054	Bahnen mit langen Schlangen
+1055	Bahnen mit langen Schlangen, Holzschild-Goblins
+1056	Dicker Pharao
+1057	Hat der Dicke Pharao wenig LP, erhebt er einen Pyramidenschild: Physische Angriffe kratzen ihn kaum, nimm also unbedingt Magieschaden mit!
+1058	Echo des Dicken Pharaos
+1059	Als der Dicke Pharao aufwachte, bot er mir einen dreitausend Jahre alten Keks an (ich habe mich nicht getraut). Nächste Station: Nebelsumpf.
+1060	Der Dicke Pharao hat Mumien gerufen!
+1061	Rennt blitzschnell, sehr wenig LP.
+1062	Blase
+1063	Beim Zerplatzen einer Blase wirken noch 50% des Schadens
+1064	Blasenschild zerbrochen
+1065	Blasenparty
+1066	Ausrüstung
+1067	Bumm!
+1068	Ein Kerl im Umhang… den hat man auch drüben im Sumpf gesehen.
+1069	Umhang
+1070	Ein über die Schultern getragener Umhang.
+1071	Ein fliegendes Monster in Steinpanzer: Die meisten physischen Angriffe werden geblockt.
+1072	Ein mit Eisenplatten behängter Streitwagen, der schnell vorstürmt.
+1073	Ein Schneemann in Eisenpanzer; zerfällt beim Tod in drei kleine Schneebälle.
+1074	Lederpanzer
+1075	Lederköcher
+1076	Ledermütze
+1077	Lederstiefel
+1078	Lügner! Niemand will mit Tinte spielen!
+1079	Fledermäuse, die oft die Bahn wechseln und schwer zu fokussieren sind.
+1080	Sicher gehen: Etage {0} erreicht
+1081	Panzerbrecher-Köcher
+1082	Panzerbrecher-Pfeilspitze
+1083	Panzerbrecher-Schwerköcher
+1084	Himmelsbrecher-Köcher
+1085	Blubb… die schwarze Tinte ist abgefallen, und dieser Prinz fühlt sich wieder klar im Kopf. Entschuldige, dass ich deine Mauer schmutzig gemacht habe.
+1086	Blubb blubb! Dieser Prinz will auf der Mauer wie auf einem Trampolin hüpfen!
+1087	Normal
+1088	Normale Angriffe setzen das Ziel mit {0}% Chance in Brand
+1089	Normale Angriffe lösen mit 25% Chance einen Blitz aus, der auf 3 Ziele überspringt und jedem ANG ×0,6 Magieschaden zufügt
+1090	Normale Angriffe setzen das Ziel mit 30% Chance in Brand
+1091	Normale Angriffe setzen das Ziel beim Treffer in Brand
+1092	Normale Angriffe verlangsamen das Ziel um {0}%
+1093	Normale Angriffe verlangsamen das Ziel um 15% (1,5 s)
+1094	Normale Angriffe verlangsamen das Ziel 1,5 Sekunden lang um 20%
+1095	Ritterpanzer
+1096	Pinguin-Rutsch
+1097	Pinguine rutschen blitzschnell und richten beim Aufprall auf die Mauer großen Schaden an. Die Frostzone kann sie bremsen.
+1098	Ballonflotte
+1099	Fernrohr
+1100	Los ›
+1101	Nicht genug Münzen für {0} Stufen
+1102	Nicht genug Münzen für 2 Stufen
+1103	Zwick!
+1104	Zwicki
+1105	Zwicki gräbt sich unter der Erde auf eine andere Bahn und überfällt dich. Wenn du die Staubwarnung siehst, halte deine Fähigkeiten bereit!
+1106	Zwicki ist ein großer Skorpion, der Angst vor dem Alleinsein hat. Er sagt, in der Pyramide „sammelt“ jemand schwarze Tinte.
+1107	Wettlauf gegen die Zeit
+1108	Zielpriorität wechseln (T)
+1109	Tempo wechseln (F)
+1110	Leichte Schuhe
+1111	Leicht
+1112	Leichtgepäck
+1113	Mit leichtem Gepäck
+1114	Spielstand löschen
+1115	Bitte drehe dein Handy quer, um „The Last Bastion“ zu spielen
+1116	Bitte aktiviere JavaScript, um „The Last Bastion“ zu spielen.
+1117	Bitte manuell schließen
+1118	Exorzismus-Pfeil
+1119	Bestienschreck-Helm
+1120	Abbrechen
+1121	Auf der Seite „Ausrüstung“ freischalten
+1122	Freischalten ({0})
+1123	Zum Shop
+1124	Alle {0}
+1125	Betäubt alle Monster 2,5 Sekunden lang (Bosse 1 Sekunde) und verursacht ANG ×3,5 Schaden.
+1126	Trifft die 4 Monster mit den meisten LP auf dem Feld mit je einem Blitz, jeder Blitz verursacht ANG ×5 Magieschaden.
+1127	Komplett verstärken
+1128	Vollbild (wird beim ersten Tippen nach dem Spielstart automatisch aktiviert)
+1129	Ganz in Schwarz, nur ein Augenschlitz ist zu sehen; läuft lautlos.
+1130	Allsehendes Auge
+1131	OK
+1132	Spielstand wirklich löschen und von vorn beginnen? Das lässt sich nicht rückgängig machen.
+1133	Horden, fliegende Monster
+1134	Brandflasche
+1135	Heißluftballon
+1136	Aufgaben-Profi
+1137	Eine beliebige Waffe aufsteigen lassen
+1138	Eine beliebige aktive Fähigkeit auf Lv3 bringen
+1139	Tagebuch
+1140	Tagebuch voll
+1141	Ein Golem aus geschmolzenem Eisen: Magie kratzt ihn kaum, nimm physische Waffen.
+1142	Die Wände der Schmiede sind rot. Jedes Echo-Monster glüht heiß, als käme es frisch aus dem Ofen.
+1143	Schmiede-Eingang
+1144	Schmiede-Wächter
+1145	Schmelzeisen-Golem
+1146	Lava-Umhang
+1147	Lavamonster fürchten Magie nicht, denk also an physische Waffen. Kael, komm gesund zurück.
+1148	Lavamonster fürchten Magie nicht; nimm physische schwere Kanonen
+1149	Lavariese
+1150	Lava-Golem
+1151	Lava-Golems fürchten Magie kaum! Wechsle zu Holzbogen, Kanone oder Bumerang.
+1152	Lavariss
+1153	Dreihundert Jahre… sind wieder vergangen.
+1154	Der Totenkopf auf dem Dreispitz lacht, und nur ein Auge kann sehen.
+1155	Drei Pfade
+1156	Kommen im Dreierpack und stürmen schnell auf derselben Bahn heran.
+1157	Der Waldhüter, mit einem Langbogen, der größer ist als er selbst. ANG ×1,5, Angriffstempo ×0,73; schwere Pfeile ignorieren 25% Rüstung und stoßen normale Monster 12 Pixel zurück.
+1158	Sandsturm, Beschwörungen, Heilung, Schilde: der dicke Pharao in drei Phasen, noch härter als zuvor.
+1159	Sandsturm zieht auf! Angriffstempo gesenkt
+1160	Vor dem Sandsturm
+1161	Sandflasche
+1162	Die Wüste? Das scheint nicht so einfach zu sein. Kael, willst du mal nachsehen?
+1163	Die Wüstensonne brennt so heiß. Die Monster hier sind in Bandagen gewickelt, und Pfeile prallen schlaff ab. Wir müssen uns etwas anderes überlegen.
+1164	Mumien in der Wüste fürchten gewöhnliche Pfeile nicht. Der Zauberstab soll helfen, schau mal im Shop vorbei!
+1165	Alle Feinde der Wüste sind gekommen. Räume zuerst die kleinen Priester und Kaktuskugeln ab!
+1166	Wüstenwächter
+1167	Wüstengeier
+1168	Der Schatten unter den Dünen
+1169	Sandskorpion
+1170	Sandskorpione graben sich zum Ausweichen in den Boden und tauchen schon nahe der Mauer wieder auf. Pfeilregen und Frostzone helfen dir dagegen.
+1171	Blitzstiefel
+1172	Korallenbucht
+1173	Ausweichen
+1174	Nach dem Treffer springt der Blitz 3-mal zwischen nahen Monstern; jeder Sprung richtet 75% des vorigen Schadens an. Magieschaden.
+1175	Blitzsprung
+1176	Der Blitz springt zwischen mehreren Einsiedlerkrebsen hin und her, da zieht sich nicht so leicht einer in seine Schale zurück
+1177	Glanzhelm
+1178	Stark gegen:
+1179	Schaden ×1,8; Treffer verlangsamt das Ziel um 30% (2 s).
+1180	Schadensquellen (insg. {0})
+1181	Shop
+1182	Shop / Ausrüstung
+1183	Karawanenstiefel
+1184	Die letzte Etage, bis zu der du gekommen bist, wurde noch nicht abgeholt.
+1185	Wächterhelm
+1186	Das vorgesehene Spielerlebnis
+1187	Einstellungen
+1188	Reichweite
+1189	Reichweite +{0}%
+1190	Reichweite +10%
+1191	Reichweite +10%, Krit-Schaden +30%
+1192	Reichweite +12%
+1193	Reichweite +20% (gleicht die Dunkelheit in Nachtlevels genau aus)
+1194	Reichweite +5%
+1195	Reichweite +6%, Krit-Chance +3%
+1196	Wer stellt hier bloß so viel Eisen her?
+1197	In dicke Wolle gehüllt; schlage zuerst die Wolle ab. Nach dem Scheren rennt es blitzschnell!
+1198	Ein tiefroter Hörnerhelm mit winzigen Drachenflügeln am Rücken; soll Funken spucken.
+1199	Gezeiten der tiefen Nacht
+1200	Welche Sorte?
+1201	Legendäre Waffen
+1202	Tempelpaladin
+1203	Rüstung der Götterhuld
+1204	Göttlicher Schutz
+1205	{0} Stufen aufwerten, insgesamt {1}
+1206	Aufwerten
+1207	{0} aufwerten
+1208	Mauerstufe aufwerten: Mauer-LP +10% ({0})
+1209	Aufsteigen
+1210	Lebensrüstung
+1211	Lebensumhang
+1212	Heiliges Licht
+1213	Rüstung des Heiligen Lichts
+1214	Paladinrüstung
+1215	Umhang der Heiligen Quelle
+1216	Siege
+1217	Siegesquote
+1218	Niederlage
+1219	Trostpreis
+1220	Löwenherz-Krone
+1221	Löwenfang-Anhänger
+1222	Der Sohn eines Steinmetzes mit einem großen Steinschild. ANG ×0,97; die Mauer erleidet 12% weniger Schaden und wird am Ende jeder Welle um 3% zusätzlich repariert.
+1223	Ein kleiner Riese aus gestapelten Steinen; erleidet 75% weniger Magieschaden. Greife ihn mit physischen Waffen an!
+1224	Gargoyle
+1225	Gargoyle-Nest
+1226	Gargoyles fliegen und tragen Steinpanzer, daher wirken Magieangriffe besser als normale Angriffe.
+1227	Zeitumhang
+1228	Zeit-Sanduhr
+1229	Zeitstopp
+1230	Raumzeit-Umhang
+1231	Raumzeit-Kompass
+1232	Chrono-Stiefel
+1233	Zahnrad der Zeit
+1234	Zeitwirbel
+1235	Sanduhr der Zeit
+1236	Angelegt
+1237	Weltenbaum-Umhang
+1238	Weltenbaum-Rüstung
+1239	Unaufhaltsam
+1240	Unaufhaltsam!
+1241	Probiere „Fähigkeiten automatisch wirken“ (unten rechts im Kampf): Fähigkeiten werden gewirkt, sobald sie bereit sind
+1242	Schmuck
+1243	Schmuck 1
+1244	Schmuck 2
+1245	Schmuck 3
+1246	Wir sind's, wuusch! Pust diesmal nicht so stark!
+1247	Das war ein Versehen! Wir sind gekommen, um aufzuräumen!
+1248	Götterbezwinger
+1249	Götterbezwinger-Köcher
+1250	Götterbezwinger-Krone
+1251	Blutdurst-Köcher
+1252	Sammeln
+1253	Verteidigung geschafft!
+1254	Verteidigungsarchiv
+1255	Verteidigungstagebuch
+1256	Mauerwächter
+1257	Die Mauer beschützen
+1258	Wächterrune
+1259	Wächterrüstung
+1260	Wächterumhang
+1261	Belohnung für die ersten 3 Sterne
+1262	Belohnung für den ersten Abschluss
+1263	Erster Abschluss +{0} Silber
+1264	Werte
+1265	Werte aufwerten (dauerhaft)
+1266	Baumstumpf-Monster
+1267	Baumstumpf-Monster heilen sich, solange sie nicht getroffen werden. Verteile dein Feuer nicht, erledige sie einzeln.
+1268	Doppelköcher
+1269	Zweiklingen-Bumerang
+1270	Zweifedern-Köcher
+1271	Frostdrache
+1272	Frostdrachen-Angriff
+1273	Königin Frosti
+1274	Königin Frosti hat die Mauer eingefroren!
+1275	Echo der Königin Frosti
+1276	Königin Frosti friert die Mauer ein, solange kann sie nicht repariert werden. Repariere die Mauer vor dem Einfrieren!
+1277	Königin Frosti ist eigentlich sehr sanft, nur nicht gut mit Worten. Letztes Ziel: der Lavariss.
+1278	Ein kleiner Eisdrache, den Königin Frosti beschworen hat.
+1279	Frostfeder-Köcher
+1280	Rückenwind-Flagge
+1281	Seine Stacheln tun nach dem Tod noch mehr weh.
+1282	Hinterlässt beim Tod eine größere, länger brennende Feuerfläche.
+1283	Hinterlässt beim Tod eine Feuerfläche; Monster, die hindurchlaufen, werden schneller.
+1284	Zerfällt beim Tod in 3 sehr schnelle kleine Kürbisse.
+1285	Platzt beim Tod zu einer Sporenwolke und macht nahe Monster schneller. Erledige es möglichst aus der Ferne.
+1286	Kleeblatt
+1287	Silbernes Kleeblatt-Abzeichen
+1288	Gepanzerte Wölfe, die zu viert heranstürmen.
+1289	Ansturm
+1290	Ansturm-Level: Skelett-Streitwagen richten beim Aufprall hohen Schaden an; Frostzone und Frostflasche sind deine Rettung.
+1291	Ansturm-Level: alle 13 Sekunden eine Welle! Pinguine und Wolfsrudel sind schnell, wirke Frostzone und Pfeilregen rechtzeitig.
+1292	Ansturm-Level: alle 14 Sekunden eine Welle, ohne aufs Räumen des Feldes zu warten! Die Frostzone hält die Hasenflut auf.
+1293	Ansturm-Level! Große Wolkenschaf-Herden kommen Welle um Welle, und geschorene Schafe rennen schnell. Frostzone und Pfeilregen sind sehr nützlich.
+1294	Ein kleiner Gegenstand, den man immer bei sich trägt.
+1295	Eisscherben
+1296	Einigeln
+1297	Bleibt länger in der Schale.
+1298	Dann ist der Riss also dein „Ich will nicht allein sein“?
+1299	Tempo aller Monster −3%
+1300	Kettenhemd
+1301	Wie Herr Knochen beschwört es Skelette und steht nach der Niederlage einmal wieder auf, nur härter.
+1302	Es sagt Danke!
+1303	Wolkenstiefel
+1304	Sonnenumhang
+1305	Laternengeist
+1306	Früher rufen
+1307	Früher rufen (N)
+1308	Früher rufen +{0} Kupfer
+1309	Früher rufen +{0} Kupfer (N)
+1310	Kupfermünzen für frühes Rufen ×3
+1311	Erhöht die max. Mauer-LP (×1,1 pro Stufe).
+1312	Eine Heilerin mit Laterne: größere Reichweite, mehr Heilung. Schalte sie zuerst aus.
+1313	Geschoren!
+1314	Stab des Himmelszorns
+1315	Feuer vom Himmel
+1316	Himmelschor
+1317	Schicksalsstiefel
+1318	Auge des Himmelsgewölbes
+1319	Himmelsaugen-Krone
+1320	Himmelsflügel-Umhang
+1321	Herausforderung
+1322	Herausforderung geschafft!
+1323	Herausforderung gescheitert…
+1324	Überspringen ›
+1325	Sprung
+1326	Springt 3 → 5-mal
+1327	Eisenwand
+1328	Eisenring-Krone
+1329	Haben Eisenpanzer Angst vor Magie? Ich probiere es aus!
+1330	Ein Eisenhelm mit zwei gebogenen Hörnern und einem orangen, geflochtenen Bart.
+1331	Eisenwolf
+1332	Eisenwölfe stürmen zu viert heran. Das Feuer, das sterbende Schlackeklumpen hinterlassen, macht durchlaufende Monster schneller.
+1333	Eisenwolf-Angriff
+1334	Blechhelm
+1335	Eisenplattenrüstung
+1336	Eisen-Schneemann
+1337	Eisen-Schneemänner zerfallen beim Tod in drei kleine Schneebälle; die Feuerbälle der Glutkobolde tun viel mehr weh als zuvor.
+1338	Eisenwagen
+1339	Eisenwagen treffen die Mauer hart und sind schnell; die Frostzone ist deine Rettung.
+1340	Bleibt weit hinten und hüllt Monster in Blasen, die einen Angriff abfangen. Schnellfeuer-Armbrüste und Blitzkugeln zerplatzen die Blasen schnell.
+1341	Schließe Level {0} ab
+1342	Nach Level {0} zieht hier ein neuer Nachbar ein
+1343	Verbrauchsplätze werden nach Level {0} freigeschaltet. Du kannst schon jetzt etwas kaufen.
+1344	Offen nach Level {0}
+1345	Nach Level {0} öffnet sich die „Ausrüstung“: Helme, Umhänge, Rüstungen, Köcher, Schmuck und Stiefel
+1346	Freigeschaltet nach Level {0}
+1347	Schließe Level 1 ab
+1348	Schließe Level 100 ab und verschließe den Chaosriss
+1349	Schließe Kapitel 8 ab und lass die Echos von Herrn Knochen und dem dicken Pharao ruhen
+1350	Schließe Kapitel 2 ab
+1351	Schließe Kapitel 9 ab und lass die Echos von Felsi und Königin Frosti ruhen
+1352	Schließe Kapitel 6 ab und besänftige Donni
+1353	Schließe Kapitel 7 ab und hilf Bobo, ein neues Zuhause zu finden
+1354	Schließe Kapitel 3 ab
+1355	Schließe Kapitel 4 ab
+1356	Schließe Kapitel 1 ab
+1357	Vergiss nach dem Abschluss nicht, im Shop deinen ANG aufzuwerten!
+1358	Abschlussbelohnung
+1359	Schließe alle 9 Etagen des Neunstöckigen Dämonenturms ab
+1360	Schließe alle 100 Level ab!
+1361	Schaffe Etage 1 des Neunstöckigen Dämonenturms
+1362	Schaffe Etage 5 des Neunstöckigen Dämonenturms
+1363	Allgemein, Boss
+1364	5000 Kupfermünzen gleichzeitig besitzen
+1365	Wirft 2 gleichzeitig: eins auf die Zielbahn, eins auf die Nachbarbahn
+1366	Kupfer
+1367	Kupfermünzen
+1368	Kupfermünzbeutel
+1369	Kupferstufe · Häufig
+1370	Kupfereinnahmen +12%, Glück +4%
+1371	Kupfereinnahmen +5%
+1372	Kupfermünzenkette
+1373	Eiserne Festung
+1374	Helm
+1375	Auf beiden Seiten des Helms sitzen Flügel, darüber schwebt ein warmer Lichtring.
+1376	Röntgenlinse
+1377	Geier kreisen
+1378	Codex
+1379	Codex-Meister
+1380	Codex-Gelehrter
+1381	Drachentöter-Köcher
+1382	Drachentöter-Helm
+1383	Götterbann-Helm
+1384	Hasen-Sprint
+1385	Hasen-Sprint rennt sehr schnell. Die Monster verteilen sich auf verschiedene Bahnen.
+1386	Hasenpfote
+1387	Große Hasenwanderung
+1388	Die Hasen kommen

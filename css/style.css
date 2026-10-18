@@ -2938,3 +2938,12 @@ html:not([lang='zh']):not([lang='zh-Hant']):not([lang='ja']):not([lang='ko']) .t
 .title-buttons .btn-row .btn {
   flex: 1 1 auto !important;
 }
+.tab {
+  overflow-wrap: anywhere;
+  padding-left: 8px;
+  padding-right: 8px;
+  line-height: 1.15;
+}
+html:not([lang='zh']):not([lang='zh-Hant']):not([lang='ja']):not([lang='ko']) .tab {
+  font-size: 15px;
+}
