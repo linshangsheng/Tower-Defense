@@ -315,6 +315,9 @@ test('技能升阶：Lv2 银币、Lv3 金币，效果随等级提升', () => {
   assert.strictEqual(P.skillLevel(s, 'thunder'), 2);
   assert.deepStrictEqual(P.skillUpgradeCost(s, 'thunder'), { gold: 2 });
   assert.ok(P.upgradeSkill(s, 'thunder'));
+  // 第 3 级以后还能继续升（设计书 76）：费用按等级涨，满级是 999999 级
+  assert.ok(P.skillUpgradeCost(s, 'thunder'), 'Lv3 以后还能升');
+  s.skillLv.thunder = D.levelCap;
   assert.strictEqual(P.skillUpgradeCost(s, 'thunder'), null, '满级');
   assert.strictEqual(P.skillDef('thunder', 3).atkMult, 7);
   assert.strictEqual(P.skillDef('thunder', 1).atkMult, 5);
@@ -1686,8 +1689,8 @@ test('震地炮：把小怪震退并减速，Boss 不动', () => {
 });
 
 // ---------- 装备扩充（设计书 58） ----------
-test('装备扩充：24 件装备，每件栏位合法；套装部件存在且属于该套装', () => {
-  assert.strictEqual(Object.keys(D.equipment).length, 24);
+test('装备扩充：每件栏位合法；套装部件存在且属于该套装', () => {
+  assert.strictEqual(Object.keys(D.equipment).length, 180);
   for (const id of Object.keys(D.equipment)) assert.ok(D.equipSlots[D.equipment[id].slot], id);
   for (const k of Object.keys(D.gearSets)) for (const id of D.gearSets[k].parts) assert.strictEqual(D.equipment[id].set, k, id);
 });
@@ -2629,4 +2632,178 @@ test('第 100 关：墨墨的回声登场，战斗可以正常跑完前 60 秒',
   for (let i = 0; i < 60 * 60 && !b.over; i++) b.step(1 / 60);
   assert.ok(b.time > 0);
   assert.ok(D.levels[100].waves.some((w) => w.groups.some(([t]) => t === 'chaosInk')));
+});
+
+// ---------- v0.68：装备七类 × 30 件、等级上限 999999（设计书 76） ----------
+test('装备：头盔、披风、盔甲、箭袋、饰品、鞋子各 30 件，五档品质各 6 件，名字不重复，价格和属性合法', () => {
+  assert.deepStrictEqual(Object.keys(D.equipSlots), ['helm', 'cape', 'armor', 'quiver', 'trinket', 'boots']);
+  const names = new Set();
+  for (const slot of Object.keys(D.equipSlots)) {
+    const ids = Object.keys(D.equipment).filter((id) => D.equipment[id].slot === slot);
+    assert.strictEqual(ids.length, 30, slot);
+    for (let t = 1; t <= 5; t++) assert.strictEqual(ids.filter((id) => D.equipment[id].rarity === t).length, 6, `${slot} 第 ${t} 档`);
+    for (const id of ids) {
+      const e = D.equipment[id];
+      assert.ok(!names.has(e.name), `名字重复：${e.name}`);
+      names.add(e.name);
+      assert.ok(e.cost && P.costValue(e.cost) > 0 && e.desc && D.weaponRarity[e.rarity], id);
+      assert.ok(Object.keys(e.stats).length + Object.keys(e.mods || {}).length + (e.zap ? 1 : 0) > 0, `${id} 没有属性`);
+    }
+    // 同一类里品质越高越贵
+    const price = (t) => Math.min(...ids.filter((id) => D.equipment[id].rarity === t).map((id) => P.costValue(D.equipment[id].cost)));
+    for (let t = 2; t <= 5; t++) assert.ok(price(t) > price(t - 1), `${slot} 第 ${t} 档比第 ${t - 1} 档贵`);
+  }
+  // 武器也在装备分类里
+  assert.deepStrictEqual(D.equipCats.map((c) => c.id), ['weapon', 'helm', 'cape', 'armor', 'quiver', 'trinket', 'boots']);
+  // 最贵的两件金色装备用钻石买
+  assert.ok(Object.values(D.equipment).some((e) => e.cost.diamond));
+});
+
+test('装备穿戴：买了自动穿（栏位空着时），否则点"穿戴"换上；卸下、出售都正确；新栏位盔甲和鞋子', () => {
+  const s = P.newSave();
+  P.maxResources(s);
+  assert.ok('armor' in s.loadout.equip && 'boots' in s.loadout.equip);
+  assert.ok(P.buyEquip(s, 'g_armor_1_0'));
+  assert.strictEqual(s.loadout.equip.armor, 'g_armor_1_0');
+  assert.ok(P.buyEquip(s, 'g_armor_2_0'));
+  assert.strictEqual(s.loadout.equip.armor, 'g_armor_1_0', '栏位占着时不自动换');
+  assert.ok(P.wearEquip(s, 'g_armor_2_0'));
+  assert.strictEqual(s.loadout.equip.armor, 'g_armor_2_0', '点穿戴换上新的');
+  assert.ok(P.wornEquip(s).includes('g_armor_2_0') && !P.wornEquip(s).includes('g_armor_1_0'));
+  P.unwearEquip(s, 'g_armor_2_0');
+  assert.strictEqual(s.loadout.equip.armor, null);
+  // 饰品三个栏位：先放空位，满了换第 1 个
+  const tr = Object.keys(D.equipment).filter((id) => D.equipment[id].slot === 'trinket').slice(0, 4);
+  for (const id of tr) P.buyEquip(s, id);
+  assert.deepStrictEqual([s.loadout.equip.trinket1, s.loadout.equip.trinket2, s.loadout.equip.trinket3], tr.slice(0, 3));
+  assert.ok(P.wearEquip(s, tr[3]));
+  assert.strictEqual(s.loadout.equip.trinket1, tr[3]);
+  // 出售：穿着的会被卸下，钱退一半
+  const before = s.copper;
+  assert.ok(P.sellEquip(s, tr[3]));
+  assert.strictEqual(s.loadout.equip.trinket1, null);
+  assert.ok(s.copper > before && !s.equipOwned[tr[3]]);
+  assert.ok(!P.wearEquip(s, tr[3]), '卖掉的穿不上');
+  // 老存档没有 armor / boots 栏位：迁移后补上
+  const old = P.newSave();
+  delete old.loadout.equip.armor;
+  delete old.loadout.equip.boots;
+  assert.ok('armor' in P.migrate(old).loadout.equip);
+});
+
+test('装备属性生效：盔甲加城墙血量和减伤；效果叠加有上限', () => {
+  const s = P.newSave();
+  P.maxResources(s);
+  const base = P.heroStats(s);
+  const a = D.equipment.g_armor_5_0;
+  P.buyEquip(s, 'g_armor_5_0');
+  const st = P.heroStats(s);
+  assert.ok(Math.abs(st.wallMax / base.wallMax - (1 + a.stats.wallHpPct)) < 0.01);
+  // 同一种效果叠到上限：6 件减冷却的金色装备也不会把冷却降到 −60% 以下
+  for (const id of Object.keys(D.equipment)) if (D.equipment[id].mods && D.equipment[id].mods.cdMult && D.equipment[id].rarity >= 4) P.buyEquip(s, id);
+  for (const k of ['cape', 'trinket1', 'trinket2', 'trinket3', 'boots']) {
+    const id = Object.keys(D.equipment).find((x) => s.equipOwned[x] && D.equipment[x].mods && D.equipment[x].mods.cdMult && !P.wornEquip(s).includes(x));
+    if (id) s.loadout.equip[k] = id;
+  }
+  assert.ok(P.equipMods(s).cdMult >= -0.6 - 1e-9);
+});
+
+test('等级上限 999999：原来的上限以内费用不变，超出以后费用越来越高、越来越多用银币金币钻石', () => {
+  assert.strictEqual(D.levelCap, 999999);
+  // 基础上限以内：和以前一样的铜币
+  assert.deepStrictEqual(P.attrCostAt('atk', 0), { copper: D.attributeCost('atk', 0) });
+  assert.deepStrictEqual(P.attrCostAt('atk', 29), { copper: D.attributeCost('atk', 29) });
+  // 超出以后：单调上升，货币档位依次是铜 → 银 → 金 → 钻石，满级没有下一级
+  let last = 0;
+  const kinds = [];
+  for (const lv of [30, 31, 50, 100, 300, 1000, 5000, 20000, 999998]) {
+    const c = P.attrCostAt('atk', lv);
+    const v = P.costValue(c);
+    assert.ok(v > last, `Lv${lv}`);
+    last = v;
+    kinds.push(Object.keys(c)[0]);
+  }
+  assert.deepStrictEqual([...new Set(kinds)], ['copper', 'silver', 'gold', 'diamond']);
+  assert.strictEqual(P.attrCostAt('atk', 999999), null);
+  assert.strictEqual(P.wallCostAt('level', 999999), null);
+});
+
+test('满级数值不会爆：属性、武器、城墙都升到 999999 级，战斗属性仍是有限数，攻速、减伤有上限', () => {
+  const s = P.newSave();
+  for (const k of Object.keys(s.attrs)) s.attrs[k] = D.levelCap;
+  s.wall = { level: D.levelCap, fortify: D.levelCap, mend: D.levelCap, thorns: D.levelCap };
+  s.weapons.bow.lv = D.levelCap;
+  const st = P.heroStats(s);
+  for (const k of ['atk', 'aspd', 'crit', 'critDmg', 'luck', 'wallMax', 'wallDr', 'mend', 'thorns', 'weaponMult']) assert.ok(Number.isFinite(st[k]) && st[k] >= 0, k);
+  assert.ok(st.aspd <= 20 && st.crit <= 1 && st.luck <= 10 && st.wallDr <= 0.75 && st.mend <= 0.5);
+  assert.ok(st.atk > 5e5 && st.wallMax > 1e8);
+  // 基础上限以内的数值没变（第 30 级攻击力、第 30 级城墙）
+  const s2 = P.newSave();
+  s2.attrs.atk = 30;
+  assert.strictEqual(P.heroStats(s2).atk, 10 + 30 * 2);
+  s2.wall.level = 30;
+  assert.strictEqual(P.heroStats(s2).wallMax, Math.round(1000 * Math.pow(1.1, 29)));
+  // 能打：满级存档跑 20 秒战斗不出 NaN
+  const b = new TD.Battle({ level: 1, stats: st, loadout: P.battleLoadout(s), seed: 1 });
+  for (let i = 0; i < 60 * 20 && !b.over; i++) b.step(1 / 60);
+  assert.ok(Number.isFinite(b.wall.hp) && b.time > 0);
+});
+
+test('批量升级：+10 / +100 / 最大；钱不够就升到买得起为止，dry 只算不买', () => {
+  const s = P.newSave();
+  s.copper = 100000;
+  const dry = P.bulkUpgrade(s, 'attr', 'atk', 10, { dry: true });
+  assert.strictEqual(dry.count, 10);
+  assert.strictEqual(s.copper, 100000);
+  assert.strictEqual(s.attrs.atk, 0);
+  const r = P.bulkUpgrade(s, 'attr', 'atk', 10);
+  assert.strictEqual(r.count, 10);
+  assert.strictEqual(s.attrs.atk, 10);
+  assert.strictEqual(s.copper, 100000 - r.cost.copper);
+  // 和一级一级买花的钱完全一样
+  const t = P.newSave();
+  t.copper = 100000;
+  for (let i = 0; i < 10; i++) P.buyAttr(t, 'atk');
+  assert.strictEqual(t.copper, s.copper);
+  // 最大：买到买不起为止，剩下的钱不够下一级
+  const m = P.bulkUpgrade(s, 'attr', 'atk', Infinity);
+  assert.ok(m.count > 0);
+  assert.ok(!P.canAfford(s, P.attrCost(s, 'atk')));
+  // 没钱：什么也不升
+  const poor = P.newSave();
+  assert.strictEqual(P.bulkUpgrade(poor, 'weapon', 'bow', 5).count, 0);
+  // 武器、城墙、技能同样可批量
+  const rich = P.newSave();
+  P.maxResources(rich);
+  rich.activeOwned.thunder = true;
+  rich.skillLv.thunder = 3;
+  assert.strictEqual(P.bulkUpgrade(rich, 'weapon', 'bow', 25).count, 25);
+  assert.strictEqual(rich.weapons.bow.lv, 25);
+  assert.strictEqual(P.bulkUpgrade(rich, 'wall', 'level', 40).count, 40);
+  assert.strictEqual(rich.wall.level, 41);
+  assert.strictEqual(P.bulkUpgrade(rich, 'skill', 'thunder', 10).count, 10);
+  assert.strictEqual(rich.skillLv.thunder, 13);
+});
+
+test('技能 Lv3 以后继续变强，战斗里也用升级后的数值；机器人只买到基础上限（战役标定不变）', () => {
+  const d3 = P.skillDef('thunder', 3);
+  const d20 = P.skillDef('thunder', 20);
+  assert.ok(d20.atkMult > d3.atkMult && d20.cd < d3.cd && d20.cd >= D.activeSkills.thunder.cd * 0.5);
+  const a3 = P.skillDef('arrowRain', 3);
+  assert.ok(P.skillDef('arrowRain', 30).arrows > a3.arrows);
+  const heal = P.skillDef('repair', 999999);
+  assert.ok(heal.healRatio <= 1 && Number.isFinite(heal.cd));
+  const s = P.newSave();
+  s.activeOwned.thunder = true;
+  s.skillLv.thunder = 20;
+  s.loadout.active = ['thunder', null, null];
+  const b = new TD.Battle({ level: 1, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 1 });
+  assert.strictEqual(b.skills[0].def.atkMult, d20.atkMult);
+  // 机器人不会买过基础上限
+  const bot = P.newSave();
+  P.maxResources(bot);
+  for (let n = 1; n <= 30; n++) bot.levels[n] = { stars: 3, clears: 1 };
+  TD.bot.shop(bot);
+  for (const k of Object.keys(D.attributes)) assert.ok(bot.attrs[k] <= D.attributes[k].max, k);
+  assert.ok(bot.wall.level <= D.wallUpgrades.level.max && bot.weapons.bow.lv <= D.weaponUpgrade.max);
 });

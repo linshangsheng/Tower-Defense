@@ -147,6 +147,7 @@
 
   TD.data.weaponUpgrade = {
     perLevel: 0.08,
+    beyond: 0.04, // 第 10 级以后每级只加 4%（设计书 76.2）
     max: 10,
     cost: (lv) => TD.util.round5(80 * Math.pow(1.3, lv)),
   };
@@ -224,11 +225,11 @@
 
   // 属性升级（设计书 18.1）
   TD.data.attributes = {
-    atk: { name: '攻击力', per: 2, max: 30, base: 30, fmt: (v) => v.toFixed(0) },
-    aspd: { name: '攻击速度', per: 0.08, max: 20, base: 40, fmt: (v) => v.toFixed(2) + '/秒' },
-    crit: { name: '暴击率', per: 0.02, max: 15, base: 50, fmt: (v) => Math.round(v * 100) + '%' },
-    critDmg: { name: '暴击伤害', per: 0.1, max: 15, base: 50, fmt: (v) => Math.round(v * 100) + '%' },
-    luck: { name: '幸运', per: 0.05, max: 10, base: 60, fmt: (v) => '+' + Math.round(v * 100) + '%' },
+    atk: { name: '攻击力', per: 2, beyond: 1, max: 30, base: 30, fmt: (v) => v.toFixed(0) },
+    aspd: { name: '攻击速度', per: 0.08, beyond: 0.02, max: 20, base: 40, fmt: (v) => v.toFixed(2) + '/秒' },
+    crit: { name: '暴击率', per: 0.02, beyond: 0.004, max: 15, base: 50, fmt: (v) => Math.round(v * 100) + '%' },
+    critDmg: { name: '暴击伤害', per: 0.1, beyond: 0.03, max: 15, base: 50, fmt: (v) => Math.round(v * 100) + '%' },
+    luck: { name: '幸运', per: 0.05, beyond: 0.01, max: 10, base: 60, fmt: (v) => '+' + Math.round(v * 100) + '%' },
   };
   TD.data.attributeGrowth = 1.2;
   TD.data.attributeCost = (key, lv) => TD.util.round5(TD.data.attributes[key].base * Math.pow(TD.data.attributeGrowth, lv));
@@ -238,6 +239,7 @@
     level: {
       name: '城墙等级',
       max: 30,
+      beyond: 0.15, // 第 30 级以后每级血量 +15% × 第 30 级的血量（线性增长，不再 ×1.1）
       start: 1,
       cost: (lv) => TD.util.round5(60 * Math.pow(1.18, lv - 1)),
       desc: '提升城墙最大血量（每级 ×1.1）。',
@@ -245,6 +247,7 @@
     fortify: {
       name: '加固',
       max: 10,
+      beyond: 0.004,
       start: 0,
       per: 0.03,
       cost: (lv) => TD.util.round5(80 * Math.pow(1.25, lv)),
@@ -253,6 +256,7 @@
     mend: {
       name: '修缮',
       max: 5,
+      beyond: 0.002,
       start: 0,
       per: 0.02,
       cost: (lv) => TD.util.round5(100 * Math.pow(1.3, lv)),
@@ -261,11 +265,26 @@
     thorns: {
       name: '荆棘',
       max: 5,
+      beyond: 0.02,
       start: 0,
       per: 0.2,
       cost: (lv) => TD.util.round5(120 * Math.pow(1.3, lv)),
       desc: '攻击城墙的怪受到英雄攻击力 ×20% / 级的反弹伤害。',
     },
+  };
+
+  // ---------- 等级上限 999999（设计书 76.2） ----------
+  // 属性、武器、城墙、技能都可以一直升到 999999 级。原来的上限（各自的 max）保留下来，叫"基础上限"：
+  // 到了基础上限，每级的收益变小（beyond），而费用按等级一路涨，并且越来越多地要用银币、金币，最后是钻石。
+  TD.data.levelCap = 999999;
+  // 超过基础上限 soft 之后，第 lv 级的费用（折成铜币）= 第 soft 级的费用 ×（1 + 超出的级数 / 25）^ 2.2
+  TD.data.extraCost = (v0, lv, soft) => v0 * Math.pow(1 + (lv - soft) / 25, 2.2);
+  // 把铜币价值折成货币：20 万铜币以内付铜币，2000 万以内付银币，20 亿以内付金币，再往上付钻石
+  TD.data.tierCost = (v) => {
+    if (v <= 2e5) return { copper: TD.util.round5(v) };
+    if (v <= 2e7) return { silver: Math.ceil(v / 100) };
+    if (v <= 2e9) return { gold: Math.ceil(v / 1e4) };
+    return { diamond: Math.ceil(v / 1e6) };
   };
 
   TD.data.items = {

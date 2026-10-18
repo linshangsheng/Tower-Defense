@@ -29,7 +29,7 @@
         weapon: 'bow',
         active: ['drum', null, null],
         passive: [null, null, null],
-        equip: { helm: null, cape: null, quiver: null, trinket1: null, trinket2: null, trinket3: null },
+        equip: { helm: null, cape: null, armor: null, quiver: null, trinket1: null, trinket2: null, trinket3: null, boots: null },
         items: [null, null, null],
         target: 'nearest',
         autoCast: false,
@@ -185,12 +185,30 @@
   P.skillLevel = (save, id) => (save.activeOwned[id] ? save.skillLv[id] || 1 : 0);
   P.skillDef = function (id, lv) {
     const base = D.activeSkills[id];
-    return Object.assign({}, base, (base.tiers || [])[Math.max(0, (lv || 1) - 1)] || {}, { lv: lv || 1 });
+    const def = Object.assign({}, base, (base.tiers || [])[Math.max(0, Math.min(lv || 1, D.skillMaxLv) - 1)] || {}, { lv: lv || 1 });
+    // 第 3 级以后每升一级，效果再强一点（设计书 76.2）
+    const f = Math.max(0, (lv || 1) - D.skillMaxLv);
+    if (f > 0) {
+      if (def.atkMult) def.atkMult *= 1 + 0.08 * f;
+      if (def.arrows) def.arrows = Math.round(def.arrows * (1 + 0.05 * f));
+      if (def.healRatio) def.healRatio = Math.min(1, def.healRatio + 0.01 * f);
+      if (def.aspdBonus) def.aspdBonus = Math.min(3, def.aspdBonus + 0.02 * f);
+      if (def.duration) def.duration += Math.min(10, 0.05 * f);
+      if (def.slow) def.slow = Math.min(0.95, def.slow + 0.002 * f);
+      if (def.cd) def.cd = Math.max(base.cd * 0.5, def.cd * (1 - 0.004 * f));
+    }
+    return def;
+  };
+  P.skillUpgradeCostAt = (lv) => {
+    // lv：升级前的等级
+    if (lv >= D.levelCap) return null;
+    if (lv < D.skillMaxLv) return D.skillUpgradeCost[lv + 1];
+    return beyondCost(P.costValue(D.skillUpgradeCost[D.skillMaxLv]), lv, D.skillMaxLv);
   };
   P.skillUpgradeCost = function (save, id) {
     const lv = P.skillLevel(save, id);
-    if (!lv || lv >= D.skillMaxLv) return null;
-    return D.skillUpgradeCost[lv + 1];
+    if (!lv) return null;
+    return P.skillUpgradeCostAt(lv);
   };
   P.upgradeSkill = function (save, id) {
     const cost = P.skillUpgradeCost(save, id);
@@ -236,7 +254,7 @@
     return Object.keys(D.gearSets || {}).filter((k) => D.gearSets[k].parts.every((id) => worn.includes(id)));
   };
   P.equipStats = function (save) {
-    const s = { atkFlat: 0, atkPct: 0, aspdPct: 0, crit: 0, critDmg: 0, luck: 0, rangePct: 0, wallDr: 0 };
+    const s = { atkFlat: 0, atkPct: 0, aspdPct: 0, crit: 0, critDmg: 0, luck: 0, rangePct: 0, wallDr: 0, wallHpPct: 0 };
     for (const id of P.wornEquip(save)) {
       const st = D.equipment[id].stats;
       for (const k of Object.keys(st)) s[k] += st[k];
@@ -255,6 +273,11 @@
     for (const k of P.activeSets(save)) add(D.gearSets[k].mods);
     const ot = P.activeOutfit(save);
     if (ot) add(ot.mods);
+    // 装备多了以后，同一种效果不能叠到离谱（冷却、无视护甲……，设计书 76.4）
+    for (const k of Object.keys(D.modCaps || {})) {
+      const cap = D.modCaps[k];
+      if (mods[k] !== undefined) mods[k] = cap < 0 ? Math.max(cap, mods[k]) : Math.min(cap, mods[k]);
+    }
     return mods;
   };
   // 装备是否已经上架
@@ -269,6 +292,19 @@
       if (id && save.passiveOwned[id]) set[id] = true;
     });
     return set;
+  };
+
+  // 等级换算（设计书 76.2）：基础上限（max）以内每级加 per，超出以后每级加 beyond
+  const MAX_ASPD = 20; // 攻击速度上限（次 / 秒）：战斗一帧最多出手一次
+  const MAX_LUCK = 10; // 幸运上限：铜币收益 +1000%
+  const MAX_WALL_DR = 0.75; // 城墙减伤上限
+  P.levelTotal = (def, lv, per) => per * Math.min(lv, def.max) + (def.beyond || 0) * Math.max(0, lv - def.max);
+  P.attrTotal = (key, lv) => P.levelTotal(D.attributes[key], lv, D.attributes[key].per);
+  // 城墙等级对应的最大血量：30 级以内每级 ×1.1，之后线性增长
+  P.wallHpAt = (level) => {
+    const u = D.wallUpgrades.level;
+    const base = C.wall.baseHp * Math.pow(C.wall.hpGrowth, Math.min(level, u.max) - 1);
+    return level <= u.max ? base : base * (1 + u.beyond * (level - u.max));
   };
 
   // 计算出战属性（不含战斗内临时增益）
@@ -289,18 +325,18 @@
     const h = C.hero;
     const hd = C.heroes[P.heroId(save)];
 
-    const atk = (h.atk + a.atk * A.atk.per + eq.atkFlat) * (1 + eq.atkPct) * hd.atkMult;
-    const aspdBase = (h.aspd + a.aspd * A.aspd.per) * (1 + eq.aspdPct) * hd.aspdMult;
-    let crit = h.crit + a.crit * A.crit.per + eq.crit + (w.bonusCrit || 0);
+    const atk = (h.atk + P.attrTotal('atk', a.atk) + eq.atkFlat) * (1 + eq.atkPct) * hd.atkMult;
+    const aspdBase = Math.min(MAX_ASPD, (h.aspd + P.attrTotal('aspd', a.aspd)) * (1 + eq.aspdPct) * hd.aspdMult);
+    let crit = h.crit + P.attrTotal('crit', a.crit) + eq.crit + (w.bonusCrit || 0);
     if (passives.precision) crit += D.passiveSkills.precision.crit;
-    const critDmg = h.critDmg + a.critDmg * A.critDmg.per + eq.critDmg;
-    const luck = a.luck * A.luck.per + eq.luck;
+    const critDmg = h.critDmg + P.attrTotal('critDmg', a.critDmg) + eq.critDmg;
+    const luck = Math.min(MAX_LUCK, P.attrTotal('luck', a.luck) + eq.luck);
     const range = C.fieldWidth * h.rangeRatio * (1 + eq.rangePct);
 
     const wl = save.wall;
     const WU = D.wallUpgrades;
-    const wallMax = Math.round(C.wall.baseHp * Math.pow(C.wall.hpGrowth, wl.level - 1));
-    const wallDr = Math.min(0.6, wl.fortify * WU.fortify.per + eq.wallDr);
+    const wallMax = Math.round(P.wallHpAt(wl.level) * (1 + eq.wallHpPct));
+    const wallDr = Math.min(MAX_WALL_DR, P.levelTotal(WU.fortify, wl.fortify, WU.fortify.per) + eq.wallDr);
 
     return {
       heroId: P.heroId(save),
@@ -311,8 +347,8 @@
       weapon: weaponId,
       weaponDef: w,
       atk,
-      weaponMult: w.dmgMult * (1 + wlv * D.weaponUpgrade.perLevel),
-      aspd: aspdBase * w.aspdMult,
+      weaponMult: w.dmgMult * (1 + P.levelTotal(D.weaponUpgrade, wlv, D.weaponUpgrade.perLevel)),
+      aspd: Math.min(MAX_ASPD, aspdBase * w.aspdMult),
       aspdBase,
       crit: Math.min(1, crit),
       critDmg,
@@ -320,8 +356,8 @@
       range,
       wallMax,
       wallDr,
-      mend: wl.mend * WU.mend.per,
-      thorns: wl.thorns * WU.thorns.per,
+      mend: Math.min(0.5, P.levelTotal(WU.mend, wl.mend, WU.mend.per)),
+      thorns: P.levelTotal(WU.thorns, wl.thorns, WU.thorns.per),
       passives,
       gearMods: P.equipMods(save),
       zap: (P.wornEquip(save).map((id) => D.equipment[id].zap).find(Boolean)) || null,
@@ -378,11 +414,14 @@
   };
 
   // ---------- 商店 ----------
-  P.attrCost = (save, key) => {
-    const lv = save.attrs[key];
-    if (lv >= D.attributes[key].max) return null;
-    return { copper: D.attributeCost(key, lv) };
+  // 每一类升级的"第 lv 级 → lv+1 级"费用：基础上限以内沿用原来的铜币公式，超出以后按 D.extraCost 折算再换成货币（设计书 76.2）
+  const beyondCost = (v0, lv, soft) => D.tierCost(D.extraCost(v0, lv, soft));
+  P.attrCostAt = (key, lv) => {
+    if (lv >= D.levelCap) return null;
+    const soft = D.attributes[key].max;
+    return lv < soft ? { copper: D.attributeCost(key, lv) } : beyondCost(D.attributeCost(key, soft), lv, soft);
   };
+  P.attrCost = (save, key) => P.attrCostAt(key, save.attrs[key]);
   P.buyAttr = function (save, key) {
     const cost = P.attrCost(save, key);
     if (!cost || !P.pay(save, cost)) return false;
@@ -390,17 +429,53 @@
     return true;
   };
 
-  P.wallCost = (save, key) => {
+  P.wallCostAt = (key, lv) => {
     const u = D.wallUpgrades[key];
-    const lv = save.wall[key];
-    if (lv >= u.max) return null;
-    return { copper: u.cost(lv) };
+    if (lv >= D.levelCap) return null;
+    return lv < u.max ? { copper: u.cost(lv) } : beyondCost(u.cost(u.max), lv, u.max);
   };
+  P.wallCost = (save, key) => P.wallCostAt(key, save.wall[key]);
   P.buyWall = function (save, key) {
     const cost = P.wallCost(save, key);
     if (!cost || !P.pay(save, cost)) return false;
     save.wall[key]++;
     return true;
+  };
+
+  // ---------- 批量升级（设计书 76.2）：等级可以到 999999，一级一级点不现实 ----------
+  const UPGRADES = {
+    attr: { get: (s, k) => s.attrs[k], set: (s, k, v) => (s.attrs[k] = v), costAt: (s, k, lv) => P.attrCostAt(k, lv) },
+    wall: { get: (s, k) => s.wall[k], set: (s, k, v) => (s.wall[k] = v), costAt: (s, k, lv) => P.wallCostAt(k, lv) },
+    weapon: { get: (s, k) => s.weapons[k].lv, set: (s, k, v) => (s.weapons[k].lv = v), costAt: (s, k, lv) => (s.weapons[k].owned ? P.weaponUpgradeCostAt(k, lv) : null) },
+    skill: { get: (s, k) => P.skillLevel(s, k), set: (s, k, v) => (s.skillLv[k] = v), costAt: (s, k, lv) => (lv ? P.skillUpgradeCostAt(lv) : null) },
+  };
+  // 一次最多升 n 级（n 可以是 Infinity = 能升多少升多少）；dry 只算不买；ignoreWallet 配合 dry 用来看"接下来 n 级一共多少钱"
+  // 返回 { count, cost }：升了几级、花了多少
+  P.bulkUpgrade = function (save, kind, key, n, opts) {
+    opts = opts || {};
+    const U = UPGRADES[kind];
+    const wallet = { copper: save.copper, silver: save.silver, gold: save.gold, diamond: save.diamond || 0 };
+    const total = {};
+    let lv = U.get(save, key);
+    let count = 0;
+    while (count < n) {
+      const c = U.costAt(save, key, lv);
+      if (!c) break;
+      let ok = true;
+      for (const k of Object.keys(c)) if (!opts.ignoreWallet && (c[k] || 0) > wallet[k]) ok = false;
+      if (!ok) break;
+      for (const k of Object.keys(c)) {
+        wallet[k] -= c[k];
+        total[k] = (total[k] || 0) + c[k];
+      }
+      lv++;
+      count++;
+    }
+    if (!opts.dry && count) {
+      P.pay(save, total);
+      U.set(save, key, lv);
+    }
+    return { count, cost: total };
   };
 
   P.buyWeapon = function (save, id) {
@@ -413,10 +488,16 @@
   // 武器随时可买，只看钱（设计书 66.3）；minLevel 只是商店里的“推荐关卡”提示
   P.weaponUnlocked = () => true;
   P.weaponUpgradeMult = (id) => D.weaponRarity[D.weapons[id].rarity || 1].upgradeMult;
+  P.weaponUpgradeCostAt = (id, lv) => {
+    if (lv >= D.levelCap) return null;
+    const k = P.weaponUpgradeMult(id);
+    const soft = D.weaponUpgrade.max;
+    return lv < soft ? { copper: TD.util.round5(D.weaponUpgrade.cost(lv) * k) } : beyondCost(D.weaponUpgrade.cost(soft) * k, lv, soft);
+  };
   P.weaponUpgradeCost = (save, id) => {
     const w = save.weapons[id];
-    if (!w.owned || w.lv >= D.weaponUpgrade.max) return null;
-    return { copper: TD.util.round5(D.weaponUpgrade.cost(w.lv) * P.weaponUpgradeMult(id)) };
+    if (!w.owned) return null;
+    return P.weaponUpgradeCostAt(id, w.lv);
   };
   P.upgradeWeapon = function (save, id) {
     const cost = P.weaponUpgradeCost(save, id);
@@ -477,7 +558,7 @@
   P.costValue = (cost) => {
     const E = C.exchange;
     if (!cost) return 0;
-    return (cost.copper || 0) + (cost.silver || 0) * E.copperPerSilver + (cost.gold || 0) * E.copperPerSilver * E.silverPerGold;
+    return (cost.copper || 0) + (cost.silver || 0) * E.copperPerSilver + (cost.gold || 0) * E.copperPerSilver * E.silverPerGold + (cost.diamond || 0) * E.copperPerSilver * E.silverPerGold * 100;
   };
   P.sellEquip = function (save, id) {
     if (!save.equipOwned[id] || !D.equipment[id]) return null;
@@ -489,6 +570,19 @@
     save.gold += price.gold || 0;
     save.diamond = (save.diamond || 0) + (price.diamond || 0);
     return price;
+  };
+
+  // 穿上一件已经拥有的装备：对应栏位里原来的那件被换下；饰品有 3 个栏位，先放空位，满了就换掉第 1 个
+  P.wearEquip = function (save, id) {
+    if (!save.equipOwned[id] || !D.equipment[id]) return false;
+    const slots = P.equipSlotsFor(D.equipment[id].slot);
+    if (slots.some((k) => save.loadout.equip[k] === id)) return true;
+    const target = slots.find((k) => !save.loadout.equip[k]) || slots[0];
+    return P.setEquip(save, target, id);
+  };
+  P.unwearEquip = function (save, id) {
+    for (const k of Object.keys(save.loadout.equip)) if (save.loadout.equip[k] === id) save.loadout.equip[k] = null;
+    return true;
   };
 
   P.buyEquip = function (save, id) {

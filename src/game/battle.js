@@ -66,9 +66,9 @@
 
       const lvs = opts.loadout.activeLv || {};
       this.skills = (opts.loadout.active || []).map((id) => {
-        const base = D.activeSkills[id];
         const lv = lvs[id] || 1;
-        const def = Object.assign({}, base, (base.tiers || [])[lv - 1] || {}, { lv });
+        // 第 3 级以后继续按等级加强（设计书 76.2）
+        const def = TD.progression.skillDef(id, lv);
         return { id, lv, def, cd: 0 };
       });
       this.tempDr = { amt: 0, until: 0 };

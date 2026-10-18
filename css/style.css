@@ -2736,3 +2736,92 @@ select option {
 .tower-choice {
   min-width: min(620px, 90vw);
 }
+
+/* ---------- 章节切换（v0.68）：上一章 / 第 N 章 ▾ / 下一章，代替十个页签 ---------- */
+.chapter-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 0 0 auto;
+}
+.chapter-nav .chapter-pick {
+  min-width: 72px;
+  white-space: nowrap;
+}
+.chapter-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin: 12px 0;
+}
+.chapter-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 6px;
+  line-height: 1.25;
+}
+.chapter-card span {
+  font-size: 12px;
+}
+.chapter-card .dim {
+  opacity: 0.7;
+}
+@media (max-width: 720px) {
+  .chapter-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ---------- 装备页分类 / 品质筛选 / 批量升级（v0.68） ---------- */
+.equip-cats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.equip-cats .cat {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+}
+.equip-cats .cat-icon {
+  font-size: 16px;
+}
+.equip-cats .cat-count {
+  font-size: 11px;
+  opacity: 0.75;
+}
+.tier-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 4px 0 8px;
+}
+.tier-filter .tier {
+  min-width: 52px;
+  border-width: 2px;
+  border-style: solid;
+  border-color: rgba(255, 255, 255, 0.3);
+  background: transparent;
+}
+.tier-filter .tier.on {
+  font-weight: bold;
+}
+.bulk-row {
+  display: flex;
+  gap: 4px;
+}
+.bulk-row .bulk {
+  flex: 1;
+  min-width: 0;
+  padding: 3px 6px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.card .hint {
+  font-size: 12px;
+  opacity: 0.8;
+}

@@ -569,19 +569,18 @@
     UI.mapChapter = ch.id;
     TD.music.play(ch.id, 'calm');
     game.renderer.setChapter(ch);
-    const chapterTabs = D.chapters.map((c) => {
-      const open = P.isUnlocked(s, c.levels[0]);
-      return h(
-        'button',
-        {
-          class: 'btn small chapter-tab' + (c.id === ch.id ? ' primary' : ''),
-          disabled: open ? null : true,
-          title: open ? c.name : `通关第 ${c.levels[0] - 1} 关后开放`,
-          onclick: () => (sfx('click'), UI.showMap(c.id)),
-        },
-        open ? '一二三四五六七八九十'[c.id - 1] : '🔒'
-      );
-    });
+    // 章节切换：上一章 / 第 N 章（点开列表）/ 下一章；十章的页签太占横向位置（v0.68）
+    const CN = '一二三四五六七八九十';
+    const prevCh = D.chapters.find((c) => c.id === ch.id - 1);
+    const nextChap = D.chapters.find((c) => c.id === ch.id + 1);
+    const nextOpen = !!nextChap && P.isUnlocked(s, nextChap.levels[0]);
+    const chapterNav = h(
+      'div',
+      { class: 'chapter-nav' },
+      h('button', { class: 'btn small icon-btn', title: prevCh ? prevCh.name : '', disabled: prevCh ? null : true, onclick: () => (sfx('click'), UI.showMap(prevCh.id)) }, '‹'),
+      h('button', { class: 'btn small chapter-pick', title: '选择章节', onclick: () => (sfx('click'), UI.showChapterList(ch.id)) }, `第${CN[ch.id - 1]}章 ▾`),
+      h('button', { class: 'btn small icon-btn', title: nextChap ? (nextOpen ? nextChap.name : `通关第 ${nextChap.levels[0] - 1} 关后开放`) : '', disabled: nextOpen ? null : true, onclick: () => (sfx('click'), UI.showMap(nextChap.id)) }, '›')
+    );
     const nodes = ch.levels.map((n, i) => {
       const lvl = D.levels[n];
       const rec = P.levelRecord(s, n);
@@ -637,7 +636,7 @@
         'div',
         { class: 'topbar' },
         h('button', { class: 'btn small', onclick: () => (sfx('click'), UI.showTitle()) }, '‹ 标题'),
-        h('div', { class: 'chapter-tabs' }, chapterTabs),
+        chapterNav,
         h('div', { class: 'chapter-title', title: `第${'一二三四五六七八九十'[ch.id - 1]}章 · ${ch.name}` }, ch.name, h('span', { class: 'chapter-stars' }, ` ★ ${totalStars}/${ch.levels.length * 3}`), P.crowns(s, ch.levels) ? h('span', { class: 'chapter-crowns', title: '本章王冠（挑战难度通关）' }, `👑${P.crowns(s, ch.levels)}`) : null),
         h('div', { class: 'power' }, '战力 ', h('b', null, P.power(s))),
         currencyBar(),
@@ -751,11 +750,33 @@
     modal(body, { closeOnBack: true, cls: 'wide' });
   };
 
+  // 章节列表：十章一目了然，未开放的显示锁
+  UI.showChapterList = function (current) {
+    const s = game.save;
+    const CN = '一二三四五六七八九十';
+    const btns = D.chapters.map((c) => {
+      const open = P.isUnlocked(s, c.levels[0]);
+      const done = c.levels.filter((n) => P.isCleared(s, n)).length;
+      return h(
+        'button',
+        {
+          class: 'btn chapter-card' + (c.id === current ? ' primary' : ''),
+          disabled: open ? null : true,
+          title: open ? c.name : `通关第 ${c.levels[0] - 1} 关后开放`,
+          onclick: () => (sfx('click'), UI.closeModal(), UI.showMap(c.id)),
+        },
+        h('b', null, open ? `第${CN[c.id - 1]}章` : '🔒'),
+        h('span', null, c.name),
+        h('span', { class: 'dim' }, `${done}/${c.levels.length}`)
+      );
+    });
+    modal(h('div', null, h('h2', null, '选择章节'), h('div', { class: 'chapter-grid' }, btns), h('div', { class: 'modal-buttons' }, h('button', { class: 'btn', onclick: UI.closeModal }, '关闭'))), { closeOnBack: true });
+  };
+
   // ================= 商店 / 配装 =================
   const TABS = [
     ['loadout', '配装'],
     ['attrs', '属性'],
-    ['weapons', '武器'],
     ['skills', '技能'],
     ['equip', '装备'],
     ['wall', '城墙'],
@@ -770,7 +791,8 @@
   UI.showShop = function (levelNo, tab) {
     clear();
     if (tab && !UI.tabUnlocked(game.save, tab)) tab = 'attrs';
-    const state = { levelNo, tab: tab || 'loadout' };
+    // 武器放进了"装备"页的第一个分类（v0.68）
+    const state = { levelNo, tab: tab === 'weapons' ? 'equip' : tab || 'loadout', equipCat: tab === 'weapons' ? 'weapon' : 'weapon', equipTier: 0 };
     UI.shopState = state;
     screenEl = h('div', { class: 'screen shop-screen' });
     root.appendChild(screenEl);
@@ -806,7 +828,6 @@
     ({
       loadout: shopLoadout,
       attrs: shopAttrs,
-      weapons: shopWeapons,
       skills: shopSkills,
       equip: shopEquip,
       wall: shopWall,
@@ -880,6 +901,38 @@
     return h('div', { class: 'card ' + ((extra && extra.cls) || '') }, h('div', { class: 'card-main' }, h('div', { class: 'card-title' }, title, sub ? h('span', { class: 'card-sub' }, sub) : null), h('div', { class: 'card-desc' }, desc)), h('div', { class: 'card-right' }, right));
   }
 
+  // 批量升级按钮（设计书 76.2）：+10 / +100 / 最大；等级可以到 999999，一级一级点不现实
+  function bulkRow(kind, key) {
+    const s = game.save;
+    const row = h('div', { class: 'bulk-row' });
+    for (const n of [10, 100, Infinity]) {
+      const r = P.bulkUpgrade(s, kind, key, n, { dry: true });
+      const ok = n === Infinity ? r.count >= 2 : r.count === n;
+      row.append(
+        h(
+          'button',
+          {
+            class: 'btn small bulk' + (ok ? ' primary' : ''),
+            disabled: ok ? null : true,
+            title: ok ? `升 ${r.count} 级，一共 ${P.costText(r.cost)}` : n === Infinity ? '钱不够连升 2 级' : `钱不够连升 ${n} 级`,
+            onclick: () => {
+              const got = P.bulkUpgrade(s, kind, key, n);
+              if (got.count) {
+                sfx('buy');
+                UI.announce(P.checkAchievements(s));
+                game.persist();
+                renderShop();
+              } else sfx('error');
+            },
+          },
+          n === Infinity ? '最大' : `+${n}`
+        )
+      );
+    }
+    return row;
+  }
+  const lvText = (lv) => `Lv.${lv}`;
+
   function shopAttrs(el) {
     const s = game.save;
     const st = P.heroStats(s);
@@ -890,17 +943,24 @@
       const a = D.attributes[key];
       const lv = s.attrs[key];
       const cur = { atk: st.atk, aspd: st.aspdBase, crit: st.crit, critDmg: st.critDmg, luck: st.luck }[key];
-      const next = cur + a.per * (key === 'atk' ? 1 + P.equipStats(s).atkPct : 1);
+      const step = lv < a.max ? a.per : a.beyond;
+      const next = cur + step * (key === 'atk' ? 1 + P.equipStats(s).atkPct : 1);
+      const capped = (key === 'aspd' && st.aspdBase >= 20) || (key === 'crit' && st.crit >= 1) || (key === 'luck' && st.luck >= 10);
       el.append(
         card(
           a.name,
-          `Lv.${lv}/${a.max}`,
-          lv < a.max ? h('span', null, `${a.fmt(cur)} → `, h('b', { class: 'up' }, a.fmt(next))) : a.fmt(cur),
-          buyBtn(P.attrCost(s, key), () => {
-            const ok = P.buyAttr(s, key);
-            if (ok) s.stats.shopGuided = true;
-            return ok;
-          }, '升级'),
+          lvText(lv),
+          lv < D.levelCap && !capped ? h('span', null, `${a.fmt(cur)} → `, h('b', { class: 'up' }, a.fmt(next)), lv >= a.max ? h('span', { class: 'hint' }, ` （已超过基础上限 Lv${a.max}，每级收益变小，费用越来越高）`) : null) : h('span', null, a.fmt(cur), capped ? '（已到上限）' : ''),
+          h(
+            'div',
+            { class: 'btn-col' },
+            buyBtn(capped ? null : P.attrCost(s, key), () => {
+              const ok = P.buyAttr(s, key);
+              if (ok) s.stats.shopGuided = true;
+              return ok;
+            }, '升级'),
+            capped ? null : bulkRow('attr', key)
+          ),
           { cls: firstVisit && key === 'atk' ? 'glow' : '' }
         )
       );
@@ -909,7 +969,7 @@
 
   function shopWeapons(el) {
     const s = game.save;
-    el.append(h('div', { class: 'section-title' }, '武器（永久解锁，每级伤害 +8%；品质越高越强、越贵，升级也越贵）'));
+    el.append(h('div', { class: 'section-title' }, '武器（永久解锁，每级伤害 +8%，10 级以后每级 +4%；品质越高越强、越贵，升级也越贵）'));
     // 按品质分组：绿 → 蓝 → 紫 → 红 → 金（设计书 63.4）
     const order = Object.keys(D.weapons).sort((a, b) => (D.weapons[a].rarity || 1) - (D.weapons[b].rarity || 1));
     let lastR = 0;
@@ -929,6 +989,7 @@
           'div',
           { class: 'btn-col' },
           buyBtn(P.weaponUpgradeCost(s, id), () => P.upgradeWeapon(s, id), '升级'),
+          bulkRow('weapon', id),
           w.ascend && !ws.asc
             ? P.canAscend(s, id)
               ? buyBtn(D.weaponAscend.cost, () => P.ascendWeapon(s, id), '进阶')
@@ -955,7 +1016,7 @@
       const mastered = P.hasMastery(s, id);
       const masteryLine = w.mastery ? h('div', { class: 'asc mastery' + (mastered ? ' on' : '') }, `${mastered ? '★ 专精' : `Lv${D.weaponUpgrade.max} 解锁专精`}「${w.mastery.name}」：${w.mastery.desc}`) : null;
       const recTip = !ws.owned && P.recommended(s, w) ? h('div', { class: 'rec-tip' }, `推荐通关第 ${w.minLevel} 关后购买`) : null;
-      el.append(card(h('span', { class: 'with-icon rar-name', style: { color: R.color } }, TD.sprites.iconCanvas(id, 30), ws.asc ? w.ascend.name : w.name, h('span', { class: 'rar-tag', style: { background: R.color } }, R.name)), ws.owned ? `Lv.${ws.lv}/${D.weaponUpgrade.max}` : '可购买', h('span', null, w.desc, h('span', { class: 'good' }, ' 擅长：' + w.good), ascLine, masteryLine, recTip), right, { cls: 'wr-' + (w.rarity || 1) }));
+      el.append(card(h('span', { class: 'with-icon rar-name', style: { color: R.color } }, TD.sprites.iconCanvas(id, 30), ws.asc ? w.ascend.name : w.name, h('span', { class: 'rar-tag', style: { background: R.color } }, R.name)), ws.owned ? lvText(ws.lv) : '可购买', h('span', null, w.desc, h('span', { class: 'good' }, ' 擅长：' + w.good), ascLine, masteryLine, recTip), right, { cls: 'wr-' + (w.rarity || 1) }));
     }
   }
 
@@ -972,10 +1033,10 @@
         desc = h('span', null, `当前：${k.tierDesc[lv - 1]} → `, h('b', { class: 'up' }, `Lv${lv + 1}：${k.tierDesc[lv]}`));
         right = buyBtn(P.skillUpgradeCost(s, id), () => P.upgradeSkill(s, id), '升阶');
       } else {
-        desc = `满级：${k.tierDesc[lv - 1]}`;
-        right = h('span', { class: 'equipped' }, '★ 满级');
+        desc = h('span', null, `${k.tierDesc[D.skillMaxLv - 1]}；Lv3 以后每升一级，伤害 / 箭数 / 回复 / 持续时间再强一点，冷却再短一点`);
+        right = h('div', { class: 'btn-col' }, buyBtn(P.skillUpgradeCost(s, id), () => P.upgradeSkill(s, id), '升级'), bulkRow('skill', id));
       }
-      el.append(card(h('span', { class: 'with-icon' }, TD.sprites.iconCanvas(id, 30), k.name), lv ? `Lv${lv} · 冷却 ${k.cd} 秒` : `冷却 ${k.cd} 秒`, desc, right));
+      el.append(card(h('span', { class: 'with-icon' }, TD.sprites.iconCanvas(id, 30), k.name), lv ? `Lv${lv} · 冷却 ${Math.round(P.skillDef(id, lv).cd * 10) / 10} 秒` : `冷却 ${k.cd} 秒`, desc, right));
     }
     el.append(h('div', { class: 'hint' }, '技能 Lv2 用银币升阶，Lv3 用金币升阶并带来质变效果。'));
     el.append(h('div', { class: 'section-title' }, '被动技能（自动生效）'));
@@ -993,41 +1054,114 @@
     return h('div', { class: 'set-line' + (on ? ' on' : '') }, `${on ? '✨' : '◇'} 套装「${st.name}」：${st.parts.map((k) => D.equipment[k].name).join(' + ')} → ${st.desc}${on ? '（已凑齐）' : ''}`);
   }
 
+  // 装备页（v0.68）：先选分类（武器 / 头盔 / 披风 / 盔甲 / 箭袋 / 饰品 / 鞋子），再按品质筛选；每类 30 件，不用一直往下拉
   function shopEquip(el) {
     const s = game.save;
+    const st = UI.shopState;
     const worn = P.wornEquip(s);
-    for (const slot of Object.keys(D.equipSlots)) {
-      const quiverLocked = slot === 'quiver' && P.slotCount(s, 'quiver') < 1;
-      el.append(h('div', { class: 'section-title' }, D.equipSlots[slot] + (slot === 'trinket' ? '（可戴 3 件）' : '') + (quiverLocked ? `（通关第 ${D.slotUnlocks.quiver[0]} 关开放栏位，可以先买）` : '')));
-      // 按价格从低到高排（买得起就能买）
-      const ids = Object.keys(D.equipment)
-        .filter((id) => D.equipment[id].slot === slot)
-        .sort((a, b) => P.costValue(D.equipment[a].cost) - P.costValue(D.equipment[b].cost));
-      for (const id of ids) {
-        const e = D.equipment[id];
-        const sellBtn = () =>
-          h(
+    const countOf = (slot) => {
+      const ids = Object.keys(D.equipment).filter((id) => D.equipment[id].slot === slot);
+      return [ids.filter((id) => s.equipOwned[id]).length, ids.length];
+    };
+    el.append(
+      h(
+        'div',
+        { class: 'equip-cats' },
+        D.equipCats.map((c) => {
+          const [have, total] = c.id === 'weapon' ? [Object.keys(D.weapons).filter((id) => s.weapons[id].owned).length, Object.keys(D.weapons).length] : countOf(c.id);
+          return h(
             'button',
             {
-              class: 'btn small sell',
-              title: '卖出价是买入价的一半',
-              onclick: () =>
-                UI.confirm(`把「${e.name}」卖掉吗？卖出价 ${P.costText(P.sellPrice(id))}（买入价的一半）。以后想要可以按原价买回。`, () => {
-                  P.sellEquip(s, id);
-                  sfx('coin');
-                  game.persist();
-                  renderShop();
-                }),
+              class: 'btn cat' + (st.equipCat === c.id ? ' primary' : ''),
+              onclick: () => {
+                sfx('click');
+                st.equipCat = c.id;
+                st.equipTier = 0;
+                renderShop();
+              },
             },
-            '出售 ',
-            costEl(P.sellPrice(id))
+            h('span', { class: 'cat-icon' }, c.icon),
+            h('span', null, c.name),
+            h('span', { class: 'cat-count' }, `${have}/${total}`)
           );
-        const right = s.equipOwned[id]
-          ? h('span', { class: 'equip-right' }, h('span', { class: 'equipped' }, worn.includes(id) ? '穿戴中' : '已拥有'), sellBtn())
-          : buyBtn(e.cost, () => P.buyEquip(s, id));
-        const recTip = !s.equipOwned[id] && P.recommended(s, e) ? h('div', { class: 'rec-tip' }, `推荐通关第 ${e.minLevel} 关后购买`) : null;
-        el.append(card(e.name, D.rarityNames[e.rarity], h('span', null, e.desc, e.set ? setLine(s, e.set) : null, recTip), right, { cls: 'rarity-' + e.rarity }));
-      }
+        })
+      )
+    );
+    if (st.equipCat === 'weapon') return shopWeapons(el);
+
+    const slot = st.equipCat;
+    const [have, total] = countOf(slot);
+    el.append(h('div', { class: 'section-title' }, `${D.equipSlots[slot]}（已拥有 ${have} / ${total}${slot === 'trinket' ? '，可同时戴 3 件' : ''}）`));
+    // 品质筛选
+    el.append(
+      h(
+        'div',
+        { class: 'tier-filter' },
+        [0, 1, 2, 3, 4, 5].map((t) => {
+          const R = t ? D.weaponRarity[t] : null;
+          const n = Object.keys(D.equipment).filter((id) => D.equipment[id].slot === slot && (!t || D.equipment[id].rarity === t)).length;
+          return h(
+            'button',
+            {
+              class: 'btn small tier' + (st.equipTier === t ? ' on' : ''),
+              style: R ? { borderColor: R.color, color: st.equipTier === t ? '#fff' : R.color, background: st.equipTier === t ? R.color : null } : null,
+              onclick: () => {
+                sfx('click');
+                st.equipTier = t;
+                renderShop();
+              },
+            },
+            R ? `${R.name} ${n}` : `全部 ${n}`
+          );
+        })
+      )
+    );
+    // 按品质、再按价格从低到高排（买得起就能买）
+    const ids = Object.keys(D.equipment)
+      .filter((id) => D.equipment[id].slot === slot && (!st.equipTier || D.equipment[id].rarity === st.equipTier))
+      .sort((a, b) => D.equipment[a].rarity - D.equipment[b].rarity || P.costValue(D.equipment[a].cost) - P.costValue(D.equipment[b].cost));
+    for (const id of ids) {
+      const e = D.equipment[id];
+      const R = D.weaponRarity[e.rarity];
+      const isWorn = worn.includes(id);
+      const sellBtn = () =>
+        h(
+          'button',
+          {
+            class: 'btn small sell',
+            title: '卖出价是买入价的一半',
+            onclick: () =>
+              UI.confirm(`把「${e.name}」卖掉吗？卖出价 ${P.costText(P.sellPrice(id))}（买入价的一半）。以后想要可以按原价买回。`, () => {
+                P.sellEquip(s, id);
+                sfx('coin');
+                game.persist();
+                renderShop();
+              }),
+          },
+          '出售 ',
+          costEl(P.sellPrice(id))
+        );
+      const wearBtn = () =>
+        h(
+          'button',
+          {
+            class: 'btn small' + (isWorn ? '' : ' primary'),
+            onclick: () => {
+              if (isWorn) P.unwearEquip(s, id);
+              else if (!P.wearEquip(s, id)) return sfx('error');
+              sfx('click');
+              game.persist();
+              renderShop();
+            },
+          },
+          isWorn ? '卸下' : '穿戴'
+        );
+      const right = s.equipOwned[id]
+        ? h('div', { class: 'btn-col' }, isWorn ? h('span', { class: 'equipped' }, '穿戴中') : null, wearBtn(), sellBtn())
+        : buyBtn(e.cost, () => P.buyEquip(s, id));
+      const recTip = !s.equipOwned[id] && P.recommended(s, e) ? h('div', { class: 'rec-tip' }, `推荐通关第 ${e.minLevel} 关后购买`) : null;
+      const name = h('span', { class: 'rar-name', style: { color: R.color } }, e.name, h('span', { class: 'rar-tag', style: { background: R.color } }, R.name));
+      el.append(card(name, null, h('span', null, e.desc, e.set ? setLine(s, e.set) : null, recTip), right, { cls: 'wr-' + e.rarity }));
     }
   }
 
@@ -1039,8 +1173,10 @@
       const u = D.wallUpgrades[key];
       const lv = s.wall[key];
       let detail = u.desc;
-      if (key === 'level') detail = h('span', null, `${u.desc} 血量 ${st.wallMax} → `, h('b', { class: 'up' }, Math.round(C.wall.baseHp * Math.pow(C.wall.hpGrowth, lv))));
-      el.append(card(u.name, `Lv.${lv}/${u.max}`, detail, buyBtn(P.wallCost(s, key), () => P.buyWall(s, key), '升级')));
+      if (key === 'level') detail = h('span', null, `${u.desc} 血量 ${st.wallMax} → `, h('b', { class: 'up' }, Math.round(P.wallHpAt(lv + 1) * (1 + P.equipStats(s).wallHpPct))), lv >= u.max ? h('span', { class: 'hint' }, ` （30 级以后每级 +${Math.round(u.beyond * 100)}% 的 30 级血量）`) : null);
+      else if (lv >= u.max) detail = h('span', null, u.desc, h('span', { class: 'hint' }, ' （超过基础上限后每级收益变小）'));
+      const capped = (key === 'fortify' && st.wallDr >= 0.75) || (key === 'mend' && st.mend >= 0.5);
+      el.append(card(u.name, lvText(lv), capped ? h('span', null, detail, '（已到上限）') : detail, capped ? h('span', { class: 'equipped' }, '已到上限') : h('div', { class: 'btn-col' }, buyBtn(P.wallCost(s, key), () => P.buyWall(s, key), '升级'), bulkRow('wall', key))));
     }
   }
 
@@ -1084,7 +1220,7 @@
       );
     el.append(card(h('span', null, coinIcon('copper'), ` ${E.copperPerSilver} 铜 → 1 `, coinIcon('silver'), ' 银'), null, '银币用来解锁技能和精良装备。', h('div', { class: 'btn-row' }, mk('copper', 'silver', E.copperPerSilver, 1), mk('copper', 'silver', E.copperPerSilver, 5))));
     el.append(card(h('span', null, coinIcon('silver'), ` ${E.silverPerGold} 银 → 1 `, coinIcon('gold'), ' 金'), null, '金币用来购买传说装备、高阶武器和技能 Lv3。', h('div', { class: 'btn-row' }, mk('silver', 'gold', E.silverPerGold, 1))));
-    el.append(card(h('span', null, coinIcon('diamond'), ' 钻石'), null, '最稀有的货币，只能在「九层妖塔」里获得，不能兑换；目前还没有商品可以买。', h('span', { class: 'equipped dim' }, `你有 ${s.diamond || 0} 颗`)));
+    el.append(card(h('span', null, coinIcon('diamond'), ' 钻石'), null, '最稀有的货币，只能在「九层妖塔」里获得，不能兑换。可以买「装备」页里最贵的两件金色装备，以及等级特别高（几千级以后）的升级。', h('span', { class: 'equipped dim' }, `你有 ${s.diamond || 0} 颗`)));
   }
 
   // ---- 配装页 ----
@@ -1186,10 +1322,10 @@
               }
             },
             !s.weapons[id].owned,
-            s.weapons[id].owned ? `Lv.${s.weapons[id].lv}` : '去武器页解锁'
+            s.weapons[id].owned ? `Lv.${s.weapons[id].lv}` : '去「装备」页解锁'
           )
         ),
-        weaponsOpen ? null : h('span', { class: 'hint slot-note' }, `更多武器：通关第 ${TAB_UNLOCK.weapons} 关后在「武器」页解锁`)
+        weaponsOpen ? null : h('span', { class: 'hint slot-note' }, `更多武器：在「装备」页的「武器」分类里解锁`)
       )
     );
 
@@ -1231,9 +1367,9 @@
 
     // 装备：装备页开放前只显示一行说明
     el.append(h('div', { class: 'section-title' }, '装备'));
-    const eqNames = { helm: '头盔', cape: '披风', quiver: '箭袋', trinket1: '饰品 1', trinket2: '饰品 2', trinket3: '饰品 3' };
+    const eqNames = { helm: '头盔', cape: '披风', armor: '盔甲', quiver: '箭袋', trinket1: '饰品 1', trinket2: '饰品 2', trinket3: '饰品 3', boots: '鞋子' };
     const anyEquip = Object.keys(s.equipOwned || {}).some((k) => s.equipOwned[k]);
-    if (!UI.tabUnlocked(s, 'equip') && !anyEquip) el.append(h('div', { class: 'hint slot-note' }, `通关第 ${TAB_UNLOCK.equip} 关后开放「装备」：头盔、披风、箭袋和饰品`));
+    if (!UI.tabUnlocked(s, 'equip') && !anyEquip) el.append(h('div', { class: 'hint slot-note' }, `通关第 ${TAB_UNLOCK.equip} 关后开放「装备」：头盔、披风、盔甲、箭袋、饰品和鞋子`));
     else {
       el.append(
         h(
@@ -1242,7 +1378,7 @@
           Object.keys(eqNames).map((k) =>
             k === 'quiver' && P.slotCount(s, 'quiver') < 1
               ? slotBox(eqNames[k], null, () => {}, true, `通关第 ${D.slotUnlocks.quiver[0]} 关解锁`)
-              : slotBox(eqNames[k], lo.equip[k] ? D.equipment[lo.equip[k]].name : null, () => pickEquip(k), false, lo.equip[k] ? D.equipment[lo.equip[k]].desc : null)
+              : slotBox(eqNames[k], lo.equip[k] ? h('span', { style: { color: D.weaponRarity[D.equipment[lo.equip[k]].rarity].color } }, D.equipment[lo.equip[k]].name) : null, () => pickEquip(k), false, lo.equip[k] ? D.equipment[lo.equip[k]].desc : null)
           )
         )
       );
@@ -1320,7 +1456,9 @@
   function pickEquip(slotKey) {
     const s = game.save;
     const kind = slotKey.startsWith('trinket') ? 'trinket' : slotKey;
-    const opts = Object.keys(D.equipment).filter((id) => s.equipOwned[id] && D.equipment[id].slot === kind);
+    const opts = Object.keys(D.equipment)
+      .filter((id) => s.equipOwned[id] && D.equipment[id].slot === kind)
+      .sort((a, b) => D.equipment[b].rarity - D.equipment[a].rarity);
     const list = h('div', { class: 'pick-list' });
     const choose = (id) => {
       P.setEquip(s, slotKey, id);
@@ -1330,7 +1468,7 @@
       renderShop();
     };
     list.append(h('button', { class: 'pick', onclick: () => choose(null) }, h('b', null, '（卸下）')));
-    for (const id of opts) list.append(h('button', { class: 'pick' + (s.loadout.equip[slotKey] === id ? ' on' : ''), onclick: () => choose(id) }, h('b', null, D.equipment[id].name), h('span', null, D.equipment[id].desc)));
+    for (const id of opts) list.append(h('button', { class: 'pick' + (s.loadout.equip[slotKey] === id ? ' on' : ''), onclick: () => choose(id) }, h('b', { style: { color: D.weaponRarity[D.equipment[id].rarity].color } }, D.equipment[id].name), h('span', null, D.equipment[id].desc)));
     if (!opts.length) list.append(h('div', { class: 'hint' }, '还没有这个栏位的装备，去「装备」页购买。'));
     modal(h('div', null, h('h2', null, '选择装备'), list, h('div', { class: 'modal-buttons' }, h('button', { class: 'btn', onclick: UI.closeModal }, '取消'))), { closeOnBack: true });
   }

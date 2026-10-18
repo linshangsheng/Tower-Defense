@@ -23,14 +23,15 @@
       const gain = dGain + hGain * 0.55 * (weight || 1);
       opts.push({ label, cost, value: gain / cost.copper, apply: mutate });
     };
+    // 机器人只买到各项的基础上限（设计书 76.2）：战役关卡的数值是按这个强度标定的
     for (const k of Object.keys(D.attributes)) {
-      if (k === 'luck') continue;
+      if (k === 'luck' || save.attrs[k] >= D.attributes[k].max) continue;
       add('attr:' + k, P.attrCost(save, k), (s) => P.buyAttr(s, k) || s.attrs[k]++);
     }
     const wid = save.loadout.weapon;
-    add('weapon:' + wid, P.weaponUpgradeCost(save, wid), (s) => s.weapons[wid].lv++);
-    add('wall:level', P.wallCost(save, 'level'), (s) => s.wall.level++);
-    add('wall:fortify', P.wallCost(save, 'fortify'), (s) => s.wall.fortify++);
+    if (save.weapons[wid].lv < D.weaponUpgrade.max) add('weapon:' + wid, P.weaponUpgradeCost(save, wid), (s) => s.weapons[wid].lv++);
+    if (save.wall.level < D.wallUpgrades.level.max) add('wall:level', P.wallCost(save, 'level'), (s) => s.wall.level++);
+    if (save.wall.fortify < D.wallUpgrades.fortify.max) add('wall:fortify', P.wallCost(save, 'fortify'), (s) => s.wall.fortify++);
     // 铜币箭袋（设计书 58）：和属性、武器升级按性价比一起比较
     for (const id of ['leatherQuiver', 'barbQuiver']) {
       if (save.equipOwned[id] || !P.equipAvailable(save, id) || P.slotCount(save, 'quiver') < 1) continue;
