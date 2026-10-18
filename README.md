@@ -12,7 +12,7 @@
 - 存档保存在浏览器本地，"设置"里可以导出 / 导入。
 - 部署到 https 网站（如 GitHub Pages）后，手机 / 平板可以"添加到主屏幕"，断网也能玩。
 
-## 当前内容（原型 v0.59，七章 70 关）
+## 当前内容（原型 v0.60，七章 70 关）
 
 - **七章 70 关**：翠绿草原、黄金沙漠、迷雾沼泽、冰霜雪原、熔岩裂隙（最终 Boss 墨墨与结局演出），以及通关后的第六章「云端王国」、第七章「珊瑚海湾」（会互相保护的海湾怪物：缩壳、护卫、跳跃、尖刺、泡泡）。
 - **14 个 Boss**，各有阶段与可以"打断"、"抓窗口"、"先拆护身"的机制；第 49 关精英挑战小 Boss 两两出场。
@@ -40,6 +40,8 @@ npm run smoke   # 浏览器冒烟测试（需要 Playwright），截图输出到
 npm run screens # 全界面检查：逐一打开 43 个界面（node tools/screens.js 目录 可截图）
 npm run perf    # 渲染性能（真实帧循环下的帧间隔）
 npm run pwa     # 离线功能检查（本地服务器 + 断网刷新）
+node tools/music.js 输出目录 --wav   # 离线渲染音乐并检查（可生成试听 WAV；--calibrate 标定采样音量）
+python3 tools/build-samples.py       # 重新生成乐器采样 src/render/samples.js（致谢见 CREDITS.md）
 node tools/icons.js                   # 重新生成 PWA 图标
 ```
 

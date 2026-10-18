@@ -458,6 +458,13 @@
   };
   P.sellPrice = (id) => P.halfCost(D.equipment[id].cost);
   // 把价格折成铜币，用来比较贵贱（设计书 63.2）
+  // 测试工具（设计书 68.4）：货币都设成最大值
+  P.MAX_CURRENCY = 9999999;
+  P.MAX_DIAMOND = 9999;
+  P.maxResources = function (save) {
+    save.copper = save.silver = save.gold = P.MAX_CURRENCY;
+    save.diamond = P.MAX_DIAMOND;
+  };
   P.costValue = (cost) => {
     const E = C.exchange;
     if (!cost) return 0;

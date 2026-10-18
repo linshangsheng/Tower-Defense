@@ -351,6 +351,28 @@
           [0, 20, 30, 45].map((m) => h('option', { value: m, selected: (s.restMinutes === undefined ? 30 : s.restMinutes) === m ? true : null }, m ? `每玩 ${m} 分钟提醒休息` : '关闭'))
         )
       ),
+      h('div', { class: 'hint credits' }, '音乐采样：FluidR3_GM 音色库（Frank Wen），CC BY 3.0，经 gleitz/midi-js-soundfonts 取得'),
+      // 测试工具（设计书 68.4）：想试装备、武器时用；只改当前浏览器里的存档
+      h(
+        'div',
+        { class: 'row' },
+        h(
+          'button',
+          {
+            class: 'btn small',
+            title: '测试用：铜、银、金、钻石都设成最大值',
+            onclick: () =>
+              UI.confirm(`测试工具：把铜币、银币、金币都设成 ${P.MAX_CURRENCY.toLocaleString()}，钻石设成 ${P.MAX_DIAMOND.toLocaleString()}？（只改这个浏览器里的存档，可以随时在上面「清空存档」重来）`, () => {
+                P.maxResources(game.save);
+                game.persist();
+                sfx('coin');
+                UI.toast('资源已拉满');
+                UI.refreshShop && UI.refreshShop();
+              }),
+          },
+          '测试：资源拉满'
+        )
+      ),
       h(
         'div',
         { class: 'row' },

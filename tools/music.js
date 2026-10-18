@@ -84,6 +84,8 @@ for (let c = 0; c <= 7; c++) if (![1, 5].includes(c) && c) SCENES.push({ name: `
 (async () => {
   const out = process.argv[2] || 'music-out';
   const writeWav = process.argv.includes('--wav');
+const forceSynth = process.argv.includes('--synth');
+const calibrate = process.argv.includes('--calibrate');
   fs.mkdirSync(out, { recursive: true });
   const browser = await chromium.launch();
   const page = await browser.newPage();
@@ -92,6 +94,54 @@ for (let c = 0; c <= 7; c++) if (![1, 5].includes(c) && c) SCENES.push({ name: `
   await page.goto('file://' + path.resolve(__dirname, '..', 'index.html'));
   await page.waitForTimeout(300);
   const rows = [];
+  if (calibrate) {
+    const res = await page.evaluate(async () => {
+      const SR = 32000;
+      const E = TD.music.Engine;
+      const GAIN = TD.music.GAIN;
+      const all = ['cello', 'contrabass', 'string_ensemble_1', 'tremolo_strings', 'pizzicato_strings', 'french_horn', 'brass_section', 'choir_aahs', 'timpani', 'taiko_drum', 'tubular_bells', 'celesta', 'orchestral_harp', 'marimba', 'oboe', 'flute'];
+      const pats = {
+        cello: (e) => [40, 44, 47].forEach((m, i) => e.cello(m, 0.2 + i * 2, 2, 0.17)),
+        string_ensemble_1: (e) => [52, 55, 59].forEach((m, i) => e.strings(m, 0.2 + i * 2, 2, 0.05)),
+        tremolo_strings: (e) => [52, 55, 59].forEach((m, i) => e.trem(m, 0.2 + i * 2, 2, 0.05)),
+        pizzicato_strings: (e) => [0, 1, 2, 3, 4, 5].forEach((i) => e.spiccato([55, 59, 62][i % 3], 0.2 + i * 0.5, 0.04)),
+        french_horn: (e) => [60, 64, 67].forEach((m, i) => e.horn(m, 0.2 + i * 2, 1.6, 0.12)),
+        brass_section: (e) => [48, 55, 60].forEach((m, i) => e.brass(m, 0.2 + i * 2, 1.6, 0.085)),
+        choir_aahs: (e) => [60, 64, 67].forEach((m, i) => e.choir(m, 0.2 + i * 2, 2, 0.035)),
+        timpani: (e) => [0, 1, 2].forEach((i) => e.taiko(0.2 + i, 0.4, 62)),
+        tubular_bells: (e) => [72, 76, 79].forEach((m, i) => e.bell(m, 0.2 + i * 2, 0.1, 2.2)),
+        celesta: (e) => [88, 91].forEach((m, i) => e.bell(m, 0.2 + i * 2, 0.1, 2.2)),
+        orchestral_harp: (e) => [72, 76, 79].forEach((m, i) => e.pluck(m, 0.2 + i * 1.2, 0.12)),
+        marimba: (e) => [72, 76, 79].forEach((m, i) => e.marimba(m, 0.2 + i * 1.2, 0.12)),
+        oboe: (e) => [69, 72, 76].forEach((m, i) => e.reed(m, 0.2 + i * 1.8, 1.6, 0.08)),
+        flute: (e) => [72, 76, 79].forEach((m, i) => e.flute(m, 0.2 + i * 1.8, 1.6, 0.1)),
+      };
+      async function rms(inst, useSamples) {
+        const ctx = new OfflineAudioContext(1, SR * 7, SR);
+        const eng = new E(ctx, ctx.destination);
+        eng.useSamples = useSamples;
+        if (useSamples) await eng.loadSamples([inst]);
+        eng.setVolume(1);
+        pats[inst](eng);
+        const d = (await ctx.startRendering()).getChannelData(0);
+        let sum = 0;
+        let n = 0;
+        for (let i = 0; i < d.length; i++) if (Math.abs(d[i]) > 1e-5) (sum += d[i] * d[i]), n++;
+        return Math.sqrt(sum / Math.max(1, n));
+      }
+      const out = {};
+      for (const inst of Object.keys(pats)) {
+        GAIN[inst] = 1;
+        const a = await rms(inst, false);
+        const b = await rms(inst, true);
+        out[inst] = { synth: a, sample: b, gain: +(a / b).toFixed(2) };
+      }
+      return out;
+    });
+    console.log(JSON.stringify(res, null, 1));
+    await browser.close();
+    return;
+  }
   for (const sc of SCENES) {
     const t0 = Date.now();
     const { b64, voices } = await page.evaluate(
@@ -101,6 +151,8 @@ for (let c = 0; c <= 7; c++) if (![1, 5].includes(c) && c) SCENES.push({ name: `
         const co = ctx.createOscillator.bind(ctx);
         ctx.createOscillator = () => (voices++, co());
         const eng = new TD.music.Engine(ctx, ctx.destination);
+        eng.useSamples = !sc.synth;
+        if (!sc.synth) await eng.loadSamples(TD.music.Engine.instrumentsFor(sc.theme));
         eng.tension = sc.tension;
         eng.setTheme(sc.theme, sc.mode);
         eng.setVolume(TD.music.levelFor(sc.mode, sc.tension));
@@ -118,7 +170,7 @@ for (let c = 0; c <= 7; c++) if (![1, 5].includes(c) && c) SCENES.push({ name: `
         for (let i = 0; i < u8.length; i += 0x8000) s += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000));
         return { b64: btoa(s), voices };
       },
-      { sc, SR }
+      { sc: forceSynth ? Object.assign({}, sc, { synth: true, name: sc.name }) : sc, SR }
     );
     const i16 = new Int16Array(Uint8Array.from(Buffer.from(b64, 'base64')).buffer);
     const x = Float32Array.from(i16, (v) => v / 32767);

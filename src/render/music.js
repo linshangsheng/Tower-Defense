@@ -1,4 +1,5 @@
-// 程序化背景音乐（设计书第 11、64 章）：多种合成乐器 + 混响 + 压缩器，沉重的小调；
+// 背景音乐（设计书第 11、64、68 章）：真实乐器采样（FluidR3_GM，CC BY 3.0）+ 合成鼓点 / 噪声 + 混响 + 压缩器，沉重的小调；
+// 采样还没解码好（或浏览器不支持）时自动退回到原来的纯合成声音；
 // 标题一首、七章各一首；战斗按"四档紧张度"分层，Boss 来了更紧张。
 // 引擎是一个可以挂在任意 AudioContext 上的类：实时播放和离线渲染（测试 / 试听）用同一套代码。
 (function (TD) {
@@ -105,6 +106,15 @@
   const TEMPO = [1, 1.06, 1.1, 1.16]; // 战斗各档的速度倍率
   const ARP = [0, 2, 1, 3, 2, 3, 1, 2]; // 琶音在 [根, 三, 五, 高八度根] 里的取音顺序
 
+  // 采样乐器（设计书 68.3）：每首曲子要预先解码的乐器 = 共用的 + 这一首的主奏
+  const SHARED = ['cello', 'contrabass', 'string_ensemble_1', 'tremolo_strings', 'pizzicato_strings', 'french_horn', 'brass_section', 'choir_aahs', 'timpani', 'taiko_drum'];
+  const LEAD_INST = { bell: ['tubular_bells', 'celesta'], pluck: ['orchestral_harp'], marimba: ['marimba'], reed: ['oboe'], flute: ['flute'], horn: [] };
+  // 采样音量相对旧合成声音的倍率（由 tools/music.js --calibrate 标定，设计书 68.3）
+  const GAIN = {
+    cello: 7.2, contrabass: 7.2, string_ensemble_1: 10.2, tremolo_strings: 7.3, pizzicato_strings: 2.7, french_horn: 9, brass_section: 10.2, choir_aahs: 4.5,
+    timpani: 1.4, taiko_drum: 1.4, tubular_bells: 6.8, celesta: 4.5, orchestral_harp: 4.5, marimba: 2.1, oboe: 8.8, flute: 13,
+  };
+
   class Engine {
     constructor(ctx, dest) {
       this.ctx = ctx;
@@ -147,6 +157,117 @@
         this.bus[k] = g;
       }
       this.noise = this.makeNoise(3);
+      this.S = {}; // 已解码的采样乐器：名字 → { loop, len, bufs: [{ midi, buf }] }
+      this.loading = {};
+      this.hold = false; // 为 true 时先不排音符（等采样解码）
+      this.useSamples = true;
+    }
+
+    // 这首曲子要用到的采样乐器
+    static instrumentsFor(themeId) {
+      const th = THEMES[themeId] || THEMES[1];
+      return SHARED.concat(LEAD_INST[th.lead] || []);
+    }
+
+    // 解码采样（只解码还没解码过的）；没有采样数据 / 解码失败就返回，保持合成声音
+    loadSamples(names) {
+      const data = TD.samples;
+      if (!data) return Promise.resolve();
+      const c = this.ctx;
+      const jobs = [];
+      for (const name of names) {
+        if (this.S[name] || !data[name]) continue;
+        if (!this.loading[name]) {
+          const inst = data[name];
+          this.loading[name] = Promise.all(
+            Object.keys(inst.notes).map(async (k) => {
+              const bin = typeof atob === 'function' ? atob(inst.notes[k]) : Buffer.from(inst.notes[k], 'base64').toString('binary');
+              const ab = new ArrayBuffer(bin.length);
+              const u8 = new Uint8Array(ab);
+              for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+              const buf = await new Promise((res, rej) => {
+                const p = c.decodeAudioData(ab, res, rej);
+                if (p && p.then) p.then(res, rej);
+              });
+              return { midi: +k, buf };
+            })
+          )
+            .then((bufs) => {
+              bufs.sort((a, b) => a.midi - b.midi);
+              // 持续音的循环接缝：在解码后的实际数据上，把末尾 0.35 秒淡化成循环起点之前的那一段，
+              // 这样无论 MP3 解码带不带编码延迟，首尾都能接上（不会"啪"一声）
+              if (inst.loop) {
+                for (const { buf } of bufs) {
+                  const sr = buf.sampleRate;
+                  const a = Math.round(inst.loop[0] * sr);
+                  const b = Math.min(buf.length, Math.round(inst.loop[1] * sr));
+                  const L = Math.round(0.35 * sr);
+                  if (b - L <= a || a - L < 0) continue;
+                  const ch = buf.getChannelData(0);
+                  for (let i = 0; i < L; i++) {
+                    const w = (i / L) * (Math.PI / 2);
+                    ch[b - L + i] = ch[b - L + i] * Math.cos(w) + ch[a - L + i] * Math.sin(w);
+                  }
+                }
+              }
+              this.S[name] = { loop: inst.loop, len: bufs[0].buf.duration, bufs };
+            })
+            .catch(() => {
+              this.loading[name] = null; // 解码失败：这个乐器继续用合成声音
+            });
+        }
+        jobs.push(this.loading[name]);
+      }
+      return Promise.all(jobs);
+    }
+
+    // 采样乐器弹一个音：找最近的采样，变速补足音高；持续音用循环拉长。没有这个乐器就返回 false（调用方退回合成声音）
+    samp(inst, m, t, dur, vol, o) {
+      const S = this.useSamples && this.S[inst];
+      if (!S) return false;
+      o = o || {};
+      let best = S.bufs[0];
+      for (const b of S.bufs) if (Math.abs(b.midi - m) < Math.abs(best.midi - m)) best = b;
+      const c = this.ctx;
+      const rate = Math.pow(2, (m - best.midi) / 12);
+      const src = c.createBufferSource();
+      src.buffer = best.buf;
+      src.playbackRate.value = rate;
+      if (S.loop) {
+        src.loop = true;
+        src.loopStart = S.loop[0];
+        src.loopEnd = S.loop[1];
+      }
+      let node = src;
+      if (o.lp) {
+        const lp = c.createBiquadFilter();
+        lp.type = 'lowpass';
+        lp.frequency.value = o.lp;
+        node.connect(lp);
+        node = lp;
+      }
+      const g = c.createGain();
+      const a = o.attack || 0.02;
+      const r = o.release || 0.25;
+      const v = vol * (GAIN[inst] || 1);
+      // 衰减音（鼓、钟、竖琴）自己会衰减，最多放到采样结束
+      const end = S.loop ? dur : Math.min(dur, S.len / rate);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.linearRampToValueAtTime(v, t + a);
+      g.gain.setValueAtTime(v, t + Math.max(a, end));
+      g.gain.exponentialRampToValueAtTime(0.0001, t + end + r);
+      node.connect(g);
+      let out = g;
+      if (o.pan && c.createStereoPanner) {
+        const pn = c.createStereoPanner();
+        pn.pan.value = o.pan;
+        g.connect(pn);
+        out = pn;
+      }
+      out.connect(o.bus || this.bus.strings);
+      src.start(t);
+      src.stop(t + end + r + 0.05);
+      return true;
     }
 
     // 程序生成的"房间"：随时间衰减的立体声噪声，高频衰减得更快
@@ -256,22 +377,39 @@
     // ---------------- 乐器 ----------------
     // 低音弦乐：三个走音的锯齿波 + 颤音
     cello(m, t, dur, vol) {
+      if (this.samp('cello', m, t, dur, vol, { attack: 0.12, release: 0.5, bus: this.bus.strings })) {
+        if (m < 52) this.samp('contrabass', m, t, dur, vol * 0.7, { attack: 0.14, release: 0.5, bus: this.bus.bass });
+        return;
+      }
       const f = hz(m);
       for (const d of [-9, 0, 9]) this.tone({ f, t, dur, vol: vol / 2.2, detune: d, lp: Math.min(2400, f * 5), attack: 0.14, release: 0.4, vibrato: 0.004, bus: this.bus.strings });
     }
     // 弦乐群：高一点、亮一点
     strings(m, t, dur, vol) {
+      if (this.samp('string_ensemble_1', m, t, dur, vol, { attack: 0.45, release: 0.9, pan: (Math.random() - 0.5) * 0.7, bus: this.bus.strings })) return;
       const f = hz(m);
       for (const d of [-8, 8]) this.tone({ f, t, dur, vol: vol / 1.6, detune: d, lp: 2800, attack: 0.4, release: 0.7, vibrato: 0.003, bus: this.bus.strings });
     }
     // 短弓（紧张时的快速音型）
     spiccato(m, t, vol) {
+      if (this.samp('pizzicato_strings', m, t, 0.6, vol, { attack: 0.003, release: 0.3, pan: (Math.random() - 0.5) * 0.5, bus: this.bus.strings })) return;
       const f = hz(m);
       this.tone({ f, t, dur: 0.12, vol, lp: 3200, lpTo: 1500, lpTime: 0.1, attack: 0.004, release: 0.08, bus: this.bus.strings });
       this.tone({ f, t, dur: 0.12, vol: vol * 0.6, detune: 11, lp: 2600, attack: 0.004, release: 0.08, bus: this.bus.strings });
     }
+    // 颤音弦乐：紧张档的"发抖"
+    trem(m, t, dur, vol) {
+      if (this.samp('tremolo_strings', m, t, dur, vol, { attack: 0.35, release: 0.7, pan: (Math.random() - 0.5) * 0.8, bus: this.bus.strings })) return;
+      this.strings(m, t, dur, vol * 0.7);
+    }
+    // 铜管组：Boss 的重音和弦
+    brass(m, t, dur, vol) {
+      if (this.samp('brass_section', m, t, dur, vol, { attack: 0.05, release: 0.25, bus: this.bus.brass })) return;
+      this.horn(m, t, dur, vol);
+    }
     // 圆号 / 铜管：低通随起音打开
     horn(m, t, dur, vol, attack) {
+      if (this.samp('french_horn', m, t, dur, vol, { attack: attack || 0.07, release: 0.25, bus: this.bus.brass })) return;
       const f = hz(m);
       const a = attack || 0.06;
       this.tone({ f, t, dur, vol: vol * 0.7, lp: f * 1.6, lpTo: Math.min(f * 7, 4200), lpTime: a + 0.04, lpEnd: f * 2.6, attack: a, release: 0.18, bus: this.bus.brass });
@@ -279,6 +417,7 @@
     }
     // 合唱"啊"：锯齿波 → 三个共振峰
     choir(m, t, dur, vol) {
+      if (this.samp('choir_aahs', m, t, dur, vol, { attack: Math.min(0.9, dur * 0.4), release: 0.8, pan: (Math.random() - 0.5) * 0.9, bus: this.bus.choir })) return;
       const c = this.ctx;
       const f = hz(m);
       const sum = c.createGain();
@@ -319,6 +458,14 @@
     // 太鼓 / 定音鼓：正弦下滑 + 膜体二次谐波 + 撞击噪声
     taiko(t, vol, f) {
       f = f || 62;
+      const mm = Math.max(34, Math.min(62, Math.round(12 * Math.log2(f / 440) + 69)));
+      if (this.useSamples && this.S.timpani) {
+        this.samp('timpani', mm, t, 3, vol, { attack: 0.002, bus: this.bus.perc });
+        if (vol >= 0.3) this.samp('taiko_drum', Math.max(36, mm - 4), t, 2, vol * 0.8, { attack: 0.002, bus: this.bus.perc });
+        // 底下仍叠一层低频正弦，保证"沉"
+        this.tone({ type: 'sine', f: f * 1.6, slideTo: f, slideTime: 0.2, t, dur: 0.45, vol: vol * 0.55, attack: 0.003, release: 0.35, bus: this.bus.perc });
+        return;
+      }
       this.tone({ type: 'sine', f: f * 2.6, slideTo: f, slideTime: 0.2, t, dur: 0.5, vol, attack: 0.003, release: 0.4, bus: this.bus.perc });
       this.tone({ type: 'triangle', f: f * 1.7, slideTo: f * 0.85, slideTime: 0.25, t, dur: 0.35, vol: vol * 0.45, attack: 0.003, release: 0.3, bus: this.bus.perc });
       this.noiseHit({ filter: 'bandpass', f: 240, q: 1, t, dur: 0.07, vol: vol * 0.7 });
@@ -341,26 +488,31 @@
     }
     // 钟 / 钢片琴：非整数倍泛音，长衰减
     bell(m, t, vol, dur) {
+      if (m >= 84 ? this.samp('celesta', m, t, 2, vol, { attack: 0.003, bus: this.bus.lead }) : this.samp('tubular_bells', m, t, 3, vol, { attack: 0.003, bus: this.bus.lead })) return;
       const f = hz(m);
       dur = dur || 2.2;
       [[1, 1, 1], [2.76, 0.5, 0.65], [5.4, 0.25, 0.4], [8.93, 0.12, 0.25]].forEach(([mul, g, dd]) => this.tone({ type: 'sine', f: f * mul, t, dur: dur * dd, vol: vol * g, attack: 0.004, release: dur * dd * 0.9, bus: this.bus.lead }));
     }
     pluck(m, t, vol) {
+      if (this.samp('orchestral_harp', m, t, 2, vol, { attack: 0.003, bus: this.bus.lead })) return;
       const f = hz(m);
       this.tone({ type: 'triangle', f, t, dur: 0.6, vol, attack: 0.004, release: 0.5, bus: this.bus.lead });
       this.tone({ type: 'sine', f: f * 2, t, dur: 0.18, vol: vol * 0.4, attack: 0.003, release: 0.15, bus: this.bus.lead });
     }
     marimba(m, t, vol) {
+      if (this.samp('marimba', m, t, 1.4, vol, { attack: 0.003, bus: this.bus.lead })) return;
       const f = hz(m);
       this.tone({ type: 'sine', f, t, dur: 0.45, vol, attack: 0.003, release: 0.4, bus: this.bus.lead });
       this.tone({ type: 'sine', f: f * 4, t, dur: 0.08, vol: vol * 0.5, attack: 0.002, release: 0.07, bus: this.bus.lead });
     }
     reed(m, t, dur, vol) {
+      if (this.samp('oboe', m, t, dur, vol, { attack: 0.06, release: 0.2, bus: this.bus.lead })) return;
       const f = hz(m);
       this.tone({ type: 'sawtooth', f, t, dur, vol: vol * 0.6, lp: 1700, q: 2.5, attack: 0.06, release: 0.12, vibrato: 0.005, bus: this.bus.lead });
       this.tone({ type: 'square', f, t, dur, vol: vol * 0.3, detune: 5, lp: 1300, attack: 0.06, release: 0.12, vibrato: 0.005, bus: this.bus.lead });
     }
     flute(m, t, dur, vol) {
+      if (this.samp('flute', m, t, dur, vol, { attack: 0.08, release: 0.25, bus: this.bus.lead })) return;
       const f = hz(m);
       this.tone({ type: 'sine', f, t, dur, vol, attack: 0.09, release: 0.2, vibrato: 0.006, bus: this.bus.lead });
       this.tone({ type: 'triangle', f: f * 2, t, dur, vol: vol * 0.25, attack: 0.1, release: 0.2, bus: this.bus.lead });
@@ -368,6 +520,7 @@
     }
     sub(m, t, dur, vol) {
       const f = hz(m);
+      this.samp('contrabass', m + 12, t, dur, vol * 0.8, { attack: 0.02, release: 0.12, bus: this.bus.bass });
       this.tone({ type: 'sine', f, t, dur, vol, attack: 0.012, release: 0.1, bus: this.bus.bass });
       this.tone({ type: 'sawtooth', f, t, dur, vol: vol * 0.5, lp: 190, attack: 0.012, release: 0.1, bus: this.bus.bass });
     }
@@ -404,7 +557,7 @@
     // 排好 until 之前的所有音符
     schedule(until) {
       const th = this.theme;
-      if (!th) return;
+      if (!th || this.hold) return;
       while (this.nextTime < until) {
         this.scheduleStep(this.step, this.nextTime);
         const tf = this.mode === 'battle' ? TEMPO[Math.min(3, this.tension)] : 1;
@@ -485,12 +638,14 @@
         this.horn(ch.root + 12, t, barLen * 0.98, 0.05, barLen * 0.5);
         this.horn(ch.root + 19, t, barLen * 0.98, 0.04, barLen * 0.5);
       }
+      // 颤音弦乐：危险档偶数小节、Boss 档每小节，铺一层"发抖"的紧张感
+      if (pos === 0 && L >= 1 && (L >= 2 || bar % 2 === 0)) for (const m of ch.tones.slice(0, 3)) this.trem(m + (L === 3 ? 12 : 0), t, barLen, L >= 2 ? 0.05 : 0.035);
       // 合唱：危险时偶数小节，Boss 档每小节
       if (pos === 0 && L >= 1 && (L >= 2 || bar % 2 === 0)) for (const m of ch.tones.slice(0, 3)) this.choir(m + 12, t, barLen, L >= 2 ? 0.05 : 0.025);
       // Boss 档：铜管重音 + 低频压迫 + 增四度不和谐音 + 镲渐强
       if (L >= 2) {
         if (pos === 0 || pos === 10 || (L === 3 && pos === 6)) {
-          for (const m of [ch.root + 12, ch.root + 19, ch.root + 24]) this.horn(m, t, sd * 3, 0.085);
+          for (const m of [ch.root + 12, ch.root + 19, ch.root + 24]) this.brass(m, t, sd * 3, 0.085);
         }
         if (pos === 0 && bar % 2 === 0) {
           this.cello(ch.root - 12 + 6, t, barLen * 2, 0.05);
@@ -538,10 +693,11 @@
     }
   }
 
-  const M = (TD.music = { enabled: true, theme: null, mode: 'calm', tension: 0, playing: false, Engine, THEMES, DRUMS });
+  const M = (TD.music = { enabled: true, theme: null, mode: 'calm', tension: 0, playing: false, Engine, THEMES, DRUMS, GAIN });
 
   let engine = null;
   let timer = null;
+  let loadToken = 0;
   const LEVEL = { title: 0.5, calm: 0.42, battle: [0.5, 0.55, 0.6, 0.66] };
   // 总音量随模式和紧张度走：越紧张越响（设计书 64.5）
   M.levelFor = (mode, tension) => (mode === 'battle' ? LEVEL.battle[Math.max(0, Math.min(3, tension | 0))] : LEVEL[mode] || 0.42);
@@ -577,6 +733,19 @@
     eng.tension = M.tension;
     eng.setTheme(theme, mode);
     if (!wasPlaying) eng.nextTime = eng.ctx.currentTime + 0.1;
+    // 要用的乐器采样还没解码好：先不排音符，解码完（最多等 4 秒）再开始，避免"先合成声、后真乐器"的音色突变
+    const names = Engine.instrumentsFor(theme);
+    if (TD.samples && names.some((n) => TD.samples[n] && !eng.S[n])) {
+      const token = ++loadToken;
+      eng.hold = true;
+      const go = () => {
+        if (token !== loadToken || !eng.hold) return;
+        eng.hold = false;
+        eng.nextTime = eng.ctx.currentTime + 0.1;
+      };
+      eng.loadSamples(names).then(go, go);
+      setTimeout(go, 4000);
+    } else eng.hold = false;
     eng.setVolume(M.levelFor(mode, M.tension) * M.volume, 0.8);
     if (!timer) timer = setInterval(tick, 40);
     M.playing = true;
@@ -638,4 +807,6 @@
   };
 
   M.themes = THEMES;
+  // 调试用：看看采样解码到哪了
+  M.status = () => (engine ? { loaded: Object.keys(engine.S), hold: engine.hold, state: engine.ctx.state } : null);
 })((globalThis.TD = globalThis.TD || {}));

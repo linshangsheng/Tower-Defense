@@ -2082,7 +2082,7 @@ test('新武器的弹道带品质色；射出的弹道种类跟基础形状一�
 function mockAudioCtx() {
   const calls = { osc: 0, noise: 0 };
   const param = () => ({ value: 0, setValueAtTime() {}, linearRampToValueAtTime() {}, exponentialRampToValueAtTime() {}, cancelScheduledValues() {} });
-  const node = () => ({ connect() {}, disconnect() {}, start() {}, stop() {}, gain: param(), frequency: param(), detune: param(), Q: param(), threshold: param(), knee: param(), ratio: param(), attack: param(), release: param() });
+  const node = () => ({ connect() {}, disconnect() {}, start() {}, stop() {}, playbackRate: param(), pan: param(), gain: param(), frequency: param(), detune: param(), Q: param(), threshold: param(), knee: param(), ratio: param(), attack: param(), release: param() });
   return {
     calls,
     currentTime: 0,
@@ -2095,6 +2095,12 @@ function mockAudioCtx() {
     createConvolver: node,
     createOscillator: () => (calls.osc++, node()),
     createBufferSource: () => (calls.noise++, node()),
+    createStereoPanner: node,
+    decodeAudioData: (ab, ok) => {
+      const buf = { duration: 2.45, sampleRate: 8000, length: 19600, getChannelData: () => new Float32Array(19600) };
+      if (ok) ok(buf);
+      return Promise.resolve(buf);
+    },
     createBuffer: (ch, len) => ({ getChannelData: () => new Float32Array(len) }),
   };
 }
@@ -2156,4 +2162,52 @@ test('音效：每个道具都有专属音效，城墙破损 / 坍塌 / 陨石�
   const src = require('fs').readFileSync(require('path').join(__dirname, '..', 'src/render/audio.js'), 'utf8');
   for (const id of Object.keys(D.items)) assert.ok(src.includes(`item_${id}:`), `道具 ${id} 没有音效`);
   for (const n of ['meteorHit', 'scrollBolt', 'barrierBreak', 'wallBreak', 'wallCollapse']) assert.ok(src.includes(`${n}:`), `缺少音效 ${n}`);
+});
+
+test('采样乐器：16 种乐器都有采样，持续音带循环区间，每个乐器覆盖足够的音高范围', () => {
+  delete require.cache[require.resolve('../src/render/samples.js')];
+  require('../src/render/samples.js');
+  const S = TD.samples;
+  const names = ['cello', 'contrabass', 'string_ensemble_1', 'tremolo_strings', 'pizzicato_strings', 'french_horn', 'brass_section', 'choir_aahs', 'timpani', 'taiko_drum', 'tubular_bells', 'celesta', 'orchestral_harp', 'marimba', 'oboe', 'flute'];
+  for (const n of names) {
+    assert.ok(S[n], `缺少乐器 ${n}`);
+    const keys = Object.keys(S[n].notes).map(Number);
+    assert.ok(keys.length >= 5, `${n} 采样太少`);
+    for (const v of Object.values(S[n].notes)) assert.ok(v.length > 2000, `${n} 有空采样`);
+  }
+  for (const n of ['cello', 'string_ensemble_1', 'french_horn', 'choir_aahs', 'flute', 'oboe']) assert.deepStrictEqual(S[n].loop, [0.8, 2.4]);
+  assert.strictEqual(S.timpani.loop, null);
+  // 每首曲子要用的乐器采样里都有
+  for (let id = 0; id <= 7; id++) for (const n of TD.music.Engine.instrumentsFor(id)) assert.ok(S[n], `第 ${id} 首要用 ${n}，但没有采样`);
+  // 主旋律用到的最高 / 最低音，采样范围内变速不超过 3 个半音
+  for (let id = 0; id <= 7; id++) {
+    const th = TD.music.THEMES[id];
+    const inst = { bell: 'tubular_bells', pluck: 'orchestral_harp', marimba: 'marimba', reed: 'oboe', flute: 'flute', horn: 'french_horn' }[th.lead];
+    const keys = Object.keys(S[inst].notes).map(Number);
+    for (const n of th.notes.filter(Boolean)) {
+      const near = Math.min(...keys.map((k) => Math.abs(k - n.midi)));
+      assert.ok(near <= 3 || (inst === 'tubular_bells' && n.midi >= 84), `第 ${id} 首旋律音 ${n.midi} 离 ${inst} 的采样太远（${near}）`);
+    }
+  }
+});
+
+test('采样乐器：解码后用采样演奏（振荡器变少、播放源变多），没解码时退回合成', async () => {
+  const M = TD.music;
+  const play = async (withSamples) => {
+    const ctx = mockAudioCtx();
+    const eng = new M.Engine(ctx, ctx.destination);
+    if (withSamples) await eng.loadSamples(M.Engine.instrumentsFor(1));
+    eng.tension = 2;
+    eng.setTheme(1, 'battle');
+    eng.schedule(20);
+    return { ctx, eng };
+  };
+  const synth = await play(false);
+  const samp = await play(true);
+  assert.ok(Object.keys(samp.eng.S).length >= 11, '共用乐器 + 主奏都解码了');
+  assert.ok(samp.ctx.calls.osc < synth.ctx.calls.osc * 0.6, `用采样后振荡器应明显变少：${samp.ctx.calls.osc} vs ${synth.ctx.calls.osc}`);
+  assert.ok(samp.ctx.calls.noise > synth.ctx.calls.noise, '采样是播放源节点');
+  // 最近采样 + 变速：不会越界
+  assert.strictEqual(samp.eng.samp('cello', 40, 0, 1, 0.1), true);
+  assert.strictEqual(synth.eng.samp('cello', 40, 0, 1, 0.1), false);
 });
