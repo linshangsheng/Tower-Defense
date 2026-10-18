@@ -16,7 +16,7 @@
       copper: 0,
       silver: 0,
       gold: 0,
-      diamond: 0, // 暂时无法获得（设计书 61.4）
+      diamond: 0, // 只能在九层妖塔里获得（设计书 74）
       attrs: { atk: 0, aspd: 0, crit: 0, critDmg: 0, luck: 0 },
       wall: { level: 1, fortify: 0, mend: 0, thorns: 0 },
       weapons: Object.fromEntries(Object.keys(D.weapons).map((id) => [id, { owned: id === 'bow', lv: 0 }])),
@@ -691,13 +691,13 @@
     }
     // 首次通关时的功能解锁提示（设计书 38、39）
     if (firstClear) {
-      const FEATURE = { 5: '解锁「王国小镇」（地图上的 🏘）和「每日挑战」（地图右下角）', 10: '解锁 3 倍速：战斗右下角的速度按钮', 20: '解锁「无尽模式」（地图右下角）', 50: '解锁第六章「云端王国」', 60: '解锁第七章「珊瑚海湾」和「Boss 连战」（地图右下角）' };
+      const FEATURE = { 5: '解锁「王国小镇」（地图上的 🏘）和「每日挑战」（地图右下角）', 10: '解锁 3 倍速：战斗右下角的速度按钮', 20: '解锁「无尽模式」（地图右下角）', 50: '解锁第六章「云端王国」', 60: '解锁第七章「珊瑚海湾」和「九层妖塔」（地图右下角）' };
       if (FEATURE[n]) out.unlocks.push(FEATURE[n]);
     }
     return out;
   };
 
-  // 一场战斗结束后累计统计（普通关卡、无尽、每日、Boss 连战共用）
+  // 一场战斗结束后累计统计（普通关卡、无尽、每日、九层妖塔共用）
   P.recordStats = function (save, result, win) {
     const st = save.stats;
     st.battles++;

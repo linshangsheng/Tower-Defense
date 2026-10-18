@@ -37,7 +37,7 @@
     },
 
     // 游戏版本：与设计书版本号、sw.js 的缓存名保持一致（测试会检查）
-    version: 'v0.65',
+    version: 'v0.66',
 
     // 英雄（设计书 42）：在 hero 基础值上乘以倍率；所有升级共用
     heroes: {
@@ -90,8 +90,8 @@
     exchange: {
       copperPerSilver: 100,
       silverPerGold: 100,
-      // 钻石暂时无法获得（设计书 61.4）：后面会加获得方法，先把货币结构做好
-      diamondObtainable: false,
+      // 钻石只能在九层妖塔里获得（设计书 74）
+      diamondObtainable: true,
     },
   };
 

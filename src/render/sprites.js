@@ -130,6 +130,9 @@
   S.monster = function (ctx, type, x, y, size, t, opts) {
     opts = opts || {};
     // 光影生灵（设计书 56）：已经重画的怪物用新画法
+    // 妖塔版 Boss 等用别的怪物的画法（def.art）
+    const mdef = TD.data && TD.data.monsters[type];
+    if (mdef && mdef.art) type = mdef.art;
     const fn = (TD.creatures && TD.creatures.drawers[type]) || S.drawers[type] || S.drawers.slime;
     ctx.save();
     ctx.translate(x, y);

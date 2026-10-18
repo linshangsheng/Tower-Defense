@@ -1177,7 +1177,7 @@ test('连击：1.2 秒内连续击败才算，记录最高连击；不影响奖�
 });
 
 test('王国小镇：每个 Boss 都有房子和 3 句台词，关卡号对得上', () => {
-  const bosses = Object.keys(D.monsters).filter((t) => D.monsters[t].boss);
+  const bosses = Object.keys(D.monsters).filter((t) => D.monsters[t].boss && !D.monsters[t].towerOf);
   for (const t of bosses) assert.ok(D.town.some((f) => f.boss === t), `${t} 没有房子`);
   for (const f of D.town) {
     assert.strictEqual(f.lines.length, 3);
@@ -1281,24 +1281,117 @@ test('技能协同：碎冰（冰冻领域里雷霆加伤）、鼓点箭雨（�
   assert.strictEqual(d.combos.drumRain, 1);
 });
 
-test('Boss 连战：通关第 60 关解锁，12 波各一个 Boss，打败当前 Boss 才来下一波；结算记录打败数', () => {
+test('九层妖塔：通关第 60 关解锁；第 N 层 10N 个妖王 + 90N 个小妖，分 3 波；钻石 2^(N−1)', () => {
   const s = P.newSave();
-  assert.ok(!TD.modes.bossRushUnlocked(s));
+  assert.ok(!TD.modes.towerUnlocked(s));
   clearUpTo(s, 60);
-  assert.ok(TD.modes.bossRushUnlocked(s));
-  const def = TD.modes.buildBossRush(s);
-  assert.strictEqual(def.waves.length, 12, '通关第七章前只有 12 个 Boss');
-  for (const w of def.waves) assert.strictEqual(w.groups.filter(([t]) => D.monsters[t].boss).length, 1);
-  const b = new TD.Battle({ level: 'bossrush', levelDef: def, stage: def.stage, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 1 });
-  for (let i = 0; i < 60 * 60 && !b.over; i++) {
-    if (b.pendingSupply) b.chooseSupply(b.pendingSupply[0]);
-    b.step(1 / 60);
+  assert.ok(TD.modes.towerUnlocked(s));
+  assert.strictEqual(D.tower.floors, 9);
+  assert.deepStrictEqual([1, 2, 3, 4, 5, 6, 7, 8, 9].map((k) => TD.modes.towerReward(k)), [1, 2, 4, 8, 16, 32, 64, 128, 256]);
+  for (const k of [1, 2, 5, 9]) {
+    const def = TD.modes.buildTower(s, k);
+    assert.strictEqual(def.waves.length, 3);
+    let boss = 0;
+    let minion = 0;
+    for (const w of def.waves)
+      for (const [t, n] of w.groups) {
+        if (D.monsters[t].boss) boss += n;
+        else minion += n;
+      }
+    assert.ok(Math.abs(boss - 10 * k) <= 3 && Math.abs(minion - 90 * k) <= 3, `第 ${k} 层：${boss} + ${minion}`);
+    assert.ok(def.tower && def.floor === k && def.supplyEvery === 1);
   }
-  assert.strictEqual(b.waveIndex, 0, '第一个 Boss 没打败时不会来第二波');
-  const r = TD.modes.applyBossRushResult(s, { killsByType: { jellyPrince: 1, boarKing: 1, slime: 9 }, killCopper: 10, time: 300 });
-  assert.strictEqual(r.beaten, 2);
-  assert.strictEqual(r.silver, 2);
-  assert.strictEqual(s.bossRush.best, 2);
+  // 妖王用妖塔版（没有特殊行动），种类循环；到第七章通关后 14 种
+  const types = new Set(TD.modes.buildTower(s, 9).waves.flatMap((w) => w.groups.map(([t]) => t)).filter((t) => D.monsters[t].boss));
+  assert.strictEqual(types.size, 12);
+  for (const t of types) assert.ok(t.startsWith('tw_') && !D.monsters[t].ai && D.monsters[t].art);
+  clearUpTo(s, 70);
+  assert.strictEqual(TD.modes.towerBossList(s).length, 14);
+  // 难度系数按关卡折算、再乘妖塔系数；每层的属性相同，数量随层数增加
+  assert.ok(Math.abs(TD.modes.towerD(s, 9) - TD.modes.towerD(s, 1) * Math.pow(D.tower.grow, 8)) < 1e-9);
+  assert.ok(TD.modes.towerD(s, 1) < TD.config.difficulty(70) * 0.5, '妖塔系数把单只怪物的强度压到普通关卡的一小部分');
+});
+
+test('九层妖塔：门票 1 金；过一层可以领钻石或继续（翻倍）；失败什么都没有；打怪没有收益', () => {
+  const s = P.newSave();
+  clearUpTo(s, 60);
+  assert.ok(!TD.modes.towerCanStart(s), '没有金币');
+  assert.ok(!TD.modes.towerStart(s));
+  s.gold = 3;
+  assert.ok(TD.modes.towerStart(s));
+  assert.strictEqual(s.gold, 2, '门票 1 金');
+  assert.ok(!TD.modes.towerStart(s), '一趟没结束不能再开');
+  // 第 1 层通过 → 选择
+  let out = TD.modes.applyTowerResult(s, { win: true, kills: 100, killCopper: 99999 });
+  assert.strictEqual(out.floor, 1);
+  assert.strictEqual(out.reward, 1);
+  assert.strictEqual(s.copper, 0, '杀怪不给铜币');
+  assert.strictEqual(s.towerRun.state, 'choose');
+  assert.strictEqual(s.diamond, 0, '还没领');
+  // 继续 → 第 2 层
+  assert.ok(TD.modes.towerContinue(s));
+  assert.deepStrictEqual(s.towerRun, { floor: 2, state: 'battle' });
+  out = TD.modes.applyTowerResult(s, { win: true, kills: 200 });
+  assert.strictEqual(out.reward, 2);
+  assert.ok(TD.modes.towerContinue(s));
+  out = TD.modes.applyTowerResult(s, { win: true, kills: 300 });
+  assert.strictEqual(out.floor, 3);
+  assert.strictEqual(TD.modes.towerCashOut(s), 4, '走人：第 3 层 = 4 钻');
+  assert.strictEqual(s.diamond, 4);
+  assert.strictEqual(s.towerRun, null);
+  assert.strictEqual(s.tower.best, 3);
+  assert.strictEqual(s.tower.diamonds, 4);
+  // 失败：什么都没有，连之前过的层也没有
+  assert.ok(TD.modes.towerStart(s));
+  TD.modes.applyTowerResult(s, { win: true });
+  TD.modes.towerContinue(s);
+  out = TD.modes.applyTowerResult(s, { win: false });
+  assert.strictEqual(s.diamond, 4, '失败不加钻石');
+  assert.strictEqual(s.towerRun, null);
+  // 通关第 9 层自动领取 256
+  s.gold = 1;
+  TD.modes.towerStart(s);
+  for (let k = 1; k <= 9; k++) {
+    out = TD.modes.applyTowerResult(s, { win: true });
+    if (k < 9) TD.modes.towerContinue(s);
+  }
+  assert.ok(out.final);
+  assert.strictEqual(s.diamond, 4 + 256);
+  assert.strictEqual(s.tower.best, 9);
+  assert.ok(!TD.modes.towerContinue(s));
+});
+
+test('九层妖塔：战斗中途刷新页面算失败；待选择的状态刷新后还在', () => {
+  const s = P.newSave();
+  clearUpTo(s, 60);
+  s.gold = 2;
+  TD.modes.towerStart(s);
+  assert.ok(TD.modes.towerRunState(s, true), '战斗进行中');
+  assert.strictEqual(TD.modes.towerRunState(s, false), null, '没有战斗了（刷新）= 失败');
+  assert.strictEqual(s.towerRun, null);
+  TD.modes.towerStart(s);
+  TD.modes.applyTowerResult(s, { win: true });
+  assert.strictEqual(TD.modes.towerRunState(s, false).state, 'choose', '过了一层待选择：刷新后仍在');
+  TD.modes.towerContinue(s);
+  assert.strictEqual(TD.modes.towerRunState(s, false), null, '选了继续之后刷新 = 失败');
+  assert.strictEqual(s.diamond || 0, 0);
+});
+
+test('九层妖塔：一层真的能打起来——大量怪物涌出，没有铜币收益、提前召唤不给铜币，打完能结算', () => {
+  const s = P.newSave();
+  clearUpTo(s, 70);
+  const def = TD.modes.buildTower(s, 2);
+  const b = new TD.Battle({ level: 'tower', levelDef: def, stage: def.stage, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 3, autoItems: true, autoSupply: true });
+  b.wall.max = b.wall.hp = 1e12;
+  let peak = 0;
+  for (let i = 0; i < 60 * 40; i++) {
+    b.step(1 / 60);
+    peak = Math.max(peak, b.aliveCount());
+  }
+  assert.ok(peak >= 60, `大量涌现：峰值同屏 ${peak}`);
+  assert.strictEqual(b.callNextWave() >= 0 ? b.earlyCopper : 0, 0, '提前召唤不给铜币');
+  const bosses = b.monsters.filter((m) => m.def.towerOf);
+  assert.ok(bosses.length > 0 && bosses.every((m) => m.ai === undefined), '妖王没有特殊行动');
 });
 
 test('助战伙伴：打败对应 Boss 后才能带；属性类加成生效；墨墨定时吐墨团', () => {
@@ -1322,11 +1415,11 @@ test('助战伙伴：打败对应 Boss 后才能带；属性类加成生效；�
   assert.strictEqual(P.battleLoadout(s).buddy, null);
 });
 
-test('统计：普通关卡、无尽、每日、Boss 连战都用同一套累计（含提前召唤）', () => {
+test('统计：普通关卡、无尽、每日、九层妖塔都用同一套累计（含提前召唤）', () => {
   const s = P.newSave();
   clearUpTo(s, 60);
   const r = { kills: 5, earlyCalls: 2, interrupts: 1, supplies: ['sharp'], killsByType: { slime: 5 }, bestStreak: 7, combos: { shatter: 1 }, time: 100 };
-  TD.modes.applyBossRushResult(s, r);
+  TD.modes.applyTowerResult(s, r);
   TD.modes.applyEndlessResult(s, Object.assign({ wavesCleared: 3 }, r));
   assert.strictEqual(s.stats.battles, 2);
   assert.strictEqual(s.stats.earlyCalls, 4);
@@ -1514,14 +1607,6 @@ test('波波：在其余车道伸出触手；2 条以上触手护身；吸盘回
   b.kill(boss);
   assert.ok(!b.whirl);
   assert.ok(b.monsters.filter((m) => m.type === 'tentacle').every((m) => m.dead), '触手缩回');
-});
-
-test('Boss 连战：通关第七章后贝贝和波波加入，共 14 个', () => {
-  const s = P.newSave();
-  clearUpTo(s, 70);
-  assert.strictEqual(TD.modes.buildBossRush(s).waves.length, 14);
-  const r = TD.modes.applyBossRushResult(s, { killsByType: { jellyPrince: 1 }, killCopper: 0, time: 100 });
-  assert.strictEqual(r.total, 14);
 });
 
 test('助战伙伴贝贝：每波开始给城墙一个泡泡护盾', () => {
@@ -1793,7 +1878,7 @@ test('兑换所：100 铜 = 1 银，100 银 = 1 金；钻石暂时无法获得',
   assert.strictEqual(s.gold, 1);
   assert.strictEqual(s.diamond, 0);
   assert.ok(!P.exchange(s, 'gold', 1), '金不能换钻石');
-  assert.strictEqual(TD.config.exchange.diamondObtainable, false);
+  assert.strictEqual(TD.config.exchange.diamondObtainable, true, '钻石只能在九层妖塔里获得');
   const old = P.newSave();
   delete old.diamond;
   assert.strictEqual(P.migrate(old).diamond, 0, '老存档补上钻石');

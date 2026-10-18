@@ -118,10 +118,16 @@
       const reward =
         m.kind === 'endless'
           ? TD.modes.applyEndlessResult(game.save, battle.result)
-          : m.kind === 'bossrush'
-          ? TD.modes.applyBossRushResult(game.save, battle.result)
+          : m.kind === 'tower'
+          ? TD.modes.applyTowerResult(game.save, battle.result)
           : TD.modes.applyDailyResult(game.save, m.info, battle.result);
       game.persist();
+      if (m.kind === 'tower') {
+        // 九层妖塔（设计书 74）：过了一层 → 选择领钻石还是继续；通关第 9 层或失败 → 结算
+        if (reward.win && !reward.final) TD.ui.showTowerChoice(reward);
+        else TD.ui.showTowerResult(reward);
+        return;
+      }
       TD.ui.showModeResult(battle, reward);
       return;
     }
@@ -149,12 +155,13 @@
     const b = game.battle;
     if (!b) return;
     if (b.mode && b.mode.kind === 'endless') TD.ui.startEndless();
-    else if (b.mode && b.mode.kind === 'bossrush') TD.ui.startBossRush();
     else game.startBattle(b.levelNo, b.mode || undefined);
   };
 
   game.quitBattle = function () {
     const n = game.battle ? game.battle.stage : 1;
+    // 放弃妖塔挑战 = 失败，门票不退（设计书 74.2）
+    if (game.battle && game.battle.mode && game.battle.mode.kind === 'tower') TD.modes.towerFail(game.save);
     TD.ui.closeModal();
     game.battle = null;
     game.renderer.battle = null;
@@ -333,6 +340,8 @@
 
   function init() {
     game.save = TD.saveStore.load() || P.newSave();
+    // 妖塔战斗中途刷新页面 = 失败（设计书 74.4）；已通过、等待选择的状态保留
+    TD.modes.towerRunState(game.save, false);
     TD.audio.enabled = game.save.settings.sound !== false;
     TD.music.enabled = game.save.settings.music !== false;
     TD.audio.setVolume((game.save.settings.sfxVolume ?? 100) / 100);

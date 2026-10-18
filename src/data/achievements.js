@@ -6,7 +6,7 @@
 
   const cleared = (save, n) => (save.levels[n] || {}).clears > 0;
   const totalStars = (save) => Object.values(save.levels).reduce((a, r) => a + (r.stars || 0), 0);
-  const bossTypes = () => Object.keys(TD.data.monsters).filter((k) => TD.data.monsters[k].boss);
+  const bossTypes = () => Object.keys(TD.data.monsters).filter((k) => TD.data.monsters[k].boss && !TD.data.monsters[k].towerOf);
   const introTypes = () => Object.keys(TD.data.monsters).filter((k) => !TD.data.noIntro[k]);
 
   TD.data.achievements = [
@@ -52,7 +52,9 @@
     },
     { id: 'streak30', name: '势不可挡', desc: '单局连击达到 30（1.2 秒内连续击败怪物）', reward: { silver: 2 }, check: (s) => (s.stats.bestStreak || 0) >= 30 },
     { id: 'combo50', name: '协同大师', desc: '累计触发 50 次技能协同（碎冰、鼓点箭雨）', reward: { silver: 2 }, check: (s) => (s.stats.combos || 0) >= 50 },
-    { id: 'bossRush', name: 'Boss 克星', desc: '在 Boss 连战中一次打败全部 12 个 Boss', reward: { gold: 1 }, check: (s) => ((s.bossRush || {}).best || 0) >= 12 },
+    { id: 'tower1', name: '初探妖塔', desc: '通过九层妖塔的第 1 层', reward: { silver: 3 }, check: (s) => ((s.tower || {}).best || 0) >= 1 },
+    { id: 'tower5', name: '妖塔勇士', desc: '通过九层妖塔的第 5 层', reward: { gold: 1 }, check: (s) => ((s.tower || {}).best || 0) >= 5 },
+    { id: 'tower9', name: '镇塔者', desc: '通关九层妖塔的全部 9 层', reward: { gold: 3 }, check: (s) => ((s.tower || {}).best || 0) >= 9 },
     { id: 'diary', name: '日记写满了', desc: '读完全部守城日记（跳过的段落可以在日记本里重看）', reward: { silver: 3 }, check: (s) => (TD.data.storyOrder || []).every((k) => (s.story || {})[k] === 'read') },
     { id: 'kill1k', name: '百怪斩', desc: '累计击败 1000 只怪物', reward: { silver: 2 }, check: (s) => s.stats.kills >= 1000 },
     { id: 'kill10k', name: '万怪敌', desc: '累计击败 10000 只怪物', reward: { gold: 1 }, check: (s) => s.stats.kills >= 10000 },

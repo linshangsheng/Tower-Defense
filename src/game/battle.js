@@ -309,7 +309,8 @@
 
     callNextWave() {
       if (this.waveState !== 'waiting' || this.waveIndex >= this.totalWaves - 1) return -1;
-      const bonus = Math.floor(this.countdown) * C.earlyCallCopperPerSec * (1 + (this.rules.earlyMult || 0));
+      // 妖塔里打怪没有任何收益，提前召唤也不给铜币（设计书 74.2）
+      const bonus = this.level.tower ? 0 : Math.floor(this.countdown) * C.earlyCallCopperPerSec * (1 + (this.rules.earlyMult || 0));
       this.earlyCopper += bonus;
       this.earlyCalls++;
       this.countdown = 0;
@@ -350,7 +351,7 @@
           this.countdown = Math.min(this.countdown, C.waveClearDelay);
         }
         // 无尽模式：Boss 还活着时下一波不来（普通关卡的 Boss 都在最后一波）
-        const bossHold = (this.level.endless || this.level.bossRush) && this.monsters.some((m) => m.def.boss && !m.dead);
+        const bossHold = this.level.endless && this.monsters.some((m) => m.def.boss && !m.dead);
         if (!bossHold) this.countdown -= dt;
         if (this.countdown <= 0) {
           if (this.supplyWaves.includes(this.waveIndex) && !this.supplyOffered[this.waveIndex]) {
@@ -382,7 +383,7 @@
         lane = this.pack.lane;
         this.pack.left--;
       }
-      if (lane === undefined && def.boss) {
+      if (lane === undefined && def.boss && !def.towerOf) {
         // Boss 走中间车道；已经有 Boss 在中间时（精英挑战两两出场）换到旁边的车道
         const mid = Math.floor(this.lanes / 2);
         const taken = (l) => this.monsters.some((o) => !o.dead && o.def.boss && o.lane === l);

@@ -4,7 +4,8 @@
   'use strict';
 
   const TAU = Math.PI * 2;
-  const CAP = 520; // 同屏粒子上限：超过 70% 时新粒子减半，到上限就不再生成
+  const CAP_MAX = 520; // 同屏粒子上限：超过 70% 时新粒子减半，到上限就不再生成
+  let CAP = CAP_MAX;
 
   function rgba(hex, a) {
     const n = parseInt(hex.slice(1), 16);
@@ -433,4 +434,7 @@
   }
 
   TD.Vfx = Vfx;
+  Vfx.setCap = (n) => {
+    CAP = n;
+  };
 })((globalThis.TD = globalThis.TD || {}));

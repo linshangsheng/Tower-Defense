@@ -118,7 +118,7 @@
       h('span', { title: '铜币' }, coinIcon('copper'), s.copper),
       h('span', { title: '银币' }, coinIcon('silver'), s.silver),
       h('span', { title: '金币' }, coinIcon('gold'), s.gold),
-      h('span', { title: '钻石（暂时无法获得）', class: 'dim-currency' }, coinIcon('diamond'), s.diamond || 0)
+      h('span', { title: '钻石（只能在九层妖塔里获得）', class: 'dim-currency' }, coinIcon('diamond'), s.diamond || 0)
     );
   }
 
@@ -655,7 +655,7 @@
         { class: 'mode-buttons' },
         TD.modes.dailyUnlocked(s) ? h('button', { class: 'btn small', onclick: () => (sfx('click'), UI.showDaily()) }, TD.modes.dailyInfo(s).done ? '📅 每日挑战 ✔' : '📅 每日挑战') : null,
         TD.modes.endlessUnlocked(s) ? h('button', { class: 'btn small', onclick: () => (sfx('click'), UI.showEndless()) }, `♾ 无尽模式${(s.endless || {}).best ? ' · 纪录 ' + s.endless.best : ''}`) : null,
-        TD.modes.bossRushUnlocked(s) ? h('button', { class: 'btn small', onclick: () => (sfx('click'), UI.showBossRush()) }, `👑 Boss 连战${(s.bossRush || {}).best ? ` · ${s.bossRush.best}/12` : ''}`) : null
+        TD.modes.towerUnlocked(s) ? h('button', { class: 'btn small', onclick: () => (sfx('click'), UI.showTower()) }, `🏯 九层妖塔${(s.tower || {}).best ? ` · ${s.tower.best}/9` : ''}`) : null
       )
     );
     root.appendChild(screenEl);
@@ -1084,7 +1084,7 @@
       );
     el.append(card(h('span', null, coinIcon('copper'), ` ${E.copperPerSilver} 铜 → 1 `, coinIcon('silver'), ' 银'), null, '银币用来解锁技能和精良装备。', h('div', { class: 'btn-row' }, mk('copper', 'silver', E.copperPerSilver, 1), mk('copper', 'silver', E.copperPerSilver, 5))));
     el.append(card(h('span', null, coinIcon('silver'), ` ${E.silverPerGold} 银 → 1 `, coinIcon('gold'), ' 金'), null, '金币用来购买传说装备、高阶武器和技能 Lv3。', h('div', { class: 'btn-row' }, mk('silver', 'gold', E.silverPerGold, 1))));
-    el.append(card(h('span', null, coinIcon('diamond'), ' 钻石'), null, '最稀有的货币，暂时无法获得，也不能兑换。以后会加入获得方法。', h('span', { class: 'equipped dim' }, `你有 ${s.diamond || 0} 颗`)));
+    el.append(card(h('span', null, coinIcon('diamond'), ' 钻石'), null, '最稀有的货币，只能在「九层妖塔」里获得，不能兑换；目前还没有商品可以买。', h('span', { class: 'equipped dim' }, `你有 ${s.diamond || 0} 颗`)));
   }
 
   // ---- 配装页 ----
@@ -1404,7 +1404,7 @@
     let waveText;
     if (b.waveState === 'prepare') waveText = `准备… ${Math.ceil(b.countdown)}`;
     else if (b.level.endless) waveText = `第 ${b.waveIndex + 1} 波 · 纪录 ${(game.save.endless || {}).best || 0}`;
-    else if (b.level.bossRush) waveText = `Boss ${b.waveIndex + 1} / ${b.totalWaves} · ${TD.modes.fmtTime(b.time)}`;
+    else if (b.level.tower) waveText = `第 ${b.level.floor} 层 · 第 ${b.waveIndex + 1} / ${b.totalWaves} 波 · 剩余 ${b.aliveCount()} 只`;
     else waveText = `第 ${b.waveIndex + 1} / ${b.totalWaves} 波`;
     if (b.pendingSupply) waveText += ' · 补给中';
     else if (b.waveState === 'waiting') waveText += ` · 下一波 ${Math.max(0, Math.ceil(b.countdown))} 秒`;
@@ -1518,9 +1518,9 @@
           'div',
           { class: 'modal-buttons col' },
           h('button', { class: 'btn primary', onclick: () => game.togglePause() }, '继续战斗'),
-          h('button', { class: 'btn', onclick: () => (UI.closeModal(), game.restartBattle()) }, '重新开始'),
+          b.level.tower ? null : h('button', { class: 'btn', onclick: () => (UI.closeModal(), game.restartBattle()) }, '重新开始'),
           h('button', { class: 'btn', onclick: () => UI.showHelp() }, '玩法说明'),
-          h('button', { class: 'btn danger', onclick: () => game.quitBattle() }, '放弃本关')
+          h('button', { class: 'btn danger', onclick: () => (b.level.tower ? UI.confirm('放弃这趟挑战吗？门票不退，什么都得不到。', () => game.quitBattle()) : game.quitBattle()) }, b.level.tower ? '放弃挑战' : '放弃本关')
         )
       )
     );

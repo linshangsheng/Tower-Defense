@@ -32,7 +32,7 @@ const STEPS = [
   ...[1, 7].map((c) => [`bestiary-${c}`, (c) => (TD.ui.showBestiary(c), !!document.querySelector('.modal')), c]),
   ['endless', () => (TD.ui.showEndless(), !!document.querySelector('.mode-rules'))],
   ['daily', () => (TD.ui.showDaily(), !!document.querySelector('.preview'))],
-  ['bossrush', () => (TD.ui.showBossRush(), document.querySelectorAll('.rush-faces canvas').length === TD.modes.bossRushList(TD.game.save).length)],
+  ['tower', () => (TD.ui.showTower(), document.querySelectorAll('.tower-table tbody tr').length === 9)],
   ['story', () => (TD.ui.closeModal(), TD.ui.playStory('pre60', () => {}, { replay: true }), !!document.querySelector('.story-overlay'))],
   ['story-skip', () => (document.querySelector('.story-skip').click(), !document.querySelector('.story-overlay'))],
   ['rest', () => ((TD.game.playSeconds = 99999), TD.ui.showMap(5), !!document.querySelector('.rest'))],
@@ -79,11 +79,13 @@ const STEPS = [
     'mode-result',
     () => {
       TD.ui.closeModal();
-      TD.ui.startBossRush();
+      TD.game.save.gold = 5;
+      TD.modes.towerStart(TD.game.save);
+      TD.ui.startTowerFloor();
       const b = TD.game.battle;
       for (let i = 0; i < 60 * 5; i++) b.step(1 / 60);
       b.finish(false);
-      TD.ui.showModeResult(b, TD.modes.applyBossRushResult(TD.game.save, b.result));
+      TD.ui.showTowerResult(TD.modes.applyTowerResult(TD.game.save, b.result));
       return !!document.querySelector('.result');
     },
   ],

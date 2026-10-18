@@ -106,60 +106,147 @@
     return out;
   };
 
-  // ---------- Boss 连战（设计书 48） ----------
-  M.bossRushUnlocked = (save) => P.isCleared(save, 60);
+  // ---------- 九层妖塔（设计书 74；取代原来的 Boss 连战） ----------
+  const T = () => D.tower;
+  M.towerUnlocked = (save) => P.isCleared(save, 60);
 
-  // 可以出场的 Boss：已经搬进小镇的朋友（设计书 52.7）
-  M.bossRushList = (save) => D.town.filter((f) => !save || P.isCleared(save, f.level));
+  // 可以出场的妖王：已经搬进小镇的朋友（设计书 52.7）的"妖塔版"
+  M.towerBossList = (save) => D.town.filter((f) => !save || P.isCleared(save, f.level)).map((f) => f.boss);
 
-  M.buildBossRush = function (save) {
-    const stage = 60;
-    const list = M.bossRushList(save);
-    const waves = list.map((f) => {
-      // 护卫：Boss 原来那一关里的第一种小怪
-      const lvl = D.levels[f.level];
-      let escort = 'slime';
-      for (const w of lvl.waves)
-        for (const [t] of w.groups)
-          if (escort === 'slime' && !D.monsters[t].boss && !D.noIntro[t]) escort = t;
-      return { gap: 0.8, groups: [[escort, 6], [f.boss, 1]], D: C.difficulty(stage), chapter: D.chapterOf(f.level).id };
-    });
+  M.towerReward = (floor) => Math.pow(2, floor - 1); // 第 N 层：2^(N−1) 钻石
+  M.towerCounts = (floor) => ({ boss: T().bossPerFloor * floor, minion: T().minionPerFloor * floor });
+  // 难度按已通关的最高关卡折算（至少按第 60 关）；越高的层血量越高
+  M.towerStage = (save) => Math.max(60, Math.min(Math.max(...Object.keys(D.levels).map(Number)), P.highestCleared(save)));
+  M.towerD = (save, floor) => C.difficulty(M.towerStage(save)) * T().base * Math.pow(T().grow, floor - 1);
+
+  // 把 n 只平均分给一组类型（余数依次补给前面的），返回 [[类型, 数量], ...]
+  function spread(types, n) {
+    const out = {};
+    for (let i = 0; i < n; i++) out[types[i % types.length]] = (out[types[i % types.length]] || 0) + 1;
+    return Object.entries(out);
+  }
+
+  // 妖塔里的小妖：每个已解锁的章节挑 2 种（同屏几百只时种类太多会拖慢画面，设计书 74.5）
+  M.towerMinionPool = function (save) {
+    const h = Math.max(1, P.highestCleared(save));
+    const last = Math.min(h, poolLast(save));
+    const out = [];
+    for (const ch of D.chapters) {
+      const seen = [];
+      for (const n of ch.levels) {
+        if (n > last) break;
+        for (const w of D.levels[n].waves)
+          for (const [t] of w.groups) {
+            const d = D.monsters[t];
+            if (!d.boss && !d.towerOf && !D.noIntro[t] && !seen.includes(t) && !out.includes(t)) seen.push(t);
+          }
+      }
+      out.push(...seen.slice(0, 2));
+    }
+    return out.length ? out : ['slime'];
+  };
+
+  M.buildTower = function (save, floor) {
+    const cnt = M.towerCounts(floor);
+    const bosses = M.towerBossList(save).map((id) => 'tw_' + id);
+    const minions = M.towerMinionPool(save);
+    const per = T().waves;
+    const stage = M.towerStage(save);
+    const waves = [];
+    for (let w = 0; w < per; w++) {
+      const nb = Math.round(cnt.boss / per);
+      const nm = Math.round(cnt.minion / per);
+      // 出怪间隔：一波大约在 (12 + 2×层数) 秒里全部涌出
+      const gap = Math.max(0.05, (12 + 2 * floor) / (nb + nm));
+      waves.push({ gap, groups: [...spread(minions, nm), ...spread(bosses, nb)], D: M.towerD(save, floor), chapter: D.chapterOf(Math.min(stage, 70)).id });
+    }
     return {
-      name: 'Boss 连战',
-      type: 'bossrush',
-      bossRush: true,
+      name: `九层妖塔 · 第 ${floor} 层`,
+      type: 'tower',
+      tower: true,
+      floor,
       lanes: 5,
       waves,
-      supplyEvery: 3,
+      supplyEvery: 1,
       stage,
-      tip: `Boss 连战：${list.length} 个 Boss 按顺序出场，打败当前 Boss 才会来下一个！`,
+      tip: `第 ${floor} 层：${cnt.boss} 个妖王 + ${cnt.minion} 只小妖同时涌来。打怪没有收益，只有过关才有钻石！`,
     };
   };
 
-  M.applyBossRushResult = function (save, result) {
-    const r = (save.bossRush = save.bossRush || { best: 0, bestTime: 0, runs: 0 });
-    const list = M.bossRushList(save);
-    const bossTypes = new Set(list.map((f) => f.boss));
-    let beaten = 0;
-    for (const [t, c] of Object.entries(result.killsByType || {})) if (bossTypes.has(t)) beaten += c;
-    beaten = Math.min(beaten, list.length);
-    const all = beaten === list.length;
-    const out = { copper: 0, silver: 0, gold: 0, notes: [], unlocks: [], beaten, total: list.length, oldBest: r.best };
-    out.copper = result.killCopper || 0;
-    if (beaten > r.best) {
-      out.silver = beaten - r.best;
-      out.notes.push(`新纪录！打败 ${r.best} → ${beaten} 个 Boss`);
-      r.best = beaten;
+  // ---- 一趟挑战的流程（状态存在 save.towerRun，刷新页面不能反悔） ----
+  //  null：没在挑战；{ floor, state: 'battle' }：第 floor 层战斗中；{ floor, state: 'choose' }：已通过第 floor 层，等待选择
+  // inBattle：此刻是否真的有一场妖塔战斗在进行。战斗中途刷新 / 关页面（存档里是"战斗中"，但没有战斗）= 失败
+  M.towerRunState = function (save, inBattle) {
+    const run = save.towerRun;
+    if (!run) return null;
+    if (run.state === 'battle' && !inBattle) {
+      M.towerFail(save);
+      return null;
     }
-    if (all && (!r.bestTime || result.time < r.bestTime)) {
-      if (r.bestTime) out.notes.push(`最快纪录！${M.fmtTime(r.bestTime)} → ${M.fmtTime(result.time)}`);
-      r.bestTime = result.time;
+    return run;
+  };
+
+  M.towerCanStart = (save) => M.towerUnlocked(save) && !save.towerRun && P.canAfford(save, T().fee);
+
+  M.towerStart = function (save) {
+    if (!M.towerCanStart(save)) return false;
+    P.pay(save, T().fee);
+    save.towerRun = { floor: 1, state: 'battle' };
+    const t = (save.tower = save.tower || { best: 0, runs: 0, diamonds: 0 });
+    t.runs++;
+    return true;
+  };
+
+  M.towerFail = function (save) {
+    save.towerRun = null;
+  };
+
+  // 通过当前这一层：返回 { floor, reward, final }
+  M.towerFloorCleared = function (save) {
+    const run = save.towerRun;
+    if (!run || run.state !== 'battle') return null;
+    const t = (save.tower = save.tower || { best: 0, runs: 0, diamonds: 0 });
+    const floor = run.floor;
+    t.best = Math.max(t.best, floor);
+    const out = { floor, reward: M.towerReward(floor), final: floor >= T().floors };
+    if (out.final) M.towerCashOut(save, floor);
+    else run.state = 'choose';
+    return out;
+  };
+
+  // 领取钻石走人
+  M.towerCashOut = function (save, floor) {
+    const run = save.towerRun;
+    const f = floor || (run && run.floor);
+    if (!f) return 0;
+    const n = M.towerReward(f);
+    save.diamond = (save.diamond || 0) + n;
+    const t = (save.tower = save.tower || { best: 0, runs: 0, diamonds: 0 });
+    t.diamonds += n;
+    save.towerRun = null;
+    return n;
+  };
+
+  // 继续往上爬：从这一刻起，刷新页面等于失败
+  M.towerContinue = function (save) {
+    const run = save.towerRun;
+    if (!run || run.state !== 'choose' || run.floor >= T().floors) return false;
+    run.floor++;
+    run.state = 'battle';
+    return true;
+  };
+
+  // 战斗结束时调用：赢了 → 返回 towerFloorCleared 的结果；输了 → 什么都没有
+  M.applyTowerResult = function (save, result) {
+    const out = { win: !!result.win, notes: [], achievements: [] };
+    if (result.win) {
+      Object.assign(out, M.towerFloorCleared(save) || {});
+    } else {
+      out.floor = (save.towerRun && save.towerRun.floor) || 0;
+      M.towerFail(save);
     }
-    r.runs++;
-    save.copper += out.copper;
-    save.silver += out.silver;
-    P.recordStats(save, result, all);
-    out.achievements = P.checkAchievements(save, Object.assign({ bossRushAll: all }, result, { win: all }));
+    P.recordStats(save, result, result.win);
+    out.achievements = P.checkAchievements(save, Object.assign({}, result, { win: result.win }));
     return out;
   };
 

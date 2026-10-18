@@ -2669,3 +2669,56 @@ select option {
   overflow-y: auto;
   padding-right: 4px;
 }
+
+/* ---------- 九层妖塔（设计书 74） ---------- */
+.tower-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 8px 0;
+  font-size: 15px;
+}
+.tower-table th,
+.tower-table td {
+  padding: 5px 10px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.tower-table tr.done td {
+  color: #ffd98a;
+}
+.tower-options {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  margin: 14px 0 4px;
+}
+.tower-options .btn {
+  min-width: 220px;
+  padding: 14px 18px;
+}
+.tower-options small {
+  display: block;
+  margin-top: 4px;
+  opacity: 0.8;
+  font-weight: normal;
+}
+.tower-choice .result-title {
+  margin-bottom: 4px;
+}
+.tower-options .btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  white-space: normal;
+  line-height: 1.3;
+  flex: 1;
+  max-width: 260px;
+}
+.tower-options .btn small {
+  font-size: 13px;
+  text-align: center;
+}
+.tower-choice {
+  min-width: min(620px, 90vw);
+}

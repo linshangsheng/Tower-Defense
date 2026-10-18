@@ -1169,7 +1169,7 @@
 
   TD.data.levelTypeNames = {
     tutorial: '教学',
-    bossrush: 'Boss 连战',
+    tower: '九层妖塔',
     normal: '普通',
     raid: '空袭',
     rush: '速攻',

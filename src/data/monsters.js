@@ -897,4 +897,22 @@
     enrageSpeedMult: 1.5,
     laneSwitchEvery: 5,
   };
+
+  // ---------- 九层妖塔（设计书 74）----------
+  // 妖塔里的 Boss 是小镇朋友们的"妖塔版"：去掉各自的指挥 / 召唤 / 冲锋 / 分裂（几十个同时行动会乱套），
+  // 只保留血量、护甲、魔抗等基础属性；画法沿用原来的（art）。
+  TD.data.towerBossIds = [];
+  for (const id of Object.keys(TD.data.monsters)) {
+    const def = TD.data.monsters[id];
+    if (!def.boss || def.bossPart) continue;
+    const tw = Object.assign({}, def, { art: id, towerOf: id, desc: '九层妖塔里的妖王：没有特殊行动，只管冲向城墙。' });
+    delete tw.ai;
+    delete tw.split;
+    delete tw.onDeath;
+    TD.data.monsters['tw_' + id] = tw;
+    TD.data.noIntro['tw_' + id] = true;
+    TD.data.towerBossIds.push(id);
+  }
+  // 妖塔的数值：第 k 层怪物血量与攻城伤害 = D(关卡) × base × grow^(k−1)；目前 grow = 1（每层只有数量不同），base 由 tools/tower.js 标定
+  TD.data.tower = { floors: 9, bossPerFloor: 10, minionPerFloor: 90, base: 0.14, grow: 1, waves: 3, fee: { gold: 1 } };
 })((globalThis.TD = globalThis.TD || {}));

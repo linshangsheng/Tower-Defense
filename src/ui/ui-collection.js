@@ -40,38 +40,124 @@
     );
   };
 
-  // ================= Boss 连战（设计书 48） =================
-  UI.startBossRush = function () {
-    const levelDef = TD.modes.buildBossRush(G().save);
-    G().startBattle('bossrush', { kind: 'bossrush', levelDef, stage: levelDef.stage });
+  // ================= 九层妖塔（设计书 74） =================
+  const inTowerBattle = () => !!(G().battle && G().battle.mode && G().battle.mode.kind === 'tower');
+
+  // 开始（或继续）当前这一层的战斗
+  UI.startTowerFloor = function () {
+    const s = G().save;
+    const run = s.towerRun;
+    if (!run) return;
+    const levelDef = TD.modes.buildTower(s, run.floor);
+    G().persist();
+    G().startBattle('tower', { kind: 'tower', levelDef, stage: levelDef.stage });
   };
 
-  UI.showBossRush = function () {
+  UI.showTower = function () {
     const s = G().save;
-    const r = s.bossRush || { best: 0, bestTime: 0 };
-    const list = TD.modes.bossRushList(s);
-    const faces = list.map((f) => {
-      const img = TD.sprites.portrait(f.boss, 44);
-      img.title = D.monsters[f.boss].name;
-      return img;
-    });
+    const run = TD.modes.towerRunState(s, inTowerBattle());
+    if (run && run.state === 'choose') return UI.showTowerChoice({ floor: run.floor, reward: TD.modes.towerReward(run.floor) }, true);
+    const t = s.tower || { best: 0, runs: 0, diamonds: 0 };
+    const cnt = (k) => TD.modes.towerCounts(k);
+    const rows = [];
+    for (let k = 1; k <= D.tower.floors; k++) rows.push(h('tr', { class: t.best >= k ? 'done' : '' }, h('td', null, `第 ${k} 层`), h('td', null, `${cnt(k).boss} 妖王 + ${cnt(k).minion} 小妖`), h('td', null, coinIcon('diamond'), ' ', TD.modes.towerReward(k))));
+    const canStart = TD.modes.towerCanStart(s);
     modal(
       h(
         'div',
-        { class: 'preview' },
-        h('div', { class: 'preview-head' }, h('h2', null, '👑 Boss 连战'), h('span', { class: 'tag' }, `最多 ${r.best} / ${list.length}${r.bestTime ? ' · 最快 ' + TD.modes.fmtTime(r.bestTime) : ''}`)),
-        h('div', { class: 'rush-faces' }, faces),
+        { class: 'preview tower' },
+        h('div', { class: 'preview-head' }, h('h2', null, '🏯 九层妖塔'), h('span', { class: 'tag' }, `最高 ${t.best} 层 · 累计 ${t.diamonds} 钻`)),
+        h('table', { class: 'tower-table' }, h('thead', null, h('tr', null, h('th', null, '层'), h('th', null, '怪物'), h('th', null, '在这里领取'))), h('tbody', null, rows)),
         h(
           'ul',
           { class: 'mode-rules' },
-          h('li', null, `${list.length} 个 Boss 按故事顺序出场，每个带 6 只它那一章的小怪；打败当前 Boss 才会来下一个。${list.length < D.town.length ? '通关第七章后，贝贝和波波也会加入。' : ''}`),
-          h('li', null, '想刷最快纪录？"提前召唤"可以让下一个 Boss 马上出场——两个 Boss 同时在场，很冒险！'),
-          h('li', null, '全部按第 60 关的难度计算；每 3 波一次战场补给；城墙被攻破时结束。'),
-          h('li', null, '刷新"打败 Boss 数"纪录时，每多 1 个奖励 1 银；全部打败解锁成就「Boss 克星」（1 金）。')
+          h('li', null, `每次挑战花 ${P.costText(D.tower.fee)}。`),
+          h('li', null, '怪物同时大量涌来，打怪没有任何收益；只有"过关"才有钻石。钻石只能在这里获得。'),
+          h('li', null, '每过一层可以领取这一层的钻石离开，或者继续往上：再过一层，钻石翻倍；失败了，什么都没有。'),
+          h('li', null, `难度按你通关的最高关卡折算（至少按第 60 关）；每一层补给 2 次；中途退出或刷新页面算失败。`)
         ),
-        h('div', { class: 'modal-buttons' }, h('button', { class: 'btn', onclick: UI.closeModal }, '返回'), h('button', { class: 'btn', onclick: () => UI.showShop(null, 'loadout') }, '配装'), h('button', { class: 'btn primary big', onclick: () => (UI.closeModal(), UI.startBossRush()) }, '开始'))
+        canStart ? null : h('div', { class: 'hint warn' }, s.towerRun ? '还有一趟挑战没有结算。' : `需要 ${P.costText(D.tower.fee)}（先去商店的汇兑所把银币换成金币）。`),
+        h(
+          'div',
+          { class: 'modal-buttons' },
+          h('button', { class: 'btn', onclick: UI.closeModal }, '返回'),
+          h('button', { class: 'btn', onclick: () => UI.showShop(null, 'loadout') }, '配装'),
+          h(
+            'button',
+            {
+              class: 'btn primary big',
+              disabled: canStart ? null : true,
+              onclick: () => {
+                if (!TD.modes.towerStart(G().save)) return sfx('error');
+                sfx('buy');
+                UI.closeModal();
+                UI.startTowerFloor();
+              },
+            },
+            `开始挑战（${P.costText(D.tower.fee)}）`
+          )
+        )
       ),
       { closeOnBack: true, cls: 'wide' }
+    );
+  };
+
+  // 过了一层：领钻石走人，还是继续往上
+  UI.showTowerChoice = function (info, fromReopen) {
+    const s = G().save;
+    const k = info.floor;
+    const next = k + 1;
+    G().persist();
+    modal(
+      h(
+        'div',
+        { class: 'result win tower-choice' },
+        h('h2', { class: 'result-title' }, `第 ${k} 层通过！`),
+        h('div', { class: 'hint' }, fromReopen ? '上次爬到这里还没有领取。' : `打败了这一层的全部妖怪。`),
+        h(
+          'div',
+          { class: 'tower-options' },
+          h('button', { class: 'btn big', onclick: () => {
+            const n = TD.modes.towerCashOut(s);
+            sfx('coin');
+            G().persist();
+            UI.closeModal();
+            UI.showTowerResult({ win: true, floor: k, reward: n, cashed: true });
+          } }, h('div', null, `领取 ${info.reward} `, coinIcon('diamond')), h('small', null, '到此为止，落袋为安')),
+          h('button', { class: 'btn primary big', onclick: () => {
+            if (!TD.modes.towerContinue(s)) return sfx('error');
+            sfx('click');
+            UI.closeModal();
+            UI.startTowerFloor();
+          } }, h('div', null, `继续挑战第 ${next} 层`), h('small', null, `成功得 ${TD.modes.towerReward(next)} 钻；失败什么都没有`))
+        )
+      ),
+      { cls: 'result-modal' }
+    );
+  };
+
+  // 妖塔结算：失败（什么都没有）或者通过第 9 层 / 领取之后
+  UI.showTowerResult = function (out) {
+    const s = G().save;
+    const t = s.tower || { best: 0 };
+    const title = out.win ? (out.floor >= D.tower.floors ? '九层通关！妖塔被你征服了！' : `平安离开：爬到第 ${out.floor} 层`) : '挑战失败…';
+    modal(
+      h(
+        'div',
+        { class: 'result ' + (out.win ? 'win' : 'lose') },
+        h('h2', { class: 'result-title' }, title),
+        out.win ? h('div', { class: 'reward-box' }, h('div', { class: 'reward-row total' }, h('span', null, '获得'), h('b', null, out.reward, ' ', coinIcon('diamond')))) : h('div', { class: 'hint' }, `倒在了第 ${out.floor || 1} 层，什么都没有得到。门票不退。`),
+        h('div', { class: 'hint' }, `最高记录：第 ${t.best} 层 · 钻石 ${s.diamond || 0} 颗`),
+        ...(out.achievements || []).map((a) => h('div', { class: 'note achieve' }, `🏆 达成成就「${a.name}」：${a.desc}（+${P.costText(a.reward)}）`)),
+        h(
+          'div',
+          { class: 'modal-buttons' },
+          h('button', { class: 'btn', onclick: () => (UI.closeModal(), G().battle = null, G().renderer.battle = null, UI.showMap()) }, '地图'),
+          h('button', { class: 'btn', onclick: () => (UI.closeModal(), G().battle = null, G().renderer.battle = null, UI.showShop(null, 'attrs')) }, '去商店'),
+          h('button', { class: 'btn primary', onclick: () => (UI.closeModal(), G().battle = null, G().renderer.battle = null, UI.showMap(), UI.showTower()) }, '再来一次')
+        )
+      ),
+      { cls: 'result-modal' }
     );
   };
 
@@ -141,15 +227,10 @@
   UI.showModeResult = function (battle, reward) {
     const res = battle.result;
     const endless = battle.mode.kind === 'endless';
-    const rush = battle.mode.kind === 'bossrush';
     const title = endless
       ? reward.waves > 0
         ? `坚持了 ${reward.waves} 波！`
         : '城墙被攻破了…'
-      : rush
-      ? reward.beaten >= reward.total
-        ? `全部打败！用时 ${TD.modes.fmtTime(res.time)}`
-        : `打败了 ${reward.beaten} / ${reward.total} 个 Boss`
       : res.win
       ? '挑战成功！'
       : '挑战失败…';

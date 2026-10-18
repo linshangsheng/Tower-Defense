@@ -5,6 +5,7 @@
   const C = TD.config;
   const S = TD.sprites;
   const DRAW_SCALE = 1.25; // 怪物绘制放大倍数（不影响判定）
+  const CHEAP_FX = { spark: 1, rock: 1, glow: 1, poof: 1, spirit: 1 };
   const OUTLINE_C = '#3b2a1e';
 
   class Renderer {
@@ -359,6 +360,7 @@
 
     // ---------- 特效工具 ----------
     text(x, y, str, color, size, life, crit) {
+      if (this.fx.length > 300 && !crit) return;
       this.fx.push({ kind: 'text', x, y, str, color, size: size || 20, life: life || 0.8, age: 0, vy: -50, crit });
     }
     burst(x, y, color, n, speed) {
@@ -445,7 +447,8 @@
         return;
       }
       const y = e.m ? e.m.y + e.m.yOffset - 10 : (C.fieldTop + C.fieldBottom) / 2;
-      for (let i = 0; i < (e.big ? 16 : 3); i++) {
+      // 妖塔里几百只怪同时啃城墙：碎石特效超过上限就不再加（设计书 74.5）
+      for (let i = 0; i < (this.fx.length > 160 ? 0 : e.big ? 16 : 3); i++) {
         this.fx.push({
           kind: 'rock',
           x: C.wallX - 6,
@@ -494,7 +497,12 @@
         // 先画地面怪，再画飞行怪；同层按 y 排序
         const alive = b.monsters.filter((m) => !m.dead);
         // 怪物很多时降低光影缓存的刷新率（设计书 55.3）
-        if (TD.art) TD.art.LIT_FPS = alive.length > 60 ? 8 : 12;
+        // 怪物很多时降低光影缓存的刷新率、合并动画相位（妖塔里同屏几百只，设计书 74.5）
+        const tower = !!b.level.tower;
+        if (TD.art) TD.art.LIT_FPS = tower ? (alive.length > 150 ? 2 : 4) : alive.length > 60 ? 8 : 12;
+        this.litGroups = tower ? 1 : alive.length > 100 ? 2 : 4;
+        this.crowd = alive.length > 200 ? 0.8 : alive.length > 80 ? 1 : 0;
+        if (TD.Vfx && TD.Vfx.setCap) TD.Vfx.setCap(alive.length > 40 ? 240 : 520);
         alive.sort((a, c) => (a.def.flying ? 1 : 0) - (c.def.flying ? 1 : 0) || a.y - c.y);
         this.darkEyes = [];
         for (const m of alive) this.drawMonster(m, b);
@@ -1882,8 +1890,8 @@
           let tt = t;
           const flash = m.hitFlash;
           mo.flash = 0; // 受击闪白不进缓存，画完后再叠一层（省掉单独重画）
-          if (!def.boss && !m.ai) {
-            const group = m.id % 4;
+          if ((!def.boss || def.towerOf) && !m.ai) {
+            const group = m.id % (this.litGroups || 4);
             tt = frozen ? 0 : this.t + group * 0.37;
             mo.seed = group + 1;
             const hk = m.type + '|' + group + '|' + flags;
@@ -1897,7 +1905,16 @@
           const frame = frozen ? -1 : Math.floor(tt * TD.art.LIT_FPS);
           const key = frame + flags;
           const c = TD.art.litSprite(holder, key, def.size * DRAW_SCALE, this.scene.palette.rim, TD.art.opts.glow ? 0.32 : 0, (g) => ((S.volume = true), S.monster(g, m.type, 0, 0, def.size, tt, mo), (S.volume = false)));
-          ctx.drawImage(c.canvas, Math.round(x - c.ox), Math.round(ly - c.oy));
+          if (this.crowd && !def.boss) {
+            // 妖塔里同屏几百只：只贴精灵画布中间有内容的那一块（约一半面积），再按人数缩小一点（设计书 74.5）
+            const sz = def.size * DRAW_SCALE;
+            const cx = Math.max(0, Math.round(c.ox - sz * 1.5));
+            const cy = Math.max(0, Math.round(c.oy - sz * 2.6));
+            const cw = Math.min(c.canvas.width - cx, Math.round(sz * 3));
+            const ch = Math.min(c.canvas.height - cy, Math.round(sz * 3));
+            const k = this.crowd;
+            ctx.drawImage(c.canvas, cx, cy, cw, ch, Math.round(x - (c.ox - cx) * k), Math.round(ly - (c.oy - cy) * k), Math.round(cw * k), Math.round(ch * k));
+          } else ctx.drawImage(c.canvas, Math.round(x - c.ox), Math.round(ly - c.oy));
           if (flash > 0) {
             ctx.save();
             ctx.globalCompositeOperation = 'lighter';
@@ -1961,7 +1978,7 @@
         }
       }
       // 血条（满血不显示，Boss 用顶部大血条）
-      if (!def.boss && m.hp < m.maxHp) {
+      if ((!def.boss || def.towerOf) && m.hp < m.maxHp) {
         const w = Math.max(26, def.size * 1.8);
         const by = y - def.size * DRAW_SCALE * (def.flying ? 1.7 : 2.0) - 8;
         ctx.fillStyle = 'rgba(0,0,0,0.45)';
@@ -2291,7 +2308,7 @@
 
     drawBossBar(b) {
       // 精英挑战会同时出现两个 Boss（设计书 29.2）：并排画两条短血条
-      const bosses = b.monsters.filter((m) => m.def.boss && !m.dead).slice(0, 2);
+      const bosses = b.monsters.filter((m) => m.def.boss && !m.def.towerOf && !m.dead).slice(0, 2);
       if (bosses.length === 2) {
         this.drawOneBossBar(bosses[0], C.width / 2 - 170, 300);
         this.drawOneBossBar(bosses[1], C.width / 2 + 170, 300);
@@ -2642,6 +2659,9 @@
     drawFx(dt) {
       const ctx = this.ctx;
       const keep = [];
+      // 怪物很多时特效太多会拖慢画面：每帧最多画 120 个小特效（火花、碎石、光晕、烟）和 24 个飘字，多出来的只计时不画（设计书 74.5）
+      let cheap = 0;
+      let texts = 0;
       for (const f of this.fx) {
         f.age += dt;
         if (f.age < 0) {
@@ -2650,6 +2670,9 @@
         }
         if (f.age > f.life) continue;
         keep.push(f);
+        if (f.kind === 'text') {
+          if (++texts > 24 && !f.crit) continue;
+        } else if (CHEAP_FX[f.kind] && ++cheap > 120) continue;
         const k = f.age / f.life;
         ctx.save();
         switch (f.kind) {
