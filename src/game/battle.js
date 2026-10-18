@@ -124,6 +124,7 @@
       this.pack = null;
       this.wallDots = []; // 城墙持续伤害：{ dps, until, src }
       this.dotTick = 0.5;
+      this.extraPlan = this.planExtraMonsters(opts);
       this.supplyWaves = this.computeSupplyWaves();
       this.supplyOffered = {};
       this.supplyPicked = [];
@@ -150,6 +151,39 @@
       this.wallDamageTaken = 0;
       // 战斗报告（设计书 32）
       this.report = { bySource: {}, raw: { phys: 0, magic: 0 }, real: { phys: 0, magic: 0 }, wallBy: {} };
+    }
+
+    // 主线第 N 关多出的小怪（设计书 84）：每波每组各多几只。总数 = N × C.extraMonstersPerLevel，
+    // 先按各波原有小怪数量的比例分给各波，再在波内按各组数量的比例分给各组（最大余数法，保证加起来正好）。
+    // 无尽模式、每日挑战、九层妖塔（自带关卡定义）不加；没有小怪的关卡也不加。
+    planExtraMonsters(opts) {
+      const none = this.level.waves.map(() => null);
+      this.swarmStrength = 1;
+      this.swarmCopper = 1;
+      if (opts.levelDef || typeof opts.level !== 'number' || !D.levels[opts.level] || this.level.tower || this.level.endless) return none;
+      const total = opts.level * (C.extraMonstersPerLevel || 0);
+      const cm = (this.level.countMult || 1) * (1 + (this.rules.countBonus || 0));
+      // 只有"普通"小怪能当潮：治疗、远程、冰冻、吹泡泡的要停在远处，不适合撞墙；Boss 和妖塔分身不算
+      const plain = (d) => !d.boss && !d.healer && !d.ranged && !d.chill && !d.bubbler && !d.towerOf && !d.bossPart && !d.ai;
+      const minions = this.level.waves.map((w) => w.groups.map(([type, count]) => (plain(D.monsters[type]) ? Math.max(1, Math.round(count * cm)) : 0)));
+      const waveSums = minions.map((g) => g.reduce((a, b) => a + b, 0));
+      const all = waveSums.reduce((a, b) => a + b, 0);
+      if (!total || !all) return none;
+      const share = (weights, amount) => {
+        const sum = weights.reduce((a, b) => a + b, 0);
+        const raw = weights.map((w) => (sum ? (amount * w) / sum : 0));
+        const out = raw.map(Math.floor);
+        let rest = amount - out.reduce((a, b) => a + b, 0);
+        const order = raw.map((r, k) => [r - Math.floor(r), k]).sort((a, b) => b[0] - a[0] || a[1] - b[1]);
+        for (let k = 0; rest > 0 && k < order.length; k++, rest--) out[order[k][1]]++;
+        return out;
+      };
+      const perWave = share(waveSums, total);
+      // 多出来的小怪的强度（撞上城墙造成的伤害）：关卡里的 swarm 是 tools/tune-swarm.js 逐关调出来的，没写就用默认值
+      const strength = this.level.swarm !== undefined ? this.level.swarm : C.swarmDefault;
+      this.swarmStrength = strength;
+      this.swarmCopper = Math.max(C.swarmCopperFloor || 0, strength);
+      return minions.map((g, wi) => (perWave[wi] ? share(g, perWave[wi]) : null));
     }
 
     // 补给出现在哪几波之后（波序号从 0 开始）
@@ -280,7 +314,13 @@
       if (wave.D) this.D = wave.D; // 无尽模式：每波有自己的难度
       // countMult：自动平衡工具（tools/tune.js）写入的每关数量倍率，Boss 不受影响
       const cm = (this.level.countMult || 1) * (1 + (this.rules.countBonus || 0));
-      const groups = wave.groups.map(([type, count]) => ({ type, left: D.monsters[type].boss ? count : Math.max(1, Math.round(count * cm)) }));
+      // 关卡越靠后小怪越多（设计书 84）：第 N 关总共多出 N × 20 只小怪，按每波原有的小怪数量摊到各波、各组里，Boss 还是一只
+      const extra = this.extraPlan[i];
+      const base = wave.groups.map(([type, count]) => ({ type, left: D.monsters[type].boss ? count : Math.max(1, Math.round(count * cm)) }));
+      const baseMinions = base.reduce((a, g) => a + (D.monsters[g.type].boss ? 0 : g.left), 0);
+      const swarm = extra ? wave.groups.map(([type], gi) => ({ type: '~' + type, left: extra[gi] })) : [];
+      const extraNow = swarm.reduce((a, g) => a + g.left, 0);
+      const groups = base.concat(swarm);
       const queue = [];
       let any = true;
       while (any) {
@@ -295,7 +335,8 @@
       }
       this.spawnQueue = queue;
       // 数量倍率提高时出怪更密集，避免关卡时间被拉长
-      this.spawnGap = cm > 1 ? wave.gap / Math.pow(cm, 0.75) : wave.gap;
+      const crowd = (cm > 1 ? cm : 1) * (baseMinions > 0 ? (baseMinions + extraNow) / baseMinions : 1);
+      this.spawnGap = crowd > 1 ? wave.gap / Math.pow(crowd, 0.75) : wave.gap;
       this.spawnTimer = 0;
       this.waveState = 'spawning';
       this.waveStartTime = this.time;
@@ -335,8 +376,8 @@
         while (this.spawnTimer <= 0 && this.spawnQueue.length) {
           if (this.level.waves[this.waveIndex].burst) {
             // 联合关：所有车道同时各出一只
-            for (let lane = 0; lane < this.lanes && this.spawnQueue.length; lane++) this.spawnMonster(this.spawnQueue.shift(), lane);
-          } else this.spawnMonster(this.spawnQueue.shift());
+            for (let lane = 0; lane < this.lanes && this.spawnQueue.length; lane++) this.spawnQueued(this.spawnQueue.shift(), lane);
+          } else this.spawnQueued(this.spawnQueue.shift());
           this.spawnTimer += this.spawnGap;
         }
         if (!this.spawnQueue.length) {
@@ -381,7 +422,12 @@
     }
 
     // ---------- 怪物 ----------
-    spawnMonster(type, lane, x) {
+    // 出怪队列里的一项：'~类型' 是多出来的小怪（设计书 84），其余是关卡原有的
+    spawnQueued(entry, lane) {
+      return entry[0] === '~' ? this.spawnMonster(entry.slice(1), lane, undefined, true) : this.spawnMonster(entry, lane);
+    }
+
+    spawnMonster(type, lane, x, swarm) {
       const def = D.monsters[type];
       if (lane === undefined && def.pack) {
         // 狼群：同一组从同一条车道出来
@@ -399,7 +445,8 @@
       if (lane === undefined) lane = this.rng.int(this.lanes);
       // bossHp：精英挑战里回归的小 Boss 是强化版（设计书 29.2）
       const bossMult = def.boss ? 1 + (this.level.bossHp || 0) : 1;
-      const hp = Math.round(def.hp * this.D * (1 + (this.rules.monsterHp || 0)) * this.diffHp * bossMult);
+      const sw = swarm ? this.swarmStrength : 1;
+      const hp = Math.max(1, Math.round(def.hp * this.D * (1 + (this.rules.monsterHp || 0)) * this.diffHp * bossMult * sw));
       const m = {
         id: nextId++,
         type,
@@ -412,6 +459,7 @@
         maxHp: hp,
         pending: 0,
         dps: def.dps * this.D,
+        swarm: !!swarm,
         state: 'walk',
         attackTimer: 0.3 + this.rng() * 0.5,
         hasteUntil: 0,
@@ -629,6 +677,11 @@
               if (ranged.poison) this.addWallDot(ranged.poison.dps * this.D, ranged.poison.duration, 'poison', true, m.type);
             }
           }
+        } else if (m.swarm) {
+          // 多出来的小怪（设计书 84）：撞上城墙留下一点伤害就消失，不会堆在城墙前啃个没完，也不掉铜币
+          this.hitWall(m.def.explode ? m.def.explode.damage * this.D : Math.max(m.dps, (m.def.slam || 0) * this.D), m, true);
+          this.emit('swarmHit', { m });
+          this.kill(m, true);
         } else if (m.def.explode) {
           // 自爆型：到达城墙立即爆炸，不掉铜币
           this.hitWall(m.def.explode.damage * this.D, m, true);
@@ -711,6 +764,7 @@
 
     hitWall(amount, m, big, kind, who) {
       amount *= this.diffDmg;
+      if (m && m.swarm) amount *= this.swarmStrength; // 多出来的小怪（设计书 84）：啃城墙、自爆、猛击都按强度折算
       const temp = this.time < this.tempDr.until ? this.tempDr.amt : 0;
       let dmg = amount * (1 - Math.min(temp > 0.5 ? 0.95 : 0.8, this.stats.wallDr + this.mods.wallDr + temp));
       // 守护符文（设计书 62.3）：整场有效的护盾，先于泡泡护盾被打
@@ -913,7 +967,7 @@
           lane = TD.util.clamp(m.lane + dir, 0, this.lanes - 1);
           if (lane === m.lane) lane = TD.util.clamp(m.lane - dir, 0, this.lanes - 1);
         }
-        const c = this.spawnMonster(sp.child, lane, m.x + 20 + this.rng() * 30);
+        const c = this.spawnMonster(sp.child, lane, m.x + 20 + this.rng() * 30, m.swarm);
         c.splitFrom = { x: m.x, y: m.y };
       }
       this.emit('split', { m, count });
@@ -923,7 +977,7 @@
       m.dead = true;
       m.hp = 0;
       m.diedAt = this.time;
-      const copper = noReward ? 0 : m.def.copper;
+      const copper = noReward ? 0 : m.swarm ? m.def.copper * this.swarmCopper : m.def.copper;
       if (!noReward) {
         // 连击：1.2 秒内连续击败
         this.streak = this.time - this.lastKillAt <= 1.2 ? this.streak + 1 : 1;
@@ -993,7 +1047,7 @@
       const ds = m.def.deathSpawn;
       if (ds) {
         for (let i = 0; i < ds.count; i++) {
-          const c = this.spawnMonster(ds.type, m.lane, m.x + (i - 1) * 22);
+          const c = this.spawnMonster(ds.type, m.lane, m.x + (i - 1) * 22, m.swarm);
           c.splitFrom = { x: m.x, y: m.y };
         }
         this.emit('split', { m, count: ds.count });

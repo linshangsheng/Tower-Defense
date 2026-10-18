@@ -1289,8 +1289,8 @@
         `兑换 ${times} `,
         coinIcon(to)
       );
-    el.append(card(h('span', null, coinIcon('copper'), ` ${E.copperPerSilver} 铜 → 1 `, coinIcon('silver'), ' 银'), null, '银币用来解锁技能和精良装备。', h('div', { class: 'btn-row' }, mk('copper', 'silver', E.copperPerSilver, 1), mk('copper', 'silver', E.copperPerSilver, 5))));
-    el.append(card(h('span', null, coinIcon('silver'), ` ${E.silverPerGold} 银 → 1 `, coinIcon('gold'), ' 金'), null, '金币用来购买传说装备、高阶武器和技能 Lv3。', h('div', { class: 'btn-row' }, mk('silver', 'gold', E.silverPerGold, 1))));
+    el.append(card(h('span', null, coinIcon('copper'), ` ${E.copperPerSilver} 铜 → 1 `, coinIcon('silver'), ' 银'), null, '银币用来解锁技能和精良装备。', h('div', { class: 'btn-row' }, ...E.amounts.map((n) => mk('copper', 'silver', E.copperPerSilver, n)))));
+    el.append(card(h('span', null, coinIcon('silver'), ` ${E.silverPerGold} 银 → 1 `, coinIcon('gold'), ' 金'), null, '金币用来购买传说装备、高阶武器和技能 Lv3。', h('div', { class: 'btn-row' }, ...E.amounts.map((n) => mk('silver', 'gold', E.silverPerGold, n)))));
     el.append(card(h('span', null, coinIcon('diamond'), ' 钻石'), null, '最稀有的货币，只能在「九层妖塔」里获得，不能兑换。可以买「装备」页里的金色装备（每类除第 1 件外都只能用钻石买，最便宜 10 钻），以及等级特别高（几千级以后）的升级。', h('span', { class: 'equipped dim' }, `你有 ${s.diamond || 0} 颗`)));
   }
 

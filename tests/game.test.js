@@ -2999,3 +2999,87 @@ test('九层妖塔：越往上妖王的比例越高，第 1 层 10%、第 9 层 
     assert.ok(Math.abs(boss / all - share(k)) < 0.01, `第 ${k} 层实际妖王占 ${(boss / all).toFixed(3)}`);
   }
 });
+
+// ---------- v0.76：汇兑所档位、主线多出的小怪（设计书 84、85） ----------
+test('汇兑所：一次可换 1 / 10 / 100 / 1000，铜换银、银换金都按档位', () => {
+  assert.deepStrictEqual(TD.config.exchange.amounts, [1, 10, 100, 1000]);
+  const s = P.newSave();
+  s.copper = 100 * 1000;
+  assert.ok(P.exchange(s, 'copper', 1000));
+  assert.strictEqual(s.copper, 0);
+  assert.strictEqual(s.silver, 1000);
+  assert.ok(!P.exchange(s, 'copper', 1), '铜币不够不能换');
+  assert.ok(P.exchange(s, 'silver', 10));
+  assert.strictEqual(s.silver, 0);
+  assert.strictEqual(s.gold, 10);
+  assert.ok(!P.exchange(s, 'silver', 10), '银币不够不能换');
+});
+
+function queuedTotals(n, opts) {
+  const s = P.newSave();
+  const b = new TD.Battle(Object.assign({ level: n, stats: P.heroStats(s), seed: 5, loadout: { active: [], items: [] } }, opts));
+  let minions = 0;
+  let bosses = 0;
+  let swarm = 0;
+  for (let i = 0; i < b.level.waves.length; i++) {
+    b.startWave(i);
+    for (const t of b.spawnQueue) {
+      if (t[0] === '~') swarm++;
+      if (D.monsters[t.replace('~', '')].boss) bosses++;
+      else minions++;
+    }
+  }
+  return { minions, bosses, swarm, b };
+}
+
+test('主线第 N 关总共多出 N × 20 只小怪，Boss 数量不变', () => {
+  for (const n of [1, 5, 10, 25, 50, 60, 100]) {
+    const base = D.levels[n].waves.reduce((a, w) => a + w.groups.reduce((x, [t, c]) => x + (D.monsters[t].boss ? 0 : Math.max(1, Math.round(c * (D.levels[n].countMult || 1)))), 0), 0);
+    const bossBase = D.levels[n].waves.reduce((a, w) => a + w.groups.reduce((x, [t, c]) => x + (D.monsters[t].boss ? c : 0), 0), 0);
+    const r = queuedTotals(n);
+    assert.strictEqual(r.swarm, n * 20, `第 ${n} 关多出的小怪数`);
+    assert.strictEqual(r.minions - r.swarm, base, `第 ${n} 关原有小怪不变`);
+    assert.strictEqual(r.bosses, bossBase, `第 ${n} 关 Boss 数量不变`);
+  }
+  assert.strictEqual(queuedTotals(100).swarm, 2000, '第 100 关多 2000 只');
+  // 100 关一关不落：每一关都正好多 N × 20
+  for (let n = 1; n <= 100; n++) {
+    const b = queuedTotals(n).b;
+    assert.strictEqual(b.extraPlan.reduce((a, p) => a + (p ? p.reduce((x, y) => x + y, 0) : 0), 0), n * 20, `第 ${n} 关`);
+  }
+});
+
+test('多出的小怪：只在主线关卡里加（自定义关卡不加），按各波原有数量比例分摊，且结果固定', () => {
+  const a = queuedTotals(40).b.extraPlan;
+  const b = queuedTotals(40).b.extraPlan;
+  assert.deepStrictEqual(a, b);
+  const lv = Object.assign({}, D.levels[40]);
+  const custom = queuedTotals(40, { levelDef: lv });
+  assert.strictEqual(custom.swarm, 0, '自定义关卡（无尽、每日挑战、妖塔）不加');
+  // 各波分到的多出数量和各波原有（普通）小怪数大致成比例
+  const plain = (d) => !d.boss && !d.healer && !d.ranged && !d.chill && !d.bubbler && !d.towerOf && !d.bossPart && !d.ai;
+  const cm = D.levels[40].countMult || 1;
+  const sums = D.levels[40].waves.map((w) => w.groups.reduce((x, [t, c]) => x + (plain(D.monsters[t]) ? Math.max(1, Math.round(c * cm)) : 0), 0));
+  const extra = a.map((p) => (p ? p.reduce((x, y) => x + y, 0) : 0));
+  const tot = sums.reduce((x, y) => x + y, 0);
+  assert.strictEqual(extra.reduce((x, y) => x + y, 0), 800);
+  extra.forEach((e, i) => assert.ok(Math.abs(e - (800 * sums[i]) / tot) <= 1.5, `第 ${i + 1} 波分摊`));
+});
+
+test('多出的小怪撞上城墙就消失（造成按强度折算的伤害），不堆在城墙前、不掉铜币；分裂出的小怪也是潮的一员', () => {
+  const s = P.newSave();
+  const b = new TD.Battle({ level: 3, stats: P.heroStats(s), seed: 9, loadout: { active: [], items: [] } });
+  const m = b.spawnMonster('slime', 1, TD.config.wallX + 5, true);
+  assert.ok(m.swarm);
+  assert.ok(m.maxHp < D.monsters.slime.hp * b.D, '血量按强度折算');
+  const hp0 = b.wall.hp;
+  b.step(1 / 60);
+  b.step(1 / 60);
+  assert.ok(m.dead, '撞上城墙就消失');
+  assert.ok(b.wall.hp < hp0 && hp0 - b.wall.hp < D.monsters.slime.dps * b.D, '造成的伤害比同类怪小得多');
+  assert.strictEqual(b.killCopper, 0, '撞墙消失不掉铜币');
+  const k = b.spawnMonster('pumpkin', 2, 600, true);
+  b.kill(k);
+  const kids = b.monsters.filter((o) => o.type === 'minipumpkin');
+  assert.ok(kids.length && kids.every((o) => o.swarm), '南瓜分裂出的小南瓜也是潮');
+});
