@@ -118,7 +118,8 @@
   M.towerCounts = (floor) => ({ boss: T().bossPerFloor * floor, minion: T().minionPerFloor * floor });
   // 难度按已通关的最高关卡折算（至少按第 60 关）；越高的层血量越高
   M.towerStage = (save) => Math.max(60, Math.min(Math.max(...Object.keys(D.levels).map(Number)), P.highestCleared(save)));
-  M.towerD = (save, floor) => C.difficulty(M.towerStage(save)) * T().base * Math.pow(T().grow, floor - 1);
+  // 难度系数按第 70 关封顶：第 71 关以后的回声小妖本身就比旧怪物强（设计书 75.4）
+  M.towerD = (save, floor) => C.difficulty(Math.min(70, M.towerStage(save))) * T().base * Math.pow(T().grow, floor - 1);
 
   // 把 n 只平均分给一组类型（余数依次补给前面的），返回 [[类型, 数量], ...]
   function spread(types, n) {
