@@ -126,7 +126,6 @@
   // ================= 角色衣柜（设计书 72） =================
   UI.showWardrobe = function () {
     const s = G().save;
-    const heroIsKael = P.heroId(s) === 'dang';
     const cards = D.outfits.map((o) => {
       const owned = P.outfitOwned(s, o.id);
       const on = (s.outfit || 'classic') === o.id;
@@ -138,14 +137,18 @@
           onclick: () => {
             if (owned) {
               sfx('click');
+              const wasOther = P.heroId(s) !== 'dang';
               P.setOutfit(s, o.id);
+              if (wasOther) UI.toast(`已换成「${o.name}」，由 Kael 出战`);
               G().persist();
               UI.showWardrobe();
               return;
             }
             if (!P.canAfford(s, o.cost)) return sfx('error'), UI.toast(`需要 ${P.costText(o.cost)}（先去商店的汇兑所把银币换成金币）`);
             UI.confirm(`花 ${P.costText(o.cost)} 买下「${o.name}」吗？\n额外属性：${o.bonusText}`, () => {
+              const wasOther = P.heroId(s) !== 'dang';
               P.buyOutfit(s, o.id);
+              if (wasOther) UI.toast(`已换成「${o.name}」，由 Kael 出战`);
               sfx('buy');
               G().persist();
               UI.showWardrobe();
@@ -166,7 +169,7 @@
         'div',
         { class: 'wardrobe' },
         h('div', { class: 'preview-head' }, h('h2', null, '👕 角色衣柜'), h('span', { class: 'tag' }, `${n} / ${D.outfits.length}`)),
-        h('div', { class: 'hint' }, heroIsKael ? '每位角色都有自己的造型和额外属性，用金币购买，一次穿一位。' : '角色衣柜是 Kael 的：额外属性只在 Kael 出战时生效，现在出战的是别的英雄。'),
+        h('div', { class: 'hint' }, '每位角色都有自己的造型和额外属性，用金币购买，一次穿一位；选中谁，城墙上站的就是谁（额外属性由 Kael 出战时生效，所以会自动换回 Kael）。'),
         h('div', { class: 'outfit-grid' }, cards),
         h('div', { class: 'modal-buttons' }, h('button', { class: 'btn primary', onclick: UI.closeModal }, '好了'))
       ),

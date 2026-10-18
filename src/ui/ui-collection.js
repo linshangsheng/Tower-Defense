@@ -74,7 +74,7 @@
           h('li', null, `每次挑战花 ${P.costText(D.tower.fee)}。`),
           h('li', null, '怪物同时大量涌来，打怪没有任何收益；只有"过关"才有钻石。钻石只能在这里获得。'),
           h('li', null, '每过一层可以领取这一层的钻石离开，或者继续往上：再过一层，钻石翻倍；失败了，什么都没有。'),
-          h('li', null, `每往上一层，怪物的血量和攻城伤害都 ×${D.tower.grow}；每清掉一波，城墙恢复满血，每一层开始时城墙也是满血。`),
+          h('li', null, `每往上一层，怪物的血量和攻城伤害都 ×${D.tower.grow}；城墙的血量接着上一层，不会恢复（只有修缮、补给卡、道具和技能能回血）。`),
           h('li', null, `难度按你通关的最高关卡折算（至少按第 60 关，最高按第 70 关）；每一层补给 2 次；中途退出或刷新页面算失败。`)
         ),
         canStart ? null : h('div', { class: 'hint warn' }, s.towerRun ? '还有一趟挑战没有结算。' : `需要 ${P.costText(D.tower.fee)}（先去商店的汇兑所把银币换成金币）。`),
@@ -115,6 +115,7 @@
         { class: 'result win tower-choice' },
         h('h2', { class: 'result-title' }, `第 ${k} 层通过！`),
         h('div', { class: 'hint' }, fromReopen ? '上次爬到这里还没有领取。' : `打败了这一层的全部妖怪。`),
+        h('div', { class: 'hint warn' }, `城墙还剩 ${Math.round(((s.towerRun && s.towerRun.wallRatio) || 1) * 100)}% 的血量：继续往上的话，下一层就从这个血量开始，不会恢复。`),
         h(
           'div',
           { class: 'tower-options' },

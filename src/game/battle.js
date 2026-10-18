@@ -56,6 +56,8 @@
       this.rally = opts.rally || 0; // 援军鼓舞（设计书 27.5）
       const wallMult = (1 + (this.rules.wallHp || 0)) * (this.rules.wallHalf ? 0.5 : 1) * (1 + this.rally);
       this.wall = { hp: Math.round(this.stats.wallMax * wallMult), max: Math.round(this.stats.wallMax * wallMult) };
+      // 九层妖塔：上一层打完剩多少血，这一层就从多少血开始，不会恢复（设计书 78.2）
+      if (this.level.startWallRatio > 0 && this.level.startWallRatio < 1) this.wall.hp = Math.max(1, Math.round(this.wall.max * this.level.startWallRatio));
       this.monsters = [];
       this.projectiles = [];
       this.laneEffects = []; // {lane, type:'frost'|'freeze', until}
@@ -303,9 +305,7 @@
 
     endWaveHeal() {
       const mend = this.stats.mend + (this.mods.mendBonus || 0);
-      // 九层妖塔：每清掉一波，城墙恢复满血（设计书 77.2）
-      if (this.level.tower && this.waveIndex >= 0 && this.wall.hp < this.wall.max) this.healWall(this.wall.max - this.wall.hp, 'tower');
-      else if (mend > 0 && this.waveIndex >= 0) this.healWall(this.wall.max * mend, 'mend');
+      if (mend > 0 && this.waveIndex >= 0) this.healWall(this.wall.max * mend, 'mend');
       if (this.buddy && this.buddy.perk.waveHeal && this.waveIndex >= 0) this.healWall(this.wall.max * this.buddy.perk.waveHeal, 'buddy');
     }
 
@@ -1130,7 +1130,7 @@
             hitOut: new Set(),
             hitBack: new Set(),
             spin: 0,
-            tint: w.look ? w.look.color : null,
+            tint: D.weaponRarity[w.rarity || 1].color, // 特效颜色跟武器品质走（设计书 78）
           });
         }
         this.emit('shoot', { weapon: 'boomerang' });
@@ -1172,7 +1172,7 @@
           pierce: w.pierce,
           knock: w.knock,
           bossMult: w.bossMult,
-          tint: w.look ? w.look.color : null,
+          tint: D.weaponRarity[w.rarity || 1].color, // 特效颜色跟武器品质走（设计书 78）
         });
       }
       this.emit('shoot', { weapon: this.stats.weapon });
@@ -1240,7 +1240,7 @@
         if (!best) break;
         dmg *= p.chain.falloff;
         hit.add(best.id);
-        this.emit('thunderChain', { x0: cur.x, y0: cur.y + cur.yOffset, x: best.x, y: best.y + best.yOffset, small: true });
+        this.emit('thunderChain', { x0: cur.x, y0: cur.y + cur.yOffset, x: best.x, y: best.y + best.yOffset, small: true, color: p.tint });
         this.damage(best, dmg, { type: 'magic', fromFront: false, source: 'chain' });
         cur = best;
       }
@@ -1254,7 +1254,7 @@
         .sort((a, b) => a.x - b.x)
         .slice(0, pc.count);
       if (!behind.length) return;
-      this.emit('pierce', { x0: first.x, x1: behind[behind.length - 1].x, y: this.laneY(first.lane) - 20 });
+      this.emit('pierce', { x0: first.x, x1: behind[behind.length - 1].x, y: this.laneY(first.lane) - 20, color: p.tint });
       for (const o of behind) this.applyWeaponHit(o, p.dmg * pc.mult, p.crit, true, p);
     }
 
@@ -1285,7 +1285,7 @@
         if (dx * dx + dy * dy > r * r) continue;
         this.damage(o, p.dmg * p.splash.mult, { type: p.dmgType === 'magic' ? 'magic' : 'phys', fromFront: false, source: 'splash', armorIgnore: p.armorIgnore });
       }
-      this.emit('splash', { x, y, radius: r, magic: p.dmgType === 'magic' });
+      this.emit('splash', { x, y, radius: r, magic: p.dmgType === 'magic', color: p.tint });
     }
 
     updateProjectiles(dt) {

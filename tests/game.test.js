@@ -1333,7 +1333,8 @@ test('九层妖塔：门票 1 金；过一层可以领钻石或继续（翻倍�
   assert.strictEqual(s.diamond, 0, '还没领');
   // 继续 → 第 2 层
   assert.ok(TD.modes.towerContinue(s));
-  assert.deepStrictEqual(s.towerRun, { floor: 2, state: 'battle' });
+  assert.strictEqual(s.towerRun.floor, 2);
+  assert.strictEqual(s.towerRun.state, 'battle');
   out = TD.modes.applyTowerResult(s, { win: true, kills: 200 });
   assert.strictEqual(out.reward, 2);
   assert.ok(TD.modes.towerContinue(s));
@@ -2191,7 +2192,8 @@ test('新武器的弹道带品质色；射出的弹道种类跟基础形状一�
   const m = b.spawnMonster('slime', 0, 500);
   m.hp = m.maxHp = 1e9;
   b.fire([m]);
-  assert.ok(b.projectiles.every((p) => p.kind === 'bolt' && p.tint === '#ff9a4a'));
+  // 弹道颜色 = 武器品质色（烈焰弩是紫色品质，设计书 78.4）
+  assert.ok(b.projectiles.every((p) => p.kind === 'bolt' && p.tint === D.weaponRarity[3].color));
   assert.ok(weaponBattle('stormOrb').weaponDef().look.base === 'orb');
 });
 
@@ -2809,7 +2811,7 @@ test('技能 Lv3 以后继续变强，战斗里也用升级后的数值；机器
 });
 
 // ---------- v0.69：九层妖塔——每波恢复城墙、数量 ×2、每层属性成长（设计书 77） ----------
-test('九层妖塔：每上一层怪物属性都变强（×grow），每一层开始时城墙满血，每清一波城墙恢复满血', () => {
+test('九层妖塔：每上一层怪物属性都变强（×grow）；每层的城墙血量接着上一层，不会恢复', () => {
   const s = P.newSave();
   clearUpTo(s, 100);
   assert.ok(D.tower.grow > 1 && D.tower.bossPerFloor === 20 && D.tower.minionPerFloor === 180);
@@ -2819,22 +2821,76 @@ test('九层妖塔：每上一层怪物属性都变强（×grow），每一层�
     // 战斗里每一波都用本层的系数
     for (const w of TD.modes.buildTower(s, k).waves) assert.ok(Math.abs(w.D - TD.modes.towerD(s, k)) < 1e-9);
   }
-  // 每一层都是一场新的战斗，城墙满血，不继承上一层剩下的血量
   const st = P.heroStats(s);
-  const mk = (floor) => new TD.Battle({ level: 'tower', levelDef: TD.modes.buildTower(s, floor), stage: 100, stats: st, loadout: P.battleLoadout(s), seed: floor });
-  const b1 = mk(1);
-  b1.hitWall(b1.wall.max * 0.7, null);
-  assert.ok(b1.wall.hp < b1.wall.max * 0.4);
-  const b2 = mk(2);
-  assert.strictEqual(b2.wall.hp, b2.wall.max);
-  // 每清掉一波（选完补给卡进入下一波时），妖塔里的城墙恢复满血；普通关卡不会
-  b1.waveIndex = 0; // 打完第 1 波
-  b1.endWaveHeal();
+  const mk = (def) => new TD.Battle({ level: 'tower', levelDef: def, stage: 100, stats: st, loadout: P.battleLoadout(s), seed: 1 });
+  s.gold = 5;
+  assert.ok(TD.modes.towerStart(s));
+  // 第 1 层：满血开始
+  const b1 = mk(TD.modes.buildTower(s, 1));
   assert.strictEqual(b1.wall.hp, b1.wall.max);
-  const n = new TD.Battle({ level: 10, stats: st, loadout: P.battleLoadout(s), seed: 1 });
-  n.hitWall(n.wall.max * 0.5, null);
-  const hurt = n.wall.hp;
-  n.waveIndex = 0;
-  n.endWaveHeal();
-  assert.ok(n.wall.hp < n.wall.max && n.wall.hp >= hurt);
+  // 打完第 1 层城墙剩 50% → 选"继续" → 第 2 层从 50% 开始，不恢复
+  b1.hitWall(b1.wall.max * 0.5, null);
+  const ratio = b1.wall.hp / b1.wall.max;
+  assert.ok(Math.abs(ratio - 0.5) < 1e-6);
+  const res = TD.modes.applyTowerResult(s, { win: true, wallRatio: ratio, kills: 1 });
+  assert.ok(res.win && !res.final);
+  assert.ok(TD.modes.towerContinue(s));
+  const def2 = TD.modes.buildTower(s, 2);
+  assert.ok(Math.abs(def2.startWallRatio - 0.5) < 1e-6);
+  const b2 = mk(def2);
+  assert.ok(Math.abs(b2.wall.hp / b2.wall.max - 0.5) < 0.001, '第 2 层从 50% 开始');
+  // 第 2 层又掉到 20% → 第 3 层从 20% 开始
+  b2.hitWall(b2.wall.hp - b2.wall.max * 0.2, null);
+  TD.modes.applyTowerResult(s, { win: true, wallRatio: b2.wall.hp / b2.wall.max, kills: 1 });
+  TD.modes.towerContinue(s);
+  assert.ok(Math.abs(mk(TD.modes.buildTower(s, 3)).wall.hp / b2.wall.max - 0.2) < 0.001);
+  // 领钻石走人后重新挑战：又是满血；妖塔里每清一波也不会回满（只有修缮这类效果能回血）
+  TD.modes.towerCashOut(s);
+  s.gold = 5;
+  TD.modes.towerStart(s);
+  assert.strictEqual(TD.modes.buildTower(s, 1).startWallRatio, 1);
+  const t = mk(TD.modes.buildTower(s, 1));
+  t.hitWall(t.wall.max * 0.5, null);
+  const hurt = t.wall.hp;
+  t.waveIndex = 0;
+  t.endWaveHeal();
+  assert.ok(t.wall.hp < t.wall.max * 0.99 && t.wall.hp >= hurt);
+  // 普通关卡不受影响
+  assert.strictEqual(mk(D.levels[10]).wall.hp, st.wallMax);
+});
+
+test('角色衣柜：选了角色（或买下）城墙上就换成这个角色，别的英雄在场时自动换回 Kael', () => {
+  const s = P.newSave();
+  clearUpTo(s, 20);
+  s.gold = 20;
+  s.hero = 'ding';
+  assert.strictEqual(P.heroId(s), 'ding');
+  assert.ok(P.buyOutfit(s, 'pirate'));
+  assert.strictEqual(s.outfit, 'pirate');
+  assert.strictEqual(P.heroId(s), 'dang', '买下后由 Kael 出战');
+  s.hero = 'ding';
+  assert.ok(P.setOutfit(s, 'classic'));
+  assert.strictEqual(P.heroId(s), 'dang');
+  assert.ok(!P.setOutfit(s, 'mage'), '没买的穿不上');
+  // 战斗画面传给英雄的就是衣柜里选的角色
+  assert.strictEqual(s.outfit, 'classic');
+});
+
+test('武器的特效颜色跟武器品质走：每把武器发出的弹道都是自己品质的颜色', () => {
+  const colors = new Set();
+  for (const id of Object.keys(D.weapons)) {
+    const s = P.newSave();
+    s.weapons[id].owned = true;
+    s.loadout.weapon = id;
+    const b = new TD.Battle({ level: 1, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 1 });
+    b.spawnMonster('slime', 0, 400);
+    b.hero.cooldown = 0;
+    b.updateHero(1 / 60);
+    const p = b.projectiles[0];
+    assert.ok(p, `${id} 开火后有弹道`);
+    const want = D.weaponRarity[D.weapons[id].rarity || 1].color;
+    assert.strictEqual(p.tint, want, id);
+    colors.add(p.tint);
+  }
+  assert.strictEqual(colors.size, 5, '五档品质五种颜色');
 });

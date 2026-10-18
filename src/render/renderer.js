@@ -50,6 +50,21 @@
       this.bgCache = null;
       const on = (type, fn) => battle.on(type, fn.bind(this));
       on('hit', this.onHit);
+      // 武器的特效颜色跟武器品质走：绿 / 蓝 / 紫 / 红 / 金（设计书 78.4）；开火时枪口一团光和几点火花
+      on('shoot', () => {
+        if (!this.scene || this.scene.none || this.fx.length > 200) return;
+        const col = this.wcolor();
+        const mx = C.heroX + 38;
+        const my = battle.heroY - 26;
+        this.fx.push({ kind: 'glow', x: mx, y: my, r: 26, color: col, life: 0.14, age: 0 });
+        if (this.vfx) {
+          this.vfx.spawn(3, () => {
+            const a = -0.5 + Math.random();
+            const v = 90 + Math.random() * 120;
+            return { kind: 'spark', x: mx, y: my, vx: Math.cos(a) * v, vy: Math.sin(a) * v, g: 60, life: 0.2, r: 1.8, color: col };
+          });
+        }
+      });
       on('death', this.onDeath);
       on('wallHit', this.onWallHit);
       // 城墙血条归零：开始坍塌（设计书 61.6）
@@ -75,8 +90,9 @@
       const wallHeal = (big) => V.heal(C.wallX - 30, C.fieldTop + 20, C.fieldBottom - 20, big);
       on('rainArrow', (e) => (V ? V.rainArrow(e.x, e.y) : this.fx.push({ kind: 'fallArrow', x: e.x, y: e.y, life: 0.18, age: 0 })));
       on('thunderChain', (e) => {
-        this.fx.push({ kind: 'chain', x0: e.x0, y0: e.y0, x: e.x, y: e.y, life: 0.3, age: 0 });
-        if (V) V.fx.push({ kind: 'flare', x: e.x, y: e.y, r: 50, color: '#d8c0ff', life: 0.3, age: 0 });
+        // e.small = 武器自己的闪电（雷电法球、风暴法球……）：用武器品质的颜色；技能「雷霆一击」仍是紫白色
+        this.fx.push({ kind: 'chain', x0: e.x0, y0: e.y0, x: e.x, y: e.y, life: 0.3, age: 0, color: e.small ? e.color : null });
+        if (V) V.fx.push({ kind: 'flare', x: e.x, y: e.y, r: 50, color: e.small && e.color ? e.color : '#d8c0ff', life: 0.3, age: 0 });
       });
       on('laneFreeze', (e) => {
         this.shake = Math.max(this.shake, 3);
@@ -184,9 +200,9 @@
       });
       on('combo', () => this.text(C.heroX + 30, battle.heroY - 100, '连珠!', '#ffd23f', 18, 0.6));
       // 第二章
-      on('splash', (e) => this.fx.push({ kind: 'splash', x: e.x, y: e.y, r: e.radius, magic: e.magic, life: 0.35, age: 0 }));
+      on('splash', (e) => this.fx.push({ kind: 'splash', x: e.x, y: e.y, r: e.radius, magic: e.magic, color: e.color, life: 0.35, age: 0 }));
       // 满级专精（设计书 53）
-      on('pierce', (e) => this.fx.push({ kind: 'chain', x0: e.x0, y0: e.y, x: e.x1 + 20, y: e.y, life: 0.15, age: 0, straight: true }));
+      on('pierce', (e) => this.fx.push({ kind: 'chain', x0: e.x0, y0: e.y, x: e.x1 + 20, y: e.y, life: 0.15, age: 0, straight: true, color: e.color }));
       on('knock', (e) => {
         this.fx.push({ kind: 'ring', x: e.x, y: e.y, r0: 10, r1: e.r + 20, color: 'rgba(255,200,120,', life: 0.3, age: 0 });
         this.shake = Math.max(this.shake, 4);
@@ -379,13 +395,32 @@
       this.fx.push({ kind: 'banner', str: text, life: 1.6, age: -delay });
     }
 
+    // 当前武器的特效颜色 = 武器品质色
+    wcolor() {
+      const b = this.battle;
+      if (!b) return '#fff0c0';
+      const w = b.stats.weaponDef || TD.data.weapons[b.stats.weapon];
+      return TD.data.weaponRarity[(w && w.rarity) || 1].color;
+    }
+
     onHit(e) {
       if (e.source === 'thorns') return;
       const big = e.crit;
       const color = e.source === 'burn' ? '#ff8a3d' : e.source === 'thunder' ? '#c58cff' : big ? '#ffd23f' : '#ffffff';
       const size = e.source === 'burn' ? 15 : big ? 30 : e.dmg >= 100 ? 24 : 19;
       this.text(e.x + (Math.random() - 0.5) * 16, e.y - e.m.def.size * 1.4, (big ? '暴击 ' : '') + Math.round(e.dmg), color, size, big ? 0.9 : 0.6, big);
-      if (this.scene && !this.scene.none && e.source !== 'burn') this.fx.push({ kind: 'glow', x: e.x, y: e.y - e.m.def.size * 0.6, r: big ? 46 : 26, color: big ? '#ffd970' : '#fff2cc', life: big ? 0.28 : 0.16, age: 0 });
+      // 武器打出的命中光和火花用武器品质的颜色（技能、灼烧等仍用原来的颜色）
+      const wsrc = e.source === 'weapon' || e.source === 'splash' || e.source === 'chain';
+      const wcol = wsrc ? this.wcolor() : null;
+      if (this.scene && !this.scene.none && e.source !== 'burn') this.fx.push({ kind: 'glow', x: e.x, y: e.y - e.m.def.size * 0.6, r: big ? 46 : 26, color: wcol || (big ? '#ffd970' : '#fff2cc'), life: big ? 0.28 : 0.16, age: 0 });
+      if (wcol && this.vfx && !big && this.fx.length < 240) {
+        const yy = e.y - e.m.def.size * 0.6;
+        this.vfx.spawn(3, () => {
+          const a = Math.random() * Math.PI * 2;
+          const v = 70 + Math.random() * 120;
+          return { kind: 'spark', x: e.x, y: yy, vx: Math.cos(a) * v, vy: Math.sin(a) * v, g: 160, life: 0.22, r: 1.5, color: wcol };
+        });
+      }
       if (e.blocked) this.fx.push({ kind: 'clang', x: e.x - e.m.def.size * 0.8, y: e.y - e.m.def.size * 0.7, life: 0.25, age: 0 });
       if (big) {
         this.critAge = 0;
@@ -393,11 +428,11 @@
         // 暴击：一圈金光 + 几道火花（设计书 60.4）
         if (this.vfx && e.source !== 'burn') {
           const y = e.y - e.m.def.size * 0.6;
-          this.vfx.fx.push({ kind: 'ring', x: e.x, y, r0: 6, r1: 44, color: '#ffd970', w: 2.5, life: 0.28, age: 0 });
+          this.vfx.fx.push({ kind: 'ring', x: e.x, y, r0: 6, r1: 44, color: wcol || '#ffd970', w: 2.5, life: 0.28, age: 0 });
           this.vfx.spawn(5, () => {
             const a = Math.random() * Math.PI * 2;
             const v = 120 + Math.random() * 160;
-            return { kind: 'spark', x: e.x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, g: 200, life: 0.25, r: 1.6, color: '#ffe6a0' };
+            return { kind: 'spark', x: e.x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, g: 200, life: 0.25, r: 1.6, color: wcol || '#ffe6a0' };
           });
         }
         if (TD.audio) TD.audio.play('crit');
@@ -2026,9 +2061,9 @@
         }
         if (p.kind === 'zap') {
           ctx.save();
-          ctx.strokeStyle = '#bfe3ff';
+          ctx.strokeStyle = p.tint ? S.lighten(p.tint, 0.55) : '#bfe3ff';
           ctx.lineWidth = 3;
-          ctx.shadowColor = '#5aa8ff';
+          ctx.shadowColor = p.tint || '#5aa8ff';
           ctx.shadowBlur = 10;
           ctx.beginPath();
           const bx = p.x - Math.cos(p.angle) * 60;
@@ -2055,9 +2090,9 @@
         if (p.kind === 'orb') {
           ctx.save();
           ctx.globalAlpha = 0.35;
-          S.ellipse(ctx, p.x - Math.cos(p.angle) * 10, p.y - Math.sin(p.angle) * 10, 9, 9, '#c58cff');
+          S.ellipse(ctx, p.x - Math.cos(p.angle) * 10, p.y - Math.sin(p.angle) * 10, 9, 9, p.tint || '#c58cff');
           ctx.globalAlpha = 1;
-          S.ellipse(ctx, p.x, p.y, 7, 7, '#d9b8ff', '#7a3fc0', 2);
+          S.ellipse(ctx, p.x, p.y, 7, 7, p.tint ? S.lighten(p.tint, 0.45) : '#d9b8ff', p.tint ? S.darken(p.tint, 0.4) : '#7a3fc0', 2);
           S.ellipse(ctx, p.x - 2, p.y - 2, 2.5, 2.5, '#fff');
           ctx.restore();
           continue;
@@ -2069,6 +2104,12 @@
           ctx.globalAlpha = 0.2;
           S.ellipse(ctx, p.x, p.y + 4, 8, 3, '#000');
           ctx.globalAlpha = 1;
+          if (p.tint) {
+            // 炮弹外面裹一圈品质色的光
+            ctx.globalAlpha = 0.55;
+            S.ellipse(ctx, p.x, p.y - lift, 12, 12, null, p.tint, 3);
+            ctx.globalAlpha = 1;
+          }
           S.ellipse(ctx, p.x, p.y - lift, 8, 8, '#3b3b48', OUTLINE_C, 2);
           S.ellipse(ctx, p.x - 2.5, p.y - lift - 2.5, 2.5, 2, 'rgba(255,255,255,0.5)');
           ctx.restore();
@@ -2080,7 +2121,7 @@
         if (p.kind === 'bolt') {
           ctx.fillStyle = '#5b3c2a';
           ctx.fillRect(-12, -1.5, 18, 3);
-          ctx.fillStyle = '#cfd6de';
+          ctx.fillStyle = p.tint ? S.lighten(p.tint, 0.35) : '#cfd6de';
           ctx.beginPath();
           ctx.moveTo(6, -4);
           ctx.lineTo(12, 0);
@@ -2093,13 +2134,13 @@
           ctx.moveTo(-18, 0);
           ctx.lineTo(8, 0);
           ctx.stroke();
-          ctx.fillStyle = '#cfd6de';
+          ctx.fillStyle = p.tint ? S.lighten(p.tint, 0.35) : '#cfd6de';
           ctx.beginPath();
           ctx.moveTo(8, -4);
           ctx.lineTo(15, 0);
           ctx.lineTo(8, 4);
           ctx.fill();
-          ctx.fillStyle = '#e04848';
+          ctx.fillStyle = p.tint || '#e04848';
           ctx.fillRect(-20, -3, 6, 6);
         }
         ctx.restore();
@@ -2795,7 +2836,7 @@
             ctx.globalAlpha = 1 - k;
             if (f.straight) {
               // 穿云箭：一道白色的直线
-              ctx.strokeStyle = 'rgba(255,250,220,0.9)';
+              ctx.strokeStyle = f.color ? S.lighten(f.color, 0.5) : 'rgba(255,250,220,0.9)';
               ctx.lineWidth = 3;
               ctx.beginPath();
               ctx.moveTo(f.x0, f.y0);
@@ -2803,9 +2844,9 @@
               ctx.stroke();
               break;
             }
-            ctx.strokeStyle = '#e2c8ff';
+            ctx.strokeStyle = f.color ? S.lighten(f.color, 0.45) : '#e2c8ff';
             ctx.lineWidth = 4;
-            ctx.shadowColor = '#b07aff';
+            ctx.shadowColor = f.color || '#b07aff';
             ctx.shadowBlur = 12;
             ctx.beginPath();
             ctx.moveTo(f.x0, f.y0);
@@ -2820,7 +2861,15 @@
           }
           case 'splash':
             ctx.globalAlpha = 1 - k;
-            if (f.magic) {
+            if (f.color) {
+              // 爆炸的颜色跟武器品质走（设计书 78.4）
+              const rg = TD.art.rgba;
+              if (f.magic) S.ellipse(ctx, f.x, f.y, f.r * (0.4 + k * 0.6), f.r * (0.3 + k * 0.45), rg(f.color, 0.45), f.color, 3);
+              else {
+                S.ellipse(ctx, f.x, f.y, f.r * (0.4 + k * 0.6), f.r * (0.3 + k * 0.45), rg(f.color, 0.55));
+                S.ellipse(ctx, f.x, f.y, f.r * (0.2 + k * 0.4), f.r * (0.15 + k * 0.3), rg(S.lighten(f.color, 0.65), 0.85));
+              }
+            } else if (f.magic) {
               S.ellipse(ctx, f.x, f.y, f.r * (0.4 + k * 0.6), f.r * (0.3 + k * 0.45), 'rgba(197,140,255,0.45)', '#b07aff', 3);
             } else {
               S.ellipse(ctx, f.x, f.y, f.r * (0.4 + k * 0.6), f.r * (0.3 + k * 0.45), 'rgba(255,179,71,0.55)');

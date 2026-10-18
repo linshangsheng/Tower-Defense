@@ -171,8 +171,9 @@
       lanes: 5,
       waves,
       supplyEvery: 1,
+      startWallRatio: (save.towerRun && save.towerRun.floor === floor && save.towerRun.wallRatio) || 1,
       stage,
-      tip: `第 ${floor} 层：${cnt.boss} 个妖王 + ${cnt.minion} 只小妖同时涌来（强度 ×${Math.pow(T().grow, floor - 1).toFixed(2)}）。每清一波城墙恢复满血；打怪没有收益，只有过关才有钻石！`,
+      tip: `第 ${floor} 层：${cnt.boss} 个妖王 + ${cnt.minion} 只小妖同时涌来（强度 ×${Math.pow(T().grow, floor - 1).toFixed(2)}）。城墙血量接着上一层，不会恢复；打怪没有收益，只有过关才有钻石！`,
     };
   };
 
@@ -205,9 +206,11 @@
   };
 
   // 通过当前这一层：返回 { floor, reward, final }
-  M.towerFloorCleared = function (save) {
+  M.towerFloorCleared = function (save, result) {
     const run = save.towerRun;
     if (!run || run.state !== 'battle') return null;
+    // 记下这一层打完后城墙还剩多少血，下一层从这个血量开始（设计书 78.2）
+    run.wallRatio = result && result.wallRatio > 0 ? Math.min(1, result.wallRatio) : run.wallRatio || 1;
     const t = (save.tower = save.tower || { best: 0, runs: 0, diamonds: 0 });
     const floor = run.floor;
     t.best = Math.max(t.best, floor);
@@ -243,7 +246,7 @@
   M.applyTowerResult = function (save, result) {
     const out = { win: !!result.win, notes: [], achievements: [] };
     if (result.win) {
-      Object.assign(out, M.towerFloorCleared(save) || {});
+      Object.assign(out, M.towerFloorCleared(save, result) || {});
     } else {
       out.floor = (save.towerRun && save.towerRun.floor) || 0;
       M.towerFail(save);

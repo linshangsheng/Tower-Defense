@@ -1,5 +1,5 @@
 // 九层妖塔难度标定（设计书 74.5）：战役机器人打到第 N 关留下的存档，逐层挑战妖塔，统计每一层的通过率和城墙剩余
-// 用法：node tools/tower.js [--levels 60,70] [--seeds 3] [--floors 1,2,3,4,5,6,7,8,9] [--base 1] [--grow 1.15]
+// 用法：node tools/tower.js [--levels 60,70] [--seeds 3] [--floors 1,2,3,4,5,6,7,8,9] [--base 1] [--grow 1.15] [--independent]
 const TD = require('./load');
 const P = TD.progression;
 const D = TD.data;
@@ -55,8 +55,9 @@ function whale(save) {
   return best.id;
 }
 
-function runFloor(save, floor, seed) {
+function runFloor(save, floor, seed, wallRatio) {
   const s = TD.util.deepClone(save);
+  s.towerRun = { floor, state: 'battle', wallRatio };
   if (args.includes('--whale')) whale(s);
   P.recommend(s, 60);
   const lo = P.battleLoadout(s);
@@ -76,8 +77,16 @@ for (let seed = 1; seed <= seeds; seed++) {
     // 这个存档是"打第 n 关之前"的，加上第 n 关通关后就是"已通关 n 关"
     const base = TD.util.deepClone(sv[n]);
     for (let k = 1; k <= n; k++) if (!base.levels[k] || !base.levels[k].clears) base.levels[k] = { stars: 1, clears: 1 };
+    // 一趟挑战从第 1 层爬起，城墙血量接着上一层（设计书 78.2）；输了以后的层都算没过。--independent：每层单独打、城墙满血
+    let ratio = 1;
+    let alive = true;
     for (const f of floors) {
-      const r = runFloor(base, f, seed * 7 + f);
+      let r = { win: false, wall: 0, time: 0 };
+      if (alive) {
+        r = runFloor(base, f, seed * 7 + f, args.includes('--independent') ? 1 : ratio);
+        if (!r.win) alive = false;
+        else if (!args.includes('--independent')) ratio = Math.max(0.01, r.wall);
+      }
       const key = n + ':' + f;
       (rows[key] = rows[key] || []).push(r);
     }

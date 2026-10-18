@@ -119,11 +119,13 @@
     save.outfitsOwned = save.outfitsOwned || { classic: true };
     save.outfitsOwned[id] = true;
     save.outfit = id; // 买下来直接穿上
+    save.hero = 'dang'; // 站上城墙的就是这个角色：别的英雄在场时，换回 Kael（设计书 78.3）
     return true;
   };
   P.setOutfit = function (save, id) {
     if (!D.outfits.some((x) => x.id === id) || !P.outfitOwned(save, id)) return false;
     save.outfit = id;
+    save.hero = 'dang'; // 同上：衣柜里选了角色，城墙上就换成这个角色（Kael 出战）
     return true;
   };
   // 当前生效的角色（额外属性只在 Kael 出战时算）
