@@ -85,7 +85,7 @@
 547	M. Os revient à la vie une fois après avoir été vaincu. Gardez une compétence pour quand il se relèvera !
 548	Écho de M. Os
 549	M. Os est revenu à la vie !
-550	@M. Os est en fait très drôle. Il dit que dans la marmite de Mamie Soupe-Poison, on fait mijoter un énorme chaudron d'Encre noire.
+550	M. Os est en fait très drôle. Il dit que dans la marmite de Mamie Soupe-Poison, on fait mijoter un énorme chaudron d'Encre noire.
 551	Pluie de flèches au rythme du tambour
 552	Monstres
 553	Les monstres apparaissent au hasard parmi les chapitres débloqués, de plus en plus forts à chaque vague.

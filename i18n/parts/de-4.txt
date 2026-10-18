@@ -1,0 +1,463 @@
+1389	Empfohlen
+1390	Empfohlene Verstärkung
+1391	Empfohlen nach Level {0}
+1392	Empfohlene Waffe: {0}
+1393	Deine empfohlene Waffe „{0}“ hat eine niedrige Stufe. Werte sie zuerst auf: {1} ({2})
+1394	Empfohlene Stärke {0} · Deine Stärke {1}
+1395	Spiel beenden
+1396	Spiel beenden? Dein Fortschritt wird automatisch gespeichert.
+1397	20 Levelaufgaben erledigen
+1398	Alle Levelaufgaben erledigen
+1399	Spielanleitung
+1400	Monsterschreck
+1401	Sternenkrone der Weite
+1402	Echo aller Dinge
+1403	Panorama
+1404	Krone
+1405	Kronensammler
+1406	Die Standardausrüstung eines Königreichswächters. Der Helm ist etwas zu groß.
+1407	Königreichsstadt
+1408	Der kleinste Mauerwächter des Königreichs, mit stetigen Angriffen.
+1409	Der kleinste Mauerwächter des Königreichs, der die größte Krise abgewehrt hat.
+1410	Web-Prototyp {0} · {1} Kapitel {2} Level
+1411	Teleskoplinse
+1412	Gefährdete Mauer
+1413	Bedrohung zuerst
+1414	Brummbiene
+1415	Brummbienen fliegen über andere Monster hinweg direkt zur Mauer. Schnellfeuer-Armbrüste richten gegen Flieger mehr Schaden an.
+1416	Bsss bsss
+1417	Ich… ich sauge die Tinte wieder ein.
+1418	Ich habe alle Drachen in den Himmel steigen lassen. Nachts sehen sie aus wie Sterne.
+1419	Ich habe etwas von meiner eigenen Tinte hier gelassen. Wenn ich nicht allein sein will, wachsen daraus Echos, immer mehr und immer größer.
+1420	Ich bin an die Mauer gezogen, so kann ich Kael jeden Tag beim Wachestehen zusehen.
+1421	Das glaube ich nicht! Erst puste ich euch um!
+1422	Ich verspreche es dir.
+1423	Mein Bogen ist schwer und langsam, aber jeder Pfeil drängt Monster zurück. Beim Vulkan bin ich dabei.
+1424	Mein neues Zuhause ist rie-sig, kommt zu Besuch!
+1425	In meinem Schneefeld ist nur Ruhe erlaubt. Dein Helm ist zu laut.
+1426	Ich übernehme die Anmeldung! Nummer eins: König Bobo, acht Beine, braucht eine rie-sige Muschel.
+1427	Wir sind über die Regenbogenbrücke in den Himmel gestiegen. Die Wolken waren weich wie Marshmallows. Tinti hat sich die ganze Zeit hinter meinem Helm versteckt.
+1428	Wir haben durchgehalten!
+1429	Am Meer haben wir ein „Muschelstädtchen“ gebaut. Bobos Haus ist das größte, und sein Dach haben alle acht Beine zusammen gebaut. Ein Zuhause zu beschützen heißt eben auch, anderen beim Bau zu helfen.
+1430	Ich lade dich auf ein Erdbeereis ein!
+1431	Huch! … Lass mich erst meinen Helm geradeziehen.
+1432	Ich bin Bebe, die Muschelverwalterin der Bucht! So eine große Muschel muss erst angemeldet werden, bevor sie vergeben wird!
+1433	Ich bin das Echo. Ein Echo wiederholt nur. Skelette, angreifen.
+1434	Ich bin hier, um die Mauer zu bewachen. Wenn du mit dem Schmollen fertig bist, können wir zusammen spielen.
+1435	Ich habe gelernt, mit Tinte zu malen! Das bist du, und das bin ich.
+1436	Ich will auch ein Zuhause! Gluckgluck! Tentakel, haltet es fest!
+1437	Im Spiegel habe ich alle gesehen. Vielleicht ist Trubel gar nicht so schlecht.
+1438	Ich übe leises Donnern. Rumms. (Ganz leise)
+1439	Ich habe in der Stadt einen Friseursalon eröffnet. Keine Sorge, ich bin sehr vorsichtig.
+1440	Ich kenne nur das Helmklopf-Konzert …
+1441	Dunkle Wolken versperren die Sicht, Reichweite −30%. Donnerwölkchen werden erst getroffen, wenn sie näher sind. Vorsicht, statische Aufladung!
+1442	Dunkle Wolken
+1443	Lampenloser Gang
+1444	Nicht platzierbar
+1445	Lichtlose Schmiede
+1446	Meer ohne Licht
+1447	Endlosmodus
+1448	Endlosmodus: je länger du durchhältst, desto besser! Alle 3 Wellen Nachschub, alle 5 Wellen ein Boss.
+1449	Erreiche Welle 30 im Endlosmodus
+1450	Endlos-Bestwert
+1451	Nicht zu stoppen!
+1452	Ignoriert 40% → 70% Rüstung, Flächenschaden 70% → 85%
+1453	Ignoriert {0}% der Rüstung des Ziels
+1454	Ignoriert 20% der Rüstung des Ziels
+1455	Ignoriert 25% der Rüstung des Ziels
+1456	Ignoriert 50% der Rüstung des Ziels (auch Schilde).
+1457	Mondlose Nacht
+1458	Waffe
+1459	Waffe: {0}
+1460	Waffen (dauerhaft freigeschaltet, pro Stufe +8% Schaden, ab Stufe 10 +4% pro Stufe; höhere Qualität heißt stärker, teurer und teurer aufzuwerten)
+1461	Waffenschaden
+1462	Waffensammler
+1463	Physisch geblockt
+1464	Physischer Schaden wirkt gegen Geister um {0}% besser
+1465	Wirkung von physischem Schaden auf Geister 30% → 70%
+1466	{0} des physischen Schadens wurde von Rüstung, Holzschilden oder Geistern geblockt: Probiere Zauberstab, Bumerang oder „Rüstungsbrecher“.
+1467	So viel Nebel, ich sehe gar nichts …
+1468	Augen im Nebel
+1469	Vampirfledermaus
+1470	Hihi, ich habe nur ein klitzekleines bisschen Honig in die Suppe getan.
+1471	Hihihi, noch ein Löffel schwarze Tinte, und meine Suppe ist fertig!
+1472	Bevor der Wind das nächste Mal stark weht, sage ich erst Bescheid.
+1473	10 Sekunden nach Wellenbeginn: friert alle Monster 4 Sekunden ein (Boss 1,5 Sekunden)
+1474	8 Sekunden nach Wellenbeginn: verursacht allen Monstern ANG ×6 Magieschaden
+1475	Nächstes Level ›
+1476	Der Sommer ist da, und ich bin der Beliebteste in der Stadt.
+1477	Kaktuskugel
+1478	Kaktuskugeln explodieren, wenn sie die Mauer erreichen! Erledige sie unbedingt aus der Ferne.
+1479	Schließe zuerst Level {0} ab
+1480	Verbrauchsgegenstände (im Kampf nutzbar, einer pro Einsatz; bis zu {0} Sorten, je bis zu {1}; nach Gebrauch hat jede Sorte Abklingzeit)
+1481	Verbrauchsgegenstände (bis zu {0} Sorten, je bis zu {1}; einer pro Einsatz, jede mit Abklingzeit)
+1482	Verbrauchsplätze
+1483	Mini-Boss
+1484	Mini-Boss. Beschwört ständig kleine Geister und steht nach der ersten Niederlage wieder auf!
+1485	Mini-Boss. Ein Steinriese mit Windmühlenkopf: lässt Drachen steigen und beschwört Sturmböen, die Monster zur Mauer wehen. Bei der Warnung Feuer bündeln und unterbrechen!
+1486	Mini-Boss. Stampft und betäubt den Helden, explodiert bei der Niederlage. Lass ihn nicht an die Mauer!
+1487	Mini-Boss. Gräbt sich zum Bahnwechsel ein, greift überraschend an und zwickt an der Mauer kräftig mit großen Scheren.
+1488	Mini-Boss. Eine riesige Perlmuschel: geschlossen fast nicht zu knacken, offen zeigt sie ihre Perle. Wirke Fähigkeiten, wenn sie sich öffnet!
+1489	Mini-Boss. Wirbelstürme und Schubsen, wilder als zuvor.
+1490	Mini-Boss. Friert in Abständen einen Fähigkeitsplatz des Helden ein.
+1491	Mini-Boss. Verhält sich wie Herr Knochen: beschwört Skelette und wirkt einen Magieschild, ist aber härter.
+1492	Mini-Boss. Verhält sich wie Felsi, mit doppelten LP.
+1493	Mini-Boss. Spaltet bei je 15% verlorener LP kleine Gelees ab und zerfällt beim Tod noch einmal.
+1494	Kleiner Eisdrache
+1495	Der kleine Eisdrache ist da! Angriff aus der Luft und vom Boden!
+1496	Kleines Gelee
+1497	Kleiner Priester
+1498	Kleine Priester verstecken sich in der hinteren Reihe und heilen Monster. Donnerschlag und die Explosion des Zauberstabs treffen sie mit.
+1499	Kleiner Tresor
+1500	Kleiner Kürbis
+1501	Kleines Brecheisen
+1502	Kleine Sanduhr
+1503	Kleiner Blitz
+1504	Kleiner Schneeball
+1505	Kleiner Geist
+1506	Kleine Geister fürchten physische Angriffe kaum
+1507	Kleine Geister fürchten physische Angriffe kaum. Zauberstab, Blitzkugel, Donnerschlag und Verbrennen sind ihr Verhängnis!
+1508	Kleine Bombe
+1509	Stadtnachbarn
+1510	Synergie-Meister
+1511	Schuhe
+1512	Speichern fehlgeschlagen
+1513	Ablegen
+1514	Ablegen −1
+1515	Danke, dass ihr mich nicht gehasst habt, als ich wütend war.
+1516	Danke, dass ihr den ganzen Weg bis hierher gekommen seid.
+1517	Danke, dass du das Königreich gerettet hast!
+1518	Neu
+1519	Neuer Feind!
+1520	Neuer Rekord! {0} → {1} Wellen
+1521	Sternenexplosion
+1522	Sternenmagier
+1523	Sternenstab
+1524	Sternenrüstung
+1525	Sternenkrone
+1526	Sternenlicht-Umhang
+1527	Funkelnd
+1528	Sternenbahn-Köcher
+1529	Strahlende Milchstraße
+1530	Stern
+1531	Glückssternstiefel
+1532	Händlerstiefel
+1533	Glück
+1534	Glück +{0}%
+1535	Glück +15%
+1536	Glücksbringer
+1537	Glücksbonus
+1538	Glücksstiefel
+1539	Glücksmünze
+1540	Pausenerinnerung
+1541	Mach eine Pause
+1542	Reparaturset
+1543	Mönchsrüstung
+1544	Reparieren
+1545	Leere-Schildkröte
+1546	Der Schutzkreis der Leere-Schildkröte ist größer. Schalte sie zuerst aus. Auch die Stacheln der Seeigel tun mehr weh.
+1547	Leere-Schildformation
+1548	Leere-Flugfisch
+1549	Leere-Flugfische springen weiter und sind in der Luft nicht zu treffen.
+1550	Leere-Drachen
+1551	Leere-Seeigel
+1552	Leere-Donnerwölkchen
+1553	Leere-Donnerwölkchen haben eine größere Schockreichweite. Erledige sie möglichst aus der Ferne.
+1554	In der Leere gibt es keinen Wind, doch die Drachen schweben und die Schafe mäh-en. Alles Vertraute ist da, nur alles ist violett geworden.
+1555	Leere-Vogel
+1556	Leere-Ballon
+1557	Leere-Himmelsreich
+1558	Leere-Krabbe
+1559	Leere-Schaf
+1560	Leere-Schafe haben dickere Wolle, und Leere-Drachen weichen der Hälfte der physischen Angriffe aus.
+1561	Benötigt {0} (tausche im Shop beim Wechselhaus zuerst Silber in Gold um)
+1562	Benötigt {0} (tausche im Shop beim Wechselhaus zuerst Silber in Gold um).
+1563	Alle Monster auf der gewählten und den Nachbarbahnen erleiden ANG ×7 Schaden.
+1564	Wähle eine Bahn. Monster darin werden 6 Sekunden um 60% verlangsamt.
+1565	Wähle eine Nachschubkarte (gilt für dieses Level) · Nachschub Nr. {0}
+1566	Wählen
+1567	Nachschub wählen
+1568	Schwierigkeit wählen
+1569	Kapitel wählen
+1570	Ausrüstung wählen
+1571	Lehrlings-Stirnband
+1572	Lehrlingsumhang
+1573	Lawine
+1574	Yeti
+1575	Yetis sind gegen Physisches resistent, Lavagolems gegen Magie. Bereite beide Schadensarten vor.
+1576	Yetis unterwegs
+1577	Yetis fürchten Magie, Lavagolems Physisches, und Schildkröten beschützen sie. Schalte zuerst die Schildkröten aus!
+1578	Schneeklumpen
+1579	Schneeklumpen zerfallen beim Tod in zwei kleine Schneebälle. Flächenschaden räumt sie müheloser ab.
+1580	Die kleinen Schneebälle, die nach dem Zerfall eines Schneeklumpens übrig bleiben.
+1581	Das Schneefeld ist so weiß und hell. Pinguine rutschen übers Eis, und wuusch, stehen sie an der Mauer.
+1582	Schneefeld-Sprint
+1583	Pinguine auf dem Schneefeld rutschen blitzschnell, und Yetis sind dick und zäh. Kael, zieh dich wärmer an.
+1584	Schneefeld-Wächter
+1585	Blutschwur-Ring
+1586	Blutaugen-Maske
+1587	Blutlinien-Rüstung
+1588	Flinker Umhang
+1589	Flinke Stiefel
+1590	Magmaklumpen
+1591	Magmaklumpen hinterlassen beim Tod Feuer, und Monster, die darauftreten, werden schneller. Erledige sie möglichst aus der Ferne.
+1592	Felsi
+1593	Felsi ist explodiert! Die Bahn wird zu Lava
+1594	Felsi explodiert bei der Niederlage! Erledige es, bevor es an die Mauer kommt. Es ist gegen Magie resistent, nimm physische Waffen mit.
+1595	Echo von Felsi
+1596	Echo von Felsi: stampft und lässt Felsbrocken bersten. Verhält sich wie Felsi, mit doppelten LP.
+1597	Das Echo von Felsi ist zu einem Haufen Kieselsteine zerfallen. Atlas hat sie am Fuß der Mauer aufgeschichtet.
+1598	Felsi ist der Torwächter des Risses. Er sagt, der Kleine da drinnen hatte nie einen Freund.
+1599	Felsi ist an der Mauer explodiert!
+1600	Fliegt die Bahn entlang und zurück und trifft jedes Monster auf Hin- und Rückweg einmal. Der Rückweg trifft von hinten und ignoriert Schilde.
+1601	Wolle
+1602	Dickere Wolle: Sie fängt zuerst 70% der LP in Wolle ab, bevor LP verloren gehen.
+1603	Wollschere
+1604	Turmkrieger
+1605	Dämonenkönig {0}% · Stärke ×{1}
+1606	Gleich stampft er!
+1607	Gleich gibt es Sturm!
+1608	Soll ich dich wieder zusammensetzen?
+1609	In den „Einstellungen“ kannst du auch zum leichten Schwierigkeitsgrad wechseln
+1610	Nachts leuchtet die alte Burg im blauen Mondlicht. Die Mondschatten-Klumpen, die aus dem Riss gefallen sind, wissen noch, wie man an der Mauer nagt.
+1611	Nachts Reichweite −30%, Vampirfledermäuse wechseln oft die Bahn, und Schattenassassinen tauchen plötzlich auf.
+1612	Nachts Reichweite −30%. Flugfische sind mit einem Sprung da, und Schattenassassinen tauchen plötzlich auf!
+1613	Nachts Reichweite −30%. Die Stacheln der Seeigel verletzen die eigene Seite, warte also, bis sie sich häufen.
+1614	Nachts Reichweite −30%. Herdkobolde bleiben weit weg und werfen Feuerbälle. Lass sie die Mauer nicht langsam abnutzen.
+1615	Nachts Reichweite −30%. Rachegeister erleiden nur 15% des physischen Schadens. Zauber und Verbrennen wirken am besten.
+1616	Nachts Reichweite −30%. Streitwagen und Wölfe stürmen aus der Dunkelheit und sind im Nu an der Mauer.
+1617	Nachteulenhelm
+1618	Nachtschlacht
+1619	Hundert Level, hundert Verteidigungen. Tinti ist zurück, und der Riss hat sich geschlossen. Die Mauer ist noch immer dieselbe Mauer, doch das Zuhause dahinter ist ganz, ganz groß geworden. (Ende von „Das letzte Bollwerk“)
+1620	Die Hälfte der physischen Angriffe schwebt an ihm vorbei.
+1621	Sind alle Monster einer Welle erschienen, kannst du „Früher rufen“ tippen, um sofort die nächste Welle zu rufen. Die verbleibenden Sekunden des Countdowns werden zu Kupfermünzen.
+1622	Wirft zwei Bumerangs gleichzeitig (diese Bahn + Nachbarbahn). Treffer verlangsamen das Ziel um 40%.
+1623	Schießt 3 gleichzeitig, +50% Schaden gegen Flieger
+1624	Schießt 3 Flammenbolzen gleichzeitig, jeder setzt sein Ziel in Brand, +50% Schaden gegen Flieger.
+1625	Schießt 3 Bolzen gleichzeitig auf 3 verschiedene Ziele, +50% Schaden gegen Flieger. Bei weniger Zielen schwächer.
+1626	Schießt 5 Pfeile gleichzeitig, +60% Schaden gegen Flieger, ignoriert 20% Rüstung.
+1627	Das muss das letzte Stück sein. Halte die Mauer. Diesmal für alle Echos.
+1628	Eins Zwei Drei Vier Fünf Sechs Sieben Acht Neun Zehn
+1629	Empfohlene Ausrüstung anlegen
+1630	Ein gutes Paar Schuhe: flink zu Fuß und fest im Stand.
+1631	Springt weiter.
+1632	Medikerrüstung
+1633	Empfohlene Ausrüstung für dieses Level angelegt:
+1634	Limit erreicht
+1635	Gelesen {0} / {1}
+1636	In die Zwischenablage kopiert
+1637	Gewechselt zu „{0}“, Kael kämpft
+1638	Du verteidigst schon seit {0} Minuten!
+1639	Max. Stufe
+1640	Gewählt:
+1641	Im Besitz
+1642	Im Herausforderungsmodus abgeschlossen
+1643	Angelegt
+1644	Angelegt {0} · Beutel {1}
+1645	Musik-Samples: FluidR3_GM-Soundfont (Frank Wen), CC BY 3.0, bezogen über gleitz/midi-js-soundfonts
+1646	Musiklautstärke
+1647	Soundeffekte
+1648	Effektlautstärke
+1649	Silber
+1650	Silbermünzen
+1651	Silberstufe · Gezielt
+1652	Mit Silbermünzen schaltest du Fähigkeiten und feine Ausrüstung frei.
+1653	Silberkrone
+1654	Seelenführer-Köcher
+1655	Tarnung
+1656	Held
+1657	Der Held kann nicht gelähmt oder betäubt werden
+1658	Helden-ANG +25% für 8 Sekunden.
+1659	Senkung des Angriffstempos beim Helden −60%
+1660	Adlerauge-Anhänger
+1661	Adlerflügel-Umhang
+1662	Adlerfeder-Anhänger
+1663	Adlerfeder-Hut
+1664	Adlerauge
+1665	Glühwürmchen
+1666	Schattenklingen-Maske
+1667	Messer im Schatten
+1668	Besitze alle 6 Waffen
+1669	Fällt nie
+1670	Dauerfrost-Köcher
+1671	Ewiges Bollwerk
+1672	Ewiger Umhang
+1673	Ewige Sanduhr
+1674	Heldenherz
+1675	Phantom-Köcher
+1676	Spieldesign · Programmierung · Grafik · Sound
+1677	Waldläuferstiefel
+1678	So fühlt es sich also an, ein Zuhause zu haben, schön warm und gemütlich.
+1679	Wunscherfüller
+1680	Hier wohnt jemand? Dann musst du dich erst recht anmelden! Klapp! (macht die Schale zu)
+1681	Dick und zäh. Heilt sich langsam, wenn es 2 Sekunden nicht getroffen wird. Bündle das Feuer und erledige es auf einen Schlag.
+1682	Glutumhang
+1683	Fischernetz
+1684	Begegne 30 Monsterarten
+1685	Begegnete Monster
+1686	Begegne allen Monstern
+1687	Heilungsumhang
+1688	Urwaffe
+1689	Verstärkung
+1690	Verstärkung feuert an: Beim nächsten Versuch in diesem Level ANG und Mauer +{0}%
+1691	Fernkampf
+1692	Fernkampf: bleibt weit weg und spuckt Gift auf die Mauer, die dadurch langsam vergiftet wird.
+1693	Aus der Ferne getarnt und nicht angreifbar. Wechselt heimlich die Bahn und zeigt sich erst nahe der Mauer.
+1694	Weitsichthelm
+1695	Fernblick
+1696	Rachegeist
+1697	Mondlicht-Köcher
+1698	Erster Besuch im Mondlicht
+1699	Mondnacht-Sturm
+1700	Mondschatten-Burg
+1701	Mondschatten-Wächter
+1702	Mondschatten-Hase
+1703	Mondschatten-Hasen und Vampirfledermäuse huschen hin und her, rechne nicht damit, immer dasselbe Ziel zu treffen.
+1704	Mondschatten-Klumpen
+1705	Mondschatten-Klumpen heilen sich selbst, wenn sie nicht getroffen werden. Lass sie nicht verschnaufen.
+1706	Lesen
+1707	Wolkenwächter
+1708	Wolkenreich
+1709	Wolkenschaf
+1710	Wolle der Wolkenschafe −60%
+1711	Wolkenschafe müssen zuerst geschoren werden und rennen danach blitzschnell. Erledige sie in einem Zug!
+1712	Lerchenumhang
+1713	Meteoritenregen
+1714	Sternschnuppenkanone
+1715	Nochmal
+1716	Regeneration
+1717	Noch ein bisschen spielen
+1718	Schließe 10 Level im Herausforderungsmodus ab (10 Kronen erhalten)
+1719	Hier abholen
+1720	Pause
+1721	Blinzle mal, schau in die Ferne und trink einen Schluck Wasser. Opa König passt eine Weile auf die Mauer auf.
+1722	Drachenspalter-Helm
+1723	Das Schlachtfeld hat jetzt 4 Bahnen. Flächenangriffe und Fähigkeiten für das ganze Feld werden immer wichtiger.
+1724	Streitwagen-Angriff
+1725	Streitwagen-Flut
+1726	Feldlazarett
+1727	Kampf
+1728	Kämpfe {0} · Siege {1} · Besiegt {2} · Unterbrochen {3} · Früh gerufen {4}
+1729	Kämpfe {0} · Siege {1} · Besiegte Monster {2}
+1730	Kämpfe
+1731	Wirkt automatisch zu Kampfbeginn: +30% Kupfermünzen in diesem Level.
+1732	Kampfeinstellungen
+1733	Kampf pausiert. Wähle eine Nachschubkarte; ihr Effekt gilt bis zum Levelende (Farben von niedrig nach hoch: Blau, Lila, Rot, Gold; höher ist stärker). Du kannst auch 1 / 2 / 3 drücken.
+1734	Tippe im Kampf auf eine Fähigkeitstaste (oder drücke 1 / 2 / 3), um aktive Fähigkeiten zu wirken, und drücke Q / W / E / R / Z / X / C für Gegenstände (jeweils bis zu 3, einer pro Einsatz, danach Abklingzeit; Gegenstände erst im Shop kaufen, dann anlegen).
+1735	Kriegstrommel
+1736	Donnernde Kriegstrommeln
+1737	Pfeilregen, der bei aktiver Kriegstrommel gewirkt wird: +30% Pfeile
+1738	Sengoku-Samurai
+1739	Nach dem Kampf
+1740	Stärke
+1741	Kriegsbanner
+1742	Vor dem Kampf
+1743	Kampfvorbereitung · Level {0}
+1744	Kriegerhelm
+1745	Offen! Schnell zuschlagen!
+1746	Offen! Schlag {0} s lang zu
+1747	Kapitel
+1748	Lange Reihe, Goblins mit Holzschild
+1749	Die Sterne auf dem Gewand funkeln von selbst, und der Hut ist größer als der Träger.
+1750	Glücksanhänger
+1751	Im Sumpf ist überall Nebel und es quaken Giftfrösche. Zum ersten Mal kommt mir die Mauer ein bisschen kalt vor.
+1752	Kleine Geister im Sumpf fürchten physische Angriffe kaum, und Giftfrösche spucken aus der Ferne Gift. Denk daran, sie mit „Bedrohung zuerst“ anzugreifen!
+1753	Ein Mädchen mit Glühwürmchenlaterne im Sumpf. ANG ×0,92, Angriffstempo ×1,05; Reichweite sinkt nachts nicht, physischer Schaden gegen Geister +20%; jeder 12. Angriff lässt 3 Glühwürmchen frei (je ANG ×0,6 Magieschaden).
+1754	Sumpfwächter
+1755	Leuchtkugel
+1756	Das ist keine Muschel, das ist die Mauer! Da wohnen viele Leute drin!
+1757	Diesmal lasse ich es nicht regnen. … Nur ein ganz kleines bisschen, um das neue Haus zu baden.
+1758	Das klingt genau wie früher.
+1759	Das ist die tiefste Stelle des Risses, wo man nicht einmal Himmel und Erde unterscheiden kann.
+1760	Dieser Gegenstand ist aufgebraucht
+1761	Die Kinder in der Stadt nennen mich Oma Suppe, und ich liebe das.
+1762	Turmhüter
+1763	Erdbebenkanone
+1764	Dampfhandwerker
+1765	Das ganze Level ist Nacht: Reichweite −30%
+1766	Du kannst das später jederzeit in den „Einstellungen“ ändern.
+1767	Danach fällt 6 Sekunden nach Beginn jeder Welle Feuer vom Himmel und verursacht allen Monstern ANG ×4 Magieschaden
+1768	Verstanden
+1769	Verstanden (Leertaste)
+1770	Nur der Holzbogen ist erlaubt
+1771	Sobald eine Bahn rot wird, bündle ich das Feuer und stoppe deinen Ansturm!
+1772	Rufe mindestens 3-mal früher und schließe das Level ab
+1773	Heilen
+1774	Heilt mehr fliegende Vögel.
+1775	Heilrüstung
+1776	Endzeit-Fang
+1777	Auge der Endzeit
+1778	Schwere Bombe
+1779	Wiederholung: Abschlussbelohnung halbiert (Kupfermünzen)
+1780	Schwere Rüstung
+1781	Schwer gepanzerte Monster, Monstergruppen, Bosse
+1782	Schwer gepanzerte Monster, Bosse
+1783	Schwerer Panzerangriff
+1784	Schwerer Panzerangriff! Zauberstab, Kanone und „Rüstungsbrecher“ sind in diesem Level der Schlüssel.
+1785	Schwerer Panzerangriff! Yetis haben hohe physische Rüstung. Magie, Kanonen und „Rüstungsbrecher“ sind der Schlüssel.
+1786	Schwerer Pfeil · Rüstungsbruch
+1787	Nochmal ansehen
+1788	Neustart
+1789	Eine zinnoberrote Rüstung, ein leuchtender Halbmond am Helm und eine kleine Fahne auf dem Rücken.
+1790	Aktive Fähigkeiten
+1791	Aktive Fähigkeiten (im Kampf antippen)
+1792	Plätze für aktive Fähigkeiten
+1793	Abklingzeit aktiver Fähigkeiten −{0}%
+1794	Abklingzeit aktiver Fähigkeiten −15%
+1795	Abklingzeit aktiver Fähigkeiten −20% und setzt sofort alle Abklingzeiten zurück
+1796	Abklingzeit aktiver Fähigkeiten −40% und setzt sofort alle Abklingzeiten zurück
+1797	Abklingzeit aktiver Fähigkeiten −5%
+1798	Abklingzeit aktiver Fähigkeiten −8%, Rüstung ignorieren +10%
+1799	Suppenzeit! {0} Monster gestärkt
+1800	Kampfgefährten
+1801	Ausrüstung
+1802	Ausrüstung +1
+1803	Sternenjäger-Stiefel
+1804	Mach dich bereit… {0}
+1805	Verbrennen
+1806	Lila
+1807	Selbstzerstörung
+1808	Auto (auf Handys aktiviert)
+1809	Autom. Wirken: Aus
+1810	Autom. Wirken: An
+1811	Gräbt sich auf halbem Weg in den Boden (nicht angreifbar) und taucht erst nahe der Mauer wieder auf.
+1812	Bohrer
+1813	Eingraben
+1814	Diamanten
+1815	Diamanten (gibt es nur im Neunstöckigen Dämonenturm)
+1816	Bohrer-Köcher
+1817	Max.
+1818	Beste Etage {0} · Insgesamt {1} Diamanten
+1819	Bestwert: Etage {0} · {1} Diamanten
+1820	Beste Kombo
+1821	Beste Kombo {0}
+1822	Das letzte Bollwerk
+1823	Letzte Welle!
+1824	Das einfachste kleine Monster, langsam und gemächlich.
+1825	Nächstes zuerst
+1826	Stärkstes zuerst
+1827	Schwächstes zuerst
+1828	Die seltenste Währung. Sie gibt es nur im „Neunstöckigen Dämonenturm“, und man kann sie nicht tauschen. Damit kaufst du goldene Ausrüstung auf der Ausrüstungsseite (außer dem 1. Stück jeder Art kostet alles nur Diamanten, ab 10 Diamanten) sowie Aufwertungen auf sehr hohen Stufen (ab mehreren Tausend).
+1829	Endboss. Tinte, Klone, versperrte Sicht: Das ist die Quelle des Chaosrisses.
+1830	Endboss. Ein wachsender tintenfarbener Klecks: beschwört Tintenschatten, Klone, eine Dämonenfürst-Form und Riss-Raserei.
+1831	Das große Finale! Tinti hat vier Phasen: Schergen räumen, Klone treffen, den Schlag unterbrechen, in der Zeit besiegen.
+1832	Der dritte Knochen von links sitzt wieder verkehrt herum, aber das macht nichts.
+1833	Boss-Fähigkeit
+1834	Boss-Bezwinger
+1835	Boss zuerst
+1836	Claude (gemeinsam mit dir)
+1837	Kael, Tinti, kommt heim zum Essen! Heute gibt das Königreich ein Siegesfest für euch!
+1838	Kael, leihst du mir deinen Helm als Trampolin?
+1839	Kael, das ist das letzte Stück. Das ganze Königreich steht hinter der Mauer und feuert dich an.
+1840	Kael, Lyra, es ist etwas passiert. Nachts hat sich in Muschelstadt am Himmel ein violetter Spalt geöffnet, und herausgefallen sind … Monster, die wir schon besiegt haben.
+1841	Kael, Lyra, Post vom Meer! Der dreitägige Regen von Donni hat die Flut steigen lassen und die Häuser der Buchtbewohner weggespült.
+1842	Kael! Auf der Wiese sind jede Menge schleimige Monster aufgetaucht und kommen auf die Mauer zu!
+1843	Kaels kleine Schwester. ANG ×0,82, Angriffstempo ×1,2; jeder 10. Angriff läutet eine Glocke und betäubt kleine Monster um das Ziel 0,5 Sekunden.
+1844	Kaels Helm klingelt immer noch. … Ich habe mich daran gewöhnt.
+1845	Kael greift automatisch an. Grüne Klumpen nagen an der Mauer, sobald sie sie erreichen!
+1846	Kael rannte hin und hob es auf. Der Helm machte „Bong“.
+1847	Kael schießt automatisch von der Mauer, und die Monster kommen von rechts über die Bahnen. Sinken die Mauer-LP auf null, verlierst du.
+1848	Lv{0} · Abklingzeit {1} s
+1849	Lv{0} schaltet Spezialisierung frei
+1850	Lv{0} ermöglicht Aufstieg
+1851	Lyra? … Na gut, wir wechseln uns bei der Wache ab.

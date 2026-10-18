@@ -1,0 +1,463 @@
+926	Foyer éteint
+927	Diablotin de braise
+928	Grand chœur de scories
+929	Masse de scories
+930	Vert
+931	Boule verte
+932	Carquois de saṃsāra
+933	Libère quatre petits gobelins en atterrissant.
+934	Raté
+935	Cape de moineau
+936	Les compétences achetées doivent être placées dans les emplacements de la page Équipement pour être emportées au combat.
+937	Le prix de vente est la moitié du prix d'achat
+938	Lourd canon lent, vaste explosion à l'impact ; ignore 40 % de l'armure de la cible.
+939	Il flotte lentement ; quand on le fait éclater, il lâche 3 petits gobelins.
+940	Prêtre chat
+941	Ce n'est pas grave ! Quand on est en colère, tout le monde gronde.
+942	Ce n'est pas grave ! La prochaine fois, passez par la grande porte.
+943	Petit garde mal élevé ! Goûte ma soupe empoisonnée !
+944	Aucune stat bonus
+945	Aucune compétence active équipée
+946	Toutes les 18 s, frappe d'un tentacule le monstre le plus proche du rempart (ATQ ×3)
+947	Ravitaillement toutes les 2 vagues
+948	Toutes les 20 s, lance un petit éclair sur le monstre ayant le plus de PV (ATQ ×4)
+949	Toutes les 25 s, crache une boule d'encre sur le monstre le plus proche (ATQ ×3)
+950	Un mini-Boss toutes les 5 vagues, un grand Boss toutes les 10 ; ravitaillement toutes les 3 vagues.
+951	Après 4 coups reçus, il rentre un instant dans sa coquille, où il est presque intouchable. Ne vous acharnez pas sur un seul : l'Arbalète à répétition et la Sphère de foudre répartissent mieux les dégâts.
+952	Le rempart récupère {0} % de plus à la fin de chaque vague
+953	Rend 2 % des PV max par niveau à la fin de chaque vague.
+954	Le rempart récupère 3 % à la fin de chaque vague
+955	Au début de chaque vague, le rempart gagne un bouclier de {0} % des PV max
+956	Au début de chaque vague, le rempart gagne un bouclier-bulle de 4 % des PV max
+957	Au début de chaque vague, donne au rempart un bouclier-bulle qui absorbe jusqu'à 3 % des PV max en dégâts
+958	Tire 4 carreaux à la fois
+959	Chaque défi coûte {0}.
+960	Toutes les 6 attaques, un petit éclair frappe la cible et inflige ATQ ×1,5 de dégâts magiques en plus
+961	De temps en temps, il bondit loin devant et reste intouchable en l'air. Plus rapide qu'il n'en a l'air !
+962	Toutes les 5 attaques, attaque aussitôt une fois de plus.
+963	Chaque niveau rapporte du cuivre, plus de l'argent à la première victoire. Allez à la boutique améliorer vos stats, débloquer des armes et des compétences, puis revenez !
+964	À chaque étage franchi, vous pouvez prendre les diamants de cet étage et partir, ou monter encore : un étage de plus double les diamants ; en cas d'échec, vous n'avez rien.
+965	Chaque monstre vaincu rend 0,3 % des PV max au rempart
+966	Défi du jour
+967	Défi du jour « {0} » : {1}
+968	La première victoire du jour donne 3 d'argent. Rejouable à volonté. N'affecte pas les étoiles du niveau.
+969	Rappel de pause toutes les {0} minutes de jeu
+970	À chaque étage de plus, PV des monstres et dégâts au rempart ×{0}. Les PV du rempart sont repris de l'étage précédent, sans récupération (seuls réparations, cartes de ravitaillement, objets et compétences soignent).
+971	Chaque personnage a son apparence et des stats bonus. Achetez avec de l'or et portez-en un à la fois ; celui que vous choisissez se tient sur le rempart (les stats bonus ne valent que quand Kael combat, donc on revient automatiquement à Kael).
+972	Au début de chaque vague, le rempart gagne un bouclier égal à 12 % des PV max ; dégâts subis par le rempart −10 %
+973	Marais brumeux
+974	Armure de mithril
+975	Carquois de mithril
+976	Heaume de mithril
+977	Cape de mithril
+978	Hordes denses, esprits
+979	Hordes denses, petits fantômes, monstres à faible résistance magique
+980	Gratuit
+981	Cape de trotteuse
+982	Extincteur
+983	Carquois brise-armure
+984	Bottes d'agilité
+985	Pendentif de fortune
+986	Dés du destin
+987	Enflamme la cible à l'impact et inflige au total 60 % d'ATQ en dégâts magiques sur 3 secondes.
+988	Aiguiser les pointes
+989	Soldat champignon
+990	Les Soldats champignons accélèrent les monstres proches en mourant. Essayez la compétence « Tambour de guerre » en bas !
+991	Forêt de champignons
+992	Magie, grande explosion (rayon 110, éclaboussure 90 %), plus 2 rebonds d'éclair.
+993	Magie bloquée
+994	Éclair magique avec 5 rebonds, ne perdant que 15 % par rebond.
+995	Dégâts magiques +12 %, recharge des compétences −5 %
+996	Dégâts magiques +25 %
+997	Les dégâts magiques ignorent l'armure physique
+998	{0} des dégâts magiques ont été bloqués par la résistance magique : les monstres de lave ne craignent pas la magie, passez aux armes physiques (canon, arbalète à répétition).
+999	Baguette magique
+1000	Rés. magique
+1001	Croc du roi démon
+1002	Forme de roi démon ! Concentrez vos tirs pour interrompre la charge !
+1003	Tachou
+1004	Tachou, rentre chez toi. On ne te laissera plus jamais seul.
+1005	Tachou ?
+1006	Tachou… c'est toi, là-bas ?
+1007	Tachou a fait « pouf » et s'est recroquevillé en petite boule…
+1008	Tachou est redevenu une petite boule. Il était juste trop seul, et il a renversé de l'Encre partout. Maintenant il vit près du rempart et me regarde monter la garde tous les jours.
+1009	Les clones de Tachou. Battez les trois clones et le vrai apparaîtra.
+1010	Écho de Tachou
+1011	Clone de Tachou
+1012	Tachou s'est dédoublé ! Battez les trois clones !
+1013	Tachou s'est déjà excusé ! On est venus aider !
+1014	Encre, clones, vue obstruée : c'est la source de la Faille du chaos. Battez-le et tout sera fini.
+1015	L'Encre est descendue des montagnes enneigées du nord. Il y fait si froid que même l'Encre a gelé.
+1016	Tache d'encre
+1017	Gobelin au bouclier de bois
+1018	Les Gobelins au bouclier de bois sont solides de face. Le retour du boomerang, la Pluie de flèches et Perforation en viennent à bout.
+1019	Armure à bouclier de bois
+1020	Arc en bois
+1021	Armée de momies
+1022	Carquois en bois
+1023	Cible :
+1024	Priorité de cible
+1025	Fantôme du cimetière
+1026	Cette soupe sent la chaussette sale !
+1027	Ces pas aussi devraient se reposer.
+1028	Alors laissons tout… refroidir.
+1029	Alors défendons encore une fois ! Cette fois, j'ai de nouveaux habits !
+1030	Un tout petit être très seul y vit. Petit garde, va le voir pour moi.
+1031	Alors tu peux écraser du sable ? … Apparemment non.
+1032	Alors construisons-en une ensemble ! Les artisans du royaume sont les meilleurs pour bâtir de grandes maisons.
+1033	La soupe de citrouille est prête ! Pas une goutte d'Encre aujourd'hui.
+1034	Champ de citrouilles
+1035	Tête de citrouille
+1036	Les petites citrouilles issues d'une Tête de citrouille éclatée.
+1037	La Tête de citrouille se divise en 3 petites citrouilles à sa mort. Abattez-la de loin pour avoir le temps de nettoyer.
+1038	Difficulté
+1039	La difficulté suit le plus haut niveau que vous avez terminé (au moins le niveau 60, au plus le niveau 70) ; 2 ravitaillements par étage ; quitter en cours de route ou actualiser la page compte comme un échec.
+1040	Oui ! Je te le promets !
+1041	Oui. On a protégé le rempart, et on a protégé tout le monde.
+1042	Oui. Cette fois, je reviendrai tout seul.
+1043	Votre registre de défense
+1044	Tes ongles sont des pinces !
+1045	Regarde, j'ai réaspiré toute l'Encre. L'arc-en-ciel a de nouveau ses sept couleurs.
+1046	Tu protèges quelqu'un là-dedans ?
+1047	Vous en avez {0}
+1048	Savais-tu que le xylophone est fait avec mes côtes ? Je plaisante.
+1049	Emblème du nirvana
+1050	L'écho de la Reine s'est changé en une petite neige qui est tombée sur le feu avec un sss. Le feu s'est enfin un peu assombri.
+1051	Chauffe-mains
+1052	Clac — Pardon, je ferme ma coquille dès que je stresse.
+1053	Clac… Bon, vos coquilles sont vraiment toutes occupées.
+1054	Voies pleines de longues files
+1055	Voies pleines de longues files, Gobelins au bouclier de bois
+1056	Pharaon bedonnant
+1057	Quand le Pharaon bedonnant est presque à court de PV, il dresse un bouclier pyramide : les attaques physiques le grattent à peine, apportez des dégâts magiques !
+1058	Écho du Pharaon bedonnant
+1059	Après son réveil, le Pharaon bedonnant m'a offert un biscuit vieux de trois mille ans (je n'ai pas osé le manger). Prochaine étape : le Marais brumeux.
+1060	Le Pharaon bedonnant a invoqué des momies !
+1061	Il court très vite, très peu de PV.
+1062	Bulle
+1063	Quand une bulle éclate, 50 % des dégâts passent quand même
+1064	Bouclier-bulle brisé
+1065	Fête des bulles
+1066	Équipement
+1067	Boum !
+1068	Un type en cape… on l'a aussi vu du côté du marais.
+1069	Cape
+1070	Une cape portée sur les épaules.
+1071	Un monstre volant en armure de pierre : la plupart des attaques physiques sont bloquées.
+1072	Un char couvert de plaques de fer, qui charge très vite.
+1073	Un bonhomme de neige en armure de fer ; se divise en trois petites boules de neige à sa mort.
+1074	Armure de cuir
+1075	Carquois en cuir
+1076	Bonnet de cuir
+1077	Bottes de cuir
+1078	Menteur ! Personne ne veut jouer avec l'Encre !
+1079	Des chauves-souris qui changent souvent de voie, difficiles à cibler ensemble.
+1080	Partir sain et sauf : atteint l'étage {0}
+1081	Carquois perce-armure
+1082	Pointe de flèche perce-armure
+1083	Lourd carquois perce-armure
+1084	Carquois fend-ciel
+1085	Blub… L'Encre noire est partie, et ce prince y voit clair à nouveau. Désolé d'avoir sali ton rempart.
+1086	Blub blub ! Ce prince veut rebondir sur le rempart comme sur un trampoline !
+1087	Normal
+1088	Les attaques normales ont {0} % de chances d'enflammer la cible
+1089	Les attaques normales ont 25 % de chances de lancer un éclair qui rebondit sur 3 cibles, chacune subissant ATQ ×0,6 de dégâts magiques
+1090	Les attaques normales ont 30 % de chances d'enflammer la cible
+1091	Les attaques normales enflamment la cible à l'impact
+1092	Les attaques normales ralentissent la cible de {0} %
+1093	Les attaques normales ralentissent la cible de 15 % (1,5 s)
+1094	Les attaques normales ralentissent la cible de 20 % pendant 1,5 seconde
+1095	Armure de chevalier
+1096	Glissade de pingouin
+1097	Les pingouins glissent très vite et infligent de gros dégâts en percutant le rempart. La Zone de gel peut les ralentir.
+1098	Flotte de ballons
+1099	Longue-vue
+1100	Aller ›
+1101	Pas assez de pièces pour {0} niveaux
+1102	Pas assez de pièces pour 2 niveaux
+1103	Pince !
+1104	Pincepince
+1105	Pincepince s'enfouit pour changer de voie et attaquer par surprise. Quand l'alerte de poussière apparaît, préparez vos compétences !
+1106	Pincepince est un gros scorpion qui a peur d'être seul. Il dit que quelqu'un dans la pyramide « collectionne l'Encre noire ».
+1107	Contre la montre
+1108	Changer la priorité de cible (T)
+1109	Changer la vitesse (F)
+1110	Chaussons légers
+1111	Facile
+1112	Équipement léger
+1113	Voyager léger
+1114	Effacer la sauvegarde
+1115	Tournez votre téléphone à l'horizontale pour jouer à The Last Bastion
+1116	Activez JavaScript pour jouer à The Last Bastion.
+1117	Fermez manuellement
+1118	Flèche d'exorcisme
+1119	Heaume anti-bêtes
+1120	Annuler
+1121	Débloquez-le dans la page Équipement
+1122	Débloquer ({0})
+1123	Aller à la boutique
+1124	Tout {0}
+1125	Étourdit tous les monstres 2,5 secondes (1 seconde pour les Boss) et inflige ATQ ×3,5 de dégâts.
+1126	Frappe d'un éclair les 4 monstres les plus riches en PV du terrain, chaque éclair infligeant ATQ ×5 de dégâts magiques.
+1127	Amélioration totale
+1128	Plein écran (activé automatiquement au premier toucher après l'ouverture du jeu)
+1129	Tout de noir vêtu, seule une fente laisse voir les yeux ; il marche sans un bruit.
+1130	Œil qui voit tout
+1131	OK
+1132	Voulez-vous vraiment effacer la sauvegarde et tout recommencer ? C'est irréversible.
+1133	Hordes, monstres volants
+1134	Cocktail Molotov
+1135	Montgolfière
+1136	Chasseur de quêtes
+1137	Faire évoluer une arme quelconque
+1138	Monter une compétence active quelconque au Nv3
+1139	Journal
+1140	Journal rempli
+1141	Un golem de fer fondu : la magie lui fait à peine mal, utilisez des armes physiques.
+1142	Les murs de la forge sont rouges. Chaque monstre-écho est brûlant, comme sorti du four à l'instant.
+1143	Entrée de la forge
+1144	Gardien de la forge
+1145	Golem de fer fondu
+1146	Cape de lave
+1147	Les monstres de lave ne craignent pas la magie, pensez à emporter des armes physiques. Kael, reviens sain et sauf.
+1148	Les monstres de lave ne craignent pas la magie ; utilisez de lourds canons physiques
+1149	Géant de lave
+1150	Golem de lave
+1151	Les Golems de lave ne craignent presque pas la magie ! Passez à l'Arc en bois, au canon ou au boomerang.
+1152	Faille de lave
+1153	Trois cents ans… se sont encore écoulés.
+1154	Le crâne sur le tricorne rit, et un seul œil voit.
+1155	Trois chemins
+1156	Ils arrivent par groupes de trois, à toute vitesse dans la même voie.
+1157	Le garde forestier, portant un arc long plus grand que lui. ATQ ×1,5, vitesse d'attaque ×0,73 ; ses flèches lourdes ignorent 25 % d'armure et repoussent les monstres normaux de 12 pixels.
+1158	Tempête de sable, invocation, soin, bouclier : le Pharaon bedonnant en trois phases, plus coriace que jamais.
+1159	Tempête de sable en approche ! Vitesse d'attaque réduite
+1160	Veille de tempête de sable
+1161	Flacon de sable
+1162	Le désert ? On dirait que ce n'est pas si simple. Kael, veux-tu aller voir ?
+1163	Le soleil du désert est brûlant. Les monstres d'ici sont enveloppés de bandelettes, et les flèches y entrent mollement. Il faudra trouver autre chose.
+1164	Les momies du désert ne craignent pas les flèches ordinaires. Il paraît que la Baguette magique peut aider, allez voir à la boutique !
+1165	Tous les ennemis du désert sont là. Éliminez d'abord les petits prêtres et les boules de cactus !
+1166	Gardien du désert
+1167	Vautour du désert
+1168	Ombre sous les dunes
+1169	Scorpion des sables
+1170	Les Scorpions des sables s'enfouissent pour éviter les attaques, et sont déjà près du rempart quand ils ressortent. La Pluie de flèches et la Zone de gel aident à les contrer.
+1171	Bottes instantanées
+1172	Baie de corail
+1173	Esquive
+1174	Après l'impact, l'éclair rebondit 3 fois entre les monstres proches, chaque rebond infligeant 75 % des dégâts du précédent. Dégâts magiques.
+1175	Rebond d'éclair
+1176	L'éclair rebondit entre plusieurs bernard-l'ermite, ce qui rend difficile d'en faire rentrer un dans sa coquille
+1177	Heaume brillant
+1178	Fort contre :
+1179	Dégâts ×1,8 ; l'impact ralentit la cible de 30 % (2 secondes).
+1180	Sources de dégâts (total {0})
+1181	Boutique
+1182	Boutique / Équipement
+1183	Bottes de caravane
+1184	Votre dernière ascension jusqu'ici n'a pas été récupérée.
+1185	Heaume de sentinelle
+1186	L'expérience prévue
+1187	Réglages
+1188	Portée
+1189	Portée +{0} %
+1190	Portée +10 %
+1191	Portée +10 %, dégâts critiques +30 %
+1192	Portée +12 %
+1193	Portée +20 % (annule exactement l'obscurité des niveaux de nuit)
+1194	Portée +5 %
+1195	Portée +6 %, taux de critique +3 %
+1196	Qui fabriquerait autant de fer ici ?
+1197	Enveloppé d'une épaisse laine qu'il faut d'abord faire tomber. Une fois tondu, il court très vite !
+1198	Un heaume cornu rouge sombre, avec deux petites ailes de dragon dans le dos ; on dit qu'il crache des étincelles.
+1199	Marée de la nuit profonde
+1200	Quel parfum ?
+1201	Armes légendaires
+1202	Paladin du temple
+1203	Armure de grâce divine
+1204	Protection divine
+1205	Monter de {0} niveaux, {1} au total
+1206	Améliorer
+1207	Améliorer {0}
+1208	Améliorer le niveau du rempart : PV du rempart +10 % ({0})
+1209	Évoluer
+1210	Armure de vie
+1211	Cape de vie
+1212	Lumière sacrée
+1213	Armure de lumière sacrée
+1214	Armure de paladin
+1215	Cape de la source sacrée
+1216	Victoires
+1217	Taux de victoire
+1218	Défaite
+1219	Lot de consolation
+1220	Couronne cœur de lion
+1221	Pendentif croc de lion
+1222	Le fils d'un tailleur de pierre, portant un grand bouclier de pierre. ATQ ×0,97 ; le rempart subit 12 % de dégâts en moins et se répare de 3 % en plus à la fin de chaque vague.
+1223	Un petit géant de pierres empilées ; subit 75 % de dégâts magiques en moins. Frappez-le avec des armes physiques !
+1224	Gargouille
+1225	Repaire de gargouilles
+1226	Les Gargouilles volent et portent une armure de pierre : les attaques magiques sont plus efficaces que les attaques normales.
+1227	Cape du temps
+1228	Sablier du temps
+1229	Arrêt du temps
+1230	Cape spatio-temporelle
+1231	Boussole spatio-temporelle
+1232	Bottes chronos
+1233	Rouage du temps
+1234	Tourbillon du temps
+1235	Sablier du temps
+1236	Équipé
+1237	Cape de l'arbre-monde
+1238	Cuirasse de l'arbre-monde
+1239	Inarrêtable
+1240	Inarrêtable !
+1241	Essayez d'activer « Compétences auto » (en bas à droite du combat) : les compétences se lancent seules dès qu'elles sont prêtes
+1242	Accessoire
+1243	Accessoire 1
+1244	Accessoire 2
+1245	Accessoire 3
+1246	C'est nous, Fouuuf ! Ne souffle pas trop fort cette fois !
+1247	C'était un accident ! On est venus tout nettoyer !
+1248	Tueur de dieux
+1249	Carquois du tueur de dieux
+1250	Couronne du tueur de dieux
+1251	Carquois assoiffé de sang
+1252	Collecter
+1253	Défense réussie !
+1254	Registre de défense
+1255	Journal de défense
+1256	Garde du rempart
+1257	Protéger le rempart
+1258	Rune de protection
+1259	Armure de gardien
+1260	Cape de garde
+1261	Récompense des premières 3 étoiles
+1262	Récompense de première victoire
+1263	Première victoire +{0} d'argent
+1264	Stats
+1265	Améliorations de stats (permanentes)
+1266	Monstre souche
+1267	Les Monstres souches se soignent quand on ne les frappe pas. Ne dispersez pas vos tirs, abattez-les un par un.
+1268	Carquois à double couche
+1269	Boomerang à double lame
+1270	Carquois à deux plumes
+1271	Dragon de givre
+1272	Raid du dragon de givre
+1273	Reine Givrée
+1274	La Reine Givrée a gelé le rempart !
+1275	Écho de la Reine Givrée
+1276	La Reine Givrée gèle le rempart, qui ne peut alors plus être réparé. Réparez-le avant qu'il ne gèle !
+1277	La Reine Givrée est en fait très douce, elle manque juste de mots. Destination finale : la Faille de lave.
+1278	Un bébé dragon de glace invoqué par la Reine Givrée.
+1279	Carquois de plumes de givre
+1280	Drapeau de vent arrière
+1281	Ses piques font encore plus mal après sa mort.
+1282	À sa mort, laisse une zone de feu plus grande et plus durable.
+1283	À sa mort, laisse une zone de feu ; les monstres qui y passent accélèrent.
+1284	À sa mort, se divise en 3 petites citrouilles très rapides.
+1285	À sa mort, libère un nuage de spores qui accélère les monstres proches. Abattez-le de loin si possible.
+1286	Trèfle à quatre feuilles
+1287	Médaille d'argent à quatre feuilles
+1288	Des loups cuirassés qui chargent par groupes de quatre.
+1289	Assaut
+1290	Niveau d'assaut : les chars squelettes frappent très fort le rempart, la Zone de gel et la Fiole de gel sont des bouées de sauvetage.
+1291	Niveau d'assaut : une vague toutes les 13 secondes ! Pingouins et meutes de loups sont rapides, lancez à temps la Zone de gel et la Pluie de flèches.
+1292	Niveau d'assaut : une vague toutes les 14 secondes, sans attendre que vous ayez fini ! La Zone de gel peut retenir la marée de lapins.
+1293	Niveau d'assaut ! De gros troupeaux de moutons-nuages se succèdent, et les moutons tondus courent vite. La Zone de gel et la Pluie de flèches sont très utiles.
+1294	Un petit objet qu'on porte sur soi.
+1295	Éclat de glace
+1296	Rentrer
+1297	Reste plus longtemps dans sa coquille.
+1298	Alors la faille, c'est ton « je ne veux pas être seul » ?
+1299	Vitesse de tous les monstres −3 %
+1300	Cotte de mailles
+1301	Comme M. Os, il invoque des squelettes et revit une fois après sa défaite, mais en plus solide.
+1302	Il dit merci, tu as vu !
+1303	Bottes de marche-nuage
+1304	Cape du soleil
+1305	Fantôme à lanterne
+1306	Appel anticipé
+1307	Appel anticipé (N)
+1308	Appel anticipé +{0} cuivre
+1309	Appel anticipé +{0} cuivre (N)
+1310	Cuivre de l'appel anticipé ×3
+1311	Augmente les PV max du rempart (×1,1 par niveau).
+1312	Un soigneur à lanterne : portée plus grande, soins plus forts. Éliminez-le d'abord.
+1313	Tondu !
+1314	Bâton du courroux céleste
+1315	Feu du ciel
+1316	Grand chœur du ciel
+1317	Bottes du destin
+1318	Œil de la voûte céleste
+1319	Couronne de l'œil céleste
+1320	Cape ailée du ciel
+1321	Défi
+1322	Défi réussi !
+1323	Défi raté…
+1324	Passer ›
+1325	Bond
+1326	Rebonds 3 → 5
+1327	Mur de fer
+1328	Couronne d'anneaux de fer
+1329	L'armure de fer a-t-elle peur de la magie ? Je vais essayer !
+1330	Un casque de fer à deux cornes recourbées, la barbe orange tressée en nattes.
+1331	Loup de fer
+1332	Les Loups de fer chargent par groupes de quatre. Le feu laissé par les Masses de scories mourantes accélère les monstres qui passent.
+1333	Raid de loups de fer
+1334	Heaume de tôle
+1335	Armure de plaques de fer
+1336	Bonhomme de neige de fer
+1337	Les Bonshommes de neige de fer se divisent en trois petites boules de neige à leur mort ; les boules de feu des Diablotins de braise font bien plus mal qu'avant.
+1338	Char de fer
+1339	Les Chars de fer frappent fort le rempart et chargent vite : la Zone de gel est une bouée de sauvetage.
+1340	Reste au loin et pose des bulles sur les monstres ; une bulle bloque une attaque. L'Arbalète à répétition et la Sphère de foudre éclatent vite les bulles.
+1341	Terminer le niveau {0}
+1342	Après le niveau {0}, un nouveau voisin emménagera ici
+1343	Les emplacements d'objets se débloquent après le niveau {0}. Vous pouvez déjà en acheter.
+1344	S'ouvre après le niveau {0}
+1345	Après le niveau {0}, « Équipement » s'ouvre : heaumes, capes, armures, carquois, accessoires et bottes
+1346	Se débloque après le niveau {0}
+1347	Terminer le niveau 1
+1348	Terminer le niveau 100 et refermer la Faille du chaos
+1349	Terminer le chapitre 8 et laisser reposer en paix les échos de M. Os et du Pharaon bedonnant
+1350	Terminer le chapitre 2
+1351	Terminer le chapitre 9 et laisser reposer en paix les échos de Rocaillou et de la Reine Givrée
+1352	Terminer le chapitre 6 et calmer Grondin
+1353	Terminer le chapitre 7 et aider Bobo à trouver un nouveau foyer
+1354	Terminer le chapitre 3
+1355	Terminer le chapitre 4
+1356	Terminer le chapitre 1
+1357	Après la victoire, pensez à améliorer votre ATQ à la boutique !
+1358	Récompense de victoire
+1359	Terminer les 9 étages de la tour démoniaque
+1360	Terminer les 100 niveaux !
+1361	Franchir l'étage 1 de la tour démoniaque
+1362	Franchir l'étage 5 de la tour démoniaque
+1363	Polyvalent, Boss
+1364	Avoir 5000 de cuivre en même temps
+1365	Lance 2 projectiles à la fois : un vers la voie visée, un vers la voie voisine
+1366	Cuivre
+1367	Cuivre
+1368	Bourse de cuivre
+1369	Niveau cuivre · courant
+1370	Gain de cuivre +12 %, chance +4 %
+1371	Gain de cuivre +5 %
+1372	Chapelet de pièces de cuivre
+1373	Murs d'airain
+1374	Heaume
+1375	Des ailes de chaque côté du heaume, et un halo chaleureux au-dessus.
+1376	Lunette
+1377	Vautours en cercle
+1378	Bestiaire
+1379	Maître du bestiaire
+1380	Érudit du bestiaire
+1381	Carquois tueur de dragon
+1382	Heaume tueur de dragon
+1383	Heaume fléau des dieux
+1384	Lapin pressé
+1385	Lapin pressé court très vite. Les monstres se répartissent sur différentes voies.
+1386	Patte de lapin
+1387	Grande migration des lapins
+1388	Les lapins arrivent

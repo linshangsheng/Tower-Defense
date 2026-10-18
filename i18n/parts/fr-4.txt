@@ -1,0 +1,312 @@
+1389	Conseillé
+1390	Amélioration conseillée
+1391	Conseillé après le niveau {0}
+1392	Arme conseillée : {0}
+1393	Votre arme conseillée « {0} » est de bas niveau, améliorez-la d'abord : {1} ({2})
+1394	Puissance conseillée {0} · Votre puissance {1}
+1395	Quitter le jeu
+1396	Quitter le jeu ? Votre progression est déjà sauvegardée automatiquement.
+1397	Terminer 20 quêtes de niveau
+1398	Terminer toutes les quêtes de niveau
+1399	Comment jouer
+1400	Ennemi aux mille monstres
+1401	Couronne de l'astronome
+1402	Écho de toutes choses
+1403	Panorama
+1404	Couronne
+1405	Collectionneur de couronnes
+1406	La tenue standard d'un garde du royaume. Le heaume est un peu grand.
+1407	Ville du royaume
+1408	Le plus petit garde du rempart du royaume, aux attaques régulières.
+1409	Le plus petit garde du rempart du royaume, qui a repoussé sa plus grande crise.
+1410	Prototype web {0} · {1} chapitres {2} niveaux
+1411	Lentille de lunette
+1412	Rempart en péril
+1413	Menace d'abord
+1414	Abeille bzz
+1415	Les Abeilles bzz volent par-dessus les autres monstres jusqu'au rempart. L'Arbalète à répétition fait plus de dégâts aux volants.
+1416	Bzzz bzzz
+1417	Je… je vais réaspirer l'Encre.
+1418	J'ai envoyé tous les cerfs-volants dans le ciel. La nuit, ils ressemblent à des étoiles.
+1419	J'ai laissé un peu de mon encre ici. Quand je ne veux pas être seul, elle fait pousser des échos, toujours plus nombreux, toujours plus grands.
+1420	J'ai emménagé près du rempart, je peux voir Kael monter la garde tous les jours.
+1421	Je ne te crois pas ! Je vais d'abord vous renverser d'un souffle !
+1422	Je te le promets.
+1423	Mon arc est lourd et lent, mais chaque flèche repousse les monstres. Pour le volcan, comptez sur moi.
+1424	Ma nouvelle maison est trop grande ! Venez jouer !
+1425	Ma plaine neigeuse n'autorise que le silence. Ton heaume est trop bruyant.
+1426	Je m'occupe de l'inscription ! Numéro un : le roi Bobo, huit pattes, il lui faut une coquille ENORME.
+1427	On a grimpé au ciel par le pont arc-en-ciel. Les nuages étaient doux, comme des chamallows. Tachou est resté caché derrière mon heaume tout du long.
+1428	On a tenu bon !
+1429	On a construit une « Ville-coquillage » au bord de la mer. La maison de Bobo est la plus grande, et son toit a été monté avec les huit pattes. Protéger un foyer, c'est aussi aider les autres à en bâtir un.
+1430	Je t'offre une glace à la fraise !
+1431	Oh là là ! … Laissez-moi d'abord redresser mon heaume.
+1432	Je suis Bébé, la gardienne des coquillages de la baie ! Une coquille aussi grande doit d'abord être enregistrée avant d'être attribuée !
+1433	Je suis l'Écho. Un écho ne fait que répéter. Squelettes, à l'attaque.
+1434	Je suis là pour garder le rempart. Quand tu auras fini de bouder, on pourra jouer ensemble.
+1435	J'ai appris à dessiner avec de l'encre ! Ça, c'est toi, et ça, c'est moi.
+1436	Moi aussi, je veux une maison ! Glou-glou — Tentacules, serrez-la fort !
+1437	Je vous ai tous vus dans le miroir. Finalement, l'animation, ce n'est pas si mal.
+1438	Je m'entraîne à tonner doucement. Boum. (Tout doucement)
+1439	J'ai ouvert un salon de coiffure en ville. N'ayez pas peur, je suis très prudent.
+1440	Je ne connais que le concert où l'on tape sur les heaumes…
+1441	Les nuages noirs bouchent la vue : portée −30 %. Les Boules de tonnerre ne sont touchées que de plus près. Attention à l'électricité statique !
+1442	Nuages noirs
+1443	Couloir sans lampe
+1444	Placement impossible
+1445	Forge sans lumière
+1446	Mer sans lumière
+1447	Mode infini
+1448	Mode infini : plus vous tenez, mieux c'est ! Ravitaillement toutes les 3 vagues, un Boss toutes les 5 vagues.
+1449	Atteindre la vague 30 en mode infini
+1450	Record infini
+1451	Rien ne les arrête !
+1452	Armure ignorée 40 % → 70 %, dégâts d'éclaboussure 70 % → 85 %
+1453	Ignore {0} % de l'armure de la cible
+1454	Ignore 20 % de l'armure de la cible
+1455	Ignore 25 % de l'armure de la cible
+1456	Ignore 50 % de l'armure de la cible (boucliers compris).
+1457	Nuit sans lune
+1458	Arme
+1459	Arme : {0}
+1460	Armes (déblocage permanent, dégâts +8 % par niveau, +4 % par niveau après le niveau 10 ; meilleure qualité = plus fort, plus cher, et amélioration plus chère)
+1461	Dégâts d'arme
+1462	Collectionneur d'armes
+1463	Physique bloqué
+1464	Les dégâts physiques sont +{0} % plus efficaces contre les esprits
+1465	Efficacité du physique contre les esprits 30 % → 70 %
+1466	{0} des dégâts physiques ont été bloqués par l'armure, les boucliers de bois ou les esprits : essayez la Baguette magique, le Boomerang ou « Perforation ».
+1467	Il y a trop de brouillard, je n'y vois rien…
+1468	Yeux dans le brouillard
+1469	Chauve-souris vampire
+1470	Hihi, j'ai mis juste un petit peu de miel dans la soupe.
+1471	Hihihi, encore une cuillerée d'Encre noire et ma soupe sera prête !
+1472	La prochaine fois que le vent soufflera fort, je vous préviendrai d'abord.
+1473	10 secondes après le début de la prochaine vague, gèle tous les monstres 4 secondes (Boss 1,5 seconde)
+1474	8 secondes après le début de la prochaine vague, inflige ATQ ×6 de dégâts magiques à tous les monstres
+1475	Niveau suivant ›
+1476	L'été est là, et je suis le plus populaire de la ville.
+1477	Boule de cactus
+1478	Les Boules de cactus explosent en arrivant au rempart ! Éliminez-les absolument de loin.
+1479	Terminez d'abord le niveau {0}
+1480	Objets (utilisés en combat, un de moins à chaque usage ; jusqu'à {0} types, {1} de chaque au maximum ; chaque type a une recharge après usage)
+1481	Objets (jusqu'à {0} types, {1} de chaque au maximum ; un de moins à chaque usage, chacun a une recharge)
+1482	Emplacements d'objets
+1483	Mini-Boss
+1484	Mini-Boss. Il invoque sans cesse des petits fantômes et revient à la vie après sa première défaite !
+1485	Mini-Boss. Un géant de pierre à tête de moulin : il fait voler des cerfs-volants et déclenche des bourrasques qui poussent les monstres vers le rempart. À l'alerte, concentrez vos tirs pour l'interrompre !
+1486	Mini-Boss. Il piétine pour étourdir le héros et explose quand il est vaincu : ne le laissez pas approcher du rempart !
+1487	Mini-Boss. Il s'enfouit pour changer de voie et attaquer par surprise, puis pince fort de ses grandes pinces une fois au rempart.
+1488	Mini-Boss. Une énorme huître perlière : presque intouchable fermée, elle montre sa perle ouverte. Lancez vos compétences quand elle s'ouvre !
+1489	Mini-Boss. Tornades et bousculades, plus féroces qu'avant.
+1490	Mini-Boss. De temps en temps, il gèle un emplacement de compétence du héros.
+1491	Mini-Boss. Agit comme M. Os : invoque des squelettes et lève un bouclier magique, mais en plus solide.
+1492	Mini-Boss. Agit comme Rocaillou, avec deux fois plus de PV.
+1493	Mini-Boss. Se divise en petites gelées chaque fois que ses PV baissent de 15 %, et une fois de plus à sa mort.
+1494	Petit dragon de glace
+1495	Le Petit dragon de glace arrive ! Ciel et sol attaquent ensemble !
+1496	Petite gelée
+1497	Petit prêtre
+1498	Les Petits prêtres se cachent au dernier rang pour soigner les monstres. Le Coup de foudre et l'explosion de la Baguette magique peuvent les toucher aussi.
+1499	Petit coffre-fort
+1500	Petite citrouille
+1501	Petit pied-de-biche
+1502	Petit sablier
+1503	Petit éclair
+1504	Petite boule de neige
+1505	Petit fantôme
+1506	Les Petits fantômes ne craignent presque pas les attaques physiques
+1507	Les Petits fantômes ne craignent presque pas les attaques physiques. La Baguette magique, la Sphère de foudre, le Coup de foudre et la Brûlure en viennent à bout !
+1508	Mini-bombe
+1509	Voisins de la ville
+1510	Maître de la synergie
+1511	Chaussures
+1512	Échec de l'écriture de la sauvegarde
+1513	Retirer
+1514	Retirer −1
+1515	Merci de ne pas m'avoir détesté quand j'étais en colère.
+1516	Merci d'être venus jusqu'ici.
+1517	Merci d'avoir sauvé le royaume !
+1518	Nouveau
+1519	Nouvel ennemi !
+1520	Nouveau record ! {0} → {1} vagues
+1521	Explosion d'étoiles
+1522	Mage des étoiles
+1523	Bâton des étoiles
+1524	Armure des étoiles
+1525	Couronne des étoiles
+1526	Cape de lumière stellaire
+1527	Scintillant
+1528	Carquois de la trajectoire stellaire
+1529	Voie lactée éclatante
+1530	Étoile
+1531	Bottes de l'étoile fortunée
+1532	Bottes de colporteur
+1533	Chance
+1534	Chance +{0} %
+1535	Chance +15 %
+1536	Porte-bonheur
+1537	Bonus de chance
+1538	Bottes de chance
+1539	Pièce porte-bonheur
+1540	Rappel de pause
+1541	Faire une pause
+1542	Kit de réparation
+1543	Armure de moine
+1544	Réparation
+1545	Tortue-bouclier du vide
+1546	Le cercle de protection de la Tortue-bouclier du vide est plus grand : détruisez-la d'abord. Les piques des oursins font aussi plus mal.
+1547	Formation de boucliers du vide
+1548	Poisson volant du vide
+1549	Les Poissons volants du vide sautent plus loin, et on ne peut pas les toucher en l'air.
+1550	Cerf-volant du vide
+1551	Oursin du vide
+1552	Boule de tonnerre du vide
+1553	Le choc des Boules de tonnerre du vide a une portée plus grande : éliminez-les de loin.
+1554	Il n'y a pas de vent dans le vide, pourtant les cerfs-volants flottent et les moutons bêlent. Tout ce qui est familier est là, mais tout est devenu violet.
+1555	Oiseau du vide
+1556	Ballon du vide
+1557	Royaume du ciel vide
+1558	Crabe du vide
+1559	Mouton du vide
+1560	La laine des Moutons du vide est plus épaisse, et les Cerfs-volants du vide esquivent la moitié des attaques physiques.
+1561	Il faut {0} (échangez d'abord de l'argent contre de l'or au change de la boutique)
+1562	Il faut {0} (échangez d'abord de l'argent contre de l'or au change de la boutique).
+1563	Tous les monstres de la voie choisie et des voies voisines subissent ATQ ×7 de dégâts.
+1564	Choisissez une voie. Les monstres qui s'y trouvent sont ralentis de 60 % pendant 6 secondes.
+1565	Choisissez une carte de ravitaillement (valable ce niveau) · Ravitaillement n° {0}
+1566	Choisir
+1567	Choisir un ravitaillement
+1568	Choisir la difficulté
+1569	Choisir le chapitre
+1570	Choisir l'équipement
+1571	Bandeau d'apprenti
+1572	Cape d'apprenti
+1573	Avalanche
+1574	Yéti
+1575	Les Yétis résistent au physique, les Golems de lave résistent à la magie : préparez les deux types de dégâts.
+1576	Yétis en vadrouille
+1577	Les Yétis craignent la magie, les Golems de lave craignent le physique, et les Tortues-boucliers les protègent : détruisez d'abord les tortues !
+1578	Boule de neige
+1579	La Boule de neige se brise en deux petites boules à sa mort. Les dégâts de zone les éliminent plus facilement.
+1580	Les petites boules de neige restant après l'éclatement d'une Boule de neige.
+1581	La plaine neigeuse est si blanche et lumineuse. Les pingouins glissent sur la glace et, zou, les voilà au pied du rempart.
+1582	Course dans la neige
+1583	Les pingouins de la plaine neigeuse glissent à toute vitesse, et les Yétis sont épais et solides. Kael, couvre-toi bien.
+1584	Gardien de la plaine neigeuse
+1585	Anneau du serment de sang
+1586	Masque à l'œil de sang
+1587	Armure de lignée
+1588	Cape vive
+1589	Bottes vives
+1590	Masse de magma
+1591	La Masse de magma laisse du feu en mourant, et les monstres qui marchent dessus accélèrent. Éliminez-les de loin si possible.
+1592	Rocaillou
+1593	Rocaillou a explosé ! La voie devient de la lave
+1594	Rocaillou explose quand il est vaincu ! Abattez-le avant qu'il n'approche du rempart. Il résiste à la magie, apportez des armes physiques.
+1595	Écho de Rocaillou
+1596	Écho de Rocaillou : piétine et brise les rochers. Agit comme Rocaillou avec deux fois plus de PV.
+1597	L'écho de Rocaillou s'est effondré en un tas de cailloux. Atlas les a empilés au pied du rempart.
+1598	Rocaillou est le gardien de la faille. Il dit que le petit à l'intérieur n'a jamais eu d'ami.
+1599	Rocaillou a explosé près du rempart !
+1600	Vole le long de la voie puis revient, touchant chaque monstre une fois à l'aller et au retour. Le retour frappe dans le dos et ignore les boucliers.
+1601	Laine
+1602	Laine plus épaisse : elle absorbe d'abord 70 % des PV en laine avant que les PV baissent.
+1603	Cisailles à laine
+1604	Brave de la tour
+1605	Rois démons {0} % · Puissance ×{1}
+1606	Il va piétiner !
+1607	Une grosse bourrasque arrive !
+1608	Tu veux que je te remette en un seul morceau ?
+1609	Vous pouvez aussi passer en difficulté Facile dans les « Réglages »
+1610	La nuit, le vieux château brille d'une lune bleue. Les Boules d'ombre-lune tombées de la faille se souviennent encore comment grignoter le rempart.
+1611	Portée −30 % la nuit. Les Chauves-souris vampires changent souvent de voie, et les Assassins de l'ombre surgissent soudain.
+1612	Portée −30 % la nuit. Les Poissons volants sont sur vous d'un seul bond, et les Assassins de l'ombre surgissent soudain !
+1613	Portée −30 % la nuit. Les piques des oursins blessent leurs alliés, attendez qu'ils s'agglutinent pour frapper.
+1614	Portée −30 % la nuit. Les Diablotins de foyer restent au loin et lancent des boules de feu, ne les laissez pas user le rempart à petit feu.
+1615	Portée −30 % la nuit. Les Spectres ne subissent que 15 % des dégâts physiques : sorts et brûlure sont les plus efficaces.
+1616	Portée −30 % la nuit. Les chars et les loups surgissent de l'obscurité et sont au rempart en un clin d'œil.
+1617	Heaume de hibou
+1618	Combat de nuit
+1619	Cent niveaux, cent défenses. Tachou est de retour et la faille s'est refermée. Le rempart est toujours le même, mais la maison derrière lui est devenue immense. (The Last Bastion, fin)
+1620	La moitié des attaques physiques passent à côté de lui en flottant.
+1621	Une fois qu'une vague est entièrement apparue, touchez « Appel anticipé » pour appeler aussitôt la suivante ; les secondes restantes du compte à rebours deviennent du cuivre.
+1622	Lance deux boomerangs à la fois (cette voie + la voie voisine). L'impact ralentit la cible de 40 %.
+1623	Tire 3 projectiles à la fois, dégâts +50 % contre les monstres volants
+1624	Tire 3 carreaux enflammés à la fois, chacun enflamme sa cible, dégâts +50 % contre les monstres volants.
+1625	Tire 3 carreaux à la fois sur 3 cibles différentes, dégâts +50 % contre les monstres volants. Moins puissant s'il y a peu de cibles.
+1626	Tire 5 flèches à la fois, dégâts +60 % contre les monstres volants, ignore 20 % d'armure.
+1627	Ce doit être la dernière ligne droite. Protégez le rempart… cette fois, pour tous les échos.
+1628	Un deux trois quatre cinq six sept huit neuf dix
+1629	Équipement conseillé en un clic
+1630	Une bonne paire de chaussures : rapide à la course, stable à l'arrêt.
+1631	Saute plus loin.
+1632	Armure de médecin
+1633	Équipement conseillé pour ce niveau appliqué :
+1634	Limite atteinte
+1635	Lus {0} / {1}
+1636	Copié dans le presse-papiers
+1637	Changé pour « {0} », Kael part au combat
+1638	Vous défendez depuis {0} minutes !
+1639	Niveau max
+1640	Choisi :
+1641	Possédé
+1642	Terminé en difficulté Défi
+1643	Équipé
+1644	Équipé {0} · Sac {1}
+1645	Échantillons musicaux : banque de sons FluidR3_GM (Frank Wen), CC BY 3.0, via gleitz/midi-js-soundfonts
+1646	Volume de la musique
+1647	Effets sonores
+1648	Volume des effets
+1649	Argent
+1650	Argent
+1651	Niveau argent · ciblé
+1652	L'argent débloque les compétences et l'équipement de qualité.
+1653	Couronne d'argent
+1654	Carquois du guide d'âmes
+1655	Furtivité
+1656	Héros
+1657	Le héros ne peut pas être électrocuté ni étourdi
+1658	ATQ du héros +25 % pendant 8 secondes.
+1659	Réduction de vitesse d'attaque subie par le héros −60 %
+1660	Pendentif œil d'aigle
+1661	Cape aile d'aigle
+1662	Pendentif plume d'aigle
+1663	Chapeau à plume d'aigle
+1664	Œil d'aigle
+1665	Luciole
+1666	Masque lame d'ombre
+1667	Couteau dans l'ombre
+1668	Posséder les 6 armes
+1669	Jamais pris
+1670	Carquois de permafrost
+1671	Rempart éternel
+1672	Cape éternelle
+1673	Sablier éternel
+1674	Cœur de héros
+1675	Carquois fantôme
+1676	Conception · Programmation · Graphismes · Son
+1677	Bottes de rôdeur
+1678	Alors c'est ça, avoir un foyer : c'est chaud et doux.
+1679	Exauceur de vœux
+1680	Quelqu'un y habite ? Raison de plus pour s'enregistrer ! Clac — (elle se referme)
+1681	Épais et solide, il se soigne lentement après 2 secondes sans être frappé. Concentrez vos tirs pour l'abattre d'un coup.
+1682	Cape de braises
+1683	Filet de pêche
+1684	Rencontrer 30 sortes de monstres
+1685	Monstres rencontrés
+1686	Rencontrer tous les monstres
+1687	Cape de guérison
+1688	Arme primitive
+1689	Renforts
+1690	Encouragement des renforts : à la prochaine tentative de ce niveau, ATQ et rempart +{0} %
+1691	Distance
+1692	Distance : reste au loin et crache du venin sur le rempart, qui s'empoisonne peu à peu.
+1693	Invisible et intouchable de loin. Il change aussi de voie en douce et n'apparaît qu'à proximité du rempart.
+1694	Heaume de longue vue
+1695	Longue vue
+1696	Spectre
+1697	Carquois de clair de lune
+1698	Première visite sous la lune
+1699	Bourrasque lunaire
+1700	Château d'ombre-lune
