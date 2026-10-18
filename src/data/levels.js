@@ -80,6 +80,7 @@
     1: {
       name: '草原初战',
       type: 'tutorial',
+      swarm: 0.99,
       lanes: 1,
       waves: [W(2.4, ['slime', 5]), W(2.0, ['slime', 7]), W(1.6, ['slime', 10])],
       tip: 'Kael会自动攻击。绿团团走到城墙前就会开始啃城墙！',
@@ -87,6 +88,7 @@
     2: {
       name: '兔子来了',
       type: 'tutorial',
+      swarm: 0.99,
       lanes: 2,
       waves: [
         W(2.0, ['slime', 6]),
@@ -99,6 +101,7 @@
     3: {
       name: '三条小路',
       type: 'normal',
+      swarm: 0.99,
       lanes: 3,
       waves: [
         W(1.6, ['slime', 8]),
@@ -112,6 +115,7 @@
     4: {
       name: '蘑菇林',
       type: 'normal',
+      swarm: 0.99,
       lanes: 3,
       waves: [
         W(1.6, ['slime', 6], ['mushroom', 3]),
@@ -125,6 +129,7 @@
     5: {
       name: '果冻王子',
       type: 'miniboss',
+      swarm: 0.0003,
       lanes: 3,
       waves: [
         W(1.5, ['slime', 10]),
@@ -139,6 +144,7 @@
     6: {
       name: '嗡嗡嗡',
       type: 'normal',
+      swarm: 0.99,
       lanes: 3,
       waves: [
         W(1.12, ['slime', 11], ['bee', 5]),
@@ -153,6 +159,7 @@
     7: {
       name: '蜂群空袭',
       type: 'raid',
+      swarm: 0.0003,
       lanes: 3,
       waves: [
         W(0.72, ['bee', 16]),
@@ -167,6 +174,7 @@
     8: {
       name: '哥布林前哨',
       type: 'normal',
+      swarm: 0.52,
       lanes: 3,
       waves: [
         W(1.28, ['slime', 11], ['goblin', 2]),
@@ -182,6 +190,7 @@
     9: {
       name: '兔子大迁徙',
       type: 'rush',
+      swarm: 0.0003,
       lanes: 3,
       rushInterval: 14,
       waves: [
@@ -197,6 +206,7 @@
     10: {
       name: '咕噜大王',
       type: 'boss',
+      swarm: 0.03,
       lanes: 3,
       waves: [
         W(1.3, ['gobling', 8], ['goblin', 3]),
@@ -210,6 +220,7 @@
     11: {
       name: '沙丘下的影子',
       type: 'normal',
+      swarm: 0.37,
       countMult: 1.11,
       lanes: 3,
       waves: [
@@ -225,6 +236,7 @@
     12: {
       name: '绷带木乃伊',
       type: 'normal',
+      swarm: 0.37,
       countMult: 1.18,
       lanes: 3,
       waves: [
@@ -241,6 +253,7 @@
     13: {
       name: '第四条路',
       type: 'normal',
+      swarm: 0.46,
       countMult: 1,
       lanes: 4,
       waves: [
@@ -257,6 +270,7 @@
     14: {
       name: '滚滚仙人掌',
       type: 'normal',
+      swarm: 0.047,
       countMult: 1,
       lanes: 4,
       waves: [
@@ -273,6 +287,7 @@
     15: {
       name: '钳钳',
       type: 'miniboss',
+      swarm: 0.16,
       countMult: 1.1,
       lanes: 4,
       waves: [
@@ -289,6 +304,7 @@
     16: {
       name: '秃鹫盘旋',
       type: 'raid',
+      swarm: 0.1,
       countMult: 0.96,
       lanes: 4,
       waves: [
@@ -305,6 +321,7 @@
     17: {
       name: '猫咪祭司',
       type: 'normal',
+      swarm: 0.17,
       countMult: 1.37,
       lanes: 4,
       waves: [
@@ -322,6 +339,7 @@
     18: {
       name: '木乃伊大军',
       type: 'armored',
+      swarm: 0.19,
       countMult: 1.34,
       lanes: 4,
       waves: [
@@ -339,6 +357,7 @@
     19: {
       name: '沙暴前夜',
       type: 'normal',
+      swarm: 0.14,
       countMult: 1.25,
       lanes: 4,
       waves: [
@@ -356,6 +375,7 @@
     20: {
       name: '胖法老',
       type: 'boss',
+      swarm: 0.13,
       countMult: 1.48,
       lanes: 4,
       waves: [
@@ -370,6 +390,7 @@
     21: {
       name: '雾中的眼睛',
       type: 'normal',
+      swarm: 0.08,
       countMult: 1.2,
       lanes: 4,
       waves: [
@@ -386,6 +407,7 @@
     22: {
       name: '呱呱毒蛙',
       type: 'normal',
+      swarm: 0.11,
       countMult: 1.4,
       lanes: 4,
       waves: [
@@ -402,6 +424,7 @@
     23: {
       name: '无月之夜',
       type: 'dark',
+      swarm: 0.11,
       countMult: 1.3,
       dark: true,
       lanes: 4,
@@ -419,6 +442,7 @@
     24: {
       name: '第五条路',
       type: 'normal',
+      swarm: 0.15,
       countMult: 1.26,
       lanes: 5,
       waves: [
@@ -436,6 +460,7 @@
     25: {
       name: '骨头先生',
       type: 'miniboss',
+      swarm: 0.12,
       countMult: 1.4,
       lanes: 5,
       waves: [
@@ -452,6 +477,7 @@
     26: {
       name: '会走路的树桩',
       type: 'normal',
+      swarm: 0.1,
       countMult: 1.06,
       lanes: 5,
       waves: [
@@ -469,6 +495,7 @@
     27: {
       name: '蝙蝠洞',
       type: 'raid',
+      swarm: 0.03,
       countMult: 1.56,
       lanes: 5,
       waves: [
@@ -486,6 +513,7 @@
     28: {
       name: '南瓜田',
       type: 'normal',
+      swarm: 0.013,
       countMult: 1.01,
       lanes: 5,
       waves: [
@@ -503,6 +531,7 @@
     29: {
       name: '百鬼夜行',
       type: 'union',
+      swarm: 0.0003,
       countMult: 1.08,
       lanes: 5,
       waves: [
@@ -520,6 +549,7 @@
     30: {
       name: '毒汤婆婆',
       type: 'boss',
+      swarm: 0.11,
       countMult: 1.93,
       lanes: 5,
       waves: [
@@ -534,6 +564,7 @@
     31: {
       name: '初雪',
       type: 'normal',
+      swarm: 0.047,
       countMult: 1.01,
       lanes: 5,
       waves: [
@@ -550,6 +581,7 @@
     32: {
       name: '滑溜溜',
       type: 'normal',
+      swarm: 0.061,
       countMult: 1.31,
       lanes: 5,
       waves: [
@@ -566,6 +598,7 @@
     33: {
       name: '雪原狂奔',
       type: 'rush',
+      swarm: 0.095,
       countMult: 1.27,
       lanes: 5,
       rushInterval: 13,
@@ -583,6 +616,7 @@
     34: {
       name: '冰晶之光',
       type: 'normal',
+      swarm: 0.003,
       countMult: 1.16,
       lanes: 5,
       waves: [
@@ -600,6 +634,7 @@
     35: {
       name: '冰棍大叔',
       type: 'miniboss',
+      swarm: 0.074,
       countMult: 1.37,
       lanes: 5,
       waves: [
@@ -616,6 +651,7 @@
     36: {
       name: '狼嚎',
       type: 'normal',
+      swarm: 0.0003,
       countMult: 1.24,
       lanes: 5,
       waves: [
@@ -633,6 +669,7 @@
     37: {
       name: '雪怪出没',
       type: 'armored',
+      swarm: 0.16,
       countMult: 1.05,
       lanes: 5,
       waves: [
@@ -650,6 +687,7 @@
     38: {
       name: '冰晶风暴',
       type: 'raid',
+      swarm: 0.089,
       countMult: 1.8,
       lanes: 5,
       waves: [
@@ -667,6 +705,7 @@
     39: {
       name: '雪崩',
       type: 'union',
+      swarm: 0.0003,
       countMult: 1.03,
       lanes: 5,
       waves: [
@@ -684,6 +723,7 @@
     40: {
       name: '霜霜女王',
       type: 'boss',
+      swarm: 0.0003,
       countMult: 1.87,
       lanes: 5,
       waves: [
@@ -698,6 +738,7 @@
     41: {
       name: '裂隙入口',
       type: 'normal',
+      swarm: 0.022,
       countMult: 2,
       lanes: 5,
       waves: [
@@ -714,6 +755,7 @@
     42: {
       name: '火球雨',
       type: 'normal',
+      swarm: 0.0003,
       countMult: 2.45,
       lanes: 5,
       waves: [
@@ -730,6 +772,7 @@
     43: {
       name: '熔岩巨人',
       type: 'armored',
+      swarm: 0.072,
       countMult: 2.08,
       lanes: 5,
       waves: [
@@ -747,6 +790,7 @@
     44: {
       name: '影子里的刀',
       type: 'dark',
+      swarm: 0.056,
       countMult: 1.35,
       dark: true,
       lanes: 5,
@@ -764,6 +808,7 @@
     45: {
       name: '岩岩',
       type: 'miniboss',
+      swarm: 0.11,
       countMult: 0.3,
       lanes: 5,
       waves: [
@@ -780,6 +825,7 @@
     46: {
       name: '战车冲锋',
       type: 'rush',
+      swarm: 0.047,
       countMult: 1.08,
       lanes: 5,
       rushInterval: 12,
@@ -797,6 +843,7 @@
     47: {
       name: '火雨天空',
       type: 'raid',
+      swarm: 0.18,
       countMult: 1.47,
       lanes: 5,
       waves: [
@@ -814,6 +861,7 @@
     48: {
       name: '万象',
       type: 'union',
+      swarm: 0.0003,
       countMult: 0.91,
       lanes: 5,
       waves: [
@@ -831,6 +879,7 @@
     49: {
       name: '精英挑战',
       type: 'elite',
+      swarm: 0.072,
       bossHp: 0.3,
       countMult: 0.79,
       lanes: 5,
@@ -848,6 +897,7 @@
     50: {
       name: '墨墨',
       type: 'boss',
+      swarm: 0.0095,
       countMult: 2.02,
       lanes: 5,
       final: true,
@@ -863,6 +913,7 @@
     51: {
       name: '彩虹桥',
       type: 'normal',
+      swarm: 0.0003,
       countMult: 2.27,
       lanes: 5,
       waves: [
@@ -879,6 +930,7 @@
     52: {
       name: '风筝节',
       type: 'raid',
+      swarm: 0.072,
       countMult: 1.8,
       lanes: 5,
       waves: [
@@ -895,6 +947,7 @@
     53: {
       name: '雷雨云',
       type: 'normal',
+      swarm: 0.03,
       countMult: 2.4,
       lanes: 5,
       waves: [
@@ -911,6 +964,7 @@
     54: {
       name: '空中马戏团',
       type: 'normal',
+      swarm: 0.0071,
       countMult: 1.94,
       lanes: 5,
       waves: [
@@ -928,6 +982,7 @@
     55: {
       name: '呼呼',
       type: 'miniboss',
+      swarm: 0.03,
       countMult: 3.15,
       lanes: 5,
       waves: [
@@ -943,6 +998,7 @@
     56: {
       name: '浮空要塞',
       type: 'armored',
+      swarm: 0.082,
       countMult: 0.8,
       lanes: 5,
       waves: [
@@ -960,6 +1016,7 @@
     57: {
       name: '剪羊毛大赛',
       type: 'rush',
+      swarm: 0.037,
       countMult: 1.34,
       lanes: 5,
       rushInterval: 12,
@@ -977,6 +1034,7 @@
     58: {
       name: '乌云密布',
       type: 'dark',
+      swarm: 0.0003,
       countMult: 2.24,
       dark: true,
       lanes: 5,
@@ -995,6 +1053,7 @@
     59: {
       name: '天空大合唱',
       type: 'union',
+      swarm: 0.0003,
       countMult: 1.68,
       lanes: 5,
       waves: [
@@ -1012,6 +1071,7 @@
     60: {
       name: '雷雷',
       type: 'boss',
+      swarm: 0.003,
       countMult: 1,
       lanes: 5,
       waves: [
@@ -1026,6 +1086,7 @@
     61: {
       name: '寄居蟹搬家',
       type: 'normal',
+      swarm: 0.037,
       countMult: 2.6,
       lanes: 5,
       waves: [
@@ -1042,6 +1103,7 @@
     62: {
       name: '盾龟护送',
       type: 'normal',
+      swarm: 0.072,
       countMult: 2.28,
       lanes: 5,
       waves: [
@@ -1058,6 +1120,7 @@
     63: {
       name: '飞鱼跳跳',
       type: 'rush',
+      swarm: 0.058,
       countMult: 1.94,
       lanes: 5,
       rushInterval: 12,
@@ -1075,6 +1138,7 @@
     64: {
       name: '泡泡派对',
       type: 'normal',
+      swarm: 0.003,
       countMult: 2.77,
       lanes: 5,
       waves: [
@@ -1091,6 +1155,7 @@
     65: {
       name: '贝贝',
       type: 'miniboss',
+      swarm: 0.08,
       countMult: 2,
       lanes: 5,
       waves: [
@@ -1106,6 +1171,7 @@
     66: {
       name: '礁石堡垒',
       type: 'armored',
+      swarm: 0.039,
       countMult: 0.64,
       lanes: 5,
       waves: [
@@ -1123,6 +1189,7 @@
     67: {
       name: '海鸥海峡',
       type: 'raid',
+      swarm: 0.037,
       countMult: 2.2,
       lanes: 5,
       waves: [
@@ -1139,6 +1206,7 @@
     68: {
       name: '深夜潮声',
       type: 'dark',
+      swarm: 0.0003,
       countMult: 2.41,
       dark: true,
       lanes: 5,
@@ -1157,6 +1225,7 @@
     69: {
       name: '海湾大合唱',
       type: 'union',
+      swarm: 0.0003,
       countMult: 1.6,
       lanes: 5,
       waves: [
@@ -1174,6 +1243,7 @@
     70: {
       name: '波波',
       type: 'boss',
+      swarm: 0.044,
       countMult: 1,
       lanes: 5,
       waves: [
@@ -1186,6 +1256,7 @@
     71: {
       name: '月下初访',
       type: 'normal',
+      swarm: 0.039,
       countMult: 1.62,
       lanes: 5,
       waves: [
@@ -1202,6 +1273,7 @@
     72: {
       name: '骨盾卫兵',
       type: 'normal',
+      swarm: 0.023,
       countMult: 0.72,
       lanes: 5,
       waves: [
@@ -1218,6 +1290,7 @@
     73: {
       name: '月夜疾风',
       type: 'rush',
+      swarm: 0.03,
       countMult: 1,
       lanes: 5,
       rushInterval: 12,
@@ -1235,6 +1308,7 @@
     74: {
       name: '墓园幽灵',
       type: 'dark',
+      swarm: 0.049,
       countMult: 0.93,
       lanes: 5,
       dark: true,
@@ -1252,6 +1326,7 @@
     75: {
       name: '骨头先生的回声',
       type: 'miniboss',
+      swarm: 0.0095,
       countMult: 1.37,
       lanes: 5,
       waves: [
@@ -1267,6 +1342,7 @@
     76: {
       name: '石像鬼巢穴',
       type: 'armored',
+      swarm: 0.065,
       countMult: 0.64,
       lanes: 5,
       waves: [
@@ -1283,6 +1359,7 @@
     77: {
       name: '蝙蝠群袭',
       type: 'raid',
+      swarm: 0.03,
       countMult: 0.51,
       lanes: 5,
       waves: [
@@ -1299,6 +1376,7 @@
     78: {
       name: '无灯长廊',
       type: 'dark',
+      swarm: 0.013,
       countMult: 0.95,
       lanes: 5,
       dark: true,
@@ -1316,6 +1394,7 @@
     79: {
       name: '古堡合唱',
       type: 'union',
+      swarm: 0.047,
       countMult: 0.82,
       lanes: 5,
       waves: [
@@ -1333,6 +1412,7 @@
     80: {
       name: '胖法老的回声',
       type: 'boss',
+      swarm: 0.0003,
       countMult: 1,
       lanes: 5,
       waves: [
@@ -1345,6 +1425,7 @@
     81: {
       name: '熔炉入口',
       type: 'normal',
+      swarm: 0.00095,
       countMult: 0.85,
       lanes: 5,
       waves: [
@@ -1361,6 +1442,7 @@
     82: {
       name: '铁狼突袭',
       type: 'normal',
+      swarm: 0.017,
       countMult: 1,
       lanes: 5,
       waves: [
@@ -1377,6 +1459,7 @@
     83: {
       name: '战车洪流',
       type: 'rush',
+      swarm: 0.0003,
       countMult: 0.33,
       lanes: 5,
       rushInterval: 12,
@@ -1394,6 +1477,7 @@
     84: {
       name: '无光锻造间',
       type: 'dark',
+      swarm: 0.0003,
       countMult: 1.47,
       lanes: 5,
       dark: true,
@@ -1411,6 +1495,7 @@
     85: {
       name: '岩岩的回声',
       type: 'miniboss',
+      swarm: 0.0095,
       countMult: 0.33,
       lanes: 5,
       waves: [
@@ -1426,6 +1511,7 @@
     86: {
       name: '钢与熔铁',
       type: 'armored',
+      swarm: 0.034,
       countMult: 0.41,
       lanes: 5,
       waves: [
@@ -1442,6 +1528,7 @@
     87: {
       name: '霜龙空袭',
       type: 'raid',
+      swarm: 0.09,
       countMult: 0.3,
       lanes: 5,
       waves: [
@@ -1458,6 +1545,7 @@
     88: {
       name: '炉火熄灭',
       type: 'dark',
+      swarm: 0.0029,
       countMult: 0.64,
       lanes: 5,
       dark: true,
@@ -1475,6 +1563,7 @@
     89: {
       name: '炉渣大合唱',
       type: 'union',
+      swarm: 0.013,
       countMult: 0.8,
       lanes: 5,
       waves: [
@@ -1492,6 +1581,7 @@
     90: {
       name: '霜霜女王的回声',
       type: 'boss',
+      swarm: 0.035,
       countMult: 1.02,
       lanes: 5,
       waves: [
@@ -1504,6 +1594,7 @@
     91: {
       name: '裂隙边缘',
       type: 'normal',
+      swarm: 0.015,
       countMult: 0.9,
       lanes: 5,
       waves: [
@@ -1520,6 +1611,7 @@
     92: {
       name: '雷鸣之间',
       type: 'normal',
+      swarm: 0.0095,
       countMult: 0.68,
       lanes: 5,
       waves: [
@@ -1536,6 +1628,7 @@
     93: {
       name: '飞鱼风暴',
       type: 'rush',
+      swarm: 0.065,
       countMult: 0.54,
       lanes: 5,
       rushInterval: 12,
@@ -1553,6 +1646,7 @@
     94: {
       name: '虚空盾阵',
       type: 'normal',
+      swarm: 0.0095,
       countMult: 0.51,
       lanes: 5,
       waves: [
@@ -1569,6 +1663,7 @@
     95: {
       name: '呼呼的回声',
       type: 'miniboss',
+      swarm: 0.044,
       countMult: 1.13,
       lanes: 5,
       waves: [
@@ -1584,6 +1679,7 @@
     96: {
       name: '万物回响',
       type: 'armored',
+      swarm: 0.019,
       countMult: 0.33,
       lanes: 5,
       waves: [
@@ -1600,6 +1696,7 @@
     97: {
       name: '气球舰队',
       type: 'raid',
+      swarm: 0.0053,
       countMult: 0.33,
       lanes: 5,
       waves: [
@@ -1616,6 +1713,7 @@
     98: {
       name: '无光之海',
       type: 'dark',
+      swarm: 0.0003,
       countMult: 1.12,
       lanes: 5,
       dark: true,
@@ -1633,6 +1731,7 @@
     99: {
       name: '回响合唱',
       type: 'union',
+      swarm: 0.018,
       countMult: 0.76,
       lanes: 5,
       waves: [
@@ -1650,6 +1749,7 @@
     100: {
       name: '墨墨的回声',
       type: 'boss',
+      swarm: 0.0003,
       countMult: 0.8,
       lanes: 5,
       waves: [

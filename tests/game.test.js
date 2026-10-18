@@ -480,8 +480,9 @@ test('联合关：所有车道同时出怪', () => {
   const spawned = [];
   b.on('spawn', (m) => spawned.push(m));
   while (!spawned.length) b.step(1 / 60);
-  assert.strictEqual(spawned.length, 5);
-  assert.deepStrictEqual(spawned.map((m) => m.lane).sort(), [0, 1, 2, 3, 4]);
+  const own = spawned.filter((m) => !m.swarm); // 多出来的小怪另走一条队列（设计书 84），不算在联合出怪里
+  assert.strictEqual(own.length, 5);
+  assert.deepStrictEqual(own.map((m) => m.lane).sort(), [0, 1, 2, 3, 4]);
 });
 
 test('暗夜关射程降低 30%', () => {
@@ -3024,9 +3025,12 @@ function queuedTotals(n, opts) {
   for (let i = 0; i < b.level.waves.length; i++) {
     b.startWave(i);
     for (const t of b.spawnQueue) {
-      if (t[0] === '~') swarm++;
-      if (D.monsters[t.replace('~', '')].boss) bosses++;
+      if (D.monsters[t].boss) bosses++;
       else minions++;
+    }
+    for (const t of b.swarmQueue) {
+      assert.ok(!D.monsters[t].boss, '潮里没有 Boss');
+      swarm++;
     }
   }
   return { minions, bosses, swarm, b };
@@ -3038,14 +3042,14 @@ test('主线第 N 关总共多出 N × 20 只小怪，Boss 数量不变', () => 
     const bossBase = D.levels[n].waves.reduce((a, w) => a + w.groups.reduce((x, [t, c]) => x + (D.monsters[t].boss ? c : 0), 0), 0);
     const r = queuedTotals(n);
     assert.strictEqual(r.swarm, n * 20, `第 ${n} 关多出的小怪数`);
-    assert.strictEqual(r.minions - r.swarm, base, `第 ${n} 关原有小怪不变`);
+    assert.strictEqual(r.minions, base, `第 ${n} 关原有小怪不变`);
     assert.strictEqual(r.bosses, bossBase, `第 ${n} 关 Boss 数量不变`);
   }
   assert.strictEqual(queuedTotals(100).swarm, 2000, '第 100 关多 2000 只');
   // 100 关一关不落：每一关都正好多 N × 20
   for (let n = 1; n <= 100; n++) {
     const b = queuedTotals(n).b;
-    assert.strictEqual(b.extraPlan.reduce((a, p) => a + (p ? p.reduce((x, y) => x + y, 0) : 0), 0), n * 20, `第 ${n} 关`);
+    assert.strictEqual(b.extraPlan.reduce((a, p) => a + (p ? p.reduce((x, [, c]) => x + c, 0) : 0), 0), n * 20, `第 ${n} 关`);
   }
 });
 
@@ -3056,11 +3060,10 @@ test('多出的小怪：只在主线关卡里加（自定义关卡不加），�
   const lv = Object.assign({}, D.levels[40]);
   const custom = queuedTotals(40, { levelDef: lv });
   assert.strictEqual(custom.swarm, 0, '自定义关卡（无尽、每日挑战、妖塔）不加');
-  // 各波分到的多出数量和各波原有（普通）小怪数大致成比例
-  const plain = (d) => !d.boss && !d.healer && !d.ranged && !d.chill && !d.bubbler && !d.towerOf && !d.bossPart && !d.ai;
+  // 各波分到的多出数量和各波原有小怪数大致成比例
   const cm = D.levels[40].countMult || 1;
-  const sums = D.levels[40].waves.map((w) => w.groups.reduce((x, [t, c]) => x + (plain(D.monsters[t]) ? Math.max(1, Math.round(c * cm)) : 0), 0));
-  const extra = a.map((p) => (p ? p.reduce((x, y) => x + y, 0) : 0));
+  const sums = D.levels[40].waves.map((w) => w.groups.reduce((x, [t, c]) => x + (D.monsters[t].boss ? 0 : Math.max(1, Math.round(c * cm))), 0));
+  const extra = a.map((p) => (p ? p.reduce((x, [, c]) => x + c, 0) : 0));
   const tot = sums.reduce((x, y) => x + y, 0);
   assert.strictEqual(extra.reduce((x, y) => x + y, 0), 800);
   extra.forEach((e, i) => assert.ok(Math.abs(e - (800 * sums[i]) / tot) <= 1.5, `第 ${i + 1} 波分摊`));
