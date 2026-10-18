@@ -115,7 +115,16 @@
   M.towerBossList = (save) => D.town.filter((f) => !save || P.isCleared(save, f.level)).map((f) => f.boss);
 
   M.towerReward = (floor) => Math.pow(2, floor - 1); // 第 N 层：2^(N−1) 钻石
-  M.towerCounts = (floor) => ({ boss: T().bossPerFloor * floor, minion: T().minionPerFloor * floor });
+  // 第 N 层一共 (bossPerFloor + minionPerFloor) × N 只怪；妖王的比例从第 1 层的 10% 一路涨到最后一层的 50%（设计书 80）
+  M.towerBossShare = (floor) => {
+    const first = T().bossPerFloor / (T().bossPerFloor + T().minionPerFloor);
+    return first + ((T().bossShareLast - first) * (floor - 1)) / (T().floors - 1);
+  };
+  M.towerCounts = (floor) => {
+    const total = (T().bossPerFloor + T().minionPerFloor) * floor;
+    const boss = Math.round(total * M.towerBossShare(floor));
+    return { boss, minion: total - boss, total, share: boss / total };
+  };
   // 难度按已通关的最高关卡折算（至少按第 60 关）；越高的层血量越高
   M.towerStage = (save) => Math.max(60, Math.min(Math.max(...Object.keys(D.levels).map(Number)), P.highestCleared(save)));
   // 难度系数按第 70 关封顶：第 71 关以后的回声小妖本身就比旧怪物强（设计书 75.4）

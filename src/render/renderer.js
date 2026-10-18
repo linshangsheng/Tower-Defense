@@ -1941,7 +1941,7 @@
           const frame = frozen ? -1 : Math.floor(tt * TD.art.LIT_FPS);
           const key = frame + flags;
           const c = TD.art.litSprite(holder, key, def.size * DRAW_SCALE, this.scene.palette.rim, TD.art.opts.glow ? 0.32 : 0, (g) => ((S.volume = true), S.monster(g, m.type, 0, 0, def.size, tt, mo), (S.volume = false)));
-          if (this.crowd && !def.boss) {
+          if (this.crowd && (!def.boss || def.towerOf)) {
             // 妖塔里同屏几百只：只贴精灵画布中间有内容的那一块（约一半面积），再按人数缩小一点（设计书 74.5）
             const sz = def.size * DRAW_SCALE;
             const cx = Math.max(0, Math.round(c.ox - sz * 1.5));

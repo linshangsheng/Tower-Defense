@@ -1284,7 +1284,7 @@ test('技能协同：碎冰（冰冻领域里雷霆加伤）、鼓点箭雨（�
   assert.strictEqual(d.combos.drumRain, 1);
 });
 
-test('九层妖塔：通关第 60 关解锁；第 N 层 20N 个妖王 + 180N 个小妖，分 3 波；钻石 2^(N−1)', () => {
+test('九层妖塔：通关第 60 关解锁；第 N 层共 200N 只怪（妖王占比 10% → 50%），分 3 波；钻石 2^(N−1)', () => {
   const s = P.newSave();
   assert.ok(!TD.modes.towerUnlocked(s));
   clearUpTo(s, 60);
@@ -1301,7 +1301,9 @@ test('九层妖塔：通关第 60 关解锁；第 N 层 20N 个妖王 + 180N 个
         if (D.monsters[t].boss) boss += n;
         else minion += n;
       }
-    assert.ok(Math.abs(boss - 20 * k) <= 3 && Math.abs(minion - 180 * k) <= 3, `第 ${k} 层：${boss} + ${minion}`);
+    const want = TD.modes.towerCounts(k);
+    assert.ok(Math.abs(boss - want.boss) <= 3 && Math.abs(minion - want.minion) <= 3, `第 ${k} 层：${boss} + ${minion}`);
+    assert.strictEqual(want.boss + want.minion, 200 * k);
     assert.ok(def.tower && def.floor === k && def.supplyEvery === 1);
   }
   // 妖王用妖塔版（没有特殊行动），种类循环；到第七章通关后 14 种
@@ -2911,4 +2913,26 @@ test('武器的特效颜色跟武器品质走：每把武器发出的弹道都�
     colors.add(p.tint);
   }
   assert.strictEqual(colors.size, 5, '五档品质五种颜色');
+});
+
+test('九层妖塔：越往上妖王的比例越高，第 1 层 10%、第 9 层 50%，每层总数仍是 200N', () => {
+  const share = (k) => TD.modes.towerCounts(k).share;
+  assert.ok(Math.abs(share(1) - 0.1) < 1e-9);
+  assert.ok(Math.abs(share(9) - 0.5) < 1e-9);
+  for (let k = 2; k <= 9; k++) assert.ok(share(k) > share(k - 1), `第 ${k} 层比第 ${k - 1} 层妖王更多`);
+  assert.deepStrictEqual([1, 9].map((k) => TD.modes.towerCounts(k).boss), [20, 900]);
+  assert.strictEqual(TD.modes.towerCounts(9).minion, 900);
+  // 真的按这个比例出怪（3 波加起来）
+  const s = P.newSave();
+  clearUpTo(s, 70);
+  for (const k of [1, 5, 9]) {
+    let boss = 0;
+    let all = 0;
+    for (const w of TD.modes.buildTower(s, k).waves)
+      for (const [t, n] of w.groups) {
+        all += n;
+        if (D.monsters[t].boss) boss += n;
+      }
+    assert.ok(Math.abs(boss / all - share(k)) < 0.01, `第 ${k} 层实际妖王占 ${(boss / all).toFixed(3)}`);
+  }
 });
