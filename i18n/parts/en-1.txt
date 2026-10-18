@@ -198,3 +198,266 @@
 197	Freeze, Blizzard, Ice Wall: Queen Frosty, even colder than before.
 198	Freeze Zone
 199	Freeze Zone, Mini Bomb and Freeze Bottle need a lane: tap the skill, then tap a lane.
+200	Freeze Bottle
+201	Freezes all monsters for 6s (Bosses 3s). Frozen monsters take +60% damage, then are slowed 50% for 4s after thawing.
+202	Frozen {0}
+203	Frost Decree
+204	Frozen, can't repair
+205	Uncle Popsicle
+206	Uncle Popsicle freezes your skills. Don't put all your hopes on a single skill!
+207	Uncle Popsicle says Queen Frosty froze the Ink into a giant mirror, and inside it you can see a red crack.
+208	Uncle Popsicle is marching toward the wall!
+209	Ice Crystal Storm
+210	Ice Crystal Sprite
+211	While Ice Crystal Sprites live, your heroes attack slower. They hide far away, so Arrow Rain and Thunder Strike are the best way to clear them.
+212	Ice Crystal Light
+213	Frostsoul Quiver
+214	Frost Snowfield
+215	Bobo
+216	Bobo's tentacle. As long as 3 or more remain, Bobo is very hard to hurt.
+217	Bobo's suckers are absorbing power! Cut down the tentacles!
+218	Bobo is shielded by tentacles: cut them down first ("Threat First" and "Boss First" both do this). Below 60% HP the tentacles also heal it, and in the end it whips up a huge whirlpool!
+219	Pop
+220	Pop pop pop
+221	Supply Frenzy
+222	Supply Expert
+223	None
+224	Clear any level after level 10 without any active skills
+225	A wave every 14 seconds, no waiting for the field to clear
+226	Whoever they are, iron snowmen, iron wolves... they're all marching toward us in iron armor.
+227	No Skills
+228	Undying Armor
+229	Can't use items
+230	Unyielding War Banner
+231	Clear without using any items
+232	It's not really them, just "echoes": shadows from that crack, dyed blue-purple by chaos. They keep marching toward the wall.
+233	Not me! It's your own alarm clock... I mean, your little soldiers.
+234	Not us! It's from the other side of the crack!
+235	No. See? My helmet is covered in your ink spots too.
+236	Immortal Cloak
+237	No, the third one on the left is always put on backwards. I'm used to it.
+238	Cloth Headband
+239	Fortune Statue
+240	Fortune Boots
+241	The rainbow went black in one stretch! We have to climb up and wipe it clean.
+242	Rainbow Bird
+243	Rainbow Birds heal nearby monsters, and balloons drop goblins when popped. "Threat First" targets Rainbow Birds first.
+244	Rainbow Bridge
+245	The other end of the Rainbow Bridge is the Cloud Kingdom. They say the clouds there blow wind and roll thunder... Kael, bring Inky along!
+246	Controls
+247	Slot {0}
+248	Slot {0}: pick item and quantity
+249	Straw Armor
+250	Strawberry popsicles, one copper coin each!
+251	Straw Sandals
+252	Herbal Cloak
+253	Meadow Skirmish
+254	Meadow Guardian
+255	Floor
+256	Wrapped in bandages: 55% physical damage reduction. Use magic on it!
+257	Heavy shell with blast radius 100, ignores 60% armor, +30% damage to Bosses.
+258	Tide
+259	Tidal Cloak
+260	{0} lanes
+261	Swarms, spirits, monsters with low magic resist
+262	Win {0} diamonds; nothing if you fail
+263	Achievements
+264	Achievements {0} / {1}
+265	Flies in flocks, passing over other monsters straight to the wall.
+266	Wall
+267	The wall is frozen! It can't be repaired for now
+268	The wall has been breached...
+269	Ends when the wall is breached. 15 copper per wave cleared; when you set a new record, 1 silver for every 5 extra waves.
+270	The wall is not a trampoline! ...Though it does look like fun.
+271	The shell... I mean the wall, is nice and sturdy today.
+272	Wall Level
+273	The wall has {0}% HP left. If you go on, the next floor starts at this HP with no recovery.
+274	Wall restores 15% max HP.
+275	Wall restores 70% max HP, then takes −60% damage for 8 seconds.
+276	Wall healing +25%, wall damage taken −5%
+277	Wall healing +{0}%
+278	Wall gains a shield that absorbs damage up to 35% of max HP, lasting until the level ends.
+279	Wall damage reduction
+280	Wall damage sources (total {0})
+281	Most wall damage came from "{0}": {1}
+282	Wall upgrade (current max HP {0})
+283	Wall {0}% left
+284	Wall ≥50% left for 2 stars, ≥80% for 3 stars.
+285	Clear with less than 5% wall HP left
+286	The wall held out to wave {0} / {1}.
+287	Wall damage over time (poison, toxic fog) −60%
+288	Wall damage taken −3% / level.
+289	Wall damage taken −{0}%
+290	Wall damage taken −12%
+291	Wall damage taken −3%
+292	Wall damage taken −6%; wall healing +25%
+293	Wall Repair
+294	Wall HP
+295	ATK +20% while wall HP is below 50%
+296	ATK +{0}% while wall HP is below 50%
+297	Keep wall HP at 70% or higher and clear the level
+298	Wall has only half HP
+299	Max wall HP +{0}%
+300	Scout Boots
+301	Red Iron Furnace
+302	Blazing Cloak
+303	Charge? Right now I only charge at garbage.
+304	Ram
+305	Made by
+306	Sell
+307	Rookie
+308	Tower Novice
+309	First Snow
+310	Execute
+311	Tentacle
+312	The tentacles all pulled back into the sea!
+313	Tentacle shield: {0} left, hit the tentacles first!
+314	Tentacle Slap
+315	Only {0} tentacles left, hit Bobo now!
+316	Equip
+317	Equipped
+318	Pierce
+319	Heartpiercer Longbow
+320	Cloud Piercer
+321	Armor worn on the body that keeps the wall steadier.
+322	Wearing
+323	Legendary
+324	Genesis Crown
+325	Genesis Quiver
+326	Genesis Armor
+327	Genesis Bow
+328	Poking Needle
+329	Coarse Cloak
+330	Emerald Meadow
+331	Invalid save text. Please check that you copied all of it
+332	Save imported
+333	Save cleared
+334	The Bosses you defeated have all moved into town. Tap them to hear how they're doing now.
+335	You beat King Gulu! He's actually the hardest-working cleaner on the meadow. The black wind blows in from the desert, so I'm setting off.
+336	You defeated every monster on this floor.
+337	Interrupt Boss
+338	Interrupt a Boss at least 2 times and clear the level
+339	Interrupted!
+340	Interrupt Master
+341	Interrupt Expert
+342	Big Boss
+343	Big Boss. Blizzard slows attack speed, the frozen wall can't be repaired, and at low HP it summons little ice dragons.
+344	Big Boss. Freeze, Blizzard, Ice Wall, even colder than before.
+345	Big Boss. Toxic fog corrodes the wall, boils minions into stronger versions, and at low HP tips the cauldron to make poison pools.
+346	Big Boss. Whips up sandstorms, summons mummies and heals them, and at low HP raises a pyramid shield that only fears magic.
+347	Big Boss. Summons minions; below 60% HP it launches a boar charge, and focusing fire during the warning can interrupt it.
+348	Big Boss. Sandstorm, summoning, healing, shield: three phases, much trickier than before.
+349	A big white-furred brute with very high physical armor.
+350	The cauldron tips over! The poison pool speeds up monsters!
+351	Huge whirlpool! All the tentacles grew back and all monsters are faster!
+352	Large Text Mode
+353	Carry {0}
+354	Protective gear worn on the head.
+355	Single shot, steady, with extra built-in crit rate. Great against Bosses.
+356	Reach a 30 combo in a single run (defeat monsters within 1.2s of each other)
+357	Single-target DPS
+358	Clang... clang... (shivering from the cold)... Sorry, it rings on its own.
+359	Current: {0} →
+360	Export Save
+361	Import
+362	Import Save
+363	Importing will overwrite your current progress.
+364	Stop here and bank it
+365	Reach wave 30 to unlock the achievement "Never Fallen" (1 gold).
+366	Barbed Quiver
+367	You fell on floor {0} and got nothing. Tickets are not refunded.
+368	Items
+369	What good is sorry! Rumble rumble rumble!
+370	The ground is floating... like a broken mirror.
+371	Map
+372	Quake Charm
+373	Peak Perfection
+374	Wait! I'm Atlas, the mason's son. My dad patched every spot on the wall that got smashed. You go on your trip, and I'll guard the wall!
+375	Level too low, go upgrade
+376	Flies low and very fast.
+377	Wave {0} / {1}
+378	Wave {0}
+379	Wave {0} · Record {1}
+380	Floor {0}
+381	Floor {0} · Wave {1} / {2} · {3} left
+382	Floor {0}: {1} demon kings + {2} minions rush in together (strength ×{3}). Wall HP carries over from the last floor with no recovery. Defeating monsters earns nothing; only clearing floors gives diamonds!
+383	Floor {0} cleared!
+384	Level {0}
+385	Level {0} · {1}
+386	Level {0} · {1} ({2})
+387	From level 3 on, clear any level with the wall at full HP
+388	Chapter {0}
+389	Chapter {0} · {1}
+390	Chapter {0} ▾
+391	Chapter {0} all-three-stars reward
+392	Chapter 6 Boss. A grumpy giant thundercloud: summons Thunder Dumplings and Rainbow Birds, charges up lightning strikes, and finally stirs up a storm.
+393	Chapter 7 Boss. The Octopus King: tentacle shield, sucker healing, and a huge whirlpool at the end. Hit the tentacles first!
+394	Fourth Lane
+395	Fifth Lane
+396	Items can only be used after the first wave of monsters appears
+397	Tap a lane to cast (right-click or Esc to cancel)
+398	Tap to equip
+399	Midas Touch
+400	Tap me to use a skill!
+401	The shock covers a wider area and paralyzes longer.
+402	Carved Longbow
+403	Ding!
+404	Thud... thud... you shall... not pass...
+405	Thud... Inky... today... was fun...
+406	Thud... it's... always... alone... be... nice... to it...
+407	Thud... I'm... guarding... the gate...
+408	Thud... thank... you...
+409	Freezes all monsters for 7s, Bosses included. Frozen monsters take ×2.2 damage, and hero attack speed is +60% during this time.
+410	Freezes all monsters in the chosen lane for 3 seconds.
+411	Granny Brew
+412	Granny Brew scrubbed her cauldron clean and says she'll only make pumpkin soup from now on. The snowfield to the north seems to be one of the sources of the Ink.
+413	Granny Brew boils minions into stronger versions. Clear the field fast and bring Wall Repair to handle the toxic fog!
+414	Granny Brew starts cooking!
+415	Poison Frog
+416	Poison Frogs stay far back and spit venom at the wall. Switch targeting to "Threat First" and heroes will hit them first when the wall is safe.
+417	Toxic fog! The wall keeps taking damage
+418	Failed to read save
+419	Read the entire guard diary (skipped passages can be re-read in the diary)
+420	Slides at high speed on its belly and deals heavy damage when it hits the wall.
+421	Sprint Shoes
+422	Damage to Bosses and flying monsters +30%
+423	Damage to Bosses +{0}%
+424	Damage to Bosses +12%, wall damage taken −4%
+425	Damage to Bosses +50%, ignores 20% armor
+426	S-sorry... it was me.
+427	Damage to slowed or frozen monsters +15%
+428	Deals ATK ×5 magic damage to the monster with the highest current HP.
+429	Damage to flying monsters +{0}%
+430	Deals ATK ×2.5 magic damage to all monsters in the chosen lane and sets them ablaze.
+431	Deals ATK ×5 damage to all monsters in the chosen lane.
+432	Damage +60% against monsters below 30% HP
+433	Redeem {0}
+434	Shield Turtle
+435	Shield Turtle Escort
+436	Shield Turtles protect monsters around them. "Threat First" targets Shield Turtles first; skills aren't affected by them.
+437	Shield
+438	Hides in the back row and keeps healing nearby monsters. Take it out first!
+439	The copper goggles on its forehead glow, and steam puffs out of the pack on its back.
+440	Fires magic shots that explode in a small area on hit. Magic damage ignores physical armor.
+441	When the Pharaoh's echo faded, it left behind a little cookie. I didn't dare eat it.
+442	Starry Sky
+443	On the return trip it hits from behind, ignoring wooden shields
+444	Back
+445	The houses got washed away? Then where will they live?
+446	Abandon Level
+447	Abandon Challenge
+448	Abandon this challenge? Tickets are not refunded and you get nothing.
+449	Flying
+450	Flies, and switches to an adjacent lane every so often.
+451	Flies, drifting with the wind: 35% of weapons' normal physical attacks are dodged. Magic and area damage can't be dodged.
+452	Flying First
+453	Flying Fish
+454	Flying Fish jump distance −50%
+455	Flying Fish Storm
+456	Flying Fish leap a big step forward and can't be hit while airborne. They run faster than they look, so Freeze Zone is very handy!
+457	Flying Fish Hop
+458	Flies in the air and hurls fireballs at the wall from far away.
+459	Split
+460	Storm Cloak
+461	Storm Orb
+462	Windwalker Boots

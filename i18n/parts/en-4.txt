@@ -260,3 +260,204 @@
 1648	SFX Volume
 1649	Silver
 1650	Silver Coins
+1651	Silver tier · Targeted
+1652	Silver coins unlock skills and fine gear.
+1653	Silver Crown
+1654	Soul-Guiding Quiver
+1655	Stealth
+1656	Hero
+1657	Hero can't be shocked or stunned
+1658	Hero ATK +25% for 8 seconds.
+1659	Attack speed reduction on the hero −60%
+1660	Eagle Eye Pendant
+1661	Eagle Wing Cape
+1662	Eagle Feather Pendant
+1663	Eagle Feather Hat
+1664	Eagle's Eye
+1665	Firefly
+1666	Shadow Blade Mask
+1667	Knife in the Shadows
+1668	Own all 6 weapons
+1669	Never Falls
+1670	Permafrost Quiver
+1671	Eternal Bulwark
+1672	Eternal Cloak
+1673	Eternal Hourglass
+1674	Hero's Heart
+1675	Phantom Quiver
+1676	Game Design · Programming · Art · Sound
+1677	Ranger Boots
+1678	So this is how it feels to have a home, warm and cozy.
+1679	Wish Granter
+1680	Someone lives here? Then you really must register! Clap! (shuts shell)
+1681	Thick and tough. It slowly regenerates after 2 seconds without being hit. Focus fire to take it down at once.
+1682	Ember Cloak
+1683	Fishing Net
+1684	Meet 30 kinds of monsters
+1685	Monsters Met
+1686	Meet all monsters
+1687	Mending Cape
+1688	Primitive Weapon
+1689	Reinforcements
+1690	Reinforcements cheer: next attempt at this level, ATK and wall +{0}%
+1691	Ranged
+1692	Ranged: stops far away and spits poison at the wall, poisoning it over time.
+1693	Stealthy and untargetable at range. It also sneaks between lanes and only appears near the wall.
+1694	Farsight Helm
+1695	Gaze Afar
+1696	Wraith
+1697	Moonlight Quiver
+1698	First Visit Under the Moon
+1699	Moonlit Gale
+1700	Moonshade Castle
+1701	Moonshade Guardian
+1702	Moonshade Bunny
+1703	Moonshade Bunnies and Vampire Bats both flit about, so don't expect to keep hitting the same one.
+1704	Moonshade Blob
+1705	Moonshade Blobs regenerate on their own when not hit. Don't let them catch their breath.
+1706	Read
+1707	Cloud Guardian
+1708	Cloud Kingdom
+1709	Cloud Sheep
+1710	Cloud Sheep wool −60%
+1711	Cloud Sheep must be sheared first, then run very fast once bare. Kill it in one burst!
+1712	Lark Cloak
+1713	Meteor Shower
+1714	Meteor Cannon
+1715	Try Again
+1716	Regen
+1717	Play a Bit More
+1718	Clear 10 levels on Challenge difficulty (earn 10 crowns)
+1719	Claim here
+1720	Pause
+1721	Blink your eyes, look into the distance, and drink some water. Grandpa King will watch the wall for a while.
+1722	Dragonslayer Helm
+1723	The battlefield now has 4 lanes. Area attacks and global skills matter more and more.
+1724	Chariot Charge
+1725	Chariot Flood
+1726	Field Hospital
+1727	Battle
+1728	Battles {0} · Wins {1} · Defeated {2} · Interrupted {3} · Early calls {4}
+1729	Battles {0} · Wins {1} · Monsters defeated {2}
+1730	Battles
+1731	Takes effect automatically at battle start: +30% copper coins from this level.
+1732	Battle Settings
+1733	Battle paused. Pick a supply card; its effect lasts until the level ends (colors from low to high: blue, purple, red, gold; higher is stronger). You can also press 1 / 2 / 3.
+1734	In battle, tap a skill button (or press 1 / 2 / 3) to cast active skills, and press Q / W / E / R / Z / X / C to use items (carry up to 3 of each, one per use, with a cooldown after each; buy items in the shop first, then equip them).
+1735	War Drum
+1736	Thundering War Drums
+1737	Arrow Rain cast while War Drum is active: +30% arrows
+1738	Sengoku Samurai
+1739	After Battle
+1740	Power
+1741	War Banner
+1742	Before Battle
+1743	Battle Prep · Level {0}
+1744	Warrior Helmet
+1745	It's open! Hit it!
+1746	Open! Hit it for {0}s
+1747	Chapter
+1748	Long line, wooden-shield goblins
+1749	The stars on the robe twinkle by themselves, and the hat is taller than the wearer.
+1750	Fortune Pendant
+1751	The swamp is full of fog and croaking poison frogs. For the first time, the wall feels a little cold.
+1752	Swamp Little Ghosts barely fear physical attacks, and poison frogs spit poison from afar. Remember to use "Threat First" on them!
+1753	A girl with a firefly lantern in the swamp. ATK ×0.92, attack speed ×1.05; range isn't reduced at night, physical damage +20% against spirits; every 12th attack releases 3 fireflies (each deals ATK ×0.6 magic damage).
+1754	Swamp Guardian
+1755	Flare
+1756	This isn't a shell, it's the wall! Lots of people live inside!
+1757	I won't make it rain this time. ...Just a tiny bit, to give the new house a bath.
+1758	That sounds exactly like before.
+1759	This is the deepest part of the rift, where even sky and ground are hard to tell apart.
+1760	You've run out of this item
+1761	The kids in town call me Granny Soup, and I love it.
+1762	Tower Keeper
+1763	Quake Cannon
+1764	Steam Artisan
+1765	Dark night all level: range −30%
+1766	You can change this anytime in Settings later.
+1767	6 seconds into every wave after that, fire falls from the sky, dealing ATK ×4 magic damage to all monsters
+1768	Got it
+1769	Got it (Space)
+1770	Only the wooden bow is allowed
+1771	As soon as a lane turns red, I'll focus fire to stop your charge!
+1772	Call early at least 3 times, and clear the level
+1773	Heal
+1774	Heals more flying birds.
+1775	Healing Armor
+1776	Doom Fang
+1777	Eye of Doom
+1778	Heavy Bomb
+1779	Replay: clear reward halved (copper coins)
+1780	Heavy Armor
+1781	Heavy armor monsters, clustered monsters, Bosses
+1782	Heavy armor monsters, Bosses
+1783	Heavy Armor Assault
+1784	Heavy Armor Assault! The magic staff, cannon, and "Armor Piercing" are key for this level.
+1785	Heavy Armor Assault! Yetis have high physical armor. Magic, cannons, and "Armor Piercing" are key.
+1786	Heavy Arrow · Armor Break
+1787	Rewatch
+1788	Restart
+1789	Vermilion armor, a glowing crescent moon on the helmet, and a little flag on the back.
+1790	Active Skills
+1791	Active Skills (tap to cast in battle)
+1792	Active Skill Slots
+1793	Active skill cooldown −{0}%
+1794	Active skill cooldown −15%
+1795	Active skill cooldown −20% and instantly resets all cooldowns
+1796	Active skill cooldown −40% and instantly resets all cooldowns
+1797	Active skill cooldown −5%
+1798	Active skill cooldown −8%, armor ignored +10%
+1799	Soup time! {0} monsters powered up
+1800	Battle Allies
+1801	Gear
+1802	Gear +1
+1803	Starchaser Boots
+1804	Get ready... {0}
+1805	Burning
+1806	Purple
+1807	Self-Destruct
+1808	Auto (enabled on mobile)
+1809	Auto-cast: Off
+1810	Auto-cast: On
+1811	Burrows underground halfway (can't be hit) and only emerges near the wall.
+1812	Drill
+1813	Burrow
+1814	Diamonds
+1815	Diamonds (only earned in the Nine-Floor Demon Tower)
+1816	Drill Quiver
+1817	Max
+1818	Best floor {0} · Total {1} diamonds
+1819	Best record: floor {0} · {1} diamonds
+1820	Best Combo
+1821	Best combo {0}
+1822	The Last Bastion
+1823	Final wave!
+1824	The most basic little monster, slow and plodding.
+1825	Nearest First
+1826	Strongest First
+1827	Weakest First
+1828	The rarest currency, only earned in the Nine-Floor Demon Tower and not exchangeable. Buy gold gear in the Gear tab (except for the 1st item of each type, all cost diamonds only, from 10 diamonds) and upgrades at very high levels (thousands of levels in).
+1829	Final Boss. Ink, clones, and blocked vision: the source of the Chaos Rift.
+1830	Final Boss. A growing ink-colored blob: summons ink shadows, clones, a Demon Lord form, and rift frenzy.
+1831	Final showdown! Inky has four phases: clear minions, hit clones, interrupt the heavy strike, kill within the time limit.
+1832	The third bone from the left is on backwards again, but that's okay.
+1833	Boss Skill
+1834	Boss Slayer
+1835	Boss First
+1836	Claude (with you)
+1837	Kael, Inky, come home for dinner! The kingdom is throwing you a victory feast today!
+1838	Kael, can I borrow your helmet as a trampoline?
+1839	Kael, this is the last stretch. The whole kingdom is behind the wall cheering for you.
+1840	Kael, Lyra, something's wrong. At night in Shell Town, a purple crack opened in the sky, and what fell out were monsters we've already beaten.
+1841	Kael, Lyra, a letter from the seaside! Three days of Thundy's heavy rain made the tide rise and washed away the bay residents' houses.
+1842	Kael! Lots of gooey monsters have popped up on the grassland and are heading for the wall!
+1843	Kael's little sister. ATK ×0.82, attack speed ×1.2; every 10th attack rings a bell, stunning small monsters around the target for 0.5 seconds.
+1844	Kael's helmet still rings. ...I've gotten used to it.
+1845	Kael attacks automatically. Green Blobs start gnawing the wall once they reach it!
+1846	Kael ran over and picked it up. The helmet went "clang".
+1847	Kael shoots automatically from the wall, and monsters come along the lanes from the right. You lose when the wall's HP hits zero.
+1848	Lv{0} · Cooldown {1}s
+1849	Lv{0} unlocks mastery
+1850	Lv{0} can advance
+1851	Lyra? ...Fine, we'll take turns on guard.

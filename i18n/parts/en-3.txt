@@ -123,3 +123,173 @@
 1048	Did you know? The xylophone is made from my ribs. Just kidding.
 1049	Nirvana Emblem
 1050	The Queen's echo turned into a puff of light snow and landed on the fire with a hiss. The fire finally dimmed a little.
+1051	Hand Warmer
+1052	Snap! Sorry, I close my shell whenever I get nervous.
+1053	Snap... Fine, your shells really are all occupied.
+1054	Lanes lined with long queues
+1055	Lanes lined with long queues, Wooden Shield Goblins
+1056	Fat Pharaoh
+1057	When the Fat Pharaoh is low on HP he raises a pyramid shield: physical attacks barely scratch it, so bring magic damage!
+1058	Echo of the Fat Pharaoh
+1059	After the Fat Pharaoh woke up, he offered me a 3,000-year-old cookie (I didn't dare eat it). Next stop: Misty Swamp.
+1060	Fat Pharaoh summoned mummies!
+1061	Runs very fast, very low HP.
+1062	Bubble
+1063	When a bubble is popped, 50% of the damage still goes through
+1064	Bubble shield broken
+1065	Bubble Party
+1066	Loadout
+1067	Boom!
+1068	A cloaked fellow... people have seen him in the swamp, too.
+1069	Cape
+1070	A cloak worn over the shoulders.
+1071	A flying monster in stone armor: most physical attacks are blocked.
+1072	A chariot covered in iron plates, charging fast.
+1073	A snowman in iron armor; splits into three little snowballs on death.
+1074	Leather Armor
+1075	Leather Quiver
+1076	Leather Cap
+1077	Leather Boots
+1078	Liar! Nobody wants to play with Ink!
+1079	Bats that change lanes often, hard to focus fire.
+1080	Leave safely: reached floor {0}
+1081	Armor-Piercing Quiver
+1082	Armor-Piercing Arrowhead
+1083	Armor-Piercing Heavy Quiver
+1084	Skybreaker Quiver
+1085	Blub... the black Ink got knocked off, and this prince feels clear-headed again. Sorry for dirtying your wall.
+1086	Blub blub! This prince wants to bounce on the wall like a trampoline!
+1087	Normal
+1088	Normal attacks have a {0}% chance to ignite the target
+1089	Normal attacks have a 25% chance to release a lightning bolt that jumps to 3 targets, each taking magic damage equal to ATK ×0.6
+1090	Normal attacks have a 30% chance to ignite the target
+1091	Normal attacks ignite the target on hit
+1092	Normal attacks slow the target by {0}%
+1093	Normal attacks slow the target by 15% (1.5s)
+1094	Normal attacks slow the target by 20% for 1.5 seconds
+1095	Knight Armor
+1096	Penguin Slide
+1097	Penguins slide very fast and deal heavy damage when they hit the wall. Frost Field can slow them down.
+1098	Balloon Fleet
+1099	Telescope
+1100	Go ›
+1101	Not enough coins for {0} levels
+1102	Not enough coins for 2 levels
+1103	Snip!
+1104	Snippy
+1105	Snippy burrows underground to switch lanes and ambush. When you see a dust warning, get your skills ready!
+1106	Snippy is a big scorpion who's afraid of being alone. It says someone in the pyramid is "collecting black Ink".
+1107	Beat the Clock
+1108	Switch target priority (T)
+1109	Switch speed (F)
+1110	Light Shoes
+1111	Easy
+1112	Light Gear
+1113	Travel Light
+1114	Erase Save
+1115	Please turn your phone sideways to play The Last Bastion
+1116	Please enable JavaScript to play The Last Bastion.
+1117	Please close manually
+1118	Exorcism Arrow
+1119	Beast-Repelling Helm
+1120	Cancel
+1121	Unlock on the "Gear" page
+1122	Unlock ({0})
+1123	Go to Shop
+1124	All {0}
+1125	Stuns all monsters for 2.5 seconds (1 second for bosses) and deals damage equal to ATK ×3.5.
+1126	Strikes the 4 highest-HP monsters on the field with lightning, each bolt dealing magic damage equal to ATK ×5.
+1127	Full Upgrade
+1128	Fullscreen (enters automatically on your first tap after the game opens)
+1129	All in black with only a slit for the eyes; walks without a sound.
+1130	All-Seeing Eye
+1131	OK
+1132	Are you sure you want to erase your save and start over? This can't be undone.
+1133	Swarms, flying monsters
+1134	Molotov
+1135	Hot Air Balloon
+1136	Quest Master
+1137	Advance any weapon
+1138	Raise any active skill to Lv3
+1139	Journal
+1140	Journal Full
+1141	A golem made of molten iron: magic barely hurts it, so use physical weapons.
+1142	The forge walls are red. Every echo monster is burning hot, as if just taken from the furnace.
+1143	Forge Entrance
+1144	Forge Guardian
+1145	Molten Iron Golem
+1146	Lava Cloak
+1147	Lava monsters don't fear magic, so remember to bring physical weapons. Kael, come back safe.
+1148	Lava monsters don't fear magic; use physical heavy cannons
+1149	Lava Giant
+1150	Lava Golem
+1151	Lava Golems barely fear magic! Switch to the Wooden Bow, cannon or boomerang.
+1152	Lava Rift
+1153	Three hundred years... have passed once again.
+1154	The skull on the tricorn hat laughs, and only one eye can see.
+1155	Three Paths
+1156	Come in groups of three, charging fast down the same lane.
+1157	The forest ranger, carrying a longbow taller than himself. ATK ×1.5, attack speed ×0.73; heavy arrows ignore 25% armor and knock normal monsters back 12 pixels.
+1158	Sandstorm, summons, healing, shields: the three-phase Fat Pharaoh, tougher than ever.
+1159	Sandstorm incoming! Attack speed reduced
+1160	Eve of the Sandstorm
+1161	Sand Bottle
+1162	The desert? Looks like things aren't so simple. Kael, would you go take a look?
+1163	The desert sun is so hot. The monsters here are wrapped in bandages, and arrows hit them softly. We'll have to think of something else.
+1164	Desert mummies aren't afraid of ordinary arrows. I hear the Magic Staff can help, so go check the shop!
+1165	All the desert's enemies have come. Clear out the little priests and cactus balls first!
+1166	Desert Guardian
+1167	Desert Vulture
+1168	Shadow Beneath the Dunes
+1169	Sand Scorpion
+1170	Sand Scorpions burrow underground to dodge attacks, and are already close to the wall when they pop out. Arrow rain and Frost Field can help you deal with them.
+1171	Instant Boots
+1172	Coral Bay
+1173	Dodge
+1174	After hitting, lightning jumps 3 times between nearby monsters, each jump dealing 75% of the previous one's damage. Magic damage.
+1175	Lightning Jump
+1176	Lightning jumps between several hermit crabs, so it's hard to make one retreat into its shell
+1177	Shining Helm
+1178	Strong against:
+1179	Damage ×1.8; hit slows the target by 30% (2 seconds).
+1180	Damage Sources ({0} total)
+1181	Shop
+1182	Shop / Loadout
+1183	Caravan Boots
+1184	Your last climb to this floor was never claimed.
+1185	Sentinel Helm
+1186	The intended experience
+1187	Settings
+1188	Range
+1189	Range +{0}%
+1190	Range +10%
+1191	Range +10%, crit damage +30%
+1192	Range +12%
+1193	Range +20% (exactly cancels the darkness in night levels)
+1194	Range +5%
+1195	Range +6%, crit rate +3%
+1196	Who would make so much iron here?
+1197	Wrapped in thick wool; knock the wool off first. Runs very fast once shorn!
+1198	A deep red horned helm with tiny dragon wings on the back; said to spit sparks.
+1199	Deep Night Tide
+1200	What flavor?
+1201	Legendary Arms
+1202	Temple Paladin
+1203	Divine Grace Armor
+1204	Divine Protection
+1205	Upgrade {0} levels, {1} total
+1206	Upgrade
+1207	Upgrade {0}
+1208	Upgrade wall level: wall HP +10% ({0})
+1209	Advance
+1210	Life Armor
+1211	Life Cape
+1212	Holy Light
+1213	Holy Light Armor
+1214	Paladin Armor
+1215	Holy Spring Cape
+1216	Wins
+1217	Win Rate
+1218	Defeat
+1219	Consolation Reward
+1220	Lionheart Crown
