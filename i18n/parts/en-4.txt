@@ -1,0 +1,262 @@
+1389	Recommended
+1390	Recommended upgrade
+1391	Recommended after clearing level {0}
+1392	Recommended weapon: {0}
+1393	Your recommended weapon "{0}" is low level. Upgrade it first: {1} ({2})
+1394	Recommended power {0} · Your power {1}
+1395	Quit Game
+1396	Quit the game? Your progress is already auto-saved.
+1397	Complete 20 level quests
+1398	Complete all level quests
+1399	How to Play
+1400	Myriad Foe
+1401	Stargazer's Crown
+1402	Echo of All Things
+1403	Panorama
+1404	Crown
+1405	Crown Collector
+1406	Standard kingdom guard gear. The helmet is a bit big.
+1407	Kingdom Town
+1408	The kingdom's smallest wall guard, with steady attacks.
+1409	The kingdom's smallest wall guard, who held back its biggest crisis.
+1410	Web prototype {0} · {1} chapters {2} levels
+1411	Telescope Lens
+1412	Endangered Wall
+1413	Threat First
+1414	Buzzbee
+1415	Buzzbees fly past other monsters straight to the wall. Repeating crossbows deal extra damage to flyers.
+1416	Bzzz bzzz
+1417	I... I'll suck the ink back in.
+1418	I flew all the kites up into the sky. At night they look like stars.
+1419	I left some of my own ink here. When I don't want to be alone, it grows echoes, more and more, bigger and bigger.
+1420	I moved next to the wall, so I can watch Kael on guard every day.
+1421	I don't believe it! I'll blow you over first!
+1422	I promise you.
+1423	My bow is heavy and slow, but every arrow pushes monsters back. Count me in for the volcano.
+1424	My new home is super big. Come and play!
+1425	My snowfield allows only quiet. Your helmet is too noisy.
+1426	I'll do the registering! Number one: King Bobo, eight legs, needs a super big shell.
+1427	We climbed the rainbow bridge up to the sky. The clouds were soft, like walking on marshmallows. Inky hid behind my helmet the whole time.
+1428	We held the line!
+1429	We built a "Shell Town" by the sea. Bobo's house is the biggest, and its roof was built by all eight legs together. Turns out protecting a home can also mean helping others build one.
+1430	I'll treat you to a strawberry one!
+1431	Whoa! ...Let me straighten my helmet first.
+1432	I'm Beibei, the bay's shell manager! A shell this big must be registered before it's assigned!
+1433	I am the Echo. An echo only repeats. Skeletons, attack.
+1434	I'm here to guard the wall. When you're done fussing, we can play together.
+1435	I learned to draw with ink! This is you, and this is me.
+1436	I want a home too! Gurgle! Tentacles, hold it tight!
+1437	I saw everyone in the mirror. Maybe lively isn't so bad.
+1438	I'm practicing small thunder. Boom. (Very quietly)
+1439	I opened a barbershop in town. Don't worry, I'm very careful.
+1440	I've only heard the helmet-knocking concert...
+1441	Storm clouds block the view: range −30%. Thunder Puffs get hit only when closer. Watch out for static!
+1442	Dark Clouds
+1443	Lampless Corridor
+1444	Can't Place
+1445	Lightless Forge
+1446	Sea of No Light
+1447	Endless Mode
+1448	Endless Mode: the longer you last, the better! A supply every 3 waves, a Boss every 5 waves.
+1449	Reach wave 30 in Endless Mode
+1450	Endless Best
+1451	Unstoppable!
+1452	Armor ignored 40% → 70%, splash damage 70% → 85%
+1453	Ignores {0}% of target armor
+1454	Ignores 20% of target armor
+1455	Ignores 25% of target armor
+1456	Ignores 50% of target armor (including shields).
+1457	Moonless Night
+1458	Weapon
+1459	Weapon: {0}
+1460	Weapons (permanent unlock, +8% damage per level, +4% per level after level 10; higher quality means stronger, pricier, and costlier upgrades)
+1461	Weapon Damage
+1462	Weapon Collector
+1463	Physical Blocked
+1464	Physical damage is +{0}% more effective against spirits
+1465	Physical damage effect on spirits 30% → 70%
+1466	{0} of physical damage was blocked by armor, wooden shields, or spirits: try the magic staff, boomerang, or "Armor Piercing".
+1467	So foggy, I can't see a thing...
+1468	Eyes in the Fog
+1469	Vampire Bat
+1470	Hehe, I added just a little honey to the soup.
+1471	Hehehe, one more spoonful of black ink and my soup is done!
+1472	Next time the wind blows hard, I'll say hello first.
+1473	10 seconds into the next wave, freezes all monsters for 4 seconds (Boss 1.5 seconds)
+1474	8 seconds into the next wave, deals ATK ×6 magic damage to all monsters
+1475	Next Level ›
+1476	Summer is here, and I'm the most popular one in town.
+1477	Cactus Ball
+1478	Cactus Balls explode when they roll up to the wall! Take them out from afar.
+1479	Clear level {0} first
+1480	Consumables (used in battle, one per use; carry up to {0} kinds, up to {1} of each; each kind has a cooldown after use)
+1481	Consumables (up to {0} kinds, up to {1} of each; one per use, each has a cooldown)
+1482	Consumable Slots
+1483	Mini Boss
+1484	Mini Boss. Keeps summoning little ghosts, and revives after its first defeat!
+1485	Mini Boss. A windmill-headed stone giant: flies kites and whips up gales that blow monsters toward the wall. Focus fire to interrupt when warned!
+1486	Mini Boss. Stomps to stun the hero, and explodes when defeated. Don't let it near the wall!
+1487	Mini Boss. Burrows to switch lanes for sneak attacks, then pinches hard with big claws at the wall.
+1488	Mini Boss. A giant pearl clam: nearly unbreakable when shut, but shows its pearl when open. Use skills when it opens!
+1489	Mini Boss. Tornadoes and shoving, fiercer than before.
+1490	Mini Boss. Every so often, freezes one of the hero's skill slots.
+1491	Mini Boss. Acts like Mr. Bones: summons skeletons and casts a magic shield, but tougher.
+1492	Mini Boss. Acts like Rocky, with double the HP.
+1493	Mini Boss. Splits off small jellies every time HP drops 15%, and splits once more on death.
+1494	Little Ice Dragon
+1495	The Little Ice Dragon is here! Air and ground attack together!
+1496	Little Jelly
+1497	Little Priest
+1498	Little Priests hide in the back row to heal monsters. Thunderstrike and the magic staff's explosion can hit them too.
+1499	Little Vault
+1500	Little Pumpkin
+1501	Little Crowbar
+1502	Little Hourglass
+1503	Little Bolt
+1504	Little Snowball
+1505	Little Ghost
+1506	Little Ghosts barely fear physical attacks
+1507	Little Ghosts barely fear physical attacks. The magic staff, lightning orb, Thunderstrike, and burning are their bane!
+1508	Little Bomb
+1509	Town Neighbors
+1510	Synergy Master
+1511	Shoes
+1512	Failed to write save data
+1513	Unequip
+1514	Unequip −1
+1515	Thank you for not hating me when I was angry.
+1516	Thank you for coming all this way.
+1517	Thank you for saving the kingdom!
+1518	New
+1519	New enemy appears!
+1520	New record! {0} → {1} waves
+1521	Starburst
+1522	Star Mage
+1523	Star Staff
+1524	Star Armor
+1525	Star Crown
+1526	Starlight Cape
+1527	Twinkling
+1528	Star Trail Quiver
+1529	Brilliant Galaxy
+1530	Star
+1531	Fortune Star Boots
+1532	Peddler's Boots
+1533	Luck
+1534	Luck +{0}%
+1535	Luck +15%
+1536	Lucky Charm
+1537	Luck Bonus
+1538	Lucky Boots
+1539	Lucky Coin
+1540	Break Reminder
+1541	Take a Break
+1542	Repair Kit
+1543	Monk Armor
+1544	Repair
+1545	Void Shield Turtle
+1546	The Void Shield Turtle's protective ring is bigger. Take it down first. The urchins' spikes hurt more, too.
+1547	Void Shield Formation
+1548	Void Flying Fish
+1549	Void Flying Fish jump farther and can't be hit in the air.
+1550	Void Kite
+1551	Void Urchin
+1552	Void Thunder Puff
+1553	Void Thunder Puffs have a wider shock range. Take them out from afar.
+1554	There's no wind in the void, yet the kites drift and the sheep baa. Everything familiar is here, just all turned purple.
+1555	Void Bird
+1556	Void Balloon
+1557	Void Sky Realm
+1558	Void Crab
+1559	Void Sheep
+1560	Void Sheep have thicker wool, and Void Kites dodge half of physical attacks.
+1561	Requires {0} (first swap silver coins for gold coins at the shop's exchange)
+1562	Requires {0} (first swap silver coins for gold coins at the shop's exchange).
+1563	Monsters in the chosen lane and adjacent lanes take ATK ×7 damage.
+1564	Choose a lane. Monsters in it are slowed 60% for 6 seconds.
+1565	Pick a supply card (lasts this level) · Supply #{0}
+1566	Select
+1567	Choose Supply
+1568	Select Difficulty
+1569	Select Chapter
+1570	Select Gear
+1571	Apprentice Headband
+1572	Apprentice Cape
+1573	Avalanche
+1574	Yeti
+1575	Yetis resist physical, Lava Golems resist magic. Prepare both kinds of damage.
+1576	Yetis Roam
+1577	Yetis fear magic, Lava Golems fear physical, and Shield Turtles protect them. Take down the turtles first!
+1578	Snowball
+1579	Snowballs split into two small snowballs on death. Area damage clears them more easily.
+1580	The small snowballs left after a Snowball breaks apart.
+1581	The snowfield is so white and bright. Penguins slide over the ice and whoosh, they're at the wall.
+1582	Snowfield Dash
+1583	Penguins on the snowfield slide fast, and Yetis are thick and tough. Kael, dress warmer.
+1584	Snowfield Guardian
+1585	Blood Oath Ring
+1586	Blood Eye Mask
+1587	Bloodline Armor
+1588	Swift Cape
+1589	Swift Boots
+1590	Magma Blob
+1591	Magma Blobs leave fire behind when they die, and monsters stepping on it speed up. Take them out from afar.
+1592	Rocky
+1593	Rocky exploded! The lane turns to lava
+1594	Rocky explodes when defeated! Take it down before it nears the wall. It resists magic, so bring physical weapons.
+1595	Rocky's Echo
+1596	Rocky's Echo: stomps and shatters rocks. Acts like Rocky with double the HP.
+1597	Rocky's Echo crumbled into a pile of pebbles. Atlas stacked them at the foot of the wall.
+1598	Rocky is the gatekeeper of the rift. It says the little one inside has never had a friend.
+1599	Rocky exploded by the wall!
+1600	Flies out along the lane and back, hitting each monster once each way. The return hit lands from behind and ignores shields.
+1601	Wool
+1602	Thicker wool: it absorbs 70% of HP in wool before HP starts dropping.
+1603	Wool Shears
+1604	Tower Warrior
+1605	Demon King {0}% · Power ×{1}
+1606	Stomp incoming!
+1607	Big wind coming!
+1608	Want me to put you back together?
+1609	You can also switch to Easy difficulty in Settings
+1610	At night the old castle glows with blue moonlight. The Moonshade Blobs that fell from the rift still remember how to gnaw the wall.
+1611	Range −30% at night. Vampire Bats switch lanes often, and Shadow Assassins appear suddenly.
+1612	Range −30% at night. Flying Fish are on you in one jump, and Shadow Assassins appear suddenly!
+1613	Range −30% at night. Urchin spikes hurt their own side, so wait until they bunch up.
+1614	Range −30% at night. Hearth Imps stay far away and throw fireballs. Don't let them wear down the wall.
+1615	Range −30% at night. Wraiths take only 15% of physical damage. Spells and burning work best.
+1616	Range −30% at night. Chariots and wolves charge out of the dark and reach the wall in a blink.
+1617	Night Owl Helm
+1618	Night Battle
+1619	One hundred levels, one hundred defenses. Inky is back and the rift has closed. The wall is still the same wall, but the home behind it has grown so, so big. (The Last Bastion, the end)
+1620	Half of physical attacks drift past it.
+1621	After a wave has fully appeared, tap "Call Early" to summon the next wave right away. Remaining countdown seconds turn into copper coin rewards.
+1622	Throws two boomerangs at once (this lane + adjacent lane). Hits slow the target by 40%.
+1623	Fires 3 at once, +50% damage to flying monsters
+1624	Fires 3 flame bolts at once, each igniting its target, +50% damage to flying monsters.
+1625	Fires 3 bolts at once at 3 different targets, +50% damage to flying monsters. Weaker with fewer targets.
+1626	Fires 5 arrows at once, +60% damage to flying monsters, ignores 20% armor.
+1627	This must be the last stretch. Hold the wall. This time, for all the echoes.
+1628	One Two Three Four Five Six Seven Eight Nine Ten
+1629	Auto-Equip Recommended
+1630	A good pair of shoes: fast on your feet, steady when you stand.
+1631	Jumps farther.
+1632	Medic Armor
+1633	Equipped the recommended loadout for this level:
+1634	Limit Reached
+1635	Read {0} / {1}
+1636	Copied to clipboard
+1637	Switched to "{0}", Kael is out to fight
+1638	You've been defending for {0} minutes!
+1639	Max Level
+1640	Selected:
+1641	Owned
+1642	Cleared on Challenge difficulty
+1643	Equipped
+1644	Equipped {0} · Bag {1}
+1645	Music samples: FluidR3_GM soundfont (Frank Wen), CC BY 3.0, via gleitz/midi-js-soundfonts
+1646	Music Volume
+1647	Sound Effects
+1648	SFX Volume
+1649	Silver
+1650	Silver Coins

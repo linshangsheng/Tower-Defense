@@ -9,7 +9,7 @@
   --red: #e04848;
   --blue: #5b8fd5;
   --shadow: rgba(59, 42, 30, 0.35);
-  font-family: 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', 'Noto Sans CJK SC', sans-serif;
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', 'Noto Sans CJK SC', system-ui, 'Segoe UI', Roboto, 'Noto Sans', 'Noto Sans Thai', 'Leelawadee UI', sans-serif;
 }
 
 * {
@@ -2865,4 +2865,43 @@ select option {
 }
 .item-qty-pick .btn {
   flex: 1;
+}
+
+/* ---------- 语言选择（v0.75，设计书 83） ---------- */
+.lang-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 12px 0;
+}
+.lang-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  padding: 8px 6px;
+  line-height: 1.25;
+}
+.lang-btn span {
+  font-size: 11px;
+  opacity: 0.7;
+}
+@media (max-width: 720px) {
+  .lang-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* 日语 / 韩语 / 繁体中文用各自的字形优先；泰语、越南语等回退到系统字体 */
+html[lang='ja'] {
+  font-family: 'Hiragino Sans', 'Yu Gothic', 'Meiryo', 'Noto Sans CJK JP', system-ui, sans-serif;
+}
+html[lang='ko'] {
+  font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans CJK KR', system-ui, sans-serif;
+}
+html[lang='zh-Hant'] {
+  font-family: 'PingFang TC', 'Microsoft JhengHei', 'Noto Sans CJK TC', system-ui, sans-serif;
+}
+html[lang='th'] {
+  font-family: system-ui, 'Leelawadee UI', 'Thonburi', 'Noto Sans Thai', 'Noto Sans', sans-serif;
 }

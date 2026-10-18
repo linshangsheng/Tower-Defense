@@ -12,6 +12,9 @@ self.addEventListener('install', (event) => {
       const html = await (await fetch('./index.html', { cache: 'no-store' })).text();
       const files = [...html.matchAll(/(?:src|href)="([^"]+\.(?:js|css))"/g)].map((m) => './' + m[1]);
       await cache.addAll(files);
+      // 语言词典是 index.html 里的小脚本按需加载的，上面认不出来：逐个缓存（缺哪个都不影响安装）
+      const langs = ['en', 'es', 'pt-BR', 'pt-PT', 'ru', 'ja', 'ko', 'de', 'fr', 'zh-Hant', 'tr', 'pl', 'it', 'id', 'vi', 'th'];
+      await Promise.all(langs.map((l) => cache.add(`./src/i18n/${l}.js`).catch(() => {})));
       await self.skipWaiting();
     })()
   );

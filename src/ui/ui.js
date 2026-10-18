@@ -171,11 +171,39 @@
         h('div', { class: 'btn-row' }, h('button', { class: 'btn', style: { flex: 1 }, onclick: () => (sfx('click'), UI.showBestiary()) }, '图鉴'), h('button', { class: 'btn', style: { flex: 1 }, onclick: () => (sfx('click'), UI.showAchievements()) }, '成就')),
         h('button', { class: 'btn', onclick: () => (sfx('click'), UI.showSettings()) }, '设置'),
         h('button', { class: 'btn', onclick: () => (sfx('click'), UI.showHelp()) }, '玩法说明'),
+        h('button', { class: 'btn', onclick: () => (sfx('click'), UI.showLanguage()) }, `🌐 Language · ${TD.i18n.languages.find((l) => l.code === TD.i18n.lang).native}`),
         h('button', { class: 'btn quit', onclick: () => (sfx('click'), UI.quitGame()) }, '退出游戏')
       ),
       h('div', { class: 'title-foot' }, `网页原型 ${C.version} · ${D.chapters.length} 章 ${Object.keys(D.levels).length} 关`)
     );
     root.appendChild(screenEl);
+  };
+
+  // 语言设置（设计书 83）：17 种语言，默认英语。点一个就切换，马上重画当前页面
+  UI.showLanguage = function (onChanged) {
+    const I = TD.i18n;
+    const cur = I.lang;
+    const btns = I.languages.map((l) =>
+      h(
+        'button',
+        {
+          class: 'btn lang-btn' + (l.code === cur ? ' primary' : ''),
+          lang: l.code,
+          onclick: () => {
+            sfx('click');
+            I.setLang(l.code, (ok) => {
+              if (!ok) return UI.toast('Failed to load language');
+              UI.closeModal();
+              UI.showTitle();
+              onChanged && onChanged();
+            });
+          },
+        },
+        h('b', null, l.native),
+        l.native !== l.english ? h('span', null, l.english) : null
+      )
+    );
+    modal(h('div', null, h('h2', null, '🌐 Language'), h('div', { class: 'lang-grid' }, btns), h('div', { class: 'modal-buttons' }, h('button', { class: 'btn', onclick: UI.closeModal }, 'OK'))), { closeOnBack: true });
   };
 
   // 退出游戏（v0.73）：存好档、停掉音乐、退出全屏，然后关闭窗口。

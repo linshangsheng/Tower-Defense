@@ -345,6 +345,7 @@
   }
 
   function init() {
+    TD.i18n.init(); // 多语言：翻译页面上的文字，并盯着之后出现的文字（设计书 83）
     game.save = TD.saveStore.load() || P.newSave();
     // 妖塔战斗中途刷新页面 = 失败（设计书 74.4）；已通过、等待选择的状态保留
     TD.modes.towerRunState(game.save, false);

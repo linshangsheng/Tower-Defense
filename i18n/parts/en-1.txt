@@ -1,0 +1,200 @@
+0	, can wear 3 at once
+1	: failed {0} times in a row. Attacks and wall HP are boosted this run. Resets after you clear it.
+2	...The wind has stopped. Ahead lies the source of the Ink.
+3	...Big brother. Big sister. You finally came.
+4	...Boom. Can't hit anything.
+5	...Boom. I'm sorry. I'm the one who made it rain.
+6	...The footsteps have stopped.
+7	...Quiet again today. Good.
+8	...The mirror broke, and now I can finally see. The Ink is seeping out of a crack in the southern volcano.
+9	...But I can't stop. Please, beat them all, okay?
+10	...The crack has closed. It's quiet now.
+11	...It smells like Ink.
+12	...That shell... isn't our wall, is it?
+13	...Do you really not hate me?
+14	...The trees in the forest told me a little guard held out all the way here. I'm Rowan, the forest keeper.
+15	...I remember you. I remember this wall. But I don't remember why I came.
+16	...Thank you. Doing the same thing again and again... is so tiring.
+17	...Thanks for blowing the fog away. I'm Nova. I carry a lantern through the swamp to guide lost little animals.
+18	...Having friends feels so good.
+19	...Another one come to hit me. Everyone only ever hits me.
+20	...Really. So pretty. I-I wasn't too mean just now, was I?
+21	...Kael, look at the sky. The last bit of Ink I scattered drifted up onto the rainbow.
+22	· Resupplying
+23	· Record
+24	· Next wave in {0}s
+25	‹ Title
+26	‹ Back
+27	(After Lv30, each level adds +{0}% of Lv30 HP)
+28	(Gains shrink for each level past the base cap)
+29	(All slots unlocked)
+30	(Clear)
+31	(Clear level {0} to unlock another slot)
+32	(Unequip {0}; {1} returned to bag)
+33	(Unequip)
+34	(Past base cap Lv{0}: gains shrink each level and costs keep rising)
+35	(Complete)
+36	(Fully equipped)
+37	(Max reached)
+38	(In another slot; it will be swapped over)
+39	(In the "Hero" section of the loadout page, you can bring in Atlas: he makes the wall sturdier.)
+40	(In the "Hero" section of the loadout page, you can bring in Lyra.)
+41	(Nova joined! Her range doesn't shrink in night levels.)
+42	(Rowan joined! His heavy arrows ignore armor.)
+43	{0}\nCooldown {1}s, carrying {2}
+44	{0} waves
+45	{0} waves (incl. Boss)
+46	{0}m {1}s
+47	{0} set "{1}": {2} → {3}{4}
+48	{0} days
+49	{0} copper → 1
+50	{0} synergy "{1}": {2}{3}
+51	{0} HP {1} →
+52	{0} demon king + {1} minions
+53	{0} silver → 1
+54	{0} types
+55	{0}; from Lv3 on, each level boosts damage / arrows / healing / duration a bit more and shortens the cooldown
+56	{0}: power +{1}% ({2})
+57	{0} (owned {1} / {2}{3})
+58	{0} stats
+59	{0} quality
+60	/s
+61	⏩ 2x Speed
+62	⏭ 3x Speed
+63	▶ 1x Speed
+64	★ Mastery
+65	♾ Endless Mode
+66	♾ Endless Mode {0}
+67	⚠ Boss incoming!
+68	✔ In use
+69	✔ Completed
+70	✔ Owned
+71	✦ Promoted
+72	✨ Set "{0}": {1}
+73	🎯 Level quest: {0}
+74	🎯 Level quest "{0}" complete: +{1} silver
+75	🎺 Reinforcement boost +{0}%
+76	🏆 Achievements
+77	🏆 Achievement "{0}" unlocked: {1} (+{2})
+78	🏆 Achievement "{0}" unlocked +{1}
+79	🏘 Kingdom Town
+80	🏯 Nine-Floor Demon Tower
+81	🏯 Nine-Floor Demon Tower {0}
+82	👉 Upgrade "Attack" and Kael can wipe out monsters faster!
+83	👑 First clear on Challenge difficulty: earn a crown
+84	👑 Clear on Challenge difficulty to earn a crown
+85	👑 Cleared on Challenge difficulty
+86	👕 Wardrobe
+87	📅 Daily Challenge
+88	📅 Daily Challenge · {0}
+89	📅 Daily Challenge ✔
+90	📊 Battle Report
+91	📔 Kael's Guard Diary
+92	📜 Guard Records
+93	📦 Supplies this level:
+94	📦 Supply crate arrived!
+95	10-hit combo!
+96	12 meteors fall on random monsters across the field, each dealing ATK ×8 damage. Monsters within 110 px take 60%.
+97	16 arrows × ATK 1.6
+98	Drops 16 arrows over 2 seconds, each hitting a random monster in range for ATK ×1.6 damage, ignoring shields.
+99	20 arrows × 1.7
+100	24 arrows × 1.8, hit monsters are set ablaze
+101	3 arrows can hit several tentacles at once; fully upgraded Wooden Bow and Cannon are also great against Bobo
+102	All 5 lanes open! Bats dart between lanes.
+103	Achoo! My helmet's frozen over.
+104	Oh dear... what I was brewing was Ink, not soup. No wonder it tastes awful.
+105	Consolation Reward
+106	Night
+107	Night · Spirit
+108	Night level: you can't see far, range -30%. "Flare" and "Far Sight" supplies are very useful.
+109	Show monsters' eyes at night (off by default, pitch black)
+110	Shadow Assassin
+111	Shadow Assassins appear much farther out (x < 800)
+112	Shadow Assassins stay hidden at range and only appear up close. The "Scope" supply reveals them sooner.
+113	Shadow Ninja
+114	Arcane Surge
+115	Sell "{0}"? Sale price {1} (half the purchase price). You can buy it back at full price later.
+116	Paste your exported save text here
+117	Copy and keep the text below safe. After switching devices or clearing browser data, paste it back with "Import Save" to restore your progress.
+118	Hundred Slayer
+119	Night Parade
+120	Plate Armor
+121	Spore
+122	Thin Ice Quiver
+123	Its protection circle is bigger and reduces more damage. Take it down first.
+124	Bastion Armor
+125	Bastion Guard
+126	Blizzard! Attack speed reduced
+127	Blizzard Scroll
+128	A storm is coming! All monsters are faster!
+129	Crit
+130	Crit Quiver
+131	Crit rate
+132	Crit rate +{0}%
+133	Crit rate +10%.
+134	Crit rate +3%
+135	Crit rate +3%; physical damage vs. spirits +25%
+136	Crit rate +4%; night-level range penalty halved
+137	Crit rate +8%
+138	Crit damage
+139	Crit damage +{0}%
+140	Crit damage +10%
+141	Crit damage +15%
+142	Crit damage +25%
+143	Crit damage +30%
+144	Tyrant Crown
+145	The blast knocks small monsters in range back 60 px and slows them 40% (1.5s); +50% damage to Bosses and tentacles
+146	Blast radius 60 → 85, splash damage 60% → 75%
+147	Arctic Wolf
+148	Arctic Wolves charge in packs of three. Freeze Zone can hold the whole pack at once.
+149	Northern Viking
+150	Bebe
+151	Bebe writes down every seashell in her little notebook. She says the wall is the biggest "shell" she has ever seen, but sadly it can't be shared with anyone.
+152	Bebe is nearly unhittable when her shell is shut and spits pearls when it's open, but she hates pain. Strike with Thunder Strike and Arrow Rain when the shell opens!
+153	Bebe is panicking: her shell opens and shuts faster!
+154	Shell Charm
+155	Bag
+156	Bag {0}
+157	No items in your bag yet. Buy some on the "Items" page.
+158	You don't have this item in your bag
+159	Your bag is empty. Buy items on the "Items" page.
+160	Music
+161	Last Stand Badge
+162	Last Stand Medal
+163	A quiver slung across your back.
+164	When killed, it shoots out spikes that hurt nearby monsters. Wait until it's in the crowd before killing it! It also pricks the wall on arrival.
+165	Zapped numb!
+166	Passive Skills
+167	Passive Skills (automatic)
+168	Passive Skill Slots
+169	Damage blocked by armor / magic resist
+170	A green blob eroded by moonlight: high HP, and it heals itself when not being hit.
+171	Stunned!
+172	My cookies... aren't done baking yet!
+173	This Pharaoh slept for three thousand years, and now I've been woken up! Who's making that noise?!
+174	This Pharaoh is working on a new cookie flavor. Only three hundred years in the oven this time.
+175	The first time the wall falls this level, it revives instantly with 60% max HP (once only)
+176	Copper income this level +{0}%
+177	Copper income this level +10%
+178	Copper income this level +30%
+179	Copper income this level +60%, and gain a lump of copper right away
+180	My castle... why is it so hot? Who lit the furnace?
+181	True form revealed! Damage +50%
+182	This Prince opened a trampoline shop in the square. First bounce is free!
+183	Chapter crown (clear on Challenge difficulty)
+184	Bandage Mummy
+185	Bandage Ball
+186	Bandage Balls, shields, swarms of small monsters
+187	Bandage Balls shrug off physical attacks. Unlock the "Magic Staff" in the shop with silver, or bring Thunder Strike and Scorch!
+188	The bandages have been washed. They smell nice!
+189	Rampart Armor
+190	Lightning Rod
+191	Lightning rod!
+192	Bat
+193	Bat Cave
+194	Bat Swarm
+195	Standard
+196	Don't be afraid, they're just in a terrible mood because of some strange black ink. Guard the wall, and you guard everyone.
+197	Freeze, Blizzard, Ice Wall: Queen Frosty, even colder than before.
+198	Freeze Zone
+199	Freeze Zone, Mini Bomb and Freeze Bottle need a lane: tap the skill, then tap a lane.

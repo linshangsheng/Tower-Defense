@@ -51,6 +51,18 @@
 
     <!-- 按顺序加载：基础 → 数据 → 逻辑 → 画面 → 界面 → 入口 -->
     <script src="src/core/ns.js"></script>
+    <script src="src/core/i18n.js"></script>
+    <script>
+      // 多语言（设计书 83）：同步加载所选语言的词典（默认英语；简体中文不需要词典）
+      (function () {
+        var l = 'en';
+        try {
+          l = localStorage.getItem('shouchengyingxiong.lang') || 'en';
+        } catch (e) {}
+        if (!/^[A-Za-z-]+$/.test(l) || (TD.i18n.codes.indexOf(l) < 0)) l = 'en';
+        if (l !== 'zh') document.write('<script src="src/i18n/' + l + '.js"><\/script>');
+      })();
+    </script>
     <script src="src/data/config.js"></script>
     <script src="src/data/monsters.js"></script>
     <script src="src/data/gear.js"></script>

@@ -1,0 +1,125 @@
+926	Hearth Out
+927	Ember Imp
+928	Slag Chorus
+929	Slag Blob
+930	Green
+931	Green Blob
+932	Samsara Quiver
+933	Releases four goblin minions on landing.
+934	Miss
+935	Sparrow Cape
+936	Purchased skills must be placed in skill slots on the Loadout page to be brought into battle.
+937	Sell price is half the buy price
+938	Slow heavy cannon with a wide blast on impact; ignores 40% of target armor.
+939	Drifts in slowly; drops 3 goblin minions when popped.
+940	Cat Priest
+941	It's okay! Everyone thunders when they're angry.
+942	It's okay! Next time, remember to use the front door.
+943	Rude little guard! Taste my poison soup!
+944	No bonus stats
+945	No active skills equipped
+946	Every 18s, slaps the monster closest to the wall with a tentacle (ATK ×3)
+947	Supplies every 2 waves
+948	Every 20s, strikes the highest-HP monster with a small lightning bolt (ATK ×4)
+949	Every 25s, spits an ink blob at the nearest monster (ATK ×3)
+950	A mini-boss every 5 waves, a big boss every 10; battlefield supplies every 3 waves.
+951	After taking 4 hits it tucks into its shell for a moment and is nearly unhittable inside. Don't focus on one: repeating crossbows and lightning orbs spread damage better.
+952	Wall heals {0}% more at the end of each wave
+953	Restores 2% max HP per level at the end of each wave.
+954	Wall heals 3% at the end of each wave
+955	At the start of each wave, wall gains a shield of {0}% max HP
+956	At the start of each wave, wall gains a bubble shield of 4% max HP
+957	At wave start, gives the wall a bubble shield that absorbs damage up to 3% max HP
+958	Fires 4 bolts at a time
+959	Each challenge costs {0}.
+960	Every 6th attack, a small lightning bolt strikes the target for extra magic damage equal to ATK ×1.5
+961	Every so often leaps far ahead and can't be hit while airborne. Faster than it looks!
+962	Every 5 attacks, immediately attacks once more.
+963	Earn copper coins after each level, plus silver on your first clear. Visit the shop to upgrade stats and unlock weapons and skills, then come back!
+964	After each floor, claim that floor's diamonds and leave, or climb on: clear another floor and the diamonds double; fail and you get nothing.
+965	Each kill heals the wall for 0.3% max HP
+966	Daily Challenge
+967	Daily Challenge "{0}": {1}
+968	The first clear each day awards 3 silver. Replay as often as you like. Doesn't affect level star records.
+969	Rest reminder every {0} minutes of play
+970	Each floor up, monster HP and siege damage ×{0}. Wall HP carries over from the previous floor without recovering (only repairs, supply cards, items and skills heal).
+971	Each character has their own look and bonus stats. Buy with gold coins and wear one at a time; whoever you pick stands on the wall (bonus stats only apply when Kael fights, so it switches back to Kael automatically).
+972	At the start of each wave, wall gains a shield equal to 12% max HP; wall takes 10% less damage
+973	Misty Swamp
+974	Mithril Armor
+975	Mithril Quiver
+976	Mithril Helm
+977	Mithril Cape
+978	Dense swarms, spirits
+979	Dense swarms, little ghosts, low magic-resist monsters
+980	Free
+981	Second Hand Cape
+982	Fire Extinguisher
+983	Armor-Shred Quiver
+984	Agile Boots
+985	Fortune Pendant
+986	Fate Dice
+987	Ignites the target on hit, dealing a total of 60% ATK as magic damage over 3 seconds.
+988	Sharpen Arrowheads
+989	Mushroom Soldier
+990	Mushroom Soldiers speed up nearby monsters when they die. Try tapping the "War Drum" skill below!
+991	Mushroom Forest
+992	Magic; large explosion (radius 110, 90% splash), plus 2 lightning jumps.
+993	Magic Blocked
+994	Magic lightning jumps 5 times, losing only 15% per jump.
+995	Magic damage +12%, skill cooldown −5%
+996	Magic damage +25%
+997	Magic damage ignores physical armor
+998	{0} of the magic damage was blocked by magic resist: lava monsters don't fear magic, so switch to physical weapons (cannon, repeating crossbow).
+999	Magic Staff
+1000	Magic Resist
+1001	Demon King Fang
+1002	Demon King form! Focus fire to interrupt the charge!
+1003	Inky
+1004	Inky, go home. We won't leave you alone again.
+1005	Inky?
+1006	Inky... is that you over there?
+1007	Inky went "pop" and shrank back into a little blob...
+1008	Inky turned back into a little blob. It was just too lonely, and spilled ink everywhere. Now it lives by the wall and watches me stand guard every day.
+1009	Inky's clones. Defeat all three clones and the real one will appear.
+1010	Echo of Inky
+1011	Inky Clone
+1012	Inky split! Defeat the three clones!
+1013	Inky already apologized! We're here to help!
+1014	Ink, clones, blocked vision: this is the source of the Chaos Rift. Defeat it and it's all over.
+1015	The Ink flowed down from the snowy mountains in the north. It's so cold there that even the Ink froze into ice.
+1016	Ink Blob
+1017	Wooden Shield Goblin
+1018	Wooden Shield Goblins are tough from the front. Returning boomerangs, arrow rain and Pierce can deal with them.
+1019	Wooden Shield Armor
+1020	Wooden Bow
+1021	Mummy Army
+1022	Wooden Quiver
+1023	Target:
+1024	Target Priority
+1025	Graveyard Ghost
+1026	That soup smells like unwashed socks!
+1027	Those footsteps should rest, too.
+1028	Then let everything... cool down.
+1029	Then let's defend once more! This time I've got new clothes!
+1030	A very lonely little thing lives there. Little guard, go see it for me.
+1031	Then can you crush sand? ...I guess not.
+1032	Then let's build one together! The kingdom's craftsmen are the best at building big houses.
+1033	The pumpkin soup is ready! Not a drop of Ink today.
+1034	Pumpkin Patch
+1035	Pumpkin Head
+1036	Little pumpkins from a split Pumpkin Head.
+1037	Pumpkin Heads split into 3 little pumpkins on death. Take it down from afar to give yourself time to clean up.
+1038	Difficulty
+1039	Difficulty is scaled to your highest cleared level (at least level 60, at most level 70). 2 supplies per floor. Quitting midway or refreshing the page counts as a failure.
+1040	Mm! I promise!
+1041	Mm. We held the wall, and we held everyone together.
+1042	Mm. This time, I'll come back on my own.
+1043	Your Defense Record
+1044	Your nails are pincers!
+1045	Look, I sucked all the Ink back. The rainbow has seven colors again.
+1046	Are you protecting someone inside?
+1047	You have {0}
+1048	Did you know? The xylophone is made from my ribs. Just kidding.
+1049	Nirvana Emblem
+1050	The Queen's echo turned into a puff of light snow and landed on the fire with a hiss. The fire finally dimmed a little.
