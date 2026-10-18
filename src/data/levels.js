@@ -1377,7 +1377,7 @@
     83: {
       name: '战车洪流',
       type: 'rush',
-      countMult: 1,
+      countMult: 0.33,
       lanes: 5,
       rushInterval: 12,
       waves: [
@@ -1394,7 +1394,7 @@
     84: {
       name: '无光锻造间',
       type: 'dark',
-      countMult: 1,
+      countMult: 1.47,
       lanes: 5,
       dark: true,
       waves: [
@@ -1411,7 +1411,7 @@
     85: {
       name: '岩岩的回声',
       type: 'miniboss',
-      countMult: 1,
+      countMult: 0.33,
       lanes: 5,
       waves: [
         W(0.85, ['slagMagma', 6], ['forgeImp', 4], ['ironSnowman', 4]),
@@ -1429,20 +1429,20 @@
       countMult: 1,
       lanes: 5,
       waves: [
-        W(0.90, ['steelYeti', 3], ['moltenGolem', 2], ['ironSnowman', 3], ['ironChariot', 1]),
-        W(0.86, ['steelYeti', 4], ['moltenGolem', 2], ['ironSnowman', 3], ['ironChariot', 2]),
-        W(0.83, ['steelYeti', 4], ['moltenGolem', 2], ['ironSnowman', 4], ['ironChariot', 2]),
-        W(0.79, ['steelYeti', 4], ['moltenGolem', 3], ['ironSnowman', 5], ['ironChariot', 2]),
-        W(0.75, ['steelYeti', 5], ['moltenGolem', 3], ['ironSnowman', 5], ['ironChariot', 3]),
-        W(0.72, ['steelYeti', 5], ['moltenGolem', 3], ['ironSnowman', 6], ['ironChariot', 3]),
-        W(0.68, ['steelYeti', 7], ['moltenGolem', 3], ['ironSnowman', 6], ['ironChariot', 3]),
+        W(0.90, ['steelYeti', 3], ['moltenGolem', 1], ['ironSnowman', 3], ['ironChariot', 1]),
+        W(0.86, ['steelYeti', 4], ['moltenGolem', 1], ['ironSnowman', 3], ['ironChariot', 2]),
+        W(0.83, ['steelYeti', 4], ['moltenGolem', 1], ['ironSnowman', 4], ['ironChariot', 2]),
+        W(0.79, ['steelYeti', 4], ['moltenGolem', 1], ['ironSnowman', 5], ['ironChariot', 2]),
+        W(0.75, ['steelYeti', 5], ['moltenGolem', 1], ['ironSnowman', 5], ['ironChariot', 3]),
+        W(0.72, ['steelYeti', 5], ['moltenGolem', 1], ['ironSnowman', 6], ['ironChariot', 3]),
+        W(0.68, ['steelYeti', 7], ['moltenGolem', 1], ['ironSnowman', 6], ['ironChariot', 3]),
       ],
       tip: '钢雪怪怕魔法，熔铁傀儡怕物理——换武器还是靠技能，自己选。',
     },
     87: {
       name: '霜龙空袭',
       type: 'raid',
-      countMult: 1,
+      countMult: 0.3,
       lanes: 5,
       waves: [
         W(0.60, ['frostWyrm', 8], ['forgeImp', 6], ['gargoyle', 2]),
@@ -1458,7 +1458,7 @@
     88: {
       name: '炉火熄灭',
       type: 'dark',
-      countMult: 1,
+      countMult: 0.64,
       lanes: 5,
       dark: true,
       waves: [
@@ -1475,7 +1475,7 @@
     89: {
       name: '炉渣大合唱',
       type: 'union',
-      countMult: 1,
+      countMult: 0.8,
       lanes: 5,
       waves: [
         B(2.00, ['ironSnowman', 4], ['slagMagma', 2], ['forgeImp', 2], ['ironChariot', 2]),
@@ -1492,7 +1492,7 @@
     90: {
       name: '霜霜女王的回声',
       type: 'boss',
-      countMult: 1,
+      countMult: 1.02,
       lanes: 5,
       waves: [
         W(0.80, ['ironSnowman', 7], ['steelYeti', 2], ['frostWyrm', 5]),
@@ -1587,13 +1587,13 @@
       countMult: 1,
       lanes: 5,
       waves: [
-        W(0.90, ['steelYeti', 3], ['moltenGolem', 2], ['voidTurtle', 3], ['skelGuard', 1]),
-        W(0.86, ['steelYeti', 4], ['moltenGolem', 2], ['voidTurtle', 3], ['skelGuard', 2]),
-        W(0.83, ['steelYeti', 4], ['moltenGolem', 2], ['voidTurtle', 4], ['skelGuard', 2]),
-        W(0.79, ['steelYeti', 4], ['moltenGolem', 3], ['voidTurtle', 5], ['skelGuard', 2]),
-        W(0.75, ['steelYeti', 5], ['moltenGolem', 3], ['voidTurtle', 5], ['skelGuard', 3]),
-        W(0.72, ['steelYeti', 5], ['moltenGolem', 3], ['voidTurtle', 6], ['skelGuard', 3]),
-        W(0.68, ['steelYeti', 7], ['moltenGolem', 3], ['voidTurtle', 6], ['skelGuard', 3]),
+        W(0.90, ['steelYeti', 3], ['moltenGolem', 1], ['voidTurtle', 3], ['skelGuard', 1]),
+        W(0.86, ['steelYeti', 4], ['moltenGolem', 1], ['voidTurtle', 3], ['skelGuard', 2]),
+        W(0.83, ['steelYeti', 4], ['moltenGolem', 1], ['voidTurtle', 4], ['skelGuard', 2]),
+        W(0.79, ['steelYeti', 4], ['moltenGolem', 1], ['voidTurtle', 5], ['skelGuard', 2]),
+        W(0.75, ['steelYeti', 5], ['moltenGolem', 1], ['voidTurtle', 5], ['skelGuard', 3]),
+        W(0.72, ['steelYeti', 5], ['moltenGolem', 1], ['voidTurtle', 6], ['skelGuard', 3]),
+        W(0.68, ['steelYeti', 7], ['moltenGolem', 1], ['voidTurtle', 6], ['skelGuard', 3]),
       ],
       tip: '各种怕物理的、怕魔法的、带盾的混在一起——别只带一种武器。',
     },
