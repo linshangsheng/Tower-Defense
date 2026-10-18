@@ -133,6 +133,32 @@
     return v;
   };
 
+  // 关卡的怪物构成（设计书 75.3）：旧怪物按名字，"回声"怪物（echo）按它们自己的属性，推荐武器 / 技能共用
+  TD.progression.levelTraits = function (counts, total) {
+    const D = TD.data;
+    const share = (t) => (counts[t] || 0) / total;
+    // 回声怪物里满足条件的占比
+    const echo = (pred) => {
+      let c = 0;
+      for (const t of Object.keys(counts)) {
+        const d = D.monsters[t];
+        if (d && d.echo && !d.boss && pred(d)) c += counts[t];
+      }
+      return c / total;
+    };
+    const has = (...ids) => ids.some((id) => counts[id]);
+    return {
+      magicProof: share('lavaGolem') * 2 + (has('rockGolem', 'chaosGolem') ? 0.3 : 0) + echo((d) => d.mres >= 250) * 2,
+      armored: share('mummy') + share('yeti') * 2 + (has('pharaoh', 'chaosPharaoh') ? 0.3 : 0) + echo((d) => d.armor >= 100) * 2,
+      spirit: share('ghost') + (has('boneMage', 'chaosBoneMage') ? 0.3 : 0) + echo((d) => d.physResist >= 0.7),
+      flying: share('bee') + share('vulture') + share('bat') + share('iceSprite') + echo((d) => d.flying),
+      dodgy: share('kite') + echo((d) => d.dodge >= 0.3),
+      goblin: share('goblin') + echo((d) => d.frontArmor > 0),
+      hermit: share('hermitCrab') + echo((d) => !!d.shell),
+      supports: echo((d) => !!d.healer || !!d.guard || !!d.ranged),
+    };
+  };
+
   // 本关的理想武器（不考虑是否拥有）：用于关卡预览的"推荐武器"提示
   TD.progression.idealWeapon = function (n) {
     const D = TD.data;
@@ -145,19 +171,15 @@
         total += c;
       }
     const share = (t) => (counts[t] || 0) / total;
-    const magicProof = share('lavaGolem') * 2 + (counts.rockGolem ? 0.3 : 0);
-    const armored = share('mummy') + share('yeti') * 2 + (counts.pharaoh ? 0.3 : 0);
-    const spirit = share('ghost') + (counts.boneMage ? 0.3 : 0);
-    const flying = share('bee') + share('vulture') + share('bat') + share('iceSprite');
-    const dodgy = share('kite');
+    const { magicProof, armored, spirit, flying, dodgy, goblin, hermit } = TD.progression.levelTraits(counts, total);
     if (counts.octoKing) return { id: 'crossbow', reason: '3 支箭能同时打好几条触手；练满的木弓、火炮也很适合打波波' };
     if (magicProof > 0.25) return { id: 'cannon', reason: '熔岩怪物不怕魔法，用物理重炮' };
     if (dodgy > 0.3) return { id: 'orb', reason: '风筝怪躲不开闪电，跳跃还能连着打好几只' };
-    if (share('hermitCrab') > 0.25) return { id: 'orb', reason: '闪电在好几只寄居蟹之间跳，不容易把一只打得缩壳' };
+    if (hermit > 0.25) return { id: 'orb', reason: '闪电在好几只寄居蟹之间跳，不容易把一只打得缩壳' };
     if (spirit > 0.2) return { id: 'staff', reason: '小幽灵几乎不怕物理攻击' };
     if (armored > 0.25) return { id: 'staff', reason: '魔法伤害无视物理护甲' };
     if (flying > 0.35) return { id: 'crossbow', reason: '一次射 3 支，对飞行怪伤害 +50%' };
-    if (share('goblin') > 0.15) return { id: 'boomerang', reason: '返程从背后命中，无视木盾' };
+    if (goblin > 0.15) return { id: 'boomerang', reason: '返程从背后命中，无视木盾' };
     return null;
   };
 
@@ -180,12 +202,8 @@
 
     // 武器
     let weapon = 'bow';
-    const armored = share('mummy') + share('yeti') * 2 + (counts.pharaoh ? 0.3 : 0);
-    const flying = share('bee') + share('vulture') + share('bat') + share('iceSprite');
-    const spirit = share('ghost') + (counts.boneMage ? 0.3 : 0);
+    const { magicProof, armored, spirit, flying, dodgy, goblin, hermit } = P.levelTraits(counts, total);
     const magicPick = owned('orb') ? 'orb' : owned('staff') ? 'staff' : null;
-    const magicProof = share('lavaGolem') * 2 + (counts.rockGolem ? 0.3 : 0);
-    const dodgy = share('kite');
     if (magicProof > 0.25) {
       // 魔抗关：按有效输出在已拥有的武器里挑（物理武器等级太低时，魔法武器可能仍然更好）
       let best = -1;
@@ -199,11 +217,11 @@
       }
     } else if ((spirit > 0.2 || dodgy > 0.3 || lvl.type === 'union') && magicPick) weapon = magicPick;
     // 寄居蟹多的关：分散火力（设计书 52.2）
-    else if (share('hermitCrab') > 0.25 && (magicPick === 'orb' || owned('crossbow'))) weapon = magicPick === 'orb' ? 'orb' : 'crossbow';
+    else if (hermit > 0.25 && (magicPick === 'orb' || owned('crossbow'))) weapon = magicPick === 'orb' ? 'orb' : 'crossbow';
     else if (armored > 0.25 && owned('staff')) weapon = 'staff';
     else if (armored > 0.25 && owned('cannon')) weapon = 'cannon';
     else if (flying > 0.35 && owned('crossbow')) weapon = 'crossbow';
-    else if (share('goblin') > 0.15 && owned('boomerang')) weapon = 'boomerang';
+    else if (goblin > 0.15 && owned('boomerang')) weapon = 'boomerang';
     else if (lvl.type === 'rush' && owned('crossbow')) weapon = 'crossbow';
     else if (n > 20 && magicPick) weapon = magicPick;
     else if (n > 10 && owned('staff')) weapon = 'staff';
@@ -242,7 +260,7 @@
     // 被动技能
     let prefP = ['precision', 'burn', 'combo', 'pierceArmor'];
     if (magicProof > 0.25 && D.weapons[weapon].dmgType !== 'magic') prefP = ['precision', 'combo', 'pierceArmor', 'burn'];
-    if (share('goblin') > 0.15 || (armored > 0.25 && weapon !== 'staff')) prefP = ['pierceArmor', 'precision', 'burn', 'combo'];
+    if (goblin > 0.15 || (armored > 0.25 && weapon !== 'staff')) prefP = ['pierceArmor', 'precision', 'burn', 'combo'];
     else if (armored > 0.25 || spirit > 0.2) prefP = ['burn', 'precision', 'combo', 'pierceArmor'];
     const nP = P.slotCount(save, 'passive');
     const pas = prefP.filter((id) => save.passiveOwned[id]).slice(0, nP);
@@ -275,7 +293,7 @@
     // 有治疗、光环、远程等辅助型怪物时用"威胁优先"（模拟验证：第 22 关城墙剩余 76% → 95%）
     // 只有毒蛙这种远程持续伤害的怪，"威胁优先"才明显更好（设计书 22.7）
     // 第七章：海马、盾龟也算辅助型；波波的触手算远程（设计书 52.3）
-    const supports = share('frog') + share('imp') + share('rainbowBird') + share('seahorse') + share('turtle');
+    const supports = share('frog') + share('imp') + share('rainbowBird') + share('seahorse') + share('turtle') + P.levelTraits(counts, total).supports;
     lo.target = lvl.type === 'raid' ? 'flying' : supports > 0.03 ? 'smart' : 'nearest';
     if (lo.target !== 'nearest') notes.push('目标：' + D.targetModes[lo.target]);
     return notes;

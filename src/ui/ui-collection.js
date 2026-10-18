@@ -345,9 +345,11 @@
     chapterId = chapterId || 1;
     const seen = s.seenMonsters || {};
     const kills = s.stats.killsByType || {};
-    const types = Object.keys(D.monsters).filter((t) => monsterChapter(t) === chapterId);
-    const total = Object.keys(D.monsters).length;
-    const seenCount = Object.keys(D.monsters).filter((t) => seen[t] || kills[t]).length;
+    // 妖塔版 Boss（tw_ 开头）只是另一种出场方式，不单独列入图鉴
+    const all = Object.keys(D.monsters).filter((t) => !D.monsters[t].towerOf);
+    const types = all.filter((t) => monsterChapter(t) === chapterId);
+    const total = all.length;
+    const seenCount = all.filter((t) => seen[t] || kills[t]).length;
     const tabs = D.chapters.map((c) => h('button', { class: 'btn small' + (c.id === chapterId ? ' primary' : ''), onclick: () => (sfx('click'), UI.showBestiary(c.id)) }, c.name));
     const cards = types.map((t) => {
       const def = D.monsters[t];

@@ -631,7 +631,7 @@
         : h('div', { class: 'map-note' }, `恭喜通关「${ch.name}」！全部 ${D.chapters.length} 章都守住了。可以回头挑战三星和王冠，或者去无尽模式刷新纪录。`);
     screenEl = h(
       'div',
-      { class: 'screen map-screen' + (ch.theme.desert ? ' desert' : ch.theme.swamp ? ' swamp' : ch.theme.snow ? ' snow' : ch.theme.lava ? ' lava' : ch.theme.sky6 ? ' sky6' : ch.theme.sea7 ? ' sea7' : '') },
+      { class: 'screen map-screen' + (ch.theme.desert ? ' desert' : ch.theme.swamp ? ' swamp' : ch.theme.snow ? ' snow' : ch.theme.lava ? ' lava' : ch.theme.sky6 ? ' sky6' : ch.theme.sea7 ? ' sea7' : ch.theme.moon8 ? ' moon8' : ch.theme.forge9 ? ' forge9' : ch.theme.void10 ? ' void10' : '') },
       path,
       h(
         'div',

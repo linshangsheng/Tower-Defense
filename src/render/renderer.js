@@ -521,11 +521,11 @@
       if (b && b.time < this.sandUntil) this.drawSandstorm(b);
       if (b && b.time < this.fogUntil) this.drawFog(b);
       if (b && b.level.dark) this.drawDarkness(b);
-      else if (this.theme.swamp) this.drawMist();
+      else if (this.theme.swamp || this.theme.moon8) this.drawMist();
       // 暗夜里不画雪和飘浮的火星（它们会在黑暗里发亮，破坏全黑，设计书 69.2）
       const night = !!(b && b.level.dark);
       if (this.theme.snow && !night) this.drawSnowfall(b && b.time < this.blizzardUntil);
-      if (this.theme.lava && !night) this.drawEmbers();
+      if ((this.theme.lava || this.theme.forge9) && !night) this.drawEmbers();
       if (b && b.storm) this.drawStormRain();
       if (b && b.whirl) this.drawWhirl();
       if (b && b.wallShield > 0) {

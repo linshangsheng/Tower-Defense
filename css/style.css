@@ -1819,6 +1819,17 @@ body {
   background: linear-gradient(180deg, rgba(150, 220, 245, 0.85) 0%, rgba(150, 220, 245, 0.6) 35%, rgba(246, 232, 192, 0.85) 60%, rgba(236, 215, 166, 0.9) 100%);
 }
 
+/* ---------- 第八至十章（设计书 75） ---------- */
+.map-screen.moon8 {
+  background: linear-gradient(180deg, rgba(40, 46, 110, 0.9) 0%, rgba(60, 70, 140, 0.75) 100%);
+}
+.map-screen.forge9 {
+  background: linear-gradient(180deg, rgba(60, 24, 24, 0.9) 0%, rgba(110, 50, 34, 0.75) 100%);
+}
+.map-screen.void10 {
+  background: radial-gradient(ellipse at 50% 40%, rgba(120, 60, 190, 0.8), rgba(30, 14, 70, 0.92));
+}
+
 /* ---------- 关卡任务（设计书 36） ---------- */
 .advice.mission {
   background: #eef4ff;
@@ -2097,7 +2108,10 @@ body {
 .map-screen.snow,
 .map-screen.lava,
 .map-screen.sky6,
-.map-screen.sea7 {
+.map-screen.sea7,
+.map-screen.moon8,
+.map-screen.forge9,
+.map-screen.void10 {
   background: radial-gradient(ellipse at 50% 55%, rgba(6, 10, 22, 0.05), rgba(6, 10, 22, 0.5));
 }
 .map-node {

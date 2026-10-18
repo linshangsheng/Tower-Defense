@@ -11,9 +11,10 @@
   // ---------- 无尽模式 ----------
   M.endlessUnlocked = (save) => P.isCleared(save, 20);
 
-  // 无尽 / 每日的关卡上限：第六章、第七章通关后才放开
+  // 无尽 / 每日的关卡上限：第六章以后，每通关一章才放开一章
   function poolLast(save) {
-    return P.isCleared(save, 70) ? 70 : P.isCleared(save, 60) ? 60 : 50;
+    for (const n of [100, 90, 80, 70, 60]) if (P.isCleared(save, n)) return n;
+    return 50;
   }
   M.poolLast = poolLast;
 
@@ -23,7 +24,7 @@
     const normal = new Set();
     const mini = new Set();
     const major = new Set();
-    // 第六、七章的怪物在通关本章最后一关后才进入（设计书 34.2、52.7）
+    // 第六章以后的怪物在通关本章最后一关后才进入（设计书 34.2、52.7、75）
     const last = poolLast(save);
     for (let n = 1; n <= Math.min(h, last); n++) {
       for (const w of D.levels[n].waves)
@@ -31,8 +32,8 @@
           const def = D.monsters[t];
           if (def.boss === 'mini') mini.add(t);
           else if (def.boss === 'major') {
-            // 最终 Boss 墨墨保持唯一，不进入无尽模式
-            if (t !== 'inkBoss') major.add(t);
+            // 最终 Boss 墨墨和它的回声保持唯一，不进入无尽模式
+            if (t !== 'inkBoss' && t !== 'chaosInk') major.add(t);
           }
           else if (!D.noIntro[t]) normal.add(t);
         }
@@ -141,7 +142,8 @@
             if (!d.boss && !d.towerOf && !D.noIntro[t] && !seen.includes(t) && !out.includes(t)) seen.push(t);
           }
       }
-      out.push(...seen.slice(0, 2));
+      // 第八章以后每章只挑 1 种：同屏的种类越多越慢（设计书 74.5）
+      out.push(...seen.slice(0, ch.id > 7 ? 1 : 2));
     }
     return out.length ? out : ['slime'];
   };
@@ -158,7 +160,7 @@
       const nm = Math.round(cnt.minion / per);
       // 出怪间隔：一波大约在 (12 + 2×层数) 秒里全部涌出
       const gap = Math.max(0.05, (12 + 2 * floor) / (nb + nm));
-      waves.push({ gap, groups: [...spread(minions, nm), ...spread(bosses, nb)], D: M.towerD(save, floor), chapter: D.chapterOf(Math.min(stage, 70)).id });
+      waves.push({ gap, groups: [...spread(minions, nm), ...spread(bosses, nb)], D: M.towerD(save, floor), chapter: D.chapterOf(Math.min(stage, 100)).id });
     }
     return {
       name: `九层妖塔 · 第 ${floor} 层`,

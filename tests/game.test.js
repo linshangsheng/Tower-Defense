@@ -1177,7 +1177,7 @@ test('连击：1.2 秒内连续击败才算，记录最高连击；不影响奖�
 });
 
 test('王国小镇：每个 Boss 都有房子和 3 句台词，关卡号对得上', () => {
-  const bosses = Object.keys(D.monsters).filter((t) => D.monsters[t].boss && !D.monsters[t].towerOf);
+  const bosses = Object.keys(D.monsters).filter((t) => D.monsters[t].boss && !D.monsters[t].towerOf && !D.monsters[t].echo);
   for (const t of bosses) assert.ok(D.town.some((f) => f.boss === t), `${t} 没有房子`);
   for (const f of D.town) {
     assert.strictEqual(f.lines.length, 3);
@@ -2224,7 +2224,7 @@ test('音乐：标题 + 七章共 8 首，每首 8 小节和弦、64 个八分�
   delete require.cache[require.resolve('../src/render/music.js')];
   require('../src/render/music.js');
   const M = TD.music;
-  for (let id = 0; id <= 7; id++) {
+  for (let id = 0; id <= 10; id++) {
     const th = M.THEMES[id];
     assert.ok(th, `缺少第 ${id} 首`);
     assert.strictEqual(th.chords.length, 8);
@@ -2550,4 +2550,83 @@ test('补给卡（金）：神圣庇佑复活一次；狂暴全属性；时光�
   const n0 = b.delayed.length;
   b.startWave(b.waveIndex + 1);
   assert.ok(b.delayed.length > n0, '每波开始时安排一次天火');
+});
+
+// ---------- 第八至十章 · 混沌回声（设计书 75） ----------
+test('100 关：十章、每章 10 关，类型顺序固定，所有怪物都存在', () => {
+  assert.strictEqual(D.chapters.length, 10);
+  assert.strictEqual(Object.keys(D.levels).length, 100);
+  assert.strictEqual(D.chapterOf(75).id, 8);
+  assert.strictEqual(D.chapterOf(85).id, 9);
+  assert.strictEqual(D.chapterOf(100).id, 10);
+  const order = ['normal', 'normal', 'rush', 'dark', 'miniboss', 'armored', 'raid', 'dark', 'union', 'boss'];
+  for (let ch = 8; ch <= 10; ch++)
+    for (let i = 0; i < 10; i++) {
+      const n = (ch - 1) * 10 + 1 + i;
+      const lvl = D.levels[n];
+      // 第十章第 4 关（虚空盾阵）是普通关，和第七章的排法一样：整章只有第 98 关是暗夜
+      assert.strictEqual(lvl.type, ch === 10 && i === 3 ? 'normal' : order[i], `第 ${n} 关类型`);
+      assert.strictEqual(lvl.lanes, 5);
+      assert.ok(lvl.waves.length >= 3 && lvl.tip, `第 ${n} 关`);
+      if (lvl.type === 'dark') assert.ok(lvl.dark);
+      for (const w of lvl.waves) for (const [t, c] of w.groups) assert.ok(D.monsters[t] && c >= 1, `第 ${n} 关的 ${t}`);
+    }
+  for (const k of ['ch8', 'pre75', 'post75', 'pre80', 'post80', 'ch9', 'pre85', 'post85', 'pre90', 'post90', 'ch10', 'pre95', 'post95', 'pre100', 'post100']) {
+    assert.ok(D.story[k] && D.storyOrder.includes(k), k);
+    for (const [who] of D.story[k].lines || []) assert.ok(D.speakers[who] || D.monsters[who], `${k} 的说话人 ${who}`);
+  }
+});
+
+test('混沌回声：怪物沿用原来的画法（art）+ 换色（tint），Boss 沿用原来的行动（ai）但血量更高', () => {
+  const echoes = Object.keys(D.monsters).filter((k) => D.monsters[k].echo);
+  assert.ok(echoes.length >= 31);
+  for (const id of echoes) {
+    const d = D.monsters[id];
+    assert.ok(d.art && D.monsters[d.art] && d.tint, id);
+  }
+  const pairs = { chaosBoneMage: 'boneMage', chaosPharaoh: 'pharaoh', chaosGolem: 'rockGolem', chaosQueen: 'frostQueen', chaosGiant: 'windGiant', chaosInk: 'inkBoss' };
+  for (const [e, o] of Object.entries(pairs)) {
+    assert.strictEqual(D.monsters[e].ai, D.monsters[o].ai, e);
+    assert.ok(D.monsters[e].hp > D.monsters[o].hp, e);
+    assert.strictEqual(D.monsters[e].boss, D.monsters[o].boss, e);
+  }
+  // 回声 Boss 不影响"击败全部 Boss"成就和小镇
+  const done = P.newSave();
+  for (const id of Object.keys(D.monsters)) if (D.monsters[id].boss && !D.monsters[id].towerOf && !D.monsters[id].echo) done.stats.killsByType[id] = 1;
+  assert.ok(D.achievements.find((a) => a.id === 'bosses').check(done));
+});
+
+test('第 70 关以后的难度系数缓慢增长（每关 +1%）', () => {
+  const d70 = TD.config.difficulty(70);
+  assert.ok(Math.abs(TD.config.difficulty(71) - d70 * 1.01) < 1e-9);
+  assert.ok(Math.abs(TD.config.difficulty(100) - d70 * 1.3) < 1e-9);
+  for (let n = 2; n <= 100; n++) assert.ok(TD.config.difficulty(n) > TD.config.difficulty(n - 1));
+});
+
+test('无尽 / 每日 / 妖塔：第八至十章通关后才放开对应章节的怪物', () => {
+  for (const [cleared, last] of [[65, 60], [70, 70], [80, 80], [90, 90], [100, 100]]) {
+    const s = P.newSave();
+    clearUpTo(s, cleared);
+    assert.strictEqual(TD.modes.poolLast(s), last);
+  }
+  const s = P.newSave();
+  clearUpTo(s, 100);
+  const echoMinions = Object.keys(D.monsters).filter((k) => D.monsters[k].echo && !D.monsters[k].boss);
+  const seen = new Set();
+  for (let seed = 1; seed <= 6; seed++) for (const w of TD.modes.buildEndless(s, seed).waves) for (const [t] of w.groups) seen.add(t);
+  assert.ok(echoMinions.some((t) => seen.has(t)));
+  assert.ok(![...seen].includes('chaosInk'), '墨墨的回声保持唯一，不进入无尽模式');
+  // 妖塔：同屏的小妖种类不超过 17 种；难度按已通关的最高关卡折算
+  const pool = TD.modes.towerMinionPool(s);
+  assert.ok(pool.length <= 17 && pool.some((t) => D.monsters[t].echo));
+  assert.strictEqual(TD.modes.towerStage(s), 100);
+});
+
+test('第 100 关：墨墨的回声登场，战斗可以正常跑完前 60 秒', () => {
+  const s = P.newSave();
+  clearUpTo(s, 99);
+  const b = new TD.Battle({ level: 100, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 3 });
+  for (let i = 0; i < 60 * 60 && !b.over; i++) b.step(1 / 60);
+  assert.ok(b.time > 0);
+  assert.ok(D.levels[100].waves.some((w) => w.groups.some(([t]) => t === 'chaosInk')));
 });

@@ -898,6 +898,58 @@
     laneSwitchEvery: 5,
   };
 
+  // ---------- 混沌回声（设计书 75）：第八至十章的怪物 ----------
+  // 每一种 = 原来的怪物（base）+ 加强的数值 / 改过的机制参数（over）+ 换色（tint）；画法沿用原来的（art），染色在 sprites.js
+  const TINT_MOON = '#7a5cff'; // 月影古堡：蓝紫
+  const TINT_FORGE = '#ff4a4a'; // 赤铁熔炉：暗红
+  const TINT_VOID = '#b04aff'; // 虚空天域：紫
+  const echo = (id, base, name, tint, over, desc) => {
+    const b = TD.data.monsters[base];
+    const def = Object.assign({}, b, over, { name, art: base, tint, desc, echo: true });
+    if (def.size) def.size = Math.round(def.size * 1.08);
+    TD.data.monsters[id] = def;
+  };
+  const M = TD.data.monsters;
+  // 第八章 · 月影古堡（第一至三章怪物的回声）
+  echo('moonSlime', 'slime', '月影团团', TINT_MOON, { hp: 70, speed: 46, dps: 12, copper: 3, regen: { delay: 2, pct: 0.05 } }, '被月光侵蚀的绿团团：血量高，不被打的时候会自己回血。');
+  echo('moonBunny', 'bunny', '月影兔', TINT_MOON, { hp: 40, speed: 135, dps: 8, copper: 3, dodge: 0.25, laneHop: { every: 2 } }, '快得看不清的兔子，会换车道，物理攻击有四分之一的几率打空。');
+  echo('digger', 'scorpion', '掘墓蝎', TINT_MOON, { hp: 90, dps: 14, armor: 60, copper: 4 }, '会钻进地里的蝎子，披着一层骨甲。');
+  echo('wraith', 'ghost', '怨灵', TINT_MOON, { hp: 90, speed: 56, dps: 14, physResist: 0.85, copper: 4 }, '几乎不怕物理攻击的灵体：只有 15% 的物理伤害有效，用魔法打它。');
+  echo('skelGuard', 'goblin', '骷髅卫兵', TINT_MOON, { hp: 200, speed: 38, dps: 18, frontArmor: 160, copper: 5 }, '举着厚重的骨盾，正面几乎打不动：回旋镖从背后打。');
+  echo('gargoyle', 'vulture', '石像鬼', TINT_MOON, { hp: 110, speed: 105, dps: 10, armor: 100, copper: 4 }, '披着石甲的飞行怪：物理攻击大半被挡住。');
+  echo('lanternGhost', 'priest', '提灯鬼', TINT_MOON, { hp: 120, dps: 8, copper: 5, healer: Object.assign({}, M.priest.healer, { radius: 150, pct: 0.06 }) }, '提着灯的治疗者：范围更大、治疗更多，先打它。');
+  echo('bloodBat', 'bat', '吸血蝠', TINT_MOON, { hp: 70, dps: 9, copper: 3, laneHop: { every: 1.8 } }, '频繁换车道的蝙蝠，很难集火。');
+  // 第九章 · 赤铁熔炉（第四、五章怪物的回声）
+  echo('ironSnowman', 'snowman', '铁雪人', TINT_FORGE, { hp: 110, dps: 16, armor: 60, copper: 4, deathSpawn: Object.assign({}, M.snowman.deathSpawn, { count: 3 }) }, '披着铁甲的雪人，死后裂成三个小雪团。');
+  echo('ironWolf', 'wolf', '铁狼', TINT_FORGE, { hp: 70, speed: 105, dps: 12, armor: 25, copper: 4, pack: 4 }, '四只一组冲过来的铁甲狼。');
+  echo('forgeImp', 'imp', '炉火小鬼', TINT_FORGE, { hp: 70, copper: 5, ranged: Object.assign({}, M.imp.ranged, { damage: Math.round(M.imp.ranged.damage * 1.4) }) }, '会飞的火球手，一发火球比原来疼得多。');
+  echo('steelYeti', 'yeti', '钢雪怪', TINT_FORGE, { hp: 300, dps: 26, armor: 180, copper: 7 }, '浑身钢板的雪怪：物理几乎打不动，魔法才有效。');
+  echo('moltenGolem', 'lavaGolem', '熔铁傀儡', TINT_FORGE, { hp: 340, dps: 28, mres: 360, copper: 8 }, '熔化的铁做的傀儡：魔法几乎打不动，用物理武器。');
+  echo('slagMagma', 'magma', '炉渣团', TINT_FORGE, { hp: 85, dps: 14, copper: 4, fireZone: Object.assign({}, M.magma.fireZone, { radius: 90, duration: 6 }) }, '死后留下更大、更久的火焰地带。');
+  echo('ironChariot', 'chariot', '铁战车', TINT_FORGE, { hp: 110, speed: 140, dps: 14, armor: 60, copper: 5, slam: 28 }, '披着铁板的战车，冲得很快。');
+  echo('frostWyrm', 'iceDragon', '霜龙', TINT_FORGE, { hp: 105, speed: 64, dps: 14, copper: 4 }, '会飞的小龙，被混沌染成了红色。');
+  // 第十章 · 虚空天域（第六、七章怪物的回声）
+  echo('voidSheep', 'cloudSheep', '虚空羊', TINT_VOID, { hp: 110, dps: 14, copper: 5, wool: Object.assign({}, M.cloudSheep.wool, { ratio: 0.7 }) }, '羊毛更厚：先扣掉 70% 血量的羊毛才开始掉血。');
+  echo('voidKite', 'kite', '虚空风筝', TINT_VOID, { hp: 56, dps: 9, copper: 4, dodge: 0.5 }, '一半的物理攻击都会被它飘走躲开。');
+  echo('voidShock', 'thunderBall', '虚空雷团', TINT_VOID, { hp: 85, dps: 14, copper: 5, staticShock: Object.assign({}, M.thunderBall.staticShock, { range: 380, stun: 1.0 }) }, '电击的范围更大、麻痹更久。');
+  echo('voidCrab', 'hermitCrab', '虚空蟹', TINT_VOID, { hp: 115, dps: 14, armor: 30, copper: 5, shell: Object.assign({}, M.hermitCrab.shell, { hits: 5, duration: 1.6 }) }, '缩壳的时间更长。');
+  echo('voidTurtle', 'turtle', '虚空盾龟', TINT_VOID, { hp: 230, dps: 18, armor: 50, copper: 7, guard: Object.assign({}, M.turtle.guard, { radius: 150, mult: 0.5 }) }, '保护圈更大、减伤更多，先把它拆掉。');
+  echo('voidFish', 'flyingFish', '虚空飞鱼', TINT_VOID, { hp: 48, dps: 9, copper: 4, leap: Object.assign({}, M.flyingFish.leap, { dist: 170 }) }, '一跳跳得更远。');
+  echo('voidUrchin', 'urchin', '虚空海胆', TINT_VOID, { hp: 120, dps: 17, copper: 4, spikes: Object.assign({}, M.urchin.spikes, { damage: 40 }) }, '死后的尖刺扎得更疼。');
+  echo('voidBalloon', 'balloon', '虚空气球', TINT_VOID, { hp: 140, dps: 12, armor: 25, copper: 6, deathSpawn: Object.assign({}, M.balloon.deathSpawn, { count: 4 }) }, '落地时放出四个哥布林小兵。');
+  echo('voidBird', 'rainbowBird', '虚空鸟', TINT_VOID, { hp: 80, dps: 6, copper: 5, healer: Object.assign({}, M.rainbowBird.healer, { pct: 0.06 }) }, '治疗更多的飞鸟。');
+  // 旧 Boss 的回声：行动方式不变（ai 沿用），血量更高
+  const echoBoss = (id, base, name, tint, hp, desc) => {
+    const b = M[base];
+    M[id] = Object.assign({}, b, { name, hp, art: base, tint, desc, echo: true, size: Math.round(b.size * 1.1) });
+  };
+  echoBoss('chaosBoneMage', 'boneMage', '骨头先生的回声', TINT_MOON, 2300, '小 Boss。行动和骨头先生一样：召唤骷髅、拿魔法护盾，但是更硬。');
+  echoBoss('chaosPharaoh', 'pharaoh', '胖法老的回声', TINT_MOON, 4300, '大 Boss。沙暴、召唤、治疗、护盾，三个阶段，比原来难缠得多。');
+  echoBoss('chaosGolem', 'rockGolem', '岩岩的回声', TINT_FORGE, 1500, '小 Boss。行动和岩岩一样，血量高了一倍。');
+  echoBoss('chaosQueen', 'frostQueen', '霜霜女王的回声', TINT_FORGE, 4200, '大 Boss。冰冻、暴风雪、冰墙，比原来更冷。');
+  echoBoss('chaosGiant', 'windGiant', '呼呼的回声', TINT_VOID, 2500, '小 Boss。龙卷风和推挤，比原来更猛。');
+  echoBoss('chaosInk', 'inkBoss', '墨墨的回声', TINT_VOID, 5200, '最终 Boss。墨水、分身、遮蔽视线——这是混沌裂隙的源头。');
+
   // ---------- 九层妖塔（设计书 74）----------
   // 妖塔里的 Boss 是小镇朋友们的"妖塔版"：去掉各自的指挥 / 召唤 / 冲锋 / 分裂（几十个同时行动会乱套），
   // 只保留血量、护甲、魔抗等基础属性；画法沿用原来的（art）。

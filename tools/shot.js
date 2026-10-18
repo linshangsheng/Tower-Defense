@@ -20,6 +20,10 @@ const { chromium } = require(path.join(process.env.NODE_PATH || '/opt/node22/lib
       s.inventory = { bomb: 1, patch: 1, haste: 1 };
       s.loadout.items = ['bomb', 'patch', 'haste'];
       s.loadout.autoCast = !!auto;
+      // 不弹"新敌人登场"，免得挡住画面
+      s.seenMonsters = {};
+      for (const k of Object.keys(TD.data.monsters)) s.seenMonsters[k] = true;
+      s.wall.level = Math.min(30, Math.floor(n / 3));
       TD.game.startBattle(n);
     },
     [+n, auto]

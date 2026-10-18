@@ -198,6 +198,65 @@
       window: '#ffd27a',
       shape: 'sea',
     },
+    // 第八至十章（设计书 75）
+    moon: {
+      sky: ['#05060f', '#1c2050', '#6a6ab0'],
+      sun: { x: 300, y: 56, r: 300, color: '#cfd8ff' },
+      far: ['#1a1e3c', '#242a4a'],
+      haze: '#8a90d0',
+      ground: ['#0c1020', '#121830', '#0a0e1c'],
+      lane: '#b8c4f0',
+      laneEdge: '#6a78b8',
+      tuft: '#080a16',
+      tuftTip: '#9aa8e8',
+      flowers: ['#b8a0ff', '#8ad0ff', '#e0e8ff'],
+      fore: '#03040a',
+      rim: '#bcc8ff',
+      mote: '#c8d0ff',
+      fog: '#7a82c0',
+      shafts: '#c8d4ff',
+      window: '#ffe08a',
+      shape: 'castle',
+    },
+    forge: {
+      sky: ['#0a0406', '#2a1018', '#8a3a22'],
+      sun: { x: 700, y: 110, r: 400, color: '#ff8a3a' },
+      far: ['#1c0e12', '#2a1418'],
+      haze: '#ff7a3a',
+      ground: ['#241618', '#30201c', '#1c1214'],
+      lane: '#ffc08a',
+      laneEdge: '#c06a3a',
+      tuft: '#0c0608',
+      tuftTip: '#ff9a5a',
+      flowers: ['#ff8a3d', '#ffd070', '#ff5a3a'],
+      fore: '#050204',
+      rim: '#ffa060',
+      mote: '#ffb878',
+      fog: '#8a3a2a',
+      shafts: null,
+      window: '#ffa04a',
+      shape: 'forge',
+    },
+    void: {
+      sky: ['#07031a', '#2a1060', '#a050c8'],
+      sun: { x: 860, y: 70, r: 380, color: '#e0a0ff' },
+      far: ['#2a1a58', '#3a2470'],
+      haze: '#c080f0',
+      ground: ['#1c1240', '#281a56', '#1a1038'],
+      lane: '#e8c8ff',
+      laneAlpha: 0.55,
+      laneEdge: '#b080e8',
+      tuft: '#140c30',
+      tuftTip: '#e0b0ff',
+      flowers: ['#ff9ae8', '#9ae0ff', '#f0e0ff'],
+      fore: '#08041a',
+      rim: '#e0b0ff',
+      mote: '#f0d0ff',
+      fog: '#9a6ad8',
+      shafts: '#e8c8ff',
+      window: '#ffe6a0',
+      shape: 'shards',
+    },
   };
   A.palettes = PALETTES;
 
@@ -421,6 +480,78 @@
       fg.lineTo(1072, top - 30);
       fg.fill();
       fg.fillRect(1044, top - 112, 24, 16);
+      fg.fillStyle = P.far[1];
+      fg.fillRect(0, top - 6, W, H);
+    } else if (P.shape === 'castle') {
+      // 月夜下的古堡：一排带垛口的塔楼和尖顶
+      fg.fillStyle = P.far[0];
+      fg.fillRect(0, top - 8, W, H);
+      for (let k = 0; k < 9; k++) {
+        const cx = 80 + k * 140 + r() * 40;
+        const tw = 26 + r() * 22;
+        const th = 50 + r() * 70;
+        fg.fillRect(cx - tw, top - th, tw * 2, th + 10);
+        for (let m = -tw; m < tw - 4; m += 10) fg.fillRect(cx + m, top - th - 8, 6, 8);
+        if (k % 2 === 0) {
+          fg.beginPath();
+          fg.moveTo(cx - tw - 4, top - th - 8);
+          fg.lineTo(cx, top - th - 44);
+          fg.lineTo(cx + tw + 4, top - th - 8);
+          fg.fill();
+        }
+      }
+      fg.fillStyle = P.far[1];
+      fg.fillRect(0, top - 6, W, H);
+    } else if (P.shape === 'forge') {
+      // 熔炉：一排烟囱，冒着暗红的烟，炉口发光
+      fg.fillStyle = P.far[0];
+      fg.fillRect(0, top - 14, W, H);
+      for (let k = 0; k < 8; k++) {
+        const cx = 60 + k * 150 + r() * 50;
+        const ch = 60 + r() * 80;
+        fg.fillRect(cx - 14, top - ch, 28, ch + 10);
+        fg.fillRect(cx - 18, top - ch - 6, 36, 8);
+        fg.globalAlpha = 0.5;
+        fg.beginPath();
+        fg.ellipse(cx + 16, top - ch - 24, 26, 14, 0, 0, Math.PI * 2);
+        fg.fill();
+        fg.globalAlpha = 1;
+      }
+      fg.globalCompositeOperation = 'lighter';
+      for (let k = 0; k < 6; k++) {
+        const gx = 100 + r() * (W - 200);
+        const gl = fg.createRadialGradient(gx, top - 4, 2, gx, top - 4, 56);
+        gl.addColorStop(0, 'rgba(255,170,80,0.8)');
+        gl.addColorStop(1, 'rgba(255,80,30,0)');
+        fg.fillStyle = gl;
+        fg.fillRect(gx - 60, top - 64, 120, 80);
+      }
+      fg.globalCompositeOperation = 'source-over';
+      fg.fillStyle = P.far[1];
+      fg.fillRect(0, top - 6, W, H);
+    } else if (P.shape === 'shards') {
+      // 虚空：漂浮的碎岩和一道裂缝里透出的光
+      fg.fillStyle = P.far[0];
+      fg.fillRect(0, top - 10, W, H);
+      for (let k = 0; k < 14; k++) {
+        const sx = r() * W;
+        const sy = top - 110 + r() * 100;
+        const sw = 10 + r() * 26;
+        fg.fillStyle = k % 3 === 0 ? P.far[1] : P.far[0];
+        fg.beginPath();
+        fg.moveTo(sx, sy - sw);
+        fg.lineTo(sx + sw * 0.7, sy);
+        fg.lineTo(sx + sw * 0.2, sy + sw * 1.4);
+        fg.lineTo(sx - sw * 0.6, sy + sw * 0.2);
+        fg.fill();
+      }
+      fg.globalCompositeOperation = 'lighter';
+      const rift = fg.createLinearGradient(0, top - 120, 0, top);
+      rift.addColorStop(0, 'rgba(224,160,255,0)');
+      rift.addColorStop(1, 'rgba(224,160,255,0.35)');
+      fg.fillStyle = rift;
+      fg.fillRect(P.sun.x - 14, top - 120, 28, 120);
+      fg.globalCompositeOperation = 'source-over';
       fg.fillStyle = P.far[1];
       fg.fillRect(0, top - 6, W, H);
     }

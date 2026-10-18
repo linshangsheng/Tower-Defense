@@ -133,7 +133,9 @@
     // 妖塔版 Boss 等用别的怪物的画法（def.art）
     const mdef = TD.data && TD.data.monsters[type];
     if (mdef && mdef.art) type = mdef.art;
-    const fn = (TD.creatures && TD.creatures.drawers[type]) || S.drawers[type] || S.drawers.slime;
+    let fn = (TD.creatures && TD.creatures.drawers[type]) || S.drawers[type] || S.drawers.slime;
+    // 混沌回声（设计书 75）：同样的画法染一层颜色（保留明暗，只换色相）
+    if (mdef && mdef.tint) fn = tinted(fn, mdef.tint, size);
     ctx.save();
     ctx.translate(x, y);
     if (opts.scale) ctx.scale(opts.scale, opts.scale);
@@ -146,6 +148,49 @@
     }
     ctx.restore();
   };
+
+  // 把一个画怪物的函数包成"先画到临时画布，用 color 混合染色，再按原形状裁剪"
+  let tintA = null;
+  let tintB = null;
+  function tinted(fn, color, size) {
+    return function (ctx, sz, t, opts) {
+      if (typeof document === 'undefined') return fn(ctx, sz, t, opts);
+      const W = Math.ceil(sz * 5);
+      const H = Math.ceil(sz * 5.5);
+      const ox = W / 2;
+      const oy = H * 0.75;
+      if (!tintA) {
+        tintA = document.createElement('canvas');
+        tintB = document.createElement('canvas');
+      }
+      for (const c of [tintA, tintB]) {
+        if (c.width < W || c.height < H) {
+          c.width = Math.max(c.width, W);
+          c.height = Math.max(c.height, H);
+        }
+      }
+      const a = tintA.getContext('2d');
+      const b = tintB.getContext('2d');
+      // b：原样的怪物（作为形状遮罩）；a：染色后的
+      for (const g of [a, b]) {
+        g.setTransform(1, 0, 0, 1, 0, 0);
+        g.globalCompositeOperation = 'source-over';
+        g.globalAlpha = 1;
+        g.clearRect(0, 0, tintA.width, tintA.height);
+        g.translate(ox, oy);
+      }
+      fn(b, sz, t, opts);
+      fn(a, sz, t, opts);
+      a.setTransform(1, 0, 0, 1, 0, 0);
+      a.globalCompositeOperation = 'color';
+      a.fillStyle = color;
+      a.fillRect(0, 0, W, H);
+      a.globalCompositeOperation = 'destination-in';
+      a.drawImage(tintB, 0, 0, W, H, 0, 0, W, H);
+      a.globalCompositeOperation = 'source-over';
+      ctx.drawImage(tintA, 0, 0, W, H, -ox, -oy, W, H);
+    };
+  }
 
   function slimeBody(ctx, s, t, color, opts) {
     const wob = Math.sin(t * 6 + (opts.seed || 0)) * 0.08;

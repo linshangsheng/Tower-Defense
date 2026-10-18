@@ -6,7 +6,7 @@
 
   const cleared = (save, n) => (save.levels[n] || {}).clears > 0;
   const totalStars = (save) => Object.values(save.levels).reduce((a, r) => a + (r.stars || 0), 0);
-  const bossTypes = () => Object.keys(TD.data.monsters).filter((k) => TD.data.monsters[k].boss && !TD.data.monsters[k].towerOf);
+  const bossTypes = () => Object.keys(TD.data.monsters).filter((k) => TD.data.monsters[k].boss && !TD.data.monsters[k].towerOf && !TD.data.monsters[k].echo);
   const introTypes = () => Object.keys(TD.data.monsters).filter((k) => !TD.data.noIntro[k]);
 
   TD.data.achievements = [
@@ -18,6 +18,9 @@
     { id: 'hero', name: '堡垒守卫', desc: '击败墨墨', reward: { gold: 1 }, check: (s) => cleared(s, 50) },
     { id: 'ch6', name: '云端守护者', desc: '通关第六章，让雷雷消气', reward: { gold: 1 }, check: (s) => cleared(s, 60) },
     { id: 'ch7', name: '海湾守护者', desc: '通关第七章，帮波波找到新家', reward: { gold: 1 }, check: (s) => cleared(s, 70) },
+    { id: 'ch8', name: '月影守护者', desc: '通关第八章，让骨头先生和胖法老的回声安息', reward: { gold: 1 }, check: (s) => cleared(s, 80) },
+    { id: 'ch9', name: '熔炉守护者', desc: '通关第九章，让岩岩和霜霜女王的回声安息', reward: { gold: 1 }, check: (s) => cleared(s, 90) },
+    { id: 'ch10', name: '混沌终结者', desc: '通关第 100 关，合上混沌裂缝', reward: { gold: 3 }, check: (s) => cleared(s, 100) },
     { id: 'bubbles', name: '啵啵啵', desc: '累计戳破 100 个泡泡', reward: { silver: 3 }, check: (s) => (s.stats.bubbles || 0) >= 100 },
     { id: 'perfect', name: '毫发无损', desc: '第 3 关以后，城墙满血通关任意一关', reward: { silver: 2 }, check: (s, c) => !!(c && c.win && c.level >= 3 && c.wallRatio >= 0.9999) },
     { id: 'close', name: '惊险过关', desc: '城墙剩余不到 5% 时通关', reward: { silver: 2 }, check: (s, c) => !!(c && c.win && c.wallRatio < 0.05) },
@@ -27,7 +30,7 @@
     { id: 'supply', name: '补给专家', desc: '累计选择 50 张补给卡', reward: { silver: 2 }, check: (s) => (s.stats.supplies || 0) >= 50 },
     { id: 'stars50', name: '星光闪闪', desc: '累计获得 50 颗星', reward: { silver: 3 }, check: (s) => totalStars(s) >= 50 },
     { id: 'stars150', name: '繁星满天', desc: '累计获得 150 颗星', reward: { gold: 1 }, check: (s) => totalStars(s) >= 150 },
-    { id: 'starsAll', name: '星河璀璨', desc: '获得全部关卡的三星（第六、七章也算）', reward: { gold: 2 }, check: (s) => Object.keys(TD.data.levels).every((n) => (s.levels[n] || {}).stars >= 3) },
+    { id: 'starsAll', name: '星河璀璨', desc: '获得全部关卡的三星（第六至十章也算）', reward: { gold: 2 }, check: (s) => Object.keys(TD.data.levels).every((n) => (s.levels[n] || {}).stars >= 3) },
     { id: 'weapons', name: '武器收藏家', desc: '拥有全部 6 把武器', reward: { silver: 3 }, check: (s) => Object.keys(TD.data.weapons).every((w) => s.weapons[w] && s.weapons[w].owned) },
     {
       id: 'skills',
