@@ -1,0 +1,463 @@
+463	Monstruo Cometa
+464	Esquiva del Monstruo Cometa −25%
+465	Los Monstruos Cometa no esquivan los rayos, y los saltos encadenan a varios
+466	Los Monstruos Cometa esquivan los ataques físicos de las armas. ¡El Bastón, el Orbe Relámpago, la Lluvia de Flechas y el Golpe de Trueno no se pueden esquivar!
+467	Festival de Cometas
+468	Ataque Aéreo de Abejas
+469	Capa de Pluma de Fénix
+470	Fortaleza Flotante
+471	Armadura de Placas Rúnicas
+472	Corona Rúnica
+473	Botas de la Buena Suerte
+474	Copiar
+475	Armadura de Acero
+476	Yelmo de Acero
+477	Capa de Alambre
+478	Yeti de Acero
+479	Los Yetis de Acero temen a la magia y los Golems de Hierro Fundido temen a los ataques físicos. Cambia de arma o usa habilidades, tú eliges.
+480	Los Yetis de Acero temen a la magia, y las Tortugas Escudo protegen a los monstruos cercanos. Elimina primero la Tortuga Escudo y luego usa magia contra el Yeti de Acero.
+481	Acero y Hierro Fundido
+482	Gran daño, prob. crítica +12%; las flechas atraviesan 3 monstruos e incendian al objetivo.
+483	Veloz
+484	Puesto Goblin
+485	Soldado Goblin
+486	¡Hermano! ¡Yo también quiero defender la muralla! ¡Cuando suena mi campanita, todos los monstruitos se asustan!
+487	Récord personal: oleada {0} · {1} derrotados
+488	Elige automáticamente armas, habilidades y objetos según los monstruos de este nivel.
+489	Más armas: desbloquéalas en la pestaña Armas de la pantalla de Equipo
+490	Y lo peor es que se enteraron de que en tierra hay una "cáscara grande y resistente", y vienen en fila para mudarse...
+491	Cañón de Asedio
+492	Los monstruos que atacan la muralla reciben daño reflejado igual al ATQ del héroe ×20% por nivel.
+493	ATQ
+494	ATQ +{0}
+495	ATQ +{0}%
+496	ATQ +12%
+497	ATQ +15%, prob. crítica +10%, daño crítico +25%
+498	ATQ +20%, vel. de ataque +15%, prob. crítica +8%
+499	ATQ +3
+500	ATQ +3; duración de Zona de Congelación y Frasco Helado +30%
+501	ATQ +3; daño a jefes (incl. tentáculos) +20%
+502	ATQ +3%
+503	ATQ +35%, vel. de ataque +25%, prob. crítica +15%, daño crítico +50%
+504	ATQ +5, prob. crítica +5%
+505	ATQ +5%
+506	ATQ +6%, daño crítico +20%
+507	ATQ +8%, los ataques básicos tienen 15% de probabilidad de incendiar al objetivo
+508	ATQ ×5
+509	ATQ ×6
+510	ATQ ×7, encadena a 3 monstruos cercanos (50% cada uno)
+511	Velocidad de ataque
+512	Vel. de ataque +{0}%
+513	Vel. de ataque +10%
+514	Vel. de ataque +12%
+515	Vel. de ataque +15%, daño recibido por la muralla −10%
+516	Vel. de ataque +3%
+517	Vel. de ataque +35% durante 9 s.
+518	Vel. de ataque +50% durante 8 s.
+519	Vel. de ataque +6%; daño a monstruos voladores +15%
+520	Vel. de ataque +8%, daño recibido por la muralla −8%; la muralla se cura 2% extra al final de cada oleada
+521	Vel. de ataque +8%, alcance +3%
+522	Vel. de ataque +8%; los ataques básicos tienen 20% de probabilidad de incendiar al objetivo
+523	VA +50%, 8 s
+524	VA +65%, 10 s
+525	VA +80%, 10 s, prob. crítica +10% durante ese tiempo
+526	VA −{0}%
+527	¡Felicidades por superar "{0}"! Defendiste los {1} capítulos. Vuelve por las tres estrellas y las coronas, o bate tu récord en el Modo infinito.
+528	¡Felicidades por superar "{0}"! Ya está abierto el nuevo capítulo "{1}".
+529	Comprar
+530	Rana Venenosa Croac
+531	¿Gru? ¿Cómo sabías que iba a embestir?
+532	¡Glub! Hoy arreglé los techos de ocho casas a la vez con mis ocho patas.
+533	Glub... ya no puedo cargarlo. Perdón, solo quería un hogar donde cupiera.
+534	¡Glub glub! ¡Esta cáscara es enorme y firme, justo para mis ocho patas!
+535	Gru... ya no estoy mareado. Solo recuerdo un viento negro que venía del desierto, y luego dejó de importarme todo y solo quería embestir.
+536	Gru... los pequeños dicen que me veo genial al barrer.
+537	Rey Gulu
+538	Seguidor del Rey Gulu.
+539	¡El Rey Gulu se enfureció: embestida de jabalí!
+540	¡El Rey Gulu entró en furia!
+541	El Rey Gulu embiste cuando su vida baja de 60%. ¡Cuando la vía se ponga roja, concentra el fuego para interrumpir la embestida!
+542	¡Gru gru! ¡De ahora en adelante la pradera es mía! ¡Mis pequeños, al ataque!
+543	Coro del Castillo
+544	Guardia con Escudo de Hueso
+545	Señor Huesos
+546	¿Señor Huesos? ¿No habías...
+547	El Señor Huesos revive una vez tras ser derrotado. ¡Guarda una habilidad para cuando se levante!
+548	Eco del Señor Huesos
+549	¡El Señor Huesos revivió!
+550	El Señor Huesos es muy gracioso. Dice que en la olla de la Abuela Caldo se cuece un enorme caldero de Tinta negra.
+551	Lluvia de Flechas al Ritmo del Tambor
+552	Monstruos
+553	Los monstruos aparecen al azar de los capítulos desbloqueados y se fortalecen en cada oleada.
+554	Marea de Monstruos
+555	Todos los monstruos son morados.
+556	Cantidad de monstruos +50%
+557	Cantidad de monstruos −40%, pero vida +80%
+558	Velocidad de monstruos +30%
+559	Los monstruos llegan en masa a la vez y derrotarlos no da nada; solo "superar" el piso da diamantes. Los diamantes solo se consiguen aquí. Cuanto más alto, más reyes demonio: 10% en el piso 1, 50% en el piso 9.
+560	Bestiario
+561	Bestiario {0} / {1}
+562	Vida de monstruos +30%, daño de asedio +15%, ingreso de cobre +20%
+563	Vida de monstruos +40%, vida de la muralla +40%
+564	Vida de monstruos y daño de asedio −25%, para quienes quieren disfrutar la historia
+565	Cerrar
+566	Misiones de nivel
+567	Misión de nivel completada
+568	Carcaj Perforante
+569	Aura
+570	Aura: mientras viva, la velocidad de ataque de los héroes baja. ¡Elimínalo primero!
+571	Rueda hasta la muralla y explota, causando mucho daño de golpe. Elimínalo siempre desde lejos.
+572	Cactus Rodante
+573	Abuelo Rey
+574	Príncipe Gelatina
+575	El Príncipe Gelatina se divide al ser golpeado. El daño en área (Lluvia de Flechas, Bumerán) limpia rápido las gelatinas pequeñas.
+576	Gelatinas pequeñas desprendidas del Príncipe Gelatina.
+577	Resulta que el Príncipe Gelatina es un saltarín. Dice que la Tinta negra llegó fluyendo desde muy, muy lejos.
+578	Aún no termina...
+579	Aún no hay habilidades disponibles. Ve a la pantalla de Habilidades y desbloquéalas con plata.
+580	Aún no lo has encontrado.
+581	Aún no hay equipo para esta ranura. Compra en la pantalla de Equipo.
+582	Todavía nadie me corta las uñas.
+583	Y también cangrejos ermitaños, caballitos de mar, Tortugas Escudo... ¡todos necesitan un hogar nuevo!
+584	Tienes un desafío sin liquidar.
+585	La arena junto al mar está tibia. Los cangrejos ermitaños cargan sus conchas en fila hacia la muralla, como si de verdad la creyeran su nuevo hogar.
+586	Erizo de Mar
+587	Los Erizos de Mar hieren a los monstruos cercanos al morir, ¡golpéalos cuando entren en la multitud! Las burbujas de los caballitos de mar bloquean un ataque; la Ballesta Repetidora y el Orbe Relámpago las revientan más rápido.
+588	Capitán Pirata
+589	Caballito de Mar
+590	Estrecho de las Gaviotas
+591	Gran Coro de la Bahía
+592	Guardián de la Bahía
+593	Escarcha
+594	Arco de Escarcha
+595	Carcaj de Escarcha
+596	Punta de Flecha de Escarcha
+597	Yelmo de Hierro Gélido
+598	Sin un rasguño
+599	Aceptar
+600	Listo
+601	Bien, Kael, Lyra. Volvamos a casa: esta noche el reino celebra su mayor banquete y vienen todos los amigos. Hasta las sombras de los ecos traen galletas.
+602	Qué calor, qué calor... hasta el casco quema.
+603	Qué calor... las grietas del suelo están llenas de Tinta negra.
+604	Total
+605	Cerrada… se abre en {0} s
+606	Cerrar diario
+607	Armadura de Obsidiana
+608	Ladrillo de Obsidiana
+609	En la noche, donde llega mi lámpara, llegan mis flechas. ¡Déjame ir con ustedes!
+610	¡Barrida total!
+611	¡Pum!
+612	Pum... hoy cayó una lluvia ligera y el arcoíris quedó bien alto.
+613	Pum. Pum. ...No soy Roqui. Soy los pasos que dejó Roqui.
+614	¡Rumbleee! ¡Ustedes ensuciaron mi arcoíris!
+615	Rojo
+616	Cinta Roja
+617	Capa Roja
+618	Inundación
+619	Una inundación barre el campo de batalla: todos los monstruos retroceden 350 px (jefes 100 px), reciben daño de ATQ ×3, y los empapados reciben +40% de daño durante 5 s y se ralentizan 60%.
+620	Armadura de Tela Gruesa
+621	Fuuu, te soplo la sopa para que se enfríe.
+622	¡Fuuu! ¡Un vendaval empujó a los monstruos hacia la muralla!
+623	Fuuu, la harina del molino se convirtió en pan para todo el pueblo.
+624	¡Fuuu, fuuu! ¿Quién dice mi nombre?
+625	¡Fuuu, fuuu! ¡Ustedes, los de la tierra! ¿Fueron ustedes quienes ensuciaron mi arcoíris?
+626	¡Fuuu! ¡Voy a convertir toda la muralla en una paleta de hielo!
+627	Uf... las paletas con sabor a Tinta son horribles. Mejor las de fresa.
+628	Uf... estas vendas aprietan mucho. Un tipo con capa me dio una botella de Tinta y dijo que me haría fuerte.
+629	Uf... tanto girar me mareó. Está bien, les creo.
+630	Fufu
+631	Eco de Fufu
+632	El eco de Fufu nos dejó su última ráfaga. Nos empujó hacia lo más profundo de la grieta.
+633	Fufu avisa su vendaval 2 s antes. ¡Concentra el fuego para interrumpirlo o todos los monstruos del campo serán empujados hasta la muralla!
+634	Fufu en realidad es un molino que muele harina para las nubes. Dice que, para calmar a Trueni, primero hay que atrapar su trueno.
+635	¡Fufu gira más rápido!
+636	Colgante de Colmillo de Tigre
+637	¡Escudo roto!
+638	Escolta
+639	Escolta: los monstruos cercanos reciben 40% menos daño de los ataques de héroes. Elimínalo primero o usa habilidades.
+640	¿Gastar {0} para comprar "{1}"?\nAtributos extra: {2}
+641	Resbaloso
+642	¡Bienvenidos a la Tienda de Perlas de Bebe! Cada perla está registrada.
+643	Cambiar vía
+644	Desierto Dorado
+645	Botas Doradas
+646	Flecha Rejuvenecedora
+647	Volver al mapa
+648	Mapa
+649	Recupera 20%
+650	Recupera 25%
+651	Recupera 30% y luego la muralla recibe −30% de daño durante 6 s
+652	Recupera 20% de la vida máxima de la muralla.
+653	Los ecos... no pueden controlarse... ¡fuuu!
+654	Los ecos, claro, son idénticos. ¡Tormenta de arena, arriba!
+655	Parece que los ecos no lo hacen a propósito. Esa grieta los despierta una y otra vez.
+656	Coro de Ecos
+657	Bumerán
+658	Casa de Cambio
+659	Casa de Cambio (cambio en un solo sentido, sin vuelta atrás)
+660	Un lanzador de bolas de fuego volador; cada bola duele mucho más que antes.
+661	Un dragoncito volador teñido de rojo por el caos.
+662	Un sanador volador que se queda lejos y cura a los monstruos cercanos. Usa "Amenaza primero" o "Voladores primero" para atacarlo antes.
+663	Tocón Caminante
+664	Un escorpión que se entierra, cubierto por una capa de armadura de hueso.
+665	Un yeti cubierto de placas de acero: casi inmune a lo físico; solo la magia funciona.
+666	Todo electricidad. Si lo derrotan cerca de la muralla, descarga y aturde brevemente a los héroes: elimínalo desde lejos.
+667	Exterminador del Caos
+668	Cañón
+669	Lluvia de Bolas de Fuego
+670	Bajo el volcán hay una grieta enorme y de ahí brota la Tinta negra. Tengo un poco de miedo, pero no retrocederé.
+671	Capa de Rata de Fuego
+672	Llama
+673	Las zonas de fuego y las vías de lava no afectan a los monstruos
+674	Punta de Flecha Flamígera
+675	Diablillo de Fuego
+676	Los Diablillos de Fuego se quedan lejos y lanzan bolas de fuego. ¡Prueba "Amenaza primero"!
+677	Cielo de Lluvia de Fuego
+678	Obtenido
+679	Conseguir 50 coronas
+680	Conseguir tres estrellas en todos los niveles (incluidos los capítulos 6 a 10)
+681	Estrellas obtenidas {0} / {1}
+682	Derrotar {0}
+683	Derrotar {0}
+684	Derrotar a Tinti
+685	Derrotar a los 10 jefes (incluidos los minijefes)
+686	Más derrotados
+687	Más derrotados: {0}
+688	Botín de derrotas ({0} derrotados)
+689	Carcaj Polar
+690	Botas de Paso Veloz
+691	Ataque Sorpresa
+692	Marcha Forzada
+693	Impaciente
+694	Botas Relámpago
+695	Vendaval
+696	Capa del Vendaval
+697	Botas Ligeras
+698	Capa de Sombra Veloz
+699	¡Concentra el fuego para interrumpir la embestida!
+700	¡Concentra el fuego para interrumpir el vendaval!
+701	¡Concentra el fuego para interrumpir el rayo!
+702	¡Concentra el fuego para interrumpir el golpazo!
+703	Un espíritu casi inmune a los ataques físicos: solo 15% del daño físico es efectivo. Usa magia.
+704	Récord: oleada {0}
+705	Habilidades
+706	Mejora las habilidades al nv. 2 con plata; el nv. 3 cuesta monedas de oro y da un efecto transformador.
+707	¡Habilidad congelada!
+708	Maestro de Habilidades
+709	Todas las Habilidades
+710	Sinergia de habilidades
+711	Habilidades automáticas
+712	Continuar piso {0}
+713	Continuar partida
+714	Seguir luchando
+715	Cangrejo Ermitaño
+716	Mudanza de Cangrejos Ermitaños
+717	Los Cangrejos Ermitaños se esconden en su concha cada 4 golpes. ¡No te enfoques en uno solo! La Ballesta Repetidora y el Orbe Relámpago reparten el fuego entre varios.
+718	Tiempo de concha del Cangrejo Ermitaño −60%
+719	Reforzar
+720	Ladrillo Reforzado
+721	Poción de Velocidad
+722	Púas
+723	Una capucha puntiaguda con una pluma roja y el carcaj colgado en diagonal a la espalda.
+724	¡Aguantaste {0} oleadas!
+725	Ralentiza 60%, 6 s
+726	Ralentiza 70%, 7 s
+727	Ralentiza 75%, 8 s; al terminar congela toda la vía 1.5 s
+728	Concurso de Esquila
+729	Salpicadura
+730	Radio de salpicadura +20, el daño de salpicadura ya no disminuye (100%)
+731	La flecha atraviesa hasta 5 monstruos en la misma vía (80% de daño cada uno) e ignora 20% de armadura.
+732	Carcaj
+733	Tras impactar, la flecha sigue de largo y golpea hasta a 2 monstruos más detrás en la vía (40% de daño)
+734	Lluvia de Flechas
+735	¡Déjamelo a mí, Abuelo Rey! ...Ay, el casco se me resbaló otra vez.
+736	Bastión del Arrecife
+737	Personajes
+738	Vestuario
+739	Tutorial
+740	Antídoto
+741	Desbloquear
+742	Desbloquea velocidad ×3: el botón de velocidad abajo a la derecha en combate
+743	Desbloquea "Pueblo del Reino" (🏘 en el mapa) y "Desafío diario" (abajo a la derecha del mapa)
+744	Desbloquea "Modo infinito" (abajo a la derecha del mapa)
+745	Desbloquear {1} n.° {0}
+746	Desbloquea el capítulo 8 "Castillo de Sombra Lunar". Monstruos eco cayeron de la Grieta del Caos
+747	Desbloquea el capítulo 9 "Forja de Hierro Rojo"
+748	Desbloquea el capítulo 6 "Reino de las Nubes"
+749	Desbloquea el capítulo 7 "Bahía de Coral" y la "Torre Demoníaca de Nueve Pisos" (abajo a la derecha del mapa)
+750	Desbloquea el capítulo 10 "Dominio del Cielo Vacío", el último capítulo
+751	Desbloquea todas las habilidades activas y pasivas
+752	Desbloquea el arma recomendada "{0}": {1} ({2})
+753	Regla de hoy: "{0}"
+754	¡Desafío de hoy completado!
+755	Completado hoy
+756	Hoy salté demasiado alto y choqué con una paloma.
+757	¡Hoy barrí todas las hojas caídas de la pradera, una por una!
+758	La recompensa de hoy ya fue reclamada
+759	Hoy es mi primer día en la muralla. Todos los monstruos de la pradera tienen un poquito de Tinta negra encima. Qué raro.
+760	Oro
+761	Monedas de oro
+762	Nivel de oro · cartas decisivas que cambian la batalla
+763	Las monedas de oro sirven para comprar equipo legendario, armas de alto nivel y habilidades nv. 3.
+764	Lingote de Oro
+765	¡Escudo piramidal! ¡Rómpelo con magia!
+766	La pirámide se alquiló como biblioteca y es muy popular.
+767	Progreso guardado. Los navegadores no permiten que una página cierre su propia pestaña, así que cierra esta pestaña o ventana tú mismo. (Si abres el juego con el ícono "The Last Bastion" del escritorio, este botón cierra el juego directamente.)
+768	Ascender
+769	Tras ascender
+770	Espinas
+771	Por los Pelos
+772	Carcaj de Acero Fino
+773	Fino
+774	Desafío de Élite
+775	Desafío de Élite: ¡los minijefes de los primeros cuatro capítulos regresan de dos en dos! Cambia a "Jefe primero" o "Amenaza primero" y no dejes que dos jefes lleguen juntos a la muralla.
+776	Preciso
+777	Estática
+778	¡Nueve pisos superados! ¡Conquistaste la torre demoníaca!
+779	Torre Demoníaca de Nueve Pisos
+780	Torre Demoníaca de Nueve Pisos · Piso {0}
+781	Un rey demonio de la Torre Demoníaca de Nueve Pisos: sin acciones especiales, solo corre hacia la muralla.
+782	Lleva un pesado escudo de hueso y casi no se le puede dañar de frente: golpéalo por la espalda con el Bumerán.
+783	Lleva un escudo de madera, muy duro de frente. El regreso del Bumerán y la Lluvia de Flechas esquivan el escudo.
+784	Gigante
+785	Cuenco del Tesoro
+786	Escorpión Sepulturero
+787	Equilibrado
+788	Corona del Equilibrio
+789	Cris... en realidad solo quería que alguien me cortara las uñas.
+790	Cris cris, hoy corté veinte flequillos.
+791	¡Cris cris! ¡Mis grandes pinzas pueden aplastar cualquier cosa!
+792	Clac... gracias por dejarme desarmarme una vez, los huesos se me estiraron de maravilla.
+793	Clac clac, ¡el concierto de huesos se presenta todos los sábados por la noche!
+794	Clac clac, ¡bienvenidos a mi concierto de huesos!
+795	Activado
+796	Iniciar
+797	Iniciar desafío
+798	Iniciar desafío ({0})
+799	Iniciar juego
+800	Iniciar batalla
+801	Iniciar batalla ›
+802	Se aplica solo al empezar la batalla
+803	Disponible
+804	Pero el Rey Bobo no hará caso. Tiene ocho patas, ninguna concha del mar le cabe, y lleva días echándole el ojo a su muralla.
+805	Pero Trueni no lo creerá. Es la nube más enojona del cielo y, desde que ensuciaron el arcoíris, lleva tres días tronando.
+806	¿Pero si ya habían hecho las paces? ¿Por qué volvieron?
+807	¡Pero este es el hogar de todos!
+808	Vacío
+809	Espacio pausa, F alterna velocidad ×2, N adelanta la siguiente oleada, T cambia la prioridad de objetivo.
+810	Ataque Aéreo
+811	¡Ataque aéreo! Un Dragón de Escarcha teñido de rojo por el caos y una banda de diablillos lanzabolas de fuego.
+812	¡Ataque aéreo! El Fantasma del Farol se esconde atrás y se cura sin parar. Búscalo primero.
+813	¡Ataque aéreo! Muchos monstruos en el cielo y, en tierra, escuadrones escoltados por Tortugas Escudo. No mires solo al cielo.
+814	¡Ataque aéreo! Los Globos del Vacío sueltan cuatro Soldados Goblin al aterrizar.
+815	Nivel aéreo con muchos Duendes de Hielo. ¡"Voladores primero" más Ballesta Repetidora u Orbe Relámpago!
+816	Nivel aéreo: los diablillos lanzan bolas de fuego desde lejos. ¡Prueba "Amenaza primero" o "Voladores primero"!
+817	¡Nivel aéreo! Los murciélagos cambian de vía, así que los ataques en área son más fiables que apuntar.
+818	¡Nivel aéreo! Cambia la prioridad de objetivo a "Voladores primero" o equipa una Ballesta Repetidora.
+819	¡Nivel aéreo! Los buitres vuelan muy rápido. La Ballesta Repetidora y "Voladores primero" son buenas opciones.
+820	Circo Aéreo
+821	Una carretilla conducida por un esqueleto que embiste a toda velocidad y golpea muy fuerte la muralla.
+822	Guardia Esqueleto
+823	Los Guardias Esqueleto llevan pesados escudos de hueso y casi no se les puede dañar de frente: el Bumerán y la Lluvia de Flechas llegan a su espalda.
+824	Carro Esqueleto
+825	Un conejo tan rápido que no se ve; cambia de vía y los ataques físicos fallan una de cada cuatro veces.
+826	Ataque rápido · Control
+827	Monstruos rápidos: conejos, lobos, carros
+828	Furia
+829	Fervor
+830	Armadura
+831	Azul
+832	Aullido de Lobo
+833	Manada de Lobos
+834	Collar de Colmillo de Lobo
+835	Orbe Relámpago
+836	Trueni
+837	¡Trueni empieza a cargar electricidad! ¡Concentra el fuego para interrumpirlo mientras carga!
+838	Trueni solo quería muchísimo ese arcoíris. Ahora, después de cada lluvia, se asegura de colgarlo bien alto. Los guardias de la muralla del reino protegieron la tierra y también el cielo.
+839	Trueni tiene tres fases: invoca Bolas de Trueno y Aves Arcoíris, carga un rayo (¡interrúmpelo!) y desata una tempestad (todo se acelera, termina rápido).
+840	Carcaj del Trueno
+841	Sala del Trueno
+842	Orbe del Dios del Trueno
+843	Amuleto del Trueno
+844	Botas del Trueno
+845	Golpe de Trueno
+846	El Golpe de Trueno hace daño ×1.3 a monstruos dentro de una Zona de Congelación (ralentizados o congelados)
+847	Bola de Trueno
+848	Las Bolas de Trueno aturden a Kael si las derrotan cerca de la muralla. ¡Elimínalas mientras siguen lejos!
+849	Nube de Tormenta
+850	Activar la Sinergia de habilidades 50 veces en total (Hielo Roto, Lluvia de Flechas al Ritmo del Tambor)
+851	Reventar 100 burbujas en total
+852	Interrumpir 10 veces la carga de un jefe en total
+853	Conseguir 150 estrellas en total
+854	Conseguir 50 estrellas en total
+855	Total derrotados
+856	Derrotar 1000 monstruos en total
+857	Derrotar 10000 monstruos en total
+858	Adelantar oleadas 30 veces en total
+859	Elegir 50 cartas de suministro en total
+860	Recarga {0} s
+861	En recarga, faltan {0} s
+862	Corona del Amanecer
+863	Recupera al instante 20% de vida de la muralla y daño recibido por la muralla −8%
+864	Recupera al instante 45% de vida de la muralla
+865	Reinicia al instante la recarga de todas las habilidades, ATQ +35% durante 30 s
+866	Ballesta Repetidora
+867	Ballesta en Cadena
+868	Relámpago en Cadena
+869	Ráfaga
+870	¡Ráfaga!
+871	Carcaj de Ráfagas
+872	Alianza
+873	Nivel de alianza: ¡todas las vías sueltan monstruos a la vez y llegan todos los habitantes de la Bahía!
+874	Nivel de alianza: ¡todas las vías sueltan monstruos a la vez y todos los obreros de la Forja están en su puesto!
+875	Nivel de alianza: todas las vías sueltan monstruos a la vez. Prepara lo físico y lo mágico.
+876	Nivel de alianza: ¡todas las vías sueltan monstruos a la vez y todos los ecos del Vacío llegan juntos!
+877	Nivel de alianza: ¡todas las vías sueltan monstruos a la vez y llegan todos los habitantes de Sombra Lunar!
+878	Nivel de alianza: ¡todas las vías sueltan monstruos a la vez y llegan todos los monstruos de las Nubes!
+879	Nivel de alianza: ¡todas las vías sueltan monstruos a la vez! Los ataques a todo el campo, como Lluvia de Flechas y Orbe Relámpago, funcionan mejor.
+880	Nivel de alianza: ¡todas las vías sueltan monstruos a la vez! Las habilidades de todo el campo y el Orbe Relámpago son clave.
+881	Capa del Purgatorio
+882	Yelmo con Cuernos del Purgatorio
+883	Armadura Pesada del Purgatorio
+884	Ya me enfrío... qué rico.
+885	Un muñequito hecho de dos bolas de nieve; al morir se vuelve 2 bolitas de nieve.
+886	Sombrero de Vigía
+887	Botas del Vendaval
+888	Encantamiento de Llama
+889	Carcaj Ardiente
+890	Ballesta Ardiente
+891	Yelmo del Sol Ardiente
+892	Carcaj de Cazador
+893	Capucha de Cazador
+894	Instinto de Cazador
+895	Botas de Caza
+896	Al otro lado de la grieta hay un lugar aún más caliente. Los ecos fueron despertados allí, en el fuego de los hornos.
+897	Al otro lado de la grieta se alza un horno gigantesco. Nadie lo alimenta, pero arde más que un volcán.
+898	La grieta se está agrandando. Kael, el origen está en el cielo de más arriba.
+899	Ballesta Rompecielos
+900	Borde de la Grieta
+901	Golpe de Grieta {0}
+902	¡Golpe de Grieta!
+903	¡Furia de la grieta! ¡Derrota a Tinti en 30 s!
+904	La grieta se fue cerrando poco a poco y el cielo volvió a ser de un azul brillante.
+905	Entrada de la Grieta
+906	Vecinos {0} / {1}
+907	Guardabosques de la Arboleda
+908	Carcaj de Hierba Espiritual
+909	Botas Ágiles
+910	Carcaj Destellante
+911	Dedos Ágiles
+912	Espíritu
+913	Espíritu: el daño físico solo es 30% efectivo. ¡Usa magia contra él!
+914	Reclamar {0}
+915	Cómo funciona: compra → va a la mochila → toca "Equipar +1" para llevarlo a la batalla (o elígelo en la pantalla de Equipo). Ranuras ahora {0} / {1}{2}.
+916	Botas Fluyeluz
+917	Capa Meteoro
+918	Carcaj Meteoro
+919	Tornados y empujones, más feroces que el Fufu de antes.
+920	Armadura de Escamas de Dragón
+921	Capa de Escamas de Dragón
+922	Tesoro de la Vena del Dragón
+923	Botas de la Vena del Dragón
+924	Caballero Dragón
+925	Collar de Colmillo de Dragón

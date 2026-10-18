@@ -1,0 +1,463 @@
+926	Lareira Apagada
+927	Diabinho de Brasa
+928	Coro das Escórias
+929	Bolha de Escória
+930	Verde
+931	Gosma Verde
+932	Aljava da Reencarnação
+933	Solta quatro goblins soldadinhos ao pousar.
+934	Errou
+935	Capa de Pardal
+936	As habilidades compradas precisam ser colocadas nos espaços de habilidade na página de Equipamento para ir à batalha.
+937	O preço de venda é metade do preço de compra
+938	Canhão pesado e lento com grande explosão no impacto; ignora 40% da armadura do alvo.
+939	Flutua devagar; solta 3 goblins soldadinhos quando estoura.
+940	Gato Sacerdote
+941	Tudo bem! Quando todo mundo fica bravo, vira trovão.
+942	Tudo bem! Da próxima vez, lembre de entrar pela porta da frente.
+943	Guardinha mal-educado! Prove minha sopa venenosa!
+944	Sem atributos extras
+945	Nenhuma habilidade ativa equipada
+946	A cada 18s, dá um tapa de tentáculo no monstro mais próximo da muralha (ATQ ×3)
+947	Suprimentos a cada 2 ondas
+948	A cada 20s, um raio pequeno atinge o monstro com mais vida (ATQ ×4)
+949	A cada 25s, cospe uma bolha de Tinta no monstro mais próximo (ATQ ×3)
+950	Um mini-Boss a cada 5 ondas, um grande Boss a cada 10; suprimentos de campo a cada 3 ondas.
+951	Depois de levar 4 golpes, ele se recolhe na concha por um instante e fica quase impossível de acertar. Não foque em um só: Bestas de Repetição e Orbes Elétricos espalham melhor o dano.
+952	A muralha cura {0}% a mais ao fim de cada onda
+953	Recupera 2% da vida máxima por nível ao fim de cada onda.
+954	A muralha cura 3% ao fim de cada onda
+955	No início de cada onda, a muralha ganha um escudo de {0}% da vida máxima
+956	No início de cada onda, a muralha ganha um escudo de bolha de 4% da vida máxima
+957	No início da onda, dá à muralha um escudo de bolha que absorve dano de até 3% da vida máxima
+958	Dispara 4 virotes por vez
+959	Cada desafio custa {0}.
+960	A cada 6º ataque, um raio pequeno cai no alvo, causando dano mágico extra de ATQ ×1,5
+961	De vez em quando dá um grande salto à frente e não pode ser atingido no ar. Mais rápido do que parece!
+962	A cada 5 ataques, ataca mais uma vez na hora.
+963	Ao fim de cada fase você ganha moedas de cobre, e prata na primeira vitória. Visite a loja para melhorar atributos e desbloquear armas e habilidades, e volte para lutar!
+964	A cada andar vencido, você pode pegar os diamantes dele e sair, ou subir mais: vença outro andar e os diamantes dobram; se falhar, não ganha nada.
+965	Cada monstro derrotado cura a muralha em 0,3% da vida máxima
+966	Desafio Diário
+967	Desafio Diário "{0}": {1}
+968	A primeira vitória do dia rende 3 de prata, e você pode repetir à vontade. Não afeta o registro de estrelas das fases.
+969	Lembrete de descanso a cada {0} minutos de jogo
+970	A cada andar acima, vida dos monstros e dano de cerco ×{0}. A vida da muralha continua a do andar anterior, sem recuperação (só reparos, cartas de suprimento, itens e habilidades curam).
+971	Cada personagem tem visual e atributos extras próprios. Compre com moedas de ouro e use um por vez; quem você escolher fica na muralha (os atributos extras só valem quando o Kael luta, então ele volta automaticamente para o Kael).
+972	No início de cada onda, a muralha ganha um escudo equivalente a 12% da vida máxima; a muralha sofre 10% menos dano
+973	Pântano de Névoa
+974	Armadura de Mithril
+975	Aljava de Mithril
+976	Elmo de Mithril
+977	Capa de Mithril
+978	Hordas densas, espíritos
+979	Hordas densas, fantasminhas, monstros com pouca resistência mágica
+980	Grátis
+981	Capa do Ponteiro dos Segundos
+982	Extintor
+983	Aljava Quebra-Armadura
+984	Botas Ágeis
+985	Pingente da Fortuna
+986	Dados do Destino
+987	Incendeia o alvo ao acertar, causando no total 60% do ATQ em dano mágico em 3 segundos.
+988	Afiar Pontas de Flecha
+989	Soldado Cogumelo
+990	Soldados Cogumelo aceleram os monstros por perto quando morrem. Experimente tocar na habilidade "Tambor de Guerra" abaixo!
+991	Floresta de Cogumelos
+992	Mágico, grande explosão (raio 110, 90% de dano em área), mais 2 saltos de relâmpago.
+993	Magia Bloqueada
+994	O relâmpago mágico salta 5 vezes, perdendo só 15% por salto.
+995	Dano mágico +12%, recarga das habilidades −5%
+996	Dano mágico +25%
+997	O dano mágico ignora armadura física
+998	{0} do dano mágico foi bloqueado pela resistência mágica: monstros de lava não temem magia, então mude para armas físicas (canhão, besta de repetição).
+999	Cajado Mágico
+1000	Res. Mágica
+1001	Presa do Rei Demônio
+1002	Forma de Rei Demônio! Concentre fogo para interromper a carga!
+1003	Tintinho
+1004	Tintinho, vá para casa. Nós não vamos deixar você sozinho de novo.
+1005	Tintinho?
+1006	Tintinho... é você ali?
+1007	O Tintinho fez "pop" e encolheu de volta para uma bolinha...
+1008	O Tintinho voltou a ser uma bolinha. Ele só estava solitário demais e derramou Tinta por toda parte. Agora mora perto da muralha e me vê montar guarda todo dia.
+1009	Clones do Tintinho. Derrote os três clones e o verdadeiro aparecerá.
+1010	Eco do Tintinho
+1011	Clone do Tintinho
+1012	O Tintinho se dividiu! Derrote os três clones!
+1013	O Tintinho já pediu desculpas! Viemos ajudar!
+1014	Tinta, clones, visão bloqueada: esta é a origem da Fenda do Caos. Derrote-o e tudo termina.
+1015	A Tinta desceu das montanhas nevadas do norte. Lá é tão frio que até a Tinta virou gelo.
+1016	Bolha de Tinta
+1017	Goblin Escudo de Madeira
+1018	Goblins Escudo de Madeira são duros de frente. O Bumerangue na volta, a Chuva de Flechas e o Perfurante dão conta deles.
+1019	Armadura de Escudo de Madeira
+1020	Arco de Madeira
+1021	Exército de Múmias
+1022	Aljava de Madeira
+1023	Alvo:
+1024	Prioridade do Alvo
+1025	Fantasma do Cemitério
+1026	Essa sopa cheira a meia suja!
+1027	Aqueles passos também deveriam descansar.
+1028	Então que tudo... esfrie.
+1029	Então vamos proteger de novo! Desta vez tenho roupa nova!
+1030	Lá mora uma coisinha muito solitária. Guardinha, vá vê-la por mim.
+1031	Então você consegue esmagar areia? ...Acho que não.
+1032	Então vamos construir uma juntos! Os artesãos do reino são os melhores em construir casas grandes.
+1033	A sopa de abóbora ficou pronta! Hoje sem nenhuma gota de Tinta.
+1034	Plantação de Abóboras
+1035	Cabeça de Abóbora
+1036	Abobrinhas de uma Cabeça de Abóbora partida.
+1037	A Cabeça de Abóbora se divide em 3 abobrinhas ao morrer. Derrube-a de longe para ter tempo de limpar.
+1038	Dificuldade
+1039	A dificuldade é ajustada à sua fase mais alta vencida (no mínimo fase 60, no máximo fase 70). 2 suprimentos por andar. Sair no meio ou atualizar a página conta como derrota.
+1040	Aham! Eu prometo!
+1041	Aham. Protegemos a muralha e também todo mundo.
+1042	Aham. Desta vez, eu volto sozinho.
+1043	Seu Registro de Defesa
+1044	Suas unhas são pinças!
+1045	Olha, eu suguei toda a Tinta de volta. O arco-íris tem sete cores de novo.
+1046	Você está protegendo alguém aí dentro?
+1047	Você tem {0}
+1048	Sabia? O xilofone é feito das minhas costelas. Brincadeira.
+1049	Emblema do Nirvana
+1050	O eco da Rainha virou um floco de neve leve e pousou na fogueira com um chiado. A fogueira finalmente diminuiu um pouquinho.
+1051	Aquecedor de Mãos
+1052	Tec! Desculpe, eu fecho a concha sempre que fico nervoso.
+1053	Tec... Tá bom, as suas conchas realmente já estão todas ocupadas.
+1054	Pistas com longas filas
+1055	Pistas com longas filas, Goblins Escudo de Madeira
+1056	Faraó Gordo
+1057	Quando o Faraó Gordo está com pouca vida, ele ergue um escudo de pirâmide: ataques físicos mal fazem cócegas, então leve dano mágico!
+1058	Eco do Faraó Gordo
+1059	Depois que o Faraó Gordo acordou, ele me ofereceu um biscoito de 3.000 anos (não tive coragem de comer). Próxima parada: Pântano de Névoa.
+1060	O Faraó Gordo invocou múmias!
+1061	Corre muito rápido, tem pouquíssima vida.
+1062	Bolha
+1063	Quando uma bolha é estourada, 50% do dano ainda passa
+1064	Escudo de bolha quebrado
+1065	Festa das Bolhas
+1066	Equipamento
+1067	Bum!
+1068	Um sujeito de capa... também foi visto no pântano.
+1069	Capa
+1070	Um manto usado sobre os ombros.
+1071	Um monstro voador de armadura de pedra: a maior parte dos ataques físicos é bloqueada.
+1072	Uma carruagem coberta de placas de ferro, avançando rápido.
+1073	Um boneco de neve de armadura de ferro; racha em três bolinhas de neve ao morrer.
+1074	Armadura de Couro
+1075	Aljava de Couro
+1076	Gorro de Couro
+1077	Botas de Couro
+1078	Mentiroso! Ninguém quer brincar com a Tinta!
+1079	Morcegos que trocam de pista com frequência, difíceis de focar.
+1080	Sair em segurança: chegou ao andar {0}
+1081	Aljava Perfura-Armadura
+1082	Ponta de Flecha Perfura-Armadura
+1083	Aljava Pesada Perfura-Armadura
+1084	Aljava Rasga-Céu
+1085	Blub... a Tinta preta saiu e este príncipe voltou a pensar com clareza. Desculpe por sujar sua muralha.
+1086	Blub blub! Este príncipe quer pular na muralha como numa cama elástica!
+1087	Normal
+1088	Ataques normais têm {0}% de chance de incendiar o alvo
+1089	Ataques normais têm 25% de chance de soltar um raio que salta por 3 alvos, cada um sofrendo dano mágico de ATQ ×0,6
+1090	Ataques normais têm 30% de chance de incendiar o alvo
+1091	Ataques normais incendeiam o alvo ao acertar
+1092	Ataques normais deixam o alvo {0}% mais lento
+1093	Ataques normais deixam o alvo 15% mais lento (1,5s)
+1094	Ataques normais deixam o alvo 20% mais lento por 1,5 segundo
+1095	Armadura de Cavaleiro
+1096	Deslize do Pinguim
+1097	Pinguins deslizam muito rápido e causam muito dano ao bater na muralha. A Zona de Gelo pode deixá-los mais lentos.
+1098	Frota de Balões
+1099	Luneta
+1100	Ir ›
+1101	Moedas insuficientes para subir {0} níveis
+1102	Moedas insuficientes para subir 2 níveis
+1103	Pinçada!
+1104	Pincinha
+1105	A Pincinha se enterra para trocar de pista e atacar de surpresa. Quando vir o aviso de poeira, deixe suas habilidades prontas!
+1106	A Pincinha é um escorpião grandão que tem medo de ficar sozinho. Ele diz que alguém na pirâmide está "coletando Tinta preta".
+1107	Contra o Relógio
+1108	Mudar prioridade do alvo (T)
+1109	Mudar velocidade (F)
+1110	Sapatos Leves
+1111	Fácil
+1112	Equipamento Leve
+1113	Viajar Leve
+1114	Apagar Save
+1115	Gire o celular para o modo horizontal para jogar The Last Bastion
+1116	Ative o JavaScript para jogar The Last Bastion.
+1117	Feche manualmente
+1118	Flecha do Exorcismo
+1119	Elmo Repele-Feras
+1120	Cancelar
+1121	Desbloqueie na página de "Equipamento"
+1122	Desbloquear ({0})
+1123	Ir à Loja
+1124	Todos {0}
+1125	Atordoa todos os monstros por 2,5 segundos (1 segundo para Bosses) e causa dano de ATQ ×3,5.
+1126	Raios atingem os 4 monstros com mais vida do campo, cada um causando dano mágico de ATQ ×5.
+1127	Melhoria Total
+1128	Tela cheia (entra automaticamente no primeiro toque depois de abrir o jogo)
+1129	Todo de preto, só com uma fresta para os olhos; anda sem fazer barulho.
+1130	Olho Onisciente
+1131	OK
+1132	Tem certeza de que quer apagar o save e recomeçar do zero? Isso não pode ser desfeito.
+1133	Hordas, monstros voadores
+1134	Coquetel Molotov
+1135	Balão de Ar Quente
+1136	Mestre das Missões
+1137	Evoluir qualquer arma
+1138	Leve qualquer habilidade ativa ao Nv3
+1139	Diário
+1140	Diário Cheio
+1141	Um golem feito de ferro derretido: a magia mal o fere, então use armas físicas.
+1142	As paredes da fornalha são vermelhas. Todo monstro-eco está em brasa, como se tivesse acabado de sair do forno.
+1143	Entrada da Fornalha
+1144	Guardião da Fornalha
+1145	Golem de Ferro Fundido
+1146	Capa de Lava
+1147	Monstros de lava não temem magia, então lembre de levar armas físicas. Kael, volte são e salvo.
+1148	Monstros de lava não temem magia; use canhões físicos pesados
+1149	Gigante de Lava
+1150	Golem de Lava
+1151	Golens de Lava quase não temem magia! Troque para o Arco de Madeira, o canhão ou o bumerangue.
+1152	Fenda de Lava
+1153	Trezentos anos... passaram mais uma vez.
+1154	A caveira no chapéu de três pontas ri, e só um olho enxerga.
+1155	Três Caminhos
+1156	Vêm em grupos de três, correndo rápido pela mesma pista.
+1157	O guardião da floresta, que carrega um arco longo mais alto que ele. ATQ ×1,5, velocidade de ataque ×0,73; flechas pesadas ignoram 25% da armadura e empurram monstros comuns 12 pixels para trás.
+1158	Tempestade de areia, invocação, cura, escudo: o Faraó Gordo de três fases, mais duro que nunca.
+1159	Tempestade de areia chegando! Velocidade de ataque reduzida
+1160	Véspera da Tempestade de Areia
+1161	Frasco de Areia
+1162	O deserto? Parece que a coisa não é tão simples. Kael, você quer ir dar uma olhada?
+1163	O sol do deserto é muito forte. Os monstros daqui estão enrolados em bandagens, e as flechas os atingem de leve. Vamos ter que pensar em outra coisa.
+1164	As múmias do deserto não têm medo de flechas comuns. Dizem que o Cajado Mágico ajuda, então dê uma olhada na loja!
+1165	Todos os inimigos do deserto vieram. Limpe primeiro os sacerdotezinhos e as bolas de cacto!
+1166	Guardião do Deserto
+1167	Abutre do Deserto
+1168	Sombra Sob as Dunas
+1169	Escorpião da Areia
+1170	Escorpiões da Areia se enterram para desviar dos ataques e, quando saem, já estão perto da muralha. A Chuva de Flechas e a Zona de Gelo ajudam a lidar com eles.
+1171	Botas Instantâneas
+1172	Baía de Coral
+1173	Esquiva
+1174	Depois de acertar, o relâmpago salta 3 vezes entre monstros próximos, cada salto causando 75% do dano do anterior. Dano mágico.
+1175	Salto de Relâmpago
+1176	O relâmpago salta entre vários caranguejos-eremitas, então é difícil fazer um deles se recolher na concha
+1177	Elmo Brilhante
+1178	Forte contra:
+1179	Dano ×1,8; o golpe deixa o alvo 30% mais lento (2 segundos).
+1180	Fontes de Dano (total {0})
+1181	Loja
+1182	Loja / Equipamento
+1183	Botas da Caravana
+1184	Você ainda não coletou a recompensa da última vez que chegou até aqui.
+1185	Elmo de Sentinela
+1186	A experiência como foi planejada
+1187	Configurações
+1188	Alcance
+1189	Alcance +{0}%
+1190	Alcance +10%
+1191	Alcance +10%, dano crítico +30%
+1192	Alcance +12%
+1193	Alcance +20% (anula exatamente a escuridão das fases noturnas)
+1194	Alcance +5%
+1195	Alcance +6%, taxa de crítico +3%
+1196	Quem faria tanto ferro aqui?
+1197	Coberto de lã grossa; tire a lã primeiro. Depois de tosquiado, corre muito rápido!
+1198	Um elmo com chifres vermelho-escuro e um par de asinhas de dragão atrás; dizem que cospe faíscas.
+1199	Maré da Noite Profunda
+1200	De que sabor?
+1201	Armas Lendárias
+1202	Paladino do Templo
+1203	Armadura da Graça Divina
+1204	Proteção Divina
+1205	Subir {0} níveis, {1} no total
+1206	Melhorar
+1207	Melhorar {0}
+1208	Melhorar nível da muralha: vida da muralha +10% ({0})
+1209	Evoluir
+1210	Armadura da Vida
+1211	Capa da Vida
+1212	Luz Sagrada
+1213	Armadura da Luz Sagrada
+1214	Armadura de Paladino
+1215	Capa da Fonte Sagrada
+1216	Vitórias
+1217	Taxa de vitória
+1218	Derrota
+1219	Prêmio de Consolação da Derrota
+1220	Coroa Coração de Leão
+1221	Pingente de Presa de Leão
+1222	O filho do pedreiro, que carrega um grande escudo de pedra. ATQ ×0,97; a muralha sofre 12% menos dano e cura 3% extra ao fim de cada onda.
+1223	Um pequeno gigante de pedras empilhadas; sofre 75% menos dano mágico. Ataque com armas físicas!
+1224	Gárgula
+1225	Ninho das Gárgulas
+1226	Gárgulas voam e usam armadura de pedra, então ataques mágicos funcionam melhor que os normais.
+1227	Capa do Tempo
+1228	Ampulheta do Tempo
+1229	Tempo Parado
+1230	Capa do Espaço-Tempo
+1231	Bússola do Espaço-Tempo
+1232	Botas Cronológicas
+1233	Engrenagem do Tempo
+1234	Redemoinho do Tempo
+1235	Ampulheta do Tempo
+1236	Em uso
+1237	Capa da Árvore do Mundo
+1238	Armadura da Árvore do Mundo
+1239	Imparável
+1240	Imparável!
+1241	Experimente ativar "Usar habilidades automaticamente" (canto inferior direito na batalha); as habilidades serão usadas quando estiverem prontas
+1242	Acessório
+1243	Acessório 1
+1244	Acessório 2
+1245	Acessório 3
+1246	Somos nós, Sopro! Desta vez não sopre tão forte!
+1247	Foi sem querer! Viemos limpar tudo!
+1248	Mata-Deuses
+1249	Aljava Mata-Deuses
+1250	Coroa Mata-Deuses
+1251	Aljava Sedenta de Sangue
+1252	Coletar
+1253	Defesa bem-sucedida!
+1254	Registros da Defesa
+1255	Diário da Defesa
+1256	Guarda da Muralha
+1257	Proteja a Muralha
+1258	Runa Guardiã
+1259	Armadura Guardiã
+1260	Capa de Guarda
+1261	Recompensa das Primeiras 3 Estrelas
+1262	Recompensa da Primeira Vitória
+1263	Primeira vitória +{0} de prata
+1264	Atributos
+1265	Melhorias de Atributos (Permanentes)
+1266	Monstro Toco
+1267	Monstros Toco recuperam vida quando não são atacados. Não espalhe o fogo; derrube um de cada vez.
+1268	Aljava de Dupla Camada
+1269	Bumerangue de Lâmina Dupla
+1270	Aljava de Pena Dupla
+1271	Dragão de Gelo
+1272	Ataque do Dragão de Gelo
+1273	Rainha Gelinha
+1274	A Rainha Gelinha congelou a muralha!
+1275	Eco da Rainha Gelinha
+1276	A Rainha Gelinha congela a muralha, e ela não pode ser consertada enquanto isso. Conserte a muralha antes que congele!
+1277	A Rainha Gelinha é, na verdade, muito gentil; só não é boa com palavras. Destino final: Fenda de Lava.
+1278	Um dragãozinho de gelo invocado pela Rainha Gelinha.
+1279	Aljava de Pena de Geada
+1280	Bandeira do Vento a Favor
+1281	Seus espinhos doem mais depois que ele morre.
+1282	Deixa ao morrer uma área de fogo maior e mais duradoura.
+1283	Deixa ao morrer uma área de fogo; monstros que passam por ela aceleram.
+1284	Ao morrer, racha em 3 abobrinhas muito rápidas.
+1285	Ao morrer, solta uma nuvem de esporos que acelera os monstros por perto. Derrube-o de longe, se puder.
+1286	Trevo de Quatro Folhas
+1287	Medalha de Prata do Trevo
+1288	Lobos blindados que avançam em grupos de quatro.
+1289	Ataque Veloz
+1290	Fase de ataque veloz: carruagens esqueleto causam muito dano ao bater; a Zona de Gelo e o Frasco Congelante são salva-vidas.
+1291	Fase de ataque veloz: uma onda a cada 13 segundos! Pinguins e matilhas de lobos são rápidos, então use a Zona de Gelo e a Chuva de Flechas a tempo.
+1292	Fase de ataque veloz: uma onda a cada 14 segundos, sem esperar você limpar o campo! A Zona de Gelo segura a maré de coelhos.
+1293	Fase de ataque veloz! Grandes rebanhos de ovelhas-nuvem vêm onda após onda, e as ovelhas tosquiadas correm rápido. Zona de Gelo e Chuva de Flechas são muito úteis.
+1294	Um objeto pequeno que você leva consigo.
+1295	Gelo Quebrado
+1296	Recolher na Concha
+1297	Fica mais tempo na concha.
+1298	Então a fenda é o seu "não quero ficar sozinho"?
+1299	Velocidade de todos os monstros −3%
+1300	Cota de Malha
+1301	Como o Sr. Ossos, invoca esqueletos e revive uma vez depois de derrotado, só que é mais duro.
+1302	Ele está dizendo obrigado!
+1303	Botas Pisa-Nuvem
+1304	Capa do Sol
+1305	Fantasma da Lanterna
+1306	Chamar Antes
+1307	Chamar Antes (N)
+1308	Chamar Antes +{0} de cobre
+1309	Chamar Antes +{0} de cobre (N)
+1310	Moedas de cobre por chamar antes ×3
+1311	Aumenta a vida máxima da muralha (×1,1 por nível).
+1312	Um curandeiro com lanterna: alcance maior, mais cura. Derrube-o primeiro.
+1313	Tosquiada!
+1314	Cajado da Ira Celeste
+1315	Fogo do Céu
+1316	Coro do Céu
+1317	Botas do Destino
+1318	Olho dos Céus
+1319	Coroa do Olho Celeste
+1320	Capa de Asas Celestes
+1321	Desafio
+1322	Desafio concluído!
+1323	Desafio fracassado...
+1324	Pular ›
+1325	Salto
+1326	Saltos 3 → 5
+1327	Muralha de Ferro
+1328	Coroa de Anéis de Ferro
+1329	Será que armadura de ferro tem medo de magia? Deixa eu testar!
+1330	Um elmo de ferro com dois chifres curvos e barba laranja trançada.
+1331	Lobo de Ferro
+1332	Lobos de Ferro avançam em grupos de quatro. O fogo deixado pelas Bolhas de Escória ao morrer acelera os monstros que passam.
+1333	Ataque dos Lobos de Ferro
+1334	Elmo de Chapa de Ferro
+1335	Armadura de Placas de Ferro
+1336	Boneco de Neve de Ferro
+1337	Bonecos de Neve de Ferro racham em três bolinhas de neve ao morrer; as bolas de fogo do Diabinho de Brasa doem muito mais que antes.
+1338	Carruagem de Ferro
+1339	Carruagens de Ferro batem forte na muralha e correm rápido; a Zona de Gelo é salva-vidas.
+1340	Fica longe colocando bolhas nos monstros; uma bolha bloqueia um ataque. Bestas de Repetição e Orbes Elétricos estouram as bolhas rápido.
+1341	Vença a fase {0}
+1342	Depois de vencer a fase {0}, um novo vizinho vai se mudar para cá
+1343	Os espaços de consumíveis são liberados após vencer a fase {0}. Você já pode comprar alguns.
+1344	Abre após vencer a fase {0}
+1345	Após vencer a fase {0}, abre o "Equipamento": elmos, capas, armaduras, aljavas, acessórios e botas
+1346	Desbloqueia após vencer a fase {0}
+1347	Vença a fase 1
+1348	Vença a fase 100 e feche a Fenda do Caos
+1349	Vença o Capítulo 8 e deixe os ecos do Sr. Ossos e do Faraó Gordo descansarem em paz
+1350	Vença o Capítulo 2
+1351	Vença o Capítulo 9 e deixe os ecos do Pedrinha e da Rainha Gelinha descansarem em paz
+1352	Vença o Capítulo 6 e acalme o Trovinho
+1353	Vença o Capítulo 7 e ajude o Bobo a encontrar uma casa nova
+1354	Vença o Capítulo 3
+1355	Vença o Capítulo 4
+1356	Vença o Capítulo 1
+1357	Depois de vencer, lembre de melhorar o ATQ na loja!
+1358	Recompensa de Vitória
+1359	Vença todos os 9 andares da Torre Demoníaca de Nove Andares
+1360	Vença todas as 100 fases!
+1361	Passe do andar 1 da Torre Demoníaca de Nove Andares
+1362	Passe do andar 5 da Torre Demoníaca de Nove Andares
+1363	Geral, Boss
+1364	Tenha 5000 moedas de cobre ao mesmo tempo
+1365	Lança 2 ao mesmo tempo: uma na pista alvo e outra na pista vizinha
+1366	Cobre
+1367	Moedas de Cobre
+1368	Bolsa de Moedas de Cobre
+1369	Faixa de Cobre · Comum
+1370	Ganho de moedas de cobre +12%, Sorte +4%
+1371	Ganho de moedas de cobre +5%
+1372	Fio de Moedas de Cobre
+1373	Fortaleza de Ferro
+1374	Elmo
+1375	Asas dos dois lados do elmo, com um anel de luz quente acima.
+1376	Lente de Raio X
+1377	Abutres Circulando
+1378	Códice
+1379	Mestre do Códice
+1380	Estudioso do Códice
+1381	Aljava Mata-Dragões
+1382	Elmo Mata-Dragões
+1383	Elmo Destruidor de Deuses
+1384	Coelho Disparado
+1385	O Coelho Disparado corre muito rápido. Os monstros se espalham por pistas diferentes.
+1386	Pé de Coelho
+1387	Grande Migração dos Coelhos
+1388	Os coelhos chegaram

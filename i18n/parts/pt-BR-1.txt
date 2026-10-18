@@ -1,0 +1,463 @@
+0	, pode usar 3 ao mesmo tempo
+1	: falhou {0} vezes seguidas. Ataques e vida da muralha aumentados nesta partida. Zera ao vencer.
+2	...O vento parou. Lá na frente fica a fonte da Tinta.
+3	...Irmão. Irmã. Vocês finalmente chegaram.
+4	...Bum. Não consigo acertar nada.
+5	...Bum. Desculpa. Fui eu que fiz chover.
+6	...Os passos pararam.
+7	...Hoje também está tudo quieto. Que bom.
+8	...O espelho quebrou e agora eu finalmente enxergo. A Tinta está vazando de uma rachadura no vulcão do sul.
+9	...Mas eu não consigo parar. Por favor, derrotem todos eles, tá?
+10	...A rachadura fechou. Está tudo quieto agora.
+11	...Cheira a Tinta.
+12	...Aquela casca não é a nossa muralha, é?
+13	...Você realmente não me odeia?
+14	...As árvores da floresta me contaram que um pequeno guarda resistiu até aqui. Eu sou Rowan, o guardião da floresta.
+15	...Eu me lembro de você. Eu me lembro desta muralha. Mas não me lembro por que vim.
+16	...Obrigado. Repetir tudo de novo... é tão cansativo.
+17	...Obrigada por dissipar a névoa. Eu sou Nova. Levo uma lanterna pelo pântano para guiar os bichinhos perdidos.
+18	...Ter amigos é tão bom.
+19	...Mais um que veio me bater. Todo mundo só sabe me bater.
+20	...Sério. Que lindo. E-eu não fui malvada agora há pouco, fui?
+21	...Kael, olhe para o céu. O último pingo de Tinta que joguei flutuou até o arco-íris.
+22	· Reabastecendo
+23	· Recorde
+24	· Próxima onda em {0}s
+25	‹ Título
+26	‹ Voltar
+27	(Após o Nv30, cada nível dá +{0}% da vida do Nv30)
+28	(Os ganhos diminuem a cada nível acima do limite base)
+29	(Todos os espaços desbloqueados)
+30	(Limpar)
+31	(Vença a fase {0} para liberar outro espaço)
+32	(Remover {0}; {1} voltam para a mochila)
+33	(Remover)
+34	(Acima do limite base Nv{0}: ganhos menores a cada nível e custos cada vez maiores)
+35	(Completo)
+36	(Totalmente equipado)
+37	(Limite atingido)
+38	(Em outro espaço; será trocado)
+39	(Na seção "Herói" da tela de equipamento, você pode escalar Atlas: ele deixa a muralha mais resistente.)
+40	(Na seção "Herói" da tela de equipamento, você pode escalar Lyra.)
+41	(Nova entrou! O alcance dela não diminui nas fases noturnas.)
+42	(Rowan entrou! Suas flechas pesadas ignoram armadura.)
+43	{0}\nRecarga {1}s, {2} equipados
+44	{0} ondas
+45	{0} ondas (com Boss)
+46	{0}min {1}s
+47	Conjunto {0} "{1}": {2} → {3}{4}
+48	{0} dias
+49	{0} de cobre → 1
+50	Sinergia {0} "{1}": {2}{3}
+51	Vida de {0} {1} →
+52	{0} rei demônio + {1} lacaios
+53	{0} de prata → 1
+54	{0} tipos
+55	{0}; a partir do Nv3, cada nível aumenta um pouco mais o dano / flechas / cura / duração e reduz a recarga
+56	{0}: poder +{1}% ({2})
+57	{0} (possui {1} / {2}{3})
+58	Atributos de {0}
+59	Qualidade {0}
+60	/s
+61	⏩ Velocidade 2x
+62	⏭ Velocidade 3x
+63	▶ Velocidade 1x
+64	★ Maestria
+65	♾ Modo Infinito
+66	♾ Modo Infinito {0}
+67	⚠ Boss chegando!
+68	✔ Em uso
+69	✔ Concluído
+70	✔ Já possui
+71	✦ Evoluído
+72	✨ Conjunto "{0}": {1}
+73	🎯 Missão da fase: {0}
+74	🎯 Missão da fase "{0}" concluída: +{1} de prata
+75	🎺 Reforços animam +{0}%
+76	🏆 Conquistas
+77	🏆 Conquista "{0}" desbloqueada: {1} (+{2})
+78	🏆 Conquista "{0}" desbloqueada +{1}
+79	🏘 Vila do Reino
+80	🏯 Torre Demoníaca de Nove Andares
+81	🏯 Torre Demoníaca de Nove Andares {0}
+82	👉 Melhore "Ataque" e Kael derrota os monstros mais rápido!
+83	👑 Primeira vitória no desafio: ganhe uma coroa
+84	👑 Vença no nível Desafio para ganhar uma coroa
+85	👑 Já venceu no nível Desafio
+86	👕 Guarda-roupa
+87	📅 Desafio Diário
+88	📅 Desafio Diário · {0}
+89	📅 Desafio Diário ✔
+90	📊 Relatório de Batalha
+91	📔 Diário de Guarda do Kael
+92	📜 Registros da Guarda
+93	📦 Suprimentos da fase:
+94	📦 A caixa de suprimentos chegou!
+95	Combo de 10!
+96	12 meteoros caem em monstros aleatórios do campo, cada um causando dano de ATQ ×8. Monstros num raio de 110 px sofrem 60%.
+97	16 flechas × ATQ 1,6
+98	Lança 16 flechas em 2 segundos, cada uma acertando um monstro aleatório no alcance, causando dano de ATQ ×1,6 e ignorando escudos.
+99	20 flechas × 1,7
+100	24 flechas × 1,8, os monstros atingidos pegam fogo
+101	3 flechas podem atingir vários tentáculos de uma vez; o Arco de Madeira e o Canhão totalmente melhorados também vão bem contra o Bobo
+102	Todas as 5 pistas abertas! Morcegos voam de uma pista para outra.
+103	Atchim! Meu capacete congelou por dentro.
+104	Ai, ai, ai... o que eu estava fervendo era Tinta, não sopa. Não admira que seja tão ruim.
+105	Prêmio de Consolação
+106	Noite
+107	Noite · Espírito
+108	Fase noturna: você enxerga pouco, alcance -30%. Os suprimentos "Sinalizador" e "Visão Longa" ajudam muito.
+109	Mostrar os olhos dos monstros à noite (desligado por padrão, escuridão total)
+110	Assassino das Sombras
+111	Assassinos das Sombras aparecem bem mais longe (x < 800)
+112	Assassinos das Sombras ficam invisíveis de longe e só aparecem de perto. O suprimento "Luneta" os revela mais cedo.
+113	Ninja das Sombras
+114	Surto Arcano
+115	Vender "{0}"? Preço de venda {1} (metade do preço de compra). Você pode comprar de volta pelo preço cheio depois.
+116	Cole aqui o texto do save exportado
+117	Copie e guarde bem o texto abaixo. Ao trocar de aparelho ou limpar os dados do navegador, cole-o de volta em "Importar Save" para restaurar seu progresso.
+118	Caçador de Cem
+119	Desfile Noturno
+120	Armadura de Placas
+121	Esporo
+122	Aljava de Gelo Fino
+123	Seu círculo de proteção é maior e reduz mais dano. Derrube-o primeiro.
+124	Armadura do Bastião
+125	Guarda do Bastião
+126	Nevasca! Velocidade de ataque reduzida
+127	Pergaminho da Nevasca
+128	A tempestade chegou! Todos os monstros ficaram mais rápidos!
+129	Crítico
+130	Aljava Crítica
+131	Taxa de crítico
+132	Taxa de crítico +{0}%
+133	Taxa de crítico +10%.
+134	Taxa de crítico +3%
+135	Taxa de crítico +3%; dano físico contra espíritos +25%
+136	Taxa de crítico +4%; penalidade de alcance nas fases noturnas reduzida pela metade
+137	Taxa de crítico +8%
+138	Dano crítico
+139	Dano crítico +{0}%
+140	Dano crítico +10%
+141	Dano crítico +15%
+142	Dano crítico +25%
+143	Dano crítico +30%
+144	Coroa do Tirano
+145	A explosão empurra os monstros pequenos da área 60 px para trás e os deixa 40% mais lentos (1,5s); +50% de dano em Bosses e tentáculos
+146	Raio da explosão 60 → 85, dano em área 60% → 75%
+147	Lobo Ártico
+148	Lobos Árticos atacam em bandos de três. A Zona de Gelo prende o bando inteiro de uma vez.
+149	Viking do Norte
+150	Bebe
+151	Bebe anota cada conchinha em seu caderninho. Ela diz que a muralha é a maior "concha" que já viu, mas que pena que não dá para dividir com ninguém.
+152	Bebe é quase impossível de acertar com a concha fechada e cospe pérolas quando ela se abre, mas odeia sentir dor. Ataque com Golpe do Trovão e Chuva de Flechas quando a concha abrir!
+153	Bebe ficou aflita: a concha abre e fecha mais rápido!
+154	Amuleto de Concha
+155	Mochila
+156	Mochila {0}
+157	Ainda não há itens na mochila. Compre na página "Itens".
+158	Você não tem este item na mochila
+159	A mochila está vazia. Compre itens na página "Itens".
+160	Música
+161	Insígnia do Último Recurso
+162	Medalha do Último Recurso
+163	Uma aljava pendurada nas costas.
+164	Ao morrer, dispara espinhos que ferem os monstros próximos. Espere até que ele esteja no meio da multidão para derrotá-lo! Ao chegar à muralha, ele também a espeta.
+165	Eletrocutado!
+166	Habilidades Passivas
+167	Habilidades Passivas (automáticas)
+168	Espaços de Habilidade Passiva
+169	Dano bloqueado por armadura / resistência mágica
+170	Uma gosma verde corroída pelo luar: muita vida, e se cura sozinha quando não é atacada.
+171	Atordoado!
+172	Meus biscoitos... ainda não ficaram prontos!
+173	Este Faraó dormiu por três mil anos e agora foi acordado! Quem está fazendo barulho?!
+174	Este Faraó está criando um novo sabor de biscoito. Desta vez só ficou trezentos anos no forno.
+175	Na primeira vez que a muralha cair nesta fase, ela revive na hora com 60% da vida máxima (só uma vez)
+176	Ganho de cobre nesta fase +{0}%
+177	Ganho de cobre nesta fase +10%
+178	Ganho de cobre nesta fase +30%
+179	Ganho de cobre nesta fase +60% e receba uma quantia de cobre na hora
+180	Meu castelo... por que está tão quente? Quem acendeu a fornalha?
+181	A forma verdadeira apareceu! Dano +50%
+182	Este Príncipe abriu uma loja de cama elástica na praça. O primeiro pulo é grátis!
+183	Coroa do capítulo (vença no nível Desafio)
+184	Múmia de Bandagens
+185	Bola de Bandagens
+186	Bolas de Bandagens, escudos, hordas de monstros pequenos
+187	Bolas de Bandagens ignoram ataques físicos. Desbloqueie o "Cajado Mágico" na loja com prata, ou leve Golpe do Trovão e Queimadura!
+188	As bandagens foram lavadas. Estão cheirosas!
+189	Armadura de Baluarte
+190	Para-raios
+191	Para-raios!
+192	Morcego
+193	Caverna dos Morcegos
+194	Ataque dos Morcegos
+195	Padrão
+196	Não tenha medo, eles só estão de péssimo humor por causa de uma tinta preta estranha. Proteja a muralha e você protege todo mundo.
+197	Gelo, Nevasca, Muralha de Gelo: a Rainha Gelinha, ainda mais fria que antes.
+198	Zona de Gelo
+199	Zona de Gelo, Minibomba e Frasco Congelante precisam de uma pista: toque na habilidade e depois em uma pista.
+200	Frasco Congelante
+201	Congela todos os monstros por 6s (Bosses 3s). Monstros congelados sofrem +60% de dano e, ao descongelar, ficam 50% mais lentos por 4s.
+202	Congelado {0}
+203	Decreto Gélido
+204	Congelada, não pode ser consertada
+205	Tio Picolé
+206	O Tio Picolé congela suas habilidades. Não coloque todas as esperanças em uma só habilidade!
+207	O Tio Picolé diz que a Rainha Gelinha congelou a Tinta num espelho gigante, e dentro dele dá para ver uma rachadura vermelha.
+208	O Tio Picolé está marchando até a muralha!
+209	Tempestade de Cristais de Gelo
+210	Fada de Cristal de Gelo
+211	Enquanto as Fadas de Cristal de Gelo estiverem vivas, seus heróis atacam mais devagar. Elas se escondem longe, então Chuva de Flechas e Golpe do Trovão são o melhor jeito de limpá-las.
+212	Luz de Cristal de Gelo
+213	Aljava da Alma Gélida
+214	Planície Nevada
+215	Bobo
+216	Tentáculo do Bobo. Enquanto restarem 3 ou mais, o Bobo é muito difícil de ferir.
+217	As ventosas do Bobo estão absorvendo poder! Derrubem os tentáculos!
+218	O Bobo é protegido por tentáculos: derrube-os primeiro ("Ameaça Primeiro" e "Boss Primeiro" fazem isso). Abaixo de 60% de vida os tentáculos também o curam, e no fim ele cria um redemoinho enorme!
+219	Plop
+220	Plop plop plop
+221	Festa de Suprimentos
+222	Especialista em Suprimentos
+223	Nenhum
+224	Vença qualquer fase após a fase 10 sem nenhuma habilidade ativa
+225	Uma onda a cada 14 segundos, sem esperar o campo ser limpo
+226	Seja quem for, bonecos de neve de ferro, lobos de ferro... todos estão marchando até nós com armaduras de ferro.
+227	Sem Habilidades
+228	Armadura Imortal
+229	Não é possível usar itens
+230	Estandarte Inabalável
+231	Vença sem usar nenhum item
+232	Não são eles de verdade, são "ecos": sombras que vêm daquela rachadura, tingidas de azul-arroxeado pelo caos. Elas continuam marchando até a muralha.
+233	Não fui eu! É o seu próprio despertador... quer dizer, seus soldadinhos.
+234	Não fomos nós! Vem do outro lado da rachadura!
+235	Não odeio. Olha, meu capacete também está todo cheio de manchas da sua tinta.
+236	Capa Imortal
+237	Não precisa, a terceira da esquerda sempre é colocada ao contrário, eu já me acostumei.
+238	Faixa de Pano
+239	Estátua da Fortuna
+240	Botas da Fortuna
+241	O arco-íris escureceu num trecho! Temos que subir lá e limpar.
+242	Pássaro Arco-Íris
+243	Pássaros Arco-Íris curam os monstros por perto, e balões soltam goblins quando estouram. "Ameaça Primeiro" ataca os Pássaros Arco-Íris antes.
+244	Ponte Arco-Íris
+245	Do outro lado da Ponte Arco-Íris fica o Reino das Nuvens. Dizem que as nuvens de lá sopram vento e trovejam... Kael, leve o Tintinho com você!
+246	Controles
+247	Espaço {0}
+248	Espaço {0}: escolha o item e a quantidade
+249	Armadura de Palha
+250	Picolés de morango, um cobre cada!
+251	Sandálias de Palha
+252	Capa de Ervas
+253	Primeira Batalha no Campo
+254	Guardião do Campo
+255	Andar
+256	Enrolada em bandagens: 55% de redução de dano físico. Use magia contra ela!
+257	Bala pesada com raio de explosão 100, ignora 60% da armadura, +30% de dano em Bosses.
+258	Maré
+259	Manto da Maré
+260	{0} pistas
+261	Hordas, espíritos, monstros com pouca resistência mágica
+262	Vitória rende {0} diamantes; falha não rende nada
+263	Conquistas
+264	Conquistas {0} / {1}
+265	Voa em bandos, passando por cima dos outros monstros direto até a muralha.
+266	Muralha
+267	A muralha congelou! Não pode ser consertada por enquanto
+268	A muralha foi destruída...
+269	Termina quando a muralha for destruída. 15 de cobre por onda concluída; ao bater o recorde, 1 de prata a cada 5 ondas extras.
+270	A muralha não é cama elástica! ...Mas parece mesmo divertido.
+271	A casca... quer dizer, a muralha, está bem firme hoje.
+272	Nível da Muralha
+273	A muralha tem {0}% de vida. Se continuar, o próximo andar começa com essa vida, sem recuperação.
+274	A muralha recupera 15% da vida máxima.
+275	A muralha recupera 70% da vida máxima e depois sofre −60% de dano por 8 segundos.
+276	Cura da muralha +25%, dano sofrido pela muralha −5%
+277	Cura da muralha +{0}%
+278	A muralha ganha um escudo que absorve dano até 35% da vida máxima, até o fim da fase.
+279	Redução de dano da muralha
+280	Fontes de dano à muralha (total {0})
+281	A maior parte do dano à muralha veio de "{0}": {1}
+282	Melhoria da muralha (vida máxima atual {0})
+283	Muralha com {0}%
+284	Muralha com ≥50% rende 2 estrelas, ≥80% rende 3 estrelas.
+285	Vença com menos de 5% de vida na muralha
+286	A muralha resistiu até a onda {0} / {1}.
+287	Dano contínuo à muralha (veneno, névoa tóxica) −60%
+288	Dano sofrido pela muralha −3% / nível.
+289	Dano sofrido pela muralha −{0}%
+290	Dano sofrido pela muralha −12%
+291	Dano sofrido pela muralha −3%
+292	Dano sofrido pela muralha −6%; cura da muralha +25%
+293	Reparo da Muralha
+294	Vida da Muralha
+295	ATQ +20% enquanto a vida da muralha estiver abaixo de 50%
+296	ATQ +{0}% enquanto a vida da muralha estiver abaixo de 50%
+297	Mantenha a vida da muralha em 70% ou mais e vença a fase
+298	A muralha tem só metade da vida
+299	Vida máxima da muralha +{0}%
+300	Botas de Batedor
+301	Fornalha de Ferro Rubro
+302	Capa Flamejante
+303	Atacar? Agora eu só ataco lixo.
+304	Investida
+305	Criado por
+306	Vender
+307	Novato
+308	Primeira Visita à Torre
+309	Primeira Neve
+310	Executar
+311	Tentáculo
+312	Os tentáculos recuaram para o mar!
+313	Escudo de tentáculos: restam {0}, ataque os tentáculos primeiro!
+314	Tapa de Tentáculo
+315	Só restam {0} tentáculos, ataque o Bobo agora!
+316	Equipar
+317	Equipado
+318	Perfurante
+319	Arco Longo Perfura-Coração
+320	Flecha Rasga-Nuvens
+321	Uma armadura para vestir no corpo que deixa a muralha mais firme.
+322	Vestindo
+323	Lendário
+324	Coroa da Gênese
+325	Aljava da Gênese
+326	Armadura da Gênese
+327	Arco da Gênese
+328	Agulhinha Cutucadora
+329	Capa de Pano Grosso
+330	Campo Esmeralda
+331	Texto do save inválido. Verifique se você copiou tudo
+332	Save importado
+333	Save apagado
+334	Os Bosses que você derrotou se mudaram para a vila. Toque neles para ouvir como estão agora.
+335	Você derrotou o Rei Gulu! Ele é, na verdade, o faxineiro mais trabalhador do campo. O vento negro vem do deserto, então estou de partida.
+336	Você derrotou todos os monstros deste andar.
+337	Interromper Boss
+338	Interrompa um Boss pelo menos 2 vezes e vença a fase
+339	Interrompido!
+340	Mestre das Interrupções
+341	Especialista em Interrupções
+342	Grande Boss
+343	Grande Boss. A Nevasca reduz a velocidade de ataque, a muralha congelada não pode ser consertada e, com pouca vida, ele invoca pequenos dragões de gelo.
+344	Grande Boss. Gelo, Nevasca, Muralha de Gelo, ainda mais frio que antes.
+345	Grande Boss. A névoa tóxica corrói a muralha, cozinha os lacaios em versões mais fortes e, com pouca vida, vira o caldeirão e cria poças de veneno.
+346	Grande Boss. Cria tempestades de areia, invoca múmias e as cura e, com pouca vida, ergue um escudo de pirâmide, que só teme magia.
+347	Grande Boss. Invoca lacaios; abaixo de 60% de vida lança uma investida de javali, e concentrar fogo durante o aviso pode interrompê-la.
+348	Grande Boss. Tempestade de areia, invocação, cura, escudo: três fases, muito mais difícil que antes.
+349	Um brutamontes grande de pelo branco com armadura física altíssima.
+350	O caldeirão virou! A poça de veneno acelera os monstros!
+351	Grande redemoinho! Todos os tentáculos cresceram de novo e todos os monstros ficaram mais rápidos!
+352	Modo Letras Grandes
+353	Levar {0}
+354	Proteção usada na cabeça.
+355	Tiro único, estável, com taxa de crítico extra. Ótimo contra Bosses.
+356	Alcance um combo de 30 em uma partida (derrote monstros com até 1,2s de intervalo)
+357	DPS em alvo único
+358	Blém... blém... (tremendo de frio)... Desculpe, ele toca sozinho.
+359	Atual: {0} →
+360	Exportar Save
+361	Importar
+362	Importar Save
+363	Importar vai sobrescrever seu progresso atual.
+364	Parar por aqui e garantir
+365	Chegue à onda 30 para desbloquear a conquista "Nunca Caiu" (1 de ouro).
+366	Aljava Farpada
+367	Você caiu no andar {0} e não ganhou nada. O ingresso não é devolvido.
+368	Itens
+369	De que adianta pedir desculpa! Ruuumble!
+370	O chão está flutuando... como um espelho quebrado.
+371	Mapa
+372	Amuleto do Terremoto
+373	Auge da Perfeição
+374	Espere! Eu sou Atlas, filho do pedreiro. Meu pai consertou todos os pontos da muralha que foram destruídos. Você vai viajar e eu protejo a muralha!
+375	Nível baixo, vá melhorar
+376	Voa baixo e muito rápido.
+377	Onda {0} / {1}
+378	Onda {0}
+379	Onda {0} · Recorde {1}
+380	Andar {0}
+381	Andar {0} · Onda {1} / {2} · restam {3}
+382	Andar {0}: {1} reis demônios + {2} lacaios chegam juntos (força ×{3}). A vida da muralha continua a do andar anterior, sem recuperação. Derrotar monstros não rende nada; só passar de andar dá diamantes!
+383	Andar {0} concluído!
+384	Fase {0}
+385	Fase {0} · {1}
+386	Fase {0} · {1} ({2})
+387	A partir da fase 3, vença qualquer fase com a muralha com a vida cheia
+388	Capítulo {0}
+389	Capítulo {0} · {1}
+390	Capítulo {0} ▾
+391	Recompensa de três estrelas do capítulo {0}
+392	Boss do capítulo 6. Uma nuvem de trovão gigante e mal-humorada: invoca Bolinhos de Trovão e Pássaros Arco-Íris, carrega raios e, no fim, provoca uma tempestade.
+393	Boss do capítulo 7. O Rei Polvo: escudo de tentáculos, cura pelas ventosas e um redemoinho enorme no final. Ataque os tentáculos primeiro!
+394	Quarta Pista
+395	Quinta Pista
+396	Itens só podem ser usados depois que a primeira onda de monstros aparecer
+397	Toque numa pista para lançar (botão direito ou Esc para cancelar)
+398	Toque para equipar
+399	Toque de Midas
+400	Toque em mim para usar uma habilidade!
+401	O choque cobre uma área maior e paralisa por mais tempo.
+402	Arco Longo Entalhado
+403	Plim!
+404	Tum... tum... não... pode... passar...
+405	Tum... Tintinho... hoje... foi... divertido...
+406	Tum... ele... está... sempre... sozinho... seja... gentil... com ele...
+407	Tum... eu... estou... guardando... o portão...
+408	Tum... obrigado... a você...
+409	Congela todos os monstros por 7s, até Bosses. Monstros congelados sofrem dano ×2,2 e a velocidade de ataque dos heróis é +60% nesse período.
+410	Congela todos os monstros da pista escolhida por 3 segundos.
+411	Vovó Caldo
+412	A Vovó Caldo deixou o caldeirão limpinho e diz que agora só vai fazer sopa de abóbora. A planície nevada ao norte parece ser uma das fontes da Tinta.
+413	A Vovó Caldo cozinha os lacaios em versões mais fortes. Limpe o campo rápido e leve Reparo da Muralha para lidar com a névoa tóxica!
+414	A Vovó Caldo começou a cozinhar!
+415	Sapo Venenoso
+416	Sapos Venenosos ficam bem atrás e cospem veneno na muralha. Mude a mira para "Ameaça Primeiro" e os heróis os atacarão antes quando a muralha estiver segura.
+417	Névoa tóxica! A muralha continua sofrendo dano
+418	Falha ao ler o save
+419	Leia o diário de guarda inteiro (trechos pulados podem ser relidos no diário)
+420	Desliza em alta velocidade de barriga e causa muito dano ao bater na muralha.
+421	Tênis de Corrida
+422	Dano em Bosses e monstros voadores +30%
+423	Dano em Bosses +{0}%
+424	Dano em Bosses +12%, dano sofrido pela muralha −4%
+425	Dano em Bosses +50%, ignora 20% da armadura
+426	D-desculpa... fui eu.
+427	Dano em monstros lentos ou congelados +15%
+428	Causa dano mágico de ATQ ×5 ao monstro com mais vida atual.
+429	Dano em monstros voadores +{0}%
+430	Causa dano mágico de ATQ ×2,5 a todos os monstros da pista escolhida e os incendeia.
+431	Causa dano de ATQ ×5 a todos os monstros da pista escolhida.
+432	Dano +60% contra monstros com menos de 30% de vida
+433	Trocar {0}
+434	Tartaruga Escudo
+435	Escolta da Tartaruga Escudo
+436	Tartarugas Escudo protegem os monstros ao redor. "Ameaça Primeiro" ataca as Tartarugas Escudo antes; as habilidades não são afetadas por elas.
+437	Escudo
+438	Fica na retaguarda e cura os monstros ao redor sem parar. Elimine-o primeiro!
+439	Os óculos de cobre na testa brilham e o vapor sai soprando da mochila nas costas.
+440	Dispara tiros mágicos que explodem em área pequena ao acertar. O dano mágico ignora armadura física.
+441	Quando o eco do Faraó se dissipou, deixou um biscoitinho para trás. Não tive coragem de comer.
+442	Céu Estrelado
+443	Na volta, acerta pelas costas e ignora escudos de madeira
+444	Voltar
+445	As casas foram levadas pela água? Então onde eles vão morar?
+446	Abandonar Fase
+447	Abandonar Desafio
+448	Abandonar este desafio? O ingresso não é devolvido e você não ganha nada.
+449	Voador
+450	Voa e troca para uma pista vizinha de tempos em tempos.
+451	Voa, levado pelo vento: 35% dos ataques físicos normais das armas são esquivados. Magia e dano em área não podem ser esquivados.
+452	Voadores Primeiro
+453	Peixe-Voador
+454	Distância do pulo do Peixe-Voador −50%
+455	Tempestade de Peixes-Voadores
+456	Peixes-Voadores dão um grande salto à frente e não podem ser atingidos no ar. Eles correm mais rápido do que parece, então a Zona de Gelo é muito útil!
+457	Pulos do Peixe-Voador
+458	Voa pelo ar e arremessa bolas de fogo na muralha de longe.
+459	Divisão
+460	Capa da Tempestade
+461	Orbe da Tempestade
+462	Botas do Caminhante do Vento

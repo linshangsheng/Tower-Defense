@@ -61,6 +61,32 @@ test('翻译顺序：整句 → 句式（占位符）→ 碎片；简体中文�
   I._use('en', I.dicts.en || {});
 });
 
+test('拼在一起的句子：前缀符号、按标点拆开、带标点的词条、数字紧挨占位符', () => {
+  I._use('xx', {
+    '对 Boss 伤害 +{0}%': 'Boss damage +{0}%',
+    '攻击力 +{0}': 'ATK +{0}',
+    '攻击力 +{0}%': 'ATK +{0}%',
+    '擅长：': 'Good against: ',
+    通用: 'general',
+    '🎯 完成「{0}」：+{1} 银': '🎯 "{0}" done: +{1} silver',
+    轻装: 'Light',
+    '现在 {0} / {1}{2}。': 'Now {0} / {1}{2}.',
+    '（已满）': '(full)',
+    '第 {0} 章': 'Chapter {0}',
+    '/秒': '/s',
+    银: 'Silver',
+  });
+  assert.strictEqual(I.t('攻击力 +2，对 Boss 伤害 +4%'), 'ATK +2, Boss damage +4%', '攻击力 +{0}% 不能把整句吞掉');
+  assert.strictEqual(I.t('擅长：通用、通用'), 'Good against: general, general');
+  assert.strictEqual(I.t('✦ 🎯 完成「轻装」：+2 银'), '✦ 🎯 "Light" done: +2 silver', '前缀符号原样保留，后面按词条翻');
+  assert.strictEqual(I.t('现在 0 / 7（已满）。'), 'Now 0 / 7(full).', '紧挨的占位符：数字归前一个');
+  assert.strictEqual(I.t('第三章'), '第三章', '没有词条的整词不动');
+  assert.strictEqual(I.t('第 三 章'), 'Chapter 3', '汉字数字换成阿拉伯数字');
+  assert.strictEqual(I.t('1.00/秒'), '1.00/s');
+  assert.strictEqual(I.t('775 银'), '775 Silver', '货币单字也能当碎片');
+  I._use('en', I.dicts.en || {});
+});
+
 test('全角标点：拉丁语系换半角，日语 / 繁中保留', () => {
   I._use('xx', { 好: 'ok' });
   assert.strictEqual(I.t('好，好！'), 'ok, ok!');

@@ -2905,3 +2905,36 @@ html[lang='zh-Hant'] {
 html[lang='th'] {
   font-family: system-ui, 'Leelawadee UI', 'Thonburi', 'Noto Sans Thai', 'Noto Sans', sans-serif;
 }
+
+/* ---------- 多语言（设计书 83）：译文比中文长，标题页的并排按钮要能收缩换行 ---------- */
+.title-buttons .btn-row .btn {
+  min-width: 0;
+  padding-left: 8px;
+  padding-right: 8px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.15;
+}
+.title-buttons .btn {
+  white-space: normal;
+  line-height: 1.15;
+}
+.title-buttons {
+  flex: 0 0 260px;
+}
+html:not([lang='zh']):not([lang='zh-Hant']):not([lang='ja']):not([lang='ko']) .title-main {
+  font-size: 68px;
+  letter-spacing: 2px;
+  line-height: 1.1;
+  max-width: 560px;
+  -webkit-text-stroke-width: 4px;
+}
+html:not([lang='zh']):not([lang='zh-Hant']):not([lang='ja']):not([lang='ko']) .title-logo {
+  margin-left: 120px;
+}
+.title-buttons .btn-row {
+  flex-wrap: wrap;
+}
+.title-buttons .btn-row .btn {
+  flex: 1 1 auto !important;
+}

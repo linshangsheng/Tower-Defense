@@ -1,0 +1,463 @@
+1389	Recomendado
+1390	Mejora recomendada
+1391	Recomendado comprar tras superar el nivel {0}
+1392	Arma recomendada: {0}
+1393	El arma recomendada "{0}" tiene nivel bajo. Mejórala primero: {1} ({2})
+1394	Poder recomendado {0} · Tu poder {1}
+1395	Salir del juego
+1396	¿Salir del juego? Tu progreso ya se guardó automáticamente.
+1397	Completar 20 misiones de nivel
+1398	Completar todas las misiones de nivel
+1399	Cómo jugar
+1400	Enemigo de Mil Monstruos
+1401	Corona del Astrónomo
+1402	Eco de Todas las Cosas
+1403	Panorama
+1404	Corona
+1405	Coleccionista de Coronas
+1406	El atuendo estándar de los guardias del reino. El yelmo es un poco grande.
+1407	Pueblo del Reino
+1408	El guardia de la muralla más pequeño del reino, de ataque estable.
+1409	El guardia de la muralla más pequeño del reino, que frenó su mayor crisis.
+1410	Prototipo web {0} · {1} capítulos {2} niveles
+1411	Lente de Telescopio
+1412	Muralla en Peligro
+1413	Amenaza primero
+1414	Zumbi
+1415	Los Zumbis vuelan sobre los demás monstruos directo a la muralla. Las ballestas repetidoras hacen más daño a los voladores.
+1416	Zzz zzz
+1417	Yo... yo absorberé la Tinta de vuelta.
+1418	Puse todas las cometas en el cielo; de noche parecen estrellas.
+1419	Dejé aquí parte de mi Tinta. Cuando no quiero estar solo, le crecen ecos: cada vez más y cada vez más grandes.
+1420	Me mudé junto a la muralla y todos los días puedo ver a Kael hacer guardia.
+1421	¡No les creo! ¡Primero los voy a tumbar de un soplido!
+1422	Te lo prometo.
+1423	Mi arco es pesado y dispara lento, pero cada flecha hace retroceder a los monstruos. Cuenten conmigo para lo del volcán.
+1424	¡Mi casa nueva es súper grande, vengan a jugar!
+1425	En mi llanura nevada solo se permite el silencio. Tu casco hace mucho ruido.
+1426	¡Yo hago el registro! Número uno: el Rey Bobo, ocho patas, necesita una concha súper grande.
+1427	Subimos al cielo por el puente arcoíris. Las nubes eran suaves, como pisar malvaviscos. Tinti estuvo escondido detrás de mi casco todo el tiempo.
+1428	¡Resistimos!
+1429	Construimos un "Pueblo Concha" junto al mar. La casa de Bobo es la más grande, y su techo lo armaron las ocho patas juntas. Resulta que proteger un hogar también puede ser ayudar a otros a construir el suyo.
+1430	¡Te invito una de fresa!
+1431	¡Rayos! ...Déjame enderezar el casco primero.
+1432	¡Soy Bebe, la encargada de conchas de la bahía! ¡Una concha tan grande debe registrarse antes de asignarse!
+1433	Soy el Eco. Un eco solo repite. Esqueletos, al ataque.
+1434	Vine a proteger la muralla. Cuando termines tu berrinche, podemos jugar juntos.
+1435	¡Aprendí a dibujar con Tinta! Este eres tú y este soy yo.
+1436	¡Yo también quiero un hogar! ¡Glub! ¡Tentáculos, sujétenlo fuerte!
+1437	Vi a todos en el espejo. Quizá el bullicio no está tan mal.
+1438	Estoy practicando truenos suaves. Pum. (Muy bajito)
+1439	Abrí una barbería en el pueblo. No te asustes, tengo mucho cuidado.
+1440	Yo solo he oído el concierto de golpes al casco...
+1441	Las nubes oscuras tapan la vista: alcance −30%. A las Bolas de Trueno solo se les puede dar cuando están más cerca. ¡Cuidado con la estática!
+1442	Nubarrones
+1443	Pasillo sin Lámparas
+1444	No se puede colocar
+1445	Fragua sin Luz
+1446	Mar sin Luz
+1447	Modo infinito
+1448	Modo infinito: ¡cuanto más aguantes, mejor! Suministros cada 3 oleadas y un jefe cada 5.
+1449	Llegar a la oleada 30 en el Modo infinito
+1450	Mejor infinito
+1451	¡Imparable!
+1452	Ignora armadura 40% → 70%, daño de salpicadura 70% → 85%
+1453	Ignora {0}% de la armadura del objetivo
+1454	Ignora 20% de la armadura del objetivo
+1455	Ignora 25% de la armadura del objetivo
+1456	Ignora 50% de la armadura del objetivo (incluidos escudos).
+1457	Noche sin Luna
+1458	Arma
+1459	Arma: {0}
+1460	Armas (desbloqueo permanente, +8% de daño por nivel y +4% por nivel después del nv. 10; mayor calidad es más fuerte y más cara, y su mejora también)
+1461	Daño del arma
+1462	Coleccionista de Armas
+1463	Físico bloqueado
+1464	El daño físico es +{0}% más efectivo contra espíritus
+1465	Efecto del daño físico en espíritus 30% → 70%
+1466	{0} del daño físico fue bloqueado por armadura, escudos de madera o espíritus: prueba el bastón mágico, el bumerán o "Perforar".
+1467	Hay mucha niebla, no se ve nada...
+1468	Ojos en la Niebla
+1469	Murciélago Vampiro
+1470	Jeje, le puse solo un poquito de miel a la sopa.
+1471	¡Jejeje, una cucharada más de Tinta negra y mi sopa estará lista!
+1472	La próxima vez que sople un vendaval, avisaré primero.
+1473	10 segundos después de empezar la siguiente oleada, congela a todos los monstruos 4 segundos (jefes 1.5 s)
+1474	8 segundos después de empezar la siguiente oleada, causa daño mágico de ATQ ×6 a todos los monstruos
+1475	Siguiente nivel ›
+1476	Llegó el verano y soy el más popular del pueblo.
+1477	Bola de Cactus
+1478	¡Las Bolas de Cactus explotan al llegar rodando a la muralla! Elimínalas desde lejos.
+1479	Primero supera el nivel {0}
+1480	Consumibles (se usan en batalla, uno por uso; hasta {0} tipos y {1} de cada uno; cada tipo tiene recarga tras usarse)
+1481	Consumibles (hasta {0} tipos y {1} de cada uno; uno por uso, cada uno con recarga)
+1482	Ranuras de consumibles
+1483	Minijefe
+1484	Minijefe. ¡Invoca fantasmitas sin parar y revive tras ser derrotado por primera vez!
+1485	Minijefe. Un gigante de piedra con cabeza de molino: vuela cometas y levanta vendavales que empujan a los monstruos hacia la muralla. ¡Concentra el fuego para interrumpirlo cuando avise!
+1486	Minijefe. Pisotea para aturdir al héroe y explota al ser derrotado. ¡No lo dejes acercarse a la muralla!
+1487	Minijefe. Se entierra para cambiar de vía y emboscar, y al llegar a la muralla la pinza con fuerza con sus grandes tenazas.
+1488	Minijefe. Una perla gigante: casi imposible de dañar con la concha cerrada, pero muestra su perla al abrirla. ¡Usa habilidades cuando se abra!
+1489	Minijefe. Tornados y empujones, más feroz que antes.
+1490	Minijefe. Cada cierto tiempo congela una ranura de habilidad del héroe.
+1491	Minijefe. Actúa como el Señor Huesos: invoca esqueletos y usa un escudo mágico, pero es más duro.
+1492	Minijefe. Actúa como Roqui, con el doble de vida.
+1493	Minijefe. Suelta gelatinitas cada vez que su vida baja 15% y se divide una vez más al morir.
+1494	Dragoncito de Hielo
+1495	¡Llegó el Dragoncito de Hielo! ¡Ataque combinado por aire y tierra!
+1496	Gelatinita
+1497	Sacerdotito
+1498	Los Sacerdotitos se esconden en la fila trasera para curar a los monstruos. El Golpe de Trueno y la explosión del bastón mágico también los alcanzan.
+1499	Alcancía
+1500	Calabacita
+1501	Palanquita
+1502	Reloj de Arena Pequeño
+1503	Rayito
+1504	Bolita de Nieve
+1505	Fantasmita
+1506	Las Fantasmitas casi no temen a los ataques físicos
+1507	Las Fantasmitas casi no temen a los ataques físicos. ¡El bastón mágico, el orbe relámpago, el Golpe de Trueno y la Quemadura son su perdición!
+1508	Minibomba
+1509	Vecinos del pueblo
+1510	Maestro de Sinergias
+1511	Calzado
+1512	Error al guardar la partida
+1513	Quitar
+1514	Quitar −1
+1515	Gracias por no odiarme cuando estaba enojado.
+1516	Gracias por llegar hasta aquí.
+1517	¡Gracias por proteger el reino!
+1518	Nuevo
+1519	¡Aparece un nuevo enemigo!
+1520	¡Nuevo récord! Oleada {0} → {1}
+1521	Estallido Estelar
+1522	Mago Estelar
+1523	Bastón Estelar
+1524	Coraza Estelar
+1525	Corona Estelar
+1526	Capa de Luz Estelar
+1527	Centelleante
+1528	Carcaj de Órbita Estelar
+1529	Galaxia Resplandeciente
+1530	Estrella
+1531	Botas de la Estrella de la Fortuna
+1532	Botas de Mercader
+1533	Suerte
+1534	Suerte +{0}%
+1535	Suerte +15%
+1536	Amuleto de la Suerte
+1537	Bono de suerte
+1538	Botas de la Suerte
+1539	Moneda de la Suerte
+1540	Aviso de descanso
+1541	Tomar un descanso
+1542	Kit de Reparación
+1543	Armadura de Monje
+1544	Reparar
+1545	Tortuga Escudo del Vacío
+1546	La Tortuga Escudo del Vacío tiene un círculo de protección mayor: elimínala primero. Las púas de los erizos también duelen más.
+1547	Formación de Escudos del Vacío
+1548	Pez Volador del Vacío
+1549	Los Peces Voladores del Vacío saltan más lejos y no se les puede golpear en el aire.
+1550	Cometa del Vacío
+1551	Erizo del Vacío
+1552	Bola de Trueno del Vacío
+1553	Las Bolas de Trueno del Vacío tienen mayor alcance de descarga: elimínalas desde lejos.
+1554	En el vacío no hay viento, pero las cometas flotan y las ovejas balan. Todo lo conocido está aquí, solo que todo es morado.
+1555	Ave del Vacío
+1556	Globo del Vacío
+1557	Dominio del Cielo Vacío
+1558	Cangrejo del Vacío
+1559	Oveja del Vacío
+1560	Las Ovejas del Vacío tienen lana más gruesa y las Cometas del Vacío esquivan la mitad de los ataques físicos.
+1561	Requiere {0} (primero cambia plata por oro en la Casa de Cambio de la tienda)
+1562	Requiere {0} (primero cambia plata por oro en la Casa de Cambio de la tienda).
+1563	Los monstruos de la vía elegida y las contiguas reciben daño de ATQ ×7.
+1564	Elige una vía: los monstruos en ella se ralentizan 60% durante 6 segundos.
+1565	Elige una carta de suministro (dura este nivel) · Suministro n.° {0}
+1566	Elegir
+1567	Elegir suministro
+1568	Elegir dificultad
+1569	Elegir capítulo
+1570	Elegir equipo
+1571	Cinta de Aprendiz
+1572	Capa de Aprendiz
+1573	Avalancha
+1574	Yeti
+1575	Los Yetis resisten lo físico y los Gólems de Lava resisten la magia: prepara ambos tipos de daño.
+1576	Yetis Merodeando
+1577	Los Yetis temen a la magia, los Gólems de Lava temen a lo físico y las Tortugas Escudo los protegen. ¡Elimina primero las tortugas!
+1578	Bola de Nieve
+1579	La Bola de Nieve se parte en dos bolitas al morir. El daño en área las limpia con menos esfuerzo.
+1580	Bolitas de nieve que quedan cuando se rompe una Bola de Nieve.
+1581	La llanura nevada es muy blanca y brillante. Los pingüinos se deslizan por el hielo y ¡zas!, ya están junto a la muralla.
+1582	Carrera en la Nieve
+1583	Los pingüinos de la llanura nevada se deslizan rapidísimo y los Yetis son gruesos y duros. Kael, abrígate más.
+1584	Guardián de la Llanura Nevada
+1585	Anillo del Juramento de Sangre
+1586	Máscara de Ojo Sangriento
+1587	Armadura de Linaje de Sangre
+1588	Capa Veloz
+1589	Botas Veloces
+1590	Masa de Magma
+1591	La Masa de Magma deja fuego al morir y los monstruos que lo pisan se aceleran. Elimínalas desde lejos.
+1592	Roqui
+1593	¡Roqui explotó! La vía se vuelve lava
+1594	¡Roqui explota al ser derrotado! Elimínalo antes de que se acerque a la muralla. No teme a la magia, lleva armas físicas.
+1595	Eco de Roqui
+1596	Eco de Roqui: pisotea y destroza rocas. Actúa como Roqui con el doble de vida.
+1597	El eco de Roqui se desmoronó en un montón de piedritas. Atlas las apiló al pie de la muralla.
+1598	Roqui es el guardián de la grieta. Dice que el pequeño de allí dentro nunca ha tenido amigos.
+1599	¡Roqui explotó junto a la muralla!
+1600	Vuela por la vía y regresa, golpeando a cada monstruo una vez de ida y otra de vuelta. El golpe de regreso llega por la espalda e ignora escudos.
+1601	Lana
+1602	Lana más gruesa: absorbe el 70% de la vida en lana antes de que empiece a bajar la vida.
+1603	Tijeras de Esquilar
+1604	Guerrero de la Torre
+1605	Rey demonio {0}% · Fuerza ×{1}
+1606	¡Va a pisotear!
+1607	¡Viene un vendaval!
+1608	¿Quieres que te arme de nuevo?
+1609	También puedes cambiar a dificultad Fácil en Ajustes
+1610	De noche el viejo castillo se ilumina con luz de luna azul. Las Bolas de Sombra Lunar que cayeron de la grieta todavía recuerdan cómo morder la muralla.
+1611	Alcance −30% de noche. Los Murciélagos Vampiro cambian de vía a menudo y los Asesinos de las Sombras aparecen de repente.
+1612	Alcance −30% de noche. ¡Los Peces Voladores llegan de un salto y los Asesinos de las Sombras aparecen de repente!
+1613	Alcance −30% de noche. Las púas de los erizos dañan a los suyos, espera a que se amontonen para atacar.
+1614	Alcance −30% de noche. Los Diablillos de Brasas se quedan lejos y lanzan bolas de fuego, no dejes que desgasten la muralla poco a poco.
+1615	Alcance −30% de noche. Los Espectros solo reciben 15% del daño físico; los hechizos y las quemaduras funcionan mejor.
+1616	Alcance −30% de noche. Los carros y los lobos salen de la oscuridad y llegan a la muralla en un parpadeo.
+1617	Yelmo de Búho Nocturno
+1618	Batalla Nocturna
+1619	Cien niveles, cien defensas. Tinti volvió y la grieta se cerró. La muralla sigue siendo la misma, pero el hogar que hay detrás creció muchísimo. (Fin de The Last Bastion)
+1620	La mitad de los ataques físicos pasan de largo porque flota.
+1621	Cuando una oleada ya apareció por completo, toca "Adelantar" para invocar la siguiente de inmediato. Los segundos restantes de la cuenta regresiva se convierten en cobre.
+1622	Lanza dos bumeranes a la vez (esta vía + la contigua). Los impactos ralentizan al objetivo 40%.
+1623	Dispara 3 a la vez, +50% de daño a voladores
+1624	Dispara 3 virotes de fuego a la vez; cada uno incendia a su objetivo, +50% de daño a voladores.
+1625	Dispara 3 virotes a la vez a 3 objetivos distintos, +50% de daño a voladores. Menos potente con pocos objetivos.
+1626	Dispara 5 flechas a la vez, +60% de daño a voladores, ignora 20% de armadura.
+1627	Seguro es el último tramo. Defiende la muralla; esta vez, también por todos los ecos.
+1628	Uno Dos Tres Cuatro Cinco Seis Siete Ocho Nueve Diez
+1629	Equipo recomendado automático
+1630	Un buen par de zapatos: rápido para correr y firme al detenerse.
+1631	Salta más lejos.
+1632	Armadura de Médico
+1633	Equipo recomendado para este nivel:
+1634	Límite alcanzado
+1635	Leído {0} / {1}
+1636	Copiado al portapapeles
+1637	Cambiado a "{0}", Kael sale a luchar
+1638	¡Ya llevas {0} minutos defendiendo!
+1639	Nivel máximo
+1640	Elegido:
+1641	Adquirido
+1642	Superado en dificultad Desafío
+1643	Equipado
+1644	Equipado {0} · Mochila {1}
+1645	Muestras de música: banco de sonidos FluidR3_GM (Frank Wen), CC BY 3.0, obtenido vía gleitz/midi-js-soundfonts
+1646	Volumen de música
+1647	Efectos de sonido
+1648	Volumen de efectos
+1649	Plata
+1650	Monedas de plata
+1651	Nivel de plata · específico
+1652	Las monedas de plata desbloquean habilidades y equipo fino.
+1653	Corona de Plata
+1654	Carcaj Guía de Almas
+1655	Sigilo
+1656	Héroe
+1657	El héroe no se puede paralizar ni aturdir
+1658	ATQ del héroe +25% durante 8 segundos.
+1659	Reducción de velocidad de ataque sobre el héroe −60%
+1660	Colgante de Ojo de Águila
+1661	Capa de Alas de Águila
+1662	Colgante de Pluma de Águila
+1663	Sombrero de Pluma de Águila
+1664	Ojo de Águila
+1665	Luciérnaga
+1666	Máscara de Hoja de Sombra
+1667	Cuchillo en la Sombra
+1668	Tener las 6 armas
+1669	Jamás Caída
+1670	Carcaj de Permafrost
+1671	Baluarte Eterno
+1672	Capa Eterna
+1673	Reloj de Arena Eterno
+1674	Corazón de Héroe
+1675	Carcaj Fantasma
+1676	Diseño de juego · Programación · Arte · Sonido
+1677	Botas de Guardabosques
+1678	Así que tener un hogar se siente así de cálido y acogedor.
+1679	Concede Deseos
+1680	¿Alguien vive aquí? ¡Entonces con más razón hay que registrarlo! ¡Clac! (cierra la concha)
+1681	Grueso y duro, se cura despacio si pasan 2 segundos sin recibir golpes. Concentra el fuego y elimínalo de una vez.
+1682	Capa de Ascuas
+1683	Red de Pesca
+1684	Encontrar 30 tipos de monstruos
+1685	Monstruos encontrados
+1686	Encontrar todos los monstruos
+1687	Capa Curativa
+1688	Arma Primitiva
+1689	Refuerzos
+1690	Ánimo de refuerzos: en tu próximo intento de este nivel, ATQ y muralla +{0}%
+1691	A distancia
+1692	A distancia: se queda lejos y escupe veneno a la muralla, envenenándola poco a poco.
+1693	Sigiloso a distancia y no se le puede atacar. También cambia de vía a escondidas y solo aparece cerca de la muralla.
+1694	Yelmo de Largavista
+1695	Vista Lejana
+1696	Espectro
+1697	Carcaj de Luz de Luna
+1698	Primera Visita Bajo la Luna
+1699	Vendaval Lunar
+1700	Castillo de Sombra Lunar
+1701	Guardián de Sombra Lunar
+1702	Conejo de Sombra Lunar
+1703	Los Conejos de Sombra Lunar y los Murciélagos Vampiro revolotean sin parar, no esperes golpear siempre al mismo.
+1704	Bola de Sombra Lunar
+1705	Las Bolas de Sombra Lunar se curan solas si no las golpean: no las dejes respirar.
+1706	Leer
+1707	Guardián de las Nubes
+1708	Reino de las Nubes
+1709	Oveja Nube
+1710	Lana de Oveja Nube −60%
+1711	A la Oveja Nube hay que esquilarla primero y, ya esquilada, corre rapidísimo. ¡Elimínala de una sola vez!
+1712	Capa de Alondra
+1713	Lluvia de Meteoritos
+1714	Cañón Meteoro
+1715	Reintentar
+1716	Regeneración
+1717	Jugar un rato más
+1718	Superar 10 niveles en dificultad Desafío (conseguir 10 coronas)
+1719	Reclamar aquí
+1720	Pausa
+1721	Parpadea, mira a lo lejos y bebe un poco de agua. El Abuelo Rey cuidará la muralla un rato.
+1722	Yelmo Mata-dragones
+1723	El campo de batalla ahora tiene 4 vías. Los ataques en área y las habilidades globales importan cada vez más.
+1724	Carga de Carros
+1725	Torrente de Carros
+1726	Hospital de Campaña
+1727	Batalla
+1728	Batallas {0} · Victorias {1} · Derrotados {2} · Interrupciones {3} · Adelantos {4}
+1729	Batallas {0} · Victorias {1} · Monstruos derrotados {2}
+1730	Batallas
+1731	Se activa automáticamente al empezar la batalla: +30% de monedas de cobre en este nivel.
+1732	Ajustes de batalla
+1733	Batalla en pausa. Elige una carta de suministro; su efecto dura hasta el fin del nivel (colores de menor a mayor: azul, morado, rojo, dorado; cuanto más alto, más fuerte). También puedes elegir con 1 / 2 / 3.
+1734	En batalla, toca un botón de habilidad (o pulsa 1 / 2 / 3) para lanzar habilidades activas y pulsa Q / W / E / R / Z / X / C para usar objetos (hasta 3 de cada uno, uno por uso, con recarga tras cada uso; primero compra los objetos en la tienda y luego equípalos).
+1735	Tambor de Guerra
+1736	Tambores de Guerra Atronadores
+1737	Lluvia de Flechas lanzada con el Tambor de Guerra activo: +30% de flechas
+1738	Samurái Sengoku
+1739	Tras la batalla
+1740	Poder
+1741	Estandarte de Guerra
+1742	Antes de la batalla
+1743	Preparativos · Nivel {0}
+1744	Casco de Guerrero
+1745	¡Se abrió! ¡Ataca ya!
+1746	¡Abierta! ¡Ataca durante {0} s!
+1747	Capítulo
+1748	Fila larga, Goblins con escudo de madera
+1749	Las estrellas de la túnica brillan solas y el sombrero es más alto que quien lo lleva.
+1750	Colgante de la Riqueza
+1751	El pantano está lleno de niebla y de ranas venenosas que croan. Por primera vez, la muralla se siente un poco fría.
+1752	Las Fantasmitas del pantano casi no temen a los ataques físicos y las ranas venenosas escupen veneno desde lejos. ¡Recuerda usar "Amenaza primero" contra ellas!
+1753	Una niña con un farol de luciérnagas en el pantano. ATQ ×0.92, vel. de ataque ×1.05; su alcance no baja de noche, daño físico +20% a espíritus; cada 12.º ataque suelta 3 luciérnagas (cada una causa daño mágico de ATQ ×0.6).
+1754	Guardián del Pantano
+1755	Bengala
+1756	¡Esto no es una concha, es la muralla! ¡Adentro vive mucha gente!
+1757	Esta vez no voy a llover. ...Solo un poquito, para darle un baño a la casa nueva.
+1758	Eso suena exactamente igual que antes.
+1759	Este es el punto más profundo de la grieta, donde ya ni se distingue el cielo de la tierra.
+1760	Se acabó este objeto
+1761	Los niños del pueblo me dicen Abuela Sopa y me encanta.
+1762	Guardián de la Torre
+1763	Cañón Sísmico
+1764	Artesano del Vapor
+1765	Todo el nivel es de noche cerrada: alcance −30%
+1766	Podrás cambiarlo cuando quieras en Ajustes.
+1767	Desde entonces, 6 segundos después de empezar cada oleada cae fuego del cielo y causa daño mágico de ATQ ×4 a todos los monstruos
+1768	Entendido
+1769	Entendido (Espacio)
+1770	Solo se puede usar el arco de madera
+1771	¡Apenas una vía se ponga roja, concentraré el fuego para detener tu embestida!
+1772	Adelantar oleadas al menos 3 veces y superar el nivel
+1773	Curación
+1774	Cura más a las aves voladoras.
+1775	Armadura Curativa
+1776	Colmillo del Fin
+1777	Pupila del Fin
+1778	Bomba Pesada
+1779	Repetición: la recompensa de victoria se reduce a la mitad (monedas de cobre)
+1780	Armadura Pesada
+1781	Monstruos de armadura pesada, monstruos agrupados, jefes
+1782	Monstruos de armadura pesada, jefes
+1783	Asalto Blindado
+1784	¡Asalto blindado! El bastón mágico, el cañón y "Perforar" son la clave en este nivel.
+1785	¡Asalto blindado! Los Yetis tienen mucha armadura física. La magia, los cañones y "Perforar" son la clave.
+1786	Flecha Pesada · Rompearmaduras
+1787	Volver a ver
+1788	Reiniciar
+1789	Una armadura bermellón, una luna creciente brillante en el yelmo y una banderita en la espalda.
+1790	Habilidades activas
+1791	Habilidades activas (tocar para lanzar en batalla)
+1792	Ranuras de habilidades activas
+1793	Recarga de habilidades activas −{0}%
+1794	Recarga de habilidades activas −15%
+1795	Recarga de habilidades activas −20% y reinicia al instante todas las recargas
+1796	Recarga de habilidades activas −40% y reinicia al instante todas las recargas
+1797	Recarga de habilidades activas −5%
+1798	Recarga de habilidades activas −8%, ignora +10% de armadura
+1799	¡A cocinar! {0} monstruos fortalecidos
+1800	Aliados de batalla
+1801	Equipo
+1802	Equipo +1
+1803	Botas Cazaestrellas
+1804	Prepárate... {0}
+1805	Quemadura
+1806	Morado
+1807	Autodestrucción
+1808	Automático (se activa en móvil)
+1809	Lanzamiento automático: No
+1810	Lanzamiento automático: Sí
+1811	A mitad de camino se entierra (no se le puede atacar) y solo sale cerca de la muralla.
+1812	Diam.
+1813	Excavar
+1814	Diamantes
+1815	Diamantes (solo se consiguen en la Torre Demoníaca de Nueve Pisos)
+1816	Carcaj Taladro
+1817	Máx.
+1818	Mejor piso {0} · Total {1} diamantes
+1819	Mejor récord: piso {0} · {1} diamantes
+1820	Mejor combo
+1821	Mejor combo {0}
+1822	The Last Bastion
+1823	¡Última oleada!
+1824	El monstruo pequeño más básico, lento y pesado.
+1825	Más cercano primero
+1826	Más fuerte primero
+1827	Más débil primero
+1828	La moneda más rara, solo se consigue en la "Torre Demoníaca de Nueve Pisos" y no se puede cambiar. Sirve para comprar el equipo dorado de la pestaña Equipo (salvo la 1.ª pieza de cada tipo, todo cuesta solo diamantes, desde 10) y para mejoras de nivel muy alto (a partir de miles de niveles).
+1829	Jefe final. Tinta, clones, visión bloqueada: el origen de la Grieta del Caos.
+1830	Jefe final. Una bolita de color tinta que crece: invoca sombras de tinta, clones, forma de Rey Demonio y furia de la grieta.
+1831	¡Batalla final! Tinti tiene cuatro fases: eliminar esbirros, golpear clones, interrumpir el golpe fuerte y derrotarlo contra reloj.
+1832	El tercer hueso desde la izquierda quedó al revés otra vez, pero no importa.
+1833	Habilidad de jefe
+1834	Azote de Jefes
+1835	Jefe primero
+1836	Claude (junto a ti)
+1837	Kael, Tinti, ¡a casa a cenar! ¡Hoy el reino les ofrece un banquete de victoria!
+1838	Kael, ¿me prestas tu casco como trampolín?
+1839	Kael, este es el último tramo. Todo el reino está detrás de la muralla animándote.
+1840	Kael, Lyra, algo anda mal. Por la noche en el Pueblo Concha se abrió una grieta morada en el cielo y lo que cayó de ella... son monstruos que ya derrotamos.
+1841	Kael, Lyra, ¡llegó una carta de la costa! Los tres días de lluvia de Trueni hicieron subir la marea y se llevaron las casas de los habitantes de la bahía.
+1842	¡Kael! ¡En la pradera aparecieron muchos monstruos viscosos y vienen hacia la muralla!
+1843	La hermana menor de Kael. ATQ ×0.82, vel. de ataque ×1.2; cada 10.º ataque toca una campanita y aturde 0.5 s a los monstruos pequeños alrededor del objetivo.
+1844	El casco de Kael sigue sonando. ...Ya me acostumbré.
+1845	Kael ataca automáticamente. ¡Las Masas Verdes empiezan a morder la muralla en cuanto llegan a ella!
+1846	Kael corrió hacia allá y lo levantó en brazos. El casco hizo "clang".
+1847	Kael dispara automáticamente desde la muralla y los monstruos llegan por las vías desde la derecha. Pierdes si la vida de la muralla llega a cero.
+1848	Nv. {0} · Recarga {1} s
+1849	Nv. {0} desbloquea maestría
+1850	Nv. {0} permite ascender
+1851	¿Lyra? ...Está bien, haremos guardia por turnos.

@@ -1,0 +1,463 @@
+463	Monstro-Papagaio
+464	Esquiva do Monstro-Papagaio −25%
+465	Os Monstros-Papagaio não esquivam relâmpagos, e os saltos encadeiam vários deles
+466	Os Monstros-Papagaio esquivam ataques físicos das armas. Cajado, Orbe Elétrico, Chuva de Setas e Golpe de Trovão não se esquivam!
+467	Festival dos Papagaios
+468	Ataque do Enxame de Abelhas
+469	Capa de Pena de Fénix
+470	Fortaleza Flutuante
+471	Armadura de Placas Rúnicas
+472	Coroa Rúnica
+473	Botas da Sorte
+474	Copiar
+475	Armadura de Aço
+476	Elmo de Aço
+477	Capa de Arame
+478	Yeti de Aço
+479	Os Yetis de Aço temem a magia, os Golems de Ferro Fundido temem ataques físicos. Troca de arma ou usa habilidades, tu escolhes.
+480	Os Yetis de Aço temem a magia e as Tartarugas-Escudo protegem os monstros próximos. Elimina primeiro a Tartaruga-Escudo e depois usa magia no Yeti de Aço.
+481	Aço e Ferro Fundido
+482	Dano elevado, taxa crítica +12%; as setas perfuram 3 monstros e incendeiam o alvo.
+483	Rápido
+484	Posto Avançado dos Goblins
+485	Goblin Soldado
+486	Mano! Também quero defender a muralha! Quando o meu sino toca, os monstrinhos todos se assustam!
+487	Recorde pessoal: vaga {0} · {1} derrotados
+488	Escolhe automaticamente armas, habilidades e objetos conforme os monstros deste nível.
+489	Mais armas: desbloqueia-as no separador Armas da página Equipamento
+490	Pior ainda: ouviram dizer que em terra há uma «concha grande e robusta» e estão a fazer fila para se mudarem para lá—
+491	Canhão de Cerco
+492	Os monstros que atacam a muralha sofrem dano refletido igual a ATQ do herói ×20% / nível.
+493	ATQ
+494	ATQ +{0}
+495	ATQ +{0}%
+496	ATQ +12%
+497	ATQ +15%, taxa crítica +10%, dano crítico +25%
+498	ATQ +20%, velocidade de ataque +15%, taxa crítica +8%
+499	ATQ +3
+500	ATQ +3; duração da Zona de Gelo e do Frasco Gelado +30%
+501	ATQ +3; dano a Bosses (incl. tentáculos) +20%
+502	ATQ +3%
+503	ATQ +35%, velocidade de ataque +25%, taxa crítica +15%, dano crítico +50%
+504	ATQ +5, taxa crítica +5%
+505	ATQ +5%
+506	ATQ +6%, dano crítico +20%
+507	ATQ +8%, os ataques normais têm 15% de hipótese de incendiar o alvo
+508	ATQ ×5
+509	ATQ ×6
+510	ATQ ×7 e encadeia a 3 monstros próximos (50% cada)
+511	Velocidade de Ataque
+512	Velocidade de ataque +{0}%
+513	Velocidade de ataque +10%
+514	Velocidade de ataque +12%
+515	Velocidade de ataque +15%, dano sofrido pela muralha −10%
+516	Velocidade de ataque +3%
+517	Velocidade de ataque +35% durante 9 s.
+518	Velocidade de ataque +50% durante 8 s.
+519	Velocidade de ataque +6%; dano a monstros voadores +15%
+520	Velocidade de ataque +8%, dano sofrido pela muralha −8%; a muralha cura mais 2% no fim de cada vaga
+521	Velocidade de ataque +8%, alcance +3%
+522	Velocidade de ataque +8%; os ataques normais têm 20% de hipótese de incendiar o alvo
+523	VA +50%, 8 s
+524	VA +65%, 10 s
+525	VA +80%, 10 s, taxa crítica +10% durante esse tempo
+526	VA −{0}%
+527	Parabéns por passares «{0}»! Defendeste todos os {1} capítulos. Volta atrás para ganhar três estrelas e coroas, ou bate novos recordes no Modo Infinito.
+528	Parabéns por passares «{0}»! O novo capítulo «{1}» já está aberto.
+529	Comprar
+530	Rã Venenosa Coaxante
+531	Grunhido? Como soubeste que eu ia carregar?
+532	Glub! Hoje arranjei os telhados de oito casas ao mesmo tempo com as minhas oito patas.
+533	Glub… já não consigo carregar mais. Desculpa, eu só queria uma casa onde coubesse.
+534	Glub glub! Esta concha é tão grande e robusta, mesmo à medida das minhas oito patas!
+535	Grunhido… a cabeça já não anda à roda. Só me lembro de um vento negro vindo do deserto, e depois deixou de me importar com tudo, só queria carregar.
+536	Grunhido… os pequenos dizem que tenho um ar giro a varrer.
+537	Rei Gulu
+538	Seguidor do Rei Gulu.
+539	O Rei Gulu enfureceu-se: Carga de Javali!
+540	O Rei Gulu entrou em fúria!
+541	O Rei Gulu carrega quando a vida desce abaixo de 60%. Quando a via ficar vermelha, concentra o fogo para interromper a carga!
+542	Grunhido grunhido! O prado agora é meu! Capangas, ao ataque!
+543	Coro do Castelo Antigo
+544	Guarda do Escudo de Osso
+545	Sr. Ossos
+546	Sr. Ossos? Tu não estavas já…
+547	O Sr. Ossos revive uma vez depois de derrotado. Guarda uma habilidade para quando ele se levantar!
+548	Eco do Sr. Ossos
+549	O Sr. Ossos reviveu!
+550	O Sr. Ossos é, na verdade, bem-humorado. Diz que no caldeirão da Avó Caldo está a ferver um enorme tacho de Tinta negra.
+551	Chuva de Setas ao Ritmo do Tambor
+552	Monstros
+553	Os monstros aparecem aleatoriamente dos capítulos desbloqueados, mais fortes a cada vaga.
+554	Maré de Monstros
+555	Os monstros são todos roxos.
+556	Número de monstros +50%
+557	Número de monstros −40%, mas vida +80%
+558	Velocidade dos monstros +30%
+559	Os monstros invadem todos de uma vez e derrotá-los não dá nada; só passar de andar dá diamantes. Os diamantes só se ganham aqui. Quanto mais subires, maior a proporção de reis demónios: 10% no andar 1, 50% no andar 9.
+560	Bestiário
+561	Bestiário {0} / {1}
+562	Vida dos monstros +30%, dano de cerco +15%, cobre ganho +20%
+563	Vida dos monstros +40%, vida da muralha +40%
+564	Vida dos monstros e dano de cerco −25%, para quem quer desfrutar da história
+565	Fechar
+566	Missões de Nível
+567	Missão de nível concluída
+568	Aljava Perfurante
+569	Aura
+570	Aura: enquanto estiver vivo, a velocidade de ataque dos heróis é reduzida. Elimina-o primeiro!
+571	Rola até à muralha e explode, causando muito dano de uma vez. Mata-o sempre ao longe.
+572	Cato Rolante
+573	Avô Rei
+574	Príncipe Gelatina
+575	O Príncipe Gelatina divide-se quando é atingido. O dano em área (Chuva de Setas, Bumerangue) limpa depressa as gelatinas pequenas.
+576	Gelatinas pequenas separadas do Príncipe Gelatina.
+577	Afinal o Príncipe Gelatina é um rapazinho saltitante. Diz que a Tinta negra veio de muito, muito longe.
+578	Ainda não acabou…
+579	Ainda não tens habilidades. Vai à página Habilidades e desbloqueia-as com prata.
+580	Ainda não encontrado.
+581	Ainda não tens equipamento para esta ranhura. Compra na página Equipamento.
+582	Continua a não haver ninguém para me cortar as unhas.
+583	E também caranguejos-eremitas, cavalos-marinhos, tartarugas-escudo… todos precisam de uma casa nova!
+584	Tens um desafio por liquidar.
+585	A areia junto ao mar está morna. Os caranguejos-eremitas, com as conchas às costas, seguem em fila para a muralha, como se mesmo a tomassem pela sua nova casa.
+586	Ouriço-do-Mar
+587	Os Ouriços-do-Mar ferem os monstros próximos quando morrem, por isso ataca-os quando entrarem no meio da multidão! As bolhas dos cavalos-marinhos bloqueiam um ataque; a Besta de Repetição e o Orbe Elétrico rebentam-nas mais depressa.
+588	Capitão Pirata
+589	Cavalo-Marinho
+590	Estreito das Gaivotas
+591	Coro da Baía
+592	Guardião da Baía
+593	Geada
+594	Arco de Geada
+595	Aljava de Geada
+596	Ponta de Seta de Geada
+597	Elmo de Ferro Frio
+598	Sem um arranhão
+599	OK
+600	Pronto
+601	Pronto, Kael, Lyra. Vamos para casa. Esta noite o reino dá a maior festa de celebração de sempre, e todos os amigos vêm: até as sombras dos ecos trazem bolachas.
+602	Que calor, que calor… até o capacete queima.
+603	Que quentura… as fendas no chão estão cheias de Tinta negra.
+604	Total
+605	A fechar a concha… abre em {0} s
+606	Fechar Diário
+607	Armadura de Obsidiana
+608	Tijolo de Obsidiana
+609	Onde a minha lanterna ilumina no escuro, as minhas setas também chegam. Deixem-me ir convosco!
+610	Varrer tudo!
+611	Bum!
+612	Bum… hoje caiu uma chuvinha e o arco-íris ficou lá bem alto.
+613	Bum. Bum. …Eu não sou o Rochedo. Sou o som dos passos que o Rochedo deixou.
+614	Brum brum! Foram vocês que sujaram o meu arco-íris!
+615	Vermelho
+616	Fita Vermelha
+617	Capa Vermelha
+618	Inundação
+619	Uma inundação varre o campo de batalha: todos os monstros recuam 350 px (Bosses 100 px), sofrem dano de ATQ ×3, e os monstros encharcados sofrem +40% de dano durante 5 s e ficam 60% mais lentos.
+620	Armadura de Pano Grosso
+621	Fuuu! Vou soprar a tua sopa para arrefecer.
+622	Fuuu! Uma rajada empurrou os monstros para a muralha!
+623	Fuuu! A farinha do moinho de vento deu pão para a vila inteira.
+624	Fuuu, fuuu! Quem está a chamar o meu nome?
+625	Fuuu, fuuu! Vocês aí do chão! Foram vocês que sujaram o meu arco-íris?
+626	Fuuu! Vou transformar a muralha inteira num gelado!
+627	Fuuu… os gelados com sabor a Tinta são horríveis. Os de morango são melhores.
+628	Fuuu… estas ligaduras apertam tanto. Um tipo de capa deu-me um frasco de Tinta e disse que, se o bebesse, ficava forte.
+629	Fuuu… de tanto rodar fiquei tonto. Está bem, acredito em vocês.
+630	Sopro
+631	Eco do Sopro
+632	O eco do Sopro deixou-nos a sua última rajada. Empurrou-nos para o ponto mais fundo da fenda.
+633	O Sopro avisa 2 s antes de uma ventania: concentra o fogo para a interromper, ou todos os monstros do campo serão soprados até à muralha!
+634	O Sopro é, na verdade, um moinho que mói farinha para as nuvens. Diz que, para acalmar o Trovão, primeiro é preciso apanhar-lhe os trovões.
+635	O Sopro gira mais depressa!
+636	Pendente de Dente de Tigre
+637	Escudo quebrado!
+638	Guarda
+639	Guarda: os monstros próximos sofrem menos 40% de dano dos ataques dos heróis. Elimina-o primeiro, ou usa habilidades.
+640	Gastar {0} para comprar «{1}»?\nAtributos extra: {2}
+641	Escorregadio
+642	Bem-vindos à Loja de Pérolas da Bebe! Cada pérola está registada.
+643	Mudar de Via
+644	Deserto Dourado
+645	Botas Douradas
+646	Seta da Rejuvenescência
+647	Voltar ao Mapa
+648	Mapa
+649	Recupera 20%
+650	Recupera 25%
+651	Recupera 30% e depois o dano sofrido pela muralha −30% durante 6 s
+652	Recupera 20% da vida máxima da muralha.
+653	Os ecos… não se controlam… fuuu!
+654	Os ecos são, claro, iguaizinhos. Tempestade de areia—levanta-te!
+655	Os ecos não parecem fazê-lo de propósito. Só são acordados uma e outra vez por aquela fenda.
+656	Coro dos Ecos
+657	Bumerangue
+658	Câmbios
+659	Câmbios (troca num só sentido, não se pode reverter)
+660	Um lançador de bolas de fogo voador; cada bola de fogo magoa muito mais do que antes.
+661	Um pequeno dragão voador, tingido de vermelho pelo caos.
+662	Um curandeiro voador que paira ao longe a curar os monstros próximos. Usa «Ameaça Primeiro» ou «Voadores Primeiro» para o atacar antes.
+663	Tronco Andante
+664	Um escorpião que se enterra, coberto por uma camada de armadura de osso.
+665	Um yeti coberto de placas de aço: quase imune a golpes físicos; só a magia resulta.
+666	Cheio de eletricidade. Se morrer perto da muralha descarrega e atordoa os heróis por momentos, por isso mata-o ao longe.
+667	Exterminador do Caos
+668	Canhão
+669	Chuva de Bolas de Fogo
+670	Debaixo do vulcão há uma enorme fenda, e é dela que a Tinta negra jorra. Tenho um pouco de medo, mas não recuo.
+671	Capa de Rato de Fogo
+672	Chama
+673	As zonas de fogo e as vias de lava não afetam os monstros
+674	Ponta de Seta Flamejante
+675	Diabrete de Fogo
+676	Os Diabretes de Fogo ficam ao longe e atiram bolas de fogo. Experimenta «Ameaça Primeiro»!
+677	Céu de Chuva de Fogo
+678	Obtido
+679	Ganha 50 coroas
+680	Ganha três estrelas em todos os níveis (incluindo os capítulos 6 a 10)
+681	Estrelas ganhas {0} / {1}
+682	Derrota {0}
+683	Derrota {0}
+684	Derrota o Inky
+685	Derrota todos os 10 Bosses (incluindo mini-Bosses)
+686	Mais derrotados
+687	Mais derrotados: {0}
+688	Pilhagem (derrotados: {0})
+689	Aljava Polar
+690	Botas de Passo Veloz
+691	Ataque Surpresa
+692	Marcha Forçada
+693	Impaciente
+694	Botas Relâmpago
+695	Ventania
+696	Capa da Ventania
+697	Botas Ligeiras
+698	Capa de Sombra Veloz
+699	Concentra o fogo para interromper a carga!
+700	Concentra o fogo para interromper a ventania!
+701	Concentra o fogo para interromper o raio!
+702	Concentra o fogo para interromper a pancada!
+703	Um espírito quase imune a ataques físicos: só 15% do dano físico resulta. Usa magia.
+704	Recorde: vaga {0}
+705	Habilidades
+706	Melhora as habilidades para Nv2 com prata; o Nv3 custa ouro e traz um efeito transformador.
+707	Habilidade congelada!
+708	Mestre das Habilidades
+709	Todas as Habilidades
+710	Sinergia de Habilidades
+711	Habilidades automáticas
+712	Continuar Andar {0}
+713	Continuar Jogo
+714	Continuar a Lutar
+715	Caranguejo-Eremita
+716	Mudança dos Caranguejos-Eremitas
+717	Os Caranguejos-Eremitas recolhem-se na concha a cada 4 golpes. Não te fixes só num. A Besta de Repetição e o Orbe Elétrico espalham o fogo por vários!
+718	Tempo na concha dos Caranguejos-Eremitas −60%
+719	Reforçar
+720	Tijolo Reforçado
+721	Poção de Aceleração
+722	Espetos
+723	Um capuz pontiagudo com uma pena vermelha e uma aljava pendurada às costas.
+724	Aguentaste {0} vagas!
+725	Abranda 60%, 6 s
+726	Abranda 70%, 7 s
+727	Abranda 75%, 8 s; no fim congela a via inteira durante 1,5 s
+728	Concurso de Tosquia
+729	Respingo
+730	Raio de respingo +20, o dano de respingo deixa de diminuir (100%)
+731	As setas atravessam até 5 monstros na mesma via (80% de dano cada), ignorando 20% da armadura.
+732	Aljava
+733	Depois de acertar, a seta continua a voar e atinge até mais 2 monstros atrás na via (40% de dano)
+734	Chuva de Setas
+735	Deixa comigo, Avô Rei! …Ups, o capacete escorregou outra vez.
+736	Bastião do Recife
+737	Personagens
+738	Guarda-roupa
+739	Tutorial
+740	Antídoto
+741	Desbloquear
+742	Desbloqueia velocidade 3×: o botão de velocidade em baixo à direita da batalha
+743	Desbloqueia a «Vila do Reino» (🏘 no mapa) e o «Desafio Diário» (em baixo à direita do mapa)
+744	Desbloqueia o «Modo Infinito» (em baixo à direita do mapa)
+745	Desbloquear {1} n.º {0}
+746	Desbloqueia o capítulo 8 «Castelo da Sombra da Lua». Monstros-eco caíram da Fenda do Caos
+747	Desbloqueia o capítulo 9 «Fornalha de Ferro Rubro»
+748	Desbloqueia o capítulo 6 «Reino das Nuvens»
+749	Desbloqueia o capítulo 7 «Baía de Coral» e a «Torre Demoníaca de Nove Andares» (em baixo à direita do mapa)
+750	Desbloqueia o capítulo 10 «Reino do Céu Vazio», o último capítulo
+751	Desbloqueia todas as habilidades ativas e passivas
+752	Desbloqueia a arma recomendada «{0}»: {1} ({2})
+753	Regra de hoje «{0}»
+754	Desafio de hoje concluído!
+755	Concluído hoje
+756	Hoje saltei demasiado alto e bati num pombo.
+757	Hoje varri uma a uma todas as folhas caídas no prado!
+758	A recompensa de hoje já foi recebida
+759	Hoje é o meu primeiro dia na muralha. Os monstros do prado têm todos um bocadinho de Tinta negra em cima. Que estranho.
+760	Ouro
+761	Moedas de ouro
+762	Nível de ouro · trunfos que viram o jogo
+763	As moedas de ouro servem para comprar equipamento lendário, armas de alto nível e habilidades Nv3.
+764	Lingote de Ouro
+765	Escudo-pirâmide! Quebra-o com magia!
+766	A pirâmide foi arrendada para biblioteca e está muito concorrida.
+767	Progresso guardado. Os navegadores não deixam uma página fechar o próprio separador, por isso fecha tu este separador ou janela. (Quando abres o jogo pelo ícone «O Último Bastião» no ambiente de trabalho, este botão fecha o jogo diretamente.)
+768	Evoluir
+769	Depois de evoluir
+770	Espinhos
+771	Por um Triz
+772	Aljava de Aço Fino
+773	Bom
+774	Desafio de Elite
+775	Desafio de Elite: os mini-Bosses dos primeiros quatro capítulos regressam, dois de cada vez! Muda para «Boss Primeiro» ou «Ameaça Primeiro» e não deixes os dois Bosses chegarem juntos à muralha.
+776	Preciso
+777	Estática
+778	Nove andares superados! Conquistaste a torre demoníaca!
+779	Torre Demoníaca de Nove Andares
+780	Torre Demoníaca de Nove Andares · Andar {0}
+781	Um rei demónio da Torre Demoníaca de Nove Andares: sem ações especiais, só investe contra a muralha.
+782	Leva um pesado escudo de osso, quase imune de frente: ataca-o por trás com o Bumerangue.
+783	Leva um escudo de madeira, muito resistente de frente. O regresso do Bumerangue e a Chuva de Setas contornam o escudo.
+784	Gigante
+785	Tigela do Tesouro
+786	Escorpião Coveiro
+787	Equilibrado
+788	Coroa do Equilíbrio
+789	Nhac… na verdade só queria que alguém me cortasse as unhas.
+790	Nhac nhac, hoje cortei vinte franjas.
+791	Nhac nhac! As minhas pinças grandes esmagam tudo!
+792	Clac… obrigado por me deixares desfazer uma vez. Os ossos esticaram-se bem.
+793	Clac clac, o concerto de ossos é todos os sábados à noite!
+794	Clac clac, bem-vindos ao meu concerto de ossos!
+795	Ligado
+796	Iniciar
+797	Iniciar Desafio
+798	Iniciar Desafio ({0})
+799	Iniciar Jogo
+800	Iniciar Batalha
+801	Iniciar Batalha ›
+802	Aplica-se automaticamente no início da batalha
+803	Disponível
+804	Mas o Rei Bobo não vai ouvir. Tem oito patas, nenhuma concha do mar é grande o suficiente para ele, e já há dias que cobiça a vossa muralha.
+805	Mas o Trovão não vai acreditar. É a nuvem mais zangada do céu e, desde que o arco-íris ficou sujo, já troveja há três dias.
+806	Mas eles já tinham feito as pazes. Porque voltaram?
+807	Mas esta é a casa de todos!
+808	Vazio
+809	Espaço pausa, F alterna velocidade 2×, N chama a próxima vaga mais cedo, T muda a prioridade de alvo.
+810	Ataque Aéreo
+811	Ataque aéreo! Um Dragão de Geada tingido de vermelho pelo caos e um bando de diabretes que atiram bolas de fogo.
+812	Ataque aéreo! O Fantasma da Lanterna esconde-se atrás a curar sem parar. Encontra-o primeiro.
+813	Ataque aéreo! Muitos monstros no céu e, no chão, esquadrões escoltados por Tartarugas-Escudo. Não olhes só para o céu.
+814	Ataque aéreo! Os Balões do Vazio libertam quatro Goblins Soldados ao aterrar.
+815	Nível de ataque aéreo com muitos Espíritos de Gelo. «Voadores Primeiro» com Besta de Repetição ou Orbe Elétrico!
+816	Nível de ataque aéreo; os diabretes atiram bolas de fogo ao longe. Experimenta «Ameaça Primeiro» ou «Voadores Primeiro»!
+817	Nível de ataque aéreo! Os morcegos mudam de via, por isso os ataques em área são melhores do que apontar.
+818	Nível de ataque aéreo! Experimenta mudar a prioridade de alvo para «Voadores Primeiro», ou equipa uma Besta de Repetição.
+819	Nível de ataque aéreo! Os abutres voam depressa. A Besta de Repetição e «Voadores Primeiro» são boas escolhas.
+820	Circo Aéreo
+821	Um carrinho conduzido por um esqueleto que embate a grande velocidade e magoa muito a muralha.
+822	Guarda Esqueleto
+823	Os Guardas Esqueleto levam pesados escudos de osso, quase imunes de frente. O Bumerangue e a Chuva de Setas chegam-lhes às costas.
+824	Carro de Guerra Esqueleto
+825	Um coelho tão rápido que mal se vê; muda de via e os ataques físicos falham-lhe um quarto das vezes.
+826	Ataque rápido · Controlo
+827	Monstros rápidos: coelhos, lobos, carros de guerra
+828	Fúria
+829	Fervor
+830	Armadura
+831	Azul
+832	Uivo do Lobo
+833	Matilha de Lobos
+834	Colar de Dente de Lobo
+835	Orbe Elétrico
+836	Trovão
+837	O Trovão está a carregar! Concentra o fogo para interromper enquanto carrega!
+838	O Trovão só gostava demasiado daquele arco-íris. Agora, depois de cada chuva, faz questão de o pendurar bem alto. Os guardas da muralha do reino defenderam tanto a terra como o céu.
+839	O Trovão tem três fases: invocar Bolinhos de Trovão e Aves Arco-Íris, carregar um raio (interrompe-o!) e tempestade (tudo acelera, por isso despacha-te).
+840	Aljava do Trovão
+841	Sala do Trovão
+842	Orbe do Deus do Trovão
+843	Amuleto do Trovão
+844	Botas do Trovão
+845	Golpe de Trovão
+846	O Golpe de Trovão causa ×1,3 de dano a monstros numa Zona de Gelo (abrandados ou congelados)
+847	Bolinho de Trovão
+848	Os Bolinhos de Trovão atordoam o Kael se morrerem perto da muralha. Elimina-os enquanto ainda estão longe!
+849	Nuvem de Trovoada
+850	Ativa a Sinergia de Habilidades 50 vezes no total (Estilhaçar, Chuva de Setas ao Ritmo do Tambor)
+851	Rebenta 100 bolhas no total
+852	Interrompe 10 vezes a carga de Bosses no total
+853	Ganha 150 estrelas no total
+854	Ganha 50 estrelas no total
+855	Total derrotados
+856	Derrota 1000 monstros no total
+857	Derrota 10 000 monstros no total
+858	Chama vagas mais cedo 30 vezes no total
+859	Escolhe 50 cartas de provisões no total
+860	Recarga {0} s
+861	Em recarga, faltam {0} s
+862	Coroa da Alvorada
+863	Recupera de imediato 20% da vida da muralha, dano sofrido pela muralha −8%
+864	Recupera de imediato 45% da muralha
+865	Repõe de imediato todas as recargas de habilidades, ATQ +35% durante 30 s
+866	Besta de Repetição
+867	Besta em Cadeia
+868	Relâmpago em Cadeia
+869	Tiro Rápido
+870	Tiro Rápido!
+871	Aljava Rápida
+872	Aliança
+873	Nível de aliança: todas as vias geram monstros ao mesmo tempo e aparecem todos os habitantes da Baía!
+874	Nível de aliança: todas as vias geram monstros ao mesmo tempo e todos os trabalhadores da Fornalha estão a postos!
+875	Nível de aliança: todas as vias geram monstros ao mesmo tempo. Prepara-te para o físico e para a magia.
+876	Nível de aliança: todas as vias geram monstros ao mesmo tempo e todos os ecos do Vazio atacam juntos!
+877	Nível de aliança: todas as vias geram monstros ao mesmo tempo e aparecem todos os habitantes da Sombra da Lua!
+878	Nível de aliança: todas as vias geram monstros ao mesmo tempo e aparecem todos os monstros das Nuvens!
+879	Nível de aliança: todas as vias geram monstros ao mesmo tempo! Ataques em todo o campo, como Chuva de Setas e Orbe Elétrico, funcionam melhor.
+880	Nível de aliança: todas as vias geram monstros ao mesmo tempo! As habilidades em todo o campo e o Orbe Elétrico são essenciais.
+881	Capa do Purgatório
+882	Elmo com Cornos do Purgatório
+883	Armadura Pesada do Purgatório
+884	A arrefecer… que bem sabe.
+885	Um pequeno boneco de neve feito de duas bolas empilhadas; ao morrer, transforma-se em 2 montinhos de neve.
+886	Chapéu de Vigia
+887	Botas Vendaval
+888	Encanto Flamejante
+889	Aljava Flamejante
+890	Besta Flamejante
+891	Elmo do Sol Ardente
+892	Aljava de Caçador
+893	Capuz de Caçador
+894	Instinto de Caçador
+895	Botas de Caça
+896	Do outro lado da fenda há um lugar ainda mais quente. Os ecos foram acordados pelas chamas de lá.
+897	Do outro lado da fenda ergue-se uma fornalha gigante. Ninguém a alimenta, mas arde mais do que um vulcão.
+898	A fenda está a crescer. Kael, a origem está no céu lá bem no alto.
+899	Besta Rasga-Céus
+900	Orla da Fenda
+901	Golpe da Fenda {0}
+902	Golpe da Fenda!
+903	Fúria da fenda! Derrota o Inky em 30 s!
+904	A fenda foi-se fechando devagar e o céu voltou a ficar azul-claro.
+905	Entrada da Fenda
+906	Vizinhos {0} / {1}
+907	Patrulheiro da Floresta
+908	Aljava de Erva Espiritual
+909	Botas Ágeis
+910	Aljava Luminosa
+911	Dedos Ágeis
+912	Espírito
+913	Espírito: o dano físico só tem 30% de eficácia. Usa magia contra ele!
+914	Receber {0}
+915	Como funciona: comprar → vai para a mochila → toca em «Equipar +1» para equipar na batalha (ou escolhe na página Equipamento). Ranhuras agora {0} / {1}{2}.
+916	Botas de Luz Fluida
+917	Capa de Meteoro
+918	Aljava de Meteoro
+919	Tornados e empurrões, mais ferozes do que o antigo Sopro.
+920	Armadura de Escamas de Dragão
+921	Capa de Escamas de Dragão
+922	Tesouro da Veia do Dragão
+923	Botas da Veia do Dragão
+924	Cavaleiro Dragão
+925	Colar de Dente de Dragão

@@ -53,7 +53,7 @@
 978	Dense swarms, spirits
 979	Dense swarms, little ghosts, low magic-resist monsters
 980	Free
-981	Second Hand Cape
+981	Second-Hand Cape
 982	Fire Extinguisher
 983	Armor-Shred Quiver
 984	Agile Boots
@@ -293,3 +293,171 @@
 1218	Defeat
 1219	Consolation Reward
 1220	Lionheart Crown
+1221	Lion Fang Pendant
+1222	A mason's son carrying a big stone shield. ATK ×0.97; wall takes 12% less damage and heals an extra 3% at the end of each wave.
+1223	A little giant of stacked stones; takes 75% less magic damage. Hit it with physical weapons!
+1224	Gargoyle
+1225	Gargoyle Nest
+1226	Gargoyles fly and wear stone armor, so magic attacks work better than normal attacks.
+1227	Time Cloak
+1228	Time Hourglass
+1229	Time Stop
+1230	Spacetime Cloak
+1231	Spacetime Compass
+1232	Chrono Boots
+1233	Gear of Time
+1234	Time Whirl
+1235	Hourglass of Time
+1236	In use
+1237	World Tree Cape
+1238	World Tree Armor
+1239	Unstoppable
+1240	Unstoppable!
+1241	Try turning on "Auto-cast skills" (bottom right in battle); skills will cast automatically when ready
+1242	Accessory
+1243	Accessory 1
+1244	Accessory 2
+1245	Accessory 3
+1246	It's us, whoosh! Don't blow too hard this time!
+1247	It was an accident! We came to clean it up!
+1248	Godslayer
+1249	Godslayer Quiver
+1250	Godslayer Crown
+1251	Bloodthirst Quiver
+1252	Collect
+1253	Defense successful!
+1254	Defense Records
+1255	Defense Journal
+1256	Wall Guard
+1257	Guard the Wall
+1258	Guardian Rune
+1259	Guardian Armor
+1260	Guard Cape
+1261	First 3-Star Reward
+1262	First Clear Reward
+1263	First clear +{0} silver
+1264	Stats
+1265	Stat Upgrades (Permanent)
+1266	Stump Monster
+1267	Stump Monsters regenerate HP when not being hit. Don't spread your fire; take them down one at a time.
+1268	Double-Layer Quiver
+1269	Twin-Blade Boomerang
+1270	Twin-Feather Quiver
+1271	Frost Dragon
+1272	Frost Dragon Raid
+1273	Queen Frosty
+1274	Queen Frosty froze the wall!
+1275	Echo of Queen Frosty
+1276	Queen Frosty freezes the wall, and it can't be repaired meanwhile. Repair the wall before it freezes!
+1277	Queen Frosty is actually very gentle; she just isn't good with words. Final destination: Lava Rift.
+1278	A baby ice dragon summoned by Queen Frosty.
+1279	Frost Feather Quiver
+1280	Tailwind Flag
+1281	Its spikes hurt more after it dies.
+1282	Leaves a bigger, longer-lasting fire patch on death.
+1283	Leaves a patch of fire on death; monsters passing through speed up.
+1284	Splits into 3 very fast little pumpkins on death.
+1285	Bursts into a spore cloud on death, speeding up nearby monsters. Take it down from a distance if you can.
+1286	Four-Leaf Clover
+1287	Four-Leaf Silver Medal
+1288	Armored wolves charging in groups of four.
+1289	Rush
+1290	Rush level: skeleton chariots deal heavy damage on impact; Frost Field and Frost Bottle are lifesavers.
+1291	Rush level: a wave every 13 seconds! Penguins and wolf packs are both fast, so cast Frost Field and arrow rain in time.
+1292	Rush level: a wave every 14 seconds, no waiting for you to clear the field! Frost Field can hold back the bunny tide.
+1293	Rush level! Big flocks of cloud sheep come wave after wave, and shorn sheep run fast. Frost Field and arrow rain are very useful.
+1294	A small item you carry around.
+1295	Shattered Ice
+1296	Shell Up
+1297	Stays in its shell longer.
+1298	So the rift is your "don't want to be alone"?
+1299	All monsters' speed −3%
+1300	Chain Mail
+1301	Like Mr. Bones, it summons skeletons and revives once after being defeated, only tougher.
+1302	It's saying thank you!
+1303	Cloud-Walker Boots
+1304	Sun Cape
+1305	Lantern Ghost
+1306	Call Early
+1307	Call Early (N)
+1308	Call Early +{0} copper
+1309	Call Early +{0} copper (N)
+1310	Copper coins from calling early ×3
+1311	Increases wall max HP (×1.1 per level).
+1312	A healer with a lantern: bigger range, more healing. Take it out first.
+1313	Shaved!
+1314	Staff of Heaven's Wrath
+1315	Fire from Heaven
+1316	Sky Chorus
+1317	Destiny Boots
+1318	Eye of the Heavens
+1319	Sky-Eye Crown
+1320	Sky Wing Cloak
+1321	Challenge
+1322	Challenge cleared!
+1323	Challenge failed...
+1324	Skip ›
+1325	Leap
+1326	Jumps 3 → 5
+1327	Iron Wall
+1328	Iron Ring Crown
+1329	Is iron armor afraid of magic? Let me try!
+1330	An iron helm with two curved horns, orange beard braided into plaits.
+1331	Iron Wolf
+1332	Iron Wolves charge in groups of four. The fire left by dying Slag Blobs speeds up monsters passing through.
+1333	Iron Wolf Raid
+1334	Sheet Iron Helm
+1335	Iron Plate Armor
+1336	Iron Snowman
+1337	Iron Snowmen split into three little snowballs on death; Ember Imp fireballs hurt much more than before.
+1338	Iron Chariot
+1339	Iron Chariots hit the wall hard and charge fast; Frost Field is a lifesaver.
+1340	Stays far away to put bubbles on monsters; a bubble blocks one attack. Repeating crossbows and lightning orbs pop bubbles quickly.
+1341	Clear level {0}
+1342	After clearing level {0}, a new neighbor will move in here
+1343	Consumable slots unlock after clearing level {0}. You can buy some now.
+1344	Opens after clearing level {0}
+1345	After clearing level {0}, "Gear" opens: helmets, capes, armor, quivers, accessories and boots
+1346	Unlocks after clearing level {0}
+1347	Clear level 1
+1348	Clear level 100 and close the Chaos Rift
+1349	Clear Chapter 8 and let the echoes of Mr. Bones and the Fat Pharaoh rest in peace
+1350	Clear Chapter 2
+1351	Clear Chapter 9 and let the echoes of Rocky and Queen Frosty rest in peace
+1352	Clear Chapter 6 and calm Thunder down
+1353	Clear Chapter 7 and help Bobo find a new home
+1354	Clear Chapter 3
+1355	Clear Chapter 4
+1356	Clear Chapter 1
+1357	After clearing, remember to upgrade your ATK at the shop!
+1358	Clear Reward
+1359	Clear all 9 floors of the Nine-Floor Demon Tower
+1360	Clear all 100 levels!
+1361	Clear floor 1 of the Nine-Floor Demon Tower
+1362	Clear floor 5 of the Nine-Floor Demon Tower
+1363	General, Boss
+1364	Hold 5000 copper coins at once
+1365	Throws 2 at once: one at the target lane, one at the adjacent lane
+1366	Copper
+1367	Copper Coins
+1368	Copper Coin Pouch
+1369	Copper Tier · Common
+1370	Copper coin income +12%, Luck +4%
+1371	Copper coin income +5%
+1372	Copper Coin String
+1373	Iron Fortress
+1374	Helmet
+1375	Wings on both sides of the helmet, with a warm glowing ring above.
+1376	X-Ray Lens
+1377	Vultures Circling
+1378	Codex
+1379	Codex Master
+1380	Codex Scholar
+1381	Dragonslayer Quiver
+1382	Dragonslayer Helm
+1383	Godbane Helm
+1384	Bunny Dash
+1385	Bunny Dash runs very fast. Monsters will spread across different lanes.
+1386	Rabbit's Foot
+1387	Great Bunny Migration
+1388	The bunnies are here

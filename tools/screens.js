@@ -9,15 +9,21 @@ try {
   ({ chromium } = require(path.join(process.env.NODE_PATH || '/opt/node22/lib/node_modules', 'playwright')));
 }
 
-const outDir = process.argv[2];
+// 用法：node tools/screens.js [截图目录] [--lang 语言代码]
+//   默认用简体中文（zh）检查；--lang en 等会用该语言开页面，并列出每个界面里还没翻译的中文（设计书 83）
+const args = process.argv.slice(2);
+const li = args.indexOf('--lang');
+const LANG = li >= 0 ? args[li + 1] : 'zh';
+if (li >= 0) args.splice(li, 2);
+const outDir = args[0];
 if (outDir) fs.mkdirSync(outDir, { recursive: true });
 
 // [名字, 在页面里执行的步骤（返回 true 表示关键元素存在）, 传给步骤的参数]
 // 步骤函数会被序列化到浏览器里执行，不能引用外层变量，参数要通过第三项传进去
 const STEPS = [
-  ['title', () => (TD.ui.showTitle(), !!document.querySelector('.title-foot') && [...document.querySelectorAll('.title-buttons .btn')].some((b) => b.textContent === '退出游戏'))],
+  ['title', () => (TD.ui.showTitle(), !!document.querySelector('.title-foot') && [...document.querySelectorAll('.title-buttons .btn')].some((b) => ["退出游戏", TD.i18n.t('退出游戏')].includes(b.textContent)))],
   ['difficulty', () => (TD.ui.chooseDifficulty(() => {}), !!document.querySelector('.diff-card'))],
-  ['settings', () => (TD.ui.showSettings(), document.querySelectorAll('.volume-row').length === 2 && ![...document.querySelectorAll('.modal button')].some((b) => b.textContent.includes('测试')))],
+  ['settings', () => (TD.ui.showSettings(), document.querySelectorAll('.volume-row').length === 2 && ![...document.querySelectorAll('.modal button')].some((b) => b.textContent.includes(TD.i18n.t('测试'))))],
   ['help', () => (TD.ui.showHelp(), !!document.querySelector('.modal'))],
   ['export', () => (TD.ui.showExport(), !!document.querySelector('textarea'))],
   ['import', () => (TD.ui.showImport(), !!document.querySelector('textarea'))],
@@ -110,6 +116,8 @@ const STEPS = [
   const errors = [];
   page.on('pageerror', (e) => errors.push(e.message));
   page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
+  const left = new Map(); // 没翻译的中文 → 出现在哪些界面
+  await page.addInitScript((lang) => localStorage.setItem('shouchengyingxiong.lang', lang), LANG);
   await page.goto('file://' + path.resolve(__dirname, '..', 'index.html'));
   await page.waitForTimeout(400);
   // 中后期存档：通关全部 60 关，部分三星、王冠、任务，读过故事，见过所有怪
@@ -126,6 +134,18 @@ const STEPS = [
     s.silver = 50;
     s.gold = 5;
   });
+  // 记录画布上画出来的字里还有中文的（日语 / 繁中本来就有汉字，不检查）
+  const cjkLang = LANG === 'zh' || LANG === 'ja' || LANG === 'zh-Hant';
+  await page.evaluate(() => {
+    window.__canvasLeft = new Set();
+    for (const name of ['fillText', 'strokeText']) {
+      const orig = CanvasRenderingContext2D.prototype[name];
+      CanvasRenderingContext2D.prototype[name] = function (text, ...rest) {
+        if (typeof text === 'string' && /[\u3400-\u9fff]/.test(TD.i18n.t(text))) window.__canvasLeft.add(TD.i18n.t(text));
+        return orig.call(this, text, ...rest);
+      };
+    }
+  });
   let fail = 0;
   for (const [name, fn, arg] of STEPS) {
     const before = errors.length;
@@ -137,11 +157,28 @@ const STEPS = [
     }
     await page.waitForTimeout(150);
     if (outDir) await page.screenshot({ path: path.join(outDir, `${name}.png`) });
+    if (!cjkLang) {
+      const found = await page.evaluate(() => {
+        const out = [];
+        const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+        for (let n; (n = w.nextNode()); ) if (/[\u3400-\u9fff]/.test(n.data) && !/^(SCRIPT|STYLE)$/.test(n.parentNode.tagName)) out.push(n.data.trim());
+        for (const el of document.querySelectorAll('[title],[placeholder],[aria-label],[alt]'))
+          for (const a of ['title', 'placeholder', 'aria-label', 'alt']) if (/[\u3400-\u9fff]/.test(el.getAttribute(a) || '')) out.push(el.getAttribute(a));
+        for (const c of window.__canvasLeft) out.push('[canvas] ' + c);
+        window.__canvasLeft.clear();
+        return out;
+      });
+      for (const f of found) if (!left.has(f)) left.set(f, name);
+    }
     const bad = !ok || errors.length > before;
     if (bad) fail++;
     console.log(`${bad ? '✗' : '✓'} ${name}${errors.length > before ? '  ' + errors.slice(before).join(' | ') : ''}`);
   }
   await browser.close();
+  if (left.size) {
+    console.log(`\n没翻译的中文（${left.size} 处）：`);
+    for (const [text, where] of left) console.log(`  [${where}] ${text.slice(0, 400).replace(/\n/g, '\\n')}`);
+  }
   console.log(fail ? `${fail} 个界面有问题` : `全部 ${STEPS.length} 个界面正常`);
   process.exit(fail ? 1 : 0);
 })();

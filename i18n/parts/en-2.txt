@@ -1,0 +1,463 @@
+463	Kite Monster
+464	Kite Monster dodge chance −25%
+465	Kite Monsters can't dodge lightning, and jumps chain through several of them
+466	Kite Monsters dodge physical weapon attacks. Staff, Lightning Orb, Arrow Rain and Thunder Strike can't be dodged!
+467	Kite Festival
+468	Bee Swarm Raid
+469	Phoenix Feather Cloak
+470	Floating Fortress
+471	Rune Plate Armor
+472	Rune Crown
+473	Lucky Boots
+474	Copy
+475	Steel Armor
+476	Steel Helm
+477	Wire Cloak
+478	Steel Yeti
+479	Steel Yetis fear magic, Molten Golems fear physical attacks. Swap weapons or use skills, your choice.
+480	Steel Yetis fear magic, and Shield Turtles protect nearby monsters. Take out the Shield Turtle first, then use magic on the Steel Yeti.
+481	Steel and Molten Iron
+482	High damage, crit chance +12%; arrows pierce 3 monsters and ignite the target.
+483	Fast
+484	Goblin Outpost
+485	Goblin Minion
+486	Big brother! I want to defend the wall too! When my bell rings, all the little monsters jump in fright!
+487	Personal best: wave {0} · {1} defeated
+488	Auto-picks weapons, skills and items based on this level's monsters.
+489	More weapons: unlock them in the Weapons tab of the Gear page
+490	Worse yet, they heard there's a "big, sturdy shell" on land, and they're lining up to move in—
+491	Siege Cannon
+492	Monsters attacking the wall take reflected damage equal to hero ATK ×20% per level.
+493	ATK
+494	ATK +{0}
+495	ATK +{0}%
+496	ATK +12%
+497	ATK +15%, crit chance +10%, crit damage +25%
+498	ATK +20%, attack speed +15%, crit chance +8%
+499	ATK +3
+500	ATK +3; Frost Field and Frost Flask duration +30%
+501	ATK +3; damage to Bosses (incl. tentacles) +20%
+502	ATK +3%
+503	ATK +35%, attack speed +25%, crit chance +15%, crit damage +50%
+504	ATK +5, crit chance +5%
+505	ATK +5%
+506	ATK +6%, crit damage +20%
+507	ATK +8%, basic attacks have a 15% chance to ignite the target
+508	ATK ×5
+509	ATK ×6
+510	ATK ×7, chains to 3 nearby monsters (50% each)
+511	Attack Speed
+512	Attack speed +{0}%
+513	Attack speed +10%
+514	Attack speed +12%
+515	Attack speed +15%, wall damage taken −10%
+516	Attack speed +3%
+517	Attack speed +35% for 9 sec.
+518	Attack speed +50% for 8 sec.
+519	Attack speed +6%; damage to flying monsters +15%
+520	Attack speed +8%, wall damage taken −8%; wall heals an extra 2% after each wave
+521	Attack speed +8%, range +3%
+522	Attack speed +8%; basic attacks have a 20% chance to ignite the target
+523	AS +50%, 8 sec
+524	AS +65%, 10 sec
+525	AS +80%, 10 sec, crit chance +10% during this time
+526	AS −{0}%
+527	Congratulations on clearing "{0}"! You held all {1} chapters. Go back for three stars and crowns, or set new records in Endless Mode.
+528	Congratulations on clearing "{0}"! New chapter "{1}" is now open.
+529	Buy
+530	Croaking Poison Frog
+531	Grunt? How did you know I was going to charge?
+532	Blub! Today I fixed the roofs of eight houses at once with my eight legs.
+533	Blub... I can't carry it anymore. Sorry, I just wanted a home big enough for me.
+534	Blub blub! This shell is so big and sturdy, just right for my eight legs!
+535	Grunt... my head's clear now. All I remember is a black wind blowing in from the desert, and then I stopped caring about anything and just wanted to charge.
+536	Grunt... the little ones say I look cool when I sweep.
+537	Gulu King
+538	Gulu King's follower.
+539	Gulu King is furious: Boar Charge!
+540	Gulu King went berserk!
+541	Gulu King charges when its HP drops below 60%. When the lane turns red, focus fire to interrupt the charge!
+542	Grunt grunt! The grassland is mine from now on! Minions, charge!
+543	Castle Chorus
+544	Bone Shield Guard
+545	Mr. Bones
+546	Mr. Bones? Weren't you already...
+547	Mr. Bones revives once after being defeated. Save a skill for when he gets back up!
+548	Mr. Bones' Echo
+549	Mr. Bones has revived!
+550	Mr. Bones is actually quite funny. He says Granny Poison-Soup's pot is brewing a huge batch of black Ink.
+551	Drumbeat Arrow Rain
+552	Monsters
+553	Monsters appear at random from unlocked chapters, getting stronger each wave.
+554	Monster Tide
+555	All the monsters are purple.
+556	Monster count +50%
+557	Monster count −40%, but HP +80%
+558	Monster speed +30%
+559	Monsters swarm in all at once, and defeating them earns nothing; only clearing a floor gives diamonds. Diamonds can only be earned here. The higher you climb, the more demon kings: 10% on floor 1, 50% on floor 9.
+560	Bestiary
+561	Bestiary {0} / {1}
+562	Monster HP +30%, siege damage +15%, copper coin income +20%
+563	Monster HP +40%, wall HP +40%
+564	Monster HP and siege damage −25%, for players who want to enjoy the story
+565	Close
+566	Level Quests
+567	Level quest complete
+568	Piercing Quiver
+569	Aura
+570	Aura: while it lives, hero attack speed is reduced. Take it out first!
+571	Explodes on reaching the wall, dealing heavy damage at once. Be sure to kill it from afar.
+572	Rolling Cactus
+573	Grandpa King
+574	Jelly Prince
+575	Jelly Prince splits when hit. Area damage (Arrow Rain, Boomerang) quickly clears the little jellies.
+576	Little jellies split off from the Jelly Prince.
+577	Turns out the Jelly Prince is a bouncy little guy. He says the black Ink flowed from very, very far away.
+578	It's not over yet...
+579	No skills available yet. Go to the Skills page and unlock them with silver coins.
+580	Not encountered yet.
+581	No gear for this slot yet. Buy some on the Gear page.
+582	Still nobody to trim my nails.
+583	And hermit crabs, seahorses, Shield Turtles... everyone needs a new home!
+584	You have an unsettled challenge run.
+585	The sand by the sea is warm. Hermit crabs carry their shells in a line toward the wall, as if they really think it's their new home.
+586	Sea Urchin
+587	Sea Urchins hurt nearby monsters when they die, so hit them once they walk into a crowd! Seahorse bubbles block one attack; Repeater Crossbow and Lightning Orb pop them fastest.
+588	Pirate Captain
+589	Seahorse
+590	Seagull Strait
+591	Bay Chorus
+592	Bay Guardian
+593	Frost
+594	Frost Bow
+595	Frost Quiver
+596	Frost Arrowhead
+597	Coldiron Helm
+598	Flawless
+599	OK
+600	Done
+601	All right, Kael, Lyra. Let's head home. Tonight the kingdom throws its biggest celebration feast, and all our friends are coming. Even the echoes' shadows are bringing cookies.
+602	So hot, so hot... even my helmet is burning.
+603	So hot... the cracks in the ground are full of black Ink.
+604	Total
+605	Shelling up... opens in {0}s
+606	Close Diary
+607	Obsidian Armor
+608	Obsidian Brick
+609	Wherever my lamp shines in the dark, my arrows can reach. Let me come along!
+610	Sweep them all away!
+611	Boom!
+612	Boom... a little rain fell today, and the rainbow hung nice and high.
+613	Boom. Boom. ...I'm not Rocky. I'm the footsteps Rocky left behind.
+614	Rumble! You're the ones who dirtied my rainbow!
+615	Red
+616	Red Ribbon
+617	Red Cape
+618	Flood
+619	A flood sweeps the battlefield: all monsters are pushed back 350 px (Bosses 100 px), take ATK ×3 damage, and soaked monsters take +40% damage for 5 sec and are slowed 60%.
+620	Thick Cloth Armor
+621	Whoosh! I'll blow your soup cool.
+622	Whoosh! A gale blew the monsters toward the wall!
+623	Whoosh! Flour from the windmill became bread for the whole town.
+624	Whoo, whoo! Who's calling my name?
+625	Whoo, whoo! You from the ground! Did you dirty my rainbow?
+626	Whoo! I'll turn the whole wall into a popsicle!
+627	Phew... Ink-flavored popsicles taste awful. Strawberry is better.
+628	Phew... these bandages are so tight. A guy in a cloak gave me a bottle of Ink and said drinking it would make me strong.
+629	Phew... all that spinning made me dizzy. Fine, I believe you.
+630	Whooshy
+631	Whooshy's Echo
+632	Whooshy's Echo left us its last gust. It pushed us onward, toward the deepest part of the rift.
+633	Whooshy telegraphs a gale 2 sec ahead. Focus fire to interrupt it, or every monster on the field gets blown to the wall!
+634	Whooshy is really a windmill that grinds flour for the clouds. It says to calm Rumbly down, you have to catch its thunder first.
+635	Whooshy spins faster!
+636	Tiger Fang Pendant
+637	Shield broken!
+638	Guard
+639	Guard: nearby monsters take 40% less damage from hero attacks. Take it out first, or use skills.
+640	Spend {0} to buy "{1}"?\nBonus stats: {2}
+641	Slippery
+642	Welcome to Bebe's Pearl Shop! Every pearl is registered.
+643	Switch Lane
+644	Golden Desert
+645	Golden Boots
+646	Rejuvenation Arrow
+647	Back to Map
+648	Map
+649	Restore 20%
+650	Restore 25%
+651	Restore 30%, then wall damage taken −30% for 6 sec
+652	Restores 20% of the wall's max HP.
+653	Echoes... can't control themselves... whoo!
+654	Echoes are identical, of course. Sandstorm, rise!
+655	The echoes don't seem to mean it. They're just woken again and again by that rift.
+656	Echo Chorus
+657	Boomerang
+658	Exchange
+659	Exchange (one-way, can't be reversed)
+660	A flying fireball thrower; each fireball hurts a lot more than before.
+661	A flying little dragon, dyed red by chaos.
+662	A flying healer that hovers far away, healing nearby monsters. Use Threat Priority or Flying Priority to hit it first.
+663	Walking Stump
+664	A burrowing scorpion wearing a layer of bone armor.
+665	A yeti covered in steel plates: nearly immune to physical hits; only magic works.
+666	Covered in electricity. If killed near the wall it discharges and stuns heroes briefly, so kill it from afar.
+667	Chaos Terminator
+668	Cannon
+669	Fireball Rain
+670	There's a huge rift under the volcano, and the black Ink is bubbling out of it. I'm a little scared, but I won't back down.
+671	Fire Rat Cloak
+672	Flame
+673	Fire zones and lava lanes have no effect on monsters
+674	Flame Arrowhead
+675	Fire Imp
+676	Fire Imps stay far away and throw fireballs. Try Threat Priority!
+677	Fire Rain Sky
+678	Obtained
+679	Earn 50 crowns
+680	Earn three stars on every level (chapters 6–10 included)
+681	Stars earned {0} / {1}
+682	Defeat {0}
+683	Defeat {0}
+684	Defeat Inky
+685	Defeat all 10 Bosses (including mini-Bosses)
+686	Most defeated
+687	Most defeated: {0}
+688	Kill drops ({0} killed)
+689	Polar Quiver
+690	Swiftstep Boots
+691	Sudden Strike
+692	Forced March
+693	Impatient
+694	Lightning Boots
+695	Gale
+696	Gale Cloak
+697	Swift Boots
+698	Shadow Cloak
+699	Focus fire to interrupt the charge!
+700	Focus fire to interrupt the gale!
+701	Focus fire to interrupt the lightning strike!
+702	Focus fire to interrupt the slam!
+703	A spirit nearly immune to physical attacks: only 15% of physical damage works. Use magic.
+704	Best: wave {0}
+705	Skills
+706	Upgrade skills to Lv2 with silver coins; Lv3 costs gold coins and brings a transformative effect.
+707	Skill frozen!
+708	Skill Master
+709	All Skills Out
+710	Skill Synergy
+711	Auto-cast Skills
+712	Continue Floor {0}
+713	Continue Game
+714	Continue Fighting
+715	Hermit Crab
+716	Hermit Crab Move-In
+717	Hermit Crabs retreat into their shells after every 4 hits. Don't focus on just one. Repeater Crossbow and Lightning Orb spread fire across several!
+718	Hermit Crab shell time −60%
+719	Reinforce
+720	Reinforced Brick
+721	Haste Potion
+722	Spikes
+723	A pointy hood with a red feather, and a quiver slung across the back.
+724	Survived {0} waves!
+725	Slow 60%, 6 sec
+726	Slow 70%, 7 sec
+727	Slow 75%, 8 sec; freezes the whole lane for 1.5 sec at the end
+728	Sheep Shearing Contest
+729	Splash
+730	Splash radius +20, splash damage no longer falls off (100%)
+731	Arrows pierce up to 5 monsters in the same lane (80% damage each), ignoring 20% armor.
+732	Quiver
+733	Arrows keep flying after a hit, hitting up to 2 more monsters behind in the lane (40% damage)
+734	Arrow Rain
+735	Leave it to me, Grandpa King! ...Oops, my helmet slipped again.
+736	Reef Bastion
+737	Characters
+738	Wardrobe
+739	Tutorial
+740	Antidote
+741	Unlock
+742	Unlock 3× speed: the speed button at the bottom right of battle
+743	Unlocks "Kingdom Town" (🏘 on the map) and "Daily Challenge" (bottom right of the map)
+744	Unlocks "Endless Mode" (bottom right of the map)
+745	Unlock {1} #{0}
+746	Unlocks Chapter 8 "Moonshadow Castle". Echo monsters fell out of the Chaos Rift
+747	Unlocks Chapter 9 "Red Iron Forge"
+748	Unlocks Chapter 6 "Cloud Kingdom"
+749	Unlocks Chapter 7 "Coral Bay" and the "Nine-Floor Demon Tower" (bottom right of the map)
+750	Unlocks Chapter 10 "Void Sky Realm", the final chapter
+751	Unlocks all active and passive skills
+752	Unlocks recommended weapon "{0}": {1} ({2})
+753	Today's rule: "{0}"
+754	Daily challenge complete!
+755	Done today
+756	Jumped too high today and hit a pigeon.
+757	I swept up every fallen leaf on the grassland today, one by one!
+758	Today's reward already claimed
+759	Today is my first day on the wall. The monsters on the grassland all have a little black Ink on them. So strange.
+760	Gold
+761	Gold coins
+762	Gold tier · game-changing trump cards
+763	Gold coins buy legendary gear, high-tier weapons and Skill Lv3.
+764	Gold Ingot
+765	Pyramid shield! Break it with magic!
+766	The pyramid was rented out as a library, and it's very popular.
+767	Progress saved. Browsers don't let a page close its own tab, so please close this tab or window yourself. (When you launch the game from the desktop "The Last Bastion" icon, this button closes the game directly.)
+768	Advance
+769	After advancing
+770	Thorns
+771	Close Call
+772	Fine Steel Quiver
+773	Fine
+774	Elite Challenge
+775	Elite Challenge: the mini-Bosses from the first four chapters return, two at a time! Switch to "Boss Priority" or "Threat Priority" and don't let both Bosses reach the wall together.
+776	Precise
+777	Static
+778	Nine floors cleared! You conquered the demon tower!
+779	Nine-Floor Demon Tower
+780	Nine-Floor Demon Tower · Floor {0}
+781	A demon king from the Nine-Floor Demon Tower: no special moves, just charges the wall.
+782	Carries a heavy bone shield, nearly immune from the front. Hit it from behind with the Boomerang.
+783	Carries a wooden shield, very tough from the front. Boomerang returns and Arrow Rain get around the shield.
+784	Giant
+785	Treasure Bowl
+786	Gravedigger Scorpion
+787	Balanced
+788	Crown of Balance
+789	Snip... really, I just wanted someone to trim my nails.
+790	Snip snip, trimmed twenty fringes today.
+791	Snip snip! My big pincers can crush anything!
+792	Clack... thanks for letting me fall apart once. My bones got a good stretch.
+793	Clack clack, the bone concert plays every Saturday night!
+794	Clack clack, welcome to my bone concert!
+795	On
+796	Start
+797	Start Challenge
+798	Start Challenge ({0})
+799	Start Game
+800	Start Battle
+801	Start Battle ›
+802	Auto-applies at battle start
+803	Available
+804	But King Bobo won't listen. He has eight legs, no shell in the sea is big enough for him, and he's had his eye on your wall for days.
+805	But Rumbly won't believe that. It's the angriest cloud in the sky, and ever since the rainbow got dirty it's been thundering for three days.
+806	But they'd already made up. Why are they back?
+807	But this is everyone's home!
+808	Empty
+809	Space pauses, F toggles 2× speed, N calls the next wave early, T switches target priority.
+810	Air Raid
+811	Air raid! A Frost Dragon dyed red by chaos, plus a gang of fireball-throwing imps.
+812	Air raid! The Lantern Ghost hides in back, healing nonstop. Find it first.
+813	Air raid! Plenty of monsters in the sky, plus squads escorted by Shield Turtles on the ground. Don't just watch the sky.
+814	Air raid! Void Balloons release four Goblin Minions when they land.
+815	Air raid level with lots of Ice Sprites. Flying Priority plus Repeater Crossbow or Lightning Orb!
+816	Air raid level; imps throw fireballs from afar. Try Threat Priority or Flying Priority!
+817	Air raid level! Bats switch lanes, so area attacks beat aiming.
+818	Air raid level! Try switching target priority to Flying Priority, or equip a Repeater Crossbow.
+819	Air raid level! Vultures fly fast. Repeater Crossbow and Flying Priority are good choices.
+820	Sky Circus
+821	A skeleton-driven cart that rams at high speed, hitting the wall very hard.
+822	Skeleton Guard
+823	Skeleton Guards carry heavy bone shields, nearly immune from the front. Boomerang and Arrow Rain can reach their backs.
+824	Skeleton Chariot
+825	A rabbit too fast to see; it switches lanes, and physical attacks miss it a quarter of the time.
+826	Fast attack · Control
+827	Fast monsters: rabbits, wolves, chariots
+828	Berserk
+829	Fervor
+830	Armor
+831	Blue
+832	Wolf Howl
+833	Wolf Pack
+834	Wolf Fang Necklace
+835	Lightning Orb
+836	Rumbly
+837	Rumbly is charging up! Focus fire to interrupt while it charges!
+838	Rumbly just loved that rainbow too much. Now after every rain it makes sure to hang the rainbow nice and high. The kingdom's wall guards held both the ground and the sky.
+839	Rumbly has three phases: summoning Thunder Puffs and Rainbow Birds, charging a lightning strike (interrupt it!), and a storm (everything speeds up, so finish fast).
+840	Thunder Quiver
+841	Thunder Hall
+842	Thunder God Orb
+843	Thunder Charm
+844	Thunder Boots
+845	Thunder Strike
+846	Thunder Strike deals ×1.3 damage to monsters in a Frost Field (slowed or frozen)
+847	Thunder Puff
+848	Thunder Puffs stun Kael if killed near the wall. Take them out while they're still far away!
+849	Thundercloud
+850	Trigger Skill Synergy 50 times total (Shatter, Drumbeat Arrow Rain)
+851	Pop 100 bubbles total
+852	Interrupt Boss charges 10 times total
+853	Earn 150 stars total
+854	Earn 50 stars total
+855	Total defeated
+856	Defeat 1000 monsters total
+857	Defeat 10000 monsters total
+858	Call waves early 30 times total
+859	Pick 50 supply cards total
+860	Cooldown {0} sec
+861	On cooldown, {0} sec left
+862	Dawn Crown
+863	Instantly restores 20% wall HP, wall damage taken −8%
+864	Instantly restores 45% wall HP
+865	Instantly resets all skill cooldowns, ATK +35% for 30 sec
+866	Repeater Crossbow
+867	Chain Crossbow
+868	Chain Lightning
+869	Rapid Fire
+870	Rapid Fire!
+871	Rapid Quiver
+872	Alliance
+873	Alliance level: all lanes spawn at once, and every Bay resident shows up!
+874	Alliance level: all lanes spawn at once, and every Forge worker is on duty!
+875	Alliance level: all lanes spawn at once. Prepare both physical and magic.
+876	Alliance level: all lanes spawn at once, and all the echoes in the Void surge in together!
+877	Alliance level: all lanes spawn at once, and every Moonshadow resident shows up!
+878	Alliance level: all lanes spawn at once, and every Cloud monster shows up!
+879	Alliance level: all lanes spawn at once! Whole-field attacks like Arrow Rain and Lightning Orb work best.
+880	Alliance level: all lanes spawn at once! Whole-field skills and Lightning Orb are key.
+881	Purgatory Cloak
+882	Purgatory Horned Helm
+883	Purgatory Heavy Armor
+884	Cooling down... so comfy.
+885	A little snowman made of two stacked snowballs; becomes 2 small snow lumps when killed.
+886	Lookout Hat
+887	Galeforce Boots
+888	Flame Enchant
+889	Flame Quiver
+890	Flame Crossbow
+891	Blazing Sun Helm
+892	Huntsman Quiver
+893	Hunter's Hood
+894	Hunter's Instinct
+895	Hunting Boots
+896	On the other side of the rift, there's an even hotter place. The echoes were woken from the furnace fires there.
+897	On the other side of the rift stands a giant furnace. Nobody stokes it, yet it burns hotter than a volcano.
+898	The rift is growing. Kael, the source is in the sky at the very top.
+899	Skybreaker Crossbow
+900	Rift Edge
+901	Rift Strike {0}
+902	Rift Strike!
+903	Rift frenzy! Defeat Inky within 30 sec!
+904	The rift slowly closed, and the sky turned bright blue again.
+905	Rift Entrance
+906	Neighbors {0} / {1}
+907	Woodland Ranger
+908	Spirit Herb Quiver
+909	Nimble Boots
+910	Glimmer Quiver
+911	Nimble Fingers
+912	Spirit
+913	Spirit: physical damage is only 30% effective. Use magic against it!
+914	Claim {0}
+915	How it works: buy → goes in your bag → tap "Equip +1" to equip for battle (or choose in the Loadout page). Slots now {0} / {1}{2}.
+916	Flowlight Boots
+917	Meteor Cloak
+918	Meteor Quiver
+919	Tornadoes and shoves, fiercer than the old Whooshy.
+920	Dragon Scale Armor
+921	Dragon Scale Cloak
+922	Dragon Vein Treasure
+923	Dragon Vein Boots
+924	Dragon Knight
+925	Dragon Fang Necklace

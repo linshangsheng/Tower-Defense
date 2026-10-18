@@ -43,7 +43,8 @@
       onDone && onDone();
     };
     const show = () => {
-      const [who, text] = sc.lines[i];
+      const who = sc.lines[i][0];
+      const text = TD.i18n.t(sc.lines[i][1]); // 逐字显示的要先译整句，不然显示到一半的半句话译不了
       const sp = speakerInfo(who);
       avatar.innerHTML = '';
       avatar.appendChild(sp.img());
@@ -64,7 +65,7 @@
       sfx('click');
     };
     const advance = () => {
-      const text = sc.lines[i][1];
+      const text = TD.i18n.t(sc.lines[i][1]);
       if (shown < text.length) {
         shown = text.length;
         clearInterval(timer);

@@ -34,6 +34,8 @@
   // 这几种语言本身用全角标点，其余语言把残留的全角标点换成半角
   const FULLWIDTH_OK = { zh: 1, 'zh-Hant': 1, ja: 1 };
 
+  const SINGLE = ['铜', '银', '金', '钻', '红', '蓝', '绿', '紫'];
+  const NUMERALS = '一二三四五六七八九十'; // 第"三"章：不用词典，直接换成阿拉伯数字（日语 / 中文保持汉字）
   const dicts = {}; // 语言代码 → { 中文原文: 译文 }
   let lang = 'en';
   let dict = null;
@@ -71,7 +73,8 @@
         for (let i = 0; i < parts.length; i++) {
           if (i % 2 === 0) src += escapeRe(parts[i]);
           else {
-            src += '([\\s\\S]*?)';
+            // 两个占位符紧挨着（"{1}{2}"）时，前一个只吃数字（或什么都不吃），后一个吃剩下的
+            src += parts[i + 1] === '' && i + 2 < parts.length ? '([+\\-−]?\\d[\\d.,]*%?|)' : '([\\s\\S]*?)';
             order.push(+parts[i]);
           }
         }
@@ -80,6 +83,8 @@
         patterns.push({ re: new RegExp(src), order, out: dict[key], literal });
       } else if (key.length >= 2) frags.push(key);
     }
+    // 单字词条只有货币和颜色这几个能当碎片用（"775 铜"、"绿 6"），其余单字太容易误伤
+    for (const key of SINGLE) if (dict[key] !== undefined) frags.push(key);
     patterns.sort((a, b) => b.literal - a.literal);
     frags.sort((a, b) => b.length - a.length);
     if (frags.length) fragRe = new RegExp(frags.map(escapeRe).join('|'), 'g');
@@ -93,23 +98,77 @@
       .replace(/[，。：；！？、（）「」『』～％]/g, (c) => PUNCT[c])
       .replace(/ {2,}/g, ' ')
       .replace(/ ([,.;:!?)])/g, '$1')
-      .replace(/\( /g, '(');
+      .replace(/\( /g, '(')
+      .trim();
   }
 
   function fill(out, caps) {
     return out.replace(/\{(\d+)\}/g, (m, i) => (caps[+i] === undefined ? m : t(caps[+i])));
   }
 
-  function translateCore(core) {
-    const exact = dict[core];
-    if (exact !== undefined) return exact;
+  const SEP = /([，。；：、！？\n「」（）]| · |, |: )/;
+  const HAS_SEP = /[，。；：、！？\n「」（）]| · |, |: /;
+  function matchPattern(core, strict) {
     for (const p of patterns) {
       const m = p.re.exec(core);
-      if (m) {
-        const caps = [];
-        p.order.forEach((idx, k) => (caps[idx] = m[k + 1]));
-        return fill(p.out, caps);
+      if (!m) continue;
+      if (strict && m.slice(1).some((c) => HAS_SEP.test(c))) continue; // 占位符里夹着逗号的，多半是几句话拼在一起，先别按句式套
+      const caps = [];
+      p.order.forEach((idx, k) => (caps[idx] = m[k + 1]));
+      return fill(p.out, caps);
+    }
+    return null;
+  }
+  // 按标点拆开的几句话（bits 是 文字, 标点, 文字, 标点…）：从每个位置起，先试"连着后面几段（含标点）"能不能整条对上词典 / 句式，对不上再单译这一小段
+  function translateRuns(bits) {
+    const n = bits.length;
+    let out = '';
+    for (let i = 0; i < n; ) {
+      let took = 0;
+      for (let j = Math.min(n - 1, i + 15); j >= i && !took; j--) {
+        const m = /^(\s*)([\s\S]*?)(\s*)$/.exec(bits.slice(i, j + 1).join(''));
+        if (!m[2]) continue;
+        const r = dict[m[2]] !== undefined ? dict[m[2]] : j > i ? matchPattern(m[2], true) : null;
+        if (r !== null && r !== undefined) {
+          out += m[1] + r + m[3];
+          took = j - i + 1;
+        }
       }
+      if (took) {
+        i += took;
+        continue;
+      }
+      const m = /^(\s*)([\s\S]*?)(\s*)$/.exec(bits[i]);
+      out += i % 2 || !m[2] ? bits[i] : m[1] + translateCore(m[2], true) + m[3];
+      i++;
+    }
+    return out;
+  }
+  function translateCore(core, noSplit) {
+    const exact = dict[core];
+    if (exact !== undefined) return exact;
+    if (core.length === 1 && !FULLWIDTH_OK[lang] && NUMERALS.includes(core)) return String(NUMERALS.indexOf(core) + 1);
+    const hit = matchPattern(core, !noSplit);
+    if (hit !== null) return hit;
+    if (!noSplit) {
+      let best = null;
+      // 前面带符号 / 序号的（"✎ 今天…"、"Lv2: 攻速 +65%"）：前缀原样保留，翻译后面的
+      const pm = /^([^\u3400-\u9fff]+)([\u3400-\u9fff][\s\S]*)$/.exec(core);
+      if (pm && !/^[\w\s]*$/.test(pm[1])) {
+        const toks = pm[1].match(/\S+\s*|\s+/g); // 从短的前缀试起："✦ " → "✦ 🎯 "
+        for (let cut = 1; cut <= toks.length && best === null; cut++) {
+          const post = toks.slice(cut).join('') + pm[2];
+          const rest = translateCore(post);
+          if (rest !== post) best = toks.slice(0, cut).join('') + rest;
+        }
+      }
+      // 几句话拼在一起的（"攻速 +1.5%，对飞行怪伤害 +4%"）：按标点拆开再译
+      const bits = core.split(SEP);
+      if (best === null && bits.length > 1) best = translateRuns(bits);
+      if (best !== null && !HAS_CJK.test(best)) return best;
+      const loose = matchPattern(core, false); // 占位符里带逗号的（成就描述等）最后再按句式套
+      if (loose !== null) return loose;
+      if (best !== null) return best;
     }
     if (fragRe) {
       fragRe.lastIndex = 0;

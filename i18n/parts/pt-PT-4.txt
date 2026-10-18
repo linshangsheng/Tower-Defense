@@ -1,0 +1,320 @@
+1389	Recomendado
+1390	Melhoria recomendada
+1391	Recomendado depois de passares o nível {0}
+1392	Arma recomendada: {0}
+1393	A arma recomendada «{0}» tem nível baixo. Melhora-a primeiro: {1} ({2})
+1394	Poder recomendado {0} · O teu poder {1}
+1395	Sair do Jogo
+1396	Sair do jogo? O progresso já foi guardado automaticamente.
+1397	Conclui 20 missões de nível
+1398	Conclui todas as missões de nível
+1399	Como Jogar
+1400	Inimigo dos Mil Monstros
+1401	Coroa do Observador de Estrelas
+1402	Eco de Todas as Coisas
+1403	Panorama
+1404	Coroa
+1405	Colecionador de Coroas
+1406	O equipamento padrão dos guardas do reino. O elmo é um bocadinho grande.
+1407	Vila do Reino
+1408	O mais pequeno guarda da muralha do reino, com ataques estáveis.
+1409	O mais pequeno guarda da muralha do reino, que travou a sua maior crise.
+1410	Protótipo web {0} · {1} capítulos {2} níveis
+1411	Lente de Telescópio
+1412	Muralha em Perigo
+1413	Ameaça Primeiro
+1414	Abelha Zumbidora
+1415	As Abelhas Zumbidoras voam por cima dos outros monstros direto à muralha. As bestas de repetição causam mais dano a voadores.
+1416	Zum zum zum
+1417	Eu… eu vou sugar a tinta de volta.
+1418	Pus todos os papagaios no céu. À noite parecem estrelas.
+1419	Deixei aqui um pouco da minha própria tinta. Quando não quero ficar sozinho, ela faz crescer ecos, cada vez mais e cada vez maiores.
+1420	Mudei-me para junto da muralha, para ver o Kael de guarda todos os dias.
+1421	Não acredito! Primeiro vou fazer-vos cair com o vento!
+1422	Prometo-te.
+1423	O meu arco é pesado e dispara devagar, mas cada seta empurra os monstros para trás. Contem comigo para o vulcão.
+1424	A minha casa nova é enooorme. Venham brincar!
+1425	A minha planície de neve só permite silêncio. O teu elmo faz demasiado barulho.
+1426	Eu faço o registo! Número um: Rei Bobo, oito patas, precisa de uma concha enooorme.
+1427	Subimos ao céu pela ponte arco-íris. As nuvens eram macias, como pisar marshmallows. O Inky escondeu-se atrás do meu elmo o tempo todo.
+1428	Aguentámos!
+1429	Construímos uma «Vila das Conchas» junto ao mar. A casa do Bobo é a maior, e o telhado foi montado pelas oito patas juntas. Afinal, proteger uma casa também pode ser ajudar os outros a construir uma.
+1430	Eu pago-te um de morango!
+1431	Uau! …Deixa-me primeiro endireitar o elmo.
+1432	Sou a Bebe, a gestora das conchas da baía! Uma concha tão grande tem de ser registada antes de ser atribuída!
+1433	Sou o Eco. Um eco só repete. Esqueletos, atacar.
+1434	Vim guardar a muralha. Quando deixares de fazer birra, podemos brincar juntos.
+1435	Aprendi a desenhar com tinta! Este és tu, e este sou eu.
+1436	Eu também quero uma casa! Glub! Tentáculos, agarrem-na bem!
+1437	Vi todos no espelho. Afinal, ter animação não é assim tão mau.
+1438	Estou a treinar trovões pequeninos. Bum. (Bem baixinho)
+1439	Abri uma barbearia na vila. Não tenhas medo, sou muito cuidadoso.
+1440	Só conhecia o concerto de bater em elmos…
+1441	As nuvens negras tapam a vista: alcance −30%. Os Bolinhos de Trovão só são atingidos quando estão mais perto. Cuidado com a estática!
+1442	Nuvens Negras
+1443	Corredor Sem Luz
+1444	Não é possível colocar
+1445	Forja Sem Luz
+1446	Mar Sem Luz
+1447	Modo Infinito
+1448	Modo Infinito: quanto mais durares, melhor! Provisões a cada 3 vagas, um Boss a cada 5 vagas.
+1449	Chega à vaga 30 no Modo Infinito
+1450	Melhor Infinito
+1451	Ninguém os pára!
+1452	Ignora armadura 40% → 70%, dano de respingo 70% → 85%
+1453	Ignora {0}% da armadura do alvo
+1454	Ignora 20% da armadura do alvo
+1455	Ignora 25% da armadura do alvo
+1456	Ignora 50% da armadura do alvo (incluindo escudos).
+1457	Noite Sem Lua
+1458	Arma
+1459	Arma: {0}
+1460	Armas (desbloqueio permanente, +8% de dano por nível, +4% por nível depois do nível 10; maior qualidade significa mais forte, mais caro e melhorias mais caras)
+1461	Dano da Arma
+1462	Colecionador de Armas
+1463	Físico Bloqueado
+1464	O dano físico é +{0}% mais eficaz contra espíritos
+1465	Eficácia do dano físico contra espíritos 30% → 70%
+1466	{0} do dano físico foi bloqueado por armadura, escudos de madeira ou espíritos: experimenta o cajado mágico, o bumerangue ou «Perfurar».
+1467	Está tanto nevoeiro, não vejo nada…
+1468	Olhos no Nevoeiro
+1469	Morcego Vampiro
+1470	Hihi, pus só um bocadinho de mel na sopa.
+1471	Hihihi, mais uma colher de tinta negra e a minha sopa fica pronta!
+1472	Da próxima vez que o vento soprar forte, aviso primeiro.
+1473	10 segundos depois de a próxima vaga começar, congela todos os monstros durante 4 segundos (Boss 1,5 segundos)
+1474	8 segundos depois de a próxima vaga começar, causa dano mágico de ATQ ×6 a todos os monstros
+1475	Próximo Nível ›
+1476	O verão chegou e eu sou a pessoa mais popular da vila.
+1477	Bola de Cato
+1478	As Bolas de Cato explodem quando rolam até à muralha! Elimina-as ao longe.
+1479	Passa primeiro o nível {0}
+1480	Consumíveis (usados em batalha, um por utilização; leva até {0} tipos, até {1} de cada; cada tipo tem recarga depois de usado)
+1481	Consumíveis (até {0} tipos, até {1} de cada; um por utilização, cada um tem recarga)
+1482	Ranhuras de Consumíveis
+1483	Mini-Boss
+1484	Mini-Boss. Invoca fantasminhas sem parar e revive depois de ser derrotado pela primeira vez!
+1485	Mini-Boss. Um gigante de pedra com cabeça de moinho: lança papagaios e levanta ventanias que sopram os monstros para a muralha. Concentra o fogo para interromper quando avisar!
+1486	Mini-Boss. Bate com o pé para atordoar o herói e explode quando é derrotado. Não o deixes aproximar-se da muralha!
+1487	Mini-Boss. Escava para mudar de via e fazer emboscadas, e depois aperta com força com as pinças grandes junto à muralha.
+1488	Mini-Boss. Uma ostra gigante: quase indestrutível fechada, mas mostra a pérola quando abre. Usa habilidades quando abrir!
+1489	Mini-Boss. Tornados e empurrões, mais feroz do que antes.
+1490	Mini-Boss. De vez em quando congela uma ranhura de habilidade do herói.
+1491	Mini-Boss. Age como o Sr. Ossos: invoca esqueletos e lança um escudo mágico, mas é mais resistente.
+1492	Mini-Boss. Age como o Rochedo, com o dobro da vida.
+1493	Mini-Boss. Liberta gelatinas pequenas sempre que a vida desce 15% e divide-se mais uma vez ao morrer.
+1494	Dragãozinho de Gelo
+1495	O Dragãozinho de Gelo chegou! Ar e terra atacam juntos!
+1496	Gelatina Pequena
+1497	Sacerdotezinho
+1498	Os Sacerdotezinhos escondem-se na retaguarda a curar monstros. O Golpe de Trovão e a explosão do cajado mágico também os atingem.
+1499	Cofrinho
+1500	Abobrinha
+1501	Pé de Cabra Pequeno
+1502	Ampulheta Pequena
+1503	Raiozinho
+1504	Bolinha de Neve
+1505	Fantasminha
+1506	As Fantasminhas quase não temem ataques físicos
+1507	As Fantasminhas quase não temem ataques físicos. O cajado mágico, o orbe elétrico, o Golpe de Trovão e a Queimadura são o seu pesadelo!
+1508	Bombinha
+1509	Vizinhos da Vila
+1510	Mestre das Sinergias
+1511	Calçado
+1512	Falha ao escrever o jogo guardado
+1513	Retirar
+1514	Retirar −1
+1515	Obrigado por não me detestarem quando eu estava zangado.
+1516	Obrigado por terem vindo até aqui.
+1517	Obrigado por salvares o reino!
+1518	Novo
+1519	Novo inimigo em cena!
+1520	Novo recorde! {0} → {1} vagas
+1521	Explosão Estelar
+1522	Mago Estelar
+1523	Cajado Estelar
+1524	Armadura Estelar
+1525	Coroa Estelar
+1526	Capa de Luz Estelar
+1527	Cintilante
+1528	Aljava da Órbita Estelar
+1529	Galáxia Resplandecente
+1530	Estrela
+1531	Botas da Estrela da Sorte
+1532	Botas de Mascate
+1533	Sorte
+1534	Sorte +{0}%
+1535	Sorte +15%
+1536	Amuleto da Sorte
+1537	Bónus de Sorte
+1538	Botas da Sorte
+1539	Moeda da Sorte
+1540	Lembrete de Descanso
+1541	Fazer uma Pausa
+1542	Kit de Reparação
+1543	Armadura de Monge
+1544	Reparar
+1545	Tartaruga-Escudo do Vazio
+1546	O círculo de proteção da Tartaruga-Escudo do Vazio é maior, elimina-a primeiro; os espetos dos ouriços também magoam mais.
+1547	Formação de Escudos do Vazio
+1548	Peixe-Voador do Vazio
+1549	Os Peixes-Voadores do Vazio saltam mais longe e não podem ser atingidos no ar.
+1550	Papagaio do Vazio
+1551	Ouriço-do-Mar do Vazio
+1552	Bolinho de Trovão do Vazio
+1553	Os Bolinhos de Trovão do Vazio têm um choque de maior alcance. Elimina-os ao longe.
+1554	No vazio não há vento, mas os papagaios flutuam e as ovelhas fazem mé. Tudo o que é familiar está cá, só que tudo ficou roxo.
+1555	Ave do Vazio
+1556	Balão do Vazio
+1557	Reino do Céu Vazio
+1558	Caranguejo do Vazio
+1559	Ovelha do Vazio
+1560	As Ovelhas do Vazio têm lã mais grossa, e os Papagaios do Vazio esquivam metade dos ataques físicos.
+1561	Requer {0} (primeiro troca prata por ouro nos câmbios da loja)
+1562	Requer {0} (primeiro troca prata por ouro nos câmbios da loja).
+1563	Os monstros da via escolhida e das vias adjacentes sofrem dano de ATQ ×7.
+1564	Escolhe uma via. Os monstros nela ficam 60% mais lentos durante 6 segundos.
+1565	Escolhe uma carta de provisões (dura este nível) · Provisões n.º {0}
+1566	Escolher
+1567	Escolher Provisões
+1568	Escolher Dificuldade
+1569	Escolher Capítulo
+1570	Escolher Equipamento
+1571	Faixa de Aprendiz
+1572	Capa de Aprendiz
+1573	Avalanche
+1574	Yeti
+1575	Os Yetis resistem ao físico, os Golems de Lava resistem à magia. Prepara os dois tipos de dano.
+1576	Yetis à Solta
+1577	Os Yetis temem a magia, os Golems de Lava temem o físico e as Tartarugas-Escudo protegem-nos. Elimina primeiro as tartarugas!
+1578	Bola de Neve
+1579	As Bolas de Neve dividem-se em duas bolinhas ao morrer. O dano em área limpa-as com menos esforço.
+1580	As bolinhas de neve que ficam depois de uma Bola de Neve se desfazer.
+1581	A planície de neve é tão branca e brilhante. Os pinguins deslizam pelo gelo e zás, já estão junto à muralha.
+1582	Corrida na Neve
+1583	Os pinguins da planície de neve deslizam depressa e os Yetis são grossos e duros. Kael, agasalha-te mais.
+1584	Guardião da Planície de Neve
+1585	Anel do Juramento de Sangue
+1586	Máscara do Olho de Sangue
+1587	Armadura da Linhagem de Sangue
+1588	Capa Veloz
+1589	Botas Velozes
+1590	Bola de Magma
+1591	As Bolas de Magma deixam fogo ao morrer, e os monstros que pisam nele aceleram. Elimina-as ao longe.
+1592	Rochedo
+1593	O Rochedo explodiu! A via transforma-se em lava
+1594	O Rochedo explode quando é derrotado! Elimina-o antes de se aproximar da muralha. Resiste à magia, por isso leva armas físicas.
+1595	Eco do Rochedo
+1596	Eco do Rochedo: bate com o pé e estilhaça rochas. Age como o Rochedo, com o dobro da vida.
+1597	O eco do Rochedo desfez-se numa pilha de pedrinhas. O Atlas empilhou-as ao pé da muralha.
+1598	O Rochedo é o porteiro da fenda. Diz que o pequenino lá dentro nunca teve um amigo.
+1599	O Rochedo explodiu junto à muralha!
+1600	Voa ao longo da via e volta, acertando uma vez em cada monstro em cada sentido. O golpe de regresso acerta por trás e ignora escudos.
+1601	Lã
+1602	Lã mais grossa: absorve 70% da vida em lã antes de a vida começar a descer.
+1603	Tesoura de Tosquia
+1604	Guerreiro da Torre
+1605	Reis demónios {0}% · Poder ×{1}
+1606	Vai bater com o pé!
+1607	Vem aí uma ventania!
+1608	Queres que te volte a montar?
+1609	Também podes mudar para a dificuldade Fácil nas Definições
+1610	À noite o castelo antigo brilha com luar azul. As Bolinhas da Sombra da Lua que caíram da fenda ainda se lembram de como roer a muralha.
+1611	Alcance −30% à noite. Os Morcegos Vampiro mudam muitas vezes de via e os Assassinos das Sombras aparecem de repente.
+1612	Alcance −30% à noite. Os Peixes-Voadores chegam num salto e os Assassinos das Sombras aparecem de repente!
+1613	Alcance −30% à noite. Os espetos dos ouriços ferem os seus aliados, por isso espera que se juntem antes de atacar.
+1614	Alcance −30% à noite. Os Diabretes das Brasas ficam ao longe a atirar bolas de fogo. Não os deixes desgastar a muralha.
+1615	Alcance −30% à noite. Os Espectros só sofrem 15% do dano físico. Feitiços e queimadura funcionam melhor.
+1616	Alcance −30% à noite. Carros de guerra e lobos saem da escuridão a correr e chegam à muralha num piscar de olhos.
+1617	Elmo da Coruja Noturna
+1618	Batalha Noturna
+1619	Cem níveis, cem defesas. O Inky voltou e a fenda fechou-se. A muralha continua a ser a mesma muralha, mas a casa que há atrás dela ficou tão, tão grande. (O Último Bastião, fim)
+1620	Metade dos ataques físicos é levada pelo vento e falha-o.
+1621	Depois de uma vaga ter aparecido toda, toca em «Chamar Mais Cedo» para invocar já a vaga seguinte. Os segundos restantes da contagem transformam-se em cobre.
+1622	Lança dois bumerangues de uma vez (esta via + via adjacente). Os golpes abrandam o alvo em 40%.
+1623	Dispara 3 de uma vez, +50% de dano a monstros voadores
+1624	Dispara 3 virotes flamejantes de uma vez, cada um incendeia o alvo, +50% de dano a monstros voadores.
+1625	Dispara 3 virotes de uma vez para 3 alvos diferentes, +50% de dano a monstros voadores. Mais fraco com menos alvos.
+1626	Dispara 5 setas de uma vez, +60% de dano a monstros voadores, ignora 20% da armadura.
+1627	Deve ser a última etapa. Guarda a muralha. Desta vez, em nome de todos os ecos.
+1628	Um Dois Três Quatro Cinco Seis Sete Oito Nove Dez
+1629	Equipar Recomendado
+1630	Um bom par de sapatos: rápido a correr, firme a parar.
+1631	Salta mais longe.
+1632	Armadura de Médico
+1633	Equipamento recomendado para este nível aplicado:
+1634	Limite Atingido
+1635	Lidos {0} / {1}
+1636	Copiado para a área de transferência
+1637	Mudou para «{0}», o Kael vai lutar
+1638	Já defendes a muralha há {0} minutos!
+1639	Nível Máximo
+1640	Selecionado:
+1641	Possuído
+1642	Vencido em dificuldade Desafio
+1643	Equipado
+1644	Equipado {0} · Mochila {1}
+1645	Amostras de música: banco de sons FluidR3_GM (Frank Wen), CC BY 3.0, via gleitz/midi-js-soundfonts
+1646	Volume da Música
+1647	Efeitos Sonoros
+1648	Volume dos Efeitos
+1649	Prata
+1650	Moedas de Prata
+1651	Nível de prata · Específico
+1652	As moedas de prata desbloqueiam habilidades e equipamento bom.
+1653	Coroa de Prata
+1654	Aljava Guia-Almas
+1655	Furtividade
+1656	Herói
+1657	O herói não pode ser eletrocutado nem atordoado
+1658	ATQ do herói +25% durante 8 segundos.
+1659	Redução de velocidade de ataque sofrida pelo herói −60%
+1660	Pendente Olho de Águia
+1661	Capa de Asas de Águia
+1662	Pendente de Pena de Águia
+1663	Chapéu de Pena de Águia
+1664	Olho de Águia
+1665	Pirilampo
+1666	Máscara da Lâmina Sombria
+1667	Faca nas Sombras
+1668	Possui todas as 6 armas
+1669	Nunca Caída
+1670	Aljava do Gelo Eterno
+1671	Baluarte Eterno
+1672	Capa Eterna
+1673	Ampulheta Eterna
+1674	Coração de Herói
+1675	Aljava Fantasma
+1676	Conceção do Jogo · Programação · Arte · Som
+1677	Botas de Patrulheiro
+1678	Então é assim que se sente ter um lar, quentinho e acolhedor.
+1679	Realizador de Desejos
+1680	Alguém vive aqui? Então tem mesmo de se registar! Clac! (fecha a concha)
+1681	Grosso e duro. Recupera vida devagar depois de 2 segundos sem ser atingido. Concentra o fogo para o derrubar de uma vez.
+1682	Capa de Brasas
+1683	Rede de Pesca
+1684	Encontra 30 tipos de monstros
+1685	Monstros Encontrados
+1686	Encontra todos os monstros
+1687	Capa Curativa
+1688	Arma Primitiva
+1689	Reforços
+1690	Os reforços animam: na próxima tentativa neste nível, ATQ e muralha +{0}%
+1691	À distância
+1692	À distância: fica ao longe e cospe veneno na muralha, envenenando-a ao longo do tempo.
+1693	Furtivo e inalvejável ao longe. Também muda de via às escondidas e só aparece junto à muralha.
+1694	Elmo da Visão Longínqua
+1695	Vista Longa
+1696	Espectro
+1697	Aljava do Luar
+1698	Primeira Visita ao Luar
+1699	Vendaval ao Luar
+1700	Castelo da Sombra da Lua
+1701	Guardião da Sombra da Lua
+1702	Coelho da Sombra da Lua
+1703	Os Coelhos da Sombra da Lua e os Morcegos Vampiro esvoaçam de um lado para o outro, por isso não contes atingir sempre o mesmo.
+1704	Bolinha da Sombra da Lua
+1705	As Bolinhas da Sombra da Lua recuperam vida sozinhas quando não são atingidas. Não as deixes respirar.
+1706	Ler
+1707	Guardião das Nuvens
+1708	Reino das Nuvens
