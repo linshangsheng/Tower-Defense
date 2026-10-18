@@ -1426,7 +1426,7 @@
     86: {
       name: '钢与熔铁',
       type: 'armored',
-      countMult: 1,
+      countMult: 0.41,
       lanes: 5,
       waves: [
         W(0.90, ['steelYeti', 3], ['moltenGolem', 1], ['ironSnowman', 3], ['ironChariot', 1]),
@@ -1584,18 +1584,18 @@
     96: {
       name: '万物回响',
       type: 'armored',
-      countMult: 1,
+      countMult: 0.33,
       lanes: 5,
       waves: [
-        W(0.90, ['steelYeti', 3], ['moltenGolem', 1], ['voidTurtle', 3], ['skelGuard', 1]),
-        W(0.86, ['steelYeti', 4], ['moltenGolem', 1], ['voidTurtle', 3], ['skelGuard', 2]),
-        W(0.83, ['steelYeti', 4], ['moltenGolem', 1], ['voidTurtle', 4], ['skelGuard', 2]),
-        W(0.79, ['steelYeti', 4], ['moltenGolem', 1], ['voidTurtle', 5], ['skelGuard', 2]),
-        W(0.75, ['steelYeti', 5], ['moltenGolem', 1], ['voidTurtle', 5], ['skelGuard', 3]),
-        W(0.72, ['steelYeti', 5], ['moltenGolem', 1], ['voidTurtle', 6], ['skelGuard', 3]),
-        W(0.68, ['steelYeti', 7], ['moltenGolem', 1], ['voidTurtle', 6], ['skelGuard', 3]),
+        W(0.90, ['steelYeti', 2], ['voidTurtle', 2], ['voidCrab', 4], ['voidSheep', 4]),
+        W(0.86, ['steelYeti', 2], ['voidTurtle', 2], ['voidCrab', 5], ['voidSheep', 5]),
+        W(0.83, ['steelYeti', 2], ['voidTurtle', 3], ['voidCrab', 6], ['voidSheep', 6]),
+        W(0.79, ['steelYeti', 3], ['voidTurtle', 3], ['voidCrab', 7], ['voidSheep', 7]),
+        W(0.75, ['steelYeti', 3], ['voidTurtle', 4], ['voidCrab', 8], ['voidSheep', 8]),
+        W(0.72, ['steelYeti', 4], ['voidTurtle', 4], ['voidCrab', 9], ['voidSheep', 9]),
+        W(0.68, ['steelYeti', 4], ['voidTurtle', 4], ['voidCrab', 10], ['voidSheep', 10]),
       ],
-      tip: '各种怕物理的、怕魔法的、带盾的混在一起——别只带一种武器。',
+      tip: '钢雪怪怕魔法、盾龟还会保护身边的怪物——先拆掉盾龟，再用魔法对付钢雪怪。',
     },
     97: {
       name: '气球舰队',
