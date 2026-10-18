@@ -34,7 +34,7 @@
   };
 
   // 不当"多出来的小怪"的怪（设计书 84）：Boss、妖塔分身，要停在远处的，会影响别的怪或英雄的
-  const FODDER_DENY = ['boss', 'towerOf', 'bossPart', 'ai', 'healer', 'ranged', 'chill', 'bubbler', 'fireZone', 'onDeath', 'staticShock', 'stealth'];
+  const FODDER_DENY = ['boss', 'towerOf', 'bossPart', 'ai', 'healer', 'ranged', 'chill', 'bubbler', 'fireZone', 'onDeath', 'staticShock', 'stealth', 'slam', 'wool', 'shell', 'leap', 'burrow', 'spikes', 'guard'];
 
   class Battle extends TD.Emitter {
     // opts: { level, stats, loadout: {active, items, target, autoCast}, seed, autoItems }
