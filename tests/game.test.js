@@ -2657,8 +2657,26 @@ test('装备：头盔、披风、盔甲、箭袋、饰品、鞋子各 30 件，�
   }
   // 武器也在装备分类里
   assert.deepStrictEqual(D.equipCats.map((c) => c.id), ['weapon', 'helm', 'cape', 'armor', 'quiver', 'trinket', 'boots']);
-  // 最贵的两件金色装备用钻石买
-  assert.ok(Object.values(D.equipment).some((e) => e.cost.diamond));
+  // 金色装备：每类只有第 1 件能用金币买，其余 5 件只能用钻石，最便宜 10 钻，越往后越贵（设计书 79）
+  for (const slot of Object.keys(D.equipSlots)) {
+    const gold = Object.values(D.equipment).filter((e) => e.slot === slot && e.rarity === 5);
+    const byGold = gold.filter((e) => !e.cost.diamond);
+    const byDia = gold.filter((e) => e.cost.diamond).sort((a, b) => a.cost.diamond - b.cost.diamond);
+    assert.strictEqual(byGold.length, 1, `${slot} 金色只有 1 件能用金币买`);
+    assert.strictEqual(byDia.length, 5, slot);
+    assert.ok(byDia.every((e) => Object.keys(e.cost).length === 1), '只收钻石，不混别的货币');
+    assert.ok(byDia[0].cost.diamond >= 10, `${slot} 最便宜的也要 10 钻`);
+    for (let i = 1; i < 5; i++) assert.ok(byDia[i].cost.diamond > byDia[i - 1].cost.diamond, slot);
+  }
+  // 没有钻石就买不了：钻石不够、金币再多也不行
+  const poor = P.newSave();
+  P.maxResources(poor);
+  poor.diamond = 9;
+  const dia = Object.keys(D.equipment).find((id) => D.equipment[id].cost.diamond);
+  assert.ok(!P.buyEquip(poor, dia), '9 钻买不起 10 钻的装备');
+  poor.diamond = D.equipment[dia].cost.diamond;
+  assert.ok(P.buyEquip(poor, dia));
+  assert.strictEqual(poor.diamond, 0);
 });
 
 test('装备穿戴：买了自动穿（栏位空着时），否则点"穿戴"换上；卸下、出售都正确；新栏位盔甲和鞋子', () => {

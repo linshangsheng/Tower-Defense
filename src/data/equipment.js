@@ -119,14 +119,16 @@
     trinket: '随身带的小物件。',
     boots: '一双好鞋，跑得快、站得稳。',
   };
-  // 价格：绿用铜币，蓝、紫用银币 / 金币，红、金用金币，最贵的两件金色装备用钻石
+  // 价格：绿用铜币，蓝、紫用银币 / 金币，红用金币，金色除了每类第 1 件以外全部用钻石
   const SLOT_COST = { helm: 1, cape: 1.1, armor: 1.4, quiver: 1.2, trinket: 1, boots: 1.1 };
+  const DIAMOND_LADDER = [10, 16, 25, 40, 64];
   const COST_LADDER = {
     1: (i, k) => ({ copper: Math.round((90 + i * 70 + i * i * 6) * k / 5) * 5 }),
     2: (i, k) => ({ silver: Math.round((3 + i * 1.2) * k) }),
     3: (i, k) => ({ gold: Math.max(2, Math.round((2 + i * 0.6) * k)) }),
     4: (i, k) => ({ gold: Math.round((6 + i * 1.6) * k) }),
-    5: (i, k) => (i >= 4 ? { diamond: i === 4 ? 8 : 24 } : { gold: Math.round((20 + i * 4) * k) }),
+    // 金色装备：每类第 1 件还能用金币买，其余 5 件只能用钻石，最便宜的也要 10 钻（设计书 79）
+    5: (i, k) => (i === 0 ? { gold: Math.round(20 * k) } : { diamond: Math.round(DIAMOND_LADDER[i - 1] * k) }),
   };
   // 推荐关卡（只是提示，买得起就能买）
   const MIN_LEVEL = { 1: [1, 3, 5, 8, 10, 12], 2: [12, 16, 20, 24, 28, 32], 3: [30, 35, 40, 45, 50, 55], 4: [50, 56, 62, 68, 74, 80], 5: [70, 76, 82, 88, 94, 100] };
