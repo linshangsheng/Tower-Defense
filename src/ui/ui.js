@@ -642,7 +642,7 @@
         h('div', { class: 'power' }, '战力 ', h('b', null, P.power(s))),
         currencyBar(),
         P.isCleared(s, 5) ? h('button', { class: 'btn small icon-btn', title: '王国小镇', onclick: () => (sfx('click'), UI.showTown()) }, '🏘') : null,
-        h('button', { class: 'btn small icon-btn', title: 'Kael的衣柜', onclick: () => (sfx('click'), UI.showWardrobe()) }, '👕'),
+        h('button', { class: 'btn small icon-btn', title: '角色衣柜', onclick: () => (sfx('click'), UI.showWardrobe()) }, '👕'),
         h('button', { class: 'btn small icon-btn', title: '守城日记', onclick: () => (sfx('click'), UI.showDiary()) }, '📔'),
         h('button', { class: 'btn small icon-btn', title: '怪物图鉴', onclick: () => (sfx('click'), UI.showBestiary()) }, '📖'),
         h('button', { class: 'btn small icon-btn', title: '成就', onclick: () => (sfx('click'), UI.showAchievements()) }, '🏆'),
@@ -1305,13 +1305,13 @@
         renderShop();
       } else {
         sfx('error');
-        UI.toast(kind === 'item' ? '背包里没有更多这个道具了' : '无法放入');
+        UI.toast(kind === 'item' ? '背包里没有这个道具' : '无法放入');
       }
     };
     list.append(h('button', { class: 'pick', onclick: () => choose(null) }, h('b', null, '（清空）')));
     for (const id of opts) {
       const d = defs[id];
-      list.append(h('button', { class: 'pick' + (arr[index] === id ? ' on' : '') + (arr.includes(id) && arr[index] !== id && kind !== 'item' ? ' used' : ''), onclick: () => choose(id) }, h('b', null, d.name, kind === 'item' ? ` ×${s.inventory[id] || 0}` : ''), h('span', null, d.desc)));
+      list.append(h('button', { class: 'pick' + (arr[index] === id ? ' on' : '') + (arr.includes(id) && arr[index] !== id ? ' used' : ''), onclick: () => choose(id) }, h('b', null, d.name, kind === 'item' ? ` ×${s.inventory[id] || 0}` : ''), h('span', null, d.desc)));
     }
     if (!opts.length) list.append(h('div', { class: 'hint' }, kind === 'item' ? '背包是空的，去「道具」页购买。' : '还没有可用的技能，去「技能」页用银币解锁。'));
     modal(h('div', null, h('h2', null, '选择'), list, h('div', { class: 'modal-buttons' }, h('button', { class: 'btn', onclick: UI.closeModal }, '取消'))), { closeOnBack: true });
@@ -1357,7 +1357,8 @@
         { class: 'item-btn', title: it.def.desc, onclick: () => game.tryItem(i) },
         h('span', { class: 'key' }, 'QWE'[i]),
         TD.sprites.iconCanvas(it.id, 36),
-        h('span', { class: 'skill-name' }, it.def.name)
+        h('span', { class: 'skill-name' }, it.def.name),
+        h('span', { class: 'item-stock' }, '×' + (game.save.inventory[it.id] || 0))
       )
     );
     hud.nudge = h('div', { class: 'nudge-bubble hidden' }, '点我释放技能！');
@@ -1434,6 +1435,8 @@
     b.items.forEach((it, i) => {
       const btn = hud.itemBtns[i];
       btn.classList.toggle('used', it.used);
+      const stock = btn.querySelector('.item-stock');
+      if (stock) stock.textContent = '×' + (game.save.inventory[it.id] || 0);
       btn.classList.toggle('armed', game.pendingLane && game.pendingLane.kind === 'item' && game.pendingLane.index === i);
     });
     hud.targetBtn.textContent = '🎯 ' + D.targetModes[b.target];
@@ -1479,12 +1482,14 @@
     const first = !game.save.stats.seenSupply;
     const cards = choices.map((id, i) => {
       const sup = D.supplies[id];
+      const rar = D.supplyRarity[sup.rarity || 'common'];
       return h(
         'button',
-        { class: 'supply-card', onclick: () => game.pickSupply(id) },
+        { class: 'supply-card rar-' + (sup.rarity || 'common'), style: { borderColor: rar.color }, onclick: () => game.pickSupply(id) },
         h('span', { class: 'key' }, i + 1),
+        h('span', { class: 'supply-rar', style: { background: rar.color } }, rar.name),
         TD.sprites.iconCanvas(sup.icon, 64),
-        h('div', { class: 'supply-name' }, sup.name),
+        h('div', { class: 'supply-name', style: { color: rar.color } }, sup.name),
         h('div', { class: 'supply-desc' }, sup.desc)
       );
     });
@@ -1493,7 +1498,7 @@
         'div',
         { class: 'supply' },
         h('h2', null, '📦 补给箱到了！'),
-        h('div', { class: 'hint' }, first ? '战斗暂停中。选一张补给卡，效果持续到本关结束。按 1 / 2 / 3 也可以选。' : '选一张补给卡（本关有效）'),
+        h('div', { class: 'hint' }, first ? '战斗暂停中。选一张补给卡，效果持续到本关结束（蓝色稀有、紫色史诗更强）。按 1 / 2 / 3 也可以选。' : `选一张补给卡（本关有效） · 第 ${battle.supplyPicked.length + 1} 次补给`),
         h('div', { class: 'supply-row' }, cards),
         battle.supplyPicked.length ? h('div', { class: 'hint' }, '已选：' + battle.supplyPicked.map((x) => D.supplies[x].name).join('、')) : null
       ),

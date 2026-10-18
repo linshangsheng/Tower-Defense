@@ -2598,3 +2598,67 @@ select option {
   color: #e9b85a;
   opacity: 0.85;
 }
+
+/* ---------- 道具库存角标（设计书 71.2） ---------- */
+.item-btn {
+  position: relative;
+}
+.item-btn .item-stock {
+  position: absolute;
+  right: 3px;
+  top: 2px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #ffe9a8;
+  text-shadow: 0 1px 2px #000;
+}
+
+/* ---------- 补给卡品质（设计书 71.5） ---------- */
+.supply-card {
+  position: relative;
+  border-width: 2px;
+  border-style: solid;
+}
+.supply-card .supply-rar {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  padding: 1px 7px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #0b1020;
+}
+.supply-card.rar-rare {
+  box-shadow: 0 0 14px rgba(90, 168, 255, 0.35);
+}
+.supply-card.rar-epic {
+  box-shadow: 0 0 18px rgba(192, 122, 255, 0.5);
+}
+
+/* ---------- 角色衣柜（设计书 72） ---------- */
+.outfit-card .outfit-bonus {
+  color: #b8741a;
+  font-weight: 700;
+  min-height: 30px;
+}
+.outfit-card .outfit-price {
+  min-height: 0;
+}
+.outfit-card em.own {
+  background: #6a8a5a;
+}
+.outfit-card.locked .outfit-img {
+  filter: brightness(0.7) saturate(0.8);
+  opacity: 0.85;
+}
+@media (min-width: 761px) {
+  .outfit-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+.wardrobe .outfit-grid {
+  max-height: 58vh;
+  overflow-y: auto;
+  padding-right: 4px;
+}

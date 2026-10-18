@@ -36,7 +36,7 @@
       name: '回旋镖',
       rarity: 1,
       cost: { copper: 450 },
-      dmgMult: 0.7,
+      dmgMult: 0.6,
       aspdMult: 0.6,
       projSpeed: 750,
       boomerang: true,
@@ -48,7 +48,7 @@
       name: '魔法杖',
       rarity: 2,
       cost: { silver: 8 },
-      dmgMult: 1.15,
+      dmgMult: 1.2,
       aspdMult: 0.85,
       projSpeed: 700,
       dmgType: 'magic',
@@ -62,7 +62,7 @@
       name: '火炮',
       rarity: 2,
       cost: { silver: 10 },
-      dmgMult: 3.3,
+      dmgMult: 3.5,
       aspdMult: 0.35,
       projSpeed: 600,
       arc: true,
@@ -77,7 +77,7 @@
       name: '雷电法球',
       rarity: 3,
       cost: { gold: 4 },
-      dmgMult: 0.8,
+      dmgMult: 0.77,
       aspdMult: 0.9,
       projSpeed: 1500,
       dmgType: 'magic',
@@ -91,39 +91,39 @@
   // ---- v0.55 武器扩充（设计书 63）：五色品质，越高越强越贵；look = 基础形状 + 品质色 + 专属细节 ----
   Object.assign(TD.data.weapons, {
     frostBow: {
-      name: '寒霜弓', rarity: 2, cost: { silver: 12 }, minLevel: 10, dmgMult: 1.8, aspdMult: 1.0, projSpeed: 950, slow: { amt: 0.3, dur: 2 },
+      name: '寒霜弓', rarity: 2, cost: { silver: 12 }, minLevel: 10, dmgMult: 1.45, aspdMult: 1.0, projSpeed: 950, slow: { amt: 0.3, dur: 2 },
       desc: '伤害 ×1.8；命中使目标减速 30%（2 秒）。', good: '快怪：兔子、狼、战车', look: { base: 'bow', color: '#8fd8ff', accent: 'frost' },
     },
     flameCrossbow: {
-      name: '烈焰弩', rarity: 3, cost: { gold: 4 }, minLevel: 20, dmgMult: 0.6, aspdMult: 1.0, projSpeed: 950, bolts: 3, extraBoltMult: 0.45, flyingMult: 1.5, ignite: true,
+      name: '烈焰弩', rarity: 3, cost: { gold: 4 }, minLevel: 20, dmgMult: 0.46, aspdMult: 1.0, projSpeed: 950, bolts: 3, extraBoltMult: 0.45, flyingMult: 1.5, ignite: true,
       desc: '一次射 3 支火焰弩箭，每支点燃目标，对飞行怪伤害 +50%。', good: '群怪、飞行怪', look: { base: 'crossbow', color: '#ff9a4a', accent: 'flame' },
     },
     piercer: {
-      name: '穿心长弓', rarity: 3, cost: { gold: 5 }, minLevel: 20, dmgMult: 1.3, aspdMult: 0.9, projSpeed: 1100, pierce: { count: 5, range: 520, mult: 0.8 }, armorIgnore: 0.2,
+      name: '穿心长弓', rarity: 3, cost: { gold: 5 }, minLevel: 20, dmgMult: 0.7, aspdMult: 0.9, projSpeed: 1100, pierce: { count: 5, range: 520, mult: 0.8 }, armorIgnore: 0.2,
       desc: '箭穿过同一车道最多 5 只怪（每只 80% 伤害），无视 20% 护甲。', good: '排成长队的车道', look: { base: 'bow', color: '#d9a0ff', accent: 'lance' },
     },
     meteorCannon: {
-      name: '陨星炮', rarity: 4, cost: { gold: 8 }, minLevel: 40, dmgMult: 3.8, aspdMult: 0.4, projSpeed: 620, arc: true, splash: { radius: 100, mult: 0.8 }, armorIgnore: 0.6, bossMult: 1.3,
+      name: '陨星炮', rarity: 4, cost: { gold: 8 }, minLevel: 40, dmgMult: 3.6, aspdMult: 0.4, projSpeed: 620, arc: true, splash: { radius: 100, mult: 0.8 }, armorIgnore: 0.6, bossMult: 1.3,
       desc: '超重炮弹，爆炸半径 100，无视 60% 护甲，对 Boss 伤害 +30%。', good: '重甲怪、Boss', look: { base: 'cannon', color: '#ff6a3a', accent: 'meteor' },
     },
     stormOrb: {
-      name: '风暴法球', rarity: 4, cost: { gold: 9 }, minLevel: 40, dmgMult: 1.2, aspdMult: 1.0, projSpeed: 1600, dmgType: 'magic', chain: { count: 5, range: 240, falloff: 0.85 },
+      name: '风暴法球', rarity: 4, cost: { gold: 9 }, minLevel: 40, dmgMult: 0.6, aspdMult: 1.0, projSpeed: 1600, dmgType: 'magic', chain: { count: 5, range: 240, falloff: 0.85 },
       desc: '魔法闪电跳跃 5 次，每跳只衰减 15%。', good: '密集怪群、灵体', look: { base: 'orb', color: '#7ad0ff', accent: 'storm' },
     },
     voidCrossbow: {
-      name: '裂空弩', rarity: 4, cost: { gold: 10 }, minLevel: 40, dmgMult: 0.62, aspdMult: 1.0, projSpeed: 1000, bolts: 5, extraBoltMult: 0.55, flyingMult: 1.6, armorIgnore: 0.2,
+      name: '裂空弩', rarity: 4, cost: { gold: 10 }, minLevel: 40, dmgMult: 0.28, aspdMult: 1.0, projSpeed: 1000, bolts: 5, extraBoltMult: 0.42, flyingMult: 1.6, armorIgnore: 0.2,
       desc: '一次射 5 支箭，对飞行怪伤害 +60%，无视 20% 护甲。', good: '群怪、飞行怪', look: { base: 'crossbow', color: '#b060ff', accent: 'void' },
     },
     genesisBow: {
-      name: '创世之弓', rarity: 5, cost: { gold: 20 }, minLevel: 60, dmgMult: 2.0, aspdMult: 1.15, projSpeed: 1200, bonusCrit: 0.2, pierce: { count: 3, range: 420, mult: 0.7 }, ignite: true,
-      desc: '高伤害、暴击率 +20%；箭穿透 3 只怪，并点燃目标。', good: '通用、Boss', look: { base: 'bow', color: '#ffd860', accent: 'genesis' },
+      name: '创世之弓', rarity: 5, cost: { gold: 20 }, minLevel: 60, dmgMult: 0.54, aspdMult: 1.15, projSpeed: 1200, bonusCrit: 0.12, pierce: { count: 3, range: 420, mult: 0.7 }, ignite: true,
+      desc: '高伤害、暴击率 +12%；箭穿透 3 只怪，并点燃目标。', good: '通用、Boss', look: { base: 'bow', color: '#ffd860', accent: 'genesis' },
     },
     judgementStaff: {
-      name: '天罚之杖', rarity: 5, cost: { gold: 18 }, minLevel: 60, dmgMult: 1.7, aspdMult: 0.95, projSpeed: 760, dmgType: 'magic', splash: { radius: 110, mult: 0.9 }, chain: { count: 2, range: 200, falloff: 0.7 },
+      name: '天罚之杖', rarity: 5, cost: { gold: 18 }, minLevel: 60, dmgMult: 0.74, aspdMult: 0.95, projSpeed: 760, dmgType: 'magic', splash: { radius: 110, mult: 0.9 }, chain: { count: 2, range: 200, falloff: 0.7 },
       desc: '魔法，大范围爆炸（半径 110、溅射 90%），再加 2 次闪电跳跃。', good: '成堆的怪、灵体、魔抗低的怪', look: { base: 'staff', color: '#fff0a0', accent: 'judgement' },
     },
     chronoBoomerang: {
-      name: '时之回旋', rarity: 5, cost: { gold: 16 }, minLevel: 60, dmgMult: 1.7, aspdMult: 0.75, projSpeed: 800, boomerang: true, twin: true, slow: { amt: 0.4, dur: 2 },
+      name: '时之回旋', rarity: 5, cost: { gold: 16 }, minLevel: 60, dmgMult: 0.32, aspdMult: 0.75, projSpeed: 800, boomerang: true, twin: true, slow: { amt: 0.4, dur: 2 },
       desc: '一次扔出两支回旋镖（本车道 + 相邻车道），命中使目标减速 40%。', good: '长队、木盾哥布林', look: { base: 'boomerang', color: '#c8a8ff', accent: 'chrono' },
     },
   });
@@ -271,22 +271,22 @@
   TD.data.items = {
     bomb: { name: '小炸弹', cost: { copper: 30 }, atkMult: 5, targetLane: true, desc: '对选定车道上所有怪造成攻击力 ×5 的伤害。' },
     patch: { name: '修补包', cost: { copper: 40 }, healRatio: 0.15, desc: '城墙回复 15% 最大血量。' },
-    haste: { name: '加速药水', cost: { copper: 35 }, aspdBonus: 0.4, duration: 10, desc: '攻击速度 +40%，持续 10 秒。' },
+    haste: { name: '加速药水', cost: { copper: 35 }, aspdBonus: 0.35, duration: 9, desc: '攻击速度 +35%，持续 9 秒。' },
     freeze: { name: '冰冻瓶', cost: { copper: 35 }, duration: 3, targetLane: true, desc: '冻结选定车道上的所有怪 3 秒。' },
     charm: { name: '幸运符', cost: { silver: 1 }, copperBonus: 0.3, passive: true, desc: '战斗开始时自动生效：本关铜币收益 +30%。' },
 
     // ---- v0.54 消耗品扩充（设计书 62）：越强越贵，铜 → 银 → 金 ----
-    firebomb: { name: '燃烧瓶', cost: { copper: 80 }, atkMult: 3, targetLane: true, desc: '对选定车道上所有怪造成攻击力 ×3 的魔法伤害，并点燃它们。' },
-    thunderScroll: { name: '雷霆符', cost: { silver: 2 }, atkMult: 6, count: 5, desc: '全场血量最高的 5 只怪各被一道闪电劈中，每道攻击力 ×6 的魔法伤害。' },
-    bigBomb: { name: '重磅炸弹', cost: { silver: 3 }, atkMult: 10, targetLane: true, desc: '选定车道和相邻车道上所有怪受到攻击力 ×10 的伤害。' },
-    barrier: { name: '守护符文', cost: { silver: 3 }, shieldRatio: 0.5, desc: '城墙获得一层护盾，能吸收 50% 最大血量的伤害，持续到本关结束。' },
-    warBanner: { name: '战旗', cost: { silver: 3 }, atkBonus: 0.4, duration: 10, desc: '英雄攻击力 +40%，持续 10 秒。' },
-    quake: { name: '地震符', cost: { silver: 4 }, atkMult: 5, stun: 3, bossStun: 1.5, desc: '全场怪物眩晕 3 秒（Boss 1.5 秒），并受到攻击力 ×5 的伤害。' },
-    blizzard: { name: '暴风雪卷轴', cost: { gold: 1 }, duration: 8, bossDuration: 4, slowAfter: 0.6, slowTime: 5, shatter: 1, desc: '冰冻全体怪物 8 秒（Boss 4 秒），冻住期间它们受到的伤害翻倍，解冻后再减速 60%，持续 5 秒。' },
-    flood: { name: '洪水', cost: { gold: 1 }, push: 500, bossPush: 150, atkMult: 4, slow: 0.7, slowTime: 6, shatter: 0.6, desc: '洪水冲过战场：全体怪物向后倒退 500 像素（Boss 150 像素），受到攻击力 ×4 的伤害，被浸湿的怪物 6 秒内受到的伤害 +60%，并减速 70%。' },
-    holyLight: { name: '圣光', cost: { gold: 2 }, healRatio: 1, drAmt: 0.8, drDuration: 10, desc: '城墙回满血，之后 10 秒城墙受到的伤害 −80%。' },
-    meteor: { name: '陨石雨', cost: { gold: 2 }, count: 18, duration: 3, atkMult: 12, radius: 110, splashMult: 0.6, desc: '18 颗陨石落在全场随机的怪身上，每颗攻击力 ×12 的伤害，周围 110 像素内的怪受到六成。' },
-    chrono: { name: '时间静止', cost: { gold: 3 }, duration: 10, aspdBonus: 1, shatter: 2, desc: '冻结全体怪物 10 秒，连 Boss 也一起冻住，冻住期间它们受到的伤害 ×3；这期间英雄攻击速度 +100%。' },
+    firebomb: { name: '燃烧瓶', cost: { copper: 80 }, atkMult: 2.5, targetLane: true, desc: '对选定车道上所有怪造成攻击力 ×2.5 的魔法伤害，并点燃它们。' },
+    thunderScroll: { name: '雷霆符', cost: { silver: 2 }, atkMult: 5, count: 4, desc: '全场血量最高的 4 只怪各被一道闪电劈中，每道攻击力 ×5 的魔法伤害。' },
+    bigBomb: { name: '重磅炸弹', cost: { silver: 3 }, atkMult: 7, targetLane: true, desc: '选定车道和相邻车道上所有怪受到攻击力 ×7 的伤害。' },
+    barrier: { name: '守护符文', cost: { silver: 3 }, shieldRatio: 0.35, desc: '城墙获得一层护盾，能吸收 35% 最大血量的伤害，持续到本关结束。' },
+    warBanner: { name: '战旗', cost: { silver: 3 }, atkBonus: 0.25, duration: 8, desc: '英雄攻击力 +25%，持续 8 秒。' },
+    quake: { name: '地震符', cost: { silver: 4 }, atkMult: 3.5, stun: 2.5, bossStun: 1, desc: '全场怪物眩晕 2.5 秒（Boss 1 秒），并受到攻击力 ×3.5 的伤害。' },
+    blizzard: { name: '暴风雪卷轴', cost: { gold: 1 }, duration: 6, bossDuration: 3, slowAfter: 0.5, slowTime: 4, shatter: 0.6, desc: '冰冻全体怪物 6 秒（Boss 3 秒），冻住期间它们受到的伤害 +60%，解冻后再减速 50%，持续 4 秒。' },
+    flood: { name: '洪水', cost: { gold: 1 }, push: 350, bossPush: 100, atkMult: 3, slow: 0.6, slowTime: 5, shatter: 0.4, desc: '洪水冲过战场：全体怪物向后倒退 350 像素（Boss 100 像素），受到攻击力 ×3 的伤害，被浸湿的怪物 5 秒内受到的伤害 +40%，并减速 60%。' },
+    holyLight: { name: '圣光', cost: { gold: 2 }, healRatio: 0.7, drAmt: 0.6, drDuration: 8, desc: '城墙回复 70% 最大血量，之后 8 秒城墙受到的伤害 −60%。' },
+    meteor: { name: '陨石雨', cost: { gold: 2 }, count: 12, duration: 3, atkMult: 8, radius: 110, splashMult: 0.6, desc: '12 颗陨石落在全场随机的怪身上，每颗攻击力 ×8 的伤害，周围 110 像素内的怪受到六成。' },
+    chrono: { name: '时间静止', cost: { gold: 3 }, duration: 7, aspdBonus: 0.6, shatter: 1.2, desc: '冻结全体怪物 7 秒，连 Boss 也一起冻住，冻住期间它们受到的伤害 ×2.2；这期间英雄攻击速度 +60%。' },
   };
 
   TD.data.equipment = {
@@ -357,19 +357,49 @@
     item: [2, 6, 8],
   };
 
-  // 战场补给卡（设计书 2.7、18.12）：mods 中的字段由战斗逻辑读取
+  // 战场补给卡（设计书 2.7、18.12、71.5）：mods 中的字段由战斗逻辑读取
+  // rarity：common 普通 / rare 稀有 / epic 史诗；instant：选完立即生效的一次性效果；minLevel：到这一章才会出现的专用克制卡
+  TD.data.supplyRarity = {
+    common: { name: '普通', color: '#cfd8e6' },
+    rare: { name: '稀有', color: '#5aa8ff' },
+    epic: { name: '史诗', color: '#c07aff' },
+  };
+  // 第 1、2、3、4 次补给时，出普通 / 稀有 / 史诗的权重
+  TD.data.supplyWeights = [
+    [60, 32, 8],
+    [45, 40, 15],
+    [30, 45, 25],
+    [20, 45, 35],
+  ];
   TD.data.supplies = {
-    sharp: { name: '磨利箭头', desc: '攻击力 +10%', mods: { atkMult: 0.1 }, icon: 'arrowUp' },
-    quick: { name: '灵巧手指', desc: '攻击速度 +10%', mods: { aspdMult: 0.1 }, icon: 'haste' },
+    // —— 普通：稳定的小强化 ——
+    sharp: { name: '磨利箭头', desc: '攻击力 +12%', mods: { atkMult: 0.12 }, icon: 'arrowUp' },
+    quick: { name: '灵巧手指', desc: '攻击速度 +12%', mods: { aspdMult: 0.12 }, icon: 'haste' },
     eagle: { name: '鹰之眼', desc: '暴击率 +8%', mods: { crit: 0.08 }, icon: 'eye' },
-    fury: { name: '狂热', desc: '暴击伤害 +25%', mods: { critDmg: 0.25 }, icon: 'fury' },
+    fury: { name: '狂热', desc: '暴击伤害 +30%', mods: { critDmg: 0.3 }, icon: 'fury' },
     bricks: { name: '加固砖块', desc: '立即回复城墙 20%，城墙受到伤害 −8%', mods: { wallDr: 0.08 }, heal: 0.2, icon: 'repair' },
     master: { name: '技能大师', desc: '主动技能冷却 −20%，并立即刷新所有冷却', mods: { cdMult: -0.2 }, refresh: true, needSkills: true, icon: 'master' },
-    purse: { name: '铜币袋', desc: '本关铜币收益 +25%', mods: { copperBonus: 0.25 }, icon: 'purse' },
+    purse: { name: '铜币袋', desc: '本关铜币收益 +30%', mods: { copperBonus: 0.3 }, icon: 'purse' },
     frostTip: { name: '寒霜箭头', desc: '普通攻击使目标减速 20%，持续 1.5 秒', mods: { slowOnHit: 0.2 }, icon: 'frost' },
     farsight: { name: '远望', desc: '射程 +12%', mods: { range: 0.12 }, icon: 'eye' },
-    arcane: { name: '奥术涌动', desc: '魔法伤害 +20%', mods: { magicMult: 0.2 }, icon: 'staff', minLevel: 11 },
+    arcane: { name: '奥术涌动', desc: '魔法伤害 +25%', mods: { magicMult: 0.25 }, icon: 'staff', minLevel: 11 },
     breaker: { name: '破甲箭头', desc: '无视目标 25% 护甲', mods: { armorIgnore: 0.25 }, icon: 'cannon', minLevel: 11 },
+    // —— 稀有：效果明显的强化，或立刻生效的一次性好处 ——
+    hospital: { name: '战地医院', desc: '立刻回复城墙 45%', mods: {}, heal: 0.45, rarity: 'rare', icon: 'patch' },
+    airstrike: { name: '空袭', desc: '下一波开始 8 秒后，对全场所有怪造成攻击力 ×6 的魔法伤害', mods: {}, delayed: { kind: 'airstrike', after: 8, atkMult: 6 }, rarity: 'rare', icon: 'cannon' },
+    coldSnap: { name: '冰封令', desc: '下一波开始 10 秒后，冻住全场怪物 4 秒（Boss 1.5 秒）', mods: {}, delayed: { kind: 'coldSnap', after: 10, dur: 4, bossDur: 1.5 }, rarity: 'rare', icon: 'freeze' },
+    warDrum: { name: '战鼓雷鸣', desc: '立刻刷新全部技能冷却，攻击力 +35%，持续 30 秒', mods: {}, refresh: true, buff: { atk: 0.35, dur: 30 }, needSkills: true, rarity: 'rare', icon: 'master' },
+    executioner: { name: '处决', desc: '对血量低于 30% 的怪，伤害 +60%', mods: { execute: 0.6 }, rarity: 'rare', icon: 'fury' },
+    mender: { name: '回春箭', desc: '每击杀一只怪，城墙回复 0.3% 最大血量', mods: { killHeal: 0.003 }, rarity: 'rare', icon: 'repair' },
+    hunter: { name: '猎手本能', desc: '对 Boss 和飞行怪伤害 +30%', mods: { bossDmg: 0.3, flyDmg: 0.3 }, rarity: 'rare', icon: 'eye' },
+    ember: { name: '烈焰附魔', desc: '普通攻击 30% 几率点燃目标', mods: { igniteChance: 0.3 }, rarity: 'rare', icon: 'fury' },
+    // —— 史诗：改变打法的强力卡 ——
+    fortress: { name: '铜墙铁壁', desc: '每一波开始时，城墙获得相当于 12% 最大血量的护盾；城墙受到伤害 −10%', mods: { waveShield: 0.12, wallDr: 0.1 }, rarity: 'epic', icon: 'repair' },
+    chain: { name: '连锁闪电', desc: '普通攻击 25% 几率放出一道闪电，跳 3 个目标，各造成攻击力 ×0.6 的魔法伤害', mods: { chainChance: 0.25 }, rarity: 'epic', icon: 'staff' },
+    godslayer: { name: '弑神', desc: '对 Boss 伤害 +50%，无视 20% 护甲', mods: { bossDmg: 0.5, armorIgnore: 0.2 }, rarity: 'epic', icon: 'cannon' },
+    overdrive: { name: '全面强化', desc: '攻击力 +20%，攻击速度 +15%，暴击率 +8%', mods: { atkMult: 0.2, aspdMult: 0.15, crit: 0.08 }, rarity: 'epic', icon: 'arrowUp' },
+    midas: { name: '点石成金', desc: '本关铜币收益 +60%，并立刻获得一笔铜币', mods: { copperBonus: 0.6 }, copperNow: true, rarity: 'epic', icon: 'purse' },
+    // —— 章节专用克制卡（普通档，到对应章节才会出现） ——
     flare: { name: '照明弹', desc: '射程 +20%（暗夜关里正好抵消黑暗）', mods: { range: 0.2 }, icon: 'eye', minLevel: 21 },
     antidote: { name: '解毒剂', desc: '城墙受到的持续伤害（中毒、毒雾）−60%', mods: { dotReduce: 0.6 }, icon: 'patch', minLevel: 21 },
     exorcism: { name: '驱魔之箭', desc: '物理伤害对灵体的效果 30% → 70%', mods: { spiritPierce: 0.4 }, icon: 'arrowUp', minLevel: 21 },
@@ -386,7 +416,8 @@
     pin: { name: '戳戳针', desc: '泡泡被戳破的那一下，仍有 50% 伤害生效', mods: { pinPop: 0.5 }, icon: 'arrowUp', minLevel: 61 },
     net: { name: '渔网', desc: '飞鱼的跳跃距离 −50%', mods: { leapCut: 0.5 }, icon: 'freeze', minLevel: 61 },
   };
-  TD.data.supplyBotOrder = ['sharp', 'quick', 'master', 'handWarmer', 'fireTip', 'obsidian', 'lens', 'extinguisher', 'lightningRod', 'windFlag', 'shears', 'pin', 'crowbar', 'net', 'arcane', 'breaker', 'exorcism', 'antidote', 'flare', 'eagle', 'fury', 'frostTip', 'farsight', 'bricks', 'purse'];
+  // 机器人选卡顺序：先挑立刻见效的强卡，再挑通用强化，最后是克制卡
+  TD.data.supplyBotOrder = ['overdrive', 'fortress', 'chain', 'godslayer', 'warDrum', 'executioner', 'hunter', 'ember', 'mender', 'sharp', 'quick', 'master', 'handWarmer', 'fireTip', 'obsidian', 'lens', 'extinguisher', 'lightningRod', 'windFlag', 'shears', 'pin', 'crowbar', 'net', 'arcane', 'breaker', 'exorcism', 'antidote', 'flare', 'eagle', 'fury', 'frostTip', 'farsight', 'hospital', 'airstrike', 'coldSnap', 'bricks', 'purse', 'midas'];
 
   TD.data.targetModes = {
     nearest: '最近优先',

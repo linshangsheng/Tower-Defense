@@ -209,7 +209,7 @@
           tile('关卡任务', `${count((r) => r.mission)} / ${lv.filter((n) => D.missionFor(+n)).length}`),
           tile('成就', `${D.achievements.filter((a) => (s.achievements || {})[a.id]).length} / ${D.achievements.length}`),
           tile('日记', `${D.storyOrder.filter((k) => (s.story || {})[k] === 'read').length} / ${D.storyOrder.length}`),
-          tile('外观', `${D.outfits.filter((o) => P.outfitUnlocked(s, o.id)).length} / ${D.outfits.length}`),
+          tile('角色', `${D.outfits.filter((o) => P.outfitOwned(s, o.id)).length} / ${D.outfits.length}`),
           tile('小镇邻居', `${D.town.filter((f) => P.isCleared(s, f.level)).length} / ${D.town.length}`),
         ],
       ],

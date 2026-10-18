@@ -123,34 +123,53 @@
     );
   };
 
-  // ================= Kael的衣柜（设计书 30） =================
+  // ================= 角色衣柜（设计书 72） =================
   UI.showWardrobe = function () {
     const s = G().save;
+    const heroIsKael = P.heroId(s) === 'dang';
     const cards = D.outfits.map((o) => {
-      const open = P.outfitUnlocked(s, o.id);
+      const owned = P.outfitOwned(s, o.id);
       const on = (s.outfit || 'classic') === o.id;
-      const img = TD.sprites.heroPortrait(110, on ? 'win' : 'idle', o.id, P.heroId(s));
+      const img = TD.sprites.heroPortrait(110, on ? 'win' : 'idle', o.id, 'dang');
       return h(
         'button',
         {
-          class: 'outfit-card' + (open ? '' : ' locked') + (on ? ' on' : ''),
+          class: 'outfit-card' + (owned ? '' : ' locked') + (on ? ' on' : ''),
           onclick: () => {
-            if (!open) return sfx('error'), UI.toast(`解锁条件：${o.unlock}`);
-            sfx('click');
-            P.setOutfit(s, o.id);
-            G().persist();
-            UI.showWardrobe();
+            if (owned) {
+              sfx('click');
+              P.setOutfit(s, o.id);
+              G().persist();
+              UI.showWardrobe();
+              return;
+            }
+            if (!P.canAfford(s, o.cost)) return sfx('error'), UI.toast(`需要 ${P.costText(o.cost)}（先去商店的汇兑所把银币换成金币）`);
+            UI.confirm(`花 ${P.costText(o.cost)} 买下「${o.name}」吗？\n额外属性：${o.bonusText}`, () => {
+              P.buyOutfit(s, o.id);
+              sfx('buy');
+              G().persist();
+              UI.showWardrobe();
+            });
           },
         },
         h('div', { class: 'outfit-img' }, img),
         h('b', null, o.name),
-        h('span', null, open ? o.desc : '🔒 ' + o.unlock),
-        on ? h('em', null, '穿着') : null
+        h('span', null, o.desc),
+        h('span', { class: 'outfit-bonus' }, '✨ ' + o.bonusText),
+        owned ? null : h('span', { class: 'outfit-price' }, costEl(o.cost)),
+        on ? h('em', null, '穿着') : owned ? h('em', { class: 'own' }, '已拥有') : null
       );
     });
-    const n = D.outfits.filter((o) => P.outfitUnlocked(s, o.id)).length;
+    const n = D.outfits.filter((o) => P.outfitOwned(s, o.id)).length;
     modal(
-      h('div', { class: 'wardrobe' }, h('div', { class: 'preview-head' }, h('h2', null, '👕 Kael的衣柜'), h('span', { class: 'tag' }, `${n} / ${D.outfits.length}`)), h('div', { class: 'outfit-grid' }, cards), h('div', { class: 'modal-buttons' }, h('button', { class: 'btn primary', onclick: UI.closeModal }, '好了'))),
+      h(
+        'div',
+        { class: 'wardrobe' },
+        h('div', { class: 'preview-head' }, h('h2', null, '👕 角色衣柜'), h('span', { class: 'tag' }, `${n} / ${D.outfits.length}`)),
+        h('div', { class: 'hint' }, heroIsKael ? '每位角色都有自己的造型和额外属性，用金币购买，一次穿一位。' : '角色衣柜是 Kael 的：额外属性只在 Kael 出战时生效，现在出战的是别的英雄。'),
+        h('div', { class: 'outfit-grid' }, cards),
+        h('div', { class: 'modal-buttons' }, h('button', { class: 'btn primary', onclick: UI.closeModal }, '好了'))
+      ),
       { closeOnBack: true, cls: 'wide' }
     );
   };

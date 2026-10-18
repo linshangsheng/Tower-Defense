@@ -252,14 +252,7 @@
     const nI = P.slotCount(save, 'item');
     const prefI = ['charm', 'patch', 'bomb', 'haste', 'freeze'];
     const items = [];
-    const left = Object.assign({}, save.inventory);
-    for (const id of prefI) {
-      while ((left[id] || 0) > 0 && items.length < nI) {
-        items.push(id);
-        left[id]--;
-        if (id === 'charm') break;
-      }
-    }
+    for (const id of prefI) if ((save.inventory[id] || 0) > 0 && items.length < nI) items.push(id);
     for (let i = 0; i < 3; i++) lo.items[i] = items[i] || null;
 
     // 装备：每个栏位挑战力提升最大的；特长装备按本关怪物构成折算（设计书 58.5）

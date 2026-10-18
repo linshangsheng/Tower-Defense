@@ -89,7 +89,7 @@
       this.waveStartTime = 0;
 
       // 战场补给（设计书 2.7）
-      this.mods = { atkMult: 0, aspdMult: 0, crit: 0, critDmg: 0, cdMult: 0, copperBonus: 0, wallDr: 0, range: 0, slowOnHit: 0, magicMult: 0, armorIgnore: 0, dotReduce: 0, spiritPierce: 0, chillResist: 0, igniteOnHit: 0, fireproof: 0, reveal: 0, woolCut: 0, stunImmune: 0, dodgeCut: 0, slowAll: 0, shellCut: 0, pinPop: 0, leapCut: 0, bossDmg: 0, flyDmg: 0, slowedDmg: 0, igniteChance: 0, darkSight: 0, frostExt: 0, mendBonus: 0, lowWallAtk: 0, healBonus: 0, waveShield: 0 };
+      this.mods = { atkMult: 0, aspdMult: 0, crit: 0, critDmg: 0, cdMult: 0, copperBonus: 0, wallDr: 0, range: 0, slowOnHit: 0, magicMult: 0, armorIgnore: 0, dotReduce: 0, spiritPierce: 0, chillResist: 0, igniteOnHit: 0, fireproof: 0, reveal: 0, woolCut: 0, stunImmune: 0, dodgeCut: 0, slowAll: 0, shellCut: 0, pinPop: 0, leapCut: 0, bossDmg: 0, flyDmg: 0, slowedDmg: 0, igniteChance: 0, darkSight: 0, frostExt: 0, mendBonus: 0, lowWallAtk: 0, healBonus: 0, waveShield: 0, execute: 0, killHeal: 0, chainChance: 0 };
       // 装备和套装的特殊效果（设计书 58）
       const gm = this.stats.gearMods || {};
       for (const k of Object.keys(gm)) this.mods[k] = (this.mods[k] || 0) + gm[k];
@@ -121,6 +121,7 @@
       this.supplyWaves = this.computeSupplyWaves();
       this.supplyOffered = {};
       this.supplyPicked = [];
+      this.delayed = []; // 下一波开始后才触发的补给效果（空袭、冰封令）
       this.pendingSupply = null;
       this.autoSupply = !!opts.autoSupply;
       this.castCount = 0;
@@ -155,7 +156,10 @@
       }
       if (this.level.noSupply || n < 3) return [];
       if (this.level.type === 'boss' || n < 5) return [1];
-      return [1, n - 2];
+      // 第 2 波后起每 3 波一次，最后一波之前不再给，最多 4 次（设计书 71.5）
+      const out = [];
+      for (let i = 1; i <= n - 2 && out.length < 4; i += 3) out.push(i);
+      return out;
     }
 
     get atk() {
@@ -179,8 +183,20 @@
         if (D.supplies[id].minLevel && this.stage < D.supplies[id].minLevel) return false;
         return true;
       });
+      // 按档抽卡：越往后的补给，稀有 / 史诗越多；抽不到的档位回退到别的档（设计书 71.5）
+      const W = D.supplyWeights[Math.min(D.supplyWeights.length - 1, this.supplyPicked.length)];
+      const tiers = ['common', 'rare', 'epic'];
       const choices = [];
-      while (choices.length < 3 && all.length) choices.push(all.splice(this.rng.int(all.length), 1)[0]);
+      while (choices.length < 3 && all.length) {
+        let r = this.rng() * W.reduce((a, b) => a + b, 0);
+        let tier = 0;
+        while (tier < 2 && r >= W[tier]) r -= W[tier++];
+        let pool = all.filter((id) => (D.supplies[id].rarity || 'common') === tiers[tier]);
+        if (!pool.length) pool = all;
+        const id = pool[this.rng.int(pool.length)];
+        all.splice(all.indexOf(id), 1);
+        choices.push(id);
+      }
       this.supplyOffered[this.waveIndex] = true;
       this.pendingSupply = choices;
       this.emit('supply', { choices });
@@ -188,7 +204,7 @@
     }
 
     botSupplyChoice(choices) {
-      if (this.wall.hp / this.wall.max < 0.6 && choices.includes('bricks')) return 'bricks';
+      if (this.wall.hp / this.wall.max < 0.6) for (const id of ['hospital', 'bricks']) if (choices.includes(id)) return id;
       for (const id of D.supplyBotOrder) if (choices.includes(id)) return id;
       return choices[0];
     }
@@ -199,12 +215,39 @@
       for (const k of Object.keys(sup.mods)) this.mods[k] += sup.mods[k];
       if (sup.heal) this.healWall(this.wall.max * sup.heal, 'supply');
       if (sup.refresh) for (const sk of this.skills) sk.cd = 0;
+      if (sup.buff) this.buffs.push({ atk: sup.buff.atk, until: this.time + sup.buff.dur, src: 'supply' });
+      if (sup.copperNow) this.killCopper += 30 + this.stage * 4;
+      if (sup.delayed) this.delayed.push({ kind: sup.delayed.kind, def: sup.delayed, at: null });
       this.supplyPicked.push(id);
       this.pendingSupply = null;
       this.emit('supplyPicked', { id });
       this.endWaveHeal();
       this.startWave(this.waveIndex + 1);
       return true;
+    }
+
+    // 补给卡里"下一波开始后才触发"的效果（设计书 71.5）
+    updateDelayed() {
+      const keep = [];
+      for (const d of this.delayed) {
+        if (d.at === null || this.time < d.at) {
+          keep.push(d);
+          continue;
+        }
+        const pool = this.monsters.filter((m) => !m.dead && this.isTargetable(m));
+        if (d.kind === 'airstrike') {
+          pool.slice(0, 12).forEach((m) => this.emit('scrollBolt', { x: m.x, y: m.y + m.yOffset }));
+          for (const m of pool) this.damage(m, this.atk * d.def.atkMult, { type: 'magic', fromFront: false, source: 'airstrike' });
+        } else if (d.kind === 'coldSnap') {
+          for (const m of this.monsters) {
+            if (m.dead) continue;
+            const boss = m.def.boss || m.def.bossPart;
+            this.freezeMonster(m, boss ? d.def.bossDur : d.def.dur);
+          }
+          for (let l = 0; l < this.lanes; l++) this.laneEffects.push({ lane: l, type: 'freeze', until: this.time + d.def.dur, start: this.time });
+        }
+      }
+      this.delayed = keep;
     }
 
     laneY(lane) {
@@ -219,6 +262,7 @@
     // ---------- 波次 ----------
     startWave(i) {
       this.waveIndex = i;
+      for (const d of this.delayed) if (d.at === null) d.at = this.time + d.def.after;
       const wave = this.level.waves[i];
       if (wave.D) this.D = wave.D; // 无尽模式：每波有自己的难度
       // countMult：自动平衡工具（tools/tune.js）写入的每关数量倍率，Boss 不受影响
@@ -831,6 +875,8 @@
         if (this.mods.bossDmg && (def.boss || def.bossPart)) k *= 1 + this.mods.bossDmg;
         if (this.mods.flyDmg && def.flying) k *= 1 + this.mods.flyDmg;
         if (this.mods.slowedDmg && (this.time < m.slowUntil || this.inFrost(m))) k *= 1 + this.mods.slowedDmg;
+        // 处决：残血的怪受到英雄攻击时伤害更高（设计书 71.5）
+        if (this.mods.execute && HERO_SOURCES[opts.source || 'weapon'] && m.hp < m.maxHp * 0.3) k *= 1 + this.mods.execute;
         // 暴风雪 / 时间静止：冻住期间的怪物更脆（设计书 62.3）
         if (m.shatterUntil && this.time < m.shatterUntil) k *= 1 + m.shatterAmt;
       }
@@ -867,6 +913,8 @@
         this.killsByType[m.type] = (this.killsByType[m.type] || 0) + 1;
       }
       this.killCopper += copper;
+      // 回春箭：击杀回复城墙（静默回复，不弹字，免得刷屏）
+      if (this.mods.killHeal && !noReward) this.wall.hp = Math.min(this.wall.max, this.wall.hp + this.wall.max * this.mods.killHeal);
       this.emit('death', { m, copper, noReward: !!noReward });
       const od = m.def.onDeath;
       if (od && od.type === 'spore') {
@@ -1145,6 +1193,10 @@
       }
       if (this.mods.igniteOnHit && !m.dead) this.ignite(m);
       else if (this.mods.igniteChance && !m.dead && this.rng() < this.mods.igniteChance) this.ignite(m);
+      // 连锁闪电：普通攻击有几率放出一道闪电（设计书 71.5）
+      if (this.mods.chainChance && !(p && p.source) && this.rng() < this.mods.chainChance) {
+        this.chainFrom(m, { dmg: this.atk * 0.6, chain: { count: 3, range: 220, falloff: 1 } });
+      }
       if (this.mods.slowOnHit > 0 && !m.dead) {
         const prev = this.time < m.slowUntil ? m.slowAmt : 0;
         m.slowAmt = Math.max(prev, this.mods.slowOnHit);
@@ -1650,6 +1702,7 @@
         }
         this.laneEffects = keep;
       }
+      if (this.delayed.length) this.updateDelayed();
       this.updateWaves(dt);
       if (this.over) return;
       if (this.buddyTimer !== undefined) this.updateBuddy(dt);

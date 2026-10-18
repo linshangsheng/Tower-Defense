@@ -879,12 +879,800 @@
     ctx.restore();
   };
 
+  // ======= 角色衣柜里的 9 位人物（设计书 72）：在 Kael 的身体上换头饰、服装、背饰 =======
+  // 穿布衣的角色不画胸甲和前肩甲；cape 控制披风：'full' 整件 / 数字 = 披风在这个高度（相对 s）截断 / 'none' 没有
+  const OUTFIT_LOOK = {
+    knight: { cloth: false, cape: 'full', scarf: true },
+    ranger: { cloth: true, cape: -0.72, scarf: false },
+    pirate: { cloth: true, cape: 'none', scarf: false },
+    mage: { cloth: true, cape: 'none', scarf: false },
+    samurai: { cloth: false, cape: 'none', scarf: false },
+    ninja: { cloth: true, cape: 'none', scarf: true },
+    viking: { cloth: false, cape: 'full', scarf: false },
+    paladin: { cloth: false, cape: 'full', scarf: false },
+    engineer: { cloth: true, cape: 'none', scarf: true },
+    dragon: { cloth: false, cape: 'none', scarf: false },
+  };
+
+  // 身后的东西（画在披风之后、身体之前）
+  function outfitBack(ctx, s, t, style, col, wave) {
+    ctx.save();
+    if (style === 'ranger') {
+      ctx.translate(-s * 0.28, -s * 1.5);
+      ctx.rotate(-0.45);
+      ctx.fillStyle = deep(col.body, 0.5);
+      ctx.beginPath();
+      ctx.ellipse(0, 0, s * 0.11, s * 0.5, 0, 0, TAU);
+      ctx.fill();
+      for (let i = 0; i < 4; i++) {
+        const ax = (i - 1.5) * s * 0.05;
+        ctx.strokeStyle = '#3a2a1a';
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        ctx.moveTo(ax, -s * 0.3);
+        ctx.lineTo(ax, -s * 0.78);
+        ctx.stroke();
+        ctx.fillStyle = i % 2 ? col.plume : light(col.plume, 0.3);
+        ctx.beginPath();
+        ctx.ellipse(ax, -s * 0.8, s * 0.035, s * 0.09, 0, 0, TAU);
+        ctx.fill();
+      }
+    } else if (style === 'ninja') {
+      ctx.translate(-s * 0.08, -s * 1.28);
+      ctx.rotate(0.7);
+      ctx.fillStyle = '#4a4660';
+      ctx.fillRect(-s * 0.05, -s * 0.12, s * 0.1, s * 0.95); // 刀鞘
+      ctx.strokeStyle = 'rgba(210,210,235,0.55)';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(-s * 0.05, -s * 0.12, s * 0.1, s * 0.95);
+      ctx.fillStyle = col.shieldHi;
+      ctx.fillRect(-s * 0.055, s * 0.62, s * 0.11, s * 0.05);
+      ctx.fillStyle = '#6a2430'; // 刀柄
+      ctx.fillRect(-s * 0.04, -s * 0.5, s * 0.08, s * 0.4);
+      ctx.strokeStyle = col.plume;
+      ctx.lineWidth = 1;
+      for (let i = 0; i < 4; i++) {
+        ctx.beginPath();
+        ctx.moveTo(-s * 0.035, -s * (0.48 - i * 0.09));
+        ctx.lineTo(s * 0.035, -s * (0.4 - i * 0.09));
+        ctx.stroke();
+      }
+      ctx.fillStyle = col.shield;
+      ctx.beginPath();
+      ctx.ellipse(0, -s * 0.12, s * 0.09, s * 0.04, 0, 0, TAU);
+      ctx.fill();
+    } else if (style === 'viking') {
+      ctx.translate(-s * 0.3, -s * 1.38);
+      const r = s * 0.36;
+      const wg = ctx.createRadialGradient(-r * 0.2, -r * 0.2, 1, 0, 0, r);
+      wg.addColorStop(0, light(col.shield, 0.2));
+      wg.addColorStop(1, deep(col.shield, 0.55));
+      ctx.fillStyle = wg;
+      ctx.beginPath();
+      ctx.arc(0, 0, r, 0, TAU);
+      ctx.fill();
+      for (let i = 0; i < 6; i++) {
+        ctx.fillStyle = i % 2 ? col.plume : deep(col.plume, 0.5);
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.arc(0, 0, r * 0.96, (i / 6) * TAU, ((i + 1) / 6) * TAU);
+        ctx.closePath();
+        ctx.fill();
+      }
+      ctx.strokeStyle = col.helmBottom;
+      ctx.lineWidth = 2.4;
+      ctx.beginPath();
+      ctx.arc(0, 0, r, 0, TAU);
+      ctx.stroke();
+      glow(ctx, 0, 0, r * 0.5, col.shieldHi, 0.25);
+      ctx.fillStyle = col.helmTop;
+      ctx.beginPath();
+      ctx.arc(0, 0, r * 0.2, 0, TAU);
+      ctx.fill();
+    } else if (style === 'engineer') {
+      // 蒸汽背包：铜皮箱子 + 管子 + 压力表 + 冒烟
+      ctx.translate(-s * 0.36, -s * 1.5);
+      const bg = ctx.createLinearGradient(-s * 0.2, -s * 0.4, s * 0.2, s * 0.4);
+      bg.addColorStop(0, light(col.shield, 0.15));
+      bg.addColorStop(1, deep(col.shield, 0.6));
+      ctx.fillStyle = bg;
+      TD.sprites.roundRect(ctx, -s * 0.22, -s * 0.38, s * 0.44, s * 0.76, 5);
+      ctx.fill();
+      ctx.strokeStyle = deep(col.shield, 0.8);
+      ctx.lineWidth = 1.4;
+      ctx.stroke();
+      ctx.fillStyle = '#2a1e12';
+      ctx.fillRect(-s * 0.24, -s * 0.12, s * 0.48, s * 0.05);
+      ctx.fillRect(-s * 0.24, s * 0.16, s * 0.48, s * 0.05);
+      ctx.strokeStyle = '#3a2a16';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.1, -s * 0.38);
+      ctx.quadraticCurveTo(-s * 0.1, -s * 0.62, s * 0.06, -s * 0.62);
+      ctx.stroke();
+      ctx.fillStyle = '#e8dcc0';
+      ctx.beginPath();
+      ctx.arc(0, s * 0.02, s * 0.09, 0, TAU);
+      ctx.fill();
+      ctx.strokeStyle = '#2a1e12';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(0, s * 0.02);
+      ctx.lineTo(Math.cos(t * 2) * s * 0.07, s * 0.02 + Math.sin(t * 2) * s * 0.07);
+      ctx.stroke();
+      for (let i = 0; i < 3; i++) {
+        const k = (t * 0.8 + i / 3) % 1;
+        ctx.globalAlpha = 0.5 * (1 - k);
+        TD.sprites.ellipse(ctx, s * 0.06 - k * s * 0.5, -s * 0.66 - k * s * 0.55, s * (0.07 + k * 0.12), s * (0.07 + k * 0.12), '#dfe6ee');
+      }
+      ctx.globalAlpha = 1;
+    } else if (style === 'samurai') {
+      // 背旗（指物）：一根竹竿 + 一面飘动的小红旗，旗上一轮白日
+      ctx.translate(-s * 0.3, -s * 1.3);
+      ctx.strokeStyle = '#4a3622';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, s * 0.1);
+      ctx.lineTo(0, -s * 1.3);
+      ctx.stroke();
+      const fw = Math.sin(t * 5) * 3;
+      ctx.fillStyle = col.cape;
+      ctx.beginPath();
+      ctx.moveTo(0, -s * 1.28);
+      ctx.quadraticCurveTo(-s * 0.3, -s * 1.3 + fw, -s * 0.62, -s * 1.22 - fw);
+      ctx.lineTo(-s * 0.62, -s * 0.78 - fw);
+      ctx.quadraticCurveTo(-s * 0.3, -s * 0.84 + fw, 0, -s * 0.8);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = '#f6f0e0';
+      ctx.beginPath();
+      ctx.arc(-s * 0.3, -s * 1.03, s * 0.1, 0, TAU);
+      ctx.fill();
+      glow(ctx, -s * 0.3, -s * 1.03, s * 0.25, '#fff0c0', 0.3);
+    } else if (style === 'paladin') {
+      // 光之翼：几片半透明的长羽
+      for (let i = 0; i < 5; i++) {
+        const a = -2.1 + i * 0.28 + Math.sin(t * 1.6 + i) * 0.03;
+        ctx.save();
+        ctx.translate(-s * 0.18, -s * 1.7);
+        ctx.rotate(a);
+        const len = s * (1.05 - i * 0.09);
+        const wg = ctx.createLinearGradient(0, 0, len, 0);
+        wg.addColorStop(0, rgba(col.plumeHi, 0.75));
+        wg.addColorStop(1, rgba(col.plume, 0.05));
+        ctx.fillStyle = wg;
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.quadraticCurveTo(len * 0.5, -s * 0.2, len, -s * 0.02);
+        ctx.quadraticCurveTo(len * 0.5, s * 0.12, 0, s * 0.04);
+        ctx.fill();
+        ctx.restore();
+      }
+      glow(ctx, -s * 0.5, -s * 2.0, s * 0.9, col.plumeHi, 0.25);
+    } else if (style === 'dragon') {
+      // 小龙翼：暗红的膜 + 骨架
+      const flap = Math.sin(t * 2.4) * 0.08;
+      ctx.translate(-s * 0.16, -s * 1.7);
+      ctx.rotate(flap);
+      const wg = ctx.createLinearGradient(-s * 0.9, -s * 0.9, 0, s * 0.2);
+      wg.addColorStop(0, deep(col.cape, 0.35));
+      wg.addColorStop(1, deep(col.cape, 0.75));
+      ctx.fillStyle = wg;
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.quadraticCurveTo(-s * 0.35, -s * 0.8, -s * 0.95, -s * 0.95);
+      ctx.quadraticCurveTo(-s * 0.78, -s * 0.5, -s * 0.9, -s * 0.28);
+      ctx.quadraticCurveTo(-s * 0.62, -s * 0.34, -s * 0.62, -s * 0.05);
+      ctx.quadraticCurveTo(-s * 0.4, -s * 0.18, -s * 0.34, s * 0.12);
+      ctx.quadraticCurveTo(-s * 0.15, 0, 0, s * 0.18);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = col.brim;
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.quadraticCurveTo(-s * 0.35, -s * 0.8, -s * 0.95, -s * 0.95);
+      ctx.moveTo(-s * 0.08, -s * 0.12);
+      ctx.lineTo(-s * 0.9, -s * 0.28);
+      ctx.moveTo(-s * 0.06, -s * 0.04);
+      ctx.lineTo(-s * 0.62, -s * 0.05);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  // 身前的服装（画在身体和腰带之后、手臂之前）
+  function outfitFront(ctx, s, t, style, col, wave, neckY) {
+    ctx.save();
+    const sway = Math.sin(t * 3.4) * 2;
+    if (style === 'mage') {
+      // 及地长袍：钟形下摆，下摆一圈星星
+      const rg = ctx.createLinearGradient(0, -s * 1.2, 0, 0);
+      rg.addColorStop(0, light(col.body, 0.05));
+      rg.addColorStop(1, deep(col.body, 0.55));
+      ctx.fillStyle = rg;
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.3, -s * 1.2);
+      ctx.quadraticCurveTo(-s * 0.4, -s * 0.5, -s * 0.52 - sway * 0.3, -s * 0.03);
+      ctx.quadraticCurveTo(0, s * 0.06, s * 0.52 + sway * 0.3, -s * 0.03);
+      ctx.quadraticCurveTo(s * 0.4, -s * 0.5, s * 0.3, -s * 1.2);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = rgba(col.brim, 0.7);
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.52, -s * 0.06);
+      ctx.quadraticCurveTo(0, s * 0.04, s * 0.52, -s * 0.06);
+      ctx.stroke();
+      for (const [px, py] of [[-0.3, -0.35], [0.05, -0.55], [0.3, -0.25], [-0.12, -0.14], [0.18, -0.85], [-0.28, -0.8]]) dot(ctx, s * px, s * py, 1.3, '#ffe68a', 0.55 + Math.sin(t * 4 + px * 9) * 0.3);
+      ctx.fillStyle = col.brim; // 腰带
+      ctx.fillRect(-s * 0.31, -s * 1.22, s * 0.62, s * 0.07);
+      glow(ctx, s * 0.02, -s * 1.185, s * 0.2, col.shieldHi, 0.5);
+    } else if (style === 'pirate') {
+      // 红色长外套：收腰、下摆张开，金扣子，领口一条白领巾
+      ctx.fillStyle = bodyGrad(ctx, -s * 0.4, neckY, s * 0.4, 0, col.cape, 0.2, 0.7);
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.26, neckY + s * 0.06);
+      ctx.quadraticCurveTo(-s * 0.3, -s * 1.4, -s * 0.2, -s * 1.15);
+      ctx.quadraticCurveTo(-s * 0.4, -s * 0.8, -s * 0.5 - sway * 0.4, -s * 0.38);
+      ctx.lineTo(s * 0.5 + sway * 0.4, -s * 0.38);
+      ctx.quadraticCurveTo(s * 0.4, -s * 0.8, s * 0.2, -s * 1.15);
+      ctx.quadraticCurveTo(s * 0.3, -s * 1.4, s * 0.26, neckY + s * 0.06);
+      ctx.quadraticCurveTo(0, neckY - s * 0.02, -s * 0.26, neckY + s * 0.06);
+      ctx.fill();
+      ctx.strokeStyle = col.brim;
+      ctx.lineWidth = 1.4;
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.5 - sway * 0.4, -s * 0.4);
+      ctx.lineTo(s * 0.5 + sway * 0.4, -s * 0.4);
+      ctx.moveTo(s * 0.02, neckY + s * 0.1);
+      ctx.lineTo(s * 0.02, -s * 0.4);
+      ctx.stroke();
+      for (let i = 0; i < 4; i++) dot(ctx, s * 0.02, s * (-1.62 + i * 0.22), 1.1, col.shieldHi, 0.8);
+      ctx.fillStyle = '#f2ecdc'; // 领巾
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.1, neckY + s * 0.02);
+      ctx.lineTo(s * 0.14, neckY + s * 0.02);
+      ctx.lineTo(s * 0.02, neckY + s * 0.3);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = '#1e140c'; // 腰带
+      ctx.fillRect(-s * 0.26, -s * 1.1, s * 0.52, s * 0.06);
+      dot(ctx, s * 0.02, -s * 1.07, 1.6, col.shieldHi, 0.9);
+    } else if (style === 'samurai') {
+      // 朱红胸甲的金线绑带 + 一排腰甲片（草摺）
+      ctx.strokeStyle = rgba(col.shieldHi, 0.7);
+      ctx.lineWidth = 1;
+      for (let i = 0; i < 5; i++) {
+        ctx.beginPath();
+        ctx.moveTo(-s * 0.2, s * (-1.74 + i * 0.1));
+        ctx.lineTo(s * 0.2, s * (-1.74 + i * 0.1));
+        ctx.stroke();
+      }
+      for (let i = 0; i < 5; i++) {
+        const px = -s * 0.36 + i * s * 0.144;
+        const g = ctx.createLinearGradient(0, -s * 1.12, 0, -s * 0.55);
+        g.addColorStop(0, col.helmTop);
+        g.addColorStop(1, deep(col.helmBottom, 0.25));
+        ctx.fillStyle = g;
+        ctx.fillRect(px, -s * 1.12, s * 0.13, s * 0.58 + Math.sin(t * 3 + i) * 1.5);
+        ctx.strokeStyle = rgba(col.shield, 0.75);
+        ctx.lineWidth = 0.8;
+        ctx.strokeRect(px, -s * 1.12, s * 0.13, s * 0.58 + Math.sin(t * 3 + i) * 1.5);
+      }
+    } else if (style === 'viking') {
+      // 毛皮披肩 + 交叉的皮带
+      ctx.strokeStyle = '#3a2616';
+      ctx.lineWidth = 2.4;
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.2, neckY + s * 0.2);
+      ctx.lineTo(s * 0.22, -s * 1.2);
+      ctx.moveTo(s * 0.2, neckY + s * 0.2);
+      ctx.lineTo(-s * 0.22, -s * 1.2);
+      ctx.stroke();
+      dot(ctx, 0, -s * 1.52, 1.6, col.shieldHi, 0.8);
+      for (let i = 0; i < 8; i++) {
+        const fx = -s * 0.34 + i * s * 0.1;
+        ctx.fillStyle = i % 2 ? col.brim : deep(col.brim, 0.2);
+        ctx.beginPath();
+        ctx.ellipse(fx, neckY + s * 0.14 + Math.sin(i * 1.7) * 2, s * 0.09, s * 0.12, 0.2, 0, TAU);
+        ctx.fill();
+      }
+    } else if (style === 'paladin') {
+      // 白色圣袍前襟（金边金十字）
+      ctx.fillStyle = bodyGrad(ctx, -s * 0.2, -s * 1.7, s * 0.2, -s * 0.4, col.body, 0.2, 0.75);
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.2, -s * 1.7);
+      ctx.lineTo(s * 0.2, -s * 1.7);
+      ctx.lineTo(s * 0.26 + sway * 0.3, -s * 0.38);
+      ctx.lineTo(-s * 0.26 - sway * 0.3, -s * 0.38);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = col.brim;
+      ctx.lineWidth = 1.6;
+      ctx.stroke();
+      ctx.fillStyle = col.brim;
+      ctx.fillRect(-s * 0.03, -s * 1.58, s * 0.06, s * 0.5);
+      ctx.fillRect(-s * 0.13, -s * 1.46, s * 0.26, s * 0.06);
+      glow(ctx, 0, -s * 1.43, s * 0.3, col.shieldHi, 0.4);
+    } else if (style === 'engineer') {
+      // 皮围裙 + 口袋里插着的扳手
+      ctx.fillStyle = '#6a4a2a';
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.2, -s * 1.7);
+      ctx.lineTo(s * 0.2, -s * 1.7);
+      ctx.lineTo(s * 0.26, -s * 0.62);
+      ctx.lineTo(-s * 0.26, -s * 0.62);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = '#2a1e12';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(-s * 0.15, -s * 1.1, s * 0.13, s * 0.22);
+      ctx.strokeRect(s * 0.02, -s * 1.1, s * 0.13, s * 0.22);
+      ctx.strokeStyle = col.shieldHi;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.09, -s * 1.1);
+      ctx.lineTo(-s * 0.09, -s * 1.28);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(-s * 0.09, -s * 1.31, s * 0.04, 0, TAU);
+      ctx.stroke();
+      // 胸前的齿轮
+      ctx.save();
+      ctx.translate(s * 0.0, -s * 1.5);
+      ctx.rotate(t * 0.8);
+      ctx.fillStyle = col.shield;
+      for (let i = 0; i < 8; i++) {
+        ctx.rotate(TAU / 8);
+        ctx.fillRect(-s * 0.025, -s * 0.12, s * 0.05, s * 0.05);
+      }
+      ctx.beginPath();
+      ctx.arc(0, 0, s * 0.09, 0, TAU);
+      ctx.fill();
+      ctx.fillStyle = '#2a1e12';
+      ctx.beginPath();
+      ctx.arc(0, 0, s * 0.035, 0, TAU);
+      ctx.fill();
+      ctx.restore();
+    } else if (style === 'dragon') {
+      // 鳞片肩甲的尖刺 + 胸口发光的龙纹
+      for (const [bx, by, a] of [[0.12, -1.86, -0.5], [0.24, -1.74, 0.1], [-0.02, -1.92, -0.9]]) {
+        ctx.save();
+        ctx.translate(s * bx, s * by);
+        ctx.rotate(a);
+        ctx.fillStyle = col.helmBottom;
+        ctx.beginPath();
+        ctx.moveTo(-s * 0.05, 0);
+        ctx.lineTo(0, -s * 0.2);
+        ctx.lineTo(s * 0.05, 0);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      }
+      rune(ctx, [[-s * 0.1, -s * 1.7], [0, -s * 1.5], [s * 0.1, -s * 1.7], [0, -s * 1.3]], col.brim, 1.4, 0.8);
+      glow(ctx, 0, -s * 1.55, s * 0.3, col.brim, 0.4);
+    } else if (style === 'ranger') {
+      // 斜挎的皮带 + 小口袋
+      ctx.strokeStyle = '#3a2616';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.2, neckY + s * 0.2);
+      ctx.lineTo(s * 0.22, -s * 1.1);
+      ctx.stroke();
+      ctx.fillStyle = '#5a3c20';
+      TD.sprites.roundRect(ctx, s * 0.12, -s * 1.28, s * 0.14, s * 0.15, 3);
+      ctx.fill();
+      dot(ctx, s * 0.19, -s * 1.2, 0.9, col.shieldHi, 0.8);
+    } else if (style === 'ninja') {
+      // 腰带 + 往后飘的两条长带
+      ctx.fillStyle = col.plume;
+      ctx.fillRect(-s * 0.2, -s * 1.22, s * 0.4, s * 0.08);
+      for (const k of [0, 1]) {
+        ctx.beginPath();
+        ctx.moveTo(-s * 0.18, -s * 1.18);
+        ctx.quadraticCurveTo(-s * 0.55 - wave * 0.4, -s * (1.1 - k * 0.1) + sway, -s * (0.85 + k * 0.2) - wave, -s * (1.0 - k * 0.2) + sway * 1.4);
+        ctx.lineTo(-s * (0.8 + k * 0.2) - wave, -s * (0.92 - k * 0.2) + sway * 1.4);
+        ctx.quadraticCurveTo(-s * 0.5, -s * (1.04 - k * 0.1), -s * 0.15, -s * 1.12);
+        ctx.fill();
+      }
+    }
+    ctx.restore();
+  }
+
+  // 头：每位角色一个（原点在头的中心，脸朝右；眼睛在 (0.17s, 0.06s) 附近）
+  function outfitHead(ctx, s, t, style, col, eye, open) {
+    const darkFace = (x, y, rx, ry) => {
+      ctx.fillStyle = '#0d0a12';
+      ctx.beginPath();
+      ctx.ellipse(x, y, rx, ry, 0, 0, TAU);
+      ctx.fill();
+    };
+    const lit = (x, y, gap, len) => {
+      glow(ctx, x, y, s * 0.45, eye, 0.45);
+      eyes(ctx, x, y, gap, len, eye, -0.05, open);
+    };
+    const fl = Math.sin(t * 3) * 3;
+    if (style === 'ranger') {
+      // 尖兜帽：往后垂成一个小尖，一根红羽毛
+      const hg = ctx.createLinearGradient(s * 0.3, -s * 0.4, -s * 0.6, s * 0.3);
+      hg.addColorStop(0, light(col.helmTop, 0.2));
+      hg.addColorStop(1, deep(col.helmBottom, 0.55));
+      ctx.fillStyle = hg;
+      ctx.beginPath();
+      ctx.moveTo(s * 0.3, s * 0.3);
+      ctx.quadraticCurveTo(s * 0.42, -s * 0.22, s * 0.04, -s * 0.5);
+      ctx.quadraticCurveTo(-s * 0.2, -s * 0.9, -s * 0.5 - fl * 0.5, -s * 0.78);
+      ctx.quadraticCurveTo(-s * 0.55, -s * 0.2, -s * 0.38, s * 0.3);
+      ctx.closePath();
+      ctx.fill();
+      darkFace(s * 0.14, s * 0.07, s * 0.2, s * 0.19);
+      ctx.strokeStyle = rgba(col.shieldHi, 0.55);
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(s * 0.3, s * 0.26);
+      ctx.quadraticCurveTo(s * 0.4, -s * 0.2, s * 0.04, -s * 0.46);
+      ctx.stroke();
+      // 羽毛
+      ctx.fillStyle = col.plume;
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.05, -s * 0.34);
+      ctx.quadraticCurveTo(-s * 0.1 - fl * 0.3, -s * 0.8, s * 0.1, -s * 1.02);
+      ctx.quadraticCurveTo(s * 0.06, -s * 0.66, s * 0.02, -s * 0.34);
+      ctx.fill();
+      lit(s * 0.16, s * 0.07, s * 0.14, s * 0.055);
+    } else if (style === 'pirate') {
+      // 红头巾的飘带 → 三角帽 → 一只眼罩 + 金耳环
+      ctx.fillStyle = col.cape;
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.2, -s * 0.2);
+      ctx.quadraticCurveTo(-s * 0.6 - fl, -s * 0.12, -s * 0.9 - fl * 1.5, s * 0.1);
+      ctx.quadraticCurveTo(-s * 0.55, -s * 0.02, -s * 0.15, s * 0.04);
+      ctx.fill();
+      darkFace(s * 0.1, s * 0.06, s * 0.25, s * 0.28);
+      ctx.fillStyle = '#e8dcc0'; // 一点点下巴胡茬的亮边
+      ctx.fillStyle = '#1b1620';
+      ctx.fillRect(-s * 0.12, s * 0.2, s * 0.44, s * 0.1);
+      // 三角帽
+      const hg = ctx.createLinearGradient(0, -s * 0.7, 0, -s * 0.1);
+      hg.addColorStop(0, light(col.helmTop, 0.15));
+      hg.addColorStop(1, deep(col.helmBottom, 0.3));
+      ctx.fillStyle = hg;
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.55, -s * 0.16);
+      ctx.quadraticCurveTo(-s * 0.3, -s * 0.6, s * 0.02, -s * 0.62);
+      ctx.quadraticCurveTo(s * 0.4, -s * 0.6, s * 0.62, -s * 0.12);
+      ctx.quadraticCurveTo(s * 0.2, -s * 0.28, -s * 0.2, -s * 0.28);
+      ctx.quadraticCurveTo(-s * 0.4, -s * 0.28, -s * 0.55, -s * 0.16);
+      ctx.fill();
+      ctx.strokeStyle = col.brim;
+      ctx.lineWidth = 1.8;
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.55, -s * 0.16);
+      ctx.quadraticCurveTo(-s * 0.2, -s * 0.3, s * 0.2, -s * 0.28);
+      ctx.quadraticCurveTo(s * 0.45, -s * 0.24, s * 0.62, -s * 0.12);
+      ctx.stroke();
+      // 骷髅徽记
+      ctx.fillStyle = '#f2ecdc';
+      ctx.beginPath();
+      ctx.arc(s * 0.05, -s * 0.44, s * 0.07, 0, TAU);
+      ctx.fill();
+      ctx.fillStyle = '#16121c';
+      ctx.fillRect(s * 0.01, -s * 0.46, s * 0.025, s * 0.03);
+      ctx.fillRect(s * 0.07, -s * 0.46, s * 0.025, s * 0.03);
+      // 眼罩（盖着靠后那只眼）和只亮着的一只眼
+      ctx.strokeStyle = '#08060a';
+      ctx.lineWidth = 1.4;
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.1, -s * 0.08);
+      ctx.lineTo(s * 0.34, s * 0.02);
+      ctx.stroke();
+      ctx.fillStyle = '#08060a';
+      ctx.beginPath();
+      ctx.ellipse(s * 0.06, s * 0.05, s * 0.07, s * 0.06, 0, 0, TAU);
+      ctx.fill();
+      glow(ctx, s * 0.24, s * 0.05, s * 0.4, eye, 0.45);
+      eyes(ctx, s * 0.24, s * 0.05, 0.001, s * 0.055, eye, -0.05, open);
+      dot(ctx, s * 0.12, s * 0.28, 1.3, col.shieldHi, 0.9);
+    } else if (style === 'mage') {
+      // 白胡子 + 宽边尖顶帽（帽尖往后耷拉），帽上的星月
+      darkFace(s * 0.14, s * 0.06, s * 0.22, s * 0.22);
+      ctx.fillStyle = '#eceaf2';
+      ctx.beginPath();
+      ctx.moveTo(s * 0.0, s * 0.14);
+      ctx.quadraticCurveTo(s * 0.25, s * 0.2, s * 0.32, s * 0.12);
+      ctx.quadraticCurveTo(s * 0.3, s * 0.55, s * 0.1, s * 0.7 + Math.sin(t * 2) * 2);
+      ctx.quadraticCurveTo(-s * 0.1, s * 0.5, s * 0.0, s * 0.14);
+      ctx.fill();
+      const hg = ctx.createLinearGradient(0, -s * 1.1, 0, -s * 0.2);
+      hg.addColorStop(0, light(col.helmTop, 0.1));
+      hg.addColorStop(1, deep(col.helmBottom, 0.45));
+      ctx.fillStyle = hg;
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.2, -s * 0.2);
+      ctx.quadraticCurveTo(-s * 0.1, -s * 0.8, -s * 0.5 - fl * 0.5, -s * 1.15);
+      ctx.quadraticCurveTo(s * 0.2, -s * 0.85, s * 0.3, -s * 0.2);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = deep(col.helmBottom, 0.3); // 帽檐
+      ctx.beginPath();
+      ctx.ellipse(s * 0.05, -s * 0.2, s * 0.5, s * 0.1, -0.08, 0, TAU);
+      ctx.fill();
+      ctx.strokeStyle = col.brim;
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.ellipse(s * 0.05, -s * 0.2, s * 0.5, s * 0.1, -0.08, 0.2, Math.PI - 0.2);
+      ctx.stroke();
+      dot(ctx, s * 0.04, -s * 0.5, 1.6, '#ffe68a', 0.9);
+      dot(ctx, -s * 0.08, -s * 0.68, 1.2, '#ffe68a', 0.6);
+      lit(s * 0.16, s * 0.07, s * 0.14, s * 0.055);
+    } else if (style === 'samurai') {
+      // 头盔：圆顶 + 后颈的草摺 + 前立（新月）+ 红脸面
+      for (let i = 0; i < 4; i++) {
+        ctx.fillStyle = i % 2 ? deep(col.helmBottom, 0.2) : col.helmBottom;
+        ctx.fillRect(-s * 0.36 - i * 2, -s * 0.02 + i * s * 0.1, s * 0.34, s * 0.1);
+      }
+      const hg = ctx.createLinearGradient(s * 0.3, -s * 0.4, -s * 0.3, s * 0.2);
+      hg.addColorStop(0, light(col.helmTop, 0.15));
+      hg.addColorStop(1, deep(col.helmBottom, 0.5));
+      ctx.fillStyle = hg;
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.32, s * 0.02);
+      ctx.quadraticCurveTo(-s * 0.36, -s * 0.46, s * 0.02, -s * 0.48);
+      ctx.quadraticCurveTo(s * 0.38, -s * 0.44, s * 0.36, s * 0.0);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = deep(col.helmBottom, 0.3);
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.34, -s * 0.06);
+      ctx.lineTo(s * 0.4, -s * 0.06);
+      ctx.lineTo(s * 0.36, s * 0.04);
+      ctx.lineTo(-s * 0.34, s * 0.04);
+      ctx.fill();
+      // 脸面 + 眼缝
+      ctx.fillStyle = bodyGrad(ctx, s * 0.3, -s * 0.1, -s * 0.1, s * 0.3, col.cape, 0.2, 0.6);
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.1, s * 0.0);
+      ctx.lineTo(s * 0.34, s * 0.02);
+      ctx.quadraticCurveTo(s * 0.3, s * 0.3, s * 0.1, s * 0.34);
+      ctx.quadraticCurveTo(-s * 0.1, s * 0.3, -s * 0.1, s * 0.0);
+      ctx.fill();
+      ctx.fillStyle = '#07050c';
+      ctx.fillRect(s * 0.02, -s * 0.02, s * 0.32, s * 0.06);
+      glow(ctx, s * 0.17, s * 0.01, s * 0.42, eye, 0.45);
+      eyes(ctx, s * 0.17, s * 0.01, s * 0.15, s * 0.05, eye, 0, open);
+      // 前立：金色新月
+      ctx.fillStyle = col.shieldHi;
+      ctx.beginPath();
+      ctx.arc(s * 0.05, -s * 0.78, s * 0.34, Math.PI * 0.18, Math.PI * 0.82);
+      ctx.arc(s * 0.05, -s * 0.62, s * 0.3, Math.PI * 0.82, Math.PI * 0.18, true);
+      ctx.fill();
+      glow(ctx, s * 0.05, -s * 0.72, s * 0.35, col.shieldHi, 0.4);
+    } else if (style === 'ninja') {
+      // 黑头巾包住整个头，只留一条眼缝；额头一块金属护额，两条红飘带往后飞
+      ctx.fillStyle = col.plume;
+      for (const k of [0, 1]) {
+        ctx.beginPath();
+        ctx.moveTo(-s * 0.3, -s * 0.12 + k * s * 0.06);
+        ctx.quadraticCurveTo(-s * 0.7 - fl, -s * 0.18 + k * s * 0.12, -s * 1.05 - fl * 1.8, s * (0.0 + k * 0.28));
+        ctx.lineTo(-s * 1.0 - fl * 1.8, s * (0.06 + k * 0.28));
+        ctx.quadraticCurveTo(-s * 0.7, s * (-0.04 + k * 0.1), -s * 0.3, -s * 0.02 + k * s * 0.06);
+        ctx.fill();
+      }
+      const hg = ctx.createLinearGradient(s * 0.3, -s * 0.4, -s * 0.3, s * 0.3);
+      hg.addColorStop(0, light(col.helmTop, 0.15));
+      hg.addColorStop(1, deep(col.helmBottom, 0.3));
+      ctx.fillStyle = hg;
+      ctx.beginPath();
+      ctx.ellipse(s * 0.02, -s * 0.02, s * 0.33, s * 0.4, 0, 0, TAU);
+      ctx.fill();
+      ctx.fillStyle = '#07050c';
+      ctx.beginPath();
+      ctx.moveTo(s * 0.0, -s * 0.02);
+      ctx.quadraticCurveTo(s * 0.18, -s * 0.08, s * 0.34, s * 0.0);
+      ctx.lineTo(s * 0.33, s * 0.1);
+      ctx.quadraticCurveTo(s * 0.18, s * 0.06, s * 0.0, s * 0.1);
+      ctx.fill();
+      ctx.fillStyle = col.brim; // 护额
+      TD.sprites.roundRect(ctx, -s * 0.1, -s * 0.22, s * 0.46, s * 0.1, 2);
+      ctx.fill();
+      ctx.strokeStyle = '#3a3a48';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      glow(ctx, s * 0.17, s * 0.04, s * 0.45, eye, 0.5);
+      eyes(ctx, s * 0.17, s * 0.04, s * 0.15, s * 0.05, eye, -0.05, open);
+    } else if (style === 'viking') {
+      // 铁盔 + 两只弯角 + 鼻甲 + 橘色辫子胡子
+      ctx.fillStyle = col.plume;
+      ctx.beginPath();
+      ctx.moveTo(s * 0.0, s * 0.18);
+      ctx.quadraticCurveTo(s * 0.3, s * 0.2, s * 0.34, s * 0.1);
+      ctx.quadraticCurveTo(s * 0.34, s * 0.5, s * 0.2, s * 0.78 + Math.sin(t * 2.4) * 2);
+      ctx.quadraticCurveTo(s * 0.05, s * 0.5, s * 0.0, s * 0.18);
+      ctx.fill();
+      ctx.strokeStyle = deep(col.plume, 0.4);
+      ctx.lineWidth = 1;
+      for (const y of [0.3, 0.42, 0.54, 0.66]) {
+        ctx.beginPath();
+        ctx.moveTo(s * 0.06, s * y);
+        ctx.lineTo(s * 0.28, s * (y - 0.02));
+        ctx.stroke();
+      }
+      darkFace(s * 0.12, s * 0.04, s * 0.2, s * 0.17);
+      const hg = ctx.createLinearGradient(s * 0.3, -s * 0.4, -s * 0.3, s * 0.1);
+      hg.addColorStop(0, light(col.helmTop, 0.2));
+      hg.addColorStop(1, deep(col.helmBottom, 0.4));
+      ctx.fillStyle = hg;
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.32, s * 0.04);
+      ctx.quadraticCurveTo(-s * 0.36, -s * 0.44, s * 0.02, -s * 0.46);
+      ctx.quadraticCurveTo(s * 0.38, -s * 0.42, s * 0.36, s * 0.02);
+      ctx.lineTo(-s * 0.32, s * 0.04);
+      ctx.fill();
+      ctx.fillStyle = deep(col.helmBottom, 0.2); // 鼻甲
+      ctx.fillRect(s * 0.2, -s * 0.06, s * 0.05, s * 0.26);
+      for (const dir of [-1, 1]) {
+        ctx.fillStyle = col.brim;
+        ctx.beginPath();
+        const bx = s * 0.02 + dir * s * 0.3;
+        ctx.moveTo(bx - dir * s * 0.04, -s * 0.28);
+        ctx.quadraticCurveTo(bx + dir * s * 0.32, -s * 0.34, bx + dir * s * 0.3, -s * 0.86);
+        ctx.quadraticCurveTo(bx + dir * s * 0.18, -s * 0.5, bx + dir * s * 0.1, -s * 0.2);
+        ctx.fill();
+      }
+      ctx.strokeStyle = 'rgba(255,250,235,0.5)';
+      ctx.lineWidth = 1.3;
+      ctx.beginPath();
+      ctx.moveTo(s * 0.06, -s * 0.4);
+      ctx.quadraticCurveTo(s * 0.28, -s * 0.34, s * 0.32, -s * 0.1);
+      ctx.stroke();
+      lit(s * 0.15, s * 0.05, s * 0.14, s * 0.05);
+    } else if (style === 'paladin') {
+      // 白金头盔：十字形观察缝，两侧一对翅膀，头顶一圈光环
+      glow(ctx, s * 0.0, -s * 0.78, s * 0.7, col.shieldHi, 0.35);
+      ctx.strokeStyle = rgba(col.shieldHi, 0.9);
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.ellipse(s * 0.0, -s * 0.66, s * 0.3, s * 0.07, 0, 0, TAU);
+      ctx.stroke();
+      for (let i = 0; i < 3; i++) {
+        ctx.save();
+        ctx.translate(-s * 0.2, -s * 0.12);
+        ctx.rotate(-2.3 + i * 0.4 + Math.sin(t * 2 + i) * 0.04);
+        ctx.fillStyle = i === 1 ? col.helmTop : light(col.helmBottom, 0.25);
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.quadraticCurveTo(s * 0.3, -s * 0.12, s * (0.62 - i * 0.06), -s * 0.02);
+        ctx.quadraticCurveTo(s * 0.3, s * 0.1, 0, s * 0.03);
+        ctx.fill();
+        ctx.restore();
+      }
+      const hg = ctx.createLinearGradient(s * 0.3, -s * 0.4, -s * 0.3, s * 0.3);
+      hg.addColorStop(0, light(col.helmTop, 0.15));
+      hg.addColorStop(0.5, col.helmBottom);
+      hg.addColorStop(1, deep(col.helmBottom, 0.5));
+      ctx.fillStyle = hg;
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.3, s * 0.24);
+      ctx.quadraticCurveTo(-s * 0.36, -s * 0.4, s * 0.02, -s * 0.44);
+      ctx.quadraticCurveTo(s * 0.38, -s * 0.38, s * 0.34, s * 0.08);
+      ctx.quadraticCurveTo(s * 0.32, s * 0.28, s * 0.12, s * 0.32);
+      ctx.lineTo(-s * 0.18, s * 0.32);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = '#07050c'; // 十字缝
+      ctx.fillRect(s * 0.02, -s * 0.0, s * 0.32, s * 0.07);
+      ctx.fillRect(s * 0.15, -s * 0.16, s * 0.06, s * 0.36);
+      glow(ctx, s * 0.17, s * 0.035, s * 0.42, eye, 0.5);
+      eyes(ctx, s * 0.17, s * 0.035, s * 0.14, s * 0.05, eye, 0, open);
+      ctx.strokeStyle = 'rgba(255,255,255,0.75)';
+      ctx.lineWidth = 1.4;
+      ctx.beginPath();
+      ctx.moveTo(s * 0.06, -s * 0.38);
+      ctx.quadraticCurveTo(s * 0.28, -s * 0.3, s * 0.3, -s * 0.06);
+      ctx.stroke();
+    } else if (style === 'engineer') {
+      // 皮帽（带护耳）+ 额头上推起来的铜护目镜（镜片发光）+ 眼睛
+      darkFace(s * 0.12, s * 0.07, s * 0.22, s * 0.21);
+      const hg = ctx.createLinearGradient(s * 0.3, -s * 0.4, -s * 0.3, s * 0.1);
+      hg.addColorStop(0, light(col.helmTop, 0.15));
+      hg.addColorStop(1, deep(col.helmBottom, 0.4));
+      ctx.fillStyle = hg;
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.34, s * 0.2);
+      ctx.quadraticCurveTo(-s * 0.4, -s * 0.38, s * 0.0, -s * 0.44);
+      ctx.quadraticCurveTo(s * 0.34, -s * 0.4, s * 0.34, -s * 0.12);
+      ctx.lineTo(-s * 0.1, -s * 0.12);
+      ctx.lineTo(-s * 0.1, s * 0.22);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = col.brim;
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.36, -s * 0.1);
+      ctx.lineTo(s * 0.34, -s * 0.12);
+      ctx.stroke();
+      // 护目镜
+      ctx.strokeStyle = '#3a2a16';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.3, -s * 0.2);
+      ctx.lineTo(s * 0.36, -s * 0.2);
+      ctx.stroke();
+      for (const lx of [s * 0.06, s * 0.26]) {
+        ctx.fillStyle = col.shield;
+        ctx.beginPath();
+        ctx.arc(lx, -s * 0.2, s * 0.095, 0, TAU);
+        ctx.fill();
+        glow(ctx, lx, -s * 0.2, s * 0.25, '#9ad8ff', 0.6);
+        ctx.fillStyle = '#cdeeff';
+        ctx.beginPath();
+        ctx.arc(lx, -s * 0.2, s * 0.06, 0, TAU);
+        ctx.fill();
+      }
+      lit(s * 0.16, s * 0.08, s * 0.14, s * 0.05);
+    } else if (style === 'dragon') {
+      // 深红角盔：一对后掠的龙角 + 一排龙脊 + 下颌尖刺
+      for (const [dx, dy] of [[-0.05, 0], [0.2, 0.03]]) {
+        ctx.fillStyle = col.brim;
+        ctx.beginPath();
+        ctx.moveTo(s * dx, -s * 0.34 + dy * s);
+        ctx.quadraticCurveTo(-s * 0.1 + s * dx, -s * 0.7, -s * 0.5 + s * dx, -s * 0.72);
+        ctx.quadraticCurveTo(-s * 0.2 + s * dx, -s * 0.5, s * (dx + 0.1), -s * 0.3);
+        ctx.fill();
+      }
+      for (let i = 0; i < 5; i++) {
+        const cx = -s * 0.22 + i * s * 0.1;
+        ctx.fillStyle = col.helmBottom;
+        ctx.beginPath();
+        ctx.moveTo(cx - s * 0.04, -s * 0.4);
+        ctx.lineTo(cx - s * 0.01, -s * 0.4 - s * (0.14 + (i === 2 ? 0.06 : 0)));
+        ctx.lineTo(cx + s * 0.05, -s * 0.4);
+        ctx.fill();
+      }
+      const hg = ctx.createLinearGradient(s * 0.3, -s * 0.4, -s * 0.3, s * 0.3);
+      hg.addColorStop(0, light(col.helmTop, 0.2));
+      hg.addColorStop(0.5, deep(col.helmBottom, 0.1));
+      hg.addColorStop(1, deep(col.helmBottom, 0.7));
+      ctx.fillStyle = hg;
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.3, s * 0.22);
+      ctx.quadraticCurveTo(-s * 0.36, -s * 0.38, s * 0.02, -s * 0.42);
+      ctx.quadraticCurveTo(s * 0.38, -s * 0.36, s * 0.36, s * 0.08);
+      ctx.lineTo(s * 0.44, s * 0.22);
+      ctx.lineTo(s * 0.22, s * 0.26);
+      ctx.lineTo(s * 0.24, s * 0.4);
+      ctx.lineTo(s * 0.08, s * 0.3);
+      ctx.lineTo(-s * 0.18, s * 0.3);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = '#07050c';
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.02, s * 0.0);
+      ctx.quadraticCurveTo(s * 0.18, -s * 0.08, s * 0.36, s * 0.0);
+      ctx.lineTo(s * 0.34, s * 0.12);
+      ctx.quadraticCurveTo(s * 0.18, s * 0.08, -s * 0.02, s * 0.14);
+      ctx.fill();
+      glow(ctx, s * 0.18, s * 0.06, s * 0.5, '#ff6a2a', 0.5);
+      eyes(ctx, s * 0.18, s * 0.06, s * 0.15, s * 0.055, '#ff8a3a', -0.12, open);
+      ctx.strokeStyle = 'rgba(255,230,200,0.55)';
+      ctx.lineWidth = 1.3;
+      ctx.beginPath();
+      ctx.moveTo(s * 0.06, -s * 0.36);
+      ctx.quadraticCurveTo(s * 0.28, -s * 0.28, s * 0.3, -s * 0.06);
+      ctx.stroke();
+    }
+  }
+
   K.hero = function (ctx, x, y, st) {
     const S = TD.sprites;
     const t = st.t;
     const s = 32;
     const look = HERO_LOOKS[st.hero] || null;
-    const outfit = !look && TD.data.outfitById ? TD.data.outfitById(st.outfit) : null;
+    const kael = !st.hero || st.hero === 'dang';
+    const outfit = !look && kael && TD.data.outfitById ? TD.data.outfitById(st.outfit) : null;
+    const style = outfit && outfit.style !== 'knight' ? outfit.style : null;
+    const OL = OUTFIT_LOOK[style || 'knight'];
     const col = look ? look.col : outfit ? outfit.colors : HERO_COL;
     const extra = outfit && outfit.extra;
     const ding = st.hero === 'ding';
@@ -925,6 +1713,16 @@
       ctx.lineTo(s * 0.12, neckY + s * 0.15);
       ctx.closePath();
     };
+    const drawCape = OL.cape !== 'none';
+    if (drawCape) {
+      ctx.save();
+      if (typeof OL.cape === 'number') {
+        ctx.beginPath();
+        ctx.rect(-s * 4, -s * 4, s * 8, s * 4 + OL.cape * s);
+        ctx.clip();
+      }
+    }
+    if (drawCape) {
     capePath(1.08);
     ctx.fillStyle = deep(col.cape, 0.82);
     ctx.fill();
@@ -964,6 +1762,9 @@
     ctx.lineWidth = 1;
     ctx.stroke();
     ctx.restore();
+    }
+    if (drawCape) ctx.restore();
+    if (style) outfitBack(ctx, s, t, style, col, wave);
     if (extra === 'stars' || extra === 'ink') {
       for (const [px, py] of [[-0.6, -0.5], [-0.45, -1.0], [-0.8, -0.25], [-0.35, -0.7]]) {
         if (extra === 'stars') dot(ctx, s * px - wave * 0.4, s * py, 1.3, '#ffd23f', 0.9);
@@ -1031,7 +1832,7 @@
         ctx.fill();
       }
       ctx.restore();
-    } else if (st.hero !== 'ying') {
+    } else if (st.hero !== 'ying' && !style) {
       // 背后的小圆盾（只露出边缘的光）
       ctx.fillStyle = deep(col.shield, 0.55);
       ctx.beginPath();
@@ -1122,8 +1923,8 @@
     ctx.moveTo(-s * 0.34, -s * 0.82);
     ctx.lineTo(s * 0.34, -s * 0.82);
     ctx.stroke();
-    // 胸甲：几块甲片，每块上缘一道金属亮边（设计书 60.3）
-    for (let i = 0; i < 3; i++) {
+    // 胸甲：几块甲片，每块上缘一道金属亮边（设计书 60.3）；穿布衣的角色没有
+    for (let i = 0; i < (OL.cloth ? 0 : 3); i++) {
       const py = -s * (1.72 - i * 0.14);
       const pw = s * (0.21 - i * 0.012);
       const pg = ctx.createLinearGradient(pw, py - s * 0.1, -pw, py + s * 0.08);
@@ -1146,15 +1947,17 @@
       ctx.stroke();
     }
     // 胸前的发光扣饰
-    glow(ctx, s * 0.02, -s * 1.76, s * 0.25, col.shieldHi, 0.55);
-    ctx.fillStyle = light(col.shieldHi, 0.4);
-    ctx.beginPath();
-    ctx.moveTo(s * 0.02, -s * 1.83);
-    ctx.lineTo(s * 0.07, -s * 1.76);
-    ctx.lineTo(s * 0.02, -s * 1.69);
-    ctx.lineTo(-s * 0.03, -s * 1.76);
-    ctx.closePath();
-    ctx.fill();
+    if (!OL.cloth) {
+      glow(ctx, s * 0.02, -s * 1.76, s * 0.25, col.shieldHi, 0.55);
+      ctx.fillStyle = light(col.shieldHi, 0.4);
+      ctx.beginPath();
+      ctx.moveTo(s * 0.02, -s * 1.83);
+      ctx.lineTo(s * 0.07, -s * 1.76);
+      ctx.lineTo(s * 0.02, -s * 1.69);
+      ctx.lineTo(-s * 0.03, -s * 1.76);
+      ctx.closePath();
+      ctx.fill();
+    }
     // 腰间的小皮包
     ctx.fillStyle = '#3a2616';
     ctx.beginPath();
@@ -1213,8 +2016,11 @@
         dot(ctx, Math.cos(a) * s * 0.7, -s * 1.5 + Math.sin(a * 1.3) * s * 0.5, 1.6, '#d8ffb0', 0.6 + Math.sin(t * 5 + i) * 0.3);
       }
     }
+    // 角色的服装（衣柜，设计书 72）
+    if (style) outfitFront(ctx, s, t, style, col, wave, neckY);
     // 围巾：从脖子往后飘
     const sw2 = Math.sin(t * 3.6) * 3;
+    if (OL.scarf) {
     ctx.fillStyle = deep(col.plume, 0.3);
     ctx.beginPath();
     ctx.moveTo(-s * 0.12, neckY + s * 0.02);
@@ -1226,7 +2032,9 @@
     ctx.beginPath();
     ctx.ellipse(-s * 0.02, neckY + s * 0.08, s * 0.18, s * 0.08, 0, 0, TAU);
     ctx.fill();
+    }
     // 前肩的护甲
+    if (!OL.cloth) {
     const pg2 = ctx.createRadialGradient(s * 0.2, -s * 1.82, 1, s * 0.12, -s * 1.74, s * 0.2);
     pg2.addColorStop(0, light(col.helmTop, 0.2));
     pg2.addColorStop(1, deep(col.helmBottom, 0.55));
@@ -1240,6 +2048,7 @@
     ctx.ellipse(s * 0.12, -s * 1.74, s * 0.15, s * 0.1, -0.2, -2.6, -0.4);
     ctx.stroke();
     for (const rx of [0.02, 0.12, 0.22]) dot(ctx, s * rx, -s * (1.66 + (rx === 0.12 ? -0.01 : 0.02)), 0.8, col.shieldHi, 0.7);
+    }
 
     // ----- 武器与手臂 -----
     if (st.mood !== 'lose') {
@@ -1313,6 +2122,12 @@
     const openEye = st.mood === 'lose' ? 0.3 : st.mood === 'win' ? 0.55 : 1;
     if (look) {
       heroHead(ctx, s, t, st.hero, col, eye, openEye);
+      ctx.restore();
+      ctx.restore();
+      return;
+    }
+    if (style) {
+      outfitHead(ctx, s, t, style, col, eye, openEye);
       ctx.restore();
       ctx.restore();
       return;

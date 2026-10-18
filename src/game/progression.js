@@ -43,8 +43,8 @@
       settings: { sound: true, speed: 1, difficulty: 'normal', restMinutes: 30 },
       hero: 'dang', // 当前英雄（设计书 42）
       buddy: null, // 助战伙伴（设计书 51）
-      outfit: 'classic', // Kael的衣柜（设计书 30）
-      outfitsSeen: { classic: true },
+      outfit: 'classic', // 当前穿的角色（设计书 72）
+      outfitsOwned: { classic: true },
       story: {}, // 守城日记（设计书 28）：段落 id → 'read' 读完 / 'skipped' 跳过
     };
   };
@@ -72,6 +72,15 @@
       }
     };
     merge(save, fresh);
+    // 旧版的 10 套颜色外观取消，穿着旧外观的存档改回默认的 Kael（设计书 72.3）
+    if (!D.outfits.some((o) => o.id === save.outfit) || !P.outfitOwned(save, save.outfit)) save.outfit = 'classic';
+    // 旧存档里同一种道具可能占了好几个栏位：只保留第一个（设计书 71.2）
+    const seenItem = new Set();
+    save.loadout.items = save.loadout.items.map((id) => {
+      if (!id || seenItem.has(id)) return null;
+      seenItem.add(id);
+      return id;
+    });
     save.version = SAVE_VERSION;
     return save;
   };
@@ -101,28 +110,24 @@
     return true;
   };
 
-  // ---------- Kael的衣柜（设计书 30） ----------
-  P.outfitUnlocked = (save, id) => {
-    const o = D.outfits && D.outfits.find((x) => x.id === id);
-    return !!o && !!o.check(save);
+  // ---------- 角色衣柜（设计书 72）：9 位不同的人物，用金币购买，各带额外属性 ----------
+  P.outfitOwned = (save, id) => id === 'classic' || !!(save.outfitsOwned && save.outfitsOwned[id]);
+  P.buyOutfit = function (save, id) {
+    const o = D.outfits.find((x) => x.id === id);
+    if (!o || !o.cost || P.outfitOwned(save, id)) return false;
+    if (!P.pay(save, o.cost)) return false;
+    save.outfitsOwned = save.outfitsOwned || { classic: true };
+    save.outfitsOwned[id] = true;
+    save.outfit = id; // 买下来直接穿上
+    return true;
   };
   P.setOutfit = function (save, id) {
-    if (!P.outfitUnlocked(save, id)) return false;
+    if (!D.outfits.some((x) => x.id === id) || !P.outfitOwned(save, id)) return false;
     save.outfit = id;
     return true;
   };
-  // 新解锁、还没提示过的外观（结算界面提示一次）
-  P.newOutfits = function (save) {
-    save.outfitsSeen = save.outfitsSeen || {};
-    const out = [];
-    for (const o of D.outfits || []) {
-      if (!save.outfitsSeen[o.id] && o.check(save)) {
-        save.outfitsSeen[o.id] = true;
-        out.push(o);
-      }
-    }
-    return out;
-  };
+  // 当前生效的角色（额外属性只在 Kael 出战时算）
+  P.activeOutfit = (save) => (P.heroId(save) === 'dang' && P.outfitOwned(save, save.outfit) ? D.outfitById(save.outfit) : null);
 
   // ---------- 守城日记（设计书 28） ----------
   // 段落是否已解锁（日记本里可以看）：章节开场 = 章节开放；战前 = Boss 关开放；战后 = Boss 关已通关
@@ -236,6 +241,8 @@
       const st = D.equipment[id].stats;
       for (const k of Object.keys(st)) s[k] += st[k];
     }
+    const ot = P.activeOutfit(save);
+    if (ot) for (const k of Object.keys(ot.stats)) s[k] += ot.stats[k];
     return s;
   };
   // 装备和套装的特殊效果：进入战斗时并入战场修正（battle.mods）
@@ -246,6 +253,8 @@
     };
     for (const id of P.wornEquip(save)) add(D.equipment[id].mods);
     for (const k of P.activeSets(save)) add(D.gearSets[k].mods);
+    const ot = P.activeOutfit(save);
+    if (ot) add(ot.mods);
     return mods;
   };
   // 装备是否已经上架
@@ -495,12 +504,13 @@
   P.buyItem = function (save, id) {
     if (!P.pay(save, D.items[id].cost)) return false;
     save.inventory[id] = (save.inventory[id] || 0) + 1;
-    // 有空的消耗品槽就自动放进去
+    // 这种道具还没带上、又有空的消耗品槽，就自动放进去（同一种道具只占一个栏位，设计书 71.2）
     const n = P.slotCount(save, 'item');
     const lo = save.loadout.items;
-    const used = lo.slice(0, n).filter((x) => x === id).length;
-    const i = lo.slice(0, n).indexOf(null);
-    if (i >= 0 && used < save.inventory[id]) lo[i] = id;
+    if (!lo.slice(0, n).includes(id)) {
+      const i = lo.slice(0, n).findIndex((x) => !x);
+      if (i >= 0) lo[i] = id;
+    }
     return true;
   };
 
@@ -535,15 +545,10 @@
     if (id) {
       const owned = kind === 'active' ? save.activeOwned : kind === 'passive' ? save.passiveOwned : null;
       if (owned && !owned[id]) return false;
-      if (kind === 'item') {
-        const have = save.inventory[id] || 0;
-        const usedElsewhere = arr.filter((x, j) => x === id && j !== index && j < n).length;
-        if (usedElsewhere >= have) return false;
-      } else {
-        // 同一技能不能放两个槽：换位
-        const j = arr.indexOf(id);
-        if (j >= 0 && j !== index) arr[j] = arr[index];
-      }
+      if (kind === 'item' && (save.inventory[id] || 0) < 1) return false;
+      // 同一技能 / 同一种道具不能放两个槽：换位（设计书 71.2）
+      const j = arr.indexOf(id);
+      if (j >= 0 && j !== index) arr[j] = arr[index];
     }
     arr[index] = id || null;
     return true;
@@ -568,12 +573,9 @@
     const active = lo.active.slice(0, nA).filter((id) => id && save.activeOwned[id]);
     const activeLv = {};
     for (const id of active) activeLv[id] = P.skillLevel(save, id);
-    const counts = {};
     const items = [];
     lo.items.slice(0, nI).forEach((id) => {
-      if (!id) return;
-      counts[id] = (counts[id] || 0) + 1;
-      if (counts[id] <= (save.inventory[id] || 0)) items.push(id);
+      if (id && !items.includes(id) && (save.inventory[id] || 0) >= 1) items.push(id);
     });
     return { active, activeLv, items, target: lo.target, autoCast: lo.autoCast, buddy: P.buddyId(save) };
   };
@@ -582,15 +584,10 @@
   P.consumeItem = function (save, id) {
     if ((save.inventory[id] || 0) <= 0) return;
     save.inventory[id]--;
-    const n = P.slotCount(save, 'item');
-    const lo = save.loadout.items;
-    // 背包不够时清掉多出来的槽
-    let count = 0;
-    for (let i = 0; i < n; i++) {
-      if (lo[i] === id) {
-        count++;
-        if (count > save.inventory[id]) lo[i] = null;
-      }
+    // 用完了就清掉栏位；还有库存就留着，下一关继续带
+    if (save.inventory[id] <= 0) {
+      const lo = save.loadout.items;
+      for (let i = 0; i < lo.length; i++) if (lo[i] === id) lo[i] = null;
     }
   };
 
@@ -687,7 +684,6 @@
     P.recordStats(save, result, result.win);
 
     out.achievements = P.checkAchievements(save, Object.assign({ level: n }, result));
-    for (const o of P.newOutfits(save)) out.unlocks.push(`衣柜里多了一套新衣服：「${o.name}」（地图上的 👕）`);
     const names = { active: '主动技能槽', passive: '被动技能槽', item: '消耗品槽' };
     for (const k of Object.keys(before)) {
       const now = P.slotCount(save, k);
