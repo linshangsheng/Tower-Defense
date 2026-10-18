@@ -303,7 +303,9 @@
 
     endWaveHeal() {
       const mend = this.stats.mend + (this.mods.mendBonus || 0);
-      if (mend > 0 && this.waveIndex >= 0) this.healWall(this.wall.max * mend, 'mend');
+      // 九层妖塔：每清掉一波，城墙恢复满血（设计书 77.2）
+      if (this.level.tower && this.waveIndex >= 0 && this.wall.hp < this.wall.max) this.healWall(this.wall.max - this.wall.hp, 'tower');
+      else if (mend > 0 && this.waveIndex >= 0) this.healWall(this.wall.max * mend, 'mend');
       if (this.buddy && this.buddy.perk.waveHeal && this.waveIndex >= 0) this.healWall(this.wall.max * this.buddy.perk.waveHeal, 'buddy');
     }
 

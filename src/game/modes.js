@@ -172,7 +172,7 @@
       waves,
       supplyEvery: 1,
       stage,
-      tip: `第 ${floor} 层：${cnt.boss} 个妖王 + ${cnt.minion} 只小妖同时涌来。打怪没有收益，只有过关才有钻石！`,
+      tip: `第 ${floor} 层：${cnt.boss} 个妖王 + ${cnt.minion} 只小妖同时涌来（强度 ×${Math.pow(T().grow, floor - 1).toFixed(2)}）。每清一波城墙恢复满血；打怪没有收益，只有过关才有钻石！`,
     };
   };
 

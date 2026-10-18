@@ -1284,7 +1284,7 @@ test('技能协同：碎冰（冰冻领域里雷霆加伤）、鼓点箭雨（�
   assert.strictEqual(d.combos.drumRain, 1);
 });
 
-test('九层妖塔：通关第 60 关解锁；第 N 层 10N 个妖王 + 90N 个小妖，分 3 波；钻石 2^(N−1)', () => {
+test('九层妖塔：通关第 60 关解锁；第 N 层 20N 个妖王 + 180N 个小妖，分 3 波；钻石 2^(N−1)', () => {
   const s = P.newSave();
   assert.ok(!TD.modes.towerUnlocked(s));
   clearUpTo(s, 60);
@@ -1301,7 +1301,7 @@ test('九层妖塔：通关第 60 关解锁；第 N 层 10N 个妖王 + 90N 个�
         if (D.monsters[t].boss) boss += n;
         else minion += n;
       }
-    assert.ok(Math.abs(boss - 10 * k) <= 3 && Math.abs(minion - 90 * k) <= 3, `第 ${k} 层：${boss} + ${minion}`);
+    assert.ok(Math.abs(boss - 20 * k) <= 3 && Math.abs(minion - 180 * k) <= 3, `第 ${k} 层：${boss} + ${minion}`);
     assert.ok(def.tower && def.floor === k && def.supplyEvery === 1);
   }
   // 妖王用妖塔版（没有特殊行动），种类循环；到第七章通关后 14 种
@@ -1310,7 +1310,7 @@ test('九层妖塔：通关第 60 关解锁；第 N 层 10N 个妖王 + 90N 个�
   for (const t of types) assert.ok(t.startsWith('tw_') && !D.monsters[t].ai && D.monsters[t].art);
   clearUpTo(s, 70);
   assert.strictEqual(TD.modes.towerBossList(s).length, 14);
-  // 难度系数按关卡折算、再乘妖塔系数；每层的属性相同，数量随层数增加
+  // 难度系数按关卡折算、再乘妖塔系数；每上一层，怪物的属性 ×grow，数量也随层数增加（设计书 77）
   assert.ok(Math.abs(TD.modes.towerD(s, 9) - TD.modes.towerD(s, 1) * Math.pow(D.tower.grow, 8)) < 1e-9);
   assert.ok(TD.modes.towerD(s, 1) < TD.config.difficulty(70) * 0.5, '妖塔系数把单只怪物的强度压到普通关卡的一小部分');
 });
@@ -2806,4 +2806,35 @@ test('技能 Lv3 以后继续变强，战斗里也用升级后的数值；机器
   TD.bot.shop(bot);
   for (const k of Object.keys(D.attributes)) assert.ok(bot.attrs[k] <= D.attributes[k].max, k);
   assert.ok(bot.wall.level <= D.wallUpgrades.level.max && bot.weapons.bow.lv <= D.weaponUpgrade.max);
+});
+
+// ---------- v0.69：九层妖塔——每波恢复城墙、数量 ×2、每层属性成长（设计书 77） ----------
+test('九层妖塔：每上一层怪物属性都变强（×grow），每一层开始时城墙满血，每清一波城墙恢复满血', () => {
+  const s = P.newSave();
+  clearUpTo(s, 100);
+  assert.ok(D.tower.grow > 1 && D.tower.bossPerFloor === 20 && D.tower.minionPerFloor === 180);
+  for (let k = 2; k <= 9; k++) {
+    const r = TD.modes.towerD(s, k) / TD.modes.towerD(s, k - 1);
+    assert.ok(Math.abs(r - D.tower.grow) < 1e-9, `第 ${k} 层比第 ${k - 1} 层强 ×${D.tower.grow}`);
+    // 战斗里每一波都用本层的系数
+    for (const w of TD.modes.buildTower(s, k).waves) assert.ok(Math.abs(w.D - TD.modes.towerD(s, k)) < 1e-9);
+  }
+  // 每一层都是一场新的战斗，城墙满血，不继承上一层剩下的血量
+  const st = P.heroStats(s);
+  const mk = (floor) => new TD.Battle({ level: 'tower', levelDef: TD.modes.buildTower(s, floor), stage: 100, stats: st, loadout: P.battleLoadout(s), seed: floor });
+  const b1 = mk(1);
+  b1.hitWall(b1.wall.max * 0.7, null);
+  assert.ok(b1.wall.hp < b1.wall.max * 0.4);
+  const b2 = mk(2);
+  assert.strictEqual(b2.wall.hp, b2.wall.max);
+  // 每清掉一波（选完补给卡进入下一波时），妖塔里的城墙恢复满血；普通关卡不会
+  b1.waveIndex = 0; // 打完第 1 波
+  b1.endWaveHeal();
+  assert.strictEqual(b1.wall.hp, b1.wall.max);
+  const n = new TD.Battle({ level: 10, stats: st, loadout: P.battleLoadout(s), seed: 1 });
+  n.hitWall(n.wall.max * 0.5, null);
+  const hurt = n.wall.hp;
+  n.waveIndex = 0;
+  n.endWaveHeal();
+  assert.ok(n.wall.hp < n.wall.max && n.wall.hp >= hurt);
 });

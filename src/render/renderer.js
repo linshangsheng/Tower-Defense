@@ -501,7 +501,8 @@
         const tower = !!b.level.tower;
         if (TD.art) TD.art.LIT_FPS = tower ? (alive.length > 150 ? 2 : 4) : alive.length > 60 ? 8 : 12;
         this.litGroups = tower ? 1 : alive.length > 100 ? 2 : 4;
-        this.crowd = alive.length > 200 ? 0.8 : alive.length > 80 ? 1 : 0;
+        this.crowd = alive.length > 400 ? 0.62 : alive.length > 250 ? 0.72 : alive.length > 150 ? 0.82 : alive.length > 80 ? 1 : 0;
+        this.crowdBars = alive.length <= 250; // 同屏很多时，小妖不画血条（妖王照画）
         if (TD.Vfx && TD.Vfx.setCap) TD.Vfx.setCap(alive.length > 40 ? 240 : 520);
         alive.sort((a, c) => (a.def.flying ? 1 : 0) - (c.def.flying ? 1 : 0) || a.y - c.y);
         this.darkEyes = [];
@@ -1978,7 +1979,7 @@
         }
       }
       // 血条（满血不显示，Boss 用顶部大血条）
-      if ((!def.boss || def.towerOf) && m.hp < m.maxHp) {
+      if ((!def.boss || def.towerOf) && m.hp < m.maxHp && (def.boss || this.crowdBars !== false)) {
         const w = Math.max(26, def.size * 1.8);
         const by = y - def.size * DRAW_SCALE * (def.flying ? 1.7 : 2.0) - 8;
         ctx.fillStyle = 'rgba(0,0,0,0.45)';

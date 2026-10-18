@@ -965,6 +965,6 @@
     TD.data.noIntro['tw_' + id] = true;
     TD.data.towerBossIds.push(id);
   }
-  // 妖塔的数值：第 k 层怪物血量与攻城伤害 = D(关卡) × base × grow^(k−1)；目前 grow = 1（每层只有数量不同），base 由 tools/tower.js 标定
-  TD.data.tower = { floors: 9, bossPerFloor: 10, minionPerFloor: 90, base: 0.14, grow: 1, waves: 3, fee: { gold: 1 } };
+  // 妖塔的数值：第 k 层怪物血量与攻城伤害 = D(关卡) × base × grow^(k−1)；每层 ×grow（v0.69 起每上一层怪物属性都会增加），base 由 tools/tower.js 标定
+  TD.data.tower = { floors: 9, bossPerFloor: 20, minionPerFloor: 180, base: 0.02, grow: 1.2, waves: 3, fee: { gold: 1 } };
 })((globalThis.TD = globalThis.TD || {}));
