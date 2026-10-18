@@ -90,7 +90,7 @@
     ],
 
     // 主线第 N 关整关总共多出 N × 这个数 只小怪（设计书 84）
-    extraMonstersPerLevel: 1,
+    extraMonstersPerLevel: 0.5,
 
     exchange: {
       copperPerSilver: 100,
