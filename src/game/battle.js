@@ -1098,6 +1098,11 @@
         const support = (m) => !!(m.def.healer || m.def.chill || m.def.ranged || m.def.guard || m.def.bubbler);
         list.sort((a, b) => (danger(b) ? 1 : 0) - (danger(a) ? 1 : 0) || (support(b) ? 1 : 0) - (support(a) ? 1 : 0) || byX(a, b));
       } else list.sort(byX);
+      // 多出来的小怪（设计书 84）排在后面：射程里还有原有的怪时先打原有的，只剩小怪潮时才打小怪（稳定排序，各自的次序不变）
+      if (this.swarmStrength < 1 || this.monsters.some((m) => m.swarm)) {
+        const real = list.filter((m) => !m.swarm);
+        if (real.length && real.length < list.length) return real.concat(list.filter((m) => m.swarm));
+      }
       return list;
     }
 
