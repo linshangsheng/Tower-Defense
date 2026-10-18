@@ -75,16 +75,23 @@ test('失败给安慰奖励，不记通关', () => {
   assert.ok(!P.isCleared(s, 3));
 });
 
-test('消耗品：买、放入槽、使用后扣除', () => {
+test('消耗品：买进背包、装备到栏位（每种最多 3 个）、使用后已装备的个数减 1', () => {
   const s = P.newSave();
   clearUpTo(s, 2);
   s.copper = 500;
   assert.ok(P.buyItem(s, 'bomb'));
-  assert.strictEqual(s.loadout.items[0], 'bomb', '有空槽自动放入');
+  assert.strictEqual(s.inventory.bomb, 1);
+  assert.strictEqual(s.loadout.items[0], null, '买下来只是进背包，不会自动装备');
+  assert.deepStrictEqual(P.battleLoadout(s).items, []);
+  assert.ok(P.adjustItem(s, 'bomb', 1));
+  assert.strictEqual(s.loadout.items[0], 'bomb');
+  assert.strictEqual(P.itemEquipped(s, 'bomb'), 1);
+  assert.strictEqual(P.itemStock(s, 'bomb'), 0);
   assert.deepStrictEqual(P.battleLoadout(s).items, ['bomb']);
   P.consumeItem(s, 'bomb');
-  assert.strictEqual(s.inventory.bomb, 0);
+  assert.strictEqual(P.itemEquipped(s, 'bomb'), 0);
   assert.strictEqual(s.loadout.items[0], null, '用完后槽位清空');
+  assert.strictEqual(s.inventory.bomb, 0, '用掉的不会回到背包');
 });
 
 test('同一技能不能同时放两个槽', () => {
@@ -1766,7 +1773,7 @@ test('寒霜套装：凑齐后对减速的怪 +15%；寒铁盔让冰冻瓶多冻
   m.slowUntil = b.time + 1;
   assert.ok(Math.abs(b.damageMult(m, { source: 'weapon' }) - 1.15) < 1e-9);
   b.waveState = 'spawning';
-  b.items = [{ id: 'freeze', def: D.items.freeze, used: false }];
+  b.items = [{ id: 'freeze', def: D.items.freeze, left: 1, cd: 0 }];
   b.useItem(0, 0);
   assert.ok(Math.abs(m.frozenUntil - b.time - D.items.freeze.duration * 1.3) < 1e-9);
 });
@@ -1937,7 +1944,7 @@ function itemBattle(id, level) {
   const s = P.newSave();
   clearUpTo(s, 69);
   s.inventory = { [id]: 1 };
-  s.loadout.items = [id, null, null];
+  P.equipItem(s, 0, id, 1);
   const b = new TD.Battle({ level: level || 41, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 3 });
   b.waveState = 'spawning';
   return b;
@@ -2366,36 +2373,92 @@ test('战斗曲子：32 小节分四段（主题 / 弦乐 / 间奏 / 高潮）�
 });
 
 // ---------- 道具去重、补给重做（设计书 71） ----------
-test('道具：买多个只占一个栏位、库存累加；用完才清栏位；旧存档的重复栏位迁移时去重', () => {
+test('道具：同一种只占一个栏位；背包和已装备分开记；用一个少一个，用完清栏位；旧存档迁移', () => {
   const s = P.newSave();
   clearUpTo(s, 10);
   s.copper = 10000;
-  for (let i = 0; i < 4; i++) assert.ok(P.buyItem(s, 'bomb'));
-  assert.strictEqual(s.inventory.bomb, 4);
-  assert.strictEqual(s.loadout.items.filter((x) => x === 'bomb').length, 1, '同一种道具只占一个栏位');
+  for (let i = 0; i < 5; i++) assert.ok(P.buyItem(s, 'bomb'));
+  assert.strictEqual(s.inventory.bomb, 5);
   assert.ok(P.buyItem(s, 'patch'));
-  assert.deepStrictEqual(s.loadout.items.filter(Boolean).sort(), ['bomb', 'patch'], '另一种道具放进空栏位');
-  // 手动放：同一种不能占两个栏位（换位）
-  const slots = P.slotCount(s, 'item');
-  assert.ok(slots >= 2);
-  const idx = s.loadout.items.indexOf('bomb');
-  assert.ok(P.setSlot(s, 'item', idx === 0 ? 1 : 0, 'bomb'));
+  // 装备：默认装满 3 个，其余留在背包
+  assert.ok(P.setSlot(s, 'item', 0, 'bomb'));
+  assert.strictEqual(P.itemEquipped(s, 'bomb'), 3);
+  assert.strictEqual(P.itemStock(s, 'bomb'), 2);
+  assert.ok(!P.adjustItem(s, 'bomb', 1), '每种最多装备 3 个');
+  // 指定个数：带 2 个，另一个退回背包
+  assert.ok(P.equipItem(s, 0, 'bomb', 2));
+  assert.strictEqual(P.itemEquipped(s, 'bomb'), 2);
+  assert.strictEqual(P.itemStock(s, 'bomb'), 3);
+  // 同一种换栏位：只占一个
+  assert.ok(P.setSlot(s, 'item', 2, 'bomb'));
   assert.strictEqual(s.loadout.items.filter((x) => x === 'bomb').length, 1);
-  assert.ok(!P.setSlot(s, 'item', 0, 'meteor'), '背包里没有的道具放不进去');
-  // 战斗里每种只带一个、用掉扣 1 个库存
+  assert.strictEqual(s.loadout.items[2], 'bomb');
+  // 栏位里换成别的道具：原来的全部退回背包
+  assert.ok(P.setSlot(s, 'item', 2, 'patch'));
+  assert.strictEqual(P.itemEquipped(s, 'patch'), 1);
+  assert.strictEqual(P.itemStock(s, 'bomb'), 5);
+  assert.ok(!P.setSlot(s, 'item', 0, 'meteor'), '一个都没有的道具装备不上');
+  // 最多 7 种：栏位数随进度解锁，前面几种解锁前装不进去
+  assert.deepStrictEqual(D.slotUnlocks.item.length, 7);
+  assert.ok(!P.equipItem(s, 6, 'bomb', 1), '第 7 个栏位还没解锁');
+  // 用一个少一个，已装备的个数记在存档里
+  P.equipItem(s, 0, 'bomb', 3);
   const lo = P.battleLoadout(s);
-  assert.deepStrictEqual(lo.items.slice().sort(), ['bomb', 'patch']);
+  assert.deepStrictEqual(lo.itemQty, { bomb: 3, patch: 1 });
   P.consumeItem(s, 'bomb');
-  assert.strictEqual(s.inventory.bomb, 3);
-  assert.ok(s.loadout.items.includes('bomb'), '还有库存，下一关继续带');
-  for (let i = 0; i < 3; i++) P.consumeItem(s, 'bomb');
-  assert.strictEqual(s.inventory.bomb, 0);
+  assert.strictEqual(P.itemEquipped(s, 'bomb'), 2);
+  assert.ok(s.loadout.items.includes('bomb'), '还剩 2 个，下一关继续带');
+  P.consumeItem(s, 'bomb');
+  P.consumeItem(s, 'bomb');
   assert.ok(!s.loadout.items.includes('bomb'), '用完了清栏位');
-  // 迁移
+  assert.strictEqual(P.itemEquipped(s, 'bomb'), 0);
+  assert.strictEqual(P.itemStock(s, 'bomb'), 2, '背包里的还在，要重新装备才会带进战斗');
+  // 旧存档迁移：栏位里的道具最多 3 个从背包挪到"已装备"，重复栏位去重，栏位补到 7 个
   const old = P.newSave();
-  old.inventory = { bomb: 5 };
-  old.loadout.items = ['bomb', 'bomb', 'bomb'];
-  assert.deepStrictEqual(P.migrate(old).loadout.items, ['bomb', null, null]);
+  delete old.loadout.itemQtyMigrated;
+  old.inventory = { bomb: 5, patch: 2 };
+  old.loadout.items = ['bomb', 'bomb', 'patch'];
+  old.loadout.itemQty = {};
+  const m = P.migrate(old);
+  assert.strictEqual(m.loadout.items.length, 7);
+  assert.deepStrictEqual(m.loadout.items.slice(0, 3), ['bomb', null, 'patch']);
+  assert.deepStrictEqual(m.loadout.itemQty, { bomb: 3, patch: 2 });
+  assert.deepStrictEqual(m.inventory, { bomb: 2, patch: 0 });
+});
+
+test('战斗里的道具：每种带 1–3 个，用一个少一个；用完一次要等冷却；每次使用都记进存档', () => {
+  const s = P.newSave();
+  clearUpTo(s, 20);
+  s.inventory = { bomb: 3, patch: 1 };
+  P.equipItem(s, 0, 'bomb', 3);
+  P.equipItem(s, 1, 'patch', 1);
+  const b = new TD.Battle({ level: 10, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 2 });
+  assert.deepStrictEqual(b.items.map((it) => [it.id, it.left]), [['bomb', 3], ['patch', 1]]);
+  b.waveState = 'spawning';
+  assert.ok(b.useItem(0, 0));
+  assert.strictEqual(b.items[0].left, 2);
+  assert.ok(Math.abs(b.items[0].cd - D.items.bomb.cd) < 1e-9, '用完进入冷却');
+  assert.ok(!b.useItem(0, 0), '冷却中不能再用');
+  assert.ok(!b.itemReady(0));
+  for (let i = 0; i < 60 * (D.items.bomb.cd + 1); i++) b.step(1 / 60);
+  assert.ok(b.itemReady(0), '冷却好了又能用');
+  assert.ok(b.useItem(0, 0));
+  assert.strictEqual(b.items[0].left, 1);
+  // 每次使用都扣已装备的个数（main.js 里监听 item 事件），道具独立冷却
+  const ev = [];
+  b.on('item', (e) => ev.push(e));
+  assert.ok(b.useItem(1, 0));
+  assert.strictEqual(ev[0].id, 'patch');
+  assert.strictEqual(b.items[1].left, 0);
+  assert.ok(!b.useItem(1, 0), '用完了');
+  P.consumeItem(s, 'bomb');
+  P.consumeItem(s, 'bomb');
+  P.consumeItem(s, 'patch');
+  assert.strictEqual(P.itemEquipped(s, 'bomb'), 1);
+  assert.strictEqual(P.itemEquipped(s, 'patch'), 0);
+  // 每种道具都有冷却（幸运符除外），越强越长
+  for (const id of Object.keys(D.items)) if (!D.items[id].passive) assert.ok(D.items[id].cd > 0, id);
+  assert.ok(D.items.chrono.cd > D.items.bigBomb.cd && D.items.bigBomb.cd > D.items.bomb.cd);
 });
 
 test('补给：每 3 波一次（最多 4 次）；三档品质；越往后稀有 / 史诗越多', () => {

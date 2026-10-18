@@ -49,7 +49,11 @@
     game.renderer.attach(battle);
     // 失败时先看城墙坍塌（约 2 秒，设计书 61.6），再出结算
     battle.on('end', (res) => setTimeout(() => game.onBattleEnd(battle), res.win || battle.wall.hp > 0 ? 1300 : 2400));
-    battle.on('item', (e) => P.consumeItem(s, e.id));
+    // 每用一次，已装备的这种道具少一个，马上记进存档（中途退出、刷新也不会白白返还，设计书 82）
+    battle.on('item', (e) => {
+      P.consumeItem(s, e.id);
+      game.persist();
+    });
     battle.on('waveStart', () => TD.audio.play('wave'));
     battle.on('shoot', () => TD.audio.play('shoot'));
     battle.on('death', (e) => e.copper && TD.audio.play('coin'));
@@ -265,10 +269,12 @@
     const b = game.battle;
     if (!b || game.paused || b.over) return;
     const it = b.items[i];
-    if (!it || it.used || b.waveState === 'prepare') {
+    if (!b.itemReady(i) || b.waveState === 'prepare') {
       TD.audio.play('error');
-      if (it && !it.used) TD.ui.toast('第一波怪物出来后才能用道具');
-      else if (it) TD.ui.toast('这个道具本关已经用过了');
+      if (!it) return;
+      if (it.left <= 0) TD.ui.toast('这种道具用完了');
+      else if (it.cd > 0) TD.ui.toast(`冷却中，还要 ${Math.ceil(it.cd)} 秒`);
+      else TD.ui.toast('第一波怪物出来后才能用道具');
       return;
     }
     if (it.def.targetLane && b.lanes > 1) {
@@ -401,7 +407,7 @@
       }
       if (game.paused) return;
       if (k >= '1' && k <= '3') game.trySkill(+k - 1);
-      else if (k === 'q' || k === 'w' || k === 'e') game.tryItem('qwe'.indexOf(k));
+      else if (k.length === 1 && 'qwerzxc'.includes(k)) game.tryItem('qwerzxc'.indexOf(k));
       else if (k === 'f') game.toggleSpeed();
       else if (k === 'n') game.callWave();
       else if (k === 't') game.cycleTarget();

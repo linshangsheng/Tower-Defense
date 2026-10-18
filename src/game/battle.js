@@ -74,7 +74,11 @@
         return { id, lv, def, cd: 0 };
       });
       this.tempDr = { amt: 0, until: 0 };
-      this.items = (opts.loadout.items || []).filter((id) => !D.items[id].passive).map((id) => ({ id, def: D.items[id], used: false }));
+      // 道具（设计书 82）：每种带 1–3 个（itemQty），用一次少一个；用完一次要等这一种的冷却；left = 剩余个数，cd = 冷却剩余秒数
+      const qty = opts.loadout.itemQty || {};
+      this.items = (opts.loadout.items || [])
+        .filter((id) => !D.items[id].passive)
+        .map((id) => ({ id, def: D.items[id], left: Math.max(1, Math.min(D.itemRules.perKind, qty[id] || 1)), cd: 0 }));
       this.charm = (opts.loadout.items || []).includes('charm');
       this.itemsUsed = [];
       if (this.charm) this.itemsUsed.push('charm');
@@ -1439,7 +1443,7 @@
 
     useItem(i, lane) {
       const it = this.items[i];
-      if (!it || it.used || this.over || this.waveState === 'prepare') return false;
+      if (!this.itemReady(i) || this.over || this.waveState === 'prepare') return false;
       const def = it.def;
       if (def.targetLane && lane === undefined) lane = this.bestLane();
       const atk = this.atk;
@@ -1542,10 +1546,17 @@
           break;
         }
       }
-      it.used = true;
+      it.left--;
+      it.cd = (def.cd || 0) * Math.max(0.3, 1 + this.mods.cdMult * 0.5); // 冷却缩减装备对道具只有一半效果
       this.itemsUsed.push(it.id);
-      this.emit('item', { id: it.id, lane });
+      this.emit('item', { id: it.id, lane, left: it.left, cd: it.cd });
       return true;
+    }
+
+    // 道具能不能用：还有剩余，并且冷却好了
+    itemReady(i) {
+      const it = this.items[i];
+      return !!it && it.left > 0 && it.cd <= 0;
     }
 
     // 冻住一只怪；Boss 的行动只看眩晕，所以同时记一次眩晕，保证 Boss 也真的停下
@@ -1647,7 +1658,7 @@
       }
       if (this.autoItems) {
         this.items.forEach((it, i) => {
-          if (it.used) return;
+          if (!this.itemReady(i)) return;
           let go = false;
           switch (it.id) {
             case 'bomb': {
@@ -1705,6 +1716,7 @@
       if (this.over || this.pendingSupply) return;
       this.time += dt;
       for (const s of this.skills) if (s.cd > 0) s.cd = Math.max(0, s.cd - dt);
+      for (const it of this.items) if (it.cd > 0) it.cd = Math.max(0, it.cd - dt);
       if (this.buffs.length && this.buffs[0].until < this.time) this.buffs = this.buffs.filter((b) => b.until >= this.time);
       if (this.laneEffects.length) {
         const keep = [];

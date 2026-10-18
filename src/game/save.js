@@ -184,7 +184,7 @@
   };
 
   // 一键推荐配装（设计书 6.4）：根据关卡里的怪物构成推荐武器、技能、道具
-  TD.progression.recommend = function (save, n) {
+  TD.progression.recommend = function (save, n, opts) {
     const P = TD.progression;
     const D = TD.data;
     const lvl = D.levels[n];
@@ -266,12 +266,16 @@
     const pas = prefP.filter((id) => save.passiveOwned[id]).slice(0, nP);
     for (let i = 0; i < 3; i++) lo.passive[i] = pas[i] || null;
 
-    // 消耗品
-    const nI = P.slotCount(save, 'item');
-    const prefI = ['charm', 'patch', 'bomb', 'haste', 'freeze'];
-    const items = [];
-    for (const id of prefI) if ((save.inventory[id] || 0) > 0 && items.length < nI) items.push(id);
-    for (let i = 0; i < 3; i++) lo.items[i] = items[i] || null;
+    // 消耗品（设计书 82）：背包 + 已装备里有的，按优先级放进栏位（最多 7 种）；每种默认装满 3 个。
+    // 机器人的战役标定按"每种带 1 个、最多 3 种"（opts.itemQty / itemSlots）
+    const nI = Math.min(P.slotCount(save, 'item'), (opts && opts.itemSlots) || 99);
+    const prefI = ['charm', 'holyLight', 'chrono', 'blizzard', 'meteor', 'flood', 'quake', 'thunderScroll', 'bigBomb', 'barrier', 'warBanner', 'firebomb', 'patch', 'bomb', 'haste', 'freeze'];
+    // 没有 patch / bomb 的高级道具时保持原来的顺序：charm、patch、bomb、haste、freeze
+    const have = (id) => P.itemEquipped(save, id) + P.itemStock(save, id) > 0;
+    const items = prefI.filter(have).slice(0, nI);
+    // 先把栏位清空（已装备的退回背包），再按顺序装
+    for (let i = 0; i < lo.items.length; i++) P.unequipItem(save, i);
+    items.forEach((id, i) => P.equipItem(save, i, id, opts && opts.itemQty ? opts.itemQty : undefined));
 
     // 装备：每个栏位挑战力提升最大的；特长装备按本关怪物构成折算（设计书 58.5）
     const slots = { helm: ['helm'], cape: ['cape'], armor: ['armor'], boots: ['boots'], trinket: ['trinket1', 'trinket2', 'trinket3'] };

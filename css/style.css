@@ -2825,3 +2825,44 @@ select option {
   font-size: 12px;
   opacity: 0.8;
 }
+
+/* ---------- 道具：最多 7 种、每种 3 个、有冷却（v0.74，设计书 82） ---------- */
+.hud-bottom .item-bar {
+  gap: 6px;
+}
+.hud-bottom .item-btn {
+  width: 68px;
+  height: 76px;
+}
+.item-btn .skill-name {
+  font-size: 12px;
+}
+.item-btn .item-stock {
+  font-size: 15px;
+  right: 4px;
+  top: 1px;
+}
+.item-btn .cd {
+  font-size: 22px;
+}
+.item-btn.cooling {
+  filter: saturate(0.6);
+}
+/* 商店 / 配装里的道具个数 */
+.item-counts {
+  display: inline-flex;
+  gap: 8px;
+  font-size: 13px;
+  margin-left: 6px;
+}
+.item-counts b {
+  color: #ffd27a;
+}
+.item-qty-pick {
+  display: flex;
+  gap: 6px;
+  margin: 10px 0;
+}
+.item-qty-pick .btn {
+  flex: 1;
+}

@@ -131,14 +131,13 @@
         bought.push(id);
       }
     }
-    // 消耗品：保持槽位填满
-    const nItem = P.slotCount(save, 'item');
+    // 消耗品：每种带 1 个、最多 3 种，和 v0.74 之前"每关每种最多用一次"完全一样，战役标定不变（设计书 82）
+    const nItem = Math.min(3, P.slotCount(save, 'item'));
     const wantItems = ['patch', 'bomb', 'haste'];
     for (let i = 0; i < nItem; i++) {
       const id = wantItems[i];
-      const have = save.inventory[id] || 0;
-      if (have < 1 && P.canAfford(save, D.items[id].cost)) P.buyItem(save, id);
-      if ((save.inventory[id] || 0) > 0) P.setSlot(save, 'item', i, id);
+      if (P.itemEquipped(save, id) + P.itemStock(save, id) < 1 && P.canAfford(save, D.items[id].cost)) P.buyItem(save, id);
+      if (P.itemEquipped(save, id) + P.itemStock(save, id) > 0) P.equipItem(save, i, id, 1);
     }
     if (opts.silverOnly) return bought;
     // 铜币升级
@@ -171,7 +170,7 @@
   // 跑一局
   Bot.playLevel = function (save, n, opts) {
     opts = opts || {};
-    if (!opts.keepLoadout) P.recommend(save, n);
+    if (!opts.keepLoadout) P.recommend(save, n, { itemQty: 1, itemSlots: 3 });
     if (opts.forceWeapon) save.loadout.weapon = opts.forceWeapon;
     const lo = P.battleLoadout(save);
     if (opts.noSkills) lo.active = [];

@@ -308,6 +308,12 @@
     chrono: { name: '时间静止', cost: { gold: 3 }, duration: 7, aspdBonus: 0.6, shatter: 1.2, desc: '冻结全体怪物 7 秒，连 Boss 也一起冻住，冻住期间它们受到的伤害 ×2.2；这期间英雄攻击速度 +60%。' },
   };
 
+  // 道具冷却（秒，设计书 82）：用过一次以后，这一种道具要等冷却好才能再用；越强冷却越长。幸运符是战斗开始时自动生效的，没有冷却
+  TD.data.itemCd = { bomb: 12, patch: 18, haste: 20, freeze: 18, firebomb: 14, thunderScroll: 25, bigBomb: 22, barrier: 30, warBanner: 24, quake: 30, blizzard: 45, flood: 45, holyLight: 50, meteor: 45, chrono: 60 };
+  for (const id of Object.keys(TD.data.items)) if (TD.data.itemCd[id]) TD.data.items[id].cd = TD.data.itemCd[id];
+  // 道具携带规则：最多带 7 种，每种最多带 3 个
+  TD.data.itemRules = { kinds: 7, perKind: 3 };
+
   TD.data.equipment = {
     ironHelm: { name: '铁皮盔', slot: 'helm', rarity: 'common', cost: { copper: 120 }, stats: { atkFlat: 3 }, desc: '攻击力 +3' },
     shineHelm: {
@@ -373,7 +379,7 @@
     quiver: [0],
     active: [0, 5, 20],
     passive: [3, 10, 30],
-    item: [2, 6, 8],
+    item: [2, 6, 8, 14, 22, 32, 45],
   };
 
   // 战场补给卡（设计书 2.7、18.12、71.5）：mods 中的字段由战斗逻辑读取

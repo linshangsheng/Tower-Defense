@@ -30,7 +30,8 @@
         active: ['drum', null, null],
         passive: [null, null, null],
         equip: { helm: null, cape: null, armor: null, quiver: null, trinket1: null, trinket2: null, trinket3: null, boots: null },
-        items: [null, null, null],
+        items: [null, null, null, null, null, null, null], // 7 种道具栏位（设计书 82）
+        itemQty: {}, // 每种已装备的个数（1–3）；背包里的在 inventory
         target: 'nearest',
         autoCast: false,
       },
@@ -77,10 +78,26 @@
     // 旧存档里同一种道具可能占了好几个栏位：只保留第一个（设计书 71.2）
     const seenItem = new Set();
     save.loadout.items = save.loadout.items.map((id) => {
-      if (!id || seenItem.has(id)) return null;
+      if (!id || seenItem.has(id) || !D.items[id]) return null;
       seenItem.add(id);
       return id;
     });
+    while (save.loadout.items.length < D.itemRules.kinds) save.loadout.items.push(null);
+    // v0.74 之前：栏位里的道具直接用背包里的个数。现在装备和背包分开：把栏位里的道具最多 3 个从背包挪到"已装备"
+    if (!save.loadout.itemQtyMigrated) {
+      save.loadout.itemQty = {};
+      save.loadout.items.forEach((id, i) => {
+        if (!id) return;
+        const q = Math.min(D.itemRules.perKind, save.inventory[id] || 0);
+        if (q <= 0) {
+          save.loadout.items[i] = null;
+          return;
+        }
+        save.inventory[id] -= q;
+        save.loadout.itemQty[id] = q;
+      });
+      save.loadout.itemQtyMigrated = true;
+    }
     save.version = SAVE_VERSION;
     return save;
   };
@@ -597,17 +614,65 @@
     return true;
   };
 
+  // 买道具：先进背包；要带进战斗得"装备"（每种最多 3 个，最多 7 种，设计书 82）
   P.buyItem = function (save, id) {
     if (!P.pay(save, D.items[id].cost)) return false;
     save.inventory[id] = (save.inventory[id] || 0) + 1;
-    // 这种道具还没带上、又有空的消耗品槽，就自动放进去（同一种道具只占一个栏位，设计书 71.2）
-    const n = P.slotCount(save, 'item');
-    const lo = save.loadout.items;
-    if (!lo.slice(0, n).includes(id)) {
-      const i = lo.slice(0, n).findIndex((x) => !x);
-      if (i >= 0) lo[i] = id;
-    }
     return true;
+  };
+
+  // 已装备 / 背包里有多少个
+  P.itemEquipped = (save, id) => (id && save.loadout.itemQty && save.loadout.itemQty[id]) || 0;
+  P.itemStock = (save, id) => save.inventory[id] || 0;
+  P.itemSlotOf = (save, id) => save.loadout.items.indexOf(id);
+  // 把某种道具装备到第 slot 个栏位，装备 qty 个（缺省 = 装满 3 个；0 = 卸下）：个数在背包和装备之间挪，栏位里原来的别的道具退回背包
+  P.equipItem = function (save, slot, id, qty) {
+    const n = P.slotCount(save, 'item');
+    if (slot < 0 || slot >= n) return false;
+    const lo = save.loadout;
+    const old = lo.items[slot];
+    if (old && old !== id) P.unequipItem(save, slot);
+    if (!id || !D.items[id]) return true;
+    // 同一种道具只占一个栏位：在别的栏位里的，换到这里来
+    const other = lo.items.indexOf(id);
+    if (other >= 0 && other !== slot) lo.items[other] = null;
+    const have = P.itemEquipped(save, id);
+    const want = Math.max(0, Math.min(D.itemRules.perKind, qty === undefined ? D.itemRules.perKind : qty, have + (save.inventory[id] || 0)));
+    save.inventory[id] = (save.inventory[id] || 0) + have - want;
+    if (want <= 0) {
+      delete lo.itemQty[id];
+      lo.items[slot] = null;
+      return true;
+    }
+    lo.items[slot] = id;
+    lo.itemQty[id] = want;
+    return true;
+  };
+  // 卸下一个栏位：已装备的全部退回背包
+  P.unequipItem = function (save, slot) {
+    const lo = save.loadout;
+    const id = lo.items[slot];
+    if (!id) return false;
+    save.inventory[id] = (save.inventory[id] || 0) + P.itemEquipped(save, id);
+    delete lo.itemQty[id];
+    lo.items[slot] = null;
+    return true;
+  };
+  // 商店里的快捷操作：装备 +1 / −1（没装备过就放进第一个空栏位）
+  P.adjustItem = function (save, id, delta) {
+    const n = P.slotCount(save, 'item');
+    let slot = P.itemSlotOf(save, id);
+    const cur = P.itemEquipped(save, id);
+    if (delta > 0) {
+      if (cur >= D.itemRules.perKind || (save.inventory[id] || 0) < 1) return false;
+      if (slot < 0 || slot >= n) {
+        slot = save.loadout.items.slice(0, n).findIndex((x) => !x);
+        if (slot < 0) return false;
+      }
+      return P.equipItem(save, slot, id, cur + 1);
+    }
+    if (slot < 0 || cur < 1) return false;
+    return P.equipItem(save, slot, id, cur - 1);
   };
 
   P.exchange = function (save, from, times) {
@@ -637,12 +702,16 @@
   P.setSlot = function (save, kind, index, id) {
     const n = P.slotCount(save, kind);
     if (index >= n) return false;
-    const arr = save.loadout[kind === 'item' ? 'items' : kind];
+    // 道具：装备到栏位，默认装满 3 个（背包里不够就有多少装多少）；一个都没有就装不上
+    if (kind === 'item') {
+      if (id && P.itemEquipped(save, id) + P.itemStock(save, id) < 1) return false;
+      return P.equipItem(save, index, id || null, undefined);
+    }
+    const arr = save.loadout[kind];
     if (id) {
-      const owned = kind === 'active' ? save.activeOwned : kind === 'passive' ? save.passiveOwned : null;
+      const owned = kind === 'active' ? save.activeOwned : save.passiveOwned;
       if (owned && !owned[id]) return false;
-      if (kind === 'item' && (save.inventory[id] || 0) < 1) return false;
-      // 同一技能 / 同一种道具不能放两个槽：换位（设计书 71.2）
+      // 同一技能不能放两个槽：换位（设计书 71.2）
       const j = arr.indexOf(id);
       if (j >= 0 && j !== index) arr[j] = arr[index];
     }
@@ -670,18 +739,23 @@
     const activeLv = {};
     for (const id of active) activeLv[id] = P.skillLevel(save, id);
     const items = [];
+    const itemQty = {};
     lo.items.slice(0, nI).forEach((id) => {
-      if (id && !items.includes(id) && (save.inventory[id] || 0) >= 1) items.push(id);
+      const q = P.itemEquipped(save, id);
+      if (id && !items.includes(id) && q >= 1) {
+        items.push(id);
+        itemQty[id] = Math.min(D.itemRules.perKind, q);
+      }
     });
-    return { active, activeLv, items, target: lo.target, autoCast: lo.autoCast, buddy: P.buddyId(save) };
+    return { active, activeLv, items, itemQty, target: lo.target, autoCast: lo.autoCast, buddy: P.buddyId(save) };
   };
 
-  // 消耗品使用后从背包扣除
+  // 战斗里用掉一个道具：已装备的个数减 1；用完了栏位清空（背包里还有的话，要重新装备才会带进下一场）
   P.consumeItem = function (save, id) {
-    if ((save.inventory[id] || 0) <= 0) return;
-    save.inventory[id]--;
-    // 用完了就清掉栏位；还有库存就留着，下一关继续带
-    if (save.inventory[id] <= 0) {
+    if (P.itemEquipped(save, id) <= 0) return;
+    save.loadout.itemQty[id]--;
+    if (save.loadout.itemQty[id] <= 0) {
+      delete save.loadout.itemQty[id];
       const lo = save.loadout.items;
       for (let i = 0; i < lo.length; i++) if (lo[i] === id) lo[i] = null;
     }

@@ -514,7 +514,7 @@
         'ul',
         null,
         h('li', null, 'Kael站在城墙上自动射击，怪物从右边沿车道走来。城墙血量归零就失败。'),
-        h('li', null, '战斗中点击技能按钮（或按 1 / 2 / 3）释放主动技能，按 Q / W / E 使用道具。'),
+        h('li', null, '战斗中点击技能按钮（或按 1 / 2 / 3）释放主动技能，按 Q / W / E / R / Z / X / C 使用道具（每种最多带 3 个，用一个少一个，用完一次要等冷却；道具要先在商店买、再装备）。'),
         h('li', null, '冰冻领域、小炸弹、冰冻瓶需要选择车道：点技能后再点一条车道。'),
         h('li', null, '一波怪全部出场后，可以点「提前召唤」立刻叫出下一波，剩余的倒计时秒数会变成铜币奖励。'),
         h('li', null, '空格暂停，F 切换 2 倍速，N 提前召唤，T 切换目标优先级。'),
@@ -1192,11 +1192,15 @@
     }
   }
 
+  // 道具商店（设计书 82）：买下来先进背包；要带进战斗得"装备"：最多 7 种，每种最多 3 个
   function shopItems(el) {
     const s = game.save;
     const nI = P.slotCount(s, 'item');
-    el.append(h('div', { class: 'section-title' }, '消耗品（一次性，战斗中使用）'));
-    if (nI === 0) el.append(h('div', { class: 'hint warn' }, `通关第 ${D.slotUnlocks.item[0]} 关后解锁消耗品槽。现在可以先买好。`));
+    const R = D.itemRules;
+    const used = s.loadout.items.slice(0, nI).filter(Boolean).length;
+    el.append(h('div', { class: 'section-title' }, `消耗品（战斗中使用，用一个少一个；最多带 ${R.kinds} 种，每种最多 ${R.perKind} 个，每种用完要等冷却）`));
+    el.append(h('div', { class: 'hint' }, `流程：买下来 → 放进背包 → 点「装备 +1」装备到战斗里（也可以在「配装」页选）。现在栏位 ${used} / ${nI}${nI < R.kinds ? `（通关第 ${D.slotUnlocks.item[nI]} 关再开一格）` : '（栏位已全部解锁）'}。`));
+    if (nI === 0) el.append(h('div', { class: 'hint warn' }, `通关第 ${D.slotUnlocks.item[0]} 关后解锁消耗品栏位。现在可以先买好。`));
     // 按价格分三档：铜币 → 银币 → 金币，越强越贵（设计书 62.2）
     const tierOf = (it) => (it.cost.gold || it.cost.diamond ? 'gold' : it.cost.silver ? 'silver' : 'copper');
     const tiers = [['copper', '铜币档 · 常用'], ['silver', '银币档 · 针对性强'], ['gold', '金币档 · 扭转战局的底牌']];
@@ -1204,7 +1208,34 @@
       el.append(h('div', { class: 'section-title' }, title));
       for (const id of Object.keys(D.items).filter((k) => tierOf(D.items[k]) === tier)) {
         const it = D.items[id];
-        el.append(card(h('span', { class: 'with-icon' }, TD.sprites.iconCanvas(id, 30), it.name), `背包 ${s.inventory[id] || 0}`, it.desc, buyBtn(it.cost, () => P.buyItem(s, id)), { cls: 'item-tier-' + tier }));
+        const eq = P.itemEquipped(s, id);
+        const stock = P.itemStock(s, id);
+        const counts = h('span', { class: 'item-counts' }, h('span', null, '背包 ', h('b', null, stock)), h('span', null, '已装备 ', h('b', null, `${eq}/${R.perKind}`)));
+        const adj = (delta, label) =>
+          h(
+            'button',
+            {
+              class: 'btn small',
+              disabled: (delta > 0 ? eq >= R.perKind || stock < 1 || (P.itemSlotOf(s, id) < 0 && s.loadout.items.slice(0, nI).every(Boolean)) || nI === 0 : eq < 1) ? true : null,
+              onclick: () => {
+                if (P.adjustItem(s, id, delta)) {
+                  sfx('click');
+                  game.persist();
+                  renderShop();
+                } else sfx('error');
+              },
+            },
+            label
+          );
+        el.append(
+          card(
+            h('span', { class: 'with-icon' }, TD.sprites.iconCanvas(id, 30), it.name, counts),
+            it.passive ? '开战自动生效' : `冷却 ${it.cd} 秒`,
+            it.desc,
+            h('div', { class: 'btn-col' }, buyBtn(it.cost, () => P.buyItem(s, id)), h('div', { class: 'bulk-row' }, adj(1, '装备 +1'), adj(-1, '卸下 −1'))),
+            { cls: 'item-tier-' + tier }
+          )
+        );
       }
     }
   }
@@ -1341,6 +1372,24 @@
       )
     );
 
+    // 消耗品：最多 7 种，每种最多带 3 个；栏位上显示"已装备 N 个 / 背包还有 M 个"（设计书 82）
+    const itemGroup = () => {
+      const n = P.slotCount(s, 'item');
+      const R = D.itemRules;
+      el.append(h('div', { class: 'section-title' }, `消耗品（最多带 ${R.kinds} 种，每种最多 ${R.perKind} 个；用一个少一个，每种有冷却）`));
+      el.append(
+        h(
+          'div',
+          { class: 'slot-row' },
+          Array.from({ length: R.kinds }, (_, i) => {
+            const id = lo.items[i];
+            const locked = i >= n;
+            const sub = locked ? `通关第 ${D.slotUnlocks.item[i]} 关解锁` : id ? `已装备 ${P.itemEquipped(s, id)} · 背包 ${P.itemStock(s, id)}` : null;
+            return slotBox(`槽 ${i + 1}`, !locked && id ? `${D.items[id].name} ×${P.itemEquipped(s, id)}` : null, () => pickItem(i), locked, sub);
+          })
+        )
+      );
+    };
     const slotGroup = (kind, title, defs, owned) => {
       const n = P.slotCount(s, kind);
       const arr = lo[kind === 'item' ? 'items' : kind];
@@ -1398,9 +1447,7 @@
       if (sets.length) el.append(h('div', { class: 'synergy-row' }, sets.map((k) => h('span', { class: 'synergy on' }, `✨ 套装「${D.gearSets[k].name}」：${D.gearSets[k].desc}`))));
     }
 
-    const invOwned = {};
-    for (const id of Object.keys(s.inventory)) if (s.inventory[id] > 0) invOwned[id] = true;
-    slotGroup('item', '消耗品', D.items, invOwned);
+    itemGroup();
 
     // 目标优先级与自动释放
     el.append(h('div', { class: 'section-title' }, '战斗设置'));
@@ -1438,6 +1485,49 @@
         )
       )
     );
+  }
+
+  // 选道具 + 选个数（设计书 82）：每种道具一行，点 1 / 2 / 3 装备这么多个（从背包里挪）
+  function pickItem(index) {
+    const s = game.save;
+    const R = D.itemRules;
+    const cur = s.loadout.items[index];
+    const ids = Object.keys(D.items).filter((id) => P.itemEquipped(s, id) + P.itemStock(s, id) > 0);
+    const list = h('div', { class: 'pick-list' });
+    const done = () => {
+      sfx('click');
+      game.persist();
+      UI.closeModal();
+      renderShop();
+    };
+    if (cur) list.append(h('button', { class: 'pick', onclick: () => (P.unequipItem(s, index), done()) }, h('b', null, `（卸下 ${D.items[cur].name}，${P.itemEquipped(s, cur)} 个退回背包）`)));
+    for (const id of ids) {
+      const total = P.itemEquipped(s, id) + P.itemStock(s, id);
+      const e = P.itemEquipped(s, id);
+      const elsewhere = s.loadout.items.indexOf(id) >= 0 && s.loadout.items.indexOf(id) !== index;
+      const nums = [1, 2, 3].map((q) =>
+        h(
+          'button',
+          {
+            class: 'btn small' + (cur === id && e === q ? ' primary' : ''),
+            disabled: q > Math.min(R.perKind, total) ? true : null,
+            onclick: () => (P.equipItem(s, index, id, q), done()),
+          },
+          `带 ${q} 个`
+        )
+      );
+      list.append(
+        h(
+          'div',
+          { class: 'pick item-pick' + (cur === id ? ' on' : '') },
+          h('b', null, D.items[id].name, h('span', { class: 'item-counts' }, h('span', null, '背包 ', h('b', null, P.itemStock(s, id))), h('span', null, '已装备 ', h('b', null, e)), elsewhere ? h('span', null, '（在别的栏位，会换过来）') : null)),
+          h('span', null, `${D.items[id].desc}${D.items[id].cd ? `　冷却 ${D.items[id].cd} 秒` : '　开战自动生效'}`),
+          h('div', { class: 'item-qty-pick' }, nums)
+        )
+      );
+    }
+    if (!ids.length) list.append(h('div', { class: 'hint' }, '背包里还没有道具，去「道具」页购买。'));
+    modal(h('div', null, h('h2', null, `槽 ${index + 1}：选道具和个数`), list, h('div', { class: 'modal-buttons' }, h('button', { class: 'btn', onclick: UI.closeModal }, '取消'))), { closeOnBack: true });
   }
 
   function pickFor(kind, index, defs, owned) {
@@ -1501,14 +1591,16 @@
         h('span', { class: 'cd' })
       )
     );
+    // 道具按钮：右上角是快捷键，下面是剩余个数；用过之后转圈冷却（设计书 82）
     const itemBtns = battle.items.map((it, i) =>
       h(
         'button',
-        { class: 'item-btn', title: it.def.desc, onclick: () => game.tryItem(i) },
-        h('span', { class: 'key' }, 'QWE'[i]),
-        TD.sprites.iconCanvas(it.id, 36),
+        { class: 'item-btn', title: `${it.def.desc}\n冷却 ${it.def.cd || 0} 秒，带了 ${it.left} 个`, onclick: () => game.tryItem(i) },
+        h('span', { class: 'key' }, 'QWERZXC'[i]),
+        TD.sprites.iconCanvas(it.id, 34),
         h('span', { class: 'skill-name' }, it.def.name),
-        h('span', { class: 'item-stock' }, '×' + (game.save.inventory[it.id] || 0))
+        h('span', { class: 'item-stock' }, '×' + it.left),
+        h('span', { class: 'cd' })
       )
     );
     hud.nudge = h('div', { class: 'nudge-bubble hidden' }, '点我释放技能！');
@@ -1584,9 +1676,20 @@
     });
     b.items.forEach((it, i) => {
       const btn = hud.itemBtns[i];
-      btn.classList.toggle('used', it.used);
+      btn.classList.toggle('used', it.left <= 0);
+      btn.classList.toggle('cooling', it.left > 0 && it.cd > 0);
       const stock = btn.querySelector('.item-stock');
-      if (stock) stock.textContent = '×' + (game.save.inventory[it.id] || 0);
+      if (stock) stock.textContent = '×' + it.left;
+      const cd = btn.querySelector('.cd');
+      if (cd) {
+        if (it.cd > 0 && it.left > 0) {
+          cd.style.background = `conic-gradient(rgba(30,20,10,0.65) ${(it.cd / ((it.def.cd || 1) * Math.max(0.3, 1 + b.mods.cdMult * 0.5))) * 360}deg, transparent 0)`;
+          cd.textContent = Math.ceil(it.cd);
+        } else {
+          cd.style.background = 'none';
+          cd.textContent = '';
+        }
+      }
       btn.classList.toggle('armed', game.pendingLane && game.pendingLane.kind === 'item' && game.pendingLane.index === i);
     });
     hud.targetBtn.textContent = '🎯 ' + D.targetModes[b.target];
