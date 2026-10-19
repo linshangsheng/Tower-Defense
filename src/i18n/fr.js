@@ -963,7 +963,6 @@ TD.i18n.register("fr", {
   "每第 6 次攻击，一道小闪电落在目标身上，额外造成攻击力 ×1.5 的魔法伤害": "Toutes les 6 attaques, un petit éclair frappe la cible et inflige ATQ ×1,5 de dégâts magiques en plus",
   "每隔一会儿向前跳一大步，跳在空中时打不到。跑得比看起来快！": "De temps en temps, il bondit loin devant et reste intouchable en l'air. Plus rapide qu'il n'en a l'air !",
   "每攻击 5 次，立即追加 1 次攻击。": "Toutes les 5 attaques, attaque aussitôt une fois de plus.",
-  "每关结束会获得铜币，首次通关还有银币。去商店升级属性、解锁武器和技能，再来挑战！": "Chaque niveau rapporte du cuivre, plus de l'argent à la première victoire. Allez à la boutique améliorer vos stats, débloquer des armes et des compétences, puis revenez !",
   "每过一层可以领取这一层的钻石离开，或者继续往上：再过一层，钻石翻倍；失败了，什么都没有。": "À chaque étage franchi, vous pouvez prendre les diamants de cet étage et partir, ou monter encore : un étage de plus double les diamants ; en cas d'échec, vous n'avez rien.",
   "每击杀一只怪，城墙回复 0.3% 最大血量": "Chaque monstre vaincu rend 0,3 % des PV max au rempart",
   "每日挑战": "Défi du jour",
@@ -1852,4 +1851,7 @@ TD.i18n.register("fr", {
   "Lv{0} 可进阶": "Nv{0} : évolution possible",
   "Lyra？……好吧，我们轮流站岗。": "Lyra ? … Bon, montons la garde à tour de rôle.",
   "难度按你通关的最高关卡折算（最高按第 70 关）；每一层补给 2 次；中途退出或刷新页面算失败。": "La difficulté suit le plus haut niveau que vous avez terminé (au plus le niveau 70) ; 2 ravitaillements par étage ; quitter en cours de route ou actualiser la page compte comme un échec.",
+  "首次完成 +{0} 铜": "Première victoire +{0} de cuivre",
+  "🎯 完成关卡任务「{0}」：+{1} 铜": "🎯 Quête du niveau « {0} » accomplie : +{1} cuivre",
+  "每关结束会获得铜币，银币只有首次通关小 Boss、大 Boss 和精英挑战关才有（也可以去汇兑所用铜币换）。去商店升级属性、解锁武器和技能，再来挑战！": "Chaque niveau rapporte du cuivre. L'argent ne vient que de la première victoire sur les niveaux de mini-boss, de boss et d'élite (ou en échangeant du cuivre au bureau de change). Allez à la boutique améliorer vos stats, débloquer des armes et des compétences, puis revenez !",
 });

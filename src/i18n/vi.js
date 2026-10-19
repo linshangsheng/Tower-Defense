@@ -963,7 +963,6 @@ TD.i18n.register("vi", {
   "每第 6 次攻击，一道小闪电落在目标身上，额外造成攻击力 ×1.5 的魔法伤害": "Cứ mỗi đòn đánh thứ 6, một tia sét nhỏ giáng xuống mục tiêu, gây thêm sát thương phép ×1.5 sức tấn công",
   "每隔一会儿向前跳一大步，跳在空中时打不到。跑得比看起来快！": "Thỉnh thoảng nhảy một bước dài về phía trước, đang ở trên không thì không đánh trúng được. Chạy nhanh hơn vẻ ngoài!",
   "每攻击 5 次，立即追加 1 次攻击。": "Cứ 5 đòn đánh, lập tức đánh thêm 1 đòn.",
-  "每关结束会获得铜币，首次通关还有银币。去商店升级属性、解锁武器和技能，再来挑战！": "Hết mỗi màn sẽ nhận xu đồng, lần đầu qua màn còn có bạc. Hãy ghé cửa hàng nâng cấp chỉ số, mở khóa vũ khí và kỹ năng rồi quay lại thử sức!",
   "每过一层可以领取这一层的钻石离开，或者继续往上：再过一层，钻石翻倍；失败了，什么都没有。": "Qua mỗi tầng có thể nhận kim cương của tầng đó rồi rời đi, hoặc leo tiếp: qua thêm một tầng, kim cương nhân đôi; thất bại thì không có gì.",
   "每击杀一只怪，城墙回复 0.3% 最大血量": "Mỗi con quái bị hạ, tường thành hồi 0.3% máu tối đa",
   "每日挑战": "Thử thách hằng ngày",
@@ -1852,4 +1851,7 @@ TD.i18n.register("vi", {
   "Lv{0} 可进阶": "Lv{0} có thể tiến cấp",
   "Lyra？……好吧，我们轮流站岗。": "Lyra? ...Thôi được, chúng ta thay phiên nhau gác.",
   "难度按你通关的最高关卡折算（最高按第 70 关）；每一层补给 2 次；中途退出或刷新页面算失败。": "Độ khó quy theo màn cao nhất bạn đã qua (tối đa tính theo màn 70); mỗi tầng tiếp tế 2 lần; thoát giữa chừng hoặc tải lại trang tính là thất bại.",
+  "首次完成 +{0} 铜": "Hoàn thành lần đầu +{0} đồng",
+  "🎯 完成关卡任务「{0}」：+{1} 铜": "🎯 Hoàn thành nhiệm vụ màn \"{0}\": +{1} đồng",
+  "每关结束会获得铜币，银币只有首次通关小 Boss、大 Boss 和精英挑战关才有（也可以去汇兑所用铜币换）。去商店升级属性、解锁武器和技能，再来挑战！": "Hết mỗi màn sẽ nhận xu đồng. Bạc chỉ có khi lần đầu qua màn mini boss, boss và màn tinh anh (hoặc đổi xu đồng ở Quầy đổi tiền). Hãy ghé cửa hàng nâng cấp chỉ số, mở khóa vũ khí và kỹ năng rồi quay lại thử sức!",
 });

@@ -963,7 +963,6 @@ TD.i18n.register("id", {
   "每第 6 次攻击，一道小闪电落在目标身上，额外造成攻击力 ×1.5 的魔法伤害": "Setiap serangan ke-6, petir kecil menyambar sasaran dengan damage sihir tambahan sebesar ATK ×1,5",
   "每隔一会儿向前跳一大步，跳在空中时打不到。跑得比看起来快！": "Sesekali melompat jauh ke depan dan tak bisa diserang saat di udara. Lebih cepat dari kelihatannya!",
   "每攻击 5 次，立即追加 1 次攻击。": "Setiap 5 serangan, langsung menyerang sekali lagi.",
-  "每关结束会获得铜币，首次通关还有银币。去商店升级属性、解锁武器和技能，再来挑战！": "Dapat koin tembaga setelah tiap level, plus perak saat menang pertama kali. Kunjungi toko untuk meningkatkan atribut, membuka senjata dan skill, lalu kembali bertarung!",
   "每过一层可以领取这一层的钻石离开，或者继续往上：再过一层，钻石翻倍；失败了，什么都没有。": "Setelah tiap lantai, ambil berlian lantai itu dan pergi, atau naik terus: menang satu lantai lagi, berliannya berlipat dua; kalah, tidak dapat apa-apa.",
   "每击杀一只怪，城墙回复 0.3% 最大血量": "Setiap monster dikalahkan, tembok pulih 0,3% HP maks",
   "每日挑战": "Tantangan Harian",
@@ -1852,4 +1851,7 @@ TD.i18n.register("id", {
   "Lv{0} 可进阶": "Lv{0} bisa naik tingkat",
   "Lyra？……好吧，我们轮流站岗。": "Lyra? ...Baiklah, kita bergantian berjaga.",
   "难度按你通关的最高关卡折算（最高按第 70 关）；每一层补给 2 次；中途退出或刷新页面算失败。": "Kesulitan disesuaikan dengan level tertinggi yang kamu tamatkan (maksimal level 70). 2 perbekalan per lantai. Keluar di tengah jalan atau memuat ulang halaman dihitung gagal.",
+  "首次完成 +{0} 铜": "Menang pertama +{0} tembaga",
+  "🎯 完成关卡任务「{0}」：+{1} 铜": "🎯 Misi level \"{0}\" selesai: +{1} tembaga",
+  "每关结束会获得铜币，银币只有首次通关小 Boss、大 Boss 和精英挑战关才有（也可以去汇兑所用铜币换）。去商店升级属性、解锁武器和技能，再来挑战！": "Dapat koin tembaga setelah tiap level. Perak hanya didapat saat menang pertama kali di level mini bos, bos, dan elite (atau tukar tembaga di Tempat Penukaran). Kunjungi toko untuk meningkatkan atribut, membuka senjata dan skill, lalu kembali bertarung!",
 });

@@ -166,4 +166,17 @@
       }
     }
   }
+
+  // ---------- 价格调整（设计书 89） ----------
+  // 装备（头盔、披风、盔甲、箭袋、饰品、鞋子）和武器的价格按品质乘一个倍数；被动技能另算。
+  // 倍数写在这里，想再贵 / 便宜一点只改这一处。
+  D.priceMult = { gear: { 1: 6, 2: 6, 3: 4, 4: 3, 5: 2 }, passive: 8 };
+  const scaleCost = (cost, m) => {
+    const out = {};
+    for (const k of Object.keys(cost || {})) out[k] = Math.round(cost[k] * m);
+    return out;
+  };
+  for (const e of Object.values(D.equipment)) e.cost = scaleCost(e.cost, D.priceMult.gear[e.rarity] || 1);
+  for (const w of Object.values(D.weapons)) if (w.cost) w.cost = scaleCost(w.cost, D.priceMult.gear[w.rarity] || 1);
+  for (const p of Object.values(D.passiveSkills)) p.cost = scaleCost(p.cost, D.priceMult.passive);
 })((globalThis.TD = globalThis.TD || {}));

@@ -633,28 +633,7 @@
         g.fill();
       }
     }
-    // 草丛（深色草叶 + 受光的亮叶尖）和发光的小花，同样在整个战场里随机分布
-    const tufts = Math.round(((W - C.wallX + 50) / 17) * (Math.max(3, lanes) + 1) * 0.35);
-    for (let k = 0; k < tufts; k++) {
-      const x = C.wallX - 30 + r() * (W - C.wallX + 50);
-      const y = top + 6 + r() * (fieldH - 6);
-      const h = 6 + r() * 10;
-      const lean = (r() - 0.3) * 6;
-      g.fillStyle = P.tuft;
-      g.beginPath();
-      g.moveTo(x - 3, y + 4);
-      g.quadraticCurveTo(x + lean * 0.5, y - h * 0.5, x + lean, y - h);
-      g.quadraticCurveTo(x + lean * 0.3 + 2, y - h * 0.4, x + 4, y + 4);
-      g.fill();
-      if (r() < 0.55) {
-        g.strokeStyle = rgba(P.tuftTip, 0.55);
-        g.lineWidth = 1.2;
-        g.beginPath();
-        g.moveTo(x + lean * 0.6, y - h * 0.6);
-        g.lineTo(x + lean, y - h);
-        g.stroke();
-      }
-    }
+    // 发光的小花，同样在整个战场里随机分布（地上不画尖尖的草叶 / 草丛，v0.78）
     for (let k = 0; k < 7 * (Math.max(3, lanes) + 1); k++) {
       const fx = C.wallX + 40 + r() * (W - C.wallX - 60);
       const fy = top + 8 + r() * (fieldH - 16);

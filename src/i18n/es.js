@@ -963,7 +963,6 @@ TD.i18n.register("es", {
   "每第 6 次攻击，一道小闪电落在目标身上，额外造成攻击力 ×1.5 的魔法伤害": "Cada 6.º ataque, un pequeño rayo cae sobre el objetivo y causa daño mágico extra de ATQ ×1.5",
   "每隔一会儿向前跳一大步，跳在空中时打不到。跑得比看起来快！": "Cada cierto tiempo da un gran salto hacia adelante y no se le puede golpear en el aire. ¡Es más rápido de lo que parece!",
   "每攻击 5 次，立即追加 1 次攻击。": "Cada 5 ataques, realiza al instante 1 ataque más.",
-  "每关结束会获得铜币，首次通关还有银币。去商店升级属性、解锁武器和技能，再来挑战！": "Al terminar cada nivel ganas monedas de cobre, y plata en la primera victoria. ¡Ve a la tienda a mejorar atributos y desbloquear armas y habilidades, y vuelve a luchar!",
   "每过一层可以领取这一层的钻石离开，或者继续往上：再过一层，钻石翻倍；失败了，什么都没有。": "Tras cada piso puedes reclamar sus diamantes y salir, o seguir subiendo: si superas otro piso, los diamantes se duplican; si fallas, no obtienes nada.",
   "每击杀一只怪，城墙回复 0.3% 最大血量": "Cada monstruo derrotado cura a la muralla 0.3% de su vida máxima",
   "每日挑战": "Desafío diario",
@@ -1852,4 +1851,7 @@ TD.i18n.register("es", {
   "Lv{0} 可进阶": "Nv. {0} permite ascender",
   "Lyra？……好吧，我们轮流站岗。": "¿Lyra? ...Está bien, haremos guardia por turnos.",
   "难度按你通关的最高关卡折算（最高按第 70 关）；每一层补给 2 次；中途退出或刷新页面算失败。": "La dificultad se ajusta a tu nivel más alto superado (máximo nivel 70). 2 suministros por piso. Salir a medias o recargar la página cuenta como derrota.",
+  "首次完成 +{0} 铜": "Primera vez +{0} cobre",
+  "🎯 完成关卡任务「{0}」：+{1} 铜": "🎯 Misión del nivel \"{0}\" completada: +{1} cobre",
+  "每关结束会获得铜币，银币只有首次通关小 Boss、大 Boss 和精英挑战关才有（也可以去汇兑所用铜币换）。去商店升级属性、解锁武器和技能，再来挑战！": "Al terminar cada nivel ganas monedas de cobre. La plata solo se consigue en la primera victoria contra minijefes, jefes y niveles de élite (o cambiando cobre en la casa de cambio). ¡Ve a la tienda a mejorar atributos y desbloquear armas y habilidades, y vuelve a luchar!",
 });

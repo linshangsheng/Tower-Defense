@@ -963,7 +963,6 @@ TD.i18n.register("pl", {
   "每第 6 次攻击，一道小闪电落在目标身上，额外造成攻击力 ×1.5 的魔法伤害": "Co 6. atak mała błyskawica uderza w cel, zadając dodatkowe obrażenia magiczne ATK ×1,5",
   "每隔一会儿向前跳一大步，跳在空中时打不到。跑得比看起来快！": "Co jakiś czas skacze daleko do przodu i w powietrzu nie można go trafić. Szybszy, niż wygląda!",
   "每攻击 5 次，立即追加 1 次攻击。": "Co 5 ataków natychmiast wykonuje jeszcze jeden.",
-  "每关结束会获得铜币，首次通关还有银币。去商店升级属性、解锁武器和技能，再来挑战！": "Po każdym etapie dostajesz miedziaki, a za pierwsze przejście także srebro. Idź do sklepu ulepszyć statystyki, odblokować broń i umiejętności, a potem wracaj!",
   "每过一层可以领取这一层的钻石离开，或者继续往上：再过一层，钻石翻倍；失败了，什么都没有。": "Po każdym piętrze możesz odebrać diamenty z tego piętra i wyjść albo iść wyżej: po kolejnym piętrze diamenty się podwajają, a po porażce nie dostajesz nic.",
   "每击杀一只怪，城墙回复 0.3% 最大血量": "Za każdego pokonanego potwora mur leczy 0,3% maks. HP",
   "每日挑战": "Wyzwanie dnia",
@@ -1852,4 +1851,7 @@ TD.i18n.register("pl", {
   "Lv{0} 可进阶": "Poz.{0} pozwala awansować",
   "Lyra？……好吧，我们轮流站岗。": "Lyra? ...No dobrze, będziemy się zmieniać na warcie.",
   "难度按你通关的最高关卡折算（最高按第 70 关）；每一层补给 2 次；中途退出或刷新页面算失败。": "Trudność jest dopasowana do najwyższego ukończonego etapu (co najwyżej etap 70). 2 zaopatrzenia na piętro. Wyjście w trakcie lub odświeżenie strony liczy się jako porażka.",
+  "首次完成 +{0} 铜": "Pierwsze ukończenie +{0} miedzi",
+  "🎯 完成关卡任务「{0}」：+{1} 铜": "🎯 Zadanie etapu „{0}” wykonane: +{1} miedzi",
+  "每关结束会获得铜币，银币只有首次通关小 Boss、大 Boss 和精英挑战关才有（也可以去汇兑所用铜币换）。去商店升级属性、解锁武器和技能，再来挑战！": "Po każdym etapie dostajesz miedziaki. Srebro dają tylko za pierwsze przejście etapów z mini-bossem, bossem i elitarnych (albo wymienisz miedź w kantorze). Idź do sklepu ulepszyć statystyki, odblokować broń i umiejętności, a potem wracaj!",
 });

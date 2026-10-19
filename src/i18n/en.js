@@ -963,7 +963,6 @@ TD.i18n.register("en", {
   "每第 6 次攻击，一道小闪电落在目标身上，额外造成攻击力 ×1.5 的魔法伤害": "Every 6th attack, a small lightning bolt strikes the target for extra magic damage equal to ATK ×1.5",
   "每隔一会儿向前跳一大步，跳在空中时打不到。跑得比看起来快！": "Every so often leaps far ahead and can't be hit while airborne. Faster than it looks!",
   "每攻击 5 次，立即追加 1 次攻击。": "Every 5 attacks, immediately attacks once more.",
-  "每关结束会获得铜币，首次通关还有银币。去商店升级属性、解锁武器和技能，再来挑战！": "Earn copper coins after each level, plus silver on your first clear. Visit the shop to upgrade stats and unlock weapons and skills, then come back!",
   "每过一层可以领取这一层的钻石离开，或者继续往上：再过一层，钻石翻倍；失败了，什么都没有。": "After each floor, claim that floor's diamonds and leave, or climb on: clear another floor and the diamonds double; fail and you get nothing.",
   "每击杀一只怪，城墙回复 0.3% 最大血量": "Each kill heals the wall for 0.3% max HP",
   "每日挑战": "Daily Challenge",
@@ -1852,4 +1851,7 @@ TD.i18n.register("en", {
   "Lv{0} 可进阶": "Lv{0} can advance",
   "Lyra？……好吧，我们轮流站岗。": "Lyra? ...Fine, we'll take turns on guard.",
   "难度按你通关的最高关卡折算（最高按第 70 关）；每一层补给 2 次；中途退出或刷新页面算失败。": "Difficulty is scaled to your highest cleared level (at most level 70). 2 supplies per floor. Quitting midway or refreshing the page counts as a failure.",
+  "首次完成 +{0} 铜": "First clear +{0} copper",
+  "🎯 完成关卡任务「{0}」：+{1} 铜": "🎯 Level quest \"{0}\" complete: +{1} copper",
+  "每关结束会获得铜币，银币只有首次通关小 Boss、大 Boss 和精英挑战关才有（也可以去汇兑所用铜币换）。去商店升级属性、解锁武器和技能，再来挑战！": "Earn copper coins after each level. Silver only comes from your first clear of mini-boss, boss and elite levels (or exchange copper for it at the Exchange). Visit the shop to upgrade stats and unlock weapons and skills, then come back!",
 });

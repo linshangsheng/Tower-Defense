@@ -53,7 +53,7 @@ test('槽位随通关解锁', () => {
 test('首通奖励只发一次；重复通关铜币减半', () => {
   const s = P.newSave();
   const r1 = P.applyResult(s, 1, { win: true, wallRatio: 1, killCopper: 0, earlyCopper: 0 });
-  assert.strictEqual(r1.silver, 2, '首通 1 银 + 首次三星 1 银');
+  assert.strictEqual(r1.silver, 0, '普通关卡不给银币（设计书 88）');
   assert.strictEqual(r1.copper, Math.round(TD.config.rewards.baseCopper(1) * 1.5));
   const r2 = P.applyResult(s, 1, { win: true, wallRatio: 1, killCopper: 0, earlyCopper: 0 });
   assert.strictEqual(r2.silver, 0);
@@ -957,7 +957,7 @@ test('角色衣柜：旧存档穿着旧的颜色外观，迁移后改回默认�
   assert.ok(m.outfitsOwned.ranger);
 });
 
-test('挑战王冠：挑战难度通关得王冠和 1 银，只给一次；标准难度不给', () => {
+test('挑战王冠：挑战难度通关得王冠（Boss 关另给 1 银），只给一次；标准难度不给', () => {
   const s = P.newSave();
   const win = { win: true, wallRatio: 1, killCopper: 0 };
   P.applyResult(s, 1, win);
@@ -967,7 +967,14 @@ test('挑战王冠：挑战难度通关得王冠和 1 银，只给一次；标�
   const r = P.applyResult(s, 1, win);
   assert.ok(s.levels[1].crown);
   assert.ok(r.notes.some((x) => x.includes('王冠')));
-  assert.ok(s.silver >= silver0 + 1);
+  assert.strictEqual(s.silver, silver0, '普通关卡的王冠不给银币');
+  const boss = P.newSave();
+  clearUpTo(boss, 9);
+  boss.settings.difficulty = 'hard';
+  const b0 = boss.silver;
+  const rb = P.applyResult(boss, 10, win);
+  assert.ok(rb.silver >= 1 && rb.notes.some((x) => x.includes('王冠')), 'Boss 关的王冠还给 1 银');
+  assert.strictEqual(b0, 0);
   const r2 = P.applyResult(s, 1, win);
   assert.ok(!r2.notes.some((x) => x.includes('王冠')));
   assert.strictEqual(P.crowns(s), 1);
@@ -1920,17 +1927,18 @@ test('出售装备：卖价是买价的一半，零头折成下一级货币', ()
 test('出售装备：自动卸下、退钱、可以原价买回；不能卖没有的', () => {
   const s = P.newSave();
   clearUpTo(s, 20);
-  s.copper = 1000;
+  const price = D.equipment.ironHelm.cost.copper;
+  s.copper = price * 2;
   assert.ok(P.buyEquip(s, 'ironHelm'));
   assert.strictEqual(s.loadout.equip.helm, 'ironHelm');
-  assert.strictEqual(s.copper, 880);
-  assert.deepStrictEqual(P.sellEquip(s, 'ironHelm'), { copper: 60 });
-  assert.strictEqual(s.copper, 940);
+  assert.strictEqual(s.copper, price);
+  assert.deepStrictEqual(P.sellEquip(s, 'ironHelm'), { copper: price / 2 });
+  assert.strictEqual(s.copper, price * 1.5);
   assert.strictEqual(s.loadout.equip.helm, null);
   assert.ok(!s.equipOwned.ironHelm);
   assert.strictEqual(P.sellEquip(s, 'ironHelm'), null);
   assert.ok(P.buyEquip(s, 'ironHelm'), '可以买回');
-  assert.strictEqual(s.copper, 820);
+  assert.strictEqual(s.copper, price * 0.5);
 });
 
 test('饰品栏 3 个，且同一件饰品不能重复佩戴；头盔披风箭袋各 1', () => {
@@ -2148,12 +2156,12 @@ test('武器：15 把，每个品质 3 把，价格逐档上涨，升级费用�
 
 test('武器随时可买（只看钱）；老存档自动补上新武器', () => {
   const s = P.newSave();
-  s.silver = 100;
-  s.gold = 100;
+  s.silver = 1000;
+  s.gold = 1000;
   assert.ok(P.buyWeapon(s, 'frostBow'), '没通关也能买蓝色');
   assert.ok(P.buyWeapon(s, 'meteorCannon'));
   assert.ok(P.buyWeapon(s, 'genesisBow'));
-  assert.strictEqual(s.gold, 100 - 8 - 20);
+  assert.strictEqual(s.gold, 1000 - D.weapons.meteorCannon.cost.gold - D.weapons.genesisBow.cost.gold);
   const poor = P.newSave();
   poor.silver = 3;
   assert.ok(!P.buyWeapon(poor, 'frostBow'), '钱不够照样买不起');
@@ -3104,4 +3112,59 @@ test('多出的小怪和原有的同类怪完全一样：血量、伤害、铜�
   for (let i = 0; i < 60 * 3; i++) b.step(1 / 60);
   assert.ok(!m.dead && b.wall.hp < hp0, '停在城墙前继续啃，不会消失');
   assert.ok(Math.abs(m.dps - D.monsters.bunny.dps * b.D) < 1e-9, '伤害和原有的一样');
+});
+
+// ---------- v0.78：普通关卡不给银币、装备和被动技能涨价（设计书 88、89） ----------
+test('普通关卡不给银币：首次通关、首次三星、王冠都没有银；关卡任务改给 200 铜', () => {
+  const ordinary = Object.keys(D.levels).map(Number).filter((n) => !P.givesSilver(D.levels[n]));
+  assert.ok(ordinary.length > 60, '大部分关卡是普通关卡');
+  const s = P.newSave();
+  for (const n of ordinary.filter((_, i) => i % 5 === 0)) {
+    const r = P.applyResult(s, n, { win: true, wallRatio: 1, killCopper: 0, earlyCopper: 0, itemsUsed: [] });
+    assert.strictEqual(r.silver, 0, `第 ${n} 关（${D.levels[n].type}）首通不给银`);
+    assert.strictEqual(r.gold, 0);
+  }
+  assert.strictEqual(TD.data.missionReward.copper, 200);
+  // 关卡任务：普通关卡给铜币，不给银币（第 3 关起有任务；"轻装上阵"之外的任务这里用 earlyCalls / minWallRatio 满足）
+  const n = ordinary.find((k) => k >= 3 && D.missionFor(k) && D.missionFor(k) !== 'interrupt2');
+  const m = P.newSave();
+  const base = Math.round(TD.config.rewards.baseCopper(n) * 1.5);
+  const r = P.applyResult(m, n, { win: true, wallRatio: 1, killCopper: 0, earlyCopper: 0, itemsUsed: [], earlyCalls: 5, minWallRatio: 1 });
+  assert.ok(m.levels[n].mission, `第 ${n} 关的任务应该完成`);
+  assert.strictEqual(r.silver, 0, '任务奖励不是银币');
+  assert.strictEqual(r.copper, base + 200, '任务奖励 200 铜');
+  assert.ok(r.notes.some((x) => x.includes('+200 铜')));
+  // 特殊关卡的任务还是 2 银
+  const sp = Number(Object.keys(D.levels).find((k) => D.levels[k].type === 'miniboss'));
+  const t = P.newSave();
+  clearUpTo(t, sp - 1);
+  const rs = P.applyResult(t, sp, { win: true, wallRatio: 1, killCopper: 0, earlyCopper: 0, itemsUsed: [], interrupts: 5 });
+  assert.ok(rs.notes.some((x) => x.includes('+2 银')), '小 Boss 关的任务给 2 银');
+});
+
+test('银币只在首次通关小 Boss、大 Boss、精英挑战关时给', () => {
+  for (const type of ['miniboss', 'boss', 'elite']) {
+    const n = Number(Object.keys(D.levels).find((k) => D.levels[k].type === type));
+    assert.ok(P.givesSilver(D.levels[n]), type);
+    const s = P.newSave();
+    clearUpTo(s, n - 1);
+    const r = P.applyResult(s, n, { win: true, wallRatio: 1, killCopper: 0, earlyCopper: 0 });
+    assert.ok(r.silver > 0, `${type} 首通有银`);
+  }
+});
+
+test('装备和被动技能涨价：价格 = 原价 × 倍数（绿 6 / 蓝 6 / 紫 4 / 红 3 / 金 2，被动 8）', () => {
+  assert.deepStrictEqual(D.priceMult, { gear: { 1: 6, 2: 6, 3: 4, 4: 3, 5: 2 }, passive: 8 });
+  assert.strictEqual(D.equipment.ironHelm.cost.copper, 720, '铁头盔原价 120 铜');
+  assert.deepStrictEqual(D.passiveSkills.precision.cost, { silver: 24 }, '精准原价 3 银');
+  assert.deepStrictEqual(D.passiveSkills.combo.cost, { silver: 32 });
+  assert.deepStrictEqual(D.weapons.crossbow.cost, { copper: 1800 }, '连发弩原价 300 铜');
+  assert.deepStrictEqual(D.weapons.genesisBow.cost, { gold: 40 });
+  // 金色装备除了每类第 1 件，其余仍然只用钻石，最便宜的比以前更贵
+  const diamonds = Object.values(D.equipment).filter((e) => e.rarity === 5 && e.cost.diamond).map((e) => e.cost.diamond);
+  assert.ok(diamonds.length >= 25 && Math.min(...diamonds) >= 20);
+  // 同一品质内价格仍然越来越贵、品质越高越贵
+  const v = (e) => P.costValue(e.cost);
+  const avg = (r) => Object.values(D.equipment).filter((e) => e.rarity === r).reduce((a, e) => a + v(e), 0) / Object.values(D.equipment).filter((e) => e.rarity === r).length;
+  for (let r = 1; r < 5; r++) assert.ok(avg(r) < avg(r + 1), `品质 ${r} 比 ${r + 1} 便宜`);
 });

@@ -8,7 +8,8 @@
     noItems: { name: '轻装上阵', desc: '不使用任何道具，并通关', check: (r) => !(r.itemsUsed && r.itemsUsed.length) },
     interrupt2: { name: '打断专家', desc: '打断 Boss 至少 2 次，并通关', check: (r) => (r.interrupts || 0) >= 2 },
   };
-  TD.data.missionReward = { silver: 2 };
+  // 特殊关卡（小 Boss、大 Boss、精英）首次完成给 2 银；普通关卡不给银币，给 200 铜（设计书 88）
+  TD.data.missionReward = { silver: 2, copper: 200 };
 
   // 有可打断机制的 Boss（咕噜大王、墨墨、呼呼、雷雷）
   const INTERRUPT_BOSSES = ['boarKing', 'inkBoss', 'windGiant', 'thunderKing'];

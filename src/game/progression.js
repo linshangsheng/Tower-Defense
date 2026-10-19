@@ -767,6 +767,9 @@
     return 1;
   };
 
+  // 哪些关卡会给银币：小 Boss、大 Boss、精英挑战（设计书 88）
+  P.givesSilver = (lvl) => !!lvl && ['miniboss', 'boss', 'elite'].includes(lvl.type);
+
   // result: { win, wallRatio, killCopper, earlyCopper, charm }
   P.applyResult = function (save, n, result) {
     const R = C.rewards;
@@ -785,6 +788,7 @@
     };
 
     let base;
+    let bonusCopper = 0; // 普通关卡的关卡任务奖励（铜币）
     if (result.win) {
       const stars = P.starsFor(result.wallRatio);
       out.stars = stars;
@@ -795,7 +799,9 @@
         base *= R.repeatMult;
         out.notes.push('重复通关：通关铜币减半');
       }
-      if (firstClear) {
+      // 普通关卡不给银币（设计书 88）：银币只在首次通关小 Boss、大 Boss、精英挑战关时给；平时用铜币去汇兑所换
+      const silverLevel = P.givesSilver(lvl);
+      if (firstClear && silverLevel) {
         if (lvl.type === 'miniboss') out.silver += R.miniBossSilver;
         else if (lvl.type === 'boss') {
           out.silver += R.bossSilver;
@@ -803,23 +809,28 @@
         } else out.silver += R.firstClearSilver;
         out.notes.push('首次通关奖励');
       }
-      if (stars === 3 && rec.stars < 3) {
+      if (stars === 3 && rec.stars < 3 && silverLevel) {
         out.silver += R.firstThreeStarSilver;
         out.notes.push('首次三星奖励');
       }
       rec.clears++;
       rec.streak = 0;
-      // 关卡任务（设计书 36）
+      // 关卡任务（设计书 36）：特殊关卡奖励银币，普通关卡奖励铜币
       const mid = D.missionFor && D.missionFor(n);
       if (mid && !rec.mission && D.missions[mid].check(result)) {
         rec.mission = true;
-        out.silver += D.missionReward.silver;
-        out.notes.push(`🎯 完成关卡任务「${D.missions[mid].name}」：+${D.missionReward.silver} 银`);
+        if (silverLevel) {
+          out.silver += D.missionReward.silver;
+          out.notes.push(`🎯 完成关卡任务「${D.missions[mid].name}」：+${D.missionReward.silver} 银`);
+        } else {
+          bonusCopper += D.missionReward.copper;
+          out.notes.push(`🎯 完成关卡任务「${D.missions[mid].name}」：+${D.missionReward.copper} 铜`);
+        }
       }
       // 挑战王冠（设计书 31）
       if (diffId === 'hard' && !rec.crown) {
         rec.crown = true;
-        out.silver += 1;
+        if (silverLevel) out.silver += 1;
         out.notes.push('👑 首次在挑战难度通关：获得王冠');
       }
       rec.stars = Math.max(rec.stars, stars);
@@ -835,7 +846,7 @@
     const killCopper = result.killCopper || 0;
     out.killCopper = Math.round(killCopper);
     out.earlyCopper = result.earlyCopper || 0;
-    out.copper = Math.round((base + killCopper + out.earlyCopper) * copperMult);
+    out.copper = Math.round((base + killCopper + out.earlyCopper + bonusCopper) * copperMult);
     out.copperMult = copperMult;
     save.levels[n] = rec;
 

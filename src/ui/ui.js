@@ -546,7 +546,7 @@
         h('li', null, '冰冻领域、小炸弹、冰冻瓶需要选择车道：点技能后再点一条车道。'),
         h('li', null, '一波怪全部出场后，可以点「提前召唤」立刻叫出下一波，剩余的倒计时秒数会变成铜币奖励。'),
         h('li', null, '空格暂停，F 切换 2 倍速，N 提前召唤，T 切换目标优先级。'),
-        h('li', null, '每关结束会获得铜币，首次通关还有银币。去商店升级属性、解锁武器和技能，再来挑战！'),
+        h('li', null, '每关结束会获得铜币，银币只有首次通关小 Boss、大 Boss 和精英挑战关才有（也可以去汇兑所用铜币换）。去商店升级属性、解锁武器和技能，再来挑战！'),
         h('li', null, '城墙剩余 ≥50% 得 2 星，≥80% 得 3 星。')
       ),
       h('div', { class: 'modal-buttons' }, h('button', { class: 'btn primary', onclick: UI.closeModal }, '知道了'))
@@ -775,7 +775,7 @@
       h('div', { class: 'mon-list' }, mons),
       weaponAdvice(n),
       D.missionFor(n)
-        ? h('div', { class: 'advice mission' + (rec.mission ? ' done' : '') }, h('span', null, h('b', null, `🎯 关卡任务：${D.missions[D.missionFor(n)].name}`), `（${D.missions[D.missionFor(n)].desc}）`), h('span', { class: 'equipped' }, rec.mission ? '✔ 已完成' : `首次完成 +${D.missionReward.silver} 银`))
+        ? h('div', { class: 'advice mission' + (rec.mission ? ' done' : '') }, h('span', null, h('b', null, `🎯 关卡任务：${D.missions[D.missionFor(n)].name}`), `（${D.missions[D.missionFor(n)].desc}）`), h('span', { class: 'equipped' }, rec.mission ? '✔ 已完成' : P.givesSilver(D.levels[n]) ? `首次完成 +${D.missionReward.silver} 银` : `首次完成 +${D.missionReward.copper} 铜`))
         : null,
       P.rally(s, n) > 0 ? h('div', { class: 'advice rally' }, h('span', null, h('b', null, `🎺 援军鼓舞 +${Math.round(P.rally(s, n) * 100)}%`), `：已连续失败 ${rec.streak} 次，本次攻击和城墙血量提高，通关后清零`)) : null,
       h('div', { class: 'tip' }, '💡 ', lvl.tip),

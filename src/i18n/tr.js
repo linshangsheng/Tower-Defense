@@ -963,7 +963,6 @@ TD.i18n.register("tr", {
   "每第 6 次攻击，一道小闪电落在目标身上，额外造成攻击力 ×1.5 的魔法伤害": "Her 6. saldırıda hedefe küçük bir şimşek düşer ve Saldırı ×1,5 kadar ekstra büyü hasarı verir",
   "每隔一会儿向前跳一大步，跳在空中时打不到。跑得比看起来快！": "Ara sıra ileri doğru büyük bir sıçrayış yapar, havadayken vurulamaz. Göründüğünden hızlı!",
   "每攻击 5 次，立即追加 1 次攻击。": "Her 5 saldırıda bir hemen bir saldırı daha yapar.",
-  "每关结束会获得铜币，首次通关还有银币。去商店升级属性、解锁武器和技能，再来挑战！": "Her bölüm sonunda bakır sikke kazanırsın, ilk geçişte gümüş de verilir. Mağazada özellikleri yükselt, silah ve yetenek aç, sonra tekrar gel!",
   "每过一层可以领取这一层的钻石离开，或者继续往上：再过一层，钻石翻倍；失败了，什么都没有。": "Her kattan sonra o katın elmaslarını alıp çıkabilir ya da yükselmeye devam edebilirsin: bir kat daha geçersen elmaslar ikiye katlanır; kaybedersen hiçbir şey alamazsın.",
   "每击杀一只怪，城墙回复 0.3% 最大血量": "Her yenilen canavar surun azami canının %0,3'ünü iyileştirir",
   "每日挑战": "Günlük Meydan Okuma",
@@ -1852,4 +1851,7 @@ TD.i18n.register("tr", {
   "Lv{0} 可进阶": "Sv{0}'da terfi edilebilir",
   "Lyra？……好吧，我们轮流站岗。": "Lyra? ...Peki, nöbeti sırayla tutarız.",
   "难度按你通关的最高关卡折算（最高按第 70 关）；每一层补给 2 次；中途退出或刷新页面算失败。": "Zorluk, geçtiğin en yüksek bölüme göre ayarlanır (en çok 70. bölüm). Her katta 2 ikmal. Ortada çıkmak ya da sayfayı yenilemek yenilgi sayılır.",
+  "首次完成 +{0} 铜": "İlk tamamlama +{0} bakır",
+  "🎯 完成关卡任务「{0}」：+{1} 铜": "🎯 Bölüm görevi \"{0}\" tamam: +{1} bakır",
+  "每关结束会获得铜币，银币只有首次通关小 Boss、大 Boss 和精英挑战关才有（也可以去汇兑所用铜币换）。去商店升级属性、解锁武器和技能，再来挑战！": "Her bölüm sonunda bakır sikke kazanırsın. Gümüş yalnızca mini patron, patron ve elit bölümleri ilk kez geçince verilir (ya da bakırı Takas Bürosu'nda gümüşe çevirebilirsin). Mağazada özellikleri yükselt, silah ve yetenek aç, sonra tekrar gel!",
 });

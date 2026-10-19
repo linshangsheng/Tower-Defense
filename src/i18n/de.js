@@ -963,7 +963,6 @@ TD.i18n.register("de", {
   "每第 6 次攻击，一道小闪电落在目标身上，额外造成攻击力 ×1.5 的魔法伤害": "Bei jedem 6. Angriff schlägt ein kleiner Blitz im Ziel ein und verursacht zusätzlich ANG ×1,5 Magieschaden",
   "每隔一会儿向前跳一大步，跳在空中时打不到。跑得比看起来快！": "Springt von Zeit zu Zeit einen großen Satz nach vorn und ist in der Luft nicht zu treffen. Schneller, als es aussieht!",
   "每攻击 5 次，立即追加 1 次攻击。": "Nach jeweils 5 Angriffen folgt sofort ein weiterer Angriff.",
-  "每关结束会获得铜币，首次通关还有银币。去商店升级属性、解锁武器和技能，再来挑战！": "Nach jedem Level erhältst du Kupfermünzen, beim ersten Abschluss zusätzlich Silber. Geh in den Shop, verbessere Werte, schalte Waffen und Fähigkeiten frei und komm wieder!",
   "每过一层可以领取这一层的钻石离开，或者继续往上：再过一层，钻石翻倍；失败了，什么都没有。": "Nach jeder Etage kannst du die Diamanten dieser Etage abholen und gehen oder weiter hinaufsteigen: Schaffst du noch eine Etage, verdoppeln sich die Diamanten; scheiterst du, gibt es nichts.",
   "每击杀一只怪，城墙回复 0.3% 最大血量": "Jeder besiegte Gegner heilt die Mauer um 0,3% der max. LP",
   "每日挑战": "Tagesaufgabe",
@@ -1852,4 +1851,7 @@ TD.i18n.register("de", {
   "Lv{0} 可进阶": "Lv{0} ermöglicht Aufstieg",
   "Lyra？……好吧，我们轮流站岗。": "Lyra? … Na gut, wir wechseln uns bei der Wache ab.",
   "难度按你通关的最高关卡折算（最高按第 70 关）；每一层补给 2 次；中途退出或刷新页面算失败。": "Die Schwierigkeit richtet sich nach deinem höchsten abgeschlossenen Level (höchstens wie Level 70). 2 Nachschübe pro Etage. Mittendrin beenden oder die Seite neu laden zählt als Niederlage.",
+  "首次完成 +{0} 铜": "Erster Abschluss +{0} Kupfer",
+  "🎯 完成关卡任务「{0}」：+{1} 铜": "🎯 Levelaufgabe „{0}“ erledigt: +{1} Kupfer",
+  "每关结束会获得铜币，银币只有首次通关小 Boss、大 Boss 和精英挑战关才有（也可以去汇兑所用铜币换）。去商店升级属性、解锁武器和技能，再来挑战！": "Nach jedem Level erhältst du Kupfermünzen. Silber gibt es nur beim ersten Abschluss von Mini-Boss-, Boss- und Elite-Leveln (oder du tauschst Kupfer in der Wechselstube). Geh in den Shop, verbessere Werte, schalte Waffen und Fähigkeiten frei und komm wieder!",
 });
