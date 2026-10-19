@@ -23,6 +23,7 @@
       activeOwned: { drum: true },
       skillLv: {},
       passiveOwned: {},
+      passiveLv: {}, // 被动技能等级（设计书 90）；买下来是 1 级
       equipOwned: {},
       inventory: {},
       loadout: {
@@ -98,6 +99,8 @@
       });
       save.loadout.itemQtyMigrated = true;
     }
+    // v0.79 之前：被动技能买下来就是满效果。老存档里已经拥有的，补成 10 级（效果和以前差不多），不吃亏
+    for (const id of Object.keys(save.passiveOwned)) if (save.passiveOwned[id] && save.passiveLv[id] === undefined) save.passiveLv[id] = D.passiveSkills[id] ? D.passiveSkills[id].eff.max : 1;
     save.version = SAVE_VERSION;
     return save;
   };
@@ -304,6 +307,29 @@
   P.equipAvailable = () => true;
   P.recommended = (save, d) => !!d.minLevel && P.highestCleared(save) < d.minLevel;
 
+  // ---------- 被动技能等级（设计书 90） ----------
+  P.passiveLevel = (save, id) => (save.passiveOwned[id] ? save.passiveLv[id] || 1 : 0);
+  P.passiveValue = (id, lv) => {
+    const e = D.passiveSkills[id].eff;
+    const v = e.base + e.per * (Math.min(lv, e.max) - 1) + e.beyond * Math.max(0, lv - e.max);
+    return Math.min(e.cap, v);
+  };
+  // 升级费用（升级前的等级 lv）
+  P.passiveCostAt = (id, lv) => {
+    if (lv >= D.levelCap) return null;
+    const U = D.passiveUpgrade;
+    const soft = D.passiveSkills[id].eff.max;
+    const at = (l) => U.base * Math.pow(U.growth, l - 1);
+    return lv < soft ? { copper: TD.util.round5(at(lv)) } : beyondCost(at(soft), lv, soft);
+  };
+  P.passiveCost = (save, id) => (save.passiveOwned[id] ? P.passiveCostAt(id, P.passiveLevel(save, id)) : null);
+  P.upgradePassive = function (save, id) {
+    const cost = P.passiveCost(save, id);
+    if (!cost || !P.pay(save, cost)) return false;
+    save.passiveLv[id] = P.passiveLevel(save, id) + 1;
+    return true;
+  };
+
   P.passiveSet = function (save) {
     const set = {};
     const n = P.slotCount(save, 'passive');
@@ -347,7 +373,10 @@
     const atk = (h.atk + P.attrTotal('atk', a.atk) + eq.atkFlat) * (1 + eq.atkPct) * hd.atkMult;
     const aspdBase = Math.min(MAX_ASPD, (h.aspd + P.attrTotal('aspd', a.aspd)) * (1 + eq.aspdPct) * hd.aspdMult);
     let crit = h.crit + P.attrTotal('crit', a.crit) + eq.crit + (w.bonusCrit || 0);
-    if (passives.precision) crit += D.passiveSkills.precision.crit;
+    // 被动技能按等级算效果（设计书 90）
+    const passiveVals = {};
+    for (const id of Object.keys(passives)) passiveVals[id] = P.passiveValue(id, P.passiveLevel(save, id));
+    if (passives.precision) crit += passiveVals.precision;
     const critDmg = h.critDmg + P.attrTotal('critDmg', a.critDmg) + eq.critDmg;
     const luck = Math.min(MAX_LUCK, P.attrTotal('luck', a.luck) + eq.luck);
     const range = C.fieldWidth * h.rangeRatio * (1 + eq.rangePct);
@@ -378,6 +407,7 @@
       mend: Math.min(0.5, P.levelTotal(WU.mend, wl.mend, WU.mend.per)),
       thorns: P.levelTotal(WU.thorns, wl.thorns, WU.thorns.per),
       passives,
+      passiveVals,
       gearMods: P.equipMods(save),
       zap: (P.wornEquip(save).map((id) => D.equipment[id].zap).find(Boolean)) || null,
     };
@@ -388,11 +418,11 @@
     const w = st.weaponDef || D.weapons[st.weapon];
     let perHit = st.atk * st.weaponMult * (1 + st.crit * (st.critDmg - 1));
     let hits = st.aspd;
-    if (st.passives.combo) hits *= 1.2;
+    if (st.passives.combo) hits *= 1 + st.passiveVals.combo;
     if (w.bolts) perHit *= 1 + (w.bolts - 1) * w.extraBoltMult;
     if (w.boomerang) perHit *= 2;
     let dps = perHit * hits;
-    if (st.passives.burn) dps += (st.atk * D.passiveSkills.burn.atkMult) / D.passiveSkills.burn.duration;
+    if (st.passives.burn) dps += (st.atk * st.passiveVals.burn) / D.passiveSkills.burn.duration;
     return dps;
   };
 
@@ -466,6 +496,7 @@
     attr: { get: (s, k) => s.attrs[k], set: (s, k, v) => (s.attrs[k] = v), costAt: (s, k, lv) => P.attrCostAt(k, lv) },
     wall: { get: (s, k) => s.wall[k], set: (s, k, v) => (s.wall[k] = v), costAt: (s, k, lv) => P.wallCostAt(k, lv) },
     weapon: { get: (s, k) => s.weapons[k].lv, set: (s, k, v) => (s.weapons[k].lv = v), costAt: (s, k, lv) => (s.weapons[k].owned ? P.weaponUpgradeCostAt(k, lv) : null) },
+    passive: { get: (s, k) => P.passiveLevel(s, k), set: (s, k, v) => (s.passiveLv[k] = v), costAt: (s, k, lv) => (lv ? P.passiveCostAt(k, lv) : null) },
     skill: { get: (s, k) => P.skillLevel(s, k), set: (s, k, v) => (s.skillLv[k] = v), costAt: (s, k, lv) => (lv ? P.skillUpgradeCostAt(lv) : null) },
   };
   // 一次最多升 n 级（n 可以是 Infinity = 能升多少升多少）；dry 只算不买；ignoreWallet 配合 dry 用来看"接下来 n 级一共多少钱"
@@ -539,6 +570,7 @@
     if (save.passiveOwned[id]) return false;
     if (!P.pay(save, D.passiveSkills[id].cost)) return false;
     save.passiveOwned[id] = true;
+    save.passiveLv[id] = 1;
     const n = P.slotCount(save, 'passive');
     const i = save.loadout.passive.slice(0, n).indexOf(null);
     if (i >= 0) save.loadout.passive[i] = id;

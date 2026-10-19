@@ -210,18 +210,19 @@
   TD.data.skillUpgradeCost = [null, null, { silver: 6 }, { gold: 2 }];
   TD.data.skillMaxLv = 3;
 
+  // 被动技能（设计书 90）：买下来是 1 级，效果很弱，升级才会变强。
+  // 效果值 = base + per × (min(等级, max) − 1) + beyond × max(0, 等级 − max)，最多到 cap：
+  //   precision 暴击率 · combo 每次攻击追加 1 次攻击的几率（累计到 1 就追加一次，所以平均每 1/几率 次攻击追加 1 次）·
+  //   burn 灼烧伤害（攻击力的倍数，3 秒内造成）· pierceArmor 无视护甲的比例
+  // 到 10 级（max）时效果和老版本（买下来就是满效果）差不多，之后每级的提升变小、费用越来越高。
   TD.data.passiveSkills = {
-    precision: { name: '精准', cost: { silver: 3 }, crit: 0.1, desc: '暴击率 +10%。' },
-    combo: { name: '连珠', cost: { silver: 4 }, every: 5, desc: '每攻击 5 次，立即追加 1 次攻击。' },
-    burn: {
-      name: '灼烧',
-      cost: { silver: 4 },
-      duration: 3,
-      atkMult: 0.6,
-      desc: '命中后点燃目标，3 秒内共造成攻击力 ×60% 的魔法伤害。',
-    },
-    pierceArmor: { name: '穿甲', cost: { silver: 3 }, ignore: 0.5, desc: '无视目标 50% 护甲（含盾牌）。' },
+    precision: { name: '精准', cost: { silver: 3 }, eff: { base: 0.02, per: 0.01, max: 10, beyond: 0.002, cap: 0.6 } },
+    combo: { name: '连珠', cost: { silver: 4 }, eff: { base: 0.05, per: 0.0167, max: 10, beyond: 0.003, cap: 1 } },
+    burn: { name: '灼烧', cost: { silver: 4 }, duration: 3, eff: { base: 0.12, per: 0.06, max: 10, beyond: 0.012, cap: 5 } },
+    pierceArmor: { name: '穿甲', cost: { silver: 3 }, eff: { base: 0.08, per: 0.05, max: 10, beyond: 0.005, cap: 0.95 } },
   };
+  // 被动技能升级费用：1→2 级 600 铜，之后每级 ×1.4（到 10 级约 6600 铜）；10 级以后按"超过基础上限"的规则越来越贵
+  TD.data.passiveUpgrade = { base: 600, growth: 1.4 };
 
   // 属性升级（设计书 18.1）
   TD.data.attributes = {

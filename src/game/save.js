@@ -70,7 +70,7 @@
         total += weight;
       }
     const dpsBase = P.estimateDps(st);
-    const ig = Math.min(0.8, (w.armorIgnore || 0) + (st.passives.pierceArmor ? D.passiveSkills.pierceArmor.ignore : 0));
+    const ig = Math.min(0.8, (w.armorIgnore || 0) + (st.passives.pierceArmor ? st.passiveVals.pierceArmor : 0));
     let eff = 0;
     for (const type of Object.keys(counts)) {
       const def = D.monsters[type];

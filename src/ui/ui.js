@@ -1080,10 +1080,26 @@
     }
     el.append(h('div', { class: 'hint' }, '技能 Lv2 用银币升阶，Lv3 用金币升阶并带来质变效果。'));
     el.append(h('div', { class: 'section-title' }, '被动技能（自动生效）'));
+    // 被动技能（设计书 90）：买下来是 1 级，效果很弱；升级才会变强
+    const pct = (v) => Math.round(v * 1000) / 10;
+    const passiveText = (id, lv) => {
+      const v = P.passiveValue(id, lv);
+      if (id === 'precision') return `暴击率 +${pct(v)}%`;
+      if (id === 'combo') return `每攻击 ${Math.round((1 / v) * 10) / 10} 次追加 1 次攻击`;
+      if (id === 'burn') return `命中后点燃目标，${D.passiveSkills.burn.duration} 秒内共造成攻击力 ×${Math.round(v * 100)}% 的魔法伤害`;
+      return `无视目标 ${pct(v)}% 护甲（含盾牌）`;
+    };
     for (const id of Object.keys(D.passiveSkills)) {
       const k = D.passiveSkills[id];
-      el.append(card(k.name, null, k.desc, s.passiveOwned[id] ? h('span', { class: 'equipped' }, '已拥有') : buyBtn(k.cost, () => P.buyPassive(s, id), '解锁')));
+      const lv = P.passiveLevel(s, id);
+      if (!lv) {
+        el.append(card(k.name, null, passiveText(id, 1), buyBtn(k.cost, () => P.buyPassive(s, id), '解锁')));
+        continue;
+      }
+      const desc = h('span', null, `当前：${passiveText(id, lv)} → `, h('b', { class: 'up' }, `Lv${lv + 1}：${passiveText(id, lv + 1)}`));
+      el.append(card(k.name, lvText(lv), desc, h('div', { class: 'btn-col' }, buyBtn(P.passiveCost(s, id), () => P.upgradePassive(s, id), '升级'), bulkRow('passive', id))));
     }
+    el.append(h('div', { class: 'hint' }, '被动技能买下来是 1 级，效果很弱，升级以后才会变强；10 级以后每级的提升变小、费用涨得更快。'));
     el.append(h('div', { class: 'hint' }, '买到的技能要在「配装」页放进技能槽才会带进战斗。'));
   }
 

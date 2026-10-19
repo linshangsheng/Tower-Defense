@@ -3168,3 +3168,113 @@ test('装备和被动技能涨价：价格 = 原价 × 倍数（绿 6 / 蓝 6 / 
   const avg = (r) => Object.values(D.equipment).filter((e) => e.rarity === r).reduce((a, e) => a + v(e), 0) / Object.values(D.equipment).filter((e) => e.rarity === r).length;
   for (let r = 1; r < 5; r++) assert.ok(avg(r) < avg(r + 1), `品质 ${r} 比 ${r + 1} 便宜`);
 });
+
+// ---------- v0.79：被动技能可升级（设计书 90） ----------
+test('被动技能买下来是 1 级、效果很弱；每升一级变强；10 级时和老版本的满效果差不多；之后每级提升变小', () => {
+  const s = P.newSave();
+  s.silver = 1000;
+  for (const id of Object.keys(D.passiveSkills)) assert.strictEqual(P.passiveLevel(s, id), 0, '没买之前是 0 级');
+  assert.ok(P.buyPassive(s, 'precision'));
+  assert.strictEqual(P.passiveLevel(s, 'precision'), 1);
+  const v = (id, lv) => P.passiveValue(id, lv);
+  // 老版本的满效果：精准 +10%、连珠每 5 次（0.2）、灼烧 ×0.6、穿甲 50%
+  const old = { precision: 0.1, combo: 0.2, burn: 0.6, pierceArmor: 0.5 };
+  for (const id of Object.keys(old)) {
+    assert.ok(v(id, 1) < old[id] * 0.3, `${id} 1 级只有老版本的三成不到`);
+    for (let lv = 1; lv < 20; lv++) assert.ok(v(id, lv + 1) > v(id, lv), `${id} 越升越强`);
+    assert.ok(Math.abs(v(id, 10) - old[id]) / old[id] < 0.15, `${id} 10 级和老版本差不多：${v(id, 10)}`);
+    assert.ok(v(id, 100) > v(id, 10), '10 级以后还能继续变强');
+    const eff = D.passiveSkills[id].eff;
+    assert.ok(v(id, 11) - v(id, 10) < v(id, 10) - v(id, 9), `${id} 10 级以后每级提升变小`);
+    assert.ok(v(id, 999999) <= eff.cap + 1e-9, '有上限');
+  }
+});
+
+test('被动技能升级：花铜币（10 级以内）、越升越贵、10 级以后越来越贵；可以批量升；存档记等级', () => {
+  const s = P.newSave();
+  s.silver = 100;
+  P.buyPassive(s, 'combo');
+  const costs = [];
+  for (let lv = 1; lv <= 12; lv++) costs.push(P.passiveCostAt('combo', lv));
+  for (let i = 0; i < 9; i++) assert.ok(costs[i].copper, '10 级以内用铜币');
+  for (let i = 1; i < costs.length; i++) assert.ok(P.costValue(costs[i]) > P.costValue(costs[i - 1]), `第 ${i + 1} 级比上一级贵`);
+  assert.strictEqual(costs[0].copper, 600);
+  s.copper = 600;
+  assert.ok(P.upgradePassive(s, 'combo'));
+  assert.strictEqual(P.passiveLevel(s, 'combo'), 2);
+  assert.strictEqual(s.copper, 0);
+  assert.ok(!P.upgradePassive(s, 'combo'), '钱不够不能升');
+  assert.ok(!P.upgradePassive(s, 'burn'), '没买的不能升');
+  s.copper = 1e6;
+  const r = P.bulkUpgrade(s, 'passive', 'combo', 5);
+  assert.strictEqual(r.count, 5);
+  assert.strictEqual(P.passiveLevel(s, 'combo'), 7);
+  assert.strictEqual(s.passiveLv.combo, 7);
+});
+
+test('被动技能的效果按等级算进英雄属性：精准加暴击、穿甲算无视护甲、连珠和灼烧进 DPS 估算', () => {
+  const s = P.newSave();
+  clearUpTo(s, 40);
+  s.silver = 1000;
+  const base = P.heroStats(s);
+  const stat = (lv) => {
+    for (const id of ['precision', 'combo', 'burn', 'pierceArmor']) {
+      s.passiveOwned[id] = true;
+      s.passiveLv[id] = lv;
+    }
+    s.loadout.passive = ['precision', 'combo', 'burn'];
+    s.silver = 1000;
+    return P.heroStats(s);
+  };
+  const a = stat(1);
+  const b = stat(10);
+  assert.ok(Math.abs(a.crit - (base.crit + P.passiveValue('precision', 1))) < 1e-9);
+  assert.ok(Math.abs(b.crit - (base.crit + P.passiveValue('precision', 10))) < 1e-9);
+  assert.ok(P.estimateDps(b) > P.estimateDps(a) && P.estimateDps(a) > P.estimateDps(base), '等级越高 DPS 越高');
+  assert.ok(Math.abs(b.passiveVals.burn - P.passiveValue('burn', 10)) < 1e-9);
+});
+
+test('连珠按几率累计追加攻击；灼烧伤害跟着等级；穿甲无视护甲跟着等级', () => {
+  const s = P.newSave();
+  clearUpTo(s, 40);
+  s.silver = 1000;
+  for (const id of ['combo', 'burn', 'pierceArmor']) {
+    s.passiveOwned[id] = true;
+    s.passiveLv[id] = 1;
+  }
+  s.loadout.passive = ['combo', 'burn', 'pierceArmor'];
+  const mk = () => new TD.Battle({ level: 3, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 4 });
+  const count = (rate) => {
+    const b = mk();
+    b.stats.passiveVals.combo = rate;
+    b.spawnMonster('slime', 1, 400);
+    let combos = 0;
+    b.on('combo', () => combos++);
+    b.monsters.forEach((m) => (m.hp = m.maxHp = 1e12));
+    for (let i = 0; i < 60 * 20; i++) b.step(1 / 60);
+    return { combos, attacks: b.hero.attacks };
+  };
+  const r5 = count(0.5);
+  assert.ok(Math.abs(r5.combos - r5.attacks * 0.5) <= 1.01, `几率 0.5：${r5.combos} / ${r5.attacks}`);
+  const r2 = count(0.2);
+  assert.ok(Math.abs(r2.combos - r2.attacks * 0.2) <= 1.01);
+  const r2x = count(2);
+  assert.ok(Math.abs(r2x.combos - r2x.attacks * 2) <= 1.01, '几率超过 1 时一次追加多次');
+  const b = mk();
+  assert.ok(Math.abs(b.armorIgnore({}) - P.passiveValue('pierceArmor', 1)) < 1e-9);
+  b.stats.passiveVals.pierceArmor = P.passiveValue('pierceArmor', 10);
+  assert.ok(Math.abs(b.armorIgnore({}) - P.passiveValue('pierceArmor', 10)) < 1e-9);
+});
+
+test('老存档里已经拥有的被动技能补成 10 级（效果和以前差不多）；新买的从 1 级开始', () => {
+  const old = P.newSave();
+  delete old.passiveLv;
+  old.passiveOwned = { precision: true, burn: true };
+  const m = P.migrate(old);
+  assert.strictEqual(m.passiveLv.precision, 10);
+  assert.strictEqual(m.passiveLv.burn, 10);
+  assert.strictEqual(P.passiveLevel(m, 'combo'), 0);
+  m.silver = 100;
+  assert.ok(P.buyPassive(m, 'combo'));
+  assert.strictEqual(m.passiveLv.combo, 1);
+});

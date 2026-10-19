@@ -815,7 +815,7 @@
     armorIgnore(opts) {
       if (opts && opts.source === 'thorns') return 0;
       let ig = this.mods.armorIgnore || 0;
-      if (this.stats.passives.pierceArmor) ig += D.passiveSkills.pierceArmor.ignore;
+      if (this.stats.passives.pierceArmor) ig += this.stats.passiveVals.pierceArmor;
       if (opts && opts.armorIgnore) ig += opts.armorIgnore;
       return Math.min(0.8, ig);
     }
@@ -1122,9 +1122,13 @@
       }
       this.fire(targets);
       this.hero.attacks++;
-      if (this.stats.passives.combo && this.hero.attacks % D.passiveSkills.combo.every === 0) {
-        const again = this.rankTargets();
-        if (again.length) {
+      if (this.stats.passives.combo) {
+        // 连珠（设计书 90）：每次攻击攒一点几率，攒够 1 就立即追加 1 次攻击
+        this.hero.comboAcc = (this.hero.comboAcc || 0) + this.stats.passiveVals.combo;
+        while (this.hero.comboAcc >= 1) {
+          this.hero.comboAcc -= 1;
+          const again = this.rankTargets();
+          if (!again.length) break;
           this.fire(again);
           this.emit('combo', {});
         }
@@ -1241,7 +1245,7 @@
       const b = D.passiveSkills.burn;
       if (this.time >= m.burnUntil) m.burnTick = 0.5;
       m.burnUntil = this.time + b.duration;
-      m.burnDps = Math.max(m.burnDps || 0, (this.atk * b.atkMult) / b.duration);
+      m.burnDps = Math.max(m.burnDps || 0, (this.atk * (this.stats.passiveVals && this.stats.passiveVals.burn ? this.stats.passiveVals.burn : D.passiveSkills.burn.eff.base)) / b.duration);
     }
 
     applyWeaponHit(m, dmg, crit, fromFront, p) {
@@ -1255,7 +1259,7 @@
         const b = D.passiveSkills.burn;
         if (this.time >= m.burnUntil) m.burnTick = 0.5;
         m.burnUntil = this.time + b.duration;
-        m.burnDps = (this.atk * b.atkMult) / b.duration;
+        m.burnDps = (this.atk * this.stats.passiveVals.burn) / b.duration;
       }
       // 武器自带的点燃 / 减速（设计书 63.5）：寒霜弓、烈焰弩、创世之弓、时之回旋
       if (!(p && p.source)) {

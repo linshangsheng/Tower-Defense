@@ -32,6 +32,12 @@
     if (save.weapons[wid].lv < D.weaponUpgrade.max) add('weapon:' + wid, P.weaponUpgradeCost(save, wid), (s) => s.weapons[wid].lv++);
     if (save.wall.level < D.wallUpgrades.level.max) add('wall:level', P.wallCost(save, 'level'), (s) => s.wall.level++);
     if (save.wall.fortify < D.wallUpgrades.fortify.max) add('wall:fortify', P.wallCost(save, 'fortify'), (s) => s.wall.fortify++);
+    // 带在身上的被动技能升到基础上限（10 级）：和属性、武器升级按性价比一起比较（设计书 90）
+    for (const id of save.loadout.passive) {
+      if (!id || !save.passiveOwned[id]) continue;
+      if (P.passiveLevel(save, id) >= D.passiveSkills[id].eff.max) continue;
+      add('passive:' + id, P.passiveCost(save, id), (s) => P.upgradePassive(s, id) || (s.passiveLv[id] = P.passiveLevel(s, id) + 1));
+    }
     // 铜币箭袋（设计书 58）：和属性、武器升级按性价比一起比较
     for (const id of ['leatherQuiver', 'barbQuiver']) {
       if (save.equipOwned[id] || !P.equipAvailable(save, id) || P.slotCount(save, 'quiver') < 1) continue;
