@@ -2131,13 +2131,13 @@ test('所有新道具自动使用：整场战斗不报错，道具会被用掉',
 });
 
 // ---------- 武器扩充：五色品质（设计书 63） ----------
-test('武器：15 把，每个品质 3 把，价格逐档上涨，升级费用逐档上涨', () => {
+test('武器：25 把，每个品质 5 把，价格逐档上涨，升级费用逐档上涨', () => {
   const ids = Object.keys(D.weapons);
-  assert.strictEqual(ids.length, 15);
+  assert.strictEqual(ids.length, 25);
   const byR = {};
   for (const id of ids) (byR[D.weapons[id].rarity] = byR[D.weapons[id].rarity] || []).push(id);
   assert.deepStrictEqual(Object.keys(byR), ['1', '2', '3', '4', '5']);
-  for (const r of Object.keys(byR)) assert.strictEqual(byR[r].length, 3, '品质 ' + r);
+  for (const r of Object.keys(byR)) assert.strictEqual(byR[r].length, 5, '品质 ' + r);
   for (let r = 1; r < 5; r++) {
     const maxLow = Math.max(...byR[r].map((id) => P.costValue(D.weapons[id].cost)));
     const minHigh = Math.min(...byR[r + 1].map((id) => P.costValue(D.weapons[id].cost)));
@@ -3277,4 +3277,51 @@ test('老存档里已经拥有的被动技能补成 10 级（效果和以前差�
   m.silver = 100;
   assert.ok(P.buyPassive(m, 'combo'));
   assert.strictEqual(m.passiveLv.combo, 1);
+});
+
+// ---------- v0.80：武器扩充到每个品质 5 把（设计书 91） ----------
+test('新增的 10 把武器：每个品质 2 把、都有图标和外观、不重名、老存档自动补上', () => {
+  const added = ['huntBow', 'mortar', 'twinCrossbow', 'galeBoomerang', 'thunderMortar', 'arcaneStaff', 'dragonBow', 'infernoStaff', 'worldCannon', 'starfallOrb'];
+  assert.deepStrictEqual(added.map((id) => D.weapons[id].rarity), [1, 1, 2, 2, 3, 3, 4, 4, 5, 5]);
+  const names = Object.values(D.weapons).map((w) => w.name);
+  assert.strictEqual(new Set(names).size, names.length, '武器不重名');
+  for (const id of added) {
+    const w = D.weapons[id];
+    assert.ok(w.desc && w.good && w.cost && w.look && w.look.color, id);
+    assert.ok(P.weaponUnlocked(P.newSave(), id), '随时可买');
+  }
+  const old = P.newSave();
+  for (const id of added) delete old.weapons[id];
+  const m = P.migrate(old);
+  for (const id of added) assert.deepStrictEqual(m.weapons[id], { owned: false, lv: 0 });
+});
+
+test('新增武器都能上战场打一阵子：弹道、溅射、穿透、连锁、震退、点燃、双镖都正常，不报错', () => {
+  const added = ['huntBow', 'mortar', 'twinCrossbow', 'galeBoomerang', 'thunderMortar', 'arcaneStaff', 'dragonBow', 'infernoStaff', 'worldCannon', 'starfallOrb'];
+  for (const id of added) {
+    const s = P.newSave();
+    clearUpTo(s, 69);
+    s.weapons[id] = { owned: true, lv: 0, asc: false };
+    s.loadout.weapon = id;
+    const b = new TD.Battle({ level: 41, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 3 });
+    let shots = 0;
+    b.on('shoot', () => shots++);
+    for (let i = 0; i < 60 * 25; i++) b.step(1 / 60);
+    assert.ok(shots > 3, `${id} 打出了 ${shots} 发`);
+    assert.ok(b.damageDealt > 0, `${id} 造成了伤害`);
+  }
+});
+
+test('每个新武器的效果和描述对得上：数值字段都在', () => {
+  const W = D.weapons;
+  assert.ok(W.huntBow.bonusCrit === 0.1 && W.huntBow.aspdMult > 1);
+  assert.ok(W.mortar.arc && W.mortar.splash);
+  assert.ok(W.twinCrossbow.bolts === 2 && W.twinCrossbow.flyingMult === 1.3);
+  assert.ok(W.galeBoomerang.boomerang && W.galeBoomerang.slow.amt === 0.25);
+  assert.ok(W.thunderMortar.knock && W.thunderMortar.armorIgnore === 0.3);
+  assert.ok(W.arcaneStaff.dmgType === 'magic' && W.arcaneStaff.bossMult === 1.2);
+  assert.ok(W.dragonBow.pierce.count === 4 && W.dragonBow.bossMult === 1.5);
+  assert.ok(W.infernoStaff.ignite && W.infernoStaff.dmgType === 'magic');
+  assert.ok(W.worldCannon.armorIgnore === 0.8 && W.worldCannon.knock.dist === 70);
+  assert.ok(W.starfallOrb.chain.count === 7 && W.starfallOrb.bonusCrit === 0.1);
 });

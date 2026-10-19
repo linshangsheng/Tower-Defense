@@ -272,7 +272,7 @@
   };
 
   // 新武器的图标（设计书 63.4）：直接画武器本身，并按品质加一圈底色
-  for (const id of ['frostBow', 'flameCrossbow', 'piercer', 'meteorCannon', 'stormOrb', 'voidCrossbow', 'genesisBow', 'judgementStaff', 'chronoBoomerang']) {
+  for (const id of ['frostBow', 'flameCrossbow', 'piercer', 'meteorCannon', 'stormOrb', 'voidCrossbow', 'genesisBow', 'judgementStaff', 'chronoBoomerang', 'huntBow', 'mortar', 'twinCrossbow', 'galeBoomerang', 'thunderMortar', 'arcaneStaff', 'dragonBow', 'infernoStaff', 'worldCannon', 'starfallOrb']) {
     S.moreIcons[id] = (ctx) => {
       const K = TD.creatures;
       const w = TD.data.weapons[id];

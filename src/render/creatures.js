@@ -628,6 +628,119 @@
       ctx.restore();
       glow(ctx, s * 0.84, -s * 0.38, s * 0.28, hi, 0.5);
     },
+    // ---- v0.80 新武器的专属细节（设计书 91） ----
+    twin(ctx, s, t, hi) {
+      // 弩身上并排的两道发光箭槽
+      for (const sg of [-1, 1]) {
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.strokeStyle = rgba(hi, 0.85);
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        ctx.moveTo(s * 0.2, sg * s * 0.035);
+        ctx.lineTo(s * 0.82, sg * s * 0.03);
+        ctx.stroke();
+        ctx.restore();
+        glow(ctx, s * 0.84, sg * s * 0.03, s * 0.1, hi, 0.5);
+      }
+    },
+    gale(ctx, s, t, hi) {
+      // 回旋镖身后飘着的几道风弧
+      ctx.save();
+      ctx.translate(s * 0.42, 0);
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.strokeStyle = rgba(hi, 0.7);
+      ctx.lineWidth = 1.5;
+      for (let i = 0; i < 3; i++) {
+        const a0 = t * 4 + (i * TAU) / 3;
+        ctx.beginPath();
+        ctx.arc(0, 0, s * (0.3 + i * 0.07), a0, a0 + 1.1);
+        ctx.stroke();
+      }
+      ctx.restore();
+    },
+    thunder(ctx, s, t, hi) {
+      // 炮身上的电纹和炮口跳动的电火花
+      const seed = Math.floor(t * 8);
+      veins(ctx, s * 0.12, -s * 0.1, s * 0.28, 0.15, 2, '#ffffff', 0.85, seed, 1.2);
+      veins(ctx, s * 0.35, s * 0.12, s * 0.22, -0.2, 2, hi, 0.9, seed + 3, 1.2);
+      glow(ctx, s * 0.92, 0, s * 0.3, hi, 0.4 + Math.sin(t * 20) * 0.15);
+    },
+    arcane(ctx, s, t, hi) {
+      // 杖头周围转动的一圈符文小点
+      ctx.save();
+      ctx.translate(s * 0.84, -s * 0.38);
+      ctx.globalCompositeOperation = 'lighter';
+      for (let i = 0; i < 6; i++) {
+        const q = t * 1.8 + (i / 6) * TAU;
+        glow(ctx, Math.cos(q) * s * 0.22, Math.sin(q) * s * 0.12, s * 0.07, hi, 0.8);
+      }
+      ctx.restore();
+      glow(ctx, s * 0.84, -s * 0.38, s * 0.3, hi, 0.4);
+    },
+    dragon(ctx, s, t, hi) {
+      // 弓梢的龙角和沿弓背的红色鳞片光点
+      for (const sg of [-1, 1]) {
+        ctx.save();
+        ctx.translate(s * 0.27, sg * s * 0.66);
+        ctx.rotate(sg * 0.6);
+        ctx.fillStyle = rgba('#fff0d0', 0.95);
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.quadraticCurveTo(s * 0.06, -sg * s * 0.06, s * 0.02, -sg * s * 0.2);
+        ctx.quadraticCurveTo(-s * 0.04, -sg * s * 0.08, 0, 0);
+        ctx.fill();
+        glow(ctx, 0, 0, s * 0.18, hi, 0.5);
+        ctx.restore();
+      }
+      sparkles(ctx, s * 0.4, 0, s * 0.3, s * 0.55, 5, t, '#ffb090', 17, 1.2);
+    },
+    inferno(ctx, s, t, hi) {
+      // 杖头上方跳动的火焰
+      for (const [fx, sc] of [[-0.06, 0.9], [0.0, 1.2], [0.06, 0.8]]) {
+        const fl = 0.8 + Math.sin(t * 12 + fx * 40) * 0.25;
+        ctx.save();
+        ctx.translate(s * (0.84 + fx), -s * 0.52);
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.fillStyle = rgba('#ff8a2a', 0.85);
+        ctx.beginPath();
+        ctx.moveTo(0, -s * 0.24 * fl * sc);
+        ctx.quadraticCurveTo(s * 0.09 * sc, -s * 0.06, 0, s * 0.04);
+        ctx.quadraticCurveTo(-s * 0.09 * sc, -s * 0.06, 0, -s * 0.24 * fl * sc);
+        ctx.fill();
+        ctx.restore();
+      }
+      glow(ctx, s * 0.84, -s * 0.45, s * 0.3, hi, 0.45);
+    },
+    world(ctx, s, t, hi) {
+      // 炮身的金色裂纹、炮口一圈扩散的光环
+      veins(ctx, s * 0.05, -s * 0.12, s * 0.3, 0.2, 3, '#fff0a0', 0.95, 31, 1.6);
+      veins(ctx, s * 0.4, s * 0.14, s * 0.25, -0.25, 2, '#fff0a0', 0.9, 32, 1.4);
+      const k = (t * 1.2) % 1;
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.strokeStyle = rgba(hi, 0.8 * (1 - k));
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.ellipse(s * 0.95, 0, s * (0.06 + k * 0.14), s * (0.18 + k * 0.2), 0, 0, TAU);
+      ctx.stroke();
+      ctx.restore();
+      glow(ctx, s * 0.95, 0, s * 0.4, hi, 0.5);
+    },
+    starfall(ctx, s, t, hi) {
+      // 球周围绕着转的几颗小星
+      for (let i = 0; i < 4; i++) {
+        const q = t * 2.4 + (i / 4) * TAU;
+        const x = s * 0.55 + Math.cos(q) * s * 0.4;
+        const y = Math.sin(q) * s * 0.28;
+        glow(ctx, x, y, s * 0.1, hi, 0.9);
+        ctx.fillStyle = rgba('#ffffff', 0.95);
+        ctx.beginPath();
+        ctx.arc(x, y, s * 0.022, 0, TAU);
+        ctx.fill();
+      }
+      glow(ctx, s * 0.55, 0, s * 0.6, hi, 0.3);
+    },
     chrono(ctx, s, t, hi) {
       // 回旋镖周围转动的刻度环
       ctx.save();

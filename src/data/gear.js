@@ -128,6 +128,50 @@
     },
   });
 
+  // ---- v0.80 武器扩充（设计书 91）：每个品质 5 把（原来每个品质 3 把，再各加 2 把） ----
+  Object.assign(TD.data.weapons, {
+    huntBow: {
+      name: '猎弓', rarity: 1, cost: { copper: 350 }, dmgMult: 0.8, aspdMult: 1.3, projSpeed: 1000, bonusCrit: 0.1,
+      desc: '出手快，暴击率 +10%，单发伤害低一点。', good: '通用、速攻关', look: { base: 'bow', color: '#8fdc6a' },
+    },
+    mortar: {
+      name: '土炮', rarity: 1, cost: { copper: 500 }, dmgMult: 2.0, aspdMult: 0.45, projSpeed: 560, arc: true, splash: { radius: 55, mult: 0.5 },
+      desc: '小号火炮：慢速抛射，落地小范围爆炸。', good: '成团的怪', look: { base: 'cannon', color: '#9bd860' },
+    },
+    twinCrossbow: {
+      name: '双发弩', rarity: 2, cost: { silver: 9 }, dmgMult: 0.55, aspdMult: 1.0, projSpeed: 980, bolts: 2, extraBoltMult: 0.6, flyingMult: 1.3, armorIgnore: 0.2,
+      desc: '一次射 2 支弩箭，对飞行怪伤害 +30%，无视 20% 护甲。', good: '飞行怪、轻甲怪', look: { base: 'crossbow', color: '#6fb0ff', accent: 'twin' },
+    },
+    galeBoomerang: {
+      name: '疾风镖', rarity: 2, cost: { silver: 11 }, dmgMult: 0.55, aspdMult: 0.75, projSpeed: 900, boomerang: true, slow: { amt: 0.25, dur: 1.5 },
+      desc: '飞得更快的回旋镖，往返命中，命中使目标减速 25%（1.5 秒）。', good: '长队、快怪', look: { base: 'boomerang', color: '#5ab8ff', accent: 'gale' },
+    },
+    thunderMortar: {
+      name: '雷鸣炮', rarity: 3, cost: { gold: 5 }, dmgMult: 2.8, aspdMult: 0.43, projSpeed: 620, arc: true, splash: { radius: 90, mult: 0.7 }, armorIgnore: 0.3, knock: { dist: 40, slow: 0.3, duration: 1 },
+      desc: '落地大范围爆炸，无视 30% 护甲，把范围内的小怪向后震退 40 像素并减速 30%（1 秒）。', good: '成团的怪、重甲怪', look: { base: 'cannon', color: '#b86cff', accent: 'thunder' },
+    },
+    arcaneStaff: {
+      name: '奥术杖', rarity: 3, cost: { gold: 4 }, dmgMult: 1.3, aspdMult: 0.9, projSpeed: 760, dmgType: 'magic', splash: { radius: 75, mult: 0.75 }, bossMult: 1.2,
+      desc: '魔法弹，爆炸范围更大（半径 75、溅射 75%），对 Boss 伤害 +20%。', good: '成堆的怪、Boss、灵体', look: { base: 'staff', color: '#c88cff', accent: 'arcane' },
+    },
+    dragonBow: {
+      name: '屠龙弓', rarity: 4, cost: { gold: 9 }, dmgMult: 0.85, aspdMult: 0.9, projSpeed: 1200, pierce: { count: 4, range: 560, mult: 0.85 }, bossMult: 1.5, armorIgnore: 0.4,
+      desc: '箭穿透同一车道最多 4 只怪（每只 85% 伤害），对 Boss 伤害 +50%，无视 40% 护甲。', good: 'Boss、重甲怪', look: { base: 'bow', color: '#ff6a4a', accent: 'dragon' },
+    },
+    infernoStaff: {
+      name: '炼狱杖', rarity: 4, cost: { gold: 9 }, dmgMult: 1.0, aspdMult: 0.95, projSpeed: 780, dmgType: 'magic', splash: { radius: 95, mult: 0.8 }, ignite: true,
+      desc: '魔法弹大范围爆炸（半径 95、溅射 80%），并点燃目标。', good: '成团的怪、灵体', look: { base: 'staff', color: '#ff7a3a', accent: 'inferno' },
+    },
+    worldCannon: {
+      name: '裂世炮', rarity: 5, cost: { gold: 19 }, dmgMult: 4.6, aspdMult: 0.45, projSpeed: 640, arc: true, splash: { radius: 130, mult: 1 }, armorIgnore: 0.8, bossMult: 1.5, knock: { dist: 70, slow: 0.4, duration: 1.5 },
+      desc: '爆炸半径 130、溅射不衰减，无视 80% 护甲，对 Boss 伤害 +50%，并把范围内的小怪向后震退 70 像素。', good: 'Boss、成团的怪', look: { base: 'cannon', color: '#ffd35a', accent: 'world' },
+    },
+    starfallOrb: {
+      name: '星陨球', rarity: 5, cost: { gold: 17 }, dmgMult: 0.58, aspdMult: 1.1, projSpeed: 1700, dmgType: 'magic', bonusCrit: 0.1, chain: { count: 7, range: 260, falloff: 0.9 },
+      desc: '魔法闪电跳跃 7 次，每跳只衰减 10%，暴击率 +10%。', good: '密集怪群、灵体、魔抗低的怪', look: { base: 'orb', color: '#fff0a8', accent: 'starfall' },
+    },
+  });
+
   // 武器品质（设计书 63.2）
   TD.data.weaponRarity = {
     1: { name: '绿', color: '#5fd35f', upgradeMult: 1 },
