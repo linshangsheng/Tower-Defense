@@ -1039,7 +1039,6 @@ TD.i18n.register("en", {
   "南瓜头裂开后的小南瓜。": "Little pumpkins from a split Pumpkin Head.",
   "南瓜头死后会裂成 3 只小南瓜。在远处打掉它，给自己留出清理的时间。": "Pumpkin Heads split into 3 little pumpkins on death. Take it down from afar to give yourself time to clean up.",
   "难度": "Difficulty",
-  "难度按你通关的最高关卡折算（至少按第 60 关，最高按第 70 关）；每一层补给 2 次；中途退出或刷新页面算失败。": "Difficulty is scaled to your highest cleared level (at least level 60, at most level 70). 2 supplies per floor. Quitting midway or refreshing the page counts as a failure.",
   "嗯！我保证！": "Mm! I promise!",
   "嗯。守住了城墙，也守住了大家。": "Mm. We held the wall, and we held everyone together.",
   "嗯。这一次，我自己回来。": "Mm. This time, I'll come back on my own.",
@@ -1852,4 +1851,5 @@ TD.i18n.register("en", {
   "Lv{0} 解锁专精": "Lv{0} unlocks mastery",
   "Lv{0} 可进阶": "Lv{0} can advance",
   "Lyra？……好吧，我们轮流站岗。": "Lyra? ...Fine, we'll take turns on guard.",
+  "难度按你通关的最高关卡折算（最高按第 70 关）；每一层补给 2 次；中途退出或刷新页面算失败。": "Difficulty is scaled to your highest cleared level (at most level 70). 2 supplies per floor. Quitting midway or refreshing the page counts as a failure.",
 });

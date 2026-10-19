@@ -1039,7 +1039,6 @@ TD.i18n.register("fr", {
   "南瓜头裂开后的小南瓜。": "Les petites citrouilles issues d'une Tête de citrouille éclatée.",
   "南瓜头死后会裂成 3 只小南瓜。在远处打掉它，给自己留出清理的时间。": "La Tête de citrouille se divise en 3 petites citrouilles à sa mort. Abattez-la de loin pour avoir le temps de nettoyer.",
   "难度": "Difficulté",
-  "难度按你通关的最高关卡折算（至少按第 60 关，最高按第 70 关）；每一层补给 2 次；中途退出或刷新页面算失败。": "La difficulté suit le plus haut niveau que vous avez terminé (au moins le niveau 60, au plus le niveau 70) ; 2 ravitaillements par étage ; quitter en cours de route ou actualiser la page compte comme un échec.",
   "嗯！我保证！": "Oui ! Je te le promets !",
   "嗯。守住了城墙，也守住了大家。": "Oui. On a protégé le rempart, et on a protégé tout le monde.",
   "嗯。这一次，我自己回来。": "Oui. Cette fois, je reviendrai tout seul.",
@@ -1852,4 +1851,5 @@ TD.i18n.register("fr", {
   "Lv{0} 解锁专精": "Nv{0} débloque la spécialisation",
   "Lv{0} 可进阶": "Nv{0} : évolution possible",
   "Lyra？……好吧，我们轮流站岗。": "Lyra ? … Bon, montons la garde à tour de rôle.",
+  "难度按你通关的最高关卡折算（最高按第 70 关）；每一层补给 2 次；中途退出或刷新页面算失败。": "La difficulté suit le plus haut niveau que vous avez terminé (au plus le niveau 70) ; 2 ravitaillements par étage ; quitter en cours de route ou actualiser la page compte comme un échec.",
 });

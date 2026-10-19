@@ -33,8 +33,8 @@
     octoKing: 'updateOctoKing',
   };
 
-  // 不当"多出来的小怪"的怪（设计书 84）：Boss、妖塔分身，要停在远处的，会影响别的怪或英雄的
-  const FODDER_DENY = ['boss', 'towerOf', 'bossPart', 'ai', 'healer', 'ranged', 'chill', 'bubbler', 'fireZone', 'onDeath', 'staticShock', 'stealth', 'slam', 'wool', 'shell', 'leap', 'burrow', 'spikes', 'guard'];
+  // 不当"多出来的小怪"的怪（设计书 84）：Boss、妖塔分身，要停在远处的（成百上千只一起远程攻击没法玩），会影响别的怪或英雄的
+  const FODDER_DENY = ['boss', 'towerOf', 'bossPart', 'ai', 'healer', 'ranged', 'chill', 'bubbler', 'fireZone', 'onDeath', 'staticShock', 'stealth'];
 
   class Battle extends TD.Emitter {
     // opts: { level, stats, loadout: {active, items, target, autoCast}, seed, autoItems }
@@ -156,15 +156,21 @@
       this.report = { bySource: {}, raw: { phys: 0, magic: 0 }, real: { phys: 0, magic: 0 }, wallBy: {} };
     }
 
-    // 主线第 N 关多出的小怪（设计书 84）：总数 = N × C.extraMonstersPerLevel，先按各波原有小怪数量的比例分给各波（最大余数法，
-    // 保证加起来正好），每一波里再分给各组。返回每一波的 [[怪物, 数量], …]。无尽模式、每日挑战、九层妖塔（自带关卡定义）不加。
+    // 主线第 N 关（N ≥ C.extraFromLevel）多出的小怪（设计书 84）：总数 = N × C.extraMonstersPerLevel。先按各波原有小怪数量的比例
+    // 分给各波（最大余数法，保证加起来正好），再在波内按本关能当小怪的各组数量的比例分给各组。和原有的同类怪一模一样，Boss 不加。
+    // 返回每一波的 [[怪物, 数量], …]。无尽模式、每日挑战、九层妖塔（自带关卡定义）不加。
     planExtraMonsters(opts) {
       const none = this.level.waves.map(() => null);
       if (opts.levelDef || typeof opts.level !== 'number' || !D.levels[opts.level] || this.level.tower || this.level.endless) return none;
-      const total = Math.round(opts.level * (C.extraMonstersPerLevel || 0) * (this.level.extraMult === undefined ? 1 : this.level.extraMult)); // extraMult：怪物本身已经压到数量下限、多出的怪还是过不去的关卡，由 tools/tune-count.js 调小
+      if (opts.level < (C.extraFromLevel || 1)) return none;
+      const total = Math.round(opts.level * (C.extraMonstersPerLevel || 0));
       const cm = (this.level.countMult || 1) * (1 + (this.rules.countBonus || 0));
-      const minions = this.level.waves.map((w) => w.groups.map(([type, count]) => (D.monsters[type].boss ? 0 : Math.max(1, Math.round(count * cm)))));
-      const waveSums = minions.map((g) => g.reduce((a, b) => a + b, 0));
+      const count = (count) => Math.max(1, Math.round(count * cm));
+      const fodder = (type) => !FODDER_DENY.some((k) => D.monsters[type][k]);
+      // 本关一只能当小怪的都没有（比如全是远程怪）时，用本章别的关卡里最弱的候选，再没有就用史莱姆
+      const levelHas = this.level.waves.some((w) => w.groups.some(([type]) => fodder(type)));
+      // 各波的权重：这一波里能当小怪的各组数量之和（没有候选时按这一波所有非 Boss 的怪）
+      const waveSums = this.level.waves.map((w) => w.groups.reduce((a, [type, c]) => a + ((levelHas ? fodder(type) : !D.monsters[type].boss) ? count(c) : 0), 0));
       if (!total || !waveSums.some((x) => x > 0)) return none;
       const share = (weights, amount) => {
         const sum = weights.reduce((a, b) => a + b, 0);
@@ -175,21 +181,20 @@
         for (let k = 0; rest > 0 && k < order.length; k++, rest--) out[order[k][1]]++;
         return out;
       };
-      const perWave = share(waveSums, total);
-      // 多出来的都是本关最弱的普通小怪（和原有的同类怪一模一样，不削弱）：同样数量下，弱怪对关卡难度的影响最小。
-      // 要停在远处的（治疗、远程、冰冻、吹泡泡）和会影响别的怪或英雄的（火焰区域、孢子、静电、隐身）不当候选；
-      // 本关没有候选时，用本章别的关卡里最弱的候选，再没有就用史莱姆
-      const cheapOf = (types) => types.reduce((a, b) => (a === null || D.monsters[b].hp < D.monsters[a].hp ? b : a), null);
-      const fodder = (type) => !FODDER_DENY.some((k) => D.monsters[type][k]);
-      const levelTypes = [];
-      for (const w of this.level.waves) for (const [type] of w.groups) if (fodder(type) && !levelTypes.includes(type)) levelTypes.push(type);
-      let cheap = cheapOf(levelTypes);
-      if (!cheap) {
-        const chapterTypes = [];
-        for (const n of D.chapterOf(opts.level).levels) for (const w of D.levels[n].waves) for (const [type] of w.groups) if (fodder(type) && !chapterTypes.includes(type)) chapterTypes.push(type);
-        cheap = cheapOf(chapterTypes) || 'slime';
+      let fallback = null;
+      if (!levelHas) {
+        const types = [];
+        for (const n of D.chapterOf(opts.level).levels) for (const w of D.levels[n].waves) for (const [type] of w.groups) if (fodder(type) && !types.includes(type)) types.push(type);
+        fallback = types.reduce((a, b) => (a === null || D.monsters[b].hp < D.monsters[a].hp ? b : a), null) || 'slime';
       }
-      return minions.map((g, wi) => (perWave[wi] ? [[cheap, perWave[wi]]] : null));
+      const perWave = share(waveSums, total);
+      return this.level.waves.map((w, wi) => {
+        if (!perWave[wi]) return null;
+        if (fallback) return [[fallback, perWave[wi]]];
+        const groups = w.groups.filter(([type]) => fodder(type));
+        if (!groups.length) return null;
+        return share(groups.map(([, c]) => count(c)), perWave[wi]).map((n, k) => [groups[k][0], n]).filter(([, n]) => n > 0);
+      });
     }
 
     // 补给出现在哪几波之后（波序号从 0 开始）

@@ -109,7 +109,8 @@
 
   // ---------- 九层妖塔（设计书 74；取代原来的 Boss 连战） ----------
   const T = () => D.tower;
-  M.towerUnlocked = (save) => P.isCleared(save, 60);
+  // 一开始就开放（v0.77 起不用先通关第 60 关）；难度随你通关的进度走，见 towerStage
+  M.towerUnlocked = () => true;
 
   // 可以出场的妖王：已经搬进小镇的朋友（设计书 52.7）的"妖塔版"
   M.towerBossList = (save) => D.town.filter((f) => !save || P.isCleared(save, f.level)).map((f) => f.boss);
@@ -125,8 +126,8 @@
     const boss = Math.round(total * M.towerBossShare(floor));
     return { boss, minion: total - boss, total, share: boss / total };
   };
-  // 难度按已通关的最高关卡折算（至少按第 60 关）；越高的层血量越高
-  M.towerStage = (save) => Math.max(60, Math.min(Math.max(...Object.keys(D.levels).map(Number)), P.highestCleared(save)));
+  // 难度按已通关的最高关卡折算（刚开始就按第 1 关）；越高的层血量越高
+  M.towerStage = (save) => Math.max(1, Math.min(Math.max(...Object.keys(D.levels).map(Number)), P.highestCleared(save)));
   // 难度系数按第 70 关封顶：第 71 关以后的回声小妖本身就比旧怪物强（设计书 75.4）
   M.towerD = (save, floor) => C.difficulty(Math.min(70, M.towerStage(save))) * T().base * Math.pow(T().grow, floor - 1);
 
@@ -166,8 +167,9 @@
     const stage = M.towerStage(save);
     const waves = [];
     for (let w = 0; w < per; w++) {
-      const nb = Math.round(cnt.boss / per);
-      const nm = Math.round(cnt.minion / per);
+      // 还没有小镇朋友（没通关过任何一个 Boss）时没有妖王可用，这部分名额换成小妖
+      const nb = bosses.length ? Math.round(cnt.boss / per) : 0;
+      const nm = Math.round(cnt.minion / per) + (bosses.length ? 0 : Math.round(cnt.boss / per));
       // 出怪间隔：一波大约在 (12 + 2×层数) 秒里全部涌出
       const gap = Math.max(0.05, (12 + 2 * floor) / (nb + nm));
       waves.push({ gap, groups: [...spread(minions, nm), ...spread(bosses, nb)], D: M.towerD(save, floor), chapter: D.chapterOf(Math.min(stage, 100)).id });
@@ -182,7 +184,7 @@
       supplyEvery: 1,
       startWallRatio: (save.towerRun && save.towerRun.floor === floor && save.towerRun.wallRatio) || 1,
       stage,
-      tip: `第 ${floor} 层：${cnt.boss} 个妖王 + ${cnt.minion} 只小妖同时涌来（强度 ×${Math.pow(T().grow, floor - 1).toFixed(2)}）。城墙血量接着上一层，不会恢复；打怪没有收益，只有过关才有钻石！`,
+      tip: `第 ${floor} 层：${bosses.length ? cnt.boss : 0} 个妖王 + ${bosses.length ? cnt.minion : cnt.total} 只小妖同时涌来（强度 ×${Math.pow(T().grow, floor - 1).toFixed(2)}）。城墙血量接着上一层，不会恢复；打怪没有收益，只有过关才有钻石！`,
     };
   };
 

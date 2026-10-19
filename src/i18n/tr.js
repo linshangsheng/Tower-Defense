@@ -1039,7 +1039,6 @@ TD.i18n.register("tr", {
   "南瓜头裂开后的小南瓜。": "Bölünen Balkabağı Kafa'dan çıkan küçük balkabakları.",
   "南瓜头死后会裂成 3 只小南瓜。在远处打掉它，给自己留出清理的时间。": "Balkabağı Kafa ölünce 3 küçük balkabağına bölünür. Temizlik için kendine zaman kazanmak üzere uzaktan devir.",
   "难度": "Zorluk",
-  "难度按你通关的最高关卡折算（至少按第 60 关，最高按第 70 关）；每一层补给 2 次；中途退出或刷新页面算失败。": "Zorluk, geçtiğin en yüksek bölüme göre ayarlanır (en az 60., en çok 70. bölüm). Her katta 2 ikmal. Ortada çıkmak ya da sayfayı yenilemek yenilgi sayılır.",
   "嗯！我保证！": "Evet! Söz veriyorum!",
   "嗯。守住了城墙，也守住了大家。": "Evet. Surları da herkesi de koruduk.",
   "嗯。这一次，我自己回来。": "Evet. Bu sefer kendi başıma döneceğim.",
@@ -1852,4 +1851,5 @@ TD.i18n.register("tr", {
   "Lv{0} 解锁专精": "Sv{0}'da ustalık açılır",
   "Lv{0} 可进阶": "Sv{0}'da terfi edilebilir",
   "Lyra？……好吧，我们轮流站岗。": "Lyra? ...Peki, nöbeti sırayla tutarız.",
+  "难度按你通关的最高关卡折算（最高按第 70 关）；每一层补给 2 次；中途退出或刷新页面算失败。": "Zorluk, geçtiğin en yüksek bölüme göre ayarlanır (en çok 70. bölüm). Her katta 2 ikmal. Ortada çıkmak ya da sayfayı yenilemek yenilgi sayılır.",
 });

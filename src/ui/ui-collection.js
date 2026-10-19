@@ -58,7 +58,12 @@
     const run = TD.modes.towerRunState(s, inTowerBattle());
     if (run && run.state === 'choose') return UI.showTowerChoice({ floor: run.floor, reward: TD.modes.towerReward(run.floor) }, true);
     const t = s.tower || { best: 0, runs: 0, diamonds: 0 };
-    const cnt = (k) => TD.modes.towerCounts(k);
+    // 还没有小镇朋友（没通关过任何 Boss）时没有妖王可用，这部分名额换成小妖（和 buildTower 一致）
+    const hasBoss = TD.modes.towerBossList(s).length > 0;
+    const cnt = (k) => {
+      const c = TD.modes.towerCounts(k);
+      return hasBoss ? c : { boss: 0, minion: c.total, total: c.total, share: 0 };
+    };
     const rows = [];
     for (let k = 1; k <= D.tower.floors; k++) rows.push(h('tr', { class: t.best >= k ? 'done' : '' }, h('td', null, `第 ${k} 层`), h('td', null, `${cnt(k).boss} 妖王 + ${cnt(k).minion} 小妖`, h('span', { class: 'hint' }, `　妖王占 ${Math.round(cnt(k).share * 100)}% · 强度 ×${Math.pow(D.tower.grow, k - 1).toFixed(2)}`)), h('td', null, coinIcon('diamond'), ' ', TD.modes.towerReward(k))));
     const canStart = TD.modes.towerCanStart(s);
@@ -75,7 +80,7 @@
           h('li', null, '怪物同时大量涌来，打怪没有任何收益；只有"过关"才有钻石。钻石只能在这里获得。越往上，妖王的比例越高：第 1 层 10%，第 9 层 50%。'),
           h('li', null, '每过一层可以领取这一层的钻石离开，或者继续往上：再过一层，钻石翻倍；失败了，什么都没有。'),
           h('li', null, `每往上一层，怪物的血量和攻城伤害都 ×${D.tower.grow}；城墙的血量接着上一层，不会恢复（只有修缮、补给卡、道具和技能能回血）。`),
-          h('li', null, `难度按你通关的最高关卡折算（至少按第 60 关，最高按第 70 关）；每一层补给 2 次；中途退出或刷新页面算失败。`)
+          h('li', null, `难度按你通关的最高关卡折算（最高按第 70 关）；每一层补给 2 次；中途退出或刷新页面算失败。`)
         ),
         canStart ? null : h('div', { class: 'hint warn' }, s.towerRun ? '还有一趟挑战没有结算。' : `需要 ${P.costText(D.tower.fee)}（先去商店的汇兑所把银币换成金币）。`),
         h(

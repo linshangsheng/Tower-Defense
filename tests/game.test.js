@@ -1294,11 +1294,17 @@ test('技能协同：碎冰（冰冻领域里雷霆加伤）、鼓点箭雨（�
   assert.strictEqual(d.combos.drumRain, 1);
 });
 
-test('九层妖塔：通关第 60 关解锁；第 N 层共 200N 只怪（妖王占比 10% → 50%），分 3 波；钻石 2^(N−1)', () => {
+test('九层妖塔：一开始就开放；第 N 层共 200N 只怪（妖王占比 10% → 50%），分 3 波；钻石 2^(N−1)', () => {
   const s = P.newSave();
-  assert.ok(!TD.modes.towerUnlocked(s));
+  assert.ok(TD.modes.towerUnlocked(s), '新存档也能进');
+  assert.strictEqual(TD.modes.towerStage(s), 1, '难度按通关进度折算，刚开始按第 1 关');
+  // 还没有小镇朋友时没有妖王可用：名额换成小妖，总数不变
+  const first = TD.modes.buildTower(s, 3);
+  assert.ok(!first.waves.some((w) => w.groups.some(([t]) => D.monsters[t].boss)));
+  assert.strictEqual(first.waves.reduce((a, w) => a + w.groups.reduce((x, [, n]) => x + n, 0), 0), 600);
   clearUpTo(s, 60);
   assert.ok(TD.modes.towerUnlocked(s));
+  assert.strictEqual(TD.modes.towerStage(s), 60);
   assert.strictEqual(D.tower.floors, 9);
   assert.deepStrictEqual([1, 2, 3, 4, 5, 6, 7, 8, 9].map((k) => TD.modes.towerReward(k)), [1, 2, 4, 8, 16, 32, 64, 128, 256]);
   for (const k of [1, 2, 5, 9]) {
@@ -3043,27 +3049,33 @@ const baseCounts = (n) => {
     bosses: lv.waves.reduce((a, w) => a + w.groups.reduce((x, [t, c]) => x + (D.monsters[t].boss ? c : 0), 0), 0),
   };
 };
-const expectedExtra = (n) => Math.round(n * TD.config.extraMonstersPerLevel * (D.levels[n].extraMult === undefined ? 1 : D.levels[n].extraMult));
+const expectedExtra = (n) => (n < TD.config.extraFromLevel ? 0 : Math.round(n * TD.config.extraMonstersPerLevel));
 
-test('主线第 N 关总共多出 N × 系数 只小怪（和原有的同类怪一模一样），Boss 数量不变', () => {
-  assert.ok(TD.config.extraMonstersPerLevel > 0);
+test('主线第 5 关起，第 N 关总共多出 N × 5 只小怪（和原有的同类怪一模一样），Boss 数量不变；前 4 关不加', () => {
+  assert.strictEqual(TD.config.extraFromLevel, 5);
+  assert.strictEqual(TD.config.extraMonstersPerLevel, 5);
   for (let n = 1; n <= 100; n++) {
     const base = baseCounts(n);
     const r = queuedTotals(n);
     assert.strictEqual(r.minions - base.minions, expectedExtra(n), `第 ${n} 关多出的小怪数`);
     assert.strictEqual(r.bosses, base.bosses, `第 ${n} 关 Boss 数量不变`);
   }
+  assert.strictEqual(expectedExtra(4), 0);
+  assert.strictEqual(expectedExtra(5), 25);
+  assert.strictEqual(expectedExtra(100), 500);
 });
 
-test('多出的小怪是本关最弱的普通小怪：不是 Boss、不是要停在远处或会影响别的怪的类型，且全是同一种', () => {
+test('多出来的小怪就是本关原有的小怪种类：不是 Boss、不是要停在远处或会影响别的怪的类型（本关没有可用的才借本章的）', () => {
   const deny = ['boss', 'towerOf', 'bossPart', 'ai', 'healer', 'ranged', 'chill', 'bubbler', 'fireZone', 'onDeath', 'staticShock', 'stealth'];
-  for (const n of [5, 30, 50, 65, 87, 100]) {
-    const own = queuedTotals(n);
-    const b = own.b;
-    const extraTypes = new Set();
-    for (const p of b.extraPlan) if (p) for (const [t] of p) extraTypes.add(t);
-    assert.ok(extraTypes.size <= 1, `第 ${n} 关只用一种`);
-    for (const t of extraTypes) assert.ok(!deny.some((k) => D.monsters[t][k]), `第 ${n} 关的 ${t} 不该当小怪`);
+  for (const n of [5, 10, 30, 50, 65, 87, 100]) {
+    const own = new Set(D.levels[n].waves.flatMap((w) => w.groups.map(([t]) => t)));
+    for (const p of queuedTotals(n).b.extraPlan) {
+      if (!p) continue;
+      for (const [t] of p) {
+        assert.ok(!deny.some((k) => D.monsters[t][k]), `第 ${n} 关的 ${t} 不该当小怪`);
+        if ([...own].some((o) => !deny.some((k) => D.monsters[o][k]))) assert.ok(own.has(t), `第 ${n} 关多出的 ${t} 应该是本关原有的种类`);
+      }
+    }
   }
 });
 
@@ -3079,7 +3091,7 @@ test('多出的小怪：只在主线关卡里加（自定义关卡不加），�
   const tot = sums.reduce((x, y) => x + y, 0);
   const want = expectedExtra(40);
   assert.strictEqual(extra.reduce((x, y) => x + y, 0), want);
-  extra.forEach((e, i) => assert.ok(Math.abs(e - (want * sums[i]) / tot) <= 1.5, `第 ${i + 1} 波分摊`));
+  extra.forEach((e, i) => assert.ok(Math.abs(e - (want * sums[i]) / tot) <= 8, `第 ${i + 1} 波分摊`));
 });
 
 test('多出的小怪和原有的同类怪完全一样：血量、伤害、铜币都不打折，会停在城墙前啃', () => {

@@ -39,7 +39,7 @@
     },
 
     // 游戏版本：与设计书版本号、sw.js 的缓存名保持一致（测试会检查）
-    version: 'v0.76',
+    version: 'v0.77',
 
     // 英雄（设计书 42）：在 hero 基础值上乘以倍率；所有升级共用
     heroes: {
@@ -89,8 +89,9 @@
       [1, 0],
     ],
 
-    // 主线第 N 关整关总共多出 N × 这个数 只小怪（设计书 84）
-    extraMonstersPerLevel: 0.25,
+    // 主线第 N 关（N ≥ extraFromLevel）整关总共多出 N × extraMonstersPerLevel 只小怪（设计书 84）
+    extraFromLevel: 5,
+    extraMonstersPerLevel: 5,
 
     exchange: {
       copperPerSilver: 100,

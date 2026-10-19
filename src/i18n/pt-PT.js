@@ -1039,7 +1039,6 @@ TD.i18n.register("pt-PT", {
   "南瓜头裂开后的小南瓜。": "Abobrinhas saídas de uma Cabeça de Abóbora partida.",
   "南瓜头死后会裂成 3 只小南瓜。在远处打掉它，给自己留出清理的时间。": "As Cabeças de Abóbora dividem-se em 3 abobrinhas ao morrer. Elimina-as ao longe para teres tempo de limpar.",
   "难度": "Dificuldade",
-  "难度按你通关的最高关卡折算（至少按第 60 关，最高按第 70 关）；每一层补给 2 次；中途退出或刷新页面算失败。": "A dificuldade é ajustada ao nível mais alto que passaste (no mínimo nível 60, no máximo nível 70). 2 provisões por andar. Sair a meio ou atualizar a página conta como falha.",
   "嗯！我保证！": "Hm! Prometo!",
   "嗯。守住了城墙，也守住了大家。": "Hm. Defendemos a muralha e defendemos todos juntos.",
   "嗯。这一次，我自己回来。": "Hm. Desta vez, volto por mim.",
@@ -1852,4 +1851,5 @@ TD.i18n.register("pt-PT", {
   "Lv{0} 解锁专精": "Nv{0} desbloqueia mestria",
   "Lv{0} 可进阶": "Nv{0} pode evoluir",
   "Lyra？……好吧，我们轮流站岗。": "Lyra? …Está bem, fazemos a guarda à vez.",
+  "难度按你通关的最高关卡折算（最高按第 70 关）；每一层补给 2 次；中途退出或刷新页面算失败。": "A dificuldade é ajustada ao nível mais alto que passaste (no máximo nível 70). 2 provisões por andar. Sair a meio ou atualizar a página conta como falha.",
 });

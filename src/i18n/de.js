@@ -1039,7 +1039,6 @@ TD.i18n.register("de", {
   "南瓜头裂开后的小南瓜。": "Kleine Kürbisse aus einem geplatzten Kürbiskopf.",
   "南瓜头死后会裂成 3 只小南瓜。在远处打掉它，给自己留出清理的时间。": "Kürbisköpfe zerfallen beim Tod in 3 kleine Kürbisse. Erledige ihn aus der Ferne, damit du Zeit zum Aufräumen hast.",
   "难度": "Schwierigkeit",
-  "难度按你通关的最高关卡折算（至少按第 60 关，最高按第 70 关）；每一层补给 2 次；中途退出或刷新页面算失败。": "Die Schwierigkeit richtet sich nach deinem höchsten abgeschlossenen Level (mindestens wie Level 60, höchstens wie Level 70). 2 Nachschübe pro Etage. Mittendrin beenden oder die Seite neu laden zählt als Niederlage.",
   "嗯！我保证！": "Mhm! Versprochen!",
   "嗯。守住了城墙，也守住了大家。": "Mhm. Wir haben die Mauer beschützt, und wir haben alle zusammengehalten.",
   "嗯。这一次，我自己回来。": "Mhm. Diesmal komme ich allein zurück.",
@@ -1852,4 +1851,5 @@ TD.i18n.register("de", {
   "Lv{0} 解锁专精": "Lv{0} schaltet Spezialisierung frei",
   "Lv{0} 可进阶": "Lv{0} ermöglicht Aufstieg",
   "Lyra？……好吧，我们轮流站岗。": "Lyra? … Na gut, wir wechseln uns bei der Wache ab.",
+  "难度按你通关的最高关卡折算（最高按第 70 关）；每一层补给 2 次；中途退出或刷新页面算失败。": "Die Schwierigkeit richtet sich nach deinem höchsten abgeschlossenen Level (höchstens wie Level 70). 2 Nachschübe pro Etage. Mittendrin beenden oder die Seite neu laden zählt als Niederlage.",
 });

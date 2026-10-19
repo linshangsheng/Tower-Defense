@@ -1039,7 +1039,6 @@ TD.i18n.register("vi", {
   "南瓜头裂开后的小南瓜。": "Những quả bí ngô nhỏ sau khi Đầu Bí ngô nứt ra.",
   "南瓜头死后会裂成 3 只小南瓜。在远处打掉它，给自己留出清理的时间。": "Đầu Bí ngô khi chết sẽ nứt thành 3 quả bí ngô nhỏ. Hạ nó từ xa để có thời gian dọn dẹp.",
   "难度": "Độ khó",
-  "难度按你通关的最高关卡折算（至少按第 60 关，最高按第 70 关）；每一层补给 2 次；中途退出或刷新页面算失败。": "Độ khó quy theo màn cao nhất bạn đã qua (tối thiểu tính theo màn 60, tối đa tính theo màn 70); mỗi tầng tiếp tế 2 lần; thoát giữa chừng hoặc tải lại trang tính là thất bại.",
   "嗯！我保证！": "Ừ! Tớ hứa!",
   "嗯。守住了城墙，也守住了大家。": "Ừ. Giữ được tường thành, cũng là giữ được mọi người.",
   "嗯。这一次，我自己回来。": "Ừ. Lần này, tớ tự quay về.",
@@ -1852,4 +1851,5 @@ TD.i18n.register("vi", {
   "Lv{0} 解锁专精": "Lv{0} mở khóa tinh thông",
   "Lv{0} 可进阶": "Lv{0} có thể tiến cấp",
   "Lyra？……好吧，我们轮流站岗。": "Lyra? ...Thôi được, chúng ta thay phiên nhau gác.",
+  "难度按你通关的最高关卡折算（最高按第 70 关）；每一层补给 2 次；中途退出或刷新页面算失败。": "Độ khó quy theo màn cao nhất bạn đã qua (tối đa tính theo màn 70); mỗi tầng tiếp tế 2 lần; thoát giữa chừng hoặc tải lại trang tính là thất bại.",
 });

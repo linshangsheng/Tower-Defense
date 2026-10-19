@@ -1039,7 +1039,6 @@ TD.i18n.register("pl", {
   "南瓜头裂开后的小南瓜。": "Małe dynie z rozłupanego Dyniogłowego.",
   "南瓜头死后会裂成 3 只小南瓜。在远处打掉它，给自己留出清理的时间。": "Dyniogłowy po śmierci rozpada się na 3 małe dynie. Zabij go z daleka, by mieć czas na sprzątanie.",
   "难度": "Trudność",
-  "难度按你通关的最高关卡折算（至少按第 60 关，最高按第 70 关）；每一层补给 2 次；中途退出或刷新页面算失败。": "Trudność jest dopasowana do najwyższego ukończonego etapu (co najmniej etap 60, co najwyżej 70). 2 zaopatrzenia na piętro. Wyjście w trakcie lub odświeżenie strony liczy się jako porażka.",
   "嗯！我保证！": "Mhm! Obiecuję!",
   "嗯。守住了城墙，也守住了大家。": "Mhm. Obroniliśmy mur i obroniliśmy wszystkich razem.",
   "嗯。这一次，我自己回来。": "Mhm. Tym razem wrócę sam.",
@@ -1852,4 +1851,5 @@ TD.i18n.register("pl", {
   "Lv{0} 解锁专精": "Poz.{0} odblokowuje mistrzostwo",
   "Lv{0} 可进阶": "Poz.{0} pozwala awansować",
   "Lyra？……好吧，我们轮流站岗。": "Lyra? ...No dobrze, będziemy się zmieniać na warcie.",
+  "难度按你通关的最高关卡折算（最高按第 70 关）；每一层补给 2 次；中途退出或刷新页面算失败。": "Trudność jest dopasowana do najwyższego ukończonego etapu (co najwyżej etap 70). 2 zaopatrzenia na piętro. Wyjście w trakcie lub odświeżenie strony liczy się jako porażka.",
 });

@@ -1039,7 +1039,6 @@ TD.i18n.register("id", {
   "南瓜头裂开后的小南瓜。": "Labu-labu kecil dari Kepala Labu yang pecah.",
   "南瓜头死后会裂成 3 只小南瓜。在远处打掉它，给自己留出清理的时间。": "Kepala Labu pecah jadi 3 labu kecil saat mati. Kalahkan dari jauh agar kamu punya waktu membersihkan.",
   "难度": "Kesulitan",
-  "难度按你通关的最高关卡折算（至少按第 60 关，最高按第 70 关）；每一层补给 2 次；中途退出或刷新页面算失败。": "Kesulitan disesuaikan dengan level tertinggi yang kamu tamatkan (minimal level 60, maksimal level 70). 2 perbekalan per lantai. Keluar di tengah jalan atau memuat ulang halaman dihitung gagal.",
   "嗯！我保证！": "Ya! Aku janji!",
   "嗯。守住了城墙，也守住了大家。": "Ya. Kita menjaga tembok, dan menjaga semua orang.",
   "嗯。这一次，我自己回来。": "Ya. Kali ini, aku pulang sendiri.",
@@ -1852,4 +1851,5 @@ TD.i18n.register("id", {
   "Lv{0} 解锁专精": "Lv{0} membuka keahlian",
   "Lv{0} 可进阶": "Lv{0} bisa naik tingkat",
   "Lyra？……好吧，我们轮流站岗。": "Lyra? ...Baiklah, kita bergantian berjaga.",
+  "难度按你通关的最高关卡折算（最高按第 70 关）；每一层补给 2 次；中途退出或刷新页面算失败。": "Kesulitan disesuaikan dengan level tertinggi yang kamu tamatkan (maksimal level 70). 2 perbekalan per lantai. Keluar di tengah jalan atau memuat ulang halaman dihitung gagal.",
 });

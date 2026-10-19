@@ -604,70 +604,66 @@
     g.fillRect(0, top, W, bottom - top);
     g.globalCompositeOperation = 'source-over';
 
-    // ===== 4. 车道：被照亮的小路，边缘柔和 =====
-    for (let i = 0; i < lanes; i++) {
-      const cy = top + laneH * (i + 0.5) + 8;
-      const ph = Math.min(56, laneH * 0.42);
-      // 越近（越下方）的路越亮
-      const near = lanes > 1 ? i / (lanes - 1) : 0.5;
-      const la = P.laneAlpha || 1;
-      const band = g.createLinearGradient(0, cy - ph, 0, cy + ph);
-      band.addColorStop(0, rgba(P.lane, 0));
-      band.addColorStop(0.22, rgba(P.lane, (0.22 + near * 0.08) * la));
-      band.addColorStop(0.5, rgba(P.lane, (0.62 + near * 0.15) * la));
-      band.addColorStop(0.78, rgba(P.lane, (0.22 + near * 0.08) * la));
-      band.addColorStop(1, rgba(P.lane, 0));
-      g.fillStyle = band;
-      g.fillRect(C.wallX - 10, cy - ph, W - C.wallX + 20, ph * 2);
-      // 路面上的小石子（暗）和光斑（亮）
-      for (let x = C.wallX + 20; x < W; x += 22 + r() * 30) {
-        const y = cy + (r() - 0.5) * ph * 0.9;
-        g.fillStyle = 'rgba(60,45,30,0.22)';
+    // ===== 4. 战场地面：整片连续的地面 =====
+    // 车道只存在于逻辑里（怪物沿着各自的车道走），画面上看不出一条一条的路：不画分道的光带、不在车道之间画草丛 / 花带，
+    // 整个战场是一块被阳光照亮的完整地面，边缘柔和地融进周围
+    const fieldH = bottom - top;
+    const la = P.laneAlpha || 1;
+    const ground = g.createLinearGradient(0, top, 0, bottom);
+    ground.addColorStop(0, rgba(P.lane, 0));
+    ground.addColorStop(0.1, rgba(P.lane, 0.34 * la));
+    ground.addColorStop(0.5, rgba(P.lane, 0.52 * la));
+    ground.addColorStop(0.9, rgba(P.lane, 0.34 * la));
+    ground.addColorStop(1, rgba(P.lane, 0));
+    g.fillStyle = ground;
+    g.fillRect(C.wallX - 10, top, W - C.wallX + 20, fieldH);
+    // 地面上的小石子（暗）和光斑（亮），在整个战场里随机撒开
+    const specks = Math.round(((W - C.wallX) / 33) * Math.max(3, lanes));
+    for (let k = 0; k < specks; k++) {
+      const x = C.wallX + 20 + r() * (W - C.wallX - 20);
+      const y = top + 14 + r() * (fieldH - 28);
+      g.fillStyle = 'rgba(60,45,30,0.22)';
+      g.beginPath();
+      g.ellipse(x, y, 2 + r() * 3, 1.2 + r() * 1.5, 0, 0, Math.PI * 2);
+      g.fill();
+      if (r() < 0.35) {
+        g.fillStyle = rgba(P.rim, 0.35);
         g.beginPath();
-        g.ellipse(x, y, 2 + r() * 3, 1.2 + r() * 1.5, 0, 0, Math.PI * 2);
+        g.ellipse(x + 3, y - 2, 1.5, 1, 0, 0, Math.PI * 2);
         g.fill();
-        if (r() < 0.35) {
-          g.fillStyle = rgba(P.rim, 0.35);
-          g.beginPath();
-          g.ellipse(x + 3, y - 2, 1.5, 1, 0, 0, Math.PI * 2);
-          g.fill();
-        }
       }
     }
-
-    // 车道之间的草丛：深色草叶 + 受光的亮叶尖
-    for (let i = 0; i <= lanes; i++) {
-      const y0 = top + laneH * i;
-      for (let x = C.wallX - 30 + r() * 20; x < W + 20; x += 9 + r() * 16) {
-        const y = y0 + 4 + (r() - 0.5) * 16;
-        const h = 8 + r() * 14;
-        const lean = (r() - 0.3) * 6;
-        g.fillStyle = P.tuft;
+    // 草丛（深色草叶 + 受光的亮叶尖）和发光的小花，同样在整个战场里随机分布
+    const tufts = Math.round(((W - C.wallX + 50) / 17) * (Math.max(3, lanes) + 1) * 0.35);
+    for (let k = 0; k < tufts; k++) {
+      const x = C.wallX - 30 + r() * (W - C.wallX + 50);
+      const y = top + 6 + r() * (fieldH - 6);
+      const h = 6 + r() * 10;
+      const lean = (r() - 0.3) * 6;
+      g.fillStyle = P.tuft;
+      g.beginPath();
+      g.moveTo(x - 3, y + 4);
+      g.quadraticCurveTo(x + lean * 0.5, y - h * 0.5, x + lean, y - h);
+      g.quadraticCurveTo(x + lean * 0.3 + 2, y - h * 0.4, x + 4, y + 4);
+      g.fill();
+      if (r() < 0.55) {
+        g.strokeStyle = rgba(P.tuftTip, 0.55);
+        g.lineWidth = 1.2;
         g.beginPath();
-        g.moveTo(x - 3, y + 4);
-        g.quadraticCurveTo(x + lean * 0.5, y - h * 0.5, x + lean, y - h);
-        g.quadraticCurveTo(x + lean * 0.3 + 2, y - h * 0.4, x + 4, y + 4);
-        g.fill();
-        if (r() < 0.55) {
-          g.strokeStyle = rgba(P.tuftTip, 0.55);
-          g.lineWidth = 1.2;
-          g.beginPath();
-          g.moveTo(x + lean * 0.6, y - h * 0.6);
-          g.lineTo(x + lean, y - h);
-          g.stroke();
-        }
+        g.moveTo(x + lean * 0.6, y - h * 0.6);
+        g.lineTo(x + lean, y - h);
+        g.stroke();
       }
-      // 发光的小花
-      for (let k = 0; k < 7; k++) {
-        const fx = C.wallX + 40 + r() * (W - C.wallX - 60);
-        const fy = y0 + (r() - 0.5) * 18;
-        const col = P.flowers[Math.floor(r() * P.flowers.length)];
-        A.drawGlow(g, fx, fy, 10 + r() * 6, col, 0.55);
-        g.fillStyle = col;
-        g.beginPath();
-        g.arc(fx, fy, 1.8, 0, Math.PI * 2);
-        g.fill();
-      }
+    }
+    for (let k = 0; k < 7 * (Math.max(3, lanes) + 1); k++) {
+      const fx = C.wallX + 40 + r() * (W - C.wallX - 60);
+      const fy = top + 8 + r() * (fieldH - 16);
+      const col = P.flowers[Math.floor(r() * P.flowers.length)];
+      A.drawGlow(g, fx, fy, 10 + r() * 6, col, 0.55);
+      g.fillStyle = col;
+      g.beginPath();
+      g.arc(fx, fy, 1.8, 0, Math.PI * 2);
+      g.fill();
     }
 
     // ===== 5. 城墙后的村子：剪影小屋 + 暖色的窗灯 =====

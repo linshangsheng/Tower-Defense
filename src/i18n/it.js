@@ -1039,7 +1039,6 @@ TD.i18n.register("it", {
   "南瓜头裂开后的小南瓜。": "Zucchette nate da una Testa di Zucca spezzata.",
   "南瓜头死后会裂成 3 只小南瓜。在远处打掉它，给自己留出清理的时间。": "La Testa di Zucca, quando muore, si divide in 3 zucchette. Abbattila da lontano per avere il tempo di ripulire.",
   "难度": "Difficoltà",
-  "难度按你通关的最高关卡折算（至少按第 60 关，最高按第 70 关）；每一层补给 2 次；中途退出或刷新页面算失败。": "La difficoltà è calcolata sul livello più alto che hai superato (almeno livello 60, al massimo livello 70). 2 rifornimenti per piano. Uscire a metà o aggiornare la pagina conta come sconfitta.",
   "嗯！我保证！": "Sì! Lo prometto!",
   "嗯。守住了城墙，也守住了大家。": "Sì. Abbiamo difeso le mura e tenuto uniti tutti.",
   "嗯。这一次，我自己回来。": "Sì. Stavolta torno da solo.",
@@ -1852,4 +1851,5 @@ TD.i18n.register("it", {
   "Lv{0} 解锁专精": "Lv{0} sblocca la maestria",
   "Lv{0} 可进阶": "Lv{0} si può far evolvere",
   "Lyra？……好吧，我们轮流站岗。": "Lyra? ...Va bene, facciamo i turni di guardia.",
+  "难度按你通关的最高关卡折算（最高按第 70 关）；每一层补给 2 次；中途退出或刷新页面算失败。": "La difficoltà è calcolata sul livello più alto che hai superato (al massimo livello 70). 2 rifornimenti per piano. Uscire a metà o aggiornare la pagina conta come sconfitta.",
 });
