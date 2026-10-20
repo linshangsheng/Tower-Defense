@@ -1804,7 +1804,7 @@
     const ding = st.hero === 'ding';
     const sc = look ? look.scale : ding ? 0.93 : 1;
     // 攻击和施法的姿势（设计书 92）
-    const pose = TD.heroAnim ? TD.heroAnim.pose(st, st.aimAngle || 0) : { torso: 0, dx: 0, dy: 0, jump: 0, arm: st.aimAngle || 0, cape: 0, kick: 0, draw: 0, charge: 0, rel: 0, wind: 0 };
+    const pose = TD.heroAnim ? TD.heroAnim.pose(st, st.aimAngle || 0) : { torso: 0, dx: 0, dy: 0, jump: 0, arm: st.aimAngle || 0, cape: 0, kick: 0, draw: 0, charge: 0, rel: 0, wind: 0, stance: 1 };
     ctx.save();
     ctx.translate(x, y);
     ctx.scale(sc, sc);
@@ -1819,7 +1819,7 @@
       lean = 0.22;
       ctx.translate(0, 6);
     }
-    shadow(ctx, 0, 2, s * 0.7);
+    shadow(ctx, 0, 2, s * 0.85);
     ctx.translate(0, bob + pose.jump);
     ctx.rotate(-lean);
     const eye = look ? look.eye : '#fff2c4';
@@ -1988,16 +1988,19 @@
       }
     }
 
-    // ----- 腿：修长、收在靴子里 -----
-    const step = st.mood === 'win' ? 0 : Math.sin(t * 2.4) * 0.02;
-    for (const [lx, far] of [[s * 0.1, true], [-s * 0.1, false]]) {
-      const fx = lx + step * s * (far ? 1 : -1);
+    // ----- 腿：修长、收在靴子里；两脚前后迈开站稳，膝盖微屈（近处的腿在前，朝着敌人） -----
+    const stance = pose.stance === undefined ? 1 : pose.stance;
+    const sway = st.mood === 'win' ? 0 : Math.sin(t * 2.4) * 0.015;
+    const winNarrow = st.mood === 'win' ? 0.45 : 1;
+    for (const [lx, far, fxr, knee] of [[s * 0.05, true, -0.28 - sway, 0.04], [-s * 0.03, false, 0.34 + sway, 0.14]]) {
+      const fx = fxr * s * stance * winNarrow;
+      const midx = (lx + fx) / 2 + knee * s;
       ctx.fillStyle = deep(col.body, far ? 0.82 : 0.68);
       ctx.beginPath();
       ctx.moveTo(lx - s * 0.09, -s * 0.98);
-      ctx.quadraticCurveTo(lx - s * 0.1, -s * 0.5, fx - s * 0.06, -s * 0.2);
+      ctx.quadraticCurveTo(midx - s * 0.1, -s * 0.58, fx - s * 0.06, -s * 0.2);
       ctx.lineTo(fx + s * 0.06, -s * 0.2);
-      ctx.quadraticCurveTo(lx + s * 0.08, -s * 0.5, lx + s * 0.09, -s * 0.98);
+      ctx.quadraticCurveTo(midx + s * 0.08, -s * 0.58, lx + s * 0.09, -s * 0.98);
       ctx.closePath();
       ctx.fill();
       // 靴子
@@ -2024,12 +2027,13 @@
         ctx.moveTo(fx + s * 0.08, -s * 0.12);
         ctx.quadraticCurveTo(fx + s * 0.19, -s * 0.06, fx + s * 0.19, -s * 0.01);
         ctx.stroke();
-        const kg = ctx.createRadialGradient(lx + s * 0.03, -s * 0.66, 0.5, lx, -s * 0.62, s * 0.1);
+        const kx = 0.25 * lx + 0.5 * midx + 0.25 * fx + s * 0.03;
+        const kg = ctx.createRadialGradient(kx + s * 0.03, -s * 0.64, 0.5, kx, -s * 0.6, s * 0.1);
         kg.addColorStop(0, deep(col.helmTop, 0.25));
         kg.addColorStop(1, deep(col.helmBottom, 0.75));
         ctx.fillStyle = kg;
         ctx.beginPath();
-        ctx.ellipse(lx + s * 0.005, -s * 0.62, s * 0.07, s * 0.055, 0, 0, TAU);
+        ctx.ellipse(kx, -s * 0.6, s * 0.07, s * 0.055, 0, 0, TAU);
         ctx.fill();
       }
     }

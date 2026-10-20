@@ -58,6 +58,8 @@
     battle.on('shoot', () => TD.audio.play('shoot'));
     battle.on('death', (e) => e.copper && TD.audio.play('coin'));
     battle.on('skill', (e) => TD.audio.play({ drum: 'drum', thunder: 'thunder', frost: 'frost', repair: 'heal' }[e.id] || 'skill'));
+    // 雷霆一击的第 2 道雷起每道也响一声（第 1 道随技能一起响）
+    battle.on('thunder', (e) => e.idx > 0 && TD.audio.play('thunder'));
     battle.on('item', (e) => TD.audio.play('item_' + e.id));
     battle.on('meteorHit', () => TD.audio.play('meteorHit'));
     battle.on('scrollBolt', () => TD.audio.play('scrollBolt'));

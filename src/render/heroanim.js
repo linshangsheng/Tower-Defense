@@ -16,6 +16,17 @@
 
   // 施法动作的时长（秒）
   A.CAST_DUR = { arrowRain: 1.8, thunder: 1.1, drum: 1.1, repair: 1.3, frost: 1.2 };
+  // 雷霆一击的动作时长随雷的道数变：每道雷之间 every 秒，最后一道之后再留 0.75 秒收势（劈下 + 恢复）
+  A.castDur = function (id, strikes, every) {
+    if (id === 'thunder' && strikes > 0) return (strikes - 1) * every + 0.75;
+    return A.CAST_DUR[id];
+  };
+  // 每道雷落下时的一小下脉冲（0..1），用来让手臂下压、尖端闪光
+  A.thunderPulse = function (a, strikes, every) {
+    let p = 0;
+    for (let i = 0; i < Math.max(1, strikes || 1); i++) p = Math.max(p, Math.exp(-(((a - i * every) / 0.06) ** 2)));
+    return p;
+  };
   // 出手前的蓄力时间 / 出手后的收势时间（秒），按武器造型
   const WIND = { bow: 0.3, crossbow: 0.12, staff: 0.3, orb: 0.25, cannon: 0.25, boomerang: 0.32 };
   const REL = { bow: 0.22, crossbow: 0.2, staff: 0.28, orb: 0.24, cannon: 0.38, boomerang: 0.3 };
@@ -32,7 +43,7 @@
   //   rear = 手臂坐标系里的 (u, v)（单位 s），rearAbs = 躯干坐标系里的 (x, y)（单位 s）
   A.pose = function (st, aim) {
     const base = A.weaponBase(st.weapon);
-    const P = { base, torso: 0, dx: 0, dy: 0, jump: 0, arm: aim, rear: null, rearAbs: null, wind: 0, rel: 0, charge: 0, draw: 0, cape: 0, kick: 0, cast: null, castAge: 0, castP: 0, castBlend: 0 };
+    const P = { base, stance: 1, torso: 0, dx: 0, dy: 0, jump: 0, arm: aim, rear: null, rearAbs: null, wind: 0, rel: 0, charge: 0, draw: 0, cape: 0, kick: 0, cast: null, castAge: 0, castP: 0, castBlend: 0 };
     if (st.mood === 'lose' || st.mood === 'win') return P;
     const t = st.t || 0;
     // 站着不动时的呼吸：躯干和手臂轻轻起伏
@@ -78,6 +89,7 @@
       case 'cannon':
         // 稳住身子，开炮时整个人被后坐力顶得往后仰
         P.dy += 1.5 * e;
+        P.stance = 1 + 0.12 * e + 0.1 * rr;
         P.torso += 0.03 * e - 0.1 * rr;
         P.dx -= 5 * rr;
         P.cape += 6 * rr;
@@ -107,21 +119,26 @@
     }
 
     // ----- 施法：盖过攻击姿势 -----
-    const dur = A.CAST_DUR[st.castId];
+    const dur = A.castDur(st.castId, st.castStrikes, st.castEvery);
     if (dur && st.castAge !== undefined && st.castAge >= 0 && st.castAge < dur) {
       const a = st.castAge;
       const b = ease(a / 0.1) * ease((dur - a) / 0.25);
-      const C = castPose(st.castId, a, aim, st.castAim, P);
+      const C = castPose(st.castId, a, aim, st.castAim, st);
       P.cast = st.castId;
       P.castAge = a;
       P.castP = a / dur;
       P.castBlend = b;
+      if (st.castId === 'thunder') {
+        P.pulse = A.thunderPulse(a, st.castStrikes, st.castEvery);
+        P.slamT = ((st.castStrikes || 1) - 1) * (st.castEvery || 0.22) + 0.2;
+      }
       P.arm = mix(P.arm, C.arm, b);
       P.torso = mix(P.torso, C.torso, b);
       P.dx = mix(P.dx, C.dx, b);
       P.dy = mix(P.dy, C.dy, b);
       P.jump = C.jump * b;
       P.cape = mix(P.cape, C.cape, b);
+      P.stance = mix(P.stance, C.stance || 1, b);
       P.charge = mix(P.charge, C.charge, b);
       P.draw = P.draw * (1 - b);
       P.kick = P.kick * (1 - b);
@@ -134,7 +151,7 @@
   };
 
   // 5 个技能的施法动作（a = 施法后经过的秒数）
-  function castPose(id, a, aim, castAim, P) {
+  function castPose(id, a, aim, castAim, st) {
     const C = { arm: aim, torso: 0, dx: 0, dy: 0, jump: 0, cape: 0, charge: 1, rear: null, rearAbs: null };
     switch (id) {
       case 'arrowRain':
@@ -146,12 +163,15 @@
         C.rear = { u: 0.34, v: 0.07 };
         break;
       case 'thunder': {
-        // 举起武器唤来雷电（雷落下的一瞬间在最高点停住），接着猛地劈下
+        // 举起武器唤来雷电：每劈下一道雷，手臂就往下一压；最后一道之后猛地劈下收势
+        const n = st.castStrikes || 3;
+        const every = st.castEvery || 0.22;
         const up = ease(a / 0.14);
-        const slam = ease((a - 0.55) / 0.14);
-        C.arm = mix(mix(aim, -1.5, up), aim + 0.25, slam);
-        C.torso = mix(-0.14 * up, 0.16, slam);
-        C.dx = mix(-1 * up, 4, slam);
+        const slam = ease((a - ((n - 1) * every + 0.2)) / 0.14);
+        const pulse = A.thunderPulse(a, n, every);
+        C.arm = mix(mix(aim, -1.5, up), aim + 0.25, slam) + 0.3 * pulse * (1 - slam);
+        C.torso = mix(-0.14 * up + 0.05 * pulse, 0.16, slam);
+        C.dx = mix(-1 * up + pulse, 4, slam);
         C.cape = mix(7, -2, slam);
         C.rear = { u: 0.34, v: 0.07 };
         break;
@@ -166,6 +186,7 @@
         C.arm = mix(aim, -1.15 + Math.sin(a * 24) * 0.05, up);
         C.torso = 0.1 * crouch - 0.12 * up;
         C.cape = 8 * air + 3;
+        C.stance = 1 - 0.4 * air + 0.25 * crouch;
         C.rearAbs = { x: -0.12 + Math.sin(a * 24 + 1) * 0.02, y: -2.2 };
         C.charge = 0.7;
         break;
@@ -178,6 +199,7 @@
         C.dy = 5 * kneel;
         C.dx = 3 * kneel;
         C.cape = 1;
+        C.stance = 1.3;
         C.rear = { u: 0.3, v: 0.12 };
         break;
       }
@@ -189,6 +211,7 @@
         C.arm = mix(mix(aim, -0.9, back), target + 0.1, sweep);
         C.torso = mix(-0.1 * back, 0.15, sweep);
         C.dx = 3 * sweep;
+        C.stance = 1 + 0.15 * sweep;
         C.cape = mix(2, 6, sweep);
         C.rearAbs = { x: -0.5 + 0.1 * Math.sin(a * 8), y: -1.0 };
         break;
@@ -224,8 +247,9 @@
         break;
       }
       case 'thunder': {
-        const slam = ease((a - 0.55) / 0.14) * (1 - ease((a - 0.7) / 0.3));
-        K.glow(ctx, tx, 0, s * (0.7 + slam * 0.7), '#d8b8ff', (0.7 + slam * 0.3) * k, true);
+        const sT = P.slamT || 0.55;
+        const slam = Math.max(ease((a - sT) / 0.14) * (1 - ease((a - sT - 0.15) / 0.3)), (P.pulse || 0) * 0.8);
+        K.glow(ctx, tx, 0, s * (0.7 + slam * 0.7), '#d8b8ff', Math.min(1, (0.7 + slam * 0.3) * k), true);
         const seed = Math.floor(t * 22);
         for (let i = 0; i < 4; i++) K.veins(ctx, tx, 0, s * (0.5 + slam * 0.4), (i / 4) * TAU + seed, 2, i % 2 ? '#ffffff' : '#b98cff', 0.9 * k, seed * 5 + i, 1.6);
         break;
@@ -267,8 +291,9 @@
 
   // ---------- 脚下和身边的大光效（渲染器在主角后面画 'back'、前面画 'front'） ----------
   // x, y 是主角脚下的位置；age 是施法后经过的秒数
-  A.fx = function (ctx, x, y, id, age, t, layer) {
-    const dur = A.CAST_DUR[id];
+  A.fx = function (ctx, x, y, id, age, t, layer, ex) {
+    ex = ex || {};
+    const dur = A.castDur(id, ex.strikes, ex.every);
     if (!dur || age === undefined || age < 0 || age >= dur) return;
     const K = TD.creatures;
     const p = age / dur;
@@ -299,12 +324,12 @@
           const seed = Math.floor(t * 18);
           for (let i = 0; i < 5; i++) K.veins(ctx, 0, -2, 46, -0.1 + ((i - 2) * Math.PI) / 7 + (i % 2 ? Math.PI : 0) * 0.0, 1, i % 2 ? '#ffffff' : '#c8a0ff', 0.8 * env, seed * 7 + i, 1.4);
           pillar(ctx, 0, 0, 60, 200, '#c8a0ff', env * 0.4);
-        } else if (age < 0.18) {
-          // 雷落下的一瞬间，整个人被白光照亮
-          K.glow(ctx, 6, -52, 110, '#e8d8ff', (1 - age / 0.18) * 0.5);
-        } else if (age > 0.55 && age < 0.85) {
-          // 劈下时的冲击环
-          ring(ctx, 14, -30, (age - 0.55) / 0.3, 90, '#d8b8ff', 0.9);
+        } else {
+          // 每道雷落下的一瞬间，整个人被白光照亮；最后劈下时一圈冲击环
+          const pulse = A.thunderPulse(age, ex.strikes, ex.every);
+          if (pulse > 0.02) K.glow(ctx, 6, -52, 110, '#e8d8ff', pulse * 0.5);
+          const slamT = ((ex.strikes || 3) - 1) * (ex.every || 0.22) + 0.2;
+          if (age > slamT && age < slamT + 0.3) ring(ctx, 14, -30, (age - slamT) / 0.3, 90, '#d8b8ff', 0.9);
         }
         break;
       case 'drum':

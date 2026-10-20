@@ -1884,4 +1884,9 @@ TD.i18n.register("en", {
   "长队、快怪": "Long lines, fast monsters",
   "Boss、成团的怪": "Bosses, clustered monsters",
   "Boss、重甲怪": "Bosses, heavy armor monsters",
+  "3 道雷，每道攻击力 ×2.5": "3 bolts, each ×2.5 ATK",
+  "4 道雷，每道攻击力 ×3": "4 bolts, each ×3 ATK",
+  "5 道雷，每道攻击力 ×3.5，并连锁附近 3 只怪（每只 50%）": "5 bolts, each ×3.5 ATK, chaining to 3 nearby monsters (50% each)",
+  "Lv3 以后每 5 级多劈 1 道雷（最多 15 道），每升一级伤害再强一点、冷却再短一点": "After Lv3, every 5 levels adds 1 more bolt (up to 15). Each level also boosts damage a bit and shortens cooldown a bit",
+  "连续劈下 3 道雷霆，每道劈向当前血量最高的怪（尽量各劈不同的怪），造成攻击力 ×2.5 的魔法伤害。": "Calls down 3 thunderbolts in a row, each striking the monster with the most HP (different monsters if possible), dealing ×2.5 ATK magic damage.",
 });

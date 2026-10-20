@@ -1884,4 +1884,9 @@ TD.i18n.register("es", {
   "长队、快怪": "Filas largas, monstruos rápidos",
   "Boss、成团的怪": "Jefes, monstruos agrupados",
   "Boss、重甲怪": "Jefes, armadura pesada",
+  "3 道雷，每道攻击力 ×2.5": "3 rayos, cada uno con ataque ×2.5",
+  "4 道雷，每道攻击力 ×3": "4 rayos, cada uno con ataque ×3",
+  "5 道雷，每道攻击力 ×3.5，并连锁附近 3 只怪（每只 50%）": "5 rayos, cada uno con ataque ×3.5, y encadena a 3 monstruos cercanos (50% cada uno)",
+  "Lv3 以后每 5 级多劈 1 道雷（最多 15 道），每升一级伤害再强一点、冷却再短一点": "Después de Lv3, cada 5 niveles cae 1 rayo más (máx. 15); cada nivel sube un poco el daño y baja un poco la recarga",
+  "连续劈下 3 道雷霆，每道劈向当前血量最高的怪（尽量各劈不同的怪），造成攻击力 ×2.5 的魔法伤害。": "Lanza 3 rayos seguidos, cada uno contra el monstruo con más vida (intentando elegir monstruos distintos), y causa daño mágico de ataque ×2.5.",
 });

@@ -1884,4 +1884,9 @@ TD.i18n.register("tr", {
   "长队、快怪": "Uzun kuyruklar, hızlı canavarlar",
   "Boss、成团的怪": "Boss, kümelenmiş canavarlar",
   "Boss、重甲怪": "Boss, ağır zırhlılar",
+  "3 道雷，每道攻击力 ×2.5": "3 yıldırım, her biri saldırı gücü ×2.5",
+  "4 道雷，每道攻击力 ×3": "4 yıldırım, her biri saldırı gücü ×3",
+  "5 道雷，每道攻击力 ×3.5，并连锁附近 3 只怪（每只 50%）": "5 yıldırım, her biri saldırı gücü ×3.5, ayrıca yakındaki 3 canavara zincirlenir (her biri %50)",
+  "Lv3 以后每 5 级多劈 1 道雷（最多 15 道），每升一级伤害再强一点、冷却再短一点": "Lv3'ten sonra her 5 seviyede +1 yıldırım (en fazla 15). Her seviyede hasar biraz artar, bekleme süresi biraz kısalır",
+  "连续劈下 3 道雷霆，每道劈向当前血量最高的怪（尽量各劈不同的怪），造成攻击力 ×2.5 的魔法伤害。": "Art arda 3 yıldırım indirir. Her biri canı en yüksek canavara çarpar (mümkünse her biri farklı bir canavara) ve saldırı gücü ×2.5 büyü hasarı verir.",
 });

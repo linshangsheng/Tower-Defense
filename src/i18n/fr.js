@@ -1884,4 +1884,9 @@ TD.i18n.register("fr", {
   "长队、快怪": "Longues files, monstres rapides",
   "Boss、成团的怪": "Boss, monstres en groupe",
   "Boss、重甲怪": "Boss, monstres lourdement blindés",
+  "3 道雷，每道攻击力 ×2.5": "3 éclairs, chacun ATQ ×2.5",
+  "4 道雷，每道攻击力 ×3": "4 éclairs, chacun ATQ ×3",
+  "5 道雷，每道攻击力 ×3.5，并连锁附近 3 只怪（每只 50%）": "5 éclairs, chacun ATQ ×3.5, et ils enchaînent 3 monstres proches (50 % chacun)",
+  "Lv3 以后每 5 级多劈 1 道雷（最多 15 道），每升一级伤害再强一点、冷却再短一点": "Après Lv3, +1 éclair tous les 5 niveaux (15 max). Chaque niveau augmente un peu les dégâts et réduit le délai de recharge",
+  "连续劈下 3 道雷霆，每道劈向当前血量最高的怪（尽量各劈不同的怪），造成攻击力 ×2.5 的魔法伤害。": "Fait tomber 3 éclairs d'affilée, chacun sur le monstre avec le plus de PV (si possible des monstres différents), et inflige des dégâts magiques de ATQ ×2.5.",
 });

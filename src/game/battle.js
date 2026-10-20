@@ -8,6 +8,8 @@
   let nextId = 1;
 
   // 技能协同（设计书 45）
+  // 雷霆一击两道雷之间的间隔：次数多时压紧，整套雷不超过约 1.2 秒
+  const thunderEvery = (n) => Math.min(0.22, 1.2 / n);
   const SYNERGY = { shatter: D.synergies.shatter.mult, drumRain: D.synergies.drumRain.mult };
   const AUTO_ORDER = { drum: 1, frost: 2, repair: 3, arrowRain: 4, thunder: 5 };
   // 英雄自己的攻击（受盾龟护卫影响）：武器、溅射、连锁闪电
@@ -86,7 +88,7 @@
       this.itemsUsed = [];
       if (this.charm) this.itemsUsed.push('charm');
 
-      this.hero = { cooldown: 0.6, attacks: 0, aimX: C.width / 2, aimY: C.height / 2, shotAt: -1, castId: null, castAt: -99, castLane: undefined };
+      this.hero = { cooldown: 0.6, attacks: 0, aimX: C.width / 2, aimY: C.height / 2, shotAt: -1, castId: null, castAt: -99, castLane: undefined, castStrikes: 0, castEvery: 0 };
       this.heroY = (C.fieldTop + C.fieldBottom) / 2;
 
       // 波次
@@ -1443,26 +1445,12 @@
           this.laneEffects.push({ lane, type: 'frost', slow: def.slow, until: this.time + def.duration * (1 + this.mods.frostExt), start: this.time, freezeEnd: def.freezeEnd || 0 });
           break;
         case 'thunder': {
-          let best = null;
-          for (const m of this.monsters) if (this.isTargetable(m) && (!best || m.hp > best.hp)) best = m;
-          if (!best) return false;
-          this.emit('thunder', { x: best.x, y: best.y + best.yOffset });
-          const bx = best.x;
-          const by = best.y;
-          // 协同"碎冰"（设计书 45）：打在被冰冻领域减速 / 冰冻的怪身上伤害 ×1.5
-          const shatter = (m) => (this.inFrost(m) ? SYNERGY.shatter : 1);
-          if (this.inFrost(best)) this.emitCombo('shatter', best.x, best.y + best.yOffset - 40);
-          this.damage(best, atk * def.atkMult * shatter(best), { type: 'magic', fromFront: false, source: 'thunder' });
-          if (def.chain) {
-            const near = this.monsters
-              .filter((m) => m !== best && this.isTargetable(m) && Math.hypot(m.x - bx, m.y - by) <= def.chainRange)
-              .sort((a, b) => Math.hypot(a.x - bx, a.y - by) - Math.hypot(b.x - bx, b.y - by))
-              .slice(0, def.chain);
-            for (const m of near) {
-              this.emit('thunderChain', { x0: bx, y0: by + best.yOffset, x: m.x, y: m.y + m.yOffset });
-              this.damage(m, atk * def.atkMult * def.chainMult * shatter(m), { type: 'magic', fromFront: false, source: 'thunder' });
-            }
-          }
+          // 连续劈下 def.strikes 道雷：第一道马上落下，其余隔一小会儿一道（尽量各劈不同的怪）
+          const struck = new Set();
+          const first = this.thunderStrike(def, struck);
+          if (!first) return false;
+          const n = def.strikes || 1;
+          if (n > 1) this.thunderQ = { left: n - 1, every: thunderEvery(n), timer: thunderEvery(n), def, struck, idx: 1 };
           break;
         }
       }
@@ -1471,6 +1459,8 @@
       this.hero.castId = s.id;
       this.hero.castAt = this.time;
       this.hero.castLane = lane;
+      this.hero.castStrikes = s.id === 'thunder' ? def.strikes || 1 : 0;
+      this.hero.castEvery = s.id === 'thunder' ? thunderEvery(def.strikes || 1) : 0;
       this.castCount++;
       this.skillsCast++;
       this.emit('skill', { id: s.id, lane });
@@ -1659,6 +1649,49 @@
       this.meteors = this.meteors.filter((mt) => !mt.done);
     }
 
+    // 雷霆一击的一道雷：劈向（还没被这次劈过的）血量最高的怪；返回被劈的怪，没有目标返回 null
+    thunderStrike(def, struck, idx) {
+      const all = this.monsters.filter((m) => this.isTargetable(m));
+      const fresh = all.filter((m) => !struck.has(m));
+      const pool = fresh.length ? fresh : all;
+      let best = null;
+      for (const m of pool) if (!best || m.hp > best.hp) best = m;
+      if (!best) return null;
+      struck.add(best);
+      this.emit('thunder', { x: best.x, y: best.y + best.yOffset, idx: idx || 0 });
+      const bx = best.x;
+      const by = best.y;
+      const atk = this.atk;
+      // 协同"碎冰"（设计书 45）：打在被冰冻领域减速 / 冰冻的怪身上伤害 ×1.5
+      const shatter = (m) => (this.inFrost(m) ? SYNERGY.shatter : 1);
+      if (this.inFrost(best)) this.emitCombo('shatter', best.x, best.y + best.yOffset - 40);
+      this.damage(best, atk * def.atkMult * shatter(best), { type: 'magic', fromFront: false, source: 'thunder' });
+      if (def.chain) {
+        const near = this.monsters
+          .filter((m) => m !== best && this.isTargetable(m) && Math.hypot(m.x - bx, m.y - by) <= def.chainRange)
+          .sort((a, b) => Math.hypot(a.x - bx, a.y - by) - Math.hypot(b.x - bx, b.y - by))
+          .slice(0, def.chain);
+        for (const m of near) {
+          this.emit('thunderChain', { x0: bx, y0: by + best.yOffset, x: m.x, y: m.y + m.yOffset });
+          this.damage(m, atk * def.atkMult * def.chainMult * shatter(m), { type: 'magic', fromFront: false, source: 'thunder' });
+        }
+      }
+      return best;
+    }
+
+    // 雷霆一击后面的几道雷
+    updateThunder(dt) {
+      const q = this.thunderQ;
+      if (!q) return;
+      q.timer -= dt;
+      while (q.timer <= 0 && q.left > 0) {
+        q.timer += q.every;
+        q.left--;
+        this.thunderStrike(q.def, q.struck, q.idx++);
+      }
+      if (q.left <= 0) this.thunderQ = null;
+    }
+
     // 箭雨：逐支落下，每支随机命中射程内的一只怪
     updateRain(dt) {
       const r = this.rain;
@@ -1805,6 +1838,7 @@
       if (this.zones.length && this.zones[0].until < this.time) this.zones = this.zones.filter((z) => z.until >= this.time);
       this.updateHero(dt);
       this.updateRain(dt);
+      this.updateThunder(dt);
       this.updateMeteors();
       this.updateProjectiles(dt);
       if (this.autoCast || this.autoItems) this.updateAuto();

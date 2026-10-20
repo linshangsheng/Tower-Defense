@@ -1884,4 +1884,9 @@ TD.i18n.register("it", {
   "长队、快怪": "Lunghe file, mostri veloci",
   "Boss、成团的怪": "Boss, mostri raggruppati",
   "Boss、重甲怪": "Boss, mostri corazzati",
+  "3 道雷，每道攻击力 ×2.5": "3 fulmini, ciascuno con attacco ×2.5",
+  "4 道雷，每道攻击力 ×3": "4 fulmini, ciascuno con attacco ×3",
+  "5 道雷，每道攻击力 ×3.5，并连锁附近 3 只怪（每只 50%）": "5 fulmini, ciascuno con attacco ×3.5, e colpiscono a catena 3 mostri vicini (50% ciascuno)",
+  "Lv3 以后每 5 级多劈 1 道雷（最多 15 道），每升一级伤害再强一点、冷却再短一点": "Dopo il Lv3, ogni 5 livelli +1 fulmine (max 15); a ogni livello più danni e ricarica più breve",
+  "连续劈下 3 道雷霆，每道劈向当前血量最高的怪（尽量各劈不同的怪），造成攻击力 ×2.5 的魔法伤害。": "Scaglia 3 fulmini di fila, ognuno sul mostro con più HP (se possibile mostri diversi), infliggendo danni magici pari ad attacco ×2.5.",
 });

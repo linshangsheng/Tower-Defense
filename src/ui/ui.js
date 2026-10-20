@@ -1073,7 +1073,7 @@
         desc = h('span', null, `当前：${k.tierDesc[lv - 1]} → `, h('b', { class: 'up' }, `Lv${lv + 1}：${k.tierDesc[lv]}`));
         right = buyBtn(P.skillUpgradeCost(s, id), () => P.upgradeSkill(s, id), '升阶');
       } else {
-        desc = h('span', null, `${k.tierDesc[D.skillMaxLv - 1]}；Lv3 以后每升一级，伤害 / 箭数 / 回复 / 持续时间再强一点，冷却再短一点`);
+        desc = h('span', null, k.beyondDesc ? `${k.tierDesc[D.skillMaxLv - 1]}；${k.beyondDesc}` : `${k.tierDesc[D.skillMaxLv - 1]}；Lv3 以后每升一级，伤害 / 箭数 / 回复 / 持续时间再强一点，冷却再短一点`);
         right = h('div', { class: 'btn-col' }, buyBtn(P.skillUpgradeCost(s, id), () => P.upgradeSkill(s, id), '升级'), bulkRow('skill', id));
       }
       el.append(card(h('span', { class: 'with-icon' }, TD.sprites.iconCanvas(id, 30), k.name), lv ? `Lv${lv} · 冷却 ${Math.round(P.skillDef(id, lv).cd * 10) / 10} 秒` : `冷却 ${k.cd} 秒`, desc, right));

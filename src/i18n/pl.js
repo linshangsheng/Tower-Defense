@@ -1884,4 +1884,9 @@ TD.i18n.register("pl", {
   "长队、快怪": "Długie kolejki, szybkie potwory",
   "Boss、成团的怪": "Bossy, skupiska potworów",
   "Boss、重甲怪": "Bossy, ciężko opancerzone potwory",
+  "3 道雷，每道攻击力 ×2.5": "3 pioruny, każdy o sile ataku ×2,5",
+  "4 道雷，每道攻击力 ×3": "4 pioruny, każdy o sile ataku ×3",
+  "5 道雷，每道攻击力 ×3.5，并连锁附近 3 只怪（每只 50%）": "5 piorunów, każdy o sile ataku ×3,5, i przeskakują na 3 pobliskie potwory (po 50%)",
+  "Lv3 以后每 5 级多劈 1 道雷（最多 15 道），每升一级伤害再强一点、冷却再短一点": "Od Lv3 co 5 poziomów o 1 piorun więcej (maks. 15); z każdym poziomem większe obrażenia i krótsze odnowienie",
+  "连续劈下 3 道雷霆，每道劈向当前血量最高的怪（尽量各劈不同的怪），造成攻击力 ×2.5 的魔法伤害。": "Seria 3 piorunów, każdy bije potwora z największym aktualnym HP (w miarę możliwości różne) i zadaje ×2,5 siły ataku obrażeń magicznych.",
 });

@@ -326,8 +326,8 @@ test('技能升阶：Lv2 银币、Lv3 金币，效果随等级提升', () => {
   assert.ok(P.skillUpgradeCost(s, 'thunder'), 'Lv3 以后还能升');
   s.skillLv.thunder = D.levelCap;
   assert.strictEqual(P.skillUpgradeCost(s, 'thunder'), null, '满级');
-  assert.strictEqual(P.skillDef('thunder', 3).atkMult, 7);
-  assert.strictEqual(P.skillDef('thunder', 1).atkMult, 5);
+  assert.strictEqual(P.skillDef('thunder', 3).atkMult, 3.5);
+  assert.strictEqual(P.skillDef('thunder', 1).atkMult, 2.5);
 });
 
 test('雷霆一击 Lv3 会连锁', () => {
@@ -3418,4 +3418,94 @@ test('战斗里放技能会记下施法动作所需的信息', () => {
   assert.strictEqual(b.hero.castId, 'frost');
   assert.strictEqual(b.hero.castLane, 1);
   assert.ok(Math.abs(b.hero.castAt - b.time) < 1e-9);
+});
+
+// ---------- v0.83：雷霆一击连劈多道雷（设计书 94） ----------
+test('雷霆一击：1 级就是 3 道雷，等级越高道数越多，上限 15', () => {
+  const n = (lv) => P.skillDef('thunder', lv).strikes;
+  assert.deepStrictEqual([n(1), n(2), n(3)], [3, 4, 5]);
+  assert.strictEqual(n(4), 5);
+  assert.strictEqual(n(8), 6);
+  assert.strictEqual(n(13), 7);
+  assert.ok(n(20) > n(8) && n(60) > n(20));
+  assert.strictEqual(n(500), 15);
+  assert.strictEqual(n(D.levelCap), 15);
+  // 其他技能没有道数
+  assert.strictEqual(P.skillDef('arrowRain', 1).strikes, undefined);
+});
+
+function thunderBattle(lv, monsters) {
+  const s = P.newSave();
+  s.activeOwned.thunder = true;
+  s.skillLv.thunder = lv;
+  s.loadout.active = ['thunder', null, null];
+  const b = new TD.Battle({ level: 1, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 1 });
+  b.waveState = 'final';
+  const ms = monsters.map(([type, x], i) => b.spawnMonster(type, i % 3, x));
+  for (const m of ms) m.hp = m.maxHp = 1e9;
+  b.time = 1;
+  return { b, ms };
+}
+
+test('雷霆一击：连续落下对应道数的雷，第一道马上落下，其余隔一会儿，尽量各劈不同的怪', () => {
+  for (const lv of [1, 2, 3]) {
+    const { b, ms } = thunderBattle(lv, [['goblin', 600], ['goblin', 640], ['goblin', 680], ['goblin', 720], ['goblin', 760], ['goblin', 800]]);
+    ms[3].hp = 2e9; // 血量最高的先挨第一道
+    const hits = [];
+    b.on('thunder', (e) => hits.push({ x: e.x, idx: e.idx, t: b.time }));
+    assert.ok(b.castSkill(0));
+    assert.strictEqual(hits.length, 1, '第一道马上落下');
+    assert.strictEqual(hits[0].x, ms[3].x);
+    assert.strictEqual(b.hero.castStrikes, 2 + lv);
+    assert.ok(b.hero.castEvery > 0 && b.hero.castEvery <= 0.22);
+    for (let i = 0; i < 120; i++) b.step(1 / 60);
+    assert.strictEqual(hits.length, 2 + lv, `${lv} 级共 ${2 + lv} 道雷`);
+    assert.deepStrictEqual(hits.map((h) => h.idx), [...Array(2 + lv).keys()]);
+    assert.strictEqual(new Set(hits.map((h) => h.x)).size, 2 + lv, '怪够多时每道雷劈不同的怪');
+    assert.ok(hits[hits.length - 1].t - hits[0].t > 0.3 && hits[hits.length - 1].t - hits[0].t < 1.3);
+    assert.strictEqual(b.thunderQ, null);
+  }
+});
+
+test('雷霆一击：怪不够多时重复劈血量最高的，没有怪时不放', () => {
+  const { b, ms } = thunderBattle(1, [['goblin', 600]]);
+  let hits = 0;
+  b.on('thunder', () => hits++);
+  const hp0 = ms[0].hp;
+  assert.ok(b.castSkill(0));
+  for (let i = 0; i < 120; i++) b.step(1 / 60);
+  assert.strictEqual(hits, 3);
+  assert.ok(hp0 - ms[0].hp > 0);
+  const empty = thunderBattle(1, []);
+  assert.strictEqual(empty.b.castSkill(0), false);
+});
+
+test('雷霆一击：总伤害随道数增加，每道的伤害低于原来的单道', () => {
+  const per = (lv) => P.skillDef('thunder', lv).atkMult;
+  assert.ok(per(1) < 5 && per(3) < 7, '每道比以前单道弱');
+  const total = (lv) => per(lv) * P.skillDef('thunder', lv).strikes;
+  assert.ok(total(1) > 5 && total(2) > total(1) && total(3) > total(2));
+});
+
+test('雷霆一击：施法动作的时长随道数变化，每道雷都有脉冲', () => {
+  require('../src/render/heroanim.js');
+  const H = TD.heroAnim;
+  assert.ok(H.castDur('thunder', 5, 0.22) > H.castDur('thunder', 3, 0.22));
+  assert.ok(Math.abs(H.castDur('thunder', 15, 0.08) - (14 * 0.08 + 0.75)) < 1e-9);
+  assert.strictEqual(H.castDur('frost'), H.CAST_DUR.frost);
+  for (let i = 0; i < 4; i++) assert.ok(H.thunderPulse(i * 0.22, 4, 0.22) > 0.99);
+  assert.ok(H.thunderPulse(0.11, 4, 0.22) < 0.2);
+  const at = (a) => H.pose({ t: 0, weapon: 'staff', mood: 'focus', shotAge: 5, readyIn: 0, castId: 'thunder', castAge: a, castStrikes: 5, castEvery: 0.22 }, -0.1);
+  assert.ok(at(0.44).arm > at(0.33).arm, '落雷时手臂往下压一下');
+  assert.ok(at(1.0).cast === 'thunder', '5 道雷的动作比 3 道长');
+  assert.strictEqual(at(0.4).castBlend > 0.9, true);
+});
+
+test('主角双腿迈开：站姿有前后分开的两只脚', () => {
+  require('../src/render/heroanim.js');
+  const H = TD.heroAnim;
+  const base = H.pose({ t: 0, weapon: 'bow', mood: 'focus' }, 0);
+  assert.strictEqual(base.stance, 1);
+  assert.ok(H.pose({ t: 0, weapon: 'staff', mood: 'focus', castId: 'repair', castAge: 0.6 }, 0).stance > 1.2, '修复时蹲得更开');
+  assert.ok(H.pose({ t: 0, weapon: 'staff', mood: 'focus', castId: 'drum', castAge: 0.33 }, 0).stance < 0.8, '战鼓跳起时两脚并拢');
 });

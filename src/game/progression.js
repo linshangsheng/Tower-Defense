@@ -218,6 +218,8 @@
       if (def.duration) def.duration += Math.min(10, 0.05 * f);
       if (def.slow) def.slow = Math.min(0.95, def.slow + 0.002 * f);
       if (def.cd) def.cd = Math.max(base.cd * 0.5, def.cd * (1 - 0.004 * f));
+      // 雷霆一击：每 5 级多劈 1 道，最多 15 道
+      if (def.strikes) def.strikes = Math.min(15, def.strikes + Math.floor(f / 5));
     }
     return def;
   };

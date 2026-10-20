@@ -243,10 +243,12 @@
       name: '雷霆一击',
       cost: { silver: 5 },
       cd: 15,
-      atkMult: 5,
-      desc: '对当前血量最高的怪造成攻击力 ×5 的魔法伤害。',
-      tiers: [{}, { atkMult: 6 }, { atkMult: 7, chain: 3, chainMult: 0.5, chainRange: 240 }],
-      tierDesc: ['攻击力 ×5', '攻击力 ×6', '攻击力 ×7，并连锁附近 3 只怪（每只 50%）'],
+      atkMult: 2.5,
+      strikes: 3,
+      desc: '连续劈下 3 道雷霆，每道劈向当前血量最高的怪（尽量各劈不同的怪），造成攻击力 ×2.5 的魔法伤害。',
+      beyondDesc: 'Lv3 以后每 5 级多劈 1 道雷（最多 15 道），每升一级伤害再强一点、冷却再短一点',
+      tiers: [{}, { strikes: 4, atkMult: 3 }, { strikes: 5, atkMult: 3.5, chain: 3, chainMult: 0.5, chainRange: 240 }],
+      tierDesc: ['3 道雷，每道攻击力 ×2.5', '4 道雷，每道攻击力 ×3', '5 道雷，每道攻击力 ×3.5，并连锁附近 3 只怪（每只 50%）'],
     },
   };
 

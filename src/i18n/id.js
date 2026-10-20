@@ -1884,4 +1884,9 @@ TD.i18n.register("id", {
   "长队、快怪": "Barisan panjang, monster cepat",
   "Boss、成团的怪": "Boss, kerumunan",
   "Boss、重甲怪": "Boss, monster berzirah berat",
+  "3 道雷，每道攻击力 ×2.5": "3 petir, masing-masing ATK ×2,5",
+  "4 道雷，每道攻击力 ×3": "4 petir, masing-masing ATK ×3",
+  "5 道雷，每道攻击力 ×3.5，并连锁附近 3 只怪（每只 50%）": "5 petir, masing-masing ATK ×3,5, menyambar 3 monster di dekatnya (masing-masing 50%)",
+  "Lv3 以后每 5 级多劈 1 道雷（最多 15 道），每升一级伤害再强一点、冷却再短一点": "Mulai Lv3, tiap 5 level menambah 1 petir (maks. 15), tiap naik level damage makin kuat dan jeda makin singkat",
+  "连续劈下 3 道雷霆，每道劈向当前血量最高的怪（尽量各劈不同的怪），造成攻击力 ×2.5 的魔法伤害。": "Menyambar 3 petir berturut-turut, masing-masing ke monster dengan HP saat ini tertinggi (sebisa mungkin monster yang berbeda), memberi damage sihir ATK ×2,5.",
 });
