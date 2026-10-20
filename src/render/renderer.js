@@ -1361,163 +1361,329 @@
       const holes = [];
       const crenels = [];
       for (let y = -4, k = 0; y < h; y += 44, k++) crenels.push(y);
-      // 每档新增多少：裂纹 / 缺砖 / 缺角垛口 / 塌掉的垛口 / 大洞
-      const CRACKS = [0, 3, 6, 9, 12, 15, 19][stage];
-      const BRICKS = [0, 0, 3, 6, 10, 15, 22][stage];
+      // 每档累计多少：裂纹 / 缺砖 / 崩角的砖 / 烧焦的撞击痕 / 缺角垛口 / 塌掉的垛口 / 大洞（几块砖掉光）
+      const CRACKS = [0, 4, 9, 15, 22, 30, 40][stage];
+      const BRICKS = 0; // 不画掉砖的洞：破得越厉害，裂纹越多越密
+      const CHIPB = [0, 3, 6, 10, 15, 20, 28][stage];
+      const SCARS = [0, 0, 2, 3, 4, 5, 6][stage];
       const CHIPS = [0, 2, 4, 5, 6, 6, 6][stage];
       const GONE = [0, 0, 0, 1, 3, 5, 7][stage];
-      const BREACH = [0, 0, 0, 0, 2, 3, 5][stage];
-      // 打乱垛口的损坏顺序（固定）
+      const BREACH = 0;
       const order = crenels.map((_, i) => i).sort((p, q) => ((p * 7919) % 31) - ((q * 7919) % 31));
-      // 先挖缺砖，再画裂纹，最后是大洞和垛口
-      const brickRects = [];
-      for (let i = 0; i < 40; i++) brickRects.push([ox + 2 + Math.floor(rnd() * 3) * 20 + (rnd() < 0.5 ? 0 : 10), 8 + Math.floor(rnd() * (h / 22 - 1)) * 22]);
-      for (let i = 0; i < BRICKS; i++) {
-        const [bx, by] = brickRects[i];
-        g.fillStyle = '#0b0f15';
-        TD.sprites.roundRect(g, bx, by + 1.5, 24, 19, 3);
-        g.fill();
-        g.strokeStyle = 'rgba(120,130,150,0.35)';
-        g.lineWidth = 1;
-        g.beginPath();
-        g.moveTo(bx + 2, by + 20);
-        g.lineTo(bx + 22, by + 20);
-        g.lineTo(bx + 22, by + 4);
-        g.stroke();
-      }
-      // 墙皮剥落：露出更深的内墙
-      if (stage >= 3) {
-        for (let i = 0; i < stage * 2; i++) {
-          const px = ox + 4 + rnd() * 40;
-          const py = 30 + rnd() * (h - 80);
-          g.fillStyle = 'rgba(14,18,26,0.9)';
-          g.beginPath();
-          g.moveTo(px, py);
-          g.lineTo(px + 14 + rnd() * 10, py + rnd() * 6);
-          g.lineTo(px + 10 + rnd() * 12, py + 16 + rnd() * 12);
-          g.lineTo(px - 4, py + 12 + rnd() * 8);
-          g.closePath();
-          g.fill();
+      // 砖格（和基础墙图里画的一致）：破损都沿着砖和砖缝来，看起来才是砖墙被打坏
+      const bricks = [];
+      for (let y = 0, r = 0; y < h; y += 22, r++) {
+        const off = r % 2 ? 0 : 16;
+        for (let x = ox - 16 + off; x < ox + 64; x += 32) {
+          const bx = Math.max(ox, x) + 1.5;
+          const bw = Math.min(ox + 64, x + 32) - bx - 1.5;
+          if (bw > 6) bricks.push({ x: bx, y: y + 1.5, w: bw, h: 19, r });
         }
       }
-      // 裂纹：带分叉的折线，旁边一道浅色边
-      for (let i = 0; i < CRACKS; i++) {
-        let x = ox + 6 + rnd() * 52;
-        let y = 20 + rnd() * (h - 60);
-        const n = 3 + Math.floor(rnd() * 3);
-        const pts = [[x, y]];
-        for (let k = 0; k < n; k++) {
-          x += (rnd() - 0.4) * 16;
-          y += 8 + rnd() * 14;
-          pts.push([x, y]);
-        }
-        for (const [col, w, dx] of [['rgba(150,165,190,0.3)', 1.2, 1.2], ['rgba(6,8,14,0.9)', stage >= 4 ? 2.4 : 1.8, 0]]) {
-          g.strokeStyle = col;
-          g.lineWidth = w;
-          g.lineJoin = 'round';
-          g.beginPath();
-          pts.forEach(([px, py], j) => (j ? g.lineTo(px + dx, py) : g.moveTo(px + dx, py)));
-          g.stroke();
-        }
-        if (rnd() < 0.6) {
-          const [bx, by] = pts[1];
-          g.strokeStyle = 'rgba(6,8,14,0.85)';
-          g.lineWidth = 1.3;
-          g.beginPath();
-          g.moveTo(bx, by);
-          g.lineTo(bx + (rnd() - 0.5) * 22, by + 8 + rnd() * 10);
-          g.stroke();
-        }
-      }
-      // 大洞：不规则的缺口，里面透出暗红的光
-      for (let i = 0; i < BREACH; i++) {
-        const hx = ox + 8 + rnd() * 36;
-        const hy = 60 + ((i * 131 + 37) % Math.max(100, h - 160));
-        const r = 14 + rnd() * 10 + stage * 1.5;
+      const pickBricks = (n, seedOffset) => {
+        const idx = bricks.map((_, i) => i).sort((p, q) => ((p * 7919 + seedOffset) % 97) - ((q * 7919 + seedOffset) % 97));
+        return idx.slice(0, n).map((i) => bricks[i]);
+      };
+      const gone = new Set();
+      const jit = (v) => (rnd() - 0.5) * v;
+      // 一块砖的凹坑（砖掉了）：边缘参差，顶部和右侧有阴影（光从右上来），底边一道亮的砖沿
+      const socketPath = (b) => {
+        // 十二个点沿砖的边走一圈，每个点往外 / 往里抖一抖：边缘参差不齐，不像一个整整齐齐的框
         const pts = [];
-        for (let k = 0; k < 9; k++) {
-          const a = (k / 9) * Math.PI * 2;
-          const rr = r * (0.65 + rnd() * 0.5);
-          pts.push([hx + Math.cos(a) * rr * 0.8, hy + Math.sin(a) * rr * 1.1]);
+        const P0 = [[0, 0], [0.33, 0], [0.66, 0], [1, 0], [1, 0.5], [1, 1], [0.66, 1], [0.33, 1], [0, 1], [0, 0.5]];
+        for (const [u, v] of P0) {
+          const edge = u === 0 || u === 1 || v === 0 || v === 1;
+          const corner = (u === 0 || u === 1) && (v === 0 || v === 1);
+          const k = corner ? 3.6 : 2.2;
+          pts.push([b.x + u * b.w + (u === 0 ? 1 : u === 1 ? -1 : 0) * rnd() * k + (edge && !corner ? jit(1.5) : 0), b.y + v * b.h + (v === 0 ? 1 : v === 1 ? -1 : 0) * rnd() * k + jit(1.6)]);
         }
-        const path = () => {
+        return () => {
           g.beginPath();
           pts.forEach(([px, py], j) => (j ? g.lineTo(px, py) : g.moveTo(px, py)));
           g.closePath();
         };
+      };
+      const paintSocket = (b, depth, tint) => {
+        const path = socketPath(b);
         path();
-        const hg = g.createRadialGradient(hx, hy, 1, hx, hy, r);
-        hg.addColorStop(0, '#5a1a14');
-        hg.addColorStop(0.5, '#1c0c0e');
-        hg.addColorStop(1, '#07080c');
-        g.fillStyle = hg;
+        const sg = g.createLinearGradient(0, b.y, 0, b.y + b.h);
+        sg.addColorStop(0, tint ? '#120a0c' : '#1a212a');
+        sg.addColorStop(1, tint ? '#24141a' : '#2c3541');
+        g.fillStyle = sg;
         g.fill();
-        g.strokeStyle = 'rgba(150,160,185,0.45)';
-        g.lineWidth = 2;
+        g.save();
+        path();
+        g.clip();
+        // 里面的内墙：一道浅浅的砖缝，越深越暗
+        g.strokeStyle = 'rgba(120,135,160,0.07)';
+        g.lineWidth = 1;
+        g.beginPath();
+        g.moveTo(b.x, b.y + b.h * 0.55);
+        g.lineTo(b.x + b.w, b.y + b.h * 0.5);
         g.stroke();
-        // 洞口掉出来的碎砖
-        for (let k = 0; k < 3; k++) {
-          g.fillStyle = `rgb(${50 + Math.floor(rnd() * 20)},${58 + Math.floor(rnd() * 20)},${70 + Math.floor(rnd() * 20)})`;
-          const sx = hx - r * 0.6 + rnd() * r * 1.2;
-          const sy = hy + r * 0.7 + rnd() * 10;
+        // 顶部和右侧挡住了光：往里投下的阴影
+        g.translate(-2.8, 2.8);
+        g.beginPath();
+        g.rect(b.x - 20, b.y - 20, b.w + 40, b.h + 40);
+        path();
+        g.fillStyle = `rgba(2,4,8,${0.5 + depth * 0.2})`;
+        g.fill('evenodd');
+        g.restore();
+        // 底边：被光照到的砖沿
+        g.strokeStyle = 'rgba(165,180,205,0.38)';
+        g.lineWidth = 1.2;
+        g.beginPath();
+        g.moveTo(b.x + 1, b.y + b.h + 0.8);
+        g.lineTo(b.x + b.w - 1, b.y + b.h + 0.8);
+        g.stroke();
+        return path;
+      };
+      // 散落的碎砖块：四边形 + 受光的一条亮边
+      const shard = (sx, sy, sz) => {
+        const v = 52 + Math.floor(rnd() * 24);
+        const pts = [[sx, sy], [sx + sz * (0.8 + rnd() * 0.5), sy - sz * 0.15 * rnd()], [sx + sz * (0.7 + rnd() * 0.5), sy + sz * (0.5 + rnd() * 0.3)], [sx + sz * 0.1, sy + sz * (0.6 + rnd() * 0.3)]];
+        g.fillStyle = `rgb(${v - 6},${v + 2},${v + 12})`;
+        g.beginPath();
+        pts.forEach(([px, py], j) => (j ? g.lineTo(px, py) : g.moveTo(px, py)));
+        g.closePath();
+        g.fill();
+        g.strokeStyle = 'rgba(190,205,225,0.45)';
+        g.lineWidth = 1;
+        g.beginPath();
+        g.moveTo(pts[0][0], pts[0][1]);
+        g.lineTo(pts[1][0], pts[1][1]);
+        g.lineTo(pts[2][0], pts[2][1]);
+        g.stroke();
+        g.fillStyle = 'rgba(0,0,0,0.28)';
+        g.beginPath();
+        g.ellipse(sx + sz * 0.5, sy + sz * 0.85, sz * 0.7, sz * 0.18, 0, 0, Math.PI * 2);
+        g.fill();
+      };
+
+      // 1) 撞击痕：烧焦的一团烟灰，周围几道放射状的细裂纹
+      for (const b of pickBricks(SCARS, 11)) {
+        const cx = b.x + b.w / 2;
+        const cy = b.y + b.h / 2;
+        const sg = g.createRadialGradient(cx, cy, 1, cx, cy, 22);
+        sg.addColorStop(0, 'rgba(6,8,12,0.55)');
+        sg.addColorStop(0.6, 'rgba(6,8,12,0.22)');
+        sg.addColorStop(1, 'rgba(6,8,12,0)');
+        g.fillStyle = sg;
+        g.fillRect(cx - 24, cy - 24, 48, 48);
+        g.lineCap = 'round';
+        for (let k = 0; k < 5; k++) {
+          const q = rnd() * Math.PI * 2;
+          const l = 5 + rnd() * 8;
+          g.strokeStyle = 'rgba(8,11,18,0.7)';
+          g.lineWidth = 1;
           g.beginPath();
-          g.moveTo(sx, sy);
-          g.lineTo(sx + 7, sy + 1);
-          g.lineTo(sx + 5, sy + 7);
-          g.lineTo(sx - 2, sy + 5);
-          g.fill();
+          g.moveTo(cx + Math.cos(q) * 3, cy + Math.sin(q) * 3);
+          g.lineTo(cx + Math.cos(q) * (3 + l * 0.5) + jit(2), cy + Math.sin(q) * (3 + l * 0.5) + jit(2));
+          g.lineTo(cx + Math.cos(q) * (3 + l) + jit(3), cy + Math.sin(q) * (3 + l) + jit(3));
+          g.stroke();
         }
-        holes.push([hx, hy, r]);
       }
-      // 垛口：先缺角，再整个塌掉
-      g.save();
-      g.globalCompositeOperation = 'destination-out';
+      // 2) 崩了角的砖：角上缺一小块，露出里面的暗处和一道新鲜的断面
+      for (const b of pickBricks(CHIPB, 29)) {
+        const right = rnd() < 0.5;
+        const top = rnd() < 0.55;
+        const sz = 3 + rnd() * 4;
+        const x0 = right ? b.x + b.w : b.x;
+        const y0 = top ? b.y : b.y + b.h;
+        const dx = right ? -1 : 1;
+        const dy = top ? 1 : -1;
+        g.fillStyle = '#10151c';
+        g.beginPath();
+        g.moveTo(x0, y0);
+        g.lineTo(x0 + dx * sz * (1 + rnd() * 0.5), y0);
+        g.lineTo(x0 + dx * sz * 0.4, y0 + dy * sz * 0.5);
+        g.lineTo(x0, y0 + dy * sz * (1 + rnd() * 0.5));
+        g.closePath();
+        g.fill();
+        g.strokeStyle = 'rgba(180,195,215,0.4)';
+        g.lineWidth = 1;
+        g.beginPath();
+        g.moveTo(x0 + dx * sz * 1.1, y0 + dy * 0.5);
+        g.lineTo(x0 + dx * sz * 0.4, y0 + dy * sz * 0.5);
+        g.lineTo(x0 + dx * 0.5, y0 + dy * sz * 1.1);
+        g.stroke();
+      }
+      // 3) 缺砖：整块掉了，留下一个有深度的凹坑，坑口下面散着碎砖
+      for (const b of pickBricks(BRICKS, 53)) {
+        gone.add(b);
+        paintSocket(b, 0, false);
+        if (rnd() < 0.5) shard(b.x + rnd() * b.w * 0.5, b.y + b.h + 1, 4 + rnd() * 3);
+      }
+      // 4) 裂纹：顺着砖缝走（横一段、竖一段），偶尔斜着劈穿一块砖；越往下越细，旁边有一道受光的亮边
+      const crack = (x, y, steps, w0) => {
+        const pts = [[x, y]];
+        let q = Math.PI / 2 + jit(0.8);
+        for (let k = 0; k < steps; k++) {
+          // 大体向下，一路左右折；偶尔顺着砖缝横着走一小段
+          q += jit(1.3);
+          q = Math.max(0.35, Math.min(Math.PI - 0.35, q));
+          const l = 5 + rnd() * 9;
+          x += Math.cos(q) * l;
+          y += Math.sin(q) * l;
+          if (rnd() < 0.2) x += (rnd() < 0.5 ? -1 : 1) * (3 + rnd() * 6);
+          x = Math.max(ox + 2, Math.min(ox + 62, x));
+          pts.push([x, y]);
+        }
+        for (const [col, dx, dy, ww] of [['rgba(175,190,212,0.28)', 1, 0.8, 1], ['rgba(9,12,19,0.78)', 0, 0, 1.3]]) {
+          g.strokeStyle = col;
+          g.lineJoin = 'round';
+          g.lineCap = 'round';
+          for (let k = 1; k < pts.length; k++) {
+            g.lineWidth = Math.max(0.6, w0 * ww * (1 - k / (pts.length + 1)));
+            g.beginPath();
+            g.moveTo(pts[k - 1][0] + dx, pts[k - 1][1] + dy);
+            g.lineTo(pts[k][0] + dx, pts[k][1] + dy);
+            g.stroke();
+          }
+        }
+        // 裂缝尽头的水渍 / 灰
+        const [ex, ey] = pts[pts.length - 1];
+        const wg = g.createRadialGradient(ex, ey + 4, 0, ex, ey + 4, 9);
+        wg.addColorStop(0, 'rgba(5,8,12,0.22)');
+        wg.addColorStop(1, 'rgba(5,8,12,0)');
+        g.fillStyle = wg;
+        g.fillRect(ex - 10, ey - 6, 20, 22);
+        return pts;
+      };
+      // 裂纹的起点沿墙高均匀撒开（黄金比例错开），越破裂纹越多越长、越粗，还会分叉；最后两档裂缝里透出暗红的光
+      const cracks = [];
+      for (let i = 0; i < CRACKS; i++) {
+        const y = 10 + ((i * 0.6180339 + 0.13) % 1) * (h - 50);
+        const steps = 3 + Math.floor(rnd() * (3 + stage));
+        cracks.push(crack(ox + 4 + rnd() * 56, y, steps, 1.3 + stage * 0.22));
+      }
+      for (const pts of cracks) {
+        if (pts.length > 2 && rnd() < 0.35 + stage * 0.08) crack(pts[1][0], pts[1][1], 2 + Math.floor(rnd() * 3), 1 + stage * 0.12);
+        if (pts.length > 3 && stage >= 3 && rnd() < 0.5) crack(pts[2][0], pts[2][1], 2 + Math.floor(rnd() * 2), 0.9 + stage * 0.1);
+      }
+      if (stage >= 5) {
+        g.save();
+        g.globalCompositeOperation = 'lighter';
+        g.lineCap = 'round';
+        g.lineJoin = 'round';
+        for (const pts of cracks) {
+          g.strokeStyle = stage >= 6 ? 'rgba(255,90,40,0.13)' : 'rgba(255,90,40,0.07)';
+          g.lineWidth = 3.2;
+          g.beginPath();
+          pts.forEach(([px, py], j) => (j ? g.lineTo(px, py) : g.moveTo(px, py)));
+          g.stroke();
+        }
+        g.restore();
+      }
+      // 5) 大洞：一簇砖掉光，里面是深处的暗红；洞口参差，洞口下面堆着碎砖
+      for (let i = 0; i < BREACH; i++) {
+        const row = 3 + ((i * 5 + 2) % Math.max(4, Math.floor(h / 22) - 6));
+        const anchor = bricks.filter((b) => b.r === row)[i % 2];
+        if (!anchor) continue;
+        const cluster = [anchor];
+        for (const b of bricks) {
+          if (b === anchor || cluster.length >= 4 + (stage >= 5 ? 1 : 0)) continue;
+          const sameRowNext = b.r === anchor.r && Math.abs(b.x - (anchor.x + anchor.w)) < 6;
+          const adj = Math.abs(b.r - anchor.r) === 1 && b.x < anchor.x + anchor.w && b.x + b.w > anchor.x;
+          if ((sameRowNext || adj) && rnd() < 0.8) cluster.push(b);
+        }
+        const paths = cluster.map((b) => paintSocket(b, 1, true));
+        const cx = cluster.reduce((a, b) => a + b.x + b.w / 2, 0) / cluster.length;
+        const cy = cluster.reduce((a, b) => a + b.y + b.h / 2, 0) / cluster.length;
+        const r = 16 + cluster.length * 3;
+        // 洞里透出的暗红光（只画在洞里）
+        g.save();
+        g.beginPath();
+        for (const b of cluster) g.rect(b.x, b.y, b.w, b.h);
+        g.clip();
+        const hg = g.createRadialGradient(cx, cy, 1, cx, cy, r);
+        hg.addColorStop(0, 'rgba(120,34,22,0.65)');
+        hg.addColorStop(0.6, 'rgba(60,16,14,0.35)');
+        hg.addColorStop(1, 'rgba(20,8,10,0)');
+        g.fillStyle = hg;
+        g.fillRect(cx - r, cy - r, r * 2, r * 2);
+        g.restore();
+        for (const b of cluster) gone.add(b);
+        // 洞口的碎砖
+        const lowest = Math.max(...cluster.map((b) => b.y + b.h));
+        for (let k = 0; k < 3 + cluster.length; k++) shard(cx - 18 + rnd() * 36, lowest + 1 + rnd() * 6, 4 + rnd() * 4);
+        holes.push([cx, cy, r]);
+      }
+      // 6) 垛口：先崩角（边缘参差、露出断面），再整块塌掉只剩一截参差的断茬
       for (let i = 0; i < CHIPS; i++) {
         const y = crenels[order[i % crenels.length]];
+        const w1 = 7 + rnd() * 6;
+        const h1 = 8 + rnd() * 8;
+        g.save();
+        g.globalCompositeOperation = 'destination-out';
         g.beginPath();
-        g.moveTo(ox + 72, y + 2);
-        g.lineTo(ox + 72 - 9 - rnd() * 5, y + 2);
-        g.lineTo(ox + 72, y + 12 + rnd() * 6);
+        g.moveTo(ox + 73, y + 1);
+        g.lineTo(ox + 72 - w1, y + 1);
+        g.lineTo(ox + 72 - w1 * 0.6, y + 2 + h1 * 0.4);
+        g.lineTo(ox + 72 - w1 * 0.25, y + 3 + h1 * 0.55);
+        g.lineTo(ox + 72, y + 4 + h1);
         g.closePath();
         g.fill();
+        g.restore();
+        g.strokeStyle = 'rgba(185,200,222,0.5)';
+        g.lineWidth = 1.2;
+        g.beginPath();
+        g.moveTo(ox + 72 - w1, y + 2);
+        g.lineTo(ox + 72 - w1 * 0.6, y + 3 + h1 * 0.4);
+        g.lineTo(ox + 72 - w1 * 0.25, y + 4 + h1 * 0.55);
+        g.lineTo(ox + 71.5, y + 5 + h1);
+        g.stroke();
       }
       for (let i = 0; i < GONE; i++) {
         const y = crenels[order[i % crenels.length]];
-        g.fillRect(ox + 56, y - 6, 20, 24);
-      }
-      g.restore();
-      for (let i = 0; i < GONE; i++) {
-        // 塌掉的垛口只剩一截断茬
-        const y = crenels[order[i % crenels.length]];
-        g.fillStyle = '#323c47';
-        g.beginPath();
-        g.moveTo(ox + 52, y + 26);
-        g.lineTo(ox + 54, y + 16);
-        g.lineTo(ox + 61, y + 19);
-        g.lineTo(ox + 66, y + 14);
-        g.lineTo(ox + 72, y + 22);
-        g.lineTo(ox + 72, y + 26);
-        g.closePath();
-        g.fill();
-      }
-      // 烟熏：大洞上方的黑色烟痕
-      for (const [hx, hy, r] of holes) {
-        const sg = g.createLinearGradient(0, hy - r * 2.4, 0, hy - r * 0.5);
-        sg.addColorStop(0, 'rgba(0,0,0,0)');
-        sg.addColorStop(1, 'rgba(0,0,0,0.45)');
+        g.save();
+        g.globalCompositeOperation = 'destination-out';
+        g.fillRect(ox + 54, y - 8, 22, 28);
+        g.restore();
+        // 断茬：参差的几块石头，顶面受光
+        const sg = g.createLinearGradient(0, y + 12, 0, y + 27);
+        sg.addColorStop(0, '#4a5560');
+        sg.addColorStop(1, '#2c353f');
         g.fillStyle = sg;
-        g.fillRect(hx - r * 0.7, hy - r * 2.4, r * 1.4, r * 1.9);
-      }
-      // 墙脚的碎石堆：越破越多
-      const pile = [0, 0, 2, 5, 8, 12, 16][stage];
-      for (let i = 0; i < pile; i++) {
-        const px = ox - 10 + rnd() * 90;
-        const pr = 3 + rnd() * 5;
-        g.fillStyle = `rgb(${46 + Math.floor(rnd() * 26)},${54 + Math.floor(rnd() * 26)},${64 + Math.floor(rnd() * 26)})`;
         g.beginPath();
-        g.ellipse(px, h + 4 - rnd() * 6, pr * 1.3, pr * 0.8, rnd(), 0, Math.PI * 2);
+        g.moveTo(ox + 52, y + 27);
+        g.lineTo(ox + 52, y + 19);
+        g.lineTo(ox + 56, y + 16 + rnd() * 3);
+        g.lineTo(ox + 60, y + 20);
+        g.lineTo(ox + 64, y + 14 + rnd() * 3);
+        g.lineTo(ox + 68, y + 18);
+        g.lineTo(ox + 72, y + 16 + rnd() * 4);
+        g.lineTo(ox + 72, y + 27);
+        g.closePath();
         g.fill();
+        g.strokeStyle = 'rgba(190,205,225,0.45)';
+        g.lineWidth = 1.2;
+        g.beginPath();
+        g.moveTo(ox + 52, y + 19);
+        g.lineTo(ox + 56, y + 17);
+        g.lineTo(ox + 60, y + 20.5);
+        g.lineTo(ox + 64, y + 15);
+        g.lineTo(ox + 68, y + 18.5);
+        g.stroke();
+        shard(ox + 70 + rnd() * 3, y + 24, 3 + rnd() * 2);
       }
+      // 7) 洞口上方的烟熏：柔和的黑色烟痕，往上渐渐散开
+      for (const [hx, hy, r] of holes) {
+        g.save();
+        g.translate(hx, hy - r * 1.1);
+        g.scale(0.55, 1);
+        const sg = g.createRadialGradient(0, 0, 0, 0, 0, r * 1.7);
+        sg.addColorStop(0, 'rgba(0,0,0,0.38)');
+        sg.addColorStop(1, 'rgba(0,0,0,0)');
+        g.fillStyle = sg;
+        g.beginPath();
+        g.arc(0, 0, r * 1.7, 0, Math.PI * 2);
+        g.fill();
+        g.restore();
+      }
+      // 8) 墙脚的碎石堆：碎砖块，越破越多
+      const pile = [0, 0, 2, 5, 8, 12, 16][stage];
+      for (let i = 0; i < pile; i++) shard(ox - 10 + rnd() * 88, h + 2 - rnd() * 5, 4 + rnd() * 6);
       const art = { canvas: c, holes };
       if (this.wallStages.size > 16) this.wallStages.clear();
       this.wallStages.set(key, art);
