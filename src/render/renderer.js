@@ -2314,6 +2314,10 @@
       let mood = this.mood;
       let aim = -0.15;
       let shotAge;
+      let readyIn;
+      let castId;
+      let castAge;
+      let castAim;
       let weapon = this.idleWeapon || 'bow';
       if (b) {
         weapon = b.stats.weapon;
@@ -2322,18 +2326,29 @@
         aim = Math.atan2(b.hero.aimY - (heroY - 18), b.hero.aimX - (C.heroX + 10));
         aim = TD.util.clamp(aim, -1.2, 1.2);
         shotAge = b.time - b.hero.shotAt;
+        // 离下一次出手还有多久（用来做蓄力动作；被眩晕时不蓄力）
+        if (b.time >= b.heroStunUntil) readyIn = b.hero.cooldown;
+        // 技能施法动作（设计书 92）；冰冻领域朝选定的车道横扫
+        if (b.hero.castId) {
+          castId = b.hero.castId;
+          castAge = b.time - b.hero.castAt;
+          if (b.hero.castLane !== undefined) castAim = TD.util.clamp(Math.atan2(b.laneY(b.hero.castLane) - (heroY - 18), 380), -1.2, 1.2);
+        }
       }
       // 英雄身边的暖光（城墙上挂着的灯，设计书 54.5）
       if (this.scene && !this.scene.none) TD.art.drawGlow(this.ctx, C.heroX + 6, heroY - 30, 110, '#ffc977', 0.42);
       // 英雄脚下的城墙平台
       const ascended = !!(b && b.stats.weaponDef && b.stats.weaponDef.ascended);
-      const ho = { t: this.t, weapon, aimAngle: aim, shotAge, mood, critAge: this.critAge, ascended, outfit: TD.game && TD.game.save && TD.game.save.outfit, hero: b ? b.stats.heroId : TD.game && TD.game.save && TD.progression.heroId(TD.game.save) };
+      const ho = { t: this.t, weapon, aimAngle: aim, shotAge, readyIn, castId, castAge, castAim, mood, critAge: this.critAge, ascended, outfit: TD.game && TD.game.save && TD.game.save.outfit, hero: b ? b.stats.heroId : TD.game && TD.game.save && TD.progression.heroId(TD.game.save) };
+      const fx = TD.heroAnim && castId && castAge !== undefined && castAge < TD.heroAnim.CAST_DUR[castId];
+      if (fx) TD.heroAnim.fx(this.ctx, C.heroX, heroY, castId, castAge, this.t, 'back');
       if (this.scene && !this.scene.none && TD.art.opts.lit) {
         // 英雄也加明暗和轮廓光（每帧重画，只有一个）
         this.heroArt = this.heroArt || {};
         const c = TD.art.litSprite(this.heroArt, Math.random(), 40, this.scene.palette.rim, 0, (g) => ((S.volume = true), S.hero(g, 0, 0, ho), (S.volume = false)));
         this.ctx.drawImage(c.canvas, Math.round(C.heroX - c.ox), Math.round(heroY - c.oy));
       } else S.hero(this.ctx, C.heroX, heroY, ho);
+      if (fx) TD.heroAnim.fx(this.ctx, C.heroX, heroY, castId, castAge, this.t, 'front');
       // 战鼓等增益光环
       if (b && b.buffs.some((x) => b.time < x.until)) {
         const ctx = this.ctx;

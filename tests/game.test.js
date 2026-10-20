@@ -3325,3 +3325,97 @@ test('每个新武器的效果和描述对得上：数值字段都在', () => {
   assert.ok(W.worldCannon.armorIgnore === 0.8 && W.worldCannon.knock.dist === 70);
   assert.ok(W.starfallOrb.chain.count === 7 && W.starfallOrb.bonusCrit === 0.1);
 });
+
+// ---------- v0.81：主角动作随武器、技能变化（设计书 92） ----------
+test('主角动作：每种武器出手前后的姿势各不相同', () => {
+  require('../src/render/heroanim.js');
+  const H = TD.heroAnim;
+  const pose = (weapon, extra) => H.pose(Object.assign({ t: 0, weapon, mood: 'focus', shotAge: 5, readyIn: 0 }, extra), -0.1);
+  for (const w of ['bow', 'crossbow', 'staff', 'orb', 'cannon', 'boomerang']) {
+    const idle = pose(w);
+    const wind = pose(w, { readyIn: 0.05 });
+    const rel = pose(w, { shotAge: 0.03 });
+    assert.ok(wind.wind > 0.5 && rel.rel > 0.5, w);
+    // 蓄力和出手时身体或手臂的姿势一定和站着不动时不同
+    const moved = (p) => Math.abs(p.torso - idle.torso) + Math.abs(p.dx - idle.dx) + Math.abs(p.arm - idle.arm) + Math.abs(p.dy - idle.dy);
+    assert.ok(moved(wind) > 0.02 || moved(rel) > 0.02, w);
+    assert.ok(moved(rel) > 0.05, w + ' 出手要有明显动作');
+  }
+  // 弓拉开、炮后坐、回旋镖甩臂
+  assert.ok(pose('bow', { readyIn: 0.02 }).draw > 0.8);
+  assert.ok(pose('cannon', { shotAge: 0.02 }).dx < -3);
+  assert.ok(pose('boomerang', { readyIn: 0.02 }).arm < -1);
+  // 所有武器都能在不同的出手进度下算出有限的数
+  for (const id of Object.keys(D.weapons)) for (const readyIn of [0, 0.1, 0.5]) for (const shotAge of [0, 0.1, 0.3, 2]) {
+    const p = pose(id, { readyIn, shotAge });
+    for (const k of ['torso', 'dx', 'dy', 'arm', 'jump']) assert.ok(Number.isFinite(p[k]), id + k);
+  }
+  // 没有出手信息（标题、剧情里的主角）和输赢状态不受影响
+  assert.strictEqual(H.pose({ t: 1, weapon: 'bow', mood: 'win' }, 0).wind, 0);
+  assert.strictEqual(H.pose({ t: 1, weapon: 'bow', mood: 'focus' }, 0).cast, null);
+});
+
+test('主角动作：5 个技能各有不同的施法姿势，施法结束后恢复', () => {
+  require('../src/render/heroanim.js');
+  const H = TD.heroAnim;
+  const ids = Object.keys(D.activeSkills);
+  assert.deepStrictEqual(Object.keys(H.CAST_DUR).sort(), ids.slice().sort(), '每个主动技能都有施法时长');
+  const at = (id, a) => H.pose({ t: 0, weapon: 'staff', mood: 'focus', shotAge: 5, readyIn: 0, castId: id, castAge: a, castAim: 0.2 }, -0.1);
+  const sig = (p) => [p.arm, p.torso, p.dx, p.dy, p.jump].map((v) => v.toFixed(2)).join(',');
+  const seen = new Set();
+  for (const id of ids) {
+    const mid = at(id, id === 'thunder' ? 0.4 : 0.5);
+    assert.strictEqual(mid.cast, id);
+    assert.ok(mid.castBlend > 0.9, id);
+    seen.add(sig(mid));
+    const done = at(id, H.CAST_DUR[id] + 0.1);
+    assert.strictEqual(done.cast, null, id + ' 施法结束后恢复');
+    // 动作的开头和结尾平滑过渡（不突然跳变）
+    assert.ok(Math.abs(at(id, 0).arm - at(id, 0.001).arm) < 0.05, id);
+    assert.ok(Math.abs(at(id, H.CAST_DUR[id] - 0.001).arm - at(id, H.CAST_DUR[id] + 0.001).arm) < 0.1, id);
+  }
+  assert.strictEqual(seen.size, ids.length, '5 个技能的姿势互不相同');
+  // 具体姿势：箭雨和雷霆举向天空，修复弯腰按向城墙，战鼓跳起，冰冻朝车道横扫
+  assert.ok(at('arrowRain', 0.5).arm < -1.2 && at('thunder', 0.4).arm < -1.2);
+  assert.ok(at('repair', 0.6).arm > 0.8 && at('repair', 0.6).dy > 3);
+  assert.ok(at('drum', 0.3).jump < -5);
+  assert.ok(Math.abs(at('frost', 0.7).arm - 0.3) < 0.15, '冰冻领域朝选定的车道');
+});
+
+test('主角动作：光效函数在各种时刻都能画出来而不出错', () => {
+  require('../src/render/heroanim.js');
+  const H = TD.heroAnim;
+  let calls = 0;
+  const ctx = new Proxy(function () {}, {
+    get: (t, k) => (k === 'createLinearGradient' || k === 'createRadialGradient' ? () => ({ addColorStop() {} }) : () => void calls++),
+    set: () => true,
+  });
+  const K = (TD.creatures = TD.creatures || {});
+  for (const k of ['glow', 'dot', 'veins', 'sparkles']) K[k] = K[k] || (() => void calls++);
+  K.rgba = K.rgba || ((c, a) => `rgba(${c},${a})`);
+  for (const id of Object.keys(H.CAST_DUR)) {
+    for (const layer of ['back', 'front']) for (let a = 0; a < H.CAST_DUR[id]; a += 0.1) H.fx(ctx, 100, 200, id, a, a * 3, layer);
+    const P = H.pose({ t: 0, weapon: 'bow', mood: 'focus', shotAge: 5, readyIn: 0, castId: id, castAge: 0.4 }, 0);
+    H.tipFx(ctx, P, 32, 1.2);
+  }
+  assert.ok(calls > 100);
+  // 没有施法或施法结束：什么也不画
+  const before = calls;
+  H.fx(ctx, 0, 0, undefined, 0, 0, 'back');
+  H.fx(ctx, 0, 0, 'thunder', 99, 0, 'front');
+  assert.strictEqual(calls, before);
+});
+
+test('战斗里放技能会记下施法动作所需的信息', () => {
+  const save = P.newSave();
+  save.activeOwned.frost = true;
+  save.loadout.active = ['frost'];
+  const b = new TD.Battle({ level: 3, stats: P.heroStats(save), loadout: P.battleLoadout(save), seed: 1 });
+  assert.strictEqual(b.hero.castId, null);
+  for (let i = 0; i < 3000 && b.waveState === 'prepare'; i++) b.step(1 / 60);
+  b.skills[0].cd = 0;
+  assert.ok(b.castSkill(0, 1));
+  assert.strictEqual(b.hero.castId, 'frost');
+  assert.strictEqual(b.hero.castLane, 1);
+  assert.ok(Math.abs(b.hero.castAt - b.time) < 1e-9);
+});

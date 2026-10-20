@@ -86,7 +86,7 @@
       this.itemsUsed = [];
       if (this.charm) this.itemsUsed.push('charm');
 
-      this.hero = { cooldown: 0.6, attacks: 0, aimX: C.width / 2, aimY: C.height / 2, shotAt: -1 };
+      this.hero = { cooldown: 0.6, attacks: 0, aimX: C.width / 2, aimY: C.height / 2, shotAt: -1, castId: null, castAt: -99, castLane: undefined };
       this.heroY = (C.fieldTop + C.fieldBottom) / 2;
 
       // 波次
@@ -1467,6 +1467,10 @@
         }
       }
       s.cd = def.cd * Math.max(0.3, 1 + this.mods.cdMult);
+      // 主角的施法动作（设计书 92）：记下是哪个技能、什么时候放的、冰冻领域放在哪条车道
+      this.hero.castId = s.id;
+      this.hero.castAt = this.time;
+      this.hero.castLane = lane;
       this.castCount++;
       this.skillsCast++;
       this.emit('skill', { id: s.id, lane });

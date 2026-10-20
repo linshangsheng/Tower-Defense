@@ -764,7 +764,10 @@
     },
   };
 
-  K.weapon = function (ctx, weapon, s, shotAge, col, t) {
+  K.weapon = function (ctx, weapon, s, shotAge, col, t, pose) {
+    pose = pose || {};
+    const dr = pose.draw || 0;
+    const charge = pose.charge || 0;
     const wdef = TD.data.weapons[weapon];
     const look = wdef && wdef.look;
     const base = look ? look.base : weapon;
@@ -838,8 +841,8 @@
         else ctx.moveTo(px, py);
       }
       ctx.stroke();
-      const k = 1 + fired * 0.5;
-      glow(ctx, s * 0.84, -s * 0.07, s * 0.45 * k, tint || '#c58cff', 0.6 + fired * 0.3);
+      const k = 1 + fired * 0.5 + charge * 0.4;
+      glow(ctx, s * 0.84, -s * 0.07, s * 0.45 * k, tint || '#c58cff', Math.min(1, 0.6 + fired * 0.3 + charge * 0.3));
       ctx.fillStyle = radial(ctx, s * 0.84, -s * 0.07, 0.5, s * 0.17 * k, tint ? [[0, '#ffffff'], [0.35, light(tint, 0.55)], [1, deep(tint, 0.5)]] : [[0, '#ffffff'], [0.35, '#e2c8ff'], [1, '#6a3ab0']], s * 0.8, -s * 0.12);
       ctx.beginPath();
       ctx.moveTo(s * 0.84, -s * 0.27 * k);
@@ -860,9 +863,9 @@
       glove(ctx, s * 0.12, s * 0.02, s * 0.12);
     } else if (base === 'orb') {
       // 雷电法球：浮在手上方的水晶球，里面有一道道细闪电
-      const k = 1 + fired * 0.3;
+      const k = 1 + fired * 0.3 + charge * 0.5;
       const ox = s * 0.55;
-      glow(ctx, ox, 0, s * 0.7 * k, tint || '#7ac8ff', 0.5 + fired * 0.4);
+      glow(ctx, ox, 0, s * 0.7 * k, tint || '#7ac8ff', Math.min(1, 0.5 + fired * 0.4 + charge * 0.3));
       ctx.fillStyle = radial(ctx, ox, 0, 0.5, s * 0.3 * k, tint ? [[0, 'rgba(240,250,255,0.95)'], [0.6, rgba(tint, 0.78)], [1, rgba(deep(tint, 0.6), 0.92)]] : [[0, 'rgba(230,245,255,0.95)'], [0.6, 'rgba(110,180,255,0.75)'], [1, 'rgba(30,70,140,0.9)']], ox + s * 0.08, -s * 0.1);
       ctx.beginPath();
       ctx.arc(ox, 0, s * 0.3 * k, 0, TAU);
@@ -897,12 +900,22 @@
       ctx.fill();
       if (fired > 0) glow(ctx, s * 0.95, 0, s * 0.6, tint || '#ffb060', fired * 0.9, true);
       ctx.restore();
+      // 开炮后炮口冒出的几团烟
+      if (shotAge !== undefined && shotAge < 0.4) {
+        const u = shotAge / 0.4;
+        for (let i = 0; i < 3; i++) {
+          ctx.fillStyle = `rgba(190,190,200,${(1 - u) * 0.35})`;
+          ctx.beginPath();
+          ctx.arc(s * 0.95 + u * s * (0.3 + 0.2 * i), -u * s * (0.2 + 0.15 * i), s * (0.08 + 0.12 * u), 0, TAU);
+          ctx.fill();
+        }
+      }
       glove(ctx, s * 0.05, s * 0.06, s * 0.12);
     } else if (base === 'boomerang') {
       if (shotAge === undefined || shotAge > 0.5) {
         ctx.save();
         ctx.translate(s * 0.42, 0);
-        K.boomerang(ctx, s * 0.5, 0, tint);
+        K.boomerang(ctx, s * 0.5, (pose.wind || 0) * TAU * 0.8, tint);
         ctx.restore();
       }
       glove(ctx, s * 0.2, 0, s * 0.12);
@@ -938,7 +951,7 @@
       glow(ctx, tipX, -tipY, s * 0.16, hi, 0.55 + pull * 0.4);
       glow(ctx, tipX, tipY, s * 0.16, hi, 0.55 + pull * 0.4);
       // 弓弦
-      const nx = cx - pull * 8;
+      const nx = cx - dr * 10 + ((pose.rel || 0) > 0 ? Math.sin(pose.rel * 40) * pose.rel * 2.5 : 0);
       ctx.strokeStyle = rgba('#fff6e0', 0.9);
       ctx.lineWidth = 1;
       ctx.beginPath();
@@ -947,14 +960,14 @@
       ctx.lineTo(tipX, tipY);
       ctx.stroke();
       // 拉弓时搭着的箭
-      if (pull > 0) {
+      if (pull > 0 || dr > 0.03) {
         ctx.strokeStyle = '#d8c0a0';
         ctx.lineWidth = 1.4;
         ctx.beginPath();
         ctx.moveTo(nx, 0);
         ctx.lineTo(cx + R * 1.25, 0);
         ctx.stroke();
-        glow(ctx, cx + R * 1.25, 0, s * 0.25, hi, pull * 0.9, true);
+        glow(ctx, cx + R * 1.25, 0, s * 0.25, hi, Math.max(pull, dr * 0.6) * 0.9, true);
       }
       // 握把的缠绳
       ctx.fillStyle = '#3a2616';
@@ -1790,6 +1803,8 @@
     const extra = outfit && outfit.extra;
     const ding = st.hero === 'ding';
     const sc = look ? look.scale : ding ? 0.93 : 1;
+    // 攻击和施法的姿势（设计书 92）
+    const pose = TD.heroAnim ? TD.heroAnim.pose(st, st.aimAngle || 0) : { torso: 0, dx: 0, dy: 0, jump: 0, arm: st.aimAngle || 0, cape: 0, kick: 0, draw: 0, charge: 0, rel: 0, wind: 0 };
     ctx.save();
     ctx.translate(x, y);
     ctx.scale(sc, sc);
@@ -1805,11 +1820,11 @@
       ctx.translate(0, 6);
     }
     shadow(ctx, 0, 2, s * 0.7);
-    ctx.translate(0, bob);
+    ctx.translate(0, bob + pose.jump);
     ctx.rotate(-lean);
     const eye = look ? look.eye : '#fff2c4';
     const pull = st.shotAge !== undefined && st.shotAge < 0.15 ? 1 - st.shotAge / 0.15 : 0;
-    const wave = Math.sin(t * 3.2) * 4 + pull * 6;
+    const wave = Math.sin(t * 3.2) * 4 + pull * 6 + pose.cape;
     const neckY = -s * 1.86;
 
     // ----- 披风（两层：外面是披风颜色，里面是更深的衬里） -----
@@ -2018,6 +2033,12 @@
         ctx.fill();
       }
     }
+    // 上半身（上衣、手臂、头）绕着腰转：攻击时前倾后仰，施法时蹲下、后仰
+    ctx.save();
+    ctx.translate(pose.dx, pose.dy);
+    ctx.translate(0, -s * 0.85);
+    ctx.rotate(pose.torso);
+    ctx.translate(0, s * 0.85);
     // ----- 上衣：收腰、下摆张开 -----
     ctx.fillStyle = bodyGrad(ctx, -s * 0.35, neckY, s * 0.35, -s * 0.8, col.body, 0.3, 0.72);
     ctx.beginPath();
@@ -2165,9 +2186,49 @@
 
     // ----- 武器与手臂 -----
     if (st.mood !== 'lose') {
+      // 另一只手：托着武器、拉弦、举起或甩开（位置由姿势给出），画在持武器的手后面
+      if (pose.rear || pose.rearAbs) {
+        let hx;
+        let hy;
+        if (pose.rearAbs) {
+          hx = pose.rearAbs.x * s;
+          hy = pose.rearAbs.y * s;
+        } else {
+          hx = s * 0.18 + (pose.rear.u * Math.cos(pose.arm) - pose.rear.v * Math.sin(pose.arm)) * s;
+          hy = -s * 1.6 + (pose.rear.u * Math.sin(pose.arm) + pose.rear.v * Math.cos(pose.arm)) * s;
+        }
+        const sx2 = -s * 0.06;
+        const sy2 = -s * 1.6;
+        const mx = (sx2 + hx) / 2;
+        const my = (sy2 + hy) / 2;
+        const dl = Math.hypot(hx - sx2, hy - sy2) || 1;
+        // 手肘往下、往后弯
+        let nx = -(hy - sy2) / dl;
+        let ny = (hx - sx2) / dl;
+        if (ny < 0) {
+          nx = -nx;
+          ny = -ny;
+        }
+        const bend = Math.max(0, s * 0.62 - dl) * 0.5;
+        const ex = mx + nx * bend;
+        const ey = my + ny * bend;
+        ctx.save();
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.strokeStyle = deep(col.body, 0.62);
+        ctx.lineWidth = s * 0.085;
+        ctx.beginPath();
+        ctx.moveTo(sx2, sy2);
+        ctx.lineTo(ex, ey);
+        ctx.lineTo(hx, hy);
+        ctx.stroke();
+        glove(ctx, hx, hy, s * 0.1);
+        if (pose.charge > 0.2) glow(ctx, hx, hy, s * 0.4, col.shieldHi, pose.charge * 0.5);
+        ctx.restore();
+      }
       ctx.save();
       ctx.translate(s * 0.18, -s * 1.6);
-      ctx.rotate(st.aimAngle || 0);
+      ctx.rotate(pose.arm);
       ctx.strokeStyle = deep(col.body, 0.45);
       ctx.lineWidth = s * 0.09;
       ctx.lineCap = 'round';
@@ -2188,7 +2249,7 @@
       ctx.moveTo(s * 0.21, -s * 0.045);
       ctx.lineTo(s * 0.21, s * 0.05);
       ctx.stroke();
-      // 拉弓时手上一圈光
+      // 出手时手上一圈光
       if (pull > 0) {
         glow(ctx, s * 0.3, 0, s * 0.35, col.shieldHi, pull * 0.7);
         ctx.strokeStyle = rgba(col.shieldHi, pull * 0.8);
@@ -2197,14 +2258,15 @@
         ctx.arc(s * 0.3, 0, s * (0.12 + (1 - pull) * 0.15), 0, TAU);
         ctx.stroke();
       }
-      ctx.translate(s * 0.12, 0);
-      K.weapon(ctx, st.weapon, s * 0.9, st.shotAge, col, t);
+      ctx.translate(s * 0.12 - pose.kick, 0);
+      K.weapon(ctx, st.weapon, s * 0.9, st.shotAge, col, t, pose);
       if (pull > 0) glow(ctx, s * 0.5, 0, s * 0.7, '#fff0c0', pull * 0.8, true);
       if (st.ascended) {
         const tw = 0.6 + Math.sin(t * 8) * 0.4;
         dot(ctx, s * 0.65, -s * 0.35, 1.6, '#ffd23f', tw);
         dot(ctx, s * 0.3, s * 0.4, 1.2, '#ffd23f', 1 - tw * 0.5);
       }
+      if (TD.heroAnim) TD.heroAnim.tipFx(ctx, pose, s, t);
       ctx.restore();
     }
 
@@ -2237,10 +2299,12 @@
       heroHead(ctx, s, t, st.hero, col, eye, openEye);
       ctx.restore();
       ctx.restore();
+      ctx.restore();
       return;
     }
     if (style) {
       outfitHead(ctx, s, t, style, col, eye, openEye);
+      ctx.restore();
       ctx.restore();
       ctx.restore();
       return;
@@ -2302,6 +2366,7 @@
     ctx.bezierCurveTo(-s * 0.75, s * 0.12 + pw * 0.5, -s * 0.35, -s * 0.06, s * 0.06, s * 0.08);
     ctx.fill();
     glow(ctx, -s * 1.12, s * 0.24 + fl * s, s * 0.28, col.plumeHi, 0.55);
+    ctx.restore();
     ctx.restore();
     ctx.restore();
     ctx.restore();
