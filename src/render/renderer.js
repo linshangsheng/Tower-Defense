@@ -95,6 +95,7 @@
         const { y0, h } = laneBox(lane);
         V.laneFlash(C.wallX, C.width, y0, h);
         V.shards(C.wallX + 40, Math.min(C.width - 20, C.wallX + battle.range + 80), y0 + h * 0.7, n);
+        V.iceSpikes(C.wallX + 60, Math.min(C.width - 40, C.wallX + battle.range + 40), y0 + h * 0.8, Math.round(n * 0.6));
       };
       const wallHeal = (big) => V.heal(C.wallX - 30, C.fieldTop + 20, C.fieldBottom - 20, big);
       on('rainArrow', (e) => (V ? V.rainArrow(e.x, e.y) : this.fx.push({ kind: 'fallArrow', x: e.x, y: e.y, life: 0.18, age: 0 })));
@@ -235,6 +236,8 @@
           V.fx.push({ kind: 'ring', x: e.x, y: e.y, r0: r * 0.2, r1: r * 1.15, color: col, w: 3, life: 0.4, age: 0 });
           V.fx.push({ kind: 'ring', x: e.x, y: e.y, r0: r * 0.1, r1: r * 0.7, color: '#ffffff', w: 1.5, life: 0.26, age: 0 });
           V.fx.push({ kind: 'flare', x: e.x, y: e.y, r: r * 1.1, color: col, life: 0.25, age: 0 });
+          if (e.magic) V.bloom(e.x, e.y, col, r * 0.9);
+          else if (V.fx.length < 120) V.boom(e.x, e.y + 6, Math.max(0.5, Math.min(1.6, r / 85)));
           this.fx.push({ kind: 'scorch', x: e.x, y: e.y + 8, r: r * 0.7, life: 2.2, age: 0 });
           V.spawn(Math.min(14, 4 + Math.round(r / 12)), () => {
             const a = Math.random() * Math.PI * 2;
@@ -474,6 +477,29 @@
         const wd = this.battle.stats.weaponDef;
         const acc = wd && wd.look && wd.look.accent;
         if (acc) this.accentHit(acc, e.x, e.y - e.m.def.size * 0.6, wcol, big);
+      }
+      // 按武器造型和品质追加命中的华丽效果（设计书 97）
+      if (wsrc && this.vfx && this.battle && this.fx.length < 220) {
+        const wd = this.battle.stats.weaponDef;
+        const base = wd && wd.look ? wd.look.base : this.battle.stats.weapon;
+        const rar = (wd && wd.rarity) || 1;
+        const hx = e.x;
+        const hy = e.y - e.m.def.size * 0.6;
+        const V = this.vfx;
+        const col = wcol || '#fff0c0';
+        if (base === 'bow' || base === 'crossbow' || base === 'boomerang') V.slashes(hx, hy, col, big ? 6 : 3 + (rar >= 3 ? 1 : 0), big ? 66 : 46);
+        else if (base === 'staff' || base === 'orb') V.bloom(hx, hy, col, big ? 92 : 56);
+        if (rar >= 3 && (big || Math.random() < 0.5)) V.star(hx, hy, col, 40 + rar * 12 + (big ? 30 : 0), rar >= 5 ? 12 : 8, 0.45);
+        if (rar >= 5 && (big || Math.random() < 0.3)) V.prism(hx, hy, big ? 92 : 62);
+        // 红 / 金武器：五彩的光屑向四周喷出（金色最多）
+        if (rar >= 4 && V.parts.length < 300 && (big || Math.random() < 0.6)) {
+          const PAL = rar >= 5 ? ['#ff6a6a', '#ffd23f', '#6affc8', '#6ab8ff', '#d28aff'] : [col, '#ffffff', col];
+          V.spawn(rar >= 5 ? 10 : 6, (i) => {
+            const q = Math.random() * Math.PI * 2;
+            const v = 90 + Math.random() * 170;
+            return { kind: 'mote', x: hx, y: hy, vx: Math.cos(q) * v, vy: Math.sin(q) * v - 30, g: 120, life: 0.5 + Math.random() * 0.4, r: 1.6 + Math.random() * 1.6, color: PAL[i % PAL.length], drag: 0.9 };
+          });
+        }
       }
       if (e.blocked) this.fx.push({ kind: 'clang', x: e.x - e.m.def.size * 0.8, y: e.y - e.m.def.size * 0.7, life: 0.25, age: 0 });
       if (big) {

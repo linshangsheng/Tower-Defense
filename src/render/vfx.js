@@ -55,7 +55,7 @@
     spawn(n, make) {
       if (this.parts.length >= CAP) return;
       const k = this.parts.length > CAP * 0.7 ? Math.ceil(n / 2) : n;
-      for (let i = 0; i < k; i++) this.parts.push(Object.assign({ age: 0, drag: 0.9, g: 0, rot: 0, vr: 0 }, make(i)));
+      for (let i = 0; i < k; i++) this.parts.push(Object.assign({ age: 0, drag: 0.9, g: 0, rot: 0, vr: 0 }, make(i, k)));
     }
 
     // ---------------- 效果 ----------------
@@ -68,6 +68,7 @@
     // 箭雨的一支：从天上拖着光尾落下，落地溅起火花和小光圈
     rainArrow(x, y) {
       this.fx.push({ kind: 'streak', x, y, life: 0.16, age: 0 });
+      this.fx.push({ kind: 'star', x, y, r: 30, color: '#ffe6a0', rays: 6, life: 0.3, age: -0.14, rot: rnd(0, TAU) });
       this.fx.push({ kind: 'ring', x, y, r0: 4, r1: 26, color: '#ffe6a0', w: 2, life: 0.3, age: -0.14 });
       this.spawn(5, () => {
         const a = rnd(-Math.PI * 0.95, -Math.PI * 0.05);
@@ -85,6 +86,11 @@
       this.fx.push({ kind: 'scorch', x, y: y + 6, r: 46 * k, life: 1.4, age: 0 });
       this.fx.push({ kind: 'ring', x, y, r0: 10, r1: 110 * k, color: '#d8c0ff', w: 4, life: 0.45, age: 0 });
       this.fx.push({ kind: 'flare', x, y: y - 20, r: 170 * k, color: '#e8d8ff', life: 0.35, age: 0 });
+      // 落点：贴着地面窜开的电弧、第二圈白色冲击环、星芒、一道稍晚的白色回闪（设计书 97）
+      this.groundArcs(x, y, 100 * k, '#d8c0ff');
+      this.fx.push({ kind: 'ring', x, y, r0: 10, r1: 75 * k, color: '#ffffff', w: 2, life: 0.3, age: -0.1, flat: 0.5 });
+      this.star(x, y - 20, '#d8c0ff', 100 * k, 8, 0.45);
+      this.fx.push({ kind: 'bolt', x, y, path: boltPath(x + rnd(-20, 20), top, x, y, 28 * k, 2), life: 0.2, age: -0.14, w: k * 0.8, color: '#ffffff' });
       this.spawn(22, () => {
         const a = rnd(-Math.PI, 0);
         const v = rnd(160, 420) * k;
@@ -153,6 +159,53 @@
     // 车道一下子结冰的闪光
     laneFlash(x0, x1, y0, h, color) {
       this.fx.push({ kind: 'laneFlash', x0, x1, y0, h, color: color || '#dff4ff', life: 0.45, age: 0 });
+    }
+
+    // ---------------- 武器和技能的华丽收尾（设计书 97） ----------------
+    // 星芒：一束束放射状的光芒慢慢旋转着炸开（紫 / 红 / 金武器命中、暴击、箭雨落点）
+    star(x, y, color, r, rays, life) {
+      if (this.fx.length > 150) return;
+      this.fx.push({ kind: 'star', x, y, r, color, rays: rays || 8, life: life || 0.4, age: 0, rot: rnd(0, TAU) });
+    }
+
+    // 斩击线：几道从命中点向四周划开的细亮线（弓、弩、回旋镖）
+    slashes(x, y, color, n, len) {
+      if (this.fx.length > 150) return;
+      const a0 = rnd(0, TAU);
+      for (let i = 0; i < (n || 3); i++) this.fx.push({ kind: 'slash', x, y, color, len: (len || 38) * rnd(0.7, 1.2), ang: a0 + (i / (n || 3)) * TAU + rnd(-0.25, 0.25), life: 0.22, age: 0 });
+    }
+
+    // 法术绽放：强光 + 两圈冲击环 + 旋转的符文环 + 绕着飞的光点（法杖、法球命中和魔法爆炸）
+    bloom(x, y, color, r) {
+      if (this.fx.length > 140) return;
+      this.fx.push({ kind: 'flare', x, y, r: r * 1.2, color, life: 0.3, age: 0 });
+      this.fx.push({ kind: 'ring', x, y, r0: r * 0.15, r1: r * 0.9, color, w: 3, life: 0.4, age: 0 });
+      this.fx.push({ kind: 'ring', x, y, r0: r * 0.1, r1: r * 0.55, color: '#ffffff', w: 1.6, life: 0.28, age: 0.04 });
+      this.fx.push({ kind: 'runeRing', x, y: y + 6, r: r * 0.75, color, life: 0.55, age: 0 });
+      this.spawn(Math.min(12, 5 + Math.round(r / 18)), (i, n) => {
+        const a = (i / 8) * TAU + rnd(-0.3, 0.3);
+        return { kind: 'mote', x: x + Math.cos(a) * r * 0.3, y: y + Math.sin(a) * r * 0.2, vx: Math.cos(a) * r * 0.9, vy: Math.sin(a) * r * 0.6 - 30, life: rnd(0.4, 0.8), r: rnd(1.4, 2.4), color: i % 3 ? color : '#ffffff', drag: 0.85 };
+      });
+    }
+
+    // 彩虹光环：颜色随时间变化的一圈光（金色武器的命中）
+    prism(x, y, r) {
+      if (this.fx.length > 150) return;
+      this.fx.push({ kind: 'prism', x, y, r, life: 0.5, age: 0 });
+    }
+
+    // 地面上向四周窜开的电弧（雷霆落点）
+    groundArcs(x, y, r, color) {
+      this.fx.push({ kind: 'groundArc', x, y: y + 6, r, color: color || '#d8c0ff', life: 0.6, age: 0, seed: Math.random() * 100 });
+    }
+
+    // 冰刺：车道上一根根冰晶从地里长出来，停一会儿再碎成冰屑（冰冻领域）
+    iceSpikes(x0, x1, y, n) {
+      for (let i = 0; i < n; i++) {
+        const x = rnd(x0, x1);
+        this.fx.push({ kind: 'iceSpike', x, y: y + rnd(-14, 14), h: rnd(30, 70), w: rnd(7, 13), lean: rnd(-0.25, 0.25), life: rnd(1.1, 1.7), age: -rnd(0, 0.35) });
+      }
+      this.spawn(14, () => ({ kind: 'smoke', x: rnd(x0, x1), y: y + rnd(-10, 14), vx: rnd(-14, 14), vy: rnd(-24, -8), life: rnd(1.0, 1.6), r: rnd(12, 22), color: '#bfe4ff' }));
     }
 
     // 暗夜关：特效在黑幕上挖出的光（设计书 57.3）
@@ -417,6 +470,160 @@
           g.addColorStop(1, rgba('#9df58a', 0));
           ctx.fillStyle = g;
           ctx.fillRect(f.x - 40, f.y0, 80, f.y1 - f.y0);
+          break;
+        }
+        case 'star': {
+          // 放射状的星芒：长短相间的光芒慢慢转动、先胀后散
+          const grow = Math.min(1, k / 0.25);
+          const r = f.r * (0.35 + 0.65 * grow) * (1 + k * 0.25);
+          ctx.globalCompositeOperation = 'lighter';
+          ctx.translate(f.x, f.y);
+          ctx.rotate(f.rot + k * 1.4);
+          for (let i = 0; i < f.rays * 2; i++) {
+            const q = (i / (f.rays * 2)) * TAU;
+            const L = r * (i % 2 ? 0.55 : 1);
+            const wd = i % 2 ? 0.05 : 0.08;
+            const g = ctx.createLinearGradient(0, 0, Math.cos(q) * L, Math.sin(q) * L);
+            g.addColorStop(0, rgba('#ffffff', 0.9 * a));
+            g.addColorStop(1, rgba(f.color, 0));
+            ctx.fillStyle = g;
+            ctx.beginPath();
+            ctx.moveTo(Math.cos(q - wd) * r * 0.08, Math.sin(q - wd) * r * 0.08);
+            ctx.lineTo(Math.cos(q) * L, Math.sin(q) * L);
+            ctx.lineTo(Math.cos(q + wd) * r * 0.08, Math.sin(q + wd) * r * 0.08);
+            ctx.closePath();
+            ctx.fill();
+          }
+          ctx.rotate(-(f.rot + k * 1.4));
+          this.glow(ctx, 0, 0, r * 0.6, f.color, 0.7 * a);
+          break;
+        }
+        case 'slash': {
+          ctx.globalCompositeOperation = 'lighter';
+          const t0 = Math.min(1, k / 0.4);
+          const x0 = f.x + Math.cos(f.ang) * f.len * 0.25 * t0;
+          const y0 = f.y + Math.sin(f.ang) * f.len * 0.25 * t0;
+          const x1 = f.x + Math.cos(f.ang) * f.len * t0;
+          const y1 = f.y + Math.sin(f.ang) * f.len * t0;
+          const g = ctx.createLinearGradient(x0, y0, x1, y1);
+          g.addColorStop(0, rgba('#ffffff', 0.95 * a));
+          g.addColorStop(1, rgba(f.color, 0));
+          ctx.strokeStyle = g;
+          ctx.lineWidth = 2.4 * a + 0.6;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.moveTo(x0, y0);
+          ctx.lineTo(x1, y1);
+          ctx.stroke();
+          break;
+        }
+        case 'runeRing': {
+          // 脚下旋转着展开的符文环（扁的椭圆）
+          const open = Math.min(1, k / 0.3);
+          const r = f.r * (0.5 + 0.5 * open);
+          ctx.globalCompositeOperation = 'lighter';
+          ctx.translate(f.x, f.y);
+          ctx.scale(1, 0.36);
+          ctx.rotate(f.age * 3);
+          ctx.strokeStyle = rgba(f.color, 0.85 * a);
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(0, 0, r, 0, TAU);
+          ctx.stroke();
+          for (let i = 0; i < 12; i++) {
+            const q = (i / 12) * TAU;
+            const l = i % 3 ? 0.1 : 0.2;
+            ctx.beginPath();
+            ctx.moveTo(Math.cos(q) * r, Math.sin(q) * r);
+            ctx.lineTo(Math.cos(q) * r * (1 - l), Math.sin(q) * r * (1 - l));
+            ctx.stroke();
+          }
+          ctx.beginPath();
+          for (let i = 0; i <= 3; i++) {
+            const q = (i * 2 * TAU) / 3 - Math.PI / 2;
+            ctx.lineTo(Math.cos(q) * r * 0.7, Math.sin(q) * r * 0.7);
+          }
+          ctx.stroke();
+          break;
+        }
+        case 'prism': {
+          // 七彩光环：一圈圈颜色不同的环错开着扩散
+          const r0 = f.r * (0.2 + 0.9 * (1 - Math.pow(1 - k, 2)));
+          ctx.globalCompositeOperation = 'lighter';
+          ctx.translate(f.x, f.y);
+          ctx.scale(1, 0.8);
+          for (let i = 0; i < 6; i++) {
+            ctx.strokeStyle = `hsla(${(i * 60 + f.age * 400) % 360},100%,68%,${0.75 * a})`;
+            ctx.lineWidth = 2.2;
+            ctx.beginPath();
+            ctx.arc(0, 0, r0 * (1 - i * 0.045), 0, TAU);
+            ctx.stroke();
+          }
+          break;
+        }
+        case 'groundArc': {
+          // 落点周围贴着地面窜开的一圈电弧：每隔一小会儿换一组形状（闪烁）
+          const step = Math.floor(f.age * 22);
+          const sd = f.seed + step * 3.7;
+          const rr = (i) => {
+            const v = Math.sin(sd * 12.9898 + i * 78.233) * 43758.5453;
+            return v - Math.floor(v);
+          };
+          ctx.globalCompositeOperation = 'lighter';
+          ctx.lineCap = 'round';
+          ctx.lineJoin = 'round';
+          const reach = f.r * (0.4 + 0.6 * Math.min(1, k / 0.2));
+          for (let b = 0; b < 7; b++) {
+            const q = (b / 7) * TAU + rr(b) * 0.5;
+            ctx.beginPath();
+            let px = f.x;
+            let py = f.y;
+            ctx.moveTo(px, py);
+            for (let s2 = 1; s2 <= 5; s2++) {
+              const l = (reach * s2) / 5;
+              px = f.x + Math.cos(q) * l + (rr(b * 9 + s2) - 0.5) * 14;
+              py = f.y + (Math.sin(q) * l + (rr(b * 9 + s2 + 40) - 0.5) * 14) * 0.38;
+              ctx.lineTo(px, py);
+            }
+            ctx.strokeStyle = rgba(f.color, 0.5 * a);
+            ctx.lineWidth = 5;
+            ctx.stroke();
+            ctx.strokeStyle = rgba('#ffffff', 0.9 * a);
+            ctx.lineWidth = 1.4;
+            ctx.stroke();
+          }
+          break;
+        }
+        case 'iceSpike': {
+          // 冰刺：快速长出来（前 20%）→ 停留闪光 → 最后碎掉（缩小淡出）
+          const grow = 1 - Math.pow(1 - Math.min(1, k / 0.2), 3);
+          const fade = k > 0.75 ? (1 - k) / 0.25 : 1;
+          const h = f.h * grow * (k > 0.75 ? 0.6 + 0.4 * fade : 1);
+          ctx.translate(f.x, f.y);
+          ctx.rotate(f.lean);
+          ctx.globalAlpha = fade;
+          const g = ctx.createLinearGradient(-f.w, 0, f.w, 0);
+          g.addColorStop(0, '#7fc8f0');
+          g.addColorStop(0.5, '#f2fbff');
+          g.addColorStop(1, '#9fd8ff');
+          ctx.fillStyle = g;
+          ctx.beginPath();
+          ctx.moveTo(-f.w * 0.6, 0);
+          ctx.lineTo(-f.w * 0.15, -h * 0.55);
+          ctx.lineTo(f.w * 0.05, -h);
+          ctx.lineTo(f.w * 0.35, -h * 0.5);
+          ctx.lineTo(f.w * 0.6, 0);
+          ctx.closePath();
+          ctx.fill();
+          ctx.strokeStyle = 'rgba(255,255,255,0.8)';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(-f.w * 0.15, -h * 0.55);
+          ctx.lineTo(f.w * 0.05, -h);
+          ctx.stroke();
+          ctx.globalCompositeOperation = 'lighter';
+          this.glow(ctx, 0, -h * 0.5, h * 0.7, '#9fe0ff', 0.45 * fade);
+          if (k > 0.2 && k < 0.7) this.glow(ctx, f.w * 0.05, -h * 0.9, 10 + Math.sin(f.age * 14) * 4, '#ffffff', 0.7);
           break;
         }
         case 'laneFlash': {

@@ -3509,3 +3509,38 @@ test('主角双腿迈开：站姿有前后分开的两只脚', () => {
   assert.ok(H.pose({ t: 0, weapon: 'staff', mood: 'focus', castId: 'repair', castAge: 0.6 }, 0).stance > 1.2, '修复时蹲得更开');
   assert.ok(H.pose({ t: 0, weapon: 'staff', mood: 'focus', castId: 'drum', castAge: 0.33 }, 0).stance < 0.8, '战鼓跳起时两脚并拢');
 });
+
+// ---------- v0.94：武器命中和技能的华丽特效（设计书 97） ----------
+test('特效：星芒、斩击、法术绽放、彩虹环、地面电弧、冰刺都能画出来并按时消失', () => {
+  TD.art = TD.art || {};
+  TD.art.drawGlow = TD.art.drawGlow || (() => {});
+  require('../src/render/vfx.js');
+  const V = new TD.Vfx();
+  let calls = 0;
+  const ctx = new Proxy(function () {}, {
+    get: (t, k) => (k === 'createLinearGradient' || k === 'createRadialGradient' ? () => ({ addColorStop() {} }) : () => void calls++),
+    set: () => true,
+  });
+  V.star(100, 100, '#ffd23f', 60, 8, 0.4);
+  V.slashes(100, 100, '#ffffff', 4, 40);
+  V.bloom(100, 100, '#c58cff', 60);
+  V.prism(100, 100, 70);
+  V.groundArcs(100, 100, 90, '#d8c0ff');
+  V.iceSpikes(50, 300, 200, 8);
+  V.thunder(150, 200, 1);
+  V.rainArrow(120, 220);
+  const kinds = new Set(V.fx.map((f) => f.kind));
+  for (const k of ['star', 'slash', 'runeRing', 'prism', 'groundArc', 'iceSpike', 'bolt', 'ring']) assert.ok(kinds.has(k), k);
+  for (let i = 0; i < 40; i++) V.draw(ctx, 0.05);
+  assert.ok(calls > 200);
+  assert.strictEqual(V.fx.length, 0, '2 秒后所有特效都已消失');
+  assert.strictEqual(V.parts.length, 0);
+  // 特效太多时新的装饰性特效不再添加
+  for (let i = 0; i < 200; i++) V.fx.push({ kind: 'ring', x: 0, y: 0, r0: 1, r1: 2, color: '#ffffff', life: 9, age: 0 });
+  const n = V.fx.length;
+  V.star(0, 0, '#fff', 10);
+  V.slashes(0, 0, '#fff', 3);
+  V.bloom(0, 0, '#fff', 10);
+  V.prism(0, 0, 10);
+  assert.strictEqual(V.fx.length, n);
+});
