@@ -70,6 +70,8 @@
       // 城墙血条归零：开始坍塌（设计书 61.6）
       on('end', (res) => {
         if (!res.win && battle.wall.hp <= 0) this.collapse = { t0: this.t };
+        // 胜利：夜空 / 战场上空绽放一串彩色烟花（设计书 96）
+        if (res.win) this.fireworks = { until: this.t + 4, next: 0 };
       });
       on('wallHeal', (e) => {
         if (e.amount > 0) this.text(C.wallX - 70, C.fieldTop + 40, '+' + Math.round(e.amount), '#4fd36a', 26);
@@ -543,12 +545,41 @@
       S.volume = vol;
     }
 
+    // 胜利烟花：每隔 0.3 秒左右在高处绽放一朵——彩色的冲击环、强光、四散的火花和稍后落下的金色碎光
+    updateFireworks(dt) {
+      const F = this.fireworks;
+      const V = this.vfx;
+      if (!V || this.t > F.until) {
+        this.fireworks = null;
+        return;
+      }
+      F.next -= dt;
+      if (F.next > 0 || V.parts.length > 260) return;
+      F.next = 0.22 + Math.random() * 0.22;
+      const PAL = ['#ff6a6a', '#ffd23f', '#6affc8', '#6ab8ff', '#d28aff', '#ff9ad0', '#ffffff'];
+      const col = PAL[Math.floor(Math.random() * PAL.length)];
+      const col2 = PAL[Math.floor(Math.random() * PAL.length)];
+      const x = 260 + Math.random() * (C.width - 460);
+      const y = C.fieldTop + 30 + Math.random() * 190;
+      V.fx.push({ kind: 'flare', x, y, r: 110, color: col, life: 0.35, age: 0 });
+      V.fx.push({ kind: 'ring', x, y, r0: 6, r1: 80, color: col, w: 3, life: 0.5, age: 0 });
+      V.fx.push({ kind: 'ring', x, y, r0: 4, r1: 46, color: '#ffffff', w: 1.6, life: 0.35, age: 0 });
+      const N = 30;
+      V.spawn(N, (i) => {
+        const a = (i / N) * Math.PI * 2 + Math.random() * 0.1;
+        const v = 120 + Math.random() * 90;
+        return { kind: 'spark', x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, g: 90, life: 0.8 + Math.random() * 0.5, r: 2 + Math.random() * 1.6, color: i % 3 ? col : col2, drag: 0.93 };
+      });
+      if (TD.audio) TD.audio.play('crit');
+    }
+
     renderFrame(dt) {
       const ctx = this.ctx;
       const b = this.battle;
       this.t += dt;
       this.lastDt = dt;
       this.critAge += dt;
+      if (this.fireworks) this.updateFireworks(dt);
       ctx.save();
       if (this.shake > 0.2) {
         ctx.translate((Math.random() - 0.5) * this.shake, (Math.random() - 0.5) * this.shake);
@@ -2245,6 +2276,12 @@
           ctx.lineTo(p.x, p.y);
           ctx.stroke();
           TD.art.drawGlow(ctx, p.x, p.y, p.crit ? 16 : 11, col, 0.7);
+          // 弹道身后掉落的火花（炮弹还会拖一缕烟），法球身上多一圈跳动的光（设计书 96）
+          if (this.vfx && this.vfx.parts.length < 300 && Math.random() < (p.crit ? 0.9 : 0.45)) {
+            this.vfx.spawn(1, () => ({ kind: 'spark', x: p.x - Math.cos(p.angle) * 6, y: p.y - Math.sin(p.angle) * 6, vx: (Math.random() - 0.5) * 40, vy: (Math.random() - 0.5) * 40, g: 0, life: 0.22 + Math.random() * 0.15, r: 1 + Math.random() * 1.4, color: col }));
+            if (p.kind === 'shell' && Math.random() < 0.5) this.vfx.spawn(1, () => ({ kind: 'smoke', x: p.x, y: p.y, vx: -10, vy: -14, life: 0.5, r: 5 + Math.random() * 4, color: '#8a8a92' }));
+          }
+          if (p.kind === 'orb' || p.kind === 'zap') TD.art.drawGlow(ctx, p.x, p.y, 20 + Math.sin(this.t * 22 + p.x) * 5, col, 0.35);
         }
         ctx.restore();
       }

@@ -153,8 +153,14 @@
     if (!noSplit) {
       let best = null;
       // 前面带符号 / 序号的（"✎ 今天…"、"Lv2: 攻速 +65%"）：前缀原样保留，翻译后面的
+      // "Lv2：4 道雷，每道…"：后面的文字以数字开头时上面的"前缀"会把数字吃掉，先单独处理 "Lv数字 + 冒号"
+      const lm = /^(Lv\d+[:：]\s*)([\s\S]+)$/.exec(core);
+      if (lm) {
+        const rest = translateCore(lm[2]);
+        if (rest !== lm[2]) best = lm[1] + rest;
+      }
       const pm = /^([^\u3400-\u9fff]+)([\u3400-\u9fff][\s\S]*)$/.exec(core);
-      if (pm && !/^[\w\s]*$/.test(pm[1])) {
+      if (best === null && pm && !/^[\w\s]*$/.test(pm[1])) {
         const toks = pm[1].match(/\S+\s*|\s+/g); // 从短的前缀试起："✦ " → "✦ 🎯 "
         for (let cut = 1; cut <= toks.length && best === null; cut++) {
           const post = toks.slice(cut).join('') + pm[2];

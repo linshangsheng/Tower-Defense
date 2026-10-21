@@ -1835,7 +1835,7 @@
     if (reward.copperMult > 1) rows.push(h('div', { class: 'reward-row' }, h('span', null, '幸运加成'), h('b', null, `×${reward.copperMult.toFixed(2)}`)));
     rows.push(h('div', { class: 'reward-row total' }, h('span', null, '合计'), h('b', null, reward.copper, ' ', coinIcon('copper'), reward.silver ? [' ', reward.silver, ' ', coinIcon('silver')] : null, reward.gold ? [' ', reward.gold, ' ', coinIcon('gold')] : null)));
     const notes = reward.notes.filter((x) => !x.includes('失败')).map((x) => h('div', { class: 'note' + (x.startsWith('援军') ? ' rally' : '') }, (x.startsWith('援军') ? '🎺 ' : '✦ ') + x));
-    if (res.supplies && res.supplies.length) notes.push(h('div', { class: 'note' }, '📦 本关补给：' + res.supplies.map((x) => D.supplies[x].name).join('、')));
+    if (res.supplies && res.supplies.length) notes.push(h('div', { class: 'note' }, '📦 本关补给：', ...res.supplies.flatMap((x, i) => (i ? [h('span', null, '、'), h('span', null, D.supplies[x].name)] : [h('span', null, D.supplies[x].name)]))));
     const unlocks = reward.unlocks.map((x) => h('div', { class: 'note unlock' }, '🔓 ' + x));
     for (const a of reward.achievements || []) unlocks.push(h('div', { class: 'note achieve' }, `🏆 达成成就「${a.name}」：${a.desc}（+${P.costText(a.reward)}）`));
     let tips = null;
