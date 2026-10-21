@@ -335,8 +335,14 @@
         this.banner('裂隙打击！');
       });
       // 第三章
-      on('spit', (e) =>
-        this.fx.push({ kind: 'spit', x0: e.x - 10, y0: e.y - 20 + (e.m.def.flying ? e.m.yOffset : 0), x1: C.wallX - 10, y1: e.y - 30, life: 0.5, age: 0, fire: e.m.type === 'imp' }));
+      on('spit', (e) => {
+        const shot = e.m.def.ranged && e.m.def.ranged.shot;
+        const life = { arrow: 0.26, rock: 0.75, ice: 0.4, lightning: 0.32, bomb: 0.8 }[shot] || 0.5;
+        this.fx.push({ kind: 'spit', x0: e.x - 10, y0: e.y - 20 + (e.m.def.flying ? e.m.yOffset : 0), x1: C.wallX - 10, y1: e.y - 30, life, age: 0, fire: e.m.type === 'imp' || e.m.type === 'forgeImp', shot, seed: Math.random() });
+        // 出手的一瞬间：弓手 / 法师身上冒一团光点
+        const burstColor = { arrow: '#ffe9a0', rock: '#b8a080', ice: '#bfeaff', lightning: '#d8b8ff', bomb: '#ffb060' }[shot];
+        if (burstColor) this.burst(e.x - 8, e.y - 24 + (e.m.def.flying ? e.m.yOffset : 0), burstColor, 5, 70);
+      });
       on('poisonFog', (e) => {
         this.fogUntil = battle.time + e.duration;
         this.banner('毒雾！城墙持续受损');
@@ -2666,6 +2672,184 @@
       ctx.restore();
     }
 
+    // 远程怪的弹道（设计书 95）：arrow 快箭 · rock 抛物线石块 · ice 冰锥 · lightning 瞬发闪电 · bomb 会爆炸的炸弹
+    drawMonsterShot(ctx, f, k) {
+      const dx = f.x1 - f.x0;
+      const dy = f.y1 - f.y0;
+      const TAU = Math.PI * 2;
+      const hit = k > 0.93 && !f.burst;
+      if (hit) f.burst = true;
+      ctx.save();
+      switch (f.shot) {
+        case 'arrow': {
+          // 箭：几乎走直线，后面拖一道亮尾，箭头朝着前进的方向
+          const x = f.x0 + dx * k;
+          const y = f.y0 + dy * k - Math.sin(k * Math.PI) * 14;
+          const ang = Math.atan2(dy - Math.cos(k * Math.PI) * 14 * Math.PI, dx);
+          const g = ctx.createLinearGradient(x, y, x - Math.cos(ang) * 46, y - Math.sin(ang) * 46);
+          g.addColorStop(0, 'rgba(255,240,170,0.9)');
+          g.addColorStop(1, 'rgba(255,240,170,0)');
+          ctx.strokeStyle = g;
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(x, y);
+          ctx.lineTo(x - Math.cos(ang) * 46, y - Math.sin(ang) * 46);
+          ctx.stroke();
+          ctx.translate(x, y);
+          ctx.rotate(ang);
+          ctx.fillStyle = '#6a4a2a';
+          ctx.fillRect(-16, -1, 16, 2);
+          ctx.fillStyle = '#e8e8f0';
+          ctx.beginPath();
+          ctx.moveTo(5, 0);
+          ctx.lineTo(-2, -3.2);
+          ctx.lineTo(-2, 3.2);
+          ctx.closePath();
+          ctx.fill();
+          ctx.fillStyle = '#d04a3a';
+          ctx.beginPath();
+          ctx.moveTo(-16, 0);
+          ctx.lineTo(-20, -3);
+          ctx.lineTo(-12, 0);
+          ctx.lineTo(-20, 3);
+          ctx.closePath();
+          ctx.fill();
+          if (hit) this.burst(f.x1, f.y1, '#ffe9a0', 5, 90);
+          break;
+        }
+        case 'rock': {
+          // 大石头：高高抛起，一路翻滚，落地扬起尘土碎石
+          const x = f.x0 + dx * k;
+          const y = f.y0 + dy * k - Math.sin(k * Math.PI) * 110;
+          // 落点的影子
+          ctx.fillStyle = `rgba(0,0,0,${0.12 + k * 0.2})`;
+          ctx.beginPath();
+          ctx.ellipse(f.x0 + dx * k, f.y0 + dy * k + 16, 10 + k * 6, 3 + k * 2, 0, 0, TAU);
+          ctx.fill();
+          ctx.translate(x, y);
+          ctx.rotate(k * 9);
+          const rg = ctx.createRadialGradient(-3, -3, 1, 0, 0, 13);
+          rg.addColorStop(0, '#b4aa9a');
+          rg.addColorStop(1, '#5a5248');
+          ctx.fillStyle = rg;
+          ctx.beginPath();
+          for (let i = 0; i < 7; i++) {
+            const q = (i / 7) * TAU;
+            const r = 10 + ((f.seed * 97 + i * 31) % 5);
+            ctx[i ? 'lineTo' : 'moveTo'](Math.cos(q) * r, Math.sin(q) * r * 0.9);
+          }
+          ctx.closePath();
+          ctx.fill();
+          ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+          ctx.lineWidth = 1.2;
+          ctx.stroke();
+          if (hit) {
+            this.burst(f.x1, f.y1, '#b8a888', 10, 150);
+            this.shake = Math.max(this.shake, 4);
+          }
+          break;
+        }
+        case 'ice': {
+          // 冰锥：蓝白色的尖晶，拖着一串冰屑
+          const x = f.x0 + dx * k;
+          const y = f.y0 + dy * k - Math.sin(k * Math.PI) * 24;
+          const ang = Math.atan2(dy, dx);
+          for (let i = 1; i <= 5; i++) {
+            const kk = Math.max(0, k - i * 0.04);
+            ctx.fillStyle = `rgba(190,235,255,${0.5 - i * 0.09})`;
+            ctx.beginPath();
+            ctx.arc(f.x0 + dx * kk + Math.sin(i * 7 + f.seed * 9) * 3, f.y0 + dy * kk - Math.sin(kk * Math.PI) * 24 + Math.cos(i * 5) * 3, 3.2 - i * 0.4, 0, TAU);
+            ctx.fill();
+          }
+          TD.art.drawGlow(ctx, x, y, 22, '#8fe0ff', 0.6);
+          ctx.translate(x, y);
+          ctx.rotate(ang);
+          const ig = ctx.createLinearGradient(-12, 0, 12, 0);
+          ig.addColorStop(0, '#6ac4ee');
+          ig.addColorStop(1, '#f4fcff');
+          ctx.fillStyle = ig;
+          ctx.beginPath();
+          ctx.moveTo(14, 0);
+          ctx.lineTo(-6, -4.5);
+          ctx.lineTo(-12, 0);
+          ctx.lineTo(-6, 4.5);
+          ctx.closePath();
+          ctx.fill();
+          if (hit) this.burst(f.x1, f.y1, '#cfeeff', 9, 130);
+          break;
+        }
+        case 'lightning': {
+          // 闪电：没有弹道，一瞬间从怪物劈到城墙，几道分叉，持续一小会儿然后闪烁着消失
+          const flick = k < 0.7 ? 1 : Math.random() < 0.6 ? 1 : 0.2;
+          ctx.globalAlpha = (1 - k * 0.6) * flick;
+          ctx.globalCompositeOperation = 'lighter';
+          ctx.lineCap = 'round';
+          ctx.lineJoin = 'round';
+          const seed = Math.floor(k * 6) + f.seed * 100;
+          const rnd = (i) => {
+            const v = Math.sin(seed * 127.1 + i * 311.7) * 43758.5453;
+            return v - Math.floor(v);
+          };
+          const pts = [[f.x0, f.y0 - 20]];
+          const N = 9;
+          for (let i = 1; i < N; i++) pts.push([f.x0 + (dx * i) / N + (rnd(i) - 0.5) * 34, f.y0 - 20 + ((f.y1 - f.y0 + 20) * i) / N + (rnd(i + 20) - 0.5) * 34]);
+          pts.push([f.x1, f.y1]);
+          for (const [col, w] of [['rgba(150,100,255,0.45)', 9], ['rgba(200,170,255,0.85)', 4], ['#ffffff', 1.8]]) {
+            ctx.strokeStyle = col;
+            ctx.lineWidth = w;
+            ctx.beginPath();
+            pts.forEach(([px, py], i) => (i ? ctx.lineTo(px, py) : ctx.moveTo(px, py)));
+            ctx.stroke();
+          }
+          // 分叉
+          ctx.strokeStyle = 'rgba(220,200,255,0.8)';
+          ctx.lineWidth = 1.6;
+          for (let b = 2; b < N - 1; b += 3) {
+            ctx.beginPath();
+            ctx.moveTo(pts[b][0], pts[b][1]);
+            ctx.lineTo(pts[b][0] + (rnd(b + 50) - 0.3) * 50, pts[b][1] + (rnd(b + 60) - 0.2) * 44);
+            ctx.stroke();
+          }
+          TD.art.drawGlow(ctx, f.x1, f.y1, 46, '#d8b8ff', 0.7 * (1 - k));
+          if (!f.burst) {
+            f.burst = true;
+            this.burst(f.x1, f.y1, '#e2d0ff', 10, 170);
+          }
+          break;
+        }
+        case 'bomb': {
+          // 炸弹：高高抛起，冒着火星的引线，落下后一团爆炸的火球
+          const x = f.x0 + dx * k;
+          const y = f.y0 + dy * k - Math.sin(k * Math.PI) * 130;
+          ctx.translate(x, y);
+          ctx.rotate(k * 5);
+          ctx.fillStyle = '#26262e';
+          ctx.beginPath();
+          ctx.arc(0, 0, 9, 0, TAU);
+          ctx.fill();
+          ctx.fillStyle = 'rgba(255,255,255,0.35)';
+          ctx.beginPath();
+          ctx.arc(-3, -3, 3, 0, TAU);
+          ctx.fill();
+          ctx.strokeStyle = '#b8a070';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(0, -9);
+          ctx.quadraticCurveTo(5, -15, 9, -13);
+          ctx.stroke();
+          const spark = 0.6 + Math.sin(k * 90) * 0.4;
+          TD.art.drawGlow(ctx, 9, -13, 14, '#ffb347', spark);
+          if (hit) {
+            this.burst(f.x1, f.y1, '#ff9a3c', 14, 190);
+            this.fx.push({ kind: 'boom', x: f.x1, y: f.y1 + 6, life: 0.4, age: 0 });
+            this.shake = Math.max(this.shake, 6);
+          }
+          break;
+        }
+      }
+      ctx.restore();
+    }
+
     drawWallSeal(b) {
       const ctx = this.ctx;
       const left = this.sealUntil - b.time;
@@ -3006,6 +3190,10 @@
           case 'spit': {
             const x = f.x0 + (f.x1 - f.x0) * k;
             const y = f.y0 + (f.y1 - f.y0) * k - Math.sin(k * Math.PI) * 60;
+            if (f.shot) {
+              this.drawMonsterShot(ctx, f, k);
+              break;
+            }
             if (f.fire) S.ellipse(ctx, x, y, 8, 8, '#ffb347', '#e04848', 2);
             else if (f.bubble) S.ellipse(ctx, x, y, 7, 7, 'rgba(190,235,255,0.5)', '#7ad0ff', 1.5);
             else if (f.pearl) S.ellipse(ctx, x, y, 8, 8, '#fff6fb', '#c9a0c0', 2);

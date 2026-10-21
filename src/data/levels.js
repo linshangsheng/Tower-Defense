@@ -1661,6 +1661,20 @@
     },
   };
 
+  // 远程怪（设计书 95）：第 6 关起，每隔两关的普通 / 重甲 / 暗夜 / 速攻关里，从第 2 波开始混进几只远程怪；
+  // 每章换一种，越往后每波越多
+  const SHOOTER_BY_CHAPTER = ['goblinArcher', 'goblinArcher', 'rockThrower', 'iceMage', 'bomber', 'stormCaster', 'iceMage', 'rockThrower', 'bomber', 'stormCaster'];
+  for (const [k, lv] of Object.entries(TD.data.levels)) {
+    const n = +k;
+    if (n < 6 || n % 3 !== 0 || !['normal', 'armored', 'dark', 'rush'].includes(lv.type)) continue;
+    const shooter = SHOOTER_BY_CHAPTER[Math.min(9, Math.floor((n - 1) / 10))];
+    const cnt = 2 + Math.floor(n / 15);
+    lv.shooter = shooter;
+    lv.waves.forEach((w, i) => {
+      if (i >= 1) w.groups.push([shooter, cnt + (i === lv.waves.length - 1 ? 1 : 0)]);
+    });
+  }
+
   TD.data.levelTypeNames = {
     tutorial: '教学',
     tower: '九层妖塔',

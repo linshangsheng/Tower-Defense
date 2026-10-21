@@ -903,6 +903,16 @@
   const TINT_MOON = '#7a5cff'; // 月影古堡：蓝紫
   const TINT_FORGE = '#ff4a4a'; // 赤铁熔炉：暗红
   const TINT_VOID = '#b04aff'; // 虚空天域：紫
+  // ---------- 远程怪（设计书 95）：停在远处，各用不同的弹道向城墙开火 ----------
+  // ranged.shot 决定弹道的样子：arrow 快箭 · rock 抛物线石块 · ice 冰锥（冻伤城墙）· lightning 瞬发闪电 · bomb 会爆炸的炸弹
+  Object.assign(TD.data.monsters, {
+    goblinArcher: { name: '哥布林弓手', hp: 36, speed: 55, dps: 0, armor: 0, copper: 4, size: 20, color: '#d8a040', art: 'goblin', tint: '#d8a040', ranged: { holdX: 520, every: 1.4, damage: 8, shot: 'arrow' }, desc: '躲在远处的哥布林，一支接一支地朝城墙射箭，箭又快又准。' },
+    rockThrower: { name: '投石怪', hp: 110, speed: 30, dps: 0, armor: 25, copper: 5, size: 26, color: '#8a6a4a', art: 'stump', ranged: { holdX: 460, every: 2.6, damage: 20, shot: 'rock' }, desc: '力气很大的怪，停在远处抛出大石头，一块砸下去很疼，但出手慢。' },
+    iceMage: { name: '冰晶法师', hp: 55, speed: 40, dps: 0, armor: 0, copper: 5, size: 22, color: '#8fe0ff', art: 'snowman', tint: '#8fe0ff', ranged: { holdX: 500, every: 2.2, damage: 8, shot: 'ice', poison: { dps: 3, duration: 4 } }, desc: '从远处射出冰锥，被冰锥打中的城墙会冻伤，持续受到伤害。' },
+    stormCaster: { name: '雷电法师', hp: 70, speed: 38, dps: 0, armor: 0, copper: 6, size: 22, color: '#b090ff', art: 'priest', tint: '#b090ff', ranged: { holdX: 620, every: 2.8, damage: 17, shot: 'lightning' }, desc: '站在最远处召来闪电劈向城墙，闪电没有弹道、躲不开，但出手慢。' },
+    bomber: { name: '投弹手', hp: 90, speed: 36, dps: 0, armor: 0, copper: 6, size: 24, color: '#ff9a3c', art: 'pumpkin', tint: '#ff9a3c', ranged: { holdX: 440, every: 3.4, damage: 30, shot: 'bomb' }, desc: '丢出会爆炸的炸弹，一颗炸弹伤城墙很重，但很久才丢一颗。' },
+  });
+
   const echo = (id, base, name, tint, over, desc) => {
     const b = TD.data.monsters[base];
     const def = Object.assign({}, b, over, { name, art: base, tint, desc, echo: true });
