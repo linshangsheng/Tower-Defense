@@ -114,9 +114,10 @@
       on('thunder', (e) => {
         if (V) {
           V.thunder(e.x, e.y, 1);
-          this.fx.push({ kind: 'flash', color: '#b090ff', life: 0.25, age: 0 });
+          // 连劈多道雷时只有第 1 道（和每隔几道）全屏闪一下，免得几道雷连着闪得晃眼
+          if (!e.idx || e.idx % 4 === 0) this.fx.push({ kind: 'flash', color: '#b090ff', life: 0.25, age: 0 });
         } else this.fx.push({ kind: 'bolt', x: e.x, y: e.y, life: 0.35, age: 0, seed: Math.random() });
-        this.shake = Math.max(this.shake, 9);
+        this.shake = Math.max(this.shake, e.idx ? 5 : 9);
       });
       on('skill', (e) => {
         if (!V) {
