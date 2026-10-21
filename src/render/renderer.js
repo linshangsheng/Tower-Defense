@@ -2530,6 +2530,45 @@
       const chrono = b.buffs.some((x) => x.src === 'chrono' && b.time < x.until);
       if (banner) this.drawBannerAura(b);
       if (chrono) this.drawChronoAura(b, dt);
+      // 城墙减伤（修复 3 级、结界等）生效期间：整面墙罩着一层蓝色流光的护盾（设计书 96）
+      if (b.time < b.tempDr.until) {
+        const ctx = this.ctx;
+        const left = b.tempDr.until - b.time;
+        const fade = Math.min(1, left / 0.8);
+        const x0 = C.wallX - 70;
+        const w = 110;
+        const y0 = C.fieldTop - 28;
+        const h = C.fieldBottom - C.fieldTop + 38;
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        const g = ctx.createLinearGradient(x0, 0, x0 + w, 0);
+        g.addColorStop(0, 'rgba(110,190,255,0)');
+        g.addColorStop(0.55, `rgba(110,190,255,${0.2 * fade})`);
+        g.addColorStop(1, `rgba(190,235,255,${0.34 * fade})`);
+        ctx.fillStyle = g;
+        ctx.fillRect(x0, y0, w, h);
+        // 从下往上流动的几道亮线
+        ctx.lineWidth = 2;
+        for (let i = 0; i < 5; i++) {
+          const yy = y0 + h - ((this.t * 90 + i * (h / 5)) % h);
+          const lg = ctx.createLinearGradient(x0, 0, x0 + w, 0);
+          lg.addColorStop(0, 'rgba(200,240,255,0)');
+          lg.addColorStop(1, `rgba(220,245,255,${0.55 * fade})`);
+          ctx.strokeStyle = lg;
+          ctx.beginPath();
+          ctx.moveTo(x0, yy);
+          ctx.lineTo(x0 + w, yy - 6);
+          ctx.stroke();
+        }
+        // 边缘一道亮边
+        ctx.strokeStyle = `rgba(210,240,255,${0.5 * fade})`;
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(x0 + w, y0);
+        ctx.lineTo(x0 + w, y0 + h);
+        ctx.stroke();
+        ctx.restore();
+      }
       if (!drum && !haste) return;
       const ctx = this.ctx;
       const x = C.heroX + 4;
