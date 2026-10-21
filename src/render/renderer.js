@@ -76,6 +76,13 @@
       on('wallHeal', (e) => {
         if (e.amount > 0) this.text(C.wallX - 70, C.fieldTop + 40, '+' + Math.round(e.amount), '#4fd36a', 26);
         this.burst(C.wallX - 60, (C.fieldTop + C.fieldBottom) / 2, '#7dff9a', 18, 220);
+        // 修复：整面墙从下到上亮起一道绿光，绿色光点沿着墙升起（设计书 96）
+        const V2 = this.vfx;
+        if (V2 && e.amount > 0 && this.fx.length < 200) {
+          const mid = (C.fieldTop + C.fieldBottom) / 2;
+          V2.fx.push({ kind: 'flare', x: C.wallX - 30, y: mid, r: (C.fieldBottom - C.fieldTop) * 0.62, color: '#7dff9a', life: 0.5, age: 0 });
+          V2.spawn(16, () => ({ kind: 'spark', x: C.wallX - 50 + Math.random() * 40, y: C.fieldBottom - Math.random() * 40, vx: (Math.random() - 0.5) * 20, vy: -90 - Math.random() * 160, g: -20, life: 0.7 + Math.random() * 0.5, r: 1.8 + Math.random() * 1.8, color: Math.random() < 0.3 ? '#ffffff' : '#9dffb0' }));
+        }
       });
       on('spore', (e) => this.fx.push({ kind: 'ring', x: e.x, y: e.y, r0: 10, r1: e.radius, color: 'rgba(196,90,210,', life: 0.6, age: 0 }));
       // 技能和道具特效（设计书 60.4）
@@ -191,11 +198,25 @@
         this.shake = Math.max(this.shake, 8);
       });
       on('chargeHit', () => (this.shake = Math.max(this.shake, 18)));
-      on('bossPhase', (e) => this.banner(e.text));
+      on('bossPhase', (e) => {
+        this.banner(e.text);
+        // Boss 换阶段：身上一圈冲击环 + 强光 + 震屏（设计书 96）
+        if (V && e.m) {
+          const y = e.m.y + e.m.yOffset - e.m.def.size * 0.6;
+          for (let i = 0; i < 3; i++) V.fx.push({ kind: 'ring', x: e.m.x, y, r0: 10, r1: e.m.def.size * (3 + i * 1.4), color: i % 2 ? '#ffffff' : '#ff6a4a', w: 3, life: 0.45 + i * 0.15, age: 0 });
+          V.fx.push({ kind: 'flare', x: e.m.x, y, r: e.m.def.size * 4, color: '#ff8a5a', life: 0.4, age: 0 });
+          this.burst(e.m.x, y, '#ff8a5a', 24, 260);
+        }
+        this.shake = Math.max(this.shake, 12);
+      });
       on('split', (e) => this.burst(e.m.x, e.m.y - 20, '#7fd0ff', 14, 200));
       on('waveStart', (e) => {
         if (e.chapter) this.setChapter(TD.data.chapters.find((c) => c.id === e.chapter));
-        this.banner(battle.level.endless ? `第 ${e.index + 1} 波` : e.index === battle.totalWaves - 1 ? '最后一波！' : `第 ${e.index + 1} 波`);
+        const last = !battle.level.endless && e.index === battle.totalWaves - 1;
+        this.banner(battle.level.endless ? `第 ${e.index + 1} 波` : last ? '最后一波！' : `第 ${e.index + 1} 波`);
+        // 一道光带从右向左扫过战场（最后一波是红色的，并震一下）
+        this.fx.push({ kind: 'waveSweep', last, life: 0.9, age: 0 });
+        if (last) this.shake = Math.max(this.shake, 6);
       });
       on('earlyCall', (e) => {
         if (e.bonus > 0) this.text(C.width - 160, 90, `提前召唤 +${e.bonus} 铜`, '#ffb347', 24, 1.4);
@@ -3320,6 +3341,18 @@
             ctx.font = 'bold 26px sans-serif';
             ctx.textAlign = 'center';
             ctx.fillText('!', f.x, f.y - 14);
+            break;
+          }
+          case 'waveSweep': {
+            const sx = C.width * (1.15 - k * 1.3);
+            const g = ctx.createLinearGradient(sx - 140, 0, sx + 140, 0);
+            const c = f.last ? '255,90,70' : '255,226,150';
+            g.addColorStop(0, `rgba(${c},0)`);
+            g.addColorStop(0.5, `rgba(${c},${(f.last ? 0.38 : 0.28) * Math.sin(k * Math.PI)})`);
+            g.addColorStop(1, `rgba(${c},0)`);
+            ctx.globalCompositeOperation = 'lighter';
+            ctx.fillStyle = g;
+            ctx.fillRect(sx - 140, C.fieldTop - 30, 280, C.fieldBottom - C.fieldTop + 60);
             break;
           }
           case 'flash':
