@@ -101,6 +101,8 @@
       on('thunderChain', (e) => {
         // e.small = 武器自己的闪电（雷电法球、风暴法球……）：用武器品质的颜色；技能「雷霆一击」仍是紫白色
         this.fx.push({ kind: 'chain', x0: e.x0, y0: e.y0, x: e.x, y: e.y, life: 0.3, age: 0, color: e.small ? e.color : null });
+        // 每一跳落点溅出几粒电火花
+        this.burst(e.x, e.y, e.small && e.color ? e.color : '#e2c8ff', 4, 110);
         if (V) V.fx.push({ kind: 'flare', x: e.x, y: e.y, r: 50, color: e.small && e.color ? e.color : '#d8c0ff', life: 0.3, age: 0 });
       });
       on('laneFreeze', (e) => {
@@ -615,6 +617,18 @@
       if (this.vfx && this.fx.length < 200) {
         this.vfx.fx.push({ kind: 'flare', x: C.wallX - 4, y, r: e.big ? 80 : 34, color: '#ffc890', life: 0.18, age: 0 });
         this.vfx.spawn(e.big ? 8 : 2, () => ({ kind: 'spark', x: C.wallX - 4, y, vx: -60 - Math.random() * 160, vy: -80 - Math.random() * 120, g: 300, life: 0.3, r: 1.6, color: '#ffd9a0' }));
+      }
+      // 远程怪的弹种决定打在墙上的样子：冰锥冻出一片白霜和冰屑，石块溅起尘土，箭扎出一圈小环（设计书 96）
+      const shot = e.m && e.m.def.ranged && e.m.def.ranged.shot;
+      if (shot && this.vfx && this.fx.length < 200) {
+        if (shot === 'ice') {
+          this.vfx.fx.push({ kind: 'flare', x: C.wallX - 8, y, r: 56, color: '#9fe0ff', life: 0.35, age: 0 });
+          this.vfx.spawn(6, () => ({ kind: 'spark', x: C.wallX - 6, y, vx: -40 - Math.random() * 120, vy: -60 - Math.random() * 120, g: 280, life: 0.45, r: 1.6 + Math.random() * 1.6, color: '#e4f8ff' }));
+        } else if (shot === 'rock') {
+          this.vfx.spawn(3, () => ({ kind: 'smoke', x: C.wallX - 8, y, vx: -20 - Math.random() * 30, vy: -10 - Math.random() * 20, life: 0.6, r: 8 + Math.random() * 6, color: '#9a9288' }));
+        } else if (shot === 'arrow') {
+          this.vfx.fx.push({ kind: 'ring', x: C.wallX - 6, y, r0: 3, r1: 18, color: '#ffe9a0', w: 1.6, life: 0.2, age: 0 });
+        }
       }
       if (e.big) {
         this.shake = Math.max(this.shake, 16);
