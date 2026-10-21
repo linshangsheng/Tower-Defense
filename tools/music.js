@@ -81,6 +81,9 @@ const SCENES = [
   { name: 'stinger-win', theme: 1, mode: 'calm', tension: 0, dur: 5, stinger: 'win', mute: true },
   { name: 'stinger-lose', theme: 1, mode: 'calm', tension: 0, dur: 6, stinger: 'lose', mute: true },
 ];
+// v0.95 新曲：另外两首标题曲、十章的 B 曲（战斗二档）
+for (const t of ['T1', 'T2']) SCENES.push({ name: `title-${t}`, theme: t, mode: 'title', tension: 0, dur: 24 });
+for (let c = 1; c <= 10; c++) SCENES.push({ name: `battle-ch${c}b-t1`, theme: `${c}b`, mode: 'battle', tension: 1, dur: 12 });
 for (let c = 0; c <= 7; c++) if (![1, 5].includes(c) && c) SCENES.push({ name: `battle-ch${c}-t1`, theme: c, mode: 'battle', tension: 1, dur: 12 });
 
 (async () => {

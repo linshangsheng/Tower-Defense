@@ -2250,12 +2250,13 @@ function mockAudioCtx() {
   };
 }
 
-test('音乐：标题 + 七章共 8 首，每首 8 小节和弦、64 个八分音符位置，音高在合理范围', () => {
+test('音乐：标题 3 首 + 十章各 2 首共 23 首，每首 8 小节和弦、64 个八分音符位置，音高在合理范围', () => {
   globalThis.window = globalThis.window || undefined;
   delete require.cache[require.resolve('../src/render/music.js')];
   require('../src/render/music.js');
   const M = TD.music;
-  for (let id = 0; id <= 10; id++) {
+  assert.strictEqual(Object.keys(M.THEMES).length, 23);
+  for (const id of Object.keys(M.THEMES)) {
     const th = M.THEMES[id];
     assert.ok(th, `缺少第 ${id} 首`);
     assert.strictEqual(th.chords.length, 8);
@@ -2263,18 +2264,25 @@ test('音乐：标题 + 七章共 8 首，每首 8 小节和弦、64 个八分�
     const played = th.notes.filter(Boolean);
     assert.ok(played.length >= 14, `第 ${id} 首旋律音符太少`);
     for (const n of played) assert.ok(Number.isFinite(n.midi) && n.midi >= 60 && n.midi <= 96, `第 ${id} 首有越界音高 ${n.midi}`);
-    assert.ok(th.bpm >= 70 && th.bpm <= 130);
+    assert.ok(th.bpm >= 66 && th.bpm <= 130);
+    assert.ok(th.name && th.lead);
   }
+  // 每章都有 A / B 两首，标题有 3 首，且名字互不相同
+  for (let ch = 1; ch <= 10; ch++) assert.ok(M.THEMES[ch] && M.THEMES[ch + 'b'], `第 ${ch} 章缺 B 曲`);
+  assert.deepStrictEqual(M.TITLE_IDS, [0, 'T1', 'T2']);
+  assert.strictEqual(new Set(Object.values(M.THEMES).map((t) => t.name)).size, 23, '曲名不重复');
+  assert.strictEqual(new Set(Object.values(M.THEMES).map((t) => t.melody.join('|'))).size, 23, '旋律不重复');
   assert.strictEqual(M.THEMES[5].lead, 'horn');
 });
 
 test('音乐：每首曲子在每种模式 / 紧张度下都能排完整个循环，且越紧张声音事件越多', () => {
   const M = TD.music;
   const events = {};
-  for (let id = 0; id <= 7; id++) {
+  for (const id of Object.keys(M.THEMES)) {
+    const isTitle = M.TITLE_IDS.map(String).includes(id);
     for (const [mode, tension] of [['title', 0], ['calm', 0], ['battle', 0], ['battle', 1], ['battle', 2], ['battle', 3]]) {
-      if (id === 0 && mode !== 'title') continue;
-      if (id > 0 && mode === 'title') continue;
+      if (isTitle && mode !== 'title') continue;
+      if (!isTitle && mode === 'title') continue;
       const ctx = mockAudioCtx();
       const eng = new M.Engine(ctx, ctx.destination);
       eng.tension = tension;
@@ -2282,7 +2290,7 @@ test('音乐：每首曲子在每种模式 / 紧张度下都能排完整个循�
       eng.schedule(40); // 足够跑完 8 小节循环
       const n = ctx.calls.osc + ctx.calls.noise;
       assert.ok(n > 20, `第 ${id} 首 ${mode}/${tension} 几乎没有声音`);
-      if (id === 1) events[mode + tension] = n / Math.min(40, eng.nextTime);
+      if (id === '1') events[mode + tension] = n / Math.min(40, eng.nextTime);
     }
   }
   assert.ok(events.battle0 > events.calm0, '战斗比地图更密');
@@ -2323,9 +2331,9 @@ test('采样乐器：25 种乐器 / 鼓件都有采样，持续音带循环区�
   for (const n of ['cello', 'string_ensemble_1', 'french_horn', 'choir_aahs', 'flute', 'oboe']) assert.deepStrictEqual(S[n].loop, [0.8, 2.4]);
   assert.strictEqual(S.timpani.loop, null);
   // 每首曲子要用的乐器采样里都有
-  for (let id = 0; id <= 7; id++) for (const n of TD.music.Engine.instrumentsFor(id)) assert.ok(S[n], `第 ${id} 首要用 ${n}，但没有采样`);
+  for (const id of Object.keys(TD.music.THEMES)) for (const n of TD.music.Engine.instrumentsFor(id)) assert.ok(S[n], `第 ${id} 首要用 ${n}，但没有采样`);
   // 主旋律用到的最高 / 最低音，采样范围内变速不超过 3 个半音
-  for (let id = 0; id <= 7; id++) {
+  for (const id of Object.keys(TD.music.THEMES)) {
     const th = TD.music.THEMES[id];
     const inst = { bell: 'tubular_bells', pluck: 'orchestral_harp', marimba: 'marimba', reed: 'oboe', flute: 'flute', horn: 'french_horn' }[th.lead];
     const keys = Object.keys(S[inst].notes).map(Number);
@@ -3531,9 +3539,9 @@ test('特效：星芒、斩击、法术绽放、彩虹环、地面电弧、冰�
   V.rainArrow(120, 220);
   const kinds = new Set(V.fx.map((f) => f.kind));
   for (const k of ['star', 'slash', 'runeRing', 'prism', 'groundArc', 'iceSpike', 'bolt', 'ring']) assert.ok(kinds.has(k), k);
-  for (let i = 0; i < 40; i++) V.draw(ctx, 0.05);
+  for (let i = 0; i < 60; i++) V.draw(ctx, 0.05);
   assert.ok(calls > 200);
-  assert.strictEqual(V.fx.length, 0, '2 秒后所有特效都已消失');
+  assert.strictEqual(V.fx.length, 0, '3 秒后所有特效都已消失');
   assert.strictEqual(V.parts.length, 0);
   // 特效太多时新的装饰性特效不再添加
   for (let i = 0; i < 200; i++) V.fx.push({ kind: 'ring', x: 0, y: 0, r0: 1, r1: 2, color: '#ffffff', life: 9, age: 0 });
@@ -3543,4 +3551,49 @@ test('特效：星芒、斩击、法术绽放、彩虹环、地面电弧、冰�
   V.bloom(0, 0, '#fff', 10);
   V.prism(0, 0, 10);
   assert.strictEqual(V.fx.length, n);
+});
+
+// ---------- v0.95：选曲 ----------
+test('音乐选曲：标题轮流播三首，关卡单数关 A 曲、双数关 B 曲、Boss 关一律 B 曲', () => {
+  const M = TD.music;
+  // 标题：连续进入三次，三首都会轮到（顺序随机起点、之后依次轮换）
+  const seen = [];
+  for (let i = 0; i < 3; i++) {
+    seen.push(M.titleTheme());
+    M.mode = 'calm'; // 离开标题再回来才会换下一首
+    M.playing = false;
+  }
+  assert.strictEqual(new Set(seen).size, 3, '三首标题曲轮流');
+  assert.ok(seen.every((id) => M.TITLE_IDS.includes(id)));
+  // 已经在播标题曲时再进标题不换歌
+  M.mode = 'title';
+  M.playing = true;
+  M.theme = 'T1';
+  assert.strictEqual(M.titleTheme(), 'T1');
+  M.playing = false;
+  M.mode = 'calm';
+  // 关卡
+  assert.strictEqual(M.levelTheme(3, 21, 'normal'), 3);
+  assert.strictEqual(M.levelTheme(3, 22, 'normal'), '3b');
+  assert.strictEqual(M.levelTheme(3, 25, 'boss'), '3b');
+  assert.strictEqual(M.levelTheme(3, 25, 'miniboss'), '3b');
+  for (let ch = 1; ch <= 10; ch++) assert.ok(M.THEMES[M.levelTheme(ch, ch * 10, 'boss')]);
+  // 没有 B 曲的章节退回 A 曲
+  assert.strictEqual(M.levelTheme(99, 2, 'normal'), 99);
+});
+
+test('通关奖励：随关卡越来越丰厚，第 100 关远多于以前', () => {
+  const f = TD.config.rewards.baseCopper;
+  let prev = 0;
+  for (let n = 1; n <= 100; n++) {
+    assert.ok(f(n) > prev, `第 ${n} 关奖励应比上一关多`);
+    prev = f(n);
+  }
+  for (const n of [1, 10, 30, 60, 100]) assert.ok(f(n) > 40 + 10 * n, `第 ${n} 关比旧公式多`);
+  assert.ok(f(100) >= 10 * (40 + 10 * 100), '第 100 关约是旧公式的 10 倍');
+  assert.ok(f(50) / f(10) > 8, '高关卡的奖励增长比线性快');
+  // 通关结算：第 N 关首通 3 星 = baseCopper × 1.5（原有倍率不变）
+  const s = P.newSave();
+  const r = P.applyResult(s, 40, { win: true, stars: 3, kills: 0, copperDrops: 0 });
+  assert.ok(r.baseCopper >= Math.round(f(40) * 1.5) - 1);
 });

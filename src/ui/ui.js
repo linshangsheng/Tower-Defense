@@ -149,7 +149,8 @@
   // ================= 标题 =================
   UI.showTitle = function () {
     clear();
-    TD.music.play(0, 'title');
+    TD.music.play(TD.music.titleTheme(), 'title');
+    const bgm = TD.music.THEMES[TD.music.want && TD.music.want.theme];
     game.renderer.mood = 'idle';
     const has = P.highestCleared(game.save) > 0 || game.save.copper > 0;
     // 背景用玩家当前所在章节的战场（设计书 57.4）
@@ -174,7 +175,7 @@
         h('button', { class: 'btn', onclick: () => (sfx('click'), UI.showLanguage()) }, `🌐 Language · ${TD.i18n.languages.find((l) => l.code === TD.i18n.lang).native}`),
         h('button', { class: 'btn quit', onclick: () => (sfx('click'), UI.quitGame()) }, '退出游戏')
       ),
-      h('div', { class: 'title-foot' }, `网页原型 ${C.version} · ${D.chapters.length} 章 ${Object.keys(D.levels).length} 关`)
+      h('div', { class: 'title-foot' }, `网页原型 ${C.version} · ${D.chapters.length} 章 ${Object.keys(D.levels).length} 关`, bgm && TD.music.enabled ? h('div', { class: 'title-bgm' }, '♪ ', h('span', null, bgm.name)) : null)
     );
     root.appendChild(screenEl);
   };

@@ -1,6 +1,6 @@
 // 背景音乐（设计书第 11、64、68 章）：真实乐器采样（FluidR3_GM，CC BY 3.0）+ 合成鼓点 / 噪声 + 混响 + 压缩器，沉重的小调；
 // 采样还没解码好（或浏览器不支持）时自动退回到原来的纯合成声音；
-// 标题一首、十章各一首；战斗按"四档紧张度"分层，Boss 来了更紧张。
+// 标题三首、十章各两首；战斗按"四档紧张度"分层，Boss 来了更紧张。
 // 引擎是一个可以挂在任意 AudioContext 上的类：实时播放和离线渲染（测试 / 试听）用同一套代码。
 (function (TD) {
   'use strict';
@@ -103,6 +103,29 @@
       melody: ['G#5 . C#6 . E6 . C#6 .', 'A5 . . G#5 E5 . A5 .', 'B5 . E6 . G#6 . E6 .', 'F#5 . . . D#5 . F#5 .', 'G#5 . C#6 . E6 . G#6 .', 'F#6 . E6 . C#6 . A5 .', 'A5 . C#6 . F#6 . C#6 .', 'B5 . D#6 . G#5 . - -'],
     },
   };
+  // 新作曲（设计书 98）：标题三首（0 · T1 · T2，每次进标题轮流播放），十章每章再多一首"B 曲"（'1b' … '10b'），
+  // 关卡按"单数关 A 曲、双数关 B 曲、Boss / 小 Boss 关一律 B 曲"切换；地图 / 菜单仍用每章的 A 曲。
+  // 主奏旋律都收在采样乐器的音域里（圆号不超过 C6），和弦只用 大 / 小 / 减 / 5 四种。
+  const T = (name, bpm, lead, prog, melody) => ({ name, bpm, lead, prog: prog.split(' '), melody });
+  Object.assign(THEMES, {
+    // ---- 标题 ----
+    0: T('最后的堡垒 · 序章', 66, 'bell', 'Dm Bb F C Dm Gm Bb A', ['D5 . . . F5 . A5 .', 'G5 . F5 . D5 . Bb4 .', 'C5 . F5 . A5 . C6 .', 'B5 . G5 . E5 . G5 .', 'F5 . A5 . D6 . C6 .', 'Bb5 . A5 . G5 . D5 .', 'D5 . F5 . Bb5 . A5 .', 'E5 . C#5 . A4 . - -']),
+    T1: T('晨曦之光', 76, 'flute', 'Em C G D Em C Am B', ['B4 . E5 . G5 . B5 .', 'A5 . G5 . E5 . C5 .', 'D5 . G5 . B5 . D6 .', 'C#6 . A5 . F#5 . A5 .', 'G5 . B5 . E6 . D6 .', 'C6 . B5 . G5 . E5 .', 'A5 . C6 . E6 . C6 .', 'D#6 . B5 . F#5 . - -']),
+    T2: T('星夜行军', 80, 'pluck', 'Cm Ab Eb Bb Cm Fm Ab G', ['G5 . . Eb5 G5 . C6 .', 'Eb6 . C6 . Ab5 . C6 .', 'Bb5 . G5 . Eb5 . G5 .', 'F5 . Bb5 . D6 . Bb5 .', 'C6 . Eb6 . G6 . Eb6 .', 'F6 . Eb6 . C6 . Ab5 .', 'Ab5 . C6 . Eb6 . C6 .', 'B5 . D6 . G5 . - -']),
+    // ---- 各章的第二首 ----
+    '1b': T('风吹麦浪', 108, 'flute', 'C G Am F C G F G', ['E5 . G5 . C6 . G5 .', 'D5 . G5 . B5 . G5 .', 'E5 . A5 . C6 . A5 .', 'F5 . A5 . C6 . A5 .', 'G5 . E5 . C5 . E5 .', 'B4 . D5 . G5 . B5 .', 'A5 . F5 . C5 . F5 .', 'G5 . . . D5 . - -']),
+    '2b': T('沙海驼铃', 96, 'reed', 'Am Am Dm E Am F E Am', ['A5 . B5 C6 . B5 A5 .', 'G#5 . A5 . E5 . - -', 'D5 . F5 . A5 . G5 .', 'G#5 . B5 . E6 . D6 .', 'C6 . B5 A5 . G#5 A5 .', 'F5 . A5 . C6 . A5 .', 'B5 . G#5 . E5 . G#5 .', 'A5 . . . - - - -']),
+    '3b': T('幽灵蛙鸣', 80, 'marimba', 'Dm Dm Gm A Dm Bb A Dm', ['D5 . F5 . A5 . F5 .', 'E5 . D5 . - - D5 .', 'G5 . Bb5 . D6 . Bb5 .', 'A5 . G5 . E5 . C#5 .', 'D5 . A5 . F5 . D5 .', 'Bb5 . D6 . F6 . D6 .', 'C#6 . A5 . E5 . A5 .', 'D5 . . . - - - -']),
+    '4b': T('冰河', 84, 'flute', 'Bm G D A Bm G Em F#', ['F#5 . B5 . D6 . B5 .', 'B5 . G5 . D5 . G5 .', 'A5 . D6 . F#6 . D6 .', 'E6 . C#6 . A5 . C#6 .', 'D6 . B5 . F#5 . B5 .', 'D6 . B5 . G5 . B5 .', 'E5 . G5 . B5 . E6 .', 'C#6 . A#5 . F#5 . - -']),
+    '5b': T('烈焰进行曲', 128, 'horn', 'Fm Db Ab Eb Fm Db Bbm C', ['F5 . Ab5 . C6 . Ab5 .', 'Db5 . C6 . Ab5 . F5 .', 'Eb5 . Ab5 . C6 . Ab5 .', 'Bb5 . G5 . Eb5 . G5 .', 'F5 Ab5 C6 . Ab5 . C6 .', 'Db5 . C6 . Bb5 Ab5 F5 .', 'Bb5 . Db6 . Bb5 . Db6 .', 'E5 . G5 . C6 . - -']),
+    '6b': T('天空之城', 112, 'bell', 'Bb Gm Eb F Bb Gm Cm F', ['D5 . F5 . Bb5 . F5 .', 'G5 . Bb5 . D6 . Bb5 .', 'Eb5 . G5 . Bb5 . G5 .', 'A5 . C6 . F6 . C6 .', 'D6 . Bb5 . F5 . Bb5 .', 'D6 . G6 . F6 . D6 .', 'Eb6 . C6 . G5 . C6 .', 'C6 . A5 . F5 . - -']),
+    '7b': T('深海回声', 92, 'pluck', 'Em C D Bm Em Am B Em', ['E5 . G5 . B5 . G5 .', 'C6 . B5 . G5 . E5 .', 'F#5 . A5 . D6 . A5 .', 'B5 . D6 . F#6 . D6 .', 'G5 . B5 . E6 . B5 .', 'A5 . C6 . E6 . C6 .', 'D#6 . B5 . F#5 . B5 .', 'E5 . . . - - - -']),
+    '8b': T('午夜舞会', 90, 'reed', 'Am F C G Am Dm E Am', ['A5 . C6 . E6 . C6 .', 'C6 . A5 . F5 . A5 .', 'G5 . C6 . E6 . C6 .', 'D6 . B5 . G5 . B5 .', 'A5 . E6 . C6 . A5 .', 'D6 . F6 . A5 . D6 .', 'B5 . G#5 . E5 . G#5 .', 'A5 . . . - - - -']),
+    '9b': T('钢铁洪流', 118, 'horn', 'Gm Eb F D Gm Eb Cm D', ['G5 . Bb5 . C6 . Bb5 .', 'Bb5 . G5 . Eb5 . G5 .', 'A5 . C6 . A5 . F5 .', 'A5 . F#5 . D5 . F#5 .', 'G5 Bb5 C6 . Bb5 . G5 .', 'Eb5 . G5 . Bb5 . G5 .', 'C6 . Bb5 . G5 . Eb5 .', 'F#5 . A5 . C6 . - -']),
+    '10b': T('星海彼岸', 88, 'bell', 'F#m D A E F#m D Bm C#', ['F#5 . A5 . C#6 . A5 .', 'D6 . A5 . F#5 . A5 .', 'E5 . A5 . C#6 . E6 .', 'B5 . G#5 . E5 . G#5 .', 'C#6 . F#6 . A6 . F#6 .', 'F#6 . D6 . A5 . D6 .', 'B5 . D6 . F#6 . D6 .', 'F6 . C#6 . G#5 . - -']),
+  });
+  const TITLE_IDS = [0, 'T1', 'T2'];
+
   // 预先解析：和弦、旋律（每个八分音符位置 { midi, len } 或 null）
   for (const id of Object.keys(THEMES)) {
     const th = THEMES[id];
@@ -926,6 +949,20 @@
   M.resume = function () {
     if (M.want && M.enabled && !M.playing) M.play(M.want.theme, M.want.mode);
   };
+
+  // 选曲（设计书 98）：标题轮流播三首（已经在播标题曲就不换）；关卡：单数关 A 曲、双数关 B 曲、Boss / 小 Boss 关一律 B 曲
+  let titleIdx = -1;
+  M.titleTheme = function () {
+    if (M.mode === 'title' && M.playing && TITLE_IDS.includes(M.theme)) return M.theme;
+    titleIdx = titleIdx < 0 ? Math.floor(Math.random() * TITLE_IDS.length) : (titleIdx + 1) % TITLE_IDS.length;
+    return TITLE_IDS[titleIdx];
+  };
+  M.levelTheme = function (chapterId, level, type) {
+    const hasB = !!THEMES[chapterId + 'b'];
+    const useB = hasB && (type === 'boss' || type === 'miniboss' || (level | 0) % 2 === 0);
+    return useB ? chapterId + 'b' : chapterId;
+  };
+  M.TITLE_IDS = TITLE_IDS;
 
   M.themes = THEMES;
   // 调试用：看看采样解码到哪了

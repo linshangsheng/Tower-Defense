@@ -2949,3 +2949,9 @@ html:not([lang='zh']):not([lang='zh-Hant']):not([lang='ja']):not([lang='ko']) .t
   padding-left: 4px;
   padding-right: 4px;
 }
+.title-bgm {
+  margin-top: 3px;
+  text-align: right;
+  font-size: 13px;
+  opacity: 0.85;
+}
