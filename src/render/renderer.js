@@ -475,6 +475,8 @@
       if (big) {
         this.critAge = 0;
         this.shake = Math.max(this.shake, 3);
+        // 暴击：主角身上也闪一下金光
+        if (this.vfx && this.battle) this.vfx.fx.push({ kind: 'flare', x: C.heroX + 10, y: this.battle.heroY - 30, r: 60, color: '#ffe080', life: 0.2, age: 0 });
         // 暴击：一圈金光 + 几道火花（设计书 60.4）
         if (this.vfx && e.source !== 'burn') {
           const y = e.y - e.m.def.size * 0.6;
@@ -550,7 +552,18 @@
       if (this.vfx && this.fx.length < 220) {
         const dy = m.y + m.yOffset - m.def.size * 0.5;
         for (let i = 0; i < (m.def.boss ? 3 : 1); i++) this.vfx.fx.push({ kind: 'ring', x: m.x, y: dy, r0: 4, r1: m.def.size * (m.def.boss ? 3 + i : 1.8), color: i % 2 ? '#ffffff' : '#ffe28a', w: 2.4, life: 0.35 + i * 0.18, age: 0 });
-        if (m.def.boss) this.shake = Math.max(this.shake, 10);
+        if (m.def.boss) {
+          this.shake = Math.max(this.shake, 18);
+          // Boss 倒下：全屏一闪、四散的彩色火花、一团大光（设计书 96）
+          this.fx.push({ kind: 'flash', color: '#fff2d0', life: 0.35, age: 0 });
+          this.vfx.fx.push({ kind: 'flare', x: m.x, y: dy, r: m.def.size * 6, color: '#ffe28a', life: 0.5, age: 0 });
+          const PAL = ['#ffd23f', '#ff8a5a', '#ffffff', '#8affc8', '#b08aff'];
+          this.vfx.spawn(36, (i) => {
+            const a = Math.random() * Math.PI * 2;
+            const v = 140 + Math.random() * 300;
+            return { kind: 'spark', x: m.x, y: dy, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 80, g: 260, life: 0.7 + Math.random() * 0.6, r: 2 + Math.random() * 2, color: PAL[i % PAL.length] };
+          });
+        }
       }
       this.fx.push({ kind: 'poof', x: m.x, y: m.y + m.yOffset - m.def.size * 0.5, r: m.def.size, life: 0.35, age: 0 });
       if (e.copper > 0) {
@@ -2670,6 +2683,20 @@
         ctx.lineWidth = 3;
         ctx.beginPath();
         ctx.ellipse(C.heroX, heroY - 2, 34, 10, 0, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+        // 战鼓生效期间：金橙色的火星不断从主角脚下升起，光环外再套一圈慢慢转的淡环（设计书 96）
+        if (this.vfx && this.vfx.parts.length < 260 && Math.random() < (this.lastDt || 0.016) * 16) {
+          this.vfx.spawn(1, () => ({ kind: 'spark', x: C.heroX - 24 + Math.random() * 48, y: heroY, vx: (Math.random() - 0.5) * 16, vy: -50 - Math.random() * 70, g: -10, life: 0.8 + Math.random() * 0.5, r: 1.6 + Math.random() * 1.4, color: Math.random() < 0.4 ? '#ffe0a0' : '#ffb347' }));
+        }
+        ctx.save();
+        ctx.globalAlpha = 0.22 + Math.sin(this.t * 6) * 0.08;
+        ctx.strokeStyle = '#ffd890';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([10, 8]);
+        ctx.lineDashOffset = -this.t * 30;
+        ctx.beginPath();
+        ctx.ellipse(C.heroX, heroY - 2, 48, 15, 0, 0, Math.PI * 2);
         ctx.stroke();
         ctx.restore();
       }
