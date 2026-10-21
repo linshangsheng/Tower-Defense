@@ -3597,3 +3597,20 @@ test('通关奖励：随关卡越来越丰厚，第 100 关远多于以前', () 
   const r = P.applyResult(s, 40, { win: true, stars: 3, kills: 0, copperDrops: 0 });
   assert.ok(r.baseCopper >= Math.round(f(40) * 1.5) - 1);
 });
+
+test('Boss 血量：主线 Boss ×3，九层妖塔的妖王 ×1.5，普通小怪不变', () => {
+  const s = P.newSave();
+  const mk = (level) => new TD.Battle({ level, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 1 });
+  const b = mk(10);
+  const boss = b.spawnMonster('boarKing' in D.monsters ? 'boarKing' : Object.keys(D.monsters).find((k) => D.monsters[k].boss && !D.monsters[k].towerOf), undefined, 600);
+  const slime = b.spawnMonster('slime', 0, 600);
+  const d = (def) => def.hp * b.D * (1 + (b.rules.monsterHp || 0)) * b.diffHp;
+  assert.strictEqual(TD.config.bossHpMult, 3);
+  assert.ok(Math.abs(boss.maxHp - Math.round(d(boss.def) * (1 + (b.level.bossHp || 0)) * 3)) <= 1);
+  assert.ok(Math.abs(slime.maxHp - Math.round(d(slime.def))) <= 1);
+  const tower = Object.keys(D.monsters).find((k) => D.monsters[k].boss && D.monsters[k].towerOf);
+  if (tower) {
+    const t = b.spawnMonster(tower, 0, 600);
+    assert.ok(Math.abs(t.maxHp - Math.round(d(t.def) * 1.5)) <= 1);
+  }
+});
