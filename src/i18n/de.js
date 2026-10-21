@@ -1912,4 +1912,5 @@ TD.i18n.register("de", {
   "烈焰进行曲": "Flammenmarsch",
   "钢铁洪流": "Stählerne Flut",
   "风吹麦浪": "Wind im Weizenfeld",
+  "出手很快，暴击率 +15%，伤害比木弓还高一点。": "Schießt schnell, Krit.-Chance +15%, etwas mehr Schaden als der Holzbogen.",
 });

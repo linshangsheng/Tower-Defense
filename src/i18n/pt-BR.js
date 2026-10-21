@@ -1912,4 +1912,5 @@ TD.i18n.register("pt-BR", {
   "烈焰进行曲": "Marcha das Chamas",
   "钢铁洪流": "Torrente de Aço",
   "风吹麦浪": "Vento nos Trigais",
+  "出手很快，暴击率 +15%，伤害比木弓还高一点。": "Atira rápido, taxa de crítico +15%, dano um pouco maior que o do Arco de Madeira.",
 });

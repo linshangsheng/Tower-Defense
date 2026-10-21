@@ -1912,4 +1912,5 @@ TD.i18n.register("id", {
   "烈焰进行曲": "Mars Api Membara",
   "钢铁洪流": "Arus Baja",
   "风吹麦浪": "Gelombang Gandum Tertiup Angin",
+  "出手很快，暴击率 +15%，伤害比木弓还高一点。": "Tembakannya cepat, peluang kritikal +15%, damage sedikit lebih tinggi dari Busur Kayu.",
 });

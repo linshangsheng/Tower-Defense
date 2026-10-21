@@ -3322,7 +3322,7 @@ test('新增武器都能上战场打一阵子：弹道、溅射、穿透、连�
 
 test('每个新武器的效果和描述对得上：数值字段都在', () => {
   const W = D.weapons;
-  assert.ok(W.huntBow.bonusCrit === 0.1 && W.huntBow.aspdMult > 1);
+  assert.ok(W.huntBow.bonusCrit === 0.15 && W.huntBow.aspdMult > 1 && W.huntBow.dmgMult > W.bow.dmgMult);
   assert.ok(W.mortar.arc && W.mortar.splash);
   assert.ok(W.twinCrossbow.bolts === 2 && W.twinCrossbow.flyingMult === 1.3);
   assert.ok(W.galeBoomerang.boomerang && W.galeBoomerang.slow.amt === 0.25);

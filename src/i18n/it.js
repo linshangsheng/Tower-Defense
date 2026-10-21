@@ -1912,4 +1912,5 @@ TD.i18n.register("it", {
   "烈焰进行曲": "Marcia di Fiamma",
   "钢铁洪流": "Fiume d'Acciaio",
   "风吹麦浪": "Onde di Grano al Vento",
+  "出手很快，暴击率 +15%，伤害比木弓还高一点。": "Tira veloce, +15% di probabilità di critico, danno un po' più alto dell'Arco di legno.",
 });

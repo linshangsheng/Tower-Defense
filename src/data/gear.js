@@ -131,8 +131,8 @@
   // ---- v0.80 武器扩充（设计书 91）：每个品质 5 把（原来每个品质 3 把，再各加 2 把） ----
   Object.assign(TD.data.weapons, {
     huntBow: {
-      name: '猎弓', rarity: 1, cost: { copper: 350 }, dmgMult: 0.8, aspdMult: 1.3, projSpeed: 1000, bonusCrit: 0.1,
-      desc: '出手快，暴击率 +10%，单发伤害低一点。', good: '通用、速攻关', look: { base: 'bow', color: '#8fdc6a' },
+      name: '猎弓', rarity: 1, cost: { copper: 350 }, dmgMult: 1.1, aspdMult: 1.4, projSpeed: 1000, bonusCrit: 0.15,
+      desc: '出手很快，暴击率 +15%，伤害比木弓还高一点。', good: '通用、速攻关', look: { base: 'bow', color: '#8fdc6a' },
     },
     mortar: {
       name: '土炮', rarity: 1, cost: { copper: 500 }, dmgMult: 4.4, aspdMult: 0.5, projSpeed: 560, arc: true, splash: { radius: 55, mult: 0.5 },

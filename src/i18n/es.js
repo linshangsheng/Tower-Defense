@@ -1912,4 +1912,5 @@ TD.i18n.register("es", {
   "烈焰进行曲": "Marcha de las Llamas",
   "钢铁洪流": "Torrente de Acero",
   "风吹麦浪": "Trigales al Viento",
+  "出手很快，暴击率 +15%，伤害比木弓还高一点。": "Dispara rápido, +15% de probabilidad de crítico y un poco más de daño que el Arco de Madera.",
 });

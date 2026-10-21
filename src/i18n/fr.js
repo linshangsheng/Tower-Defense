@@ -1912,4 +1912,5 @@ TD.i18n.register("fr", {
   "烈焰进行曲": "Marche des flammes",
   "钢铁洪流": "Torrent d'acier",
   "风吹麦浪": "Vent dans les blés",
+  "出手很快，暴击率 +15%，伤害比木弓还高一点。": "Tire vite, +15 % de chances de critique, un peu plus de dégâts que l'Arc en bois.",
 });

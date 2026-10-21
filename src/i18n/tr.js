@@ -1912,4 +1912,5 @@ TD.i18n.register("tr", {
   "烈焰进行曲": "Alev Marşı",
   "钢铁洪流": "Çelik Seli",
   "风吹麦浪": "Rüzgârda Dalgalanan Buğday",
+  "出手很快，暴击率 +15%，伤害比木弓还高一点。": "Hızlı atar, kritik vuruş şansı +15%, hasarı Tahta Yay'dan biraz daha yüksek.",
 });

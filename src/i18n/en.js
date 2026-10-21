@@ -1912,4 +1912,5 @@ TD.i18n.register("en", {
   "烈焰进行曲": "Blazing March",
   "钢铁洪流": "Tide of Steel",
   "风吹麦浪": "Wind in the Wheat",
+  "出手很快，暴击率 +15%，伤害比木弓还高一点。": "Fires fast, +15% crit chance, and hits a bit harder than the Wooden Bow.",
 });

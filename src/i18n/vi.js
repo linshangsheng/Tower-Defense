@@ -1912,4 +1912,5 @@ TD.i18n.register("vi", {
   "烈焰进行曲": "Hành khúc lửa rực",
   "钢铁洪流": "Dòng thác thép",
   "风吹麦浪": "Gió lay sóng lúa",
+  "出手很快，暴击率 +15%，伤害比木弓还高一点。": "Bắn rất nhanh, tỉ lệ chí mạng +15%, sát thương nhỉnh hơn Cung gỗ một chút.",
 });

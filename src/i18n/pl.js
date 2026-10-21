@@ -1912,4 +1912,5 @@ TD.i18n.register("pl", {
   "烈焰进行曲": "Płomienny Marsz",
   "钢铁洪流": "Stalowa Fala",
   "风吹麦浪": "Falujące Zboże",
+  "出手很快，暴击率 +15%，伤害比木弓还高一点。": "Szybka, szansa na krytyk +15%, obrażenia nieco większe niż Drewniany Łuk.",
 });
