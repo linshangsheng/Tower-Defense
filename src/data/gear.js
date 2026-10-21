@@ -62,8 +62,8 @@
       name: '火炮',
       rarity: 2,
       cost: { silver: 10 },
-      dmgMult: 3.5,
-      aspdMult: 0.35,
+      dmgMult: 7.5, // v0.96：炮类整体大幅加强（原 3.5）
+      aspdMult: 0.4,
       projSpeed: 600,
       arc: true,
       splash: { radius: 80, mult: 0.7 },
@@ -103,7 +103,7 @@
       desc: '箭穿过同一车道最多 5 只怪（每只 80% 伤害），无视 20% 护甲。', good: '排成长队的车道', look: { base: 'bow', color: '#d9a0ff', accent: 'lance' },
     },
     meteorCannon: {
-      name: '陨星炮', rarity: 4, cost: { gold: 8 }, minLevel: 40, dmgMult: 3.6, aspdMult: 0.4, projSpeed: 620, arc: true, splash: { radius: 100, mult: 0.8 }, armorIgnore: 0.6, bossMult: 1.3,
+      name: '陨星炮', rarity: 4, cost: { gold: 8 }, minLevel: 40, dmgMult: 8.4, aspdMult: 0.45, projSpeed: 620, arc: true, splash: { radius: 100, mult: 0.8 }, armorIgnore: 0.6, bossMult: 1.3,
       desc: '超重炮弹，爆炸半径 100，无视 60% 护甲，对 Boss 伤害 +30%。', good: '重甲怪、Boss', look: { base: 'cannon', color: '#ff6a3a', accent: 'meteor' },
     },
     stormOrb: {
@@ -135,7 +135,7 @@
       desc: '出手快，暴击率 +10%，单发伤害低一点。', good: '通用、速攻关', look: { base: 'bow', color: '#8fdc6a' },
     },
     mortar: {
-      name: '土炮', rarity: 1, cost: { copper: 500 }, dmgMult: 2.0, aspdMult: 0.45, projSpeed: 560, arc: true, splash: { radius: 55, mult: 0.5 },
+      name: '土炮', rarity: 1, cost: { copper: 500 }, dmgMult: 4.4, aspdMult: 0.5, projSpeed: 560, arc: true, splash: { radius: 55, mult: 0.5 },
       desc: '小号火炮：慢速抛射，落地小范围爆炸。', good: '成团的怪', look: { base: 'cannon', color: '#9bd860' },
     },
     twinCrossbow: {
@@ -147,7 +147,7 @@
       desc: '飞得更快的回旋镖，往返命中，命中使目标减速 25%（1.5 秒）。', good: '长队、快怪', look: { base: 'boomerang', color: '#5ab8ff', accent: 'gale' },
     },
     thunderMortar: {
-      name: '雷鸣炮', rarity: 3, cost: { gold: 5 }, dmgMult: 2.8, aspdMult: 0.43, projSpeed: 620, arc: true, splash: { radius: 90, mult: 0.7 }, armorIgnore: 0.3, knock: { dist: 40, slow: 0.3, duration: 1 },
+      name: '雷鸣炮', rarity: 3, cost: { gold: 5 }, dmgMult: 6.2, aspdMult: 0.48, projSpeed: 620, arc: true, splash: { radius: 90, mult: 0.7 }, armorIgnore: 0.3, knock: { dist: 40, slow: 0.3, duration: 1 },
       desc: '落地大范围爆炸，无视 30% 护甲，把范围内的小怪向后震退 40 像素并减速 30%（1 秒）。', good: '成团的怪、重甲怪', look: { base: 'cannon', color: '#b86cff', accent: 'thunder' },
     },
     arcaneStaff: {
@@ -163,7 +163,7 @@
       desc: '魔法弹大范围爆炸（半径 95、溅射 80%），并点燃目标。', good: '成团的怪、灵体', look: { base: 'staff', color: '#ff7a3a', accent: 'inferno' },
     },
     worldCannon: {
-      name: '裂世炮', rarity: 5, cost: { gold: 19 }, dmgMult: 4.6, aspdMult: 0.45, projSpeed: 640, arc: true, splash: { radius: 130, mult: 1 }, armorIgnore: 0.8, bossMult: 1.5, knock: { dist: 70, slow: 0.4, duration: 1.5 },
+      name: '裂世炮', rarity: 5, cost: { gold: 19 }, dmgMult: 10.5, aspdMult: 0.5, projSpeed: 640, arc: true, splash: { radius: 130, mult: 1 }, armorIgnore: 0.8, bossMult: 1.5, knock: { dist: 70, slow: 0.4, duration: 1.5 },
       desc: '爆炸半径 130、溅射不衰减，无视 80% 护甲，对 Boss 伤害 +50%，并把范围内的小怪向后震退 70 像素。', good: 'Boss、成团的怪', look: { base: 'cannon', color: '#ffd35a', accent: 'world' },
     },
     starfallOrb: {
