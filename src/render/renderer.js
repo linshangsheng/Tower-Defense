@@ -5,7 +5,7 @@
   const C = TD.config;
   const S = TD.sprites;
   const DRAW_SCALE = 1.25; // 怪物绘制放大倍数（不影响判定）
-  const CHEAP_FX = { spark: 1, rock: 1, glow: 1, poof: 1, spirit: 1 };
+  const CHEAP_FX = { spark: 1, rock: 1, glow: 1, poof: 1, spirit: 1, scorch: 1 };
   const OUTLINE_C = '#3b2a1e';
 
   class Renderer {
@@ -232,6 +232,7 @@
           V.fx.push({ kind: 'ring', x: e.x, y: e.y, r0: r * 0.2, r1: r * 1.15, color: col, w: 3, life: 0.4, age: 0 });
           V.fx.push({ kind: 'ring', x: e.x, y: e.y, r0: r * 0.1, r1: r * 0.7, color: '#ffffff', w: 1.5, life: 0.26, age: 0 });
           V.fx.push({ kind: 'flare', x: e.x, y: e.y, r: r * 1.1, color: col, life: 0.25, age: 0 });
+          this.fx.push({ kind: 'scorch', x: e.x, y: e.y + 8, r: r * 0.7, life: 2.2, age: 0 });
           V.spawn(Math.min(14, 4 + Math.round(r / 12)), () => {
             const a = Math.random() * Math.PI * 2;
             const v = 90 + Math.random() * (140 + r);
@@ -2328,6 +2329,15 @@
           ctx.stroke();
         }
       }
+      // 远程怪出手前 0.5 秒：武器 / 手上聚起一团越来越亮的光（先兆，也让玩家看得出谁要开火）（设计书 96）
+      if (def.ranged && m.state === 'hold' && m.rangedTimer > 0 && m.rangedTimer < 0.5 && !def.bossPart) {
+        const k = 1 - m.rangedTimer / 0.5;
+        const sc = { arrow: '#ffe9a0', rock: '#c8b090', ice: '#9fe0ff', lightning: '#d8b8ff', bomb: '#ffb060' }[def.ranged.shot] || (def.ranged.poison ? '#9dff8a' : '#ff9a4a');
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        TD.art.drawGlow(ctx, x - def.size * 0.7, y - def.size * 1.1 + (def.flying ? 0 : 0), 10 + k * 26, sc, 0.3 + k * 0.6, true);
+        ctx.restore();
+      }
       // 血条（满血不显示，Boss 用顶部大血条）
       if ((!def.boss || def.towerOf) && m.hp < m.maxHp && (def.boss || this.crowdBars !== false)) {
         const w = Math.max(26, def.size * 1.8);
@@ -3420,6 +3430,26 @@
             ctx.font = 'bold 26px sans-serif';
             ctx.textAlign = 'center';
             ctx.fillText('!', f.x, f.y - 14);
+            break;
+          }
+          case 'scorch': {
+            // 爆炸留在地上的焦痕：一块深色的椭圆，边缘一圈暗红的余烬，慢慢淡去
+            const a = (1 - k) * 0.5;
+            const rg = ctx.createRadialGradient(f.x, f.y, 1, f.x, f.y, f.r);
+            rg.addColorStop(0, `rgba(10,8,8,${a})`);
+            rg.addColorStop(0.7, `rgba(20,12,10,${a * 0.6})`);
+            rg.addColorStop(1, 'rgba(20,12,10,0)');
+            ctx.fillStyle = rg;
+            ctx.beginPath();
+            ctx.ellipse(f.x, f.y, f.r, f.r * 0.45, 0, 0, Math.PI * 2);
+            ctx.fill();
+            if (k < 0.5) {
+              ctx.strokeStyle = `rgba(255,110,40,${(0.5 - k) * 0.7})`;
+              ctx.lineWidth = 1.5;
+              ctx.beginPath();
+              ctx.ellipse(f.x, f.y, f.r * 0.8, f.r * 0.35, 0, 0, Math.PI * 2);
+              ctx.stroke();
+            }
             break;
           }
           case 'waveSweep': {
