@@ -200,7 +200,22 @@
       });
       on('combo', () => this.text(C.heroX + 30, battle.heroY - 100, '连珠!', '#ffd23f', 18, 0.6));
       // 第二章
-      on('splash', (e) => this.fx.push({ kind: 'splash', x: e.x, y: e.y, r: e.radius, magic: e.magic, color: e.color, life: 0.35, age: 0 }));
+      on('splash', (e) => {
+        this.fx.push({ kind: 'splash', x: e.x, y: e.y, r: e.radius, magic: e.magic, color: e.color, life: 0.35, age: 0 });
+        // 爆炸再加冲击环、强光和飞溅的火花（设计书 96）
+        if (V && this.fx.length < 220) {
+          const col = e.color || (e.magic ? '#c58cff' : '#ffb347');
+          const r = e.radius || 60;
+          V.fx.push({ kind: 'ring', x: e.x, y: e.y, r0: r * 0.2, r1: r * 1.15, color: col, w: 3, life: 0.4, age: 0 });
+          V.fx.push({ kind: 'ring', x: e.x, y: e.y, r0: r * 0.1, r1: r * 0.7, color: '#ffffff', w: 1.5, life: 0.26, age: 0 });
+          V.fx.push({ kind: 'flare', x: e.x, y: e.y, r: r * 1.1, color: col, life: 0.25, age: 0 });
+          V.spawn(Math.min(14, 4 + Math.round(r / 12)), () => {
+            const a = Math.random() * Math.PI * 2;
+            const v = 90 + Math.random() * (140 + r);
+            return { kind: 'spark', x: e.x, y: e.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v * 0.7 - 40, g: 240, life: 0.3 + Math.random() * 0.3, r: 1.5 + Math.random() * 1.8, color: Math.random() < 0.4 ? '#ffffff' : col };
+          });
+        }
+      });
       // 满级专精（设计书 53）
       on('pierce', (e) => this.fx.push({ kind: 'chain', x0: e.x0, y0: e.y, x: e.x1 + 20, y: e.y, life: 0.15, age: 0, straight: true, color: e.color }));
       on('knock', (e) => {
@@ -456,6 +471,12 @@
         this.fx.push({ kind: 'glow', x: m.x, y: m.y + m.yOffset - m.def.size * 0.6, r: m.def.size * 2.6, color: this.scene.palette.rim, life: 0.3, age: 0 });
       }
       this.burst(m.x, m.y + m.yOffset - m.def.size * 0.5, '#ffe28a', m.def.boss ? 40 : 10, m.def.boss ? 320 : 160);
+      // 死亡的冲击环（Boss 三圈 + 震屏）
+      if (this.vfx && this.fx.length < 220) {
+        const dy = m.y + m.yOffset - m.def.size * 0.5;
+        for (let i = 0; i < (m.def.boss ? 3 : 1); i++) this.vfx.fx.push({ kind: 'ring', x: m.x, y: dy, r0: 4, r1: m.def.size * (m.def.boss ? 3 + i : 1.8), color: i % 2 ? '#ffffff' : '#ffe28a', w: 2.4, life: 0.35 + i * 0.18, age: 0 });
+        if (m.def.boss) this.shake = Math.max(this.shake, 10);
+      }
       this.fx.push({ kind: 'poof', x: m.x, y: m.y + m.yOffset - m.def.size * 0.5, r: m.def.size, life: 0.35, age: 0 });
       if (e.copper > 0) {
         for (let i = 0; i < Math.min(6, e.copper); i++) {
@@ -500,6 +521,11 @@
           age: 0,
           r: 2 + Math.random() * 3,
         });
+      }
+      // 城墙被击中：一团冲击光和几粒火星
+      if (this.vfx && this.fx.length < 200) {
+        this.vfx.fx.push({ kind: 'flare', x: C.wallX - 4, y, r: e.big ? 80 : 34, color: '#ffc890', life: 0.18, age: 0 });
+        this.vfx.spawn(e.big ? 8 : 2, () => ({ kind: 'spark', x: C.wallX - 4, y, vx: -60 - Math.random() * 160, vy: -80 - Math.random() * 120, g: 300, life: 0.3, r: 1.6, color: '#ffd9a0' }));
       }
       if (e.big) {
         this.shake = Math.max(this.shake, 16);
