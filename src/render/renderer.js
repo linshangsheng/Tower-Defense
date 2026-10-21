@@ -465,6 +465,12 @@
           return { kind: 'spark', x: e.x, y: yy, vx: Math.cos(a) * v, vy: Math.sin(a) * v, g: 160, life: 0.22, r: 1.5, color: wcol };
         });
       }
+      // 武器专属的命中效果（设计书 96）：冰晶、火焰、闪电、虚空等按武器外观的 accent 各不相同
+      if (wsrc && this.battle && this.fx.length < 200) {
+        const wd = this.battle.stats.weaponDef;
+        const acc = wd && wd.look && wd.look.accent;
+        if (acc) this.accentHit(acc, e.x, e.y - e.m.def.size * 0.6, wcol, big);
+      }
       if (e.blocked) this.fx.push({ kind: 'clang', x: e.x - e.m.def.size * 0.8, y: e.y - e.m.def.size * 0.7, life: 0.25, age: 0 });
       if (big) {
         this.critAge = 0;
@@ -481,6 +487,52 @@
         }
         if (TD.audio) TD.audio.play('crit');
       } else if (TD.audio && e.source === 'weapon') TD.audio.play('hit');
+    }
+
+    // 武器专属的命中效果：冰晶 / 火焰 / 闪电 / 虚空 / 龙息等
+    accentHit(acc, x, y, col, big) {
+      const V = this.vfx;
+      if (!V || V.parts.length > 280) return;
+      const spark = (n, make) => V.spawn(n, (i) => Object.assign({ kind: 'spark', x, y, g: 0, life: 0.4, r: 1.6 }, make(i)));
+      const rnd = Math.random;
+      switch (acc) {
+        case 'frost':
+          // 冰屑向四周飞溅，几片雪花慢慢飘落
+          spark(big ? 8 : 4, () => ({ vx: (rnd() - 0.5) * 220, vy: -rnd() * 140, g: 260, color: '#d8f4ff', r: 2 + rnd() * 1.6 }));
+          spark(2, () => ({ vx: (rnd() - 0.5) * 30, vy: 10 + rnd() * 20, life: 0.8, color: '#ffffff', r: 1.4 }));
+          break;
+        case 'flame':
+        case 'inferno':
+        case 'meteor':
+          // 火星和热气往上冒
+          spark(big ? 8 : 4, () => ({ vx: (rnd() - 0.5) * 100, vy: -60 - rnd() * 140, g: -60, color: rnd() < 0.5 ? '#ff9a3c' : '#ffd070', life: 0.5 + rnd() * 0.3, r: 1.8 + rnd() * 1.6 }));
+          break;
+        case 'thunder':
+        case 'storm':
+        case 'arcane':
+        case 'starfall':
+          // 一道很短的电弧从命中点劈开
+          this.fx.push({ kind: 'chain', x0: x - 16 + rnd() * 8, y0: y - 14, x: x + 16 - rnd() * 8, y: y + 14, life: 0.14, age: 0, color: col });
+          if (big) this.fx.push({ kind: 'chain', x0: x + 18, y0: y - 12, x: x - 18, y: y + 12, life: 0.14, age: 0, color: col });
+          break;
+        case 'void':
+        case 'judgement':
+        case 'genesis':
+        case 'chrono':
+          // 一圈向内收缩又散开的光环
+          V.fx.push({ kind: 'ring', x, y, r0: big ? 50 : 34, r1: 6, color: col || '#d8b8ff', w: 2, life: 0.22, age: 0 });
+          break;
+        case 'dragon':
+        case 'world':
+        case 'lance':
+          spark(big ? 7 : 3, () => ({ vx: 80 + rnd() * 160, vy: (rnd() - 0.5) * 120, g: 80, color: acc === 'dragon' ? '#ff6a4a' : '#ffe9a0', life: 0.3, r: 2 }));
+          if (acc === 'world') V.fx.push({ kind: 'ring', x, y, r0: 8, r1: 60, color: col, w: 2.4, life: 0.3, age: 0 });
+          break;
+        case 'gale':
+        case 'twin':
+          spark(3, () => ({ vx: -120 - rnd() * 100, vy: (rnd() - 0.5) * 60, color: '#e8ffe8', life: 0.25, r: 1.4 }));
+          break;
+      }
     }
 
     onDeath(e) {
