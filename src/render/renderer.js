@@ -1463,71 +1463,251 @@
       return st;
     }
 
-    // 基础墙图（按场景缓存）：石块、垛口、苔藓，不含破损
+    // 灯笼挂在墙上的高度（占墙高的比例）：基础墙图画铁架，drawWallDeco 画会晃的灯火
+    wallLampYs(h) {
+      return [0.1, 0.34, 0.66, 0.9].map((k) => Math.round(h * k));
+    }
+
+    // 基础墙图（按场景缓存）：石砌城墙（设计书 102.2）
+    //   墙面：一块块大小颜色不同的条石，受光的上沿和右沿有亮边，下沿有暗缝，石面有细小的凿痕和斑点；
+    //   墙头：右边一条铺着石板的巡逻道，上面立着带箭孔、压顶石的垛口，垛口在巡逻道上投下影子；
+    //   墙脚：加宽的基座；墙头一圈压顶石；几处挂灯笼的铁架；苔藓只长在背光的缝里。
+    // 砖格（行高 22、块宽 32、隔行错开半块）和垛口位置（每 44 一个，x 50~72）不变——破损（wallStageArt）沿用同一套。
     wallBase(h) {
       const key = this.scene.key;
       if (this.wallBaseArt && this.wallBaseArt.key === key) return this.wallBaseArt.canvas;
       const P = this.scene.palette;
+      const A = TD.art;
       const c = document.createElement('canvas');
       c.width = 110;
       c.height = h + 40;
       const g = c.getContext('2d');
       g.translate(0, 30);
       const ox = 20;
-      const body = g.createLinearGradient(ox, 0, ox + 64, 0);
-      body.addColorStop(0, '#1c232c');
-      body.addColorStop(1, '#3e4954');
-      g.fillStyle = body;
-      g.fillRect(ox, 0, 64, h);
       let seed = 7;
       const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
-      for (let y = 0; y < h; y += 22) {
-        const off = (y / 22) % 2 ? 0 : 16;
+      const RR = TD.sprites.roundRect;
+      // 1) 墙体底色：左边背光偏冷偏暗，右边受光偏暖
+      const body = g.createLinearGradient(ox, 0, ox + 64, 0);
+      body.addColorStop(0, '#1d242e');
+      body.addColorStop(0.6, '#34404c');
+      body.addColorStop(1, '#4a5663');
+      g.fillStyle = body;
+      g.fillRect(ox, 0, 64, h);
+      // 2) 条石
+      for (let y = 0, r = 0; y < h; y += 22, r++) {
+        const off = r % 2 ? 0 : 16;
         for (let x = ox - 16 + off; x < ox + 64; x += 32) {
           const bx = Math.max(ox, x) + 1.5;
           const bw = Math.min(ox + 64, x + 32) - bx - 1.5;
           if (bw <= 2) continue;
-          const v = 40 + Math.floor(rnd() * 22) + (bx - ox) * 0.35;
-          g.fillStyle = `rgb(${v - 6},${v + 2},${v + 12})`;
-          TD.sprites.roundRect(g, bx, y + 1.5, bw, 19, 4);
+          const lit = (bx - ox) / 64;
+          const v = 40 + Math.floor(rnd() * 24) + lit * 26;
+          const warm = rnd() < 0.3 ? 5 : 0;
+          const bg = g.createLinearGradient(0, y, 0, y + 20);
+          bg.addColorStop(0, `rgb(${v + warm + 6},${v + 8},${v + 17})`);
+          bg.addColorStop(1, `rgb(${v + warm - 8},${v - 2},${v + 6})`);
+          g.fillStyle = bg;
+          RR(g, bx, y + 1.5, bw, 19, 3.5);
           g.fill();
-          g.strokeStyle = TD.art.rgba(P.rim, 0.28 + ((bx - ox) / 64) * 0.3);
-          g.lineWidth = 1.5;
+          // 下沿的暗缝和左沿的暗边（背光）
+          g.strokeStyle = 'rgba(4,7,12,0.5)';
+          g.lineWidth = 1.4;
           g.beginPath();
-          g.moveTo(bx + 3, y + 2.5);
-          g.lineTo(bx + bw - 2, y + 2.5);
-          g.lineTo(bx + bw - 1, y + 12);
+          g.moveTo(bx + 2, y + 20.2);
+          g.lineTo(bx + bw - 2, y + 20.2);
           g.stroke();
+          // 上沿和右沿的亮边（光从右上来）
+          g.strokeStyle = A.rgba(P.rim, 0.3 + lit * 0.32);
+          g.lineWidth = 1.4;
+          g.beginPath();
+          g.moveTo(bx + 3, y + 2.4);
+          g.lineTo(bx + bw - 2, y + 2.4);
+          g.lineTo(bx + bw - 1, y + 13);
+          g.stroke();
+          // 凿痕和斑点
+          for (let k = 0; k < 4; k++) {
+            g.fillStyle = rnd() < 0.5 ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.16)';
+            g.fillRect(bx + 3 + rnd() * (bw - 7), y + 4 + rnd() * 13, 1 + rnd() * 1.6, 1 + rnd() * 1.2);
+          }
+          if (rnd() < 0.22) {
+            g.strokeStyle = 'rgba(0,0,0,0.16)';
+            g.lineWidth = 0.9;
+            g.beginPath();
+            const sx = bx + 4 + rnd() * (bw - 10);
+            g.moveTo(sx, y + 5);
+            g.lineTo(sx + 3 + rnd() * 3, y + 10 + rnd() * 3);
+            g.stroke();
+          }
         }
       }
-      for (let y = -4; y < h; y += 44) {
-        const gg = g.createLinearGradient(ox + 50, 0, ox + 72, 0);
-        gg.addColorStop(0, '#3a444f');
-        gg.addColorStop(1, '#5a6672');
-        g.fillStyle = gg;
-        TD.sprites.roundRect(g, ox + 50, y, 22, 26, 4);
-        g.fill();
-        g.strokeStyle = TD.art.rgba(P.rim, 0.55);
-        g.lineWidth = 2;
+      // 3) 墙头巡逻道（右边一条）：石板 + 靠墙面一侧的暗沟（女墙的内侧阴影）
+      const bandX = ox + 42;
+      const bg2 = g.createLinearGradient(bandX, 0, ox + 64, 0);
+      bg2.addColorStop(0, '#3a4450');
+      bg2.addColorStop(0.5, '#5a6672');
+      bg2.addColorStop(1, '#6c7986');
+      g.fillStyle = bg2;
+      g.fillRect(bandX, 0, 22, h);
+      g.strokeStyle = 'rgba(8,12,18,0.4)';
+      g.lineWidth = 1;
+      for (let y = 8; y < h; y += 15) {
         g.beginPath();
-        g.moveTo(ox + 54, y + 1);
-        g.lineTo(ox + 71, y + 1);
-        g.lineTo(ox + 71, y + 20);
+        g.moveTo(bandX, y);
+        g.lineTo(ox + 64, y);
         g.stroke();
-        g.fillStyle = '#2f5a2c';
         g.beginPath();
-        g.ellipse(ox + 58, y + 1, 9, 4, 0, 0, Math.PI * 2);
-        g.fill();
-        g.fillStyle = 'rgba(170,220,110,0.6)';
-        g.beginPath();
-        g.ellipse(ox + 60, y - 1, 5, 2, 0, 0, Math.PI * 2);
-        g.fill();
+        const jx = bandX + 5 + ((y * 7) % 11);
+        g.moveTo(jx, y);
+        g.lineTo(jx, y + 15);
+        g.stroke();
       }
-      g.fillStyle = '#244a26';
-      for (let y = 30; y < h; y += 70 + rnd() * 50) {
-        g.beginPath();
-        g.ellipse(ox + 4 + rnd() * 50, y, 10 + rnd() * 8, 5, 0, 0, Math.PI * 2);
+      const gut = g.createLinearGradient(bandX - 5, 0, bandX + 6, 0);
+      gut.addColorStop(0, 'rgba(0,0,0,0)');
+      gut.addColorStop(0.5, 'rgba(2,4,8,0.55)');
+      gut.addColorStop(1, 'rgba(2,4,8,0)');
+      g.fillStyle = gut;
+      g.fillRect(bandX - 5, 0, 11, h);
+      g.strokeStyle = A.rgba(P.rim, 0.5);
+      g.lineWidth = 1.4;
+      g.beginPath();
+      g.moveTo(ox + 63.5, 0);
+      g.lineTo(ox + 63.5, h);
+      g.stroke();
+      // 4) 垛口：投影 → 本体 → 压顶石 → 箭孔 → 受光的右沿
+      for (let y = -4; y < h; y += 44) {
+        const sh = g.createLinearGradient(ox + 34, 0, ox + 52, 0);
+        sh.addColorStop(0, 'rgba(0,0,0,0)');
+        sh.addColorStop(1, 'rgba(0,0,0,0.42)');
+        g.fillStyle = sh;
+        g.fillRect(ox + 34, y + 6, 18, 24);
+        const mg = g.createLinearGradient(ox + 50, 0, ox + 72, 0);
+        mg.addColorStop(0, '#3a4550');
+        mg.addColorStop(0.6, '#59656f');
+        mg.addColorStop(1, '#75828f');
+        g.fillStyle = mg;
+        RR(g, ox + 50, y, 22, 26, 3);
         g.fill();
+        g.strokeStyle = 'rgba(5,8,14,0.55)';
+        g.lineWidth = 1.3;
+        g.beginPath();
+        g.moveTo(ox + 52, y + 25.4);
+        g.lineTo(ox + 70, y + 25.4);
+        g.stroke();
+        // 压顶石：比垛口宽一点的一整块
+        const cg = g.createLinearGradient(0, y - 3, 0, y + 5);
+        cg.addColorStop(0, '#8c99a6');
+        cg.addColorStop(1, '#5e6a76');
+        g.fillStyle = cg;
+        RR(g, ox + 48.5, y - 3, 25, 7, 2.5);
+        g.fill();
+        g.strokeStyle = A.rgba(P.rim, 0.7);
+        g.lineWidth = 1.3;
+        g.beginPath();
+        g.moveTo(ox + 51, y - 2.4);
+        g.lineTo(ox + 71, y - 2.4);
+        g.stroke();
+        // 箭孔
+        g.fillStyle = 'rgba(3,5,10,0.9)';
+        RR(g, ox + 59, y + 9, 4, 12, 2);
+        g.fill();
+        g.fillStyle = 'rgba(255,200,120,0.12)';
+        g.fillRect(ox + 61.5, y + 10, 1, 10);
+        // 受光的右沿
+        g.strokeStyle = A.rgba(P.rim, 0.55);
+        g.lineWidth = 1.6;
+        g.beginPath();
+        g.moveTo(ox + 71.4, y + 4);
+        g.lineTo(ox + 71.4, y + 22);
+        g.stroke();
+        // 压顶石上的一小撮苔藓
+        if (rnd() < 0.55) {
+          g.fillStyle = '#2d5a2c';
+          g.beginPath();
+          g.ellipse(ox + 54 + rnd() * 10, y - 2, 6, 2.6, 0, 0, Math.PI * 2);
+          g.fill();
+          g.fillStyle = 'rgba(160,215,110,0.5)';
+          g.beginPath();
+          g.ellipse(ox + 56 + rnd() * 10, y - 3, 3.2, 1.2, 0, 0, Math.PI * 2);
+          g.fill();
+        }
+      }
+      // 5) 外沿（最左边）的收边：一道深色的线 + 细细的亮边，让墙有个干净的轮廓
+      g.strokeStyle = 'rgba(2,4,8,0.75)';
+      g.lineWidth = 2;
+      g.beginPath();
+      g.moveTo(ox + 0.5, 0);
+      g.lineTo(ox + 0.5, h);
+      g.stroke();
+      g.strokeStyle = 'rgba(190,205,225,0.18)';
+      g.lineWidth = 1;
+      g.beginPath();
+      g.moveTo(ox + 2.5, 0);
+      g.lineTo(ox + 2.5, h);
+      g.stroke();
+      // 6) 墙头的一圈压顶石（顶端）和墙脚的基座（底端）
+      const top = g.createLinearGradient(0, -14, 0, 0);
+      top.addColorStop(0, '#7b8895');
+      top.addColorStop(1, '#4c5763');
+      g.fillStyle = top;
+      RR(g, ox - 5, -13, 82, 12, 3);
+      g.fill();
+      g.strokeStyle = A.rgba(P.rim, 0.6);
+      g.lineWidth = 1.4;
+      g.beginPath();
+      g.moveTo(ox - 2, -12.4);
+      g.lineTo(ox + 74, -12.4);
+      g.stroke();
+      g.fillStyle = 'rgba(0,0,0,0.35)';
+      g.fillRect(ox - 5, -2, 82, 3);
+      const foot = g.createLinearGradient(0, h - 18, 0, h);
+      foot.addColorStop(0, '#2a323c');
+      foot.addColorStop(1, '#12171e');
+      g.fillStyle = foot;
+      RR(g, ox - 5, h - 18, 82, 18, 3);
+      g.fill();
+      g.strokeStyle = 'rgba(190,205,225,0.28)';
+      g.lineWidth = 1.2;
+      g.beginPath();
+      g.moveTo(ox - 3, h - 17);
+      g.lineTo(ox + 74, h - 17);
+      g.stroke();
+      for (let x = ox - 5 + 14; x < ox + 77; x += 20 + ((x * 3) % 7)) {
+        g.strokeStyle = 'rgba(0,0,0,0.4)';
+        g.beginPath();
+        g.moveTo(x, h - 17);
+        g.lineTo(x, h);
+        g.stroke();
+      }
+      // 7) 灯笼的铁架（灯本身是会晃的，由 drawWallDeco 画）
+      for (const ly of this.wallLampYs(h)) {
+        g.strokeStyle = '#1a1d24';
+        g.lineWidth = 2.6;
+        g.lineCap = 'round';
+        g.beginPath();
+        g.moveTo(ox + 40, ly);
+        g.lineTo(ox + 52, ly);
+        g.lineTo(ox + 52, ly + 5);
+        g.stroke();
+        g.strokeStyle = 'rgba(190,205,225,0.35)';
+        g.lineWidth = 1;
+        g.beginPath();
+        g.moveTo(ox + 40, ly - 1);
+        g.lineTo(ox + 52, ly - 1);
+        g.stroke();
+      }
+      // 8) 苔藓：只长在背光的石缝里，一小团一小团
+      g.fillStyle = 'rgba(36,74,38,0.85)';
+      for (let y = 30; y < h; y += 56 + rnd() * 50) {
+        const mx = ox + 3 + rnd() * 30;
+        g.beginPath();
+        g.ellipse(mx, y, 8 + rnd() * 7, 3.6, 0, 0, Math.PI * 2);
+        g.fill();
+        g.fillStyle = 'rgba(120,180,90,0.35)';
+        g.beginPath();
+        g.ellipse(mx + 2, y - 1.5, 4 + rnd() * 3, 1.5, 0, 0, Math.PI * 2);
+        g.fill();
+        g.fillStyle = 'rgba(36,74,38,0.85)';
       }
       this.wallBaseArt = { key, canvas: c };
       return c;
@@ -1924,7 +2104,95 @@
         const wy = top + 20 + Math.random() * (h - 60);
         this.vfx.spawn(1, () => ({ kind: 'smoke', x: wx, y: wy, vx: (Math.random() - 0.5) * 6, vy: 18 + Math.random() * 20, life: 0.9, r: 3 + Math.random() * 3, color: '#8a8a92' }));
       }
+      this.drawWallDeco(ratio, stage, x0, top, h);
       this.drawWallFace(ratio, x0, top, bottom);
+    }
+
+    // 城墙上会动的东西（设计书 102.2）：挂在铁架上的灯笼（火苗晃动、墙越破越闪）和墙头的旗
+    drawWallDeco(ratio, stage, x0, top, h) {
+      const ctx = this.ctx;
+      const A = TD.art;
+      const t = this.t;
+      this.wallLampYs(h).forEach((ly, i) => {
+        // 墙破得厉害时灯火不稳，偶尔熄一下
+        let fl = 0.82 + Math.sin(t * 9 + i * 1.7) * 0.12 + Math.sin(t * 23 + i * 3.1) * 0.06;
+        if (stage >= 4) fl *= 0.7 + Math.sin(t * 31 + i * 5) * 0.25 + (Math.sin(t * 2.3 + i * 4) > 0.93 ? -0.5 : 0);
+        fl = Math.max(0.12, fl);
+        const lx = x0 + 52 + Math.sin(t * 1.6 + i) * 0.8;
+        const lyy = top + ly + 14;
+        // 墙面上一圈暖光
+        A.drawGlow(ctx, lx - 8, lyy, 62, '#ffb860', 0.34 * fl);
+        A.drawGlow(ctx, lx, lyy, 22, '#ffe2a0', 0.55 * fl, true);
+        ctx.save();
+        // 吊环
+        ctx.strokeStyle = '#1a1d24';
+        ctx.lineWidth = 1.6;
+        ctx.beginPath();
+        ctx.moveTo(lx, lyy - 9);
+        ctx.lineTo(lx, lyy - 5);
+        ctx.stroke();
+        // 灯身：铁框 + 玻璃里的火
+        S.roundRect(ctx, lx - 5, lyy - 6, 10, 13, 3);
+        ctx.fillStyle = `rgba(255,${190 + Math.floor(fl * 40)},110,${0.55 + fl * 0.35})`;
+        ctx.fill();
+        ctx.strokeStyle = '#1a1d24';
+        ctx.lineWidth = 1.6;
+        ctx.stroke();
+        S.ellipse(ctx, lx, lyy + 1 + Math.sin(t * 14 + i) * 0.6, 2.2, 3.6 * fl, '#fff2c0');
+        ctx.fillStyle = '#1a1d24';
+        ctx.fillRect(lx - 6, lyy - 8, 12, 2.4);
+        ctx.fillRect(lx - 5, lyy + 6.5, 10, 2);
+        ctx.restore();
+      });
+      // 墙面上的两条垂旗（吊在横杆上，随风轻摆）：越破颜色越暗、下摆撕得越碎
+      const hurt = ratio < 0.4;
+      for (const [k, bx] of [[0.2, x0 + 18], [0.8, x0 + 18]]) {
+        const by = top + Math.round(h * k);
+        const sway = Math.sin(t * 1.9 + k * 7) * 2.4;
+        const BW = 15;
+        const BH = 50 - stage * 2;
+        ctx.save();
+        // 横杆和杆头
+        ctx.strokeStyle = '#1a1d24';
+        ctx.lineWidth = 2.6;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(bx - BW / 2 - 4, by);
+        ctx.lineTo(bx + BW / 2 + 4, by);
+        ctx.stroke();
+        S.ellipse(ctx, bx - BW / 2 - 4, by, 2.2, 2.2, '#e8c050');
+        S.ellipse(ctx, bx + BW / 2 + 4, by, 2.2, 2.2, '#e8c050');
+        // 旗面：燕尾下摆，下半截摆幅更大
+        const x = (u) => sway * u * u;
+        ctx.beginPath();
+        ctx.moveTo(bx - BW / 2, by + 1);
+        ctx.lineTo(bx + BW / 2, by + 1);
+        ctx.lineTo(bx + BW / 2 + x(1) * 0.9, by + BH);
+        ctx.lineTo(bx + x(1) * 0.9, by + BH - 9 - stage);
+        ctx.lineTo(bx - BW / 2 + x(1) * 0.9, by + BH);
+        ctx.closePath();
+        const fg = ctx.createLinearGradient(bx - BW / 2, 0, bx + BW / 2, 0);
+        fg.addColorStop(0, hurt ? '#6a2020' : '#c83a40');
+        fg.addColorStop(1, hurt ? '#4a1616' : '#e65a58');
+        ctx.fillStyle = fg;
+        ctx.fill();
+        ctx.strokeStyle = '#3a1414';
+        ctx.lineWidth = 1.4;
+        ctx.stroke();
+        // 金边和塔徽
+        ctx.strokeStyle = hurt ? '#a8873c' : '#f0cc66';
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.moveTo(bx - BW / 2 + 2, by + 4);
+        ctx.lineTo(bx + BW / 2 - 2, by + 4);
+        ctx.stroke();
+        const ex = bx + x(0.5) * 0.9;
+        const ey = by + BH * 0.42;
+        ctx.fillStyle = hurt ? '#c9a24a' : '#ffd86a';
+        ctx.fillRect(ex - 4.5, ey - 1, 9, 7);
+        for (let q = 0; q < 3; q++) ctx.fillRect(ex - 4.5 + q * 3.6, ey - 4, 2.2, 3);
+        ctx.restore();
+      }
     }
 
     // 升档的那一下：几块墙皮砸下来，扬起灰尘
