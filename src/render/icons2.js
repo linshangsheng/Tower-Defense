@@ -355,6 +355,234 @@
     ctx.stroke();
   };
 
+  // 属性 / 城墙升级的图标（设计书 102）：商店里每张升级卡片左边的大图标
+  const spike = (ctx, n, r1, r2, fill, stroke) => {
+    ctx.fillStyle = fill;
+    ctx.strokeStyle = stroke;
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    for (let i = 0; i < n * 2; i++) {
+      const a = (i / (n * 2)) * TAU - Math.PI / 2;
+      const r = i % 2 ? r1 : r2;
+      ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+    }
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+  };
+  S.moreIcons.attr_atk = (ctx) => {
+    ctx.save();
+    ctx.rotate(-Math.PI / 4);
+    ctx.fillStyle = '#dfe8f5';
+    ctx.strokeStyle = OUT;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, -20);
+    ctx.lineTo(5, -13);
+    ctx.lineTo(5, 7);
+    ctx.lineTo(-5, 7);
+    ctx.lineTo(-5, -13);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.strokeStyle = 'rgba(120,150,190,0.8)';
+    ctx.beginPath();
+    ctx.moveTo(0, -15);
+    ctx.lineTo(0, 5);
+    ctx.stroke();
+    ctx.fillStyle = '#e0a83a';
+    ctx.strokeStyle = OUT;
+    ctx.lineWidth = 2;
+    S.roundRect(ctx, -11, 7, 22, 5, 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = '#8a5a3c';
+    S.roundRect(ctx, -3, 12, 6, 9, 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+  };
+  S.moreIcons.attr_aspd = (ctx) => {
+    ell(ctx, 3, 3, 14, 14, '#2a3a5a', '#9fd0ff', 2.4);
+    ell(ctx, 3, 3, 11, 11, '#16233c');
+    ctx.fillStyle = '#9fd0ff';
+    ctx.fillRect(0, -15, 6, 4);
+    ctx.strokeStyle = '#ffd27a';
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    ctx.moveTo(3, 3);
+    ctx.lineTo(3, -6);
+    ctx.moveTo(3, 3);
+    ctx.lineTo(10, 7);
+    ctx.stroke();
+    ctx.strokeStyle = '#7fe0ff';
+    ctx.lineWidth = 2;
+    for (const [y, x] of [[-5, -18], [3, -20], [11, -18]]) {
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + 8, y);
+      ctx.stroke();
+    }
+  };
+  S.moreIcons.attr_crit = (ctx) => {
+    ell(ctx, 0, 0, 16, 16, '#f4f4f4', OUT, 2);
+    ell(ctx, 0, 0, 11.5, 11.5, '#e8524a');
+    ell(ctx, 0, 0, 7, 7, '#f4f4f4');
+    ell(ctx, 0, 0, 3.4, 3.4, '#e8524a');
+    ctx.strokeStyle = '#8a5a3c';
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    ctx.moveTo(1, -1);
+    ctx.lineTo(16, -16);
+    ctx.stroke();
+    ctx.fillStyle = '#ffd27a';
+    ctx.beginPath();
+    ctx.moveTo(20, -20);
+    ctx.lineTo(10, -19);
+    ctx.lineTo(19, -10);
+    ctx.closePath();
+    ctx.fill();
+  };
+  S.moreIcons.attr_critDmg = (ctx) => {
+    spike(ctx, 9, 9, 19, '#ff9a2a', OUT);
+    spike(ctx, 9, 5.5, 12, '#ffd84a', 'rgba(0,0,0,0)');
+    ell(ctx, 0, 0, 4.2, 4.2, '#fff6d0');
+  };
+  S.moreIcons.attr_luck = (ctx) => {
+    for (const [x, y] of [[-6, -6], [6, -6], [-6, 6], [6, 6]]) {
+      ell(ctx, x, y, 7.5, 7.5, '#5fd35f', OUT, 1.8);
+      ell(ctx, x - 1.6, y - 1.8, 2.6, 2.6, 'rgba(255,255,255,0.45)');
+    }
+    ctx.strokeStyle = '#2f8a3a';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(0, 2);
+    ctx.quadraticCurveTo(3, 12, 10, 19);
+    ctx.stroke();
+    ell(ctx, 0, 0, 3.2, 3.2, '#2f8a3a');
+  };
+  S.moreIcons.attr_range = (ctx) => {
+    ctx.strokeStyle = '#9fd0ff';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(-16, 0);
+    ctx.lineTo(16, 0);
+    ctx.moveTo(-16, -8);
+    ctx.lineTo(-16, 8);
+    ctx.moveTo(16, -8);
+    ctx.lineTo(16, 8);
+    ctx.stroke();
+    ctx.fillStyle = '#ffd27a';
+    ctx.strokeStyle = OUT;
+    ctx.lineWidth = 1.6;
+    for (const d of [-1, 1]) {
+      ctx.beginPath();
+      ctx.moveTo(d * 17, 0);
+      ctx.lineTo(d * 7, -7);
+      ctx.lineTo(d * 7, 7);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+    }
+  };
+  const brick = (ctx, x, y, w, h, c) => {
+    ctx.fillStyle = c;
+    ctx.strokeStyle = OUT;
+    ctx.lineWidth = 1.6;
+    ctx.fillRect(x, y, w, h);
+    ctx.strokeRect(x, y, w, h);
+  };
+  S.moreIcons.wall_level = (ctx) => {
+    ctx.fillStyle = '#b8b2a6';
+    ctx.strokeStyle = OUT;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(-17, 17);
+    ctx.lineTo(-17, -9);
+    ctx.lineTo(-17, -14);
+    ctx.lineTo(-10, -14);
+    ctx.lineTo(-10, -9);
+    ctx.lineTo(-4, -9);
+    ctx.lineTo(-4, -14);
+    ctx.lineTo(4, -14);
+    ctx.lineTo(4, -9);
+    ctx.lineTo(10, -9);
+    ctx.lineTo(10, -14);
+    ctx.lineTo(17, -14);
+    ctx.lineTo(17, 17);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.strokeStyle = 'rgba(60,56,80,0.55)';
+    ctx.lineWidth = 1.4;
+    for (const y of [-2, 6, 14]) {
+      ctx.beginPath();
+      ctx.moveTo(-17, y);
+      ctx.lineTo(17, y);
+      ctx.stroke();
+    }
+    for (const [x, y] of [[-6, -9], [6, -9], [-12, -2], [0, -2], [12, -2], [-6, 6], [6, 6]]) {
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x, y + 8);
+      ctx.stroke();
+    }
+    ctx.fillStyle = 'rgba(255,255,255,0.22)';
+    ctx.fillRect(-17, -14, 5, 31);
+  };
+  S.moreIcons.wall_fortify = (ctx) => {
+    ctx.fillStyle = '#6a8fd8';
+    ctx.strokeStyle = OUT;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, -18);
+    ctx.lineTo(15, -12);
+    ctx.lineTo(14, 3);
+    ctx.quadraticCurveTo(11, 14, 0, 19);
+    ctx.quadraticCurveTo(-11, 14, -14, 3);
+    ctx.lineTo(-15, -12);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = '#9ab8f0';
+    ctx.beginPath();
+    ctx.moveTo(0, -18);
+    ctx.lineTo(15, -12);
+    ctx.lineTo(14, 3);
+    ctx.quadraticCurveTo(11, 14, 0, 19);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = '#ffe6a0';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(0, -11);
+    ctx.lineTo(0, 12);
+    ctx.moveTo(-9, -2);
+    ctx.lineTo(9, -2);
+    ctx.stroke();
+  };
+  S.moreIcons.wall_mend = (ctx) => {
+    brick(ctx, -17, 2, 15, 8, '#c98a5a');
+    brick(ctx, -2, 2, 17, 8, '#d79a68');
+    brick(ctx, -17, 10, 9, 8, '#d79a68');
+    brick(ctx, -8, 10, 15, 8, '#c98a5a');
+    brick(ctx, 7, 10, 10, 8, '#d79a68');
+    ell(ctx, 0, -8, 10, 10, '#5fd35f', OUT, 2);
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 3.2;
+    ctx.beginPath();
+    ctx.moveTo(0, -13);
+    ctx.lineTo(0, -3);
+    ctx.moveTo(-5, -8);
+    ctx.lineTo(5, -8);
+    ctx.stroke();
+  };
+  S.moreIcons.wall_thorns = (ctx) => {
+    spike(ctx, 10, 8, 19, '#a9b3c8', OUT);
+    ell(ctx, 0, 0, 9, 9, '#6f7a92', OUT, 2);
+    ell(ctx, -2.5, -3, 3, 3, 'rgba(255,255,255,0.4)');
+  };
+
   // 装备的图标（设计书 101）：按部位画剪影，颜色跟着品质走（同一个部位的不同装备靠颜色区分，名字写在图标下面）
   S.gearIcon = function (ctx, slot, color, cx, cy, r) {
     ctx.save();
