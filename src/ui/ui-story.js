@@ -196,7 +196,7 @@
     const credits = h(
       'div',
       { class: 'ending-credits hidden' },
-      h('h2', null, '最后的堡垒'),
+      h('h2', null, '城头射手'),
       h('h3', null, '游戏设计 · 程序 · 美术 · 音效'),
       h('p', null, 'Claude（与你一起）'),
       h('h3', null, '出品'),

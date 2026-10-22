@@ -485,7 +485,13 @@
     const t = tc.getContext('2d');
     t.textAlign = 'center';
     t.textBaseline = 'middle';
-    t.font = '900 104px "PingFang SC","Microsoft YaHei","Noto Sans CJK SC","Source Han Sans SC",sans-serif';
+    // 游戏名随语言变长（英文 / 德文比中文宽得多）：按实际宽度缩小字号，最宽留 700 像素
+    const NAME = '城头射手';
+    const face = '"PingFang SC","Microsoft YaHei","Noto Sans CJK SC","Source Han Sans SC",sans-serif';
+    t.font = '900 104px ' + face;
+    const wide = t.measureText(NAME).width;
+    const fs = wide > 700 ? Math.max(44, Math.floor((104 * 700) / wide)) : 104;
+    t.font = '900 ' + fs + 'px ' + face;
     const g = t.createLinearGradient(0, 40, 0, 160);
     g.addColorStop(0, '#fff6d6');
     g.addColorStop(0.5, '#f6c65a');
@@ -493,9 +499,9 @@
     t.lineWidth = 10;
     t.strokeStyle = 'rgba(40,20,5,0.85)';
     t.lineJoin = 'round';
-    t.strokeText('最后的堡垒', 380, 100);
+    t.strokeText(NAME, 380, 100);
     t.fillStyle = g;
-    t.fillText('最后的堡垒', 380, 100);
+    t.fillText(NAME, 380, 100);
     // 扫光
     t.globalCompositeOperation = 'source-atop';
     const sx = -200 + sweep * 1160;

@@ -1,6 +1,6 @@
 {
-  "name": "最后的堡垒",
-  "short_name": "最后的堡垒",
+  "name": "Archer on the Wall",
+  "short_name": "Archer Wall",
   "description": "：2D 横版自动战斗塔防",
   "start_url": "./index.html",
   "scope": "./",

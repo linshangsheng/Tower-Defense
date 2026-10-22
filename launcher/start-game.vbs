@@ -1,4 +1,4 @@
-' Last Bastion launcher: double-click, no console window
+' Archer on the Wall launcher: double-click, no console window
 Dim fso, sh, dir, game, browsers, b, p
 Set fso = CreateObject("Scripting.FileSystemObject")
 Set sh = CreateObject("WScript.Shell")

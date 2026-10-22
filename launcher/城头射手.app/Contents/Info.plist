@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0"><dict>
-<key>CFBundleName</key><string>最后的堡垒</string>
-<key>CFBundleDisplayName</key><string>最后的堡垒</string>
+<key>CFBundleName</key><string>城头射手</string>
+<key>CFBundleDisplayName</key><string>城头射手</string>
 <key>CFBundleIdentifier</key><string>game.lastbastion.launcher</string>
 <key>CFBundleExecutable</key><string>launch</string>
 <key>CFBundleIconFile</key><string>icon</string>

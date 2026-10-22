@@ -238,7 +238,7 @@
   function applyDocument() {
     if (typeof document === 'undefined') return;
     document.documentElement.lang = lang;
-    document.title = t('最后的堡垒');
+    document.title = t('城头射手');
   }
 
   const I18n = (TD.i18n = {

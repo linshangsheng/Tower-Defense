@@ -4071,3 +4071,11 @@ html:not([lang='zh']):not([lang='zh-Hant']):not([lang='ja']):not([lang='ko']) .t
   margin-top: 4px;
   font-size: 13px;
 }
+
+/* 游戏名《城头射手》随语言变长：韩语（"성벽 위의 궁수"，7 个字 + 空格）用小一点的字号，免得盖到右边的菜单 */
+html[lang='ko'] .title-main {
+  font-size: 72px;
+  letter-spacing: 3px;
+  line-height: 1.15;
+  max-width: 560px;
+}

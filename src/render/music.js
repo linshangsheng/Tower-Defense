@@ -26,7 +26,7 @@
   // 每首曲子：bpm；prog 每小节一个和弦；melody 每小节 8 个八分音符（"." 延长 / "-" 休止）；lead = 菜单 / 地图里的主奏乐器
   const THEMES = {
     0: {
-      name: '最后的堡垒',
+      name: '城头射手',
       bpm: 72,
       lead: 'bell',
       prog: ['Dm', 'Bb', 'Gm', 'A', 'Dm', 'Bb', 'C', 'A'],
@@ -109,7 +109,7 @@
   const T = (name, bpm, lead, prog, melody) => ({ name, bpm, lead, prog: prog.split(' '), melody });
   Object.assign(THEMES, {
     // ---- 标题 ----
-    0: T('最后的堡垒 · 序章', 66, 'bell', 'Dm Bb F C Dm Gm Bb A', ['D5 . . . F5 . A5 .', 'G5 . F5 . D5 . Bb4 .', 'C5 . F5 . A5 . C6 .', 'B5 . G5 . E5 . G5 .', 'F5 . A5 . D6 . C6 .', 'Bb5 . A5 . G5 . D5 .', 'D5 . F5 . Bb5 . A5 .', 'E5 . C#5 . A4 . - -']),
+    0: T('城头射手 · 序章', 66, 'bell', 'Dm Bb F C Dm Gm Bb A', ['D5 . . . F5 . A5 .', 'G5 . F5 . D5 . Bb4 .', 'C5 . F5 . A5 . C6 .', 'B5 . G5 . E5 . G5 .', 'F5 . A5 . D6 . C6 .', 'Bb5 . A5 . G5 . D5 .', 'D5 . F5 . Bb5 . A5 .', 'E5 . C#5 . A4 . - -']),
     T1: T('晨曦之光', 76, 'flute', 'Em C G D Em C Am B', ['B4 . E5 . G5 . B5 .', 'A5 . G5 . E5 . C5 .', 'D5 . G5 . B5 . D6 .', 'C#6 . A5 . F#5 . A5 .', 'G5 . B5 . E6 . D6 .', 'C6 . B5 . G5 . E5 .', 'A5 . C6 . E6 . C6 .', 'D#6 . B5 . F#5 . - -']),
     T2: T('星夜行军', 80, 'pluck', 'Cm Ab Eb Bb Cm Fm Ab G', ['G5 . . Eb5 G5 . C6 .', 'Eb6 . C6 . Ab5 . C6 .', 'Bb5 . G5 . Eb5 . G5 .', 'F5 . Bb5 . D6 . Bb5 .', 'C6 . Eb6 . G6 . Eb6 .', 'F6 . Eb6 . C6 . Ab5 .', 'Ab5 . C6 . Eb6 . C6 .', 'B5 . D6 . G5 . - -']),
     // ---- 各章的第二首 ----

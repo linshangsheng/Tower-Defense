@@ -163,7 +163,7 @@
         'div',
         { class: 'title-logo' },
         TD.logo ? TD.logo.liveEmblem(220) : null,
-        h('div', { class: 'title-main' }, '最后的堡垒')
+        h('div', { class: 'title-main' }, '城头射手')
       ),
       h(
         'div',
@@ -230,7 +230,7 @@
             'div',
             null,
             h('h2', null, '请手动关闭'),
-            h('p', { class: 'hint' }, '进度已保存。浏览器不允许网页关闭自己所在的标签页，请直接关闭这个标签页或窗口。（用桌面上的「最后的堡垒」图标打开游戏时，这个按钮可以直接关闭游戏。）'),
+            h('p', { class: 'hint' }, '进度已保存。浏览器不允许网页关闭自己所在的标签页，请直接关闭这个标签页或窗口。（用桌面上的「城头射手」图标打开游戏时，这个按钮可以直接关闭游戏。）'),
             h('div', { class: 'modal-buttons' }, h('button', { class: 'btn primary', onclick: UI.closeModal }, '好的'))
           ),
           { closeOnBack: true }

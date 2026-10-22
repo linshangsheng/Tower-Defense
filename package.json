@@ -2,7 +2,7 @@
   "name": "shoucheng-yingxiong",
   "version": "0.1.0",
   "private": true,
-  "description": "《最后的堡垒》网页原型：2D 横版自动战斗塔防",
+  "description": "《城头射手》网页原型：2D 横版自动战斗塔防",
   "scripts": {
     "test": "node --test tests/*.test.js",
     "sim": "node tools/sim.js --seeds 6",
