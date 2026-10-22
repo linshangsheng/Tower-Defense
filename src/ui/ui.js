@@ -1146,7 +1146,16 @@
       if (id === 'precision') return `暴击率 +${pct(v)}%`;
       if (id === 'combo') return `每攻击 ${Math.round((1 / v) * 10) / 10} 次追加 1 次攻击`;
       if (id === 'burn') return `命中后点燃目标，${D.passiveSkills.burn.duration} 秒内共造成攻击力 ×${Math.round(v * 100)}% 的魔法伤害`;
-      return `无视目标 ${pct(v)}% 护甲（含盾牌）`;
+      if (id === 'pierceArmor') return `无视目标 ${pct(v)}% 护甲（含盾牌）`;
+      // 外放型：按几率触发的额外效果（设计书 103）
+      const k = D.passiveSkills[id];
+      const m = Math.round(P.passiveMult(id, lv) * 100) / 100;
+      if (id === 'lightning') return `攻击时有 ${pct(v)}% 的几率召下一道闪电，劈中目标并连锁 ${k.chain} 只怪，造成攻击力 ×${m} 的魔法伤害（连锁 60%）`;
+      if (id === 'frostNova') return `攻击时有 ${pct(v)}% 的几率在目标处炸开一团寒霜，范围内的怪受到攻击力 ×${m} 的魔法伤害，并减速 ${Math.round(k.slow * 100)}% ${k.slowTime} 秒`;
+      if (id === 'fireball') return `攻击时有 ${pct(v)}% 的几率掷出一颗火球，爆炸范围内的怪受到攻击力 ×${m} 的魔法伤害并被点燃`;
+      if (id === 'spiritArrows') return `攻击时有 ${pct(v)}% 的几率放出 ${k.count} 支灵箭，各自追向一只怪，每支造成攻击力 ×${m} 的魔法伤害`;
+      if (id === 'bladeWave') return `攻击时有 ${pct(v)}% 的几率挥出一道剑气，扫过目标所在的整条车道，每只怪受到攻击力 ×${m} 的伤害`;
+      return `攻击时有 ${pct(v)}% 的几率为城墙回复 ${Math.round(m * 1000) / 10}% 的最大血量`;
     };
     for (const id of Object.keys(D.passiveSkills)) {
       const k = D.passiveSkills[id];
@@ -1155,7 +1164,9 @@
         passiveGrid.append(card(k.name, null, passiveText(id, 1), buyBtn(k.cost, () => P.buyPassive(s, id), '解锁'), { cls: 'v unowned', icon: TD.sprites.iconCanvas(id, 56) }));
         continue;
       }
-      const desc = h('span', null, `当前：${passiveText(id, lv)} → `, h('b', { class: 'up' }, `Lv${lv + 1}：${passiveText(id, lv + 1)}`));
+      // 外放型被动的描述很长，升级预览只写变化的两个数：几率 和 倍数（回春是回血比例）
+      const nxt = (l) => `${pct(P.passiveValue(id, l))}% · ${k.heal ? Math.round(P.passiveMult(id, l) * 1000) / 10 + '%' : '×' + Math.round(P.passiveMult(id, l) * 100) / 100}`;
+      const desc = k.proc ? h('span', null, passiveText(id, lv), h('b', { class: 'up delta-line' }, `Lv${lv} ${nxt(lv)} → Lv${lv + 1} ${nxt(lv + 1)}`)) : h('span', null, `当前：${passiveText(id, lv)} → `, h('b', { class: 'up' }, `Lv${lv + 1}：${passiveText(id, lv + 1)}`));
       passiveGrid.append(card(k.name, lvText(lv), desc, h('div', { class: 'btn-col' }, buyBtn(P.passiveCost(s, id), () => P.upgradePassive(s, id), '升级'), bulkRow('passive', id)), { cls: 'v', icon: TD.sprites.iconCanvas(id, 56), bar: lv / 10, barText: `${lv} / 10`, over: lv >= 10 }));
     }
     el.append(h('div', { class: 'hint' }, '被动技能买下来是 1 级，效果很弱，升级以后才会变强；10 级以后每级的提升变小、费用涨得更快。'));

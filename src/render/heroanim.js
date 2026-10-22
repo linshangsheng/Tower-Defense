@@ -15,7 +15,7 @@
   const mix = (a, b, k) => a + (b - a) * k;
 
   // 施法动作的时长（秒）
-  A.CAST_DUR = { arrowRain: 1.8, thunder: 1.1, drum: 1.1, repair: 1.3, frost: 1.2 };
+  A.CAST_DUR = { arrowRain: 1.8, thunder: 1.1, drum: 1.1, repair: 1.3, frost: 1.2, pierce: 1.1, vortex: 1.5, firewall: 1.2, mark: 1.0, clones: 1.3 };
   // 雷霆一击的动作时长随雷的道数变：每道雷之间 every 秒，最后一道之后再留 0.75 秒收势（劈下 + 恢复）
   A.castDur = function (id, strikes, every) {
     if (id === 'thunder' && strikes > 0) return (strikes - 1) * every + 0.75;
@@ -203,6 +203,65 @@
         C.rear = { u: 0.3, v: 0.12 };
         break;
       }
+      case 'pierce': {
+        // 拉满弓，朝选定的车道瞄准，停一下再松手：身体前送，披风甩起
+        const target = castAim === undefined ? aim : castAim;
+        const draw = ease(a / 0.4);
+        const rel = ease((a - 0.45) / 0.08);
+        C.arm = target + Math.sin(a * 40) * 0.006 * draw * (1 - rel);
+        C.torso = -0.08 * draw + 0.14 * rel;
+        C.dx = -2.2 * draw + 4.5 * rel;
+        C.stance = 1.15;
+        C.cape = 3 + 5 * rel;
+        C.rear = { u: 0.24 - 0.31 * draw - 0.35 * rel, v: 0.02 };
+        break;
+      }
+      case 'vortex': {
+        // 双手向前推出，掌心画着圈：手臂随漩涡轻轻抖动
+        const push = ease(a / 0.22);
+        C.arm = mix(aim, aim - 0.35, push) + Math.sin(a * 11) * 0.05 * push;
+        C.torso = 0.06 * push + Math.sin(a * 7) * 0.02;
+        C.dx = 3 * push;
+        C.stance = 1.2;
+        C.cape = 5 + Math.sin(a * 9);
+        C.rear = { u: 0.4, v: 0.12 + Math.sin(a * 11) * 0.04 };
+        break;
+      }
+      case 'firewall': {
+        // 蹲下，手臂贴着地面朝车道一挥，火从指尖窜出去
+        const kneel = ease(a / 0.18);
+        const sweep = ease((a - 0.2) / 0.16);
+        C.arm = mix(mix(aim, 1.0, kneel), aim + 0.15, sweep);
+        C.torso = mix(0.2 * kneel, 0.04, sweep);
+        C.dy = 4 * kneel * (1 - sweep * 0.5);
+        C.dx = 2 + 2 * sweep;
+        C.stance = 1.3;
+        C.cape = mix(2, 7, sweep);
+        C.rear = { u: 0.3, v: 0.14 };
+        break;
+      }
+      case 'mark': {
+        // 稳稳地举臂指向目标，另一只手收在肩后，像在锁定猎物
+        const lock = ease(a / 0.2);
+        C.arm = aim - 0.04 * lock + Math.sin(a * 22) * 0.012 * lock;
+        C.torso = 0.03 * lock;
+        C.dx = 2 * lock;
+        C.stance = 1.1;
+        C.cape = 3;
+        C.rear = { u: 0.1, v: -0.12 };
+        break;
+      }
+      case 'clones': {
+        // 举弓过头，小小地跳起来转一下身：幻影从身边分出去
+        const up = ease(a / 0.18);
+        C.arm = mix(aim, -1.15, up) + Math.sin(a * 6) * 0.08;
+        C.torso = -0.1 * up;
+        C.jump = 6 * Math.sin(Math.PI * clamp(a / 0.55, 0, 1));
+        C.cape = 6;
+        C.dx = -1;
+        C.rearAbs = { x: -0.45, y: -1.1 };
+        break;
+      }
       case 'frost': {
         // 手臂先向后蓄势，再朝选定的车道横扫出去，指尖凝出冰晶
         const back = ease(a / 0.25);
@@ -260,6 +319,46 @@
       case 'repair':
         K.glow(ctx, tx, 0, s * 0.7, '#7dffa0', 0.7 * k, true);
         K.sparkles(ctx, tx, 0, s * 0.5, s * 0.3, 6, t, '#c8ffd0', 7, 1.4);
+        break;
+      case 'pierce': {
+        const ch = ease(a / 0.4);
+        K.glow(ctx, tx, 0, s * (0.5 + ch * 0.6), '#fff0b0', (0.5 + 0.4 * ch) * k, true);
+        // 光芒向箭尖汇聚
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.lineCap = 'round';
+        for (let i = 0; i < 6; i++) {
+          const u = (a * 2.4 + i / 6) % 1;
+          const q = (i / 6) * TAU;
+          const r = s * (1.1 - u) * 0.9;
+          ctx.strokeStyle = `rgba(255,226,140,${(1 - u) * 0.8 * k * ch})`;
+          ctx.lineWidth = 1.8;
+          ctx.beginPath();
+          ctx.moveTo(tx + Math.cos(q) * r, Math.sin(q) * r);
+          ctx.lineTo(tx + Math.cos(q) * r * 0.7, Math.sin(q) * r * 0.7);
+          ctx.stroke();
+        }
+        break;
+      }
+      case 'vortex': {
+        K.glow(ctx, tx, 0, s * 0.8, '#b98cff', 0.7 * k, true);
+        ctx.globalCompositeOperation = 'lighter';
+        for (let i = 0; i < 8; i++) {
+          const q = t * 5 + (i / 8) * TAU;
+          const r = s * (0.45 + 0.1 * Math.sin(t * 6 + i));
+          K.dot(ctx, tx + Math.cos(q) * r, Math.sin(q) * r * 0.7, 1.8, i % 2 ? '#ffffff' : '#c8a0ff', 0.9 * k);
+        }
+        break;
+      }
+      case 'firewall':
+        K.glow(ctx, tx, 0, s * 0.75, '#ff8a2a', 0.8 * k, true);
+        K.sparkles(ctx, tx, 0, s * 0.5, s * 0.35, 9, t, '#ffd27a', 9, 1.6);
+        break;
+      case 'mark':
+        K.glow(ctx, tx, 0, s * 0.6, '#ff5a4a', 0.7 * k, true);
+        break;
+      case 'clones':
+        K.glow(ctx, tx, 0, s * 0.7, '#7fe0ff', 0.7 * k, true);
+        K.sparkles(ctx, tx, 0, s * 0.5, s * 0.3, 7, t, '#dff8ff', 8, 1.4);
         break;
       case 'frost': {
         K.glow(ctx, tx, 0, s * 0.8, '#8fe0ff', 0.75 * k, true);
@@ -368,6 +467,72 @@
             const u = (age * 0.8 + i * 0.113) % 1;
             const px = -34 + ((i * 37) % 68) + Math.sin(t * 2 + i) * 4;
             plus(ctx, px, -6 - u * 100, 4 + (i % 3), '#b8ffc8', (1 - u) * env);
+          }
+        }
+        break;
+      case 'pierce':
+        if (!front) {
+          groundCircle(ctx, 52, 14, t * 0.8, '#ffd23f', env, 10);
+          pillar(ctx, 0, 0, 60, 170, '#fff0b0', env * 0.45);
+        } else {
+          // 松手的一瞬：一圈白光从脚下弹开
+          const rel = clamp((age - 0.45) / 0.35, 0, 1);
+          if (rel > 0 && rel < 1) ring(ctx, 14, -30, rel, 110, '#fff2c0', 0.9);
+          for (let i = 0; i < 10; i++) {
+            const u = (age * 0.9 + i * 0.1) % 1;
+            K.dot(ctx, Math.sin(i * 9.1) * 26, -u * 130, 1.5 + (i % 3) * 0.5, i % 2 ? '#fff0b0' : '#ffd23f', (1 - u) * env);
+          }
+        }
+        break;
+      case 'vortex':
+        if (!front) {
+          groundCircle(ctx, 58, 16, t * 2.2, '#b98cff', env, 14);
+          groundCircle(ctx, 38, 10, -t * 3, '#e8d0ff', env * 0.8, 8);
+          pillar(ctx, 0, 0, 64, 150, '#a47cff', env * 0.4);
+        } else {
+          for (let i = 0; i < 12; i++) {
+            const u = (age * 0.8 + i * 0.083) % 1;
+            const q = u * 9 + i;
+            K.dot(ctx, Math.cos(q) * (50 * (1 - u)), -4 - u * 70 + Math.sin(q) * 6, 1.6 + (i % 3) * 0.5, i % 2 ? '#e8d0ff' : '#b98cff', (1 - u) * env);
+          }
+        }
+        break;
+      case 'firewall':
+        if (!front) {
+          groundCircle(ctx, 54, 15, t * 1.4, '#ff8a3a', env, 12);
+          pillar(ctx, 0, 0, 66, 140, '#ff7a2a', env * 0.5);
+        } else {
+          for (let i = 0; i < 12; i++) {
+            const u = (age * 1.2 + i * 0.083) % 1;
+            K.dot(ctx, Math.sin(i * 7.7 + t) * 30, -u * 110, 1.6 + (i % 3) * 0.6, i % 2 ? '#ffd27a' : '#ff7a3a', (1 - u) * env);
+          }
+        }
+        break;
+      case 'mark':
+        if (!front) {
+          groundCircle(ctx, 40, 11, -t * 1.6, '#ff5a4a', env, 8);
+          pillar(ctx, 0, 0, 48, 130, '#ff5a4a', env * 0.35);
+        } else {
+          // 头顶一个收缩的红色瞄准环
+          const u = clamp(age / 0.5, 0, 1);
+          ctx.strokeStyle = `rgba(255,90,80,${(1 - u) * 0.9})`;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(14, -70, 38 * (1 - u) + 8, 0, TAU);
+          ctx.stroke();
+        }
+        break;
+      case 'clones':
+        if (!front) {
+          groundCircle(ctx, 56, 16, t * 1.3, '#7fe0ff', env, 12);
+          pillar(ctx, 0, 0, 70, 150, '#7fe0ff', env * 0.4);
+        } else {
+          // 青色的光影从身边飘散成几个人形
+          for (let i = 0; i < 3; i++) {
+            const u = clamp((age - 0.12 - i * 0.1) / 0.5, 0, 1);
+            if (u <= 0 || u >= 1) continue;
+            const sx = (i - 1) * 46 * u;
+            K.glow(ctx, sx, -34, 30, '#7fe0ff', (1 - u) * 0.6);
           }
         }
         break;

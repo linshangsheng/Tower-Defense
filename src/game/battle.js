@@ -11,7 +11,9 @@
   // 雷霆一击两道雷之间的间隔：次数多时压紧，整套雷不超过约 1.2 秒
   const thunderEvery = (n) => Math.min(0.22, 1.2 / n);
   const SYNERGY = { shatter: D.synergies.shatter.mult, drumRain: D.synergies.drumRain.mult };
-  const AUTO_ORDER = { drum: 1, frost: 2, repair: 3, arrowRain: 4, thunder: 5 };
+  const AUTO_ORDER = { drum: 1, clones: 1.5, frost: 2, mark: 2.5, repair: 3, arrowRain: 4, thunder: 5, firewall: 5.5, vortex: 6, pierce: 7 };
+  // 外放型被动技能（设计书 103）：每次攻击按几率额外放出一个效果
+  const PROC_IDS = ['lightning', 'frostNova', 'fireball', 'spiritArrows', 'bladeWave', 'renewal'];
   // 英雄自己的攻击（受盾龟护卫影响）：武器、溅射、连锁闪电
   const HERO_SOURCES = { weapon: true, splash: true, chain: true, zap: true, firefly: true };
 
@@ -111,6 +113,12 @@
       this.fireflyCount = 0;
       this.itemShield = 0;
       this.meteors = [];
+      this.timers = []; // 稍后执行的小动作（飞行中的火球、灵箭、剑气），{at, fn}
+      this.procCd = {};
+      this.vortexes = [];
+      this.fireWalls = [];
+      this.phantomScale = 1;
+      this.inPhantom = false;
       // 助战伙伴（设计书 51）
       this.buddy = (opts.loadout && opts.loadout.buddy && D.town.find((f) => f.boss === opts.loadout.buddy)) || null;
       if (this.buddy) {
@@ -848,6 +856,7 @@
       }
       if (opts.type === 'magic' && opts.source !== 'thorns') amount *= 1 + this.mods.magicMult;
       if (m.vulnUntil && this.time < m.vulnUntil) amount *= D.inkBoss.vulnMult;
+      if (m.markUntil && this.time < m.markUntil) amount *= 1 + (m.markBonus || 0); // 猎杀标记
       amount *= this.damageMult(m, opts);
       // 护盾：先吸收伤害，魔法效果更好（设计书 19.3）
       if (m.shield > 0) {
@@ -1101,11 +1110,17 @@
         const support = (m) => !!(m.def.healer || m.def.chill || m.def.ranged || m.def.guard || m.def.bubbler);
         list.sort((a, b) => (danger(b) ? 1 : 0) - (danger(a) ? 1 : 0) || (support(b) ? 1 : 0) - (support(a) ? 1 : 0) || byX(a, b));
       } else list.sort(byX);
+      // 猎杀标记：被标记的怪排在最前面（其余保持原来的顺序）
+      if (list.some((m) => m.markUntil && this.time < m.markUntil)) {
+        const mk = (m) => (m.markUntil && this.time < m.markUntil ? 1 : 0);
+        const idx = new Map(list.map((m, i) => [m, i]));
+        list.sort((a, b) => mk(b) - mk(a) || idx.get(a) - idx.get(b));
+      }
       return list;
     }
 
     rollHit(mult) {
-      let dmg = this.atk * this.stats.weaponMult * mult;
+      let dmg = this.atk * this.stats.weaponMult * mult * this.phantomScale;
       let buffCrit = 0;
       for (const b of this.buffs) if (b.crit && this.time < b.until) buffCrit += b.crit;
       const crit = this.rng() < this.stats.crit + this.mods.crit + buffCrit;
@@ -1124,6 +1139,8 @@
       }
       this.fire(targets);
       this.hero.attacks++;
+      this.rollProcs(targets);
+      this.firePhantoms(targets);
       if (this.stats.passives.combo) {
         // 连珠（设计书 90）：每次攻击攒一点几率，攒够 1 就立即追加 1 次攻击
         this.hero.comboAcc = (this.hero.comboAcc || 0) + this.stats.passiveVals.combo;
@@ -1132,6 +1149,7 @@
           const again = this.rankTargets();
           if (!again.length) break;
           this.fire(again);
+          this.rollProcs(again);
           this.emit('combo', {});
         }
       }
@@ -1148,7 +1166,7 @@
       const sy = this.heroY - 46;
       const t0 = targets[0];
       // Lyra的铃声（设计书 42.2）：每第 N 次攻击眩晕目标周围的普通怪物
-      const bell = this.stats.bell;
+      const bell = this.inPhantom ? null : this.stats.bell;
       if (bell) {
         this.attackCount = (this.attackCount || 0) + 1;
         if (this.attackCount % bell.every === 0) {
@@ -1165,7 +1183,7 @@
       this.hero.aimY = t0.y + t0.yOffset;
       this.hero.shotAt = this.time;
       // Nova的萤火虫（设计书 59.2）：每第 N 次攻击放出几只，各自飞向射程内的怪
-      const ff = this.stats.fireflies;
+      const ff = this.inPhantom ? null : this.stats.fireflies;
       if (ff && ++this.fireflyCount % ff.every === 0) {
         for (let i = 0; i < ff.count; i++) {
           const m = targets[i % targets.length];
@@ -1174,7 +1192,7 @@
         this.emit('fireflies', { x: sx, y: sy });
       }
       // 雷鸣箭袋（设计书 58.3）：每第 N 次攻击落下一道小闪电
-      const zap = this.stats.zap;
+      const zap = this.inPhantom ? null : this.stats.zap;
       if (zap && ++this.zapCount % zap.every === 0) {
         this.emit('gearZap', { x: t0.x, y: t0.y + t0.yOffset });
         // 目标被闪电打死时，箭照常射出（飞到原位置落空），不影响后面的攻击节奏
@@ -1444,6 +1462,64 @@
         case 'frost':
           this.laneEffects.push({ lane, type: 'frost', slow: def.slow, until: this.time + def.duration * (1 + this.mods.frostExt), start: this.time, freezeEnd: def.freezeEnd || 0 });
           break;
+        case 'pierce': {
+          // 贯穿光矢（设计书 103）：一支光矢扫过整条车道，每只怪按到达的先后挨一下
+          const inLane = this.monsters.filter((m) => this.isTargetable(m) && m.lane === lane);
+          const side = def.sideMult ? this.monsters.filter((m) => this.isTargetable(m) && Math.abs(m.lane - lane) === 1) : [];
+          if (!inLane.length && !side.length) return false;
+          const sx = C.heroX + 30;
+          const hitAt = (m, mult) =>
+            this.later(Math.max(0, (m.x - sx) / 2200), () => {
+              if (m.dead) return;
+              this.emit('pierceHit', { x: m.x, y: m.y + m.yOffset });
+              this.damage(m, atk * def.atkMult * mult, { type: 'phys', fromFront: false, source: 'pierce' });
+            });
+          for (const m of inLane) hitAt(m, 1);
+          for (const m of side) hitAt(m, def.sideMult);
+          this.emit('pierceBeam', { lane, sides: def.sideMult ? [lane - 1, lane + 1].filter((l) => l >= 0 && l < this.lanes) : [] });
+          break;
+        }
+        case 'vortex': {
+          // 引力漩涡：撕开在怪最密集的地方
+          const pool = this.monsters.filter((m) => this.isTargetable(m));
+          if (!pool.length) return false;
+          let best = null;
+          let bn = -1;
+          for (const m of pool) {
+            let n = 0;
+            for (const o of pool) if (Math.hypot(o.x - m.x, o.y + o.yOffset - (m.y + m.yOffset)) <= def.radius) n += 1 + (o.def.boss ? 3 : 0);
+            if (n > bn) {
+              bn = n;
+              best = m;
+            }
+          }
+          const vx = best.x;
+          const vy = best.y + best.yOffset;
+          this.vortexes.push({ x: vx, y: vy, start: this.time, until: this.time + def.duration, tick: 0.25, def });
+          this.emit('vortexOpen', { x: vx, y: vy, r: def.radius, dur: def.duration });
+          break;
+        }
+        case 'firewall':
+          this.fireWalls.push({ lane, start: this.time, until: this.time + def.duration, tick: 0.3, def });
+          this.emit('firewall', { lane, dur: def.duration });
+          break;
+        case 'mark': {
+          const pool = this.monsters
+            .filter((m) => this.isTargetable(m))
+            .sort((a, b) => (b.def.boss ? 1e12 : 0) + b.hp - ((a.def.boss ? 1e12 : 0) + a.hp))
+            .slice(0, def.count || 1);
+          if (!pool.length) return false;
+          for (const m of pool) {
+            m.markUntil = this.time + def.duration;
+            m.markBonus = def.bonus;
+            this.emit('mark', { m, x: m.x, y: m.y + m.yOffset });
+          }
+          break;
+        }
+        case 'clones':
+          this.buffs.push({ phantoms: def.phantoms, phantomMult: def.phantomMult, until: this.time + def.duration, src: 'clones' });
+          this.emit('clonesOn', { n: def.phantoms, dur: def.duration });
+          break;
         case 'thunder': {
           // 连续劈下 def.strikes 道雷：第一道马上落下，其余隔一小会儿一道（尽量各劈不同的怪）
           const struck = new Set();
@@ -1710,6 +1786,221 @@
       if (r.left <= 0) this.rain = null;
     }
 
+    // ---------- 新技能与外放型被动（设计书 103） ----------
+    later(delay, fn) {
+      this.timers.push({ at: this.time + delay, fn });
+    }
+
+    updateTimers() {
+      if (!this.timers.length) return;
+      const due = this.timers.filter((t) => t.at <= this.time);
+      if (!due.length) return;
+      this.timers = this.timers.filter((t) => t.at > this.time);
+      for (const t of due) t.fn();
+    }
+
+    // 幻影连射：战斗里还有效的幻影，每次攻击补射
+    firePhantoms(targets) {
+      let n = 0;
+      let mult = 0;
+      for (const b of this.buffs) {
+        if (b.phantoms && this.time < b.until) {
+          n += b.phantoms;
+          mult = Math.max(mult, b.phantomMult);
+        }
+      }
+      if (!n) return;
+      n = Math.min(n, 6);
+      for (let i = 0; i < n; i++) {
+        const alive = this.rankTargets();
+        if (!alive.length) break;
+        const rot = (i + 1) % alive.length;
+        const list = alive.slice(rot).concat(alive.slice(0, rot));
+        this.inPhantom = true;
+        this.phantomScale = mult;
+        this.fire(list);
+        this.phantomScale = 1;
+        this.inPhantom = false;
+        this.emit('phantomShot', { i });
+      }
+    }
+
+    // 每次攻击：外放型被动按几率各掷一次
+    rollProcs(targets) {
+      const ps = this.stats.passives;
+      for (const id of PROC_IDS) {
+        if (!ps[id]) continue;
+        if (this.time < (this.procCd[id] || 0)) continue;
+        if (this.rng() >= this.stats.passiveVals[id]) continue;
+        this.procCd[id] = this.time + 0.18;
+        this.runProc(id, targets);
+      }
+    }
+
+    runProc(id, targets) {
+      const d = D.passiveSkills[id];
+      const mult = this.stats.passiveMult[id];
+      const atk = this.atk;
+      const t0 = targets.find((m) => !m.dead && this.isTargetable(m));
+      const sx = C.heroX + 26;
+      const sy = this.heroY - 46;
+      const dist = (m, x, y) => Math.hypot(m.x - x, m.y + m.yOffset - y);
+      switch (id) {
+        case 'lightning': {
+          if (!t0) return;
+          this.emit('procLightning', { x: t0.x, y: t0.y + t0.yOffset });
+          this.damage(t0, atk * mult, { type: 'magic', fromFront: false, source: 'procLightning' });
+          const hit = new Set([t0]);
+          let cur = t0;
+          for (let i = 0; i < d.chain; i++) {
+            let nx = null;
+            let nd = 260;
+            for (const o of this.monsters) {
+              if (hit.has(o) || !this.isTargetable(o)) continue;
+              const dd = dist(o, cur.x, cur.y + cur.yOffset);
+              if (dd < nd) {
+                nd = dd;
+                nx = o;
+              }
+            }
+            if (!nx) break;
+            hit.add(nx);
+            this.emit('thunderChain', { x0: cur.x, y0: cur.y + cur.yOffset, x: nx.x, y: nx.y + nx.yOffset, small: true, color: '#bfe6ff' });
+            this.damage(nx, atk * mult * 0.6, { type: 'magic', fromFront: false, source: 'procLightning' });
+            cur = nx;
+          }
+          break;
+        }
+        case 'frostNova': {
+          if (!t0) return;
+          const cx = t0.x;
+          const cy = t0.y + t0.yOffset;
+          this.emit('procFrost', { x: cx, y: cy, r: d.radius });
+          for (const m of this.monsters.slice()) {
+            if (!this.isTargetable(m) || dist(m, cx, cy) > d.radius) continue;
+            this.damage(m, atk * mult, { type: 'magic', fromFront: false, source: 'procFrost' });
+            if (m.dead) continue;
+            const prev = this.time < m.slowUntil ? m.slowAmt : 0;
+            m.slowAmt = Math.max(prev, d.slow);
+            m.slowUntil = Math.max(m.slowUntil, this.time + d.slowTime);
+          }
+          break;
+        }
+        case 'fireball': {
+          if (!t0) return;
+          const tx = t0.x;
+          const ty = t0.y + t0.yOffset;
+          const fly = 0.3;
+          this.emit('procFireball', { x0: sx, y0: sy, x: tx, y: ty, r: d.radius, fly });
+          this.later(fly, () => {
+            this.emit('procFireballHit', { x: tx, y: ty, r: d.radius });
+            for (const m of this.monsters.slice()) {
+              if (!this.isTargetable(m)) continue;
+              const dd = dist(m, tx, ty);
+              if (dd > d.radius) continue;
+              this.damage(m, atk * mult * (dd <= 40 ? 1 : 0.6), { type: 'magic', fromFront: false, source: 'procFireball' });
+              if (!m.dead) this.ignite(m);
+            }
+          });
+          break;
+        }
+        case 'spiritArrows': {
+          const pool = this.monsters.filter((m) => this.isTargetable(m) && this.inRange(m));
+          if (!pool.length) return;
+          const picks = [];
+          const bag = pool.slice();
+          while (picks.length < d.count && bag.length) picks.push(bag.splice(Math.floor(this.rng() * bag.length), 1)[0]);
+          picks.forEach((m, i) => {
+            const fly = 0.28 + i * 0.05;
+            this.emit('procSpirit', { x0: sx, y0: sy, x: m.x, y: m.y + m.yOffset, i, fly });
+            this.later(fly, () => {
+              if (m.dead) return;
+              this.emit('procSpiritHit', { x: m.x, y: m.y + m.yOffset });
+              this.damage(m, atk * mult, { type: 'magic', fromFront: false, source: 'procSpirit' });
+            });
+          });
+          break;
+        }
+        case 'bladeWave': {
+          if (!t0) return;
+          const lane = t0.lane;
+          const speed = 950;
+          const x0 = C.heroX + 20;
+          this.emit('procWave', { lane, dur: (C.wallX + this.range + 160 - x0) / speed });
+          for (const m of this.monsters) {
+            if (m.lane !== lane || !this.isTargetable(m)) continue;
+            this.later(Math.max(0, (m.x - x0) / speed), () => {
+              if (m.dead) return;
+              this.emit('procWaveHit', { x: m.x, y: m.y + m.yOffset });
+              this.damage(m, atk * mult, { type: 'phys', fromFront: false, source: 'procWave' });
+            });
+          }
+          break;
+        }
+        case 'renewal':
+          this.healWall(this.wall.max * mult, 'renewal');
+          this.emit('procHeal', {});
+          break;
+      }
+    }
+
+    // 引力漩涡：每 0.25 秒把周围的怪往中心拽一把，并造成一份伤害；结束时（Lv3）爆炸
+    updateVortex() {
+      if (!this.vortexes.length) return;
+      const keep = [];
+      for (const v of this.vortexes) {
+        const d = v.def;
+        v.tick -= this.dtNow;
+        while (v.tick <= 0 && this.time < v.until + 0.001) {
+          v.tick += 0.25;
+          const steps = d.duration / 0.25;
+          for (const m of this.monsters.slice()) {
+            if (!this.isTargetable(m) || Math.abs(m.y + m.yOffset - v.y) > d.radius || Math.abs(m.x - v.x) > d.radius * 1.6) continue;
+            const boss = m.def.boss || m.def.bossPart;
+            const dx = v.x - m.x;
+            const pull = Math.min(Math.abs(dx), d.pull * 0.25 * (boss ? 0.25 : 1));
+            m.x = Math.min(C.spawnX + 60, m.x + Math.sign(dx) * pull);
+            this.damage(m, (this.atk * d.atkMult) / steps, { type: 'magic', fromFront: false, source: 'vortex' });
+          }
+        }
+        if (this.time < v.until) keep.push(v);
+        else if (d.burst) {
+          this.emit('vortexBurst', { x: v.x, y: v.y, r: d.radius });
+          for (const m of this.monsters.slice()) {
+            if (!this.isTargetable(m) || Math.hypot(m.x - v.x, m.y + m.yOffset - v.y) > d.radius * 1.15) continue;
+            this.damage(m, this.atk * d.burst, { type: 'magic', fromFront: false, source: 'vortex' });
+          }
+        } else this.emit('vortexBurst', { x: v.x, y: v.y, r: d.radius * 0.6, soft: true });
+      }
+      this.vortexes = keep;
+    }
+
+    // 烈焰之墙：车道上的怪每 0.3 秒挨一下火，被点燃
+    updateFireWalls() {
+      if (!this.fireWalls.length) return;
+      const keep = [];
+      for (const f of this.fireWalls) {
+        f.tick -= this.dtNow;
+        while (f.tick <= 0) {
+          f.tick += 0.3;
+          this.emit('firewallPulse', { lane: f.lane });
+          for (const m of this.monsters.slice()) {
+            if (m.lane !== f.lane || !this.isTargetable(m) || m.x < C.wallX - 10) continue;
+            this.damage(m, this.atk * f.def.atkMult * 0.3, { type: 'magic', fromFront: false, source: 'firewall' });
+            if (m.dead) continue;
+            this.ignite(m);
+            if (f.def.slow) {
+              const prev = this.time < m.slowUntil ? m.slowAmt : 0;
+              m.slowAmt = Math.max(prev, f.def.slow);
+              m.slowUntil = Math.max(m.slowUntil, this.time + 0.8);
+            }
+          }
+        }
+        if (this.time < f.until) keep.push(f);
+      }
+      this.fireWalls = keep;
+    }
+
     // 自动释放（玩家开启自动释放，或模拟机器人）
     updateAuto() {
       const inRange = this.monsters.filter((m) => this.isTargetable(m) && this.inRange(m));
@@ -1738,6 +2029,23 @@
               go = near >= 4 || this.monsters.some((m) => m.ai && m.ai.mode === 'warn');
               break;
             }
+            case 'pierce':
+              go = inRange.length >= 4 || (hasBoss && inRange.length > 0);
+              break;
+            case 'vortex':
+              go = all.filter((m) => m.x < C.wallX + 520).length >= 5;
+              break;
+            case 'firewall': {
+              const l = this.bestLane();
+              go = all.filter((m) => m.lane === l && m.x < C.wallX + this.range).length >= 3;
+              break;
+            }
+            case 'mark':
+              go = hasBoss || all.some((m) => m.hp >= this.atk * 8);
+              break;
+            case 'clones':
+              go = inRange.length >= 3 || (hasBoss && inRange.length > 0);
+              break;
             case 'thunder': {
               go = all.some((m) => m.hp >= this.atk * 4) || this.monsters.some((m) => m.ai && m.ai.mode === 'warn');
               // 贝贝合壳、波波有触手护身时先等一等（设计书 52.3）
@@ -1811,6 +2119,7 @@
     step(dt) {
       if (this.over || this.pendingSupply) return;
       this.time += dt;
+      this.dtNow = dt;
       for (const s of this.skills) if (s.cd > 0) s.cd = Math.max(0, s.cd - dt);
       for (const it of this.items) if (it.cd > 0) it.cd = Math.max(0, it.cd - dt);
       if (this.buffs.length && this.buffs[0].until < this.time) this.buffs = this.buffs.filter((b) => b.until >= this.time);
@@ -1836,6 +2145,9 @@
       this.updateWallDots(dt);
       if (this.over) return;
       if (this.zones.length && this.zones[0].until < this.time) this.zones = this.zones.filter((z) => z.until >= this.time);
+      this.updateTimers();
+      this.updateVortex();
+      this.updateFireWalls();
       this.updateHero(dt);
       this.updateRain(dt);
       this.updateThunder(dt);

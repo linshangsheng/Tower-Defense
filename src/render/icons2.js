@@ -355,6 +355,268 @@
     ctx.stroke();
   };
 
+  // 新主动技能 / 外放型被动技能的图标（设计书 103）
+  S.moreIcons.pierce = (ctx) => {
+    // 贯穿光矢：一支发光的长矢穿过三个怪影
+    ctx.fillStyle = 'rgba(255,214,120,0.2)';
+    ctx.fillRect(-20, -6, 40, 12);
+    for (const x of [-9, 1, 11]) ell(ctx, x, 0, 3.4, 7, 'rgba(120,90,160,0.8)');
+    ctx.strokeStyle = '#fff2c0';
+    ctx.lineWidth = 3.2;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(-19, 0);
+    ctx.lineTo(13, 0);
+    ctx.stroke();
+    ctx.strokeStyle = '#ffd23f';
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(-19, 0);
+    ctx.lineTo(13, 0);
+    ctx.stroke();
+    ctx.fillStyle = '#fff6d0';
+    ctx.strokeStyle = OUT;
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(20, 0);
+    ctx.lineTo(10, -7);
+    ctx.lineTo(10, 7);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = '#ff8a3a';
+    ctx.beginPath();
+    ctx.moveTo(-19, 0);
+    ctx.lineTo(-14, -5);
+    ctx.lineTo(-11, -5);
+    ctx.lineTo(-13, 0);
+    ctx.lineTo(-11, 5);
+    ctx.lineTo(-14, 5);
+    ctx.closePath();
+    ctx.fill();
+  };
+  S.moreIcons.vortex = (ctx) => {
+    // 引力漩涡：紫色的螺旋
+    ell(ctx, 0, 0, 18, 18, 'rgba(60,30,110,0.85)', OUT, 2);
+    ctx.lineCap = 'round';
+    for (let arm = 0; arm < 3; arm++) {
+      ctx.strokeStyle = arm === 0 ? '#e8d0ff' : arm === 1 ? '#b98cff' : '#8a5cff';
+      ctx.lineWidth = 3 - arm * 0.5;
+      ctx.beginPath();
+      for (let i = 0; i <= 26; i++) {
+        const k = i / 26;
+        const a = arm * 2.094 + k * 5.4;
+        const r = 16 * (1 - k * 0.92);
+        const x = Math.cos(a) * r;
+        const y = Math.sin(a) * r;
+        if (i) ctx.lineTo(x, y);
+        else ctx.moveTo(x, y);
+      }
+      ctx.stroke();
+    }
+    ell(ctx, 0, 0, 2.6, 2.6, '#ffffff');
+  };
+  S.moreIcons.firewall = (ctx) => {
+    // 烈焰之墙：一排并肩的火舌
+    for (const [x, s] of [[-12, 0.7], [0, 1.0], [12, 0.75]]) flame(ctx, x, 8 - s * 2, s * 1.1, '#ff6a1a', '#ffe28a');
+    ctx.fillStyle = 'rgba(255,170,60,0.35)';
+    ctx.fillRect(-19, 13, 38, 4);
+    ctx.fillStyle = '#5a4a40';
+    ctx.fillRect(-19, 16, 38, 3);
+  };
+  S.moreIcons.mark = (ctx) => {
+    // 猎杀标记：红色的瞄准环 + 骷髅点
+    ctx.strokeStyle = '#ff4a4a';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(0, 0, 13, 0, TAU);
+    ctx.stroke();
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    for (const [x0, y0, x1, y1] of [[0, -20, 0, -8], [0, 8, 0, 20], [-20, 0, -8, 0], [8, 0, 20, 0]]) {
+      ctx.moveTo(x0, y0);
+      ctx.lineTo(x1, y1);
+    }
+    ctx.stroke();
+    ell(ctx, 0, -1, 5.2, 5.6, '#f2f2f2', OUT, 1.4);
+    ctx.fillStyle = '#16121c';
+    ctx.fillRect(-3, -2.4, 2, 2.4);
+    ctx.fillRect(1, -2.4, 2, 2.4);
+    ctx.fillRect(-1.6, 2.4, 3.2, 2.4);
+  };
+  S.moreIcons.clones = (ctx) => {
+    // 幻影连射：一张实弓 + 两张淡青色的虚影弓
+    for (const [dx, dy, a, c] of [[-9, 5, 0.35, '#7fe0ff'], [9, -5, 0.35, '#7fe0ff'], [0, 0, 1, '#ffd27a']]) {
+      ctx.save();
+      ctx.translate(dx, dy);
+      ctx.globalAlpha = a;
+      ctx.strokeStyle = c;
+      ctx.lineWidth = 3;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.arc(-4, 0, 13, -1.15, 1.15);
+      ctx.stroke();
+      ctx.lineWidth = 1.2;
+      ctx.strokeStyle = '#fff';
+      ctx.beginPath();
+      ctx.moveTo(-4 + Math.cos(-1.15) * 13, Math.sin(-1.15) * 13);
+      ctx.lineTo(-4 + Math.cos(1.15) * 13, Math.sin(1.15) * 13);
+      ctx.stroke();
+      ctx.restore();
+    }
+    ctx.strokeStyle = '#fff2c0';
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.moveTo(-14, 0);
+    ctx.lineTo(16, 0);
+    ctx.stroke();
+    ctx.fillStyle = '#fff2c0';
+    ctx.beginPath();
+    ctx.moveTo(20, 0);
+    ctx.lineTo(13, -4);
+    ctx.lineTo(13, 4);
+    ctx.closePath();
+    ctx.fill();
+  };
+  S.moreIcons.lightning = (ctx) => {
+    // 雷鸣：乌云 + 闪电
+    ell(ctx, -7, -8, 9, 7, '#5a5f78', OUT, 1.8);
+    ell(ctx, 5, -10, 10, 8, '#6a7090', OUT, 1.8);
+    ell(ctx, 0, -5, 15, 6, '#7a80a0');
+    ctx.fillStyle = '#ffe66a';
+    ctx.strokeStyle = OUT;
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(3, -3);
+    ctx.lineTo(-6, 8);
+    ctx.lineTo(-1, 8);
+    ctx.lineTo(-4, 19);
+    ctx.lineTo(9, 5);
+    ctx.lineTo(3, 5);
+    ctx.lineTo(7, -3);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+  };
+  S.moreIcons.frostNova = (ctx) => {
+    // 霜爆：雪花
+    ctx.strokeStyle = '#dff6ff';
+    ctx.lineWidth = 2.6;
+    ctx.lineCap = 'round';
+    for (let i = 0; i < 6; i++) {
+      const a = (i / 6) * TAU;
+      const c = Math.cos(a);
+      const s2 = Math.sin(a);
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(c * 18, s2 * 18);
+      ctx.moveTo(c * 10, s2 * 10);
+      ctx.lineTo(c * 10 + Math.cos(a + 0.8) * 6, s2 * 10 + Math.sin(a + 0.8) * 6);
+      ctx.moveTo(c * 10, s2 * 10);
+      ctx.lineTo(c * 10 + Math.cos(a - 0.8) * 6, s2 * 10 + Math.sin(a - 0.8) * 6);
+      ctx.stroke();
+    }
+    ell(ctx, 0, 0, 4, 4, '#8fe0ff', OUT, 1.4);
+  };
+  S.moreIcons.fireball = (ctx) => {
+    // 火球：带尾焰的大火球
+    ctx.fillStyle = 'rgba(255,120,30,0.55)';
+    ctx.beginPath();
+    ctx.moveTo(-20, -9);
+    ctx.quadraticCurveTo(-4, -8, 4, -4);
+    ctx.lineTo(4, 6);
+    ctx.quadraticCurveTo(-6, 9, -20, 12);
+    ctx.quadraticCurveTo(-10, 2, -20, -9);
+    ctx.fill();
+    ell(ctx, 7, 0, 12, 12, '#ff7a1a', OUT, 2);
+    ell(ctx, 8, 0, 8, 8, '#ffc23a');
+    ell(ctx, 9, -1, 4, 4, '#fff6c8');
+  };
+  S.moreIcons.spiritArrows = (ctx) => {
+    // 灵箭：三支发光的青色箭
+    for (const [dy, a] of [[-11, -0.12], [0, 0], [11, 0.12]]) {
+      ctx.save();
+      ctx.translate(0, dy);
+      ctx.rotate(a);
+      ctx.strokeStyle = 'rgba(127,224,255,0.4)';
+      ctx.lineWidth = 6;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(-18, 0);
+      ctx.lineTo(10, 0);
+      ctx.stroke();
+      ctx.strokeStyle = '#e8fbff';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(-18, 0);
+      ctx.lineTo(10, 0);
+      ctx.stroke();
+      ctx.fillStyle = '#7fe0ff';
+      ctx.strokeStyle = OUT;
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(19, 0);
+      ctx.lineTo(10, -4.5);
+      ctx.lineTo(10, 4.5);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+    }
+  };
+  S.moreIcons.bladeWave = (ctx) => {
+    // 剑气：一弯向前的月牙光刃
+    ctx.fillStyle = '#e8f6ff';
+    ctx.strokeStyle = OUT;
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.moveTo(-8, -19);
+    ctx.quadraticCurveTo(18, -12, 18, 0);
+    ctx.quadraticCurveTo(18, 12, -8, 19);
+    ctx.quadraticCurveTo(6, 8, 6, 0);
+    ctx.quadraticCurveTo(6, -8, -8, -19);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.strokeStyle = '#7fd0ff';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(-17, -6);
+    ctx.lineTo(-5, -6);
+    ctx.moveTo(-20, 0);
+    ctx.lineTo(-3, 0);
+    ctx.moveTo(-17, 6);
+    ctx.lineTo(-5, 6);
+    ctx.stroke();
+  };
+  S.moreIcons.renewal = (ctx) => {
+    // 回春：绿色的叶子托着一个十字
+    ctx.fillStyle = '#4fcf6a';
+    ctx.strokeStyle = OUT;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(-16, 14);
+    ctx.quadraticCurveTo(-18, -12, 14, -16);
+    ctx.quadraticCurveTo(18, 14, -16, 14);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.strokeStyle = '#1f8a3a';
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(-14, 12);
+    ctx.quadraticCurveTo(-2, 0, 10, -12);
+    ctx.stroke();
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 3.4;
+    ctx.beginPath();
+    ctx.moveTo(4, -2);
+    ctx.lineTo(4, 10);
+    ctx.moveTo(-2, 4);
+    ctx.lineTo(10, 4);
+    ctx.stroke();
+  };
+
   // 属性 / 城墙升级的图标（设计书 102）：商店里每张升级卡片左边的大图标
   const spike = (ctx, n, r1, r2, fill, stroke) => {
     ctx.fillStyle = fill;

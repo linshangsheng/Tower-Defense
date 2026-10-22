@@ -220,6 +220,12 @@
       if (def.cd) def.cd = Math.max(base.cd * 0.5, def.cd * (1 - 0.004 * f));
       // 雷霆一击：每 5 级多劈 1 道，最多 15 道
       if (def.strikes) def.strikes = Math.min(15, def.strikes + Math.floor(f / 5));
+      // 新技能（设计书 103）：标记数、幻影数每 5 级 +1；标记增伤、爆炸、幻影伤害缓慢增长
+      if (def.burst) def.burst *= 1 + 0.08 * f;
+      if (def.bonus) def.bonus = Math.min(1.5, def.bonus + 0.01 * f);
+      if (def.count) def.count = Math.min(6, def.count + Math.floor(f / 5));
+      if (def.phantoms) def.phantoms = Math.min(6, def.phantoms + Math.floor(f / 5));
+      if (def.phantomMult) def.phantomMult = Math.min(1.2, def.phantomMult + 0.004 * f);
     }
     return def;
   };
@@ -316,6 +322,12 @@
     const v = e.base + e.per * (Math.min(lv, e.max) - 1) + e.beyond * Math.max(0, lv - e.max);
     return Math.min(e.cap, v);
   };
+  // 外放型被动的伤害倍数：1 级是 mult，之后每级 +10%（10 级以后每级 +1%）
+  P.passiveMult = (id, lv) => {
+    const d = D.passiveSkills[id];
+    const base = d.mult || d.heal || 0;
+    return base * (1 + 0.1 * (Math.min(lv, d.eff.max) - 1) + 0.01 * Math.max(0, lv - d.eff.max));
+  };
   // 升级费用（升级前的等级 lv）
   P.passiveCostAt = (id, lv) => {
     if (lv >= D.levelCap) return null;
@@ -377,7 +389,11 @@
     let crit = h.crit + P.attrTotal('crit', a.crit) + eq.crit + (w.bonusCrit || 0);
     // 被动技能按等级算效果（设计书 90）
     const passiveVals = {};
-    for (const id of Object.keys(passives)) passiveVals[id] = P.passiveValue(id, P.passiveLevel(save, id));
+    const passiveMult = {};
+    for (const id of Object.keys(passives)) {
+      passiveVals[id] = P.passiveValue(id, P.passiveLevel(save, id));
+      if (D.passiveSkills[id].proc) passiveMult[id] = P.passiveMult(id, P.passiveLevel(save, id));
+    }
     if (passives.precision) crit += passiveVals.precision;
     const critDmg = h.critDmg + P.attrTotal('critDmg', a.critDmg) + eq.critDmg;
     const luck = Math.min(MAX_LUCK, P.attrTotal('luck', a.luck) + eq.luck);
@@ -410,6 +426,7 @@
       thorns: P.levelTotal(WU.thorns, wl.thorns, WU.thorns.per),
       passives,
       passiveVals,
+      passiveMult,
       gearMods: P.equipMods(save),
       zap: (P.wornEquip(save).map((id) => D.equipment[id].zap).find(Boolean)) || null,
     };
@@ -425,6 +442,12 @@
     if (w.boomerang) perHit *= 2;
     let dps = perHit * hits;
     if (st.passives.burn) dps += (st.atk * st.passiveVals.burn) / D.passiveSkills.burn.duration;
+    // 外放型被动：几率 × 伤害倍数 × 攻击频率（灵箭三支、雷鸣连锁都按单体估算）
+    for (const id of Object.keys(st.passiveMult || {})) {
+      const d = D.passiveSkills[id];
+      if (d.heal) continue;
+      dps += st.atk * st.passiveVals[id] * st.passiveMult[id] * (d.count || 1) * st.aspd;
+    }
     return dps;
   };
 

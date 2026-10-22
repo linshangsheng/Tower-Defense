@@ -3614,3 +3614,153 @@ test('Boss 血量：主线 Boss ×3，九层妖塔的妖王 ×1.5，普通小怪
     assert.ok(Math.abs(t.maxHp - Math.round(d(t.def) * 1.5)) <= 1);
   }
 });
+
+// ---------- 新技能（设计书 104）：主动技能 10 种、被动技能 10 种 ----------
+test('技能数量：主动、被动各 10 种；每个主动技能 3 档说明，外放型被动都有几率和倍数', () => {
+  assert.strictEqual(Object.keys(D.activeSkills).length, 10);
+  assert.strictEqual(Object.keys(D.passiveSkills).length, 10);
+  for (const [id, k] of Object.entries(D.activeSkills)) {
+    assert.strictEqual(k.tierDesc.length, 3, id);
+    assert.strictEqual(k.tiers.length, 3, id);
+  }
+  const procs = Object.entries(D.passiveSkills).filter(([, k]) => k.proc);
+  assert.strictEqual(procs.length, 6);
+  for (const [id, k] of procs) {
+    assert.ok(P.passiveValue(id, 1) > 0.04 && P.passiveValue(id, 1) < 0.1, id + ' 1 级几率');
+    assert.ok(P.passiveValue(id, 10) > P.passiveValue(id, 1) * 2, id + ' 升级几率变大');
+    assert.ok(P.passiveMult(id, 10) > P.passiveMult(id, 1), id + ' 升级倍数变大');
+    assert.ok(P.passiveValue(id, 9999) <= k.eff.cap, id + ' 几率有上限');
+  }
+});
+
+test('新主动技能：贯穿光矢打整条车道、猎杀标记加伤、引力漩涡拉怪、烈焰之墙点燃、幻影连射多射', () => {
+  const s = P.newSave();
+  clearUpTo(s, 25);
+  const ids = ['pierce', 'vortex', 'firewall', 'mark', 'clones'];
+  for (const k of ids) s.activeOwned[k] = true;
+  const mk = (loadout, lv) => {
+    s.loadout.active = loadout;
+    for (const k of ids) s.skillLv[k] = lv || 1;
+    const b = new TD.Battle({ level: 21, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 3 });
+    b.waveState = 'running';
+    return b;
+  };
+  const step = (b, sec) => {
+    for (let i = 0; i < sec * 20; i++) b.step(0.05);
+  };
+  // 贯穿光矢：同一车道的怪都挨一下，别的车道不受影响；Lv3 相邻车道吃 50%
+  let b = mk(['pierce', null, null]);
+  const a1 = b.spawnMonster('snowman', 1, 500);
+  const a2 = b.spawnMonster('snowman', 1, 800);
+  const a3 = b.spawnMonster('snowman', 3, 600);
+  for (const m of [a1, a2, a3]) m.hp = m.maxHp = 1e6;
+  assert.ok(b.castSkill(0, 1));
+  step(b, 1);
+  assert.ok(a1.hp < 1e6 && a2.hp < 1e6, '车道里的怪都挨到');
+  assert.strictEqual(a3.hp, 1e6, '别的车道没事');
+  b = mk(['pierce', null, null], 3);
+  const s1 = b.spawnMonster('snowman', 1, 500);
+  const s2 = b.spawnMonster('snowman', 2, 500);
+  s1.hp = s1.maxHp = 1e6;
+  s2.hp = s2.maxHp = 1e6;
+  b.heroStunUntil = Infinity; // 不让主角自己的箭干扰伤害比例
+  b.castSkill(0, 1);
+  step(b, 1);
+  assert.ok(Math.abs((1e6 - s2.hp) / (1e6 - s1.hp) - 0.5) < 0.02, '相邻车道 50%');
+  // 猎杀标记：标记血量最高的怪，伤害 +40%；没有怪时放不出去
+  b = mk(['mark', null, null]);
+  assert.strictEqual(b.castSkill(0), false);
+  const strong = b.spawnMonster('snowman', 1, 600);
+  const weak = b.spawnMonster('snowman', 2, 600);
+  strong.hp = strong.maxHp = 1e6;
+  weak.hp = weak.maxHp = 1e5;
+  assert.ok(b.castSkill(0));
+  assert.ok(strong.markUntil > b.time && !weak.markUntil, '只标记血量最高的');
+  const hp0 = strong.hp;
+  b.damage(strong, 1000, { type: 'phys', fromFront: false, source: 'test' });
+  const marked = hp0 - strong.hp;
+  strong.markUntil = 0;
+  const hp1 = strong.hp;
+  b.damage(strong, 1000, { type: 'phys', fromFront: false, source: 'test' });
+  assert.ok(Math.abs(marked / (hp1 - strong.hp) - 1.4) < 0.01, `标记增伤 ${marked / (hp1 - strong.hp)}`);
+  // 引力漩涡：周围的怪被拽向中心
+  b = mk(['vortex', null, null]);
+  const v1 = b.spawnMonster('snowman', 1, 560);
+  const v2 = b.spawnMonster('snowman', 1, 700);
+  v1.hp = v1.maxHp = v2.hp = v2.maxHp = 1e6;
+  assert.ok(b.castSkill(0));
+  const gap0 = Math.abs(v1.x - v2.x);
+  step(b, 1);
+  assert.ok(Math.abs(v1.x - v2.x) < gap0, '两只怪靠近了');
+  assert.ok(v1.hp < 1e6 && v2.hp < 1e6);
+  // 烈焰之墙：车道里的怪被点燃并持续掉血，别的车道不受影响
+  b = mk(['firewall', null, null]);
+  const f1 = b.spawnMonster('snowman', 1, 600);
+  const f2 = b.spawnMonster('snowman', 3, 600);
+  f1.hp = f1.maxHp = f2.hp = f2.maxHp = 1e6;
+  assert.ok(b.castSkill(0, 1));
+  step(b, 2);
+  assert.ok(f1.hp < 1e6 && f1.burnUntil > b.time - 3, '烧到了');
+  assert.strictEqual(f2.hp, 1e6);
+  step(b, 8);
+  assert.strictEqual(b.fireWalls.length, 0, '火墙到时间熄灭');
+  // 幻影连射：开着的时候每次攻击多射几箭（弹道数明显更多）
+  const shots = (withClones) => {
+    const bb = mk(['clones', null, null], 3);
+    const m = bb.spawnMonster('snowman', 1, 400);
+    m.hp = m.maxHp = 1e9;
+    if (withClones) bb.castSkill(0);
+    let n = 0;
+    const old = bb.emit.bind(bb);
+    bb.emit = (t, e) => (t === 'shoot' && n++, old(t, e));
+    step(bb, 3);
+    return n;
+  };
+  assert.ok(shots(true) >= shots(false) * 3, '幻影多射');
+});
+
+test('外放型被动：几率拉满时每次攻击都触发，各自造成伤害 / 治疗；几率为 0 时不触发', () => {
+  const s = P.newSave();
+  clearUpTo(s, 25);
+  const procs = ['lightning', 'frostNova', 'fireball', 'spiritArrows', 'bladeWave', 'renewal'];
+  for (const id of procs) {
+    s.passiveOwned[id] = true;
+    s.passiveLv[id] = 1;
+  }
+  const run = (id, chance) => {
+    s.loadout.passive = [id, null, null];
+    const stats = P.heroStats(s);
+    stats.passiveVals[id] = chance;
+    const b = new TD.Battle({ level: 21, stats, loadout: P.battleLoadout(s), seed: 9 });
+    b.waveState = 'running';
+    const ms = [b.spawnMonster('snowman', 1, 450), b.spawnMonster('snowman', 1, 520), b.spawnMonster('snowman', 1, 590), b.spawnMonster('snowman', 2, 520)];
+    for (const m of ms) m.hp = m.maxHp = 1e9;
+    b.wall.hp = b.wall.max * 0.5;
+    const hp0 = b.wall.hp;
+    for (let i = 0; i < 80; i++) b.step(0.05);
+    const dealt = ms.reduce((a, m) => a + (1e9 - m.hp), 0);
+    return { dealt, healed: b.wall.hp - hp0, src: b.report.bySource };
+  };
+  const srcOf = { lightning: 'procLightning', frostNova: 'procFrost', fireball: 'procFireball', spiritArrows: 'procSpirit', bladeWave: 'procWave' };
+  for (const id of procs) {
+    const on = run(id, 1);
+    const off = run(id, 0);
+    if (id === 'renewal') {
+      assert.ok(on.healed > off.healed, '回春治疗了城墙');
+      continue;
+    }
+    assert.ok(on.src[srcOf[id]] > 0, id + ' 触发了');
+    assert.ok(!off.src[srcOf[id]], id + ' 几率为 0 不触发');
+    assert.ok(on.dealt > off.dealt, id + ' 多造成了伤害');
+  }
+  // 霜爆会减速
+  s.loadout.passive = ['frostNova', null, null];
+  const st = P.heroStats(s);
+  st.passiveVals.frostNova = 1;
+  const b = new TD.Battle({ level: 21, stats: st, loadout: P.battleLoadout(s), seed: 9 });
+  b.waveState = 'running';
+  const m = b.spawnMonster('snowman', 1, 450);
+  m.hp = m.maxHp = 1e9;
+  for (let i = 0; i < 40; i++) b.step(0.05);
+  assert.ok(m.slowAmt >= D.passiveSkills.frostNova.slow - 1e-9 || b.time > m.slowUntil, '霜爆减速');
+});

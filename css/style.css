@@ -4066,3 +4066,8 @@ html:not([lang='zh']):not([lang='zh-Hant']):not([lang='ja']):not([lang='ko']) .t
   box-shadow: 0 0 0 1px rgba(255, 220, 170, 0.3), 0 6px 18px rgba(0, 0, 0, 0.5);
   filter: brightness(0.88) saturate(0.95);
 }
+.card-desc .delta-line {
+  display: block;
+  margin-top: 4px;
+  font-size: 13px;
+}

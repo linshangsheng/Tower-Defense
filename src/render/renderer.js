@@ -129,8 +129,69 @@
         else if (e.id === 'arrowRain') V.sigil(C.wallX + battle.range * 0.55, C.fieldTop + 4, Math.min(170, battle.range * 0.3), '#ffd27a', 2.4);
         else if (e.id === 'repair') wallHeal(true);
         else if (e.id === 'frost' && e.lane !== undefined) iceLane(e.lane, 22);
+        else if (e.id === 'clones') V.bloom(C.heroX + 6, battle.heroY - 40, '#7fe0ff', 110);
+        else if (e.id === 'mark') V.shockwave(C.heroX + 10, battle.heroY - 10, '#ff6a5a', 2);
         if (e.id === 'frost') this.shake = Math.max(this.shake, 2);
       });
+      // ---- 新主动技能的特效（设计书 103） ----
+      const laneX1 = () => Math.min(C.width - 20, C.wallX + battle.range + 140);
+      on('pierceBeam', (e) => {
+        if (!V) return;
+        const ys = [battle.laneY(e.lane)].concat((e.sides || []).map((l) => battle.laneY(l)));
+        V.lance(C.heroX + 30, C.width - 10, ys);
+        const { y0, h } = laneBox(e.lane);
+        V.laneFlash(C.wallX, C.width, y0, h, '#fff0b0');
+        this.fx.push({ kind: 'flash', color: '#fff2c4', life: 0.2, age: 0 });
+        this.shake = Math.max(this.shake, 8);
+      });
+      on('pierceHit', (e) => V && V.lanceHit(e.x, e.y));
+      on('vortexOpen', (e) => {
+        if (!V) return;
+        V.vortexOpen(e.x, e.y, e.r, e.dur);
+        this.shake = Math.max(this.shake, 4);
+      });
+      on('vortexBurst', (e) => {
+        if (!V) return;
+        V.vortexBurst(e.x, e.y, e.r, e.soft);
+        if (!e.soft) {
+          this.shake = Math.max(this.shake, 12);
+          this.fx.push({ kind: 'flash', color: '#d8b8ff', life: 0.25, age: 0 });
+        }
+      });
+      on('firewall', (e) => {
+        if (!V) return;
+        const { y0, h } = laneBox(e.lane);
+        V.flameLane(C.wallX, laneX1(), y0, h, e.dur);
+        this.shake = Math.max(this.shake, 4);
+      });
+      on('firewallPulse', (e) => {
+        if (!V) return;
+        const { y0, h } = laneBox(e.lane);
+        V.flamePulse(C.wallX, laneX1(), y0, h);
+      });
+      on('mark', (e) => {
+        if (!V) return;
+        V.star(e.x, e.y - 20, '#ff6a5a', 50, 8, 0.45);
+        V.fx.push({ kind: 'ring', x: e.x, y: e.y - 20, r0: 70, r1: 14, color: '#ff4a4a', w: 3, life: 0.35, age: 0 });
+      });
+      on('clonesOn', () => V && V.shockwave(C.heroX + 10, battle.heroY - 10, '#7fe0ff', 2));
+      // ---- 外放型被动的特效 ----
+      on('procLightning', (e) => V && V.thunder(e.x, e.y, 0.6));
+      on('procFrost', (e) => V && V.frostNova(e.x, e.y, e.r));
+      on('procFireball', (e) => V && V.comet(e.x0, e.y0, e.x, e.y, e.fly, '#ff8a2a', 15));
+      on('procFireballHit', (e) => {
+        if (!V) return;
+        V.fireballBoom(e.x, e.y, e.r);
+        this.shake = Math.max(this.shake, 3);
+      });
+      on('procSpirit', (e) => V && V.wisp(e.x0, e.y0, e.x, e.y, e.fly, '#7fe0ff', e.i));
+      on('procSpiritHit', (e) => V && V.spiritHit(e.x, e.y));
+      on('procWave', (e) => {
+        if (!V) return;
+        V.crescent(C.heroX + 20, laneX1() + 40, battle.laneY(e.lane), e.dur);
+      });
+      on('procWaveHit', (e) => V && V.crescentHit(e.x, e.y));
+      on('procHeal', () => V && V.heal(C.wallX - 30, C.fieldTop + 20, C.fieldBottom - 20, false));
       on('item', (e) => {
         if (e.id === 'bomb') {
           const y = battle.laneY(e.lane);
@@ -2628,6 +2689,32 @@
           S.ellipse(ctx, x - 8 + i * 8, fy, 3, 5, i % 2 ? '#ff8a3d' : '#ffd23f');
         }
       }
+      // 猎杀标记：怪身上一圈缓缓转动的红色瞄准环（最后 1.5 秒闪烁提醒快消失）
+      if (m.markUntil && b.time < m.markUntil) {
+        const left = m.markUntil - b.time;
+        const blink = left < 1.5 ? 0.5 + 0.5 * Math.sin(this.t * 18) : 1;
+        const cy = y - def.size * 0.9;
+        const rr = def.size * 1.25 + 8;
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        TD.art.drawGlow(ctx, x, cy, rr * 1.4, '#ff4a4a', 0.28 * blink);
+        ctx.strokeStyle = `rgba(255,90,80,${0.9 * blink})`;
+        ctx.lineWidth = 2.4;
+        ctx.beginPath();
+        ctx.arc(x, cy, rr, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.translate(x, cy);
+        ctx.rotate(this.t * 1.8);
+        ctx.lineWidth = 2.8;
+        ctx.beginPath();
+        for (let q = 0; q < 4; q++) {
+          const a = (q * Math.PI) / 2;
+          ctx.moveTo(Math.cos(a) * (rr - 6), Math.sin(a) * (rr - 6));
+          ctx.lineTo(Math.cos(a) * (rr + 8), Math.sin(a) * (rr + 8));
+        }
+        ctx.stroke();
+        ctx.restore();
+      }
       if (b.time < m.hasteUntil) {
         ctx.strokeStyle = 'rgba(196,90,210,0.8)';
         ctx.lineWidth = 2;
@@ -3032,6 +3119,27 @@
         this.ctx.drawImage(c.canvas, Math.round(C.heroX - c.ox), Math.round(heroY - c.oy));
       } else S.hero(this.ctx, C.heroX, heroY, ho);
       if (fx) TD.heroAnim.fx(this.ctx, C.heroX, heroY, castId, castAge, this.t, 'front', { strikes: castStrikes, every: castEvery });
+      // 幻影连射：几个淡青色的幻影并肩站在城墙上，跟着主角一起射击（设计书 103）
+      if (b) {
+        let nGhost = 0;
+        for (const bb of b.buffs) if (bb.phantoms && b.time < bb.until) nGhost += bb.phantoms;
+        nGhost = Math.min(nGhost, 4);
+        for (let gi = 1; gi <= nGhost; gi++) {
+          const gy = heroY + (gi % 2 ? -1 : 1) * Math.ceil(gi / 2) * 80;
+          const gx = C.heroX - 5 + Math.sin(this.t * 3 + gi) * 2;
+          const ctx2 = this.ctx;
+          ctx2.save();
+          TD.art.drawGlow(ctx2, gx, gy - 32, 60, '#7fe0ff', 0.4 + Math.sin(this.t * 6 + gi) * 0.1);
+          ctx2.globalAlpha = 0.42;
+          try {
+            ctx2.filter = 'hue-rotate(185deg) saturate(1.5) brightness(1.5)';
+          } catch (err) {
+            /* 个别浏览器没有 canvas 滤镜，直接用半透明 */
+          }
+          S.hero(ctx2, gx, gy, ho);
+          ctx2.restore();
+        }
+      }
       // 战鼓等增益光环
       if (b && b.buffs.some((x) => b.time < x.until)) {
         const ctx = this.ctx;

@@ -250,6 +250,62 @@
       tiers: [{}, { strikes: 4, atkMult: 3 }, { strikes: 5, atkMult: 3.5, chain: 3, chainMult: 0.5, chainRange: 240 }],
       tierDesc: ['3 道雷，每道攻击力 ×2.5', '4 道雷，每道攻击力 ×3', '5 道雷，每道攻击力 ×3.5，并连锁附近 3 只怪（每只 50%）'],
     },
+    // ---- 新增 5 个主动技能（设计书 103） ----
+    pierce: {
+      name: '贯穿光矢',
+      cost: { silver: 5 },
+      cd: 16,
+      atkMult: 5,
+      targetLane: true,
+      desc: '选定一条车道，射出一支贯穿整条车道的光矢，对车道上所有的怪造成攻击力 ×5 的伤害，无视盾牌。',
+      tiers: [{}, { atkMult: 6.5 }, { atkMult: 8, sideMult: 0.5 }],
+      tierDesc: ['整条车道的怪，每只攻击力 ×5', '整条车道的怪，每只攻击力 ×6.5', '整条车道的怪，每只攻击力 ×8，相邻两条车道的怪也受到 50%'],
+    },
+    vortex: {
+      name: '引力漩涡',
+      cost: { silver: 5 },
+      cd: 20,
+      duration: 3,
+      atkMult: 3,
+      radius: 170,
+      pull: 170,
+      desc: '在怪最密集的地方撕开一个漩涡，3 秒内把周围的怪不断拉向中心，并造成共计攻击力 ×3 的魔法伤害。',
+      tiers: [{}, { duration: 4, atkMult: 3.6 }, { duration: 4, atkMult: 4.2, burst: 2.5 }],
+      tierDesc: ['3 秒，共攻击力 ×3', '4 秒，共攻击力 ×3.6', '4 秒，共攻击力 ×4.2，结束时漩涡爆炸，再造成攻击力 ×2.5'],
+    },
+    firewall: {
+      name: '烈焰之墙',
+      cost: { silver: 5 },
+      cd: 18,
+      duration: 6,
+      atkMult: 1.2,
+      targetLane: true,
+      desc: '在选定的车道上升起一道火墙，6 秒内车道上的怪每秒受到攻击力 ×1.2 的魔法伤害，并被点燃。',
+      tiers: [{}, { duration: 7, atkMult: 1.5 }, { duration: 8, atkMult: 1.8, slow: 0.3 }],
+      tierDesc: ['6 秒，每秒攻击力 ×1.2', '7 秒，每秒攻击力 ×1.5', '8 秒，每秒攻击力 ×1.8，火里的怪减速 30%'],
+    },
+    mark: {
+      name: '猎杀标记',
+      cost: { silver: 4 },
+      cd: 22,
+      duration: 8,
+      count: 1,
+      bonus: 0.4,
+      desc: '标记 1 只血量最高的怪，8 秒内它受到的伤害 +40%，主角优先攻击它。',
+      tiers: [{}, { duration: 10, bonus: 0.5, count: 2 }, { duration: 12, bonus: 0.6, count: 3 }],
+      tierDesc: ['标记 1 只，8 秒，受到伤害 +40%', '标记 2 只，10 秒，受到伤害 +50%', '标记 3 只，12 秒，受到伤害 +60%'],
+    },
+    clones: {
+      name: '幻影连射',
+      cost: { silver: 5 },
+      cd: 24,
+      duration: 8,
+      phantoms: 1,
+      phantomMult: 0.6,
+      desc: '召出幻影和 Kael 并肩射击：8 秒内每次攻击，幻影再补 1 箭，伤害为 60%。',
+      tiers: [{}, { duration: 9, phantoms: 2 }, { duration: 10, phantoms: 3, phantomMult: 0.7 }],
+      tierDesc: ['8 秒，每次攻击补 1 箭（60%）', '9 秒，每次攻击补 2 箭（60%）', '10 秒，每次攻击补 3 箭（70%）'],
+    },
   };
 
   // 技能升阶费用（设计书 20.1）：下标为目标等级
@@ -266,6 +322,14 @@
     combo: { name: '连珠', cost: { silver: 4 }, eff: { base: 0.05, per: 0.0167, max: 10, beyond: 0.003, cap: 1 } },
     burn: { name: '灼烧', cost: { silver: 4 }, duration: 3, eff: { base: 0.12, per: 0.06, max: 10, beyond: 0.012, cap: 5 } },
     pierceArmor: { name: '穿甲', cost: { silver: 3 }, eff: { base: 0.08, per: 0.05, max: 10, beyond: 0.005, cap: 0.95 } },
+    // ---- 外放型被动技能（设计书 103）：每次攻击都有一定几率额外放出一个效果。
+    //   eff 是触发几率；mult 是 1 级时的伤害倍数（攻击力 ×），每升一级再强 10%（10 级以后每级 +1%）
+    lightning: { name: '雷鸣', cost: { silver: 5 }, proc: true, mult: 1.4, chain: 2, eff: { base: 0.06, per: 0.02, max: 10, beyond: 0.004, cap: 0.6 } },
+    frostNova: { name: '霜爆', cost: { silver: 5 }, proc: true, mult: 1.0, radius: 130, slow: 0.5, slowTime: 2, eff: { base: 0.07, per: 0.02, max: 10, beyond: 0.004, cap: 0.6 } },
+    fireball: { name: '火球', cost: { silver: 6 }, proc: true, mult: 1.8, radius: 115, eff: { base: 0.05, per: 0.018, max: 10, beyond: 0.004, cap: 0.55 } },
+    spiritArrows: { name: '灵箭', cost: { silver: 5 }, proc: true, mult: 0.9, count: 3, eff: { base: 0.07, per: 0.02, max: 10, beyond: 0.004, cap: 0.6 } },
+    bladeWave: { name: '剑气', cost: { silver: 6 }, proc: true, mult: 1.2, eff: { base: 0.05, per: 0.018, max: 10, beyond: 0.004, cap: 0.55 } },
+    renewal: { name: '回春', cost: { silver: 4 }, proc: true, heal: 0.008, eff: { base: 0.08, per: 0.02, max: 10, beyond: 0.004, cap: 0.6 } },
   };
   // 被动技能升级费用：1→2 级 600 铜，之后每级 ×1.4（到 10 级约 6600 铜）；10 级以后按"超过基础上限"的规则越来越贵
   TD.data.passiveUpgrade = { base: 600, growth: 1.4 };
