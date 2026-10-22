@@ -1913,4 +1913,6 @@ TD.i18n.register("vi", {
   "钢铁洪流": "Dòng thác thép",
   "风吹麦浪": "Gió lay sóng lúa",
   "出手很快，暴击率 +15%，伤害比木弓还高一点。": "Bắn rất nhanh, tỉ lệ chí mạng +15%, sát thương nhỉnh hơn Cung gỗ một chút.",
+  "{0}：通关第 {1} 关解锁": "{0}: mở khóa sau khi qua màn {1}",
+  "还有 {0} 把武器可以在「装备」页的「武器」分类里购买": "Còn {0} vũ khí có thể mua ở mục \"Vũ khí\" trong trang Trang bị",
 });

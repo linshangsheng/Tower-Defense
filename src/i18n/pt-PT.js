@@ -1913,4 +1913,6 @@ TD.i18n.register("pt-PT", {
   "钢铁洪流": "Torrente de Aço",
   "风吹麦浪": "Vento nas Searas",
   "出手很快，暴击率 +15%，伤害比木弓还高一点。": "Dispara depressa, +15% de probabilidade de crítico e um pouco mais de dano do que o Arco de Madeira.",
+  "{0}：通关第 {1} 关解锁": "{0}: desbloqueia ao passar o nível {1}",
+  "还有 {0} 把武器可以在「装备」页的「武器」分类里购买": "Mais {0} armas podem ser compradas na categoria \"Armas\" da página Equipamento",
 });

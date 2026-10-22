@@ -1311,13 +1311,27 @@
     el.append(card(h('span', null, coinIcon('diamond'), ' 钻石'), null, '最稀有的货币，只能在「九层妖塔」里获得，不能兑换。可以买「装备」页里的金色装备（每类除第 1 件外都只能用钻石买，最便宜 10 钻），以及等级特别高（几千级以后）的升级。', h('span', { class: 'equipped dim' }, `你有 ${s.diamond || 0} 颗`)));
   }
 
-  // ---- 配装页 ----
+  // ---- 配装页（v0.99 重新设计，设计书 101） ----
+  // 思路：只放"现在能用的"，每类东西一张分组卡片，统一用图标方块；锁着的 / 没买的不再铺满页面。
+  //   角色卡（头像 + 英雄 / 伙伴小头像）→ 武器（已拥有的图标，点击换）→ 技能（主动 | 被动）→ 装备（8 格）→ 消耗品 → 战斗设置
   function shopLoadout(el) {
     const s = game.save;
     const lo = s.loadout;
     const st = UI.shopState;
-    const slotBox = (label, content, onclick, locked, sub) =>
-      h('button', { class: 'slot' + (locked ? ' locked' : '') + (content ? '' : ' empty'), onclick: locked ? () => sfx('error') : onclick }, h('div', { class: 'slot-label' }, label), h('div', { class: 'slot-content' }, locked ? '🔒' : content || '空'), sub ? h('div', { class: 'slot-sub' }, sub) : null);
+    const RC = (r) => D.weaponRarity[r || 1].color;
+    // 图标方块：图标 + 名字 + 小字；空格子是虚线 + 加号，锁住的是灰色 + 锁
+    const tile = (o) =>
+      h(
+        'button',
+        { class: 'lo-tile' + (o.on ? ' on' : '') + (o.locked ? ' locked' : '') + (!o.icon && !o.locked ? ' empty' : ''), title: o.title || null, style: o.color ? { '--rar': o.color } : null, onclick: o.locked ? () => sfx('error') : o.onclick },
+        h('div', { class: 'lo-ico' }, o.locked ? h('span', { class: 'lo-lock' }, '🔒') : o.icon || h('span', { class: 'lo-plus' }, '＋')),
+        h('div', { class: 'lo-name', style: o.color && o.icon ? { color: o.color } : null }, o.name || o.label || ''),
+        o.sub ? h('div', { class: 'lo-sub' }, o.sub) : null,
+        o.badge ? h('i', { class: 'lo-badge' }, o.badge) : null,
+        o.on ? h('i', { class: 'lo-check' }, '✔') : null
+      );
+    const card = (title, sub, ...kids) => h('div', { class: 'lo-card' }, h('div', { class: 'lo-head' }, h('b', null, title), sub ? h('span', { class: 'lo-hint' }, sub) : null), ...kids);
+    const lockSub = (n) => `通关第 ${n} 关解锁`;
 
     if (st.levelNo)
       el.append(
@@ -1342,191 +1356,214 @@
         )
       );
 
-    // 英雄（设计书 42、59）：通关第 10 / 20 / 30 / 40 关陆续加入；卡片只放头像、名字和定位，详细说明在下面
-    if (Object.keys(C.heroes).some((id) => id !== 'dang' && P.heroUnlocked(s, id))) {
-      el.append(h('div', { class: 'section-title' }, '英雄'));
+    // ---- 角色：大头像 + 英雄小头像 + 助战伙伴小头像 ----
+    {
+      const cur = C.heroes[P.heroId(s)];
+      const heroChips = Object.keys(C.heroes).map((id) => {
+        const hd = C.heroes[id];
+        const open = P.heroUnlocked(s, id);
+        const on = P.heroId(s) === id;
+        return h('button', { class: 'lo-chip' + (on ? ' on' : '') + (open ? '' : ' locked'), title: open ? `${hd.name}：${hd.role}` : `${hd.name}：通关第 ${hd.unlock} 关解锁`, onclick: () => (open && P.setHero(s, id) ? (sfx('click'), game.persist(), renderShop()) : sfx('error')) }, TD.sprites.heroPortrait(42, on ? 'win' : 'idle', undefined, id), open ? null : h('i', { class: 'lo-chip-lock' }, '🔒'));
+      });
+      const buddies = D.town.filter((f) => P.buddyUnlocked(s, f.boss));
+      const curBuddy = P.buddyId(s);
+      const buddyChips = buddies.length
+        ? [
+            h('button', { class: 'lo-chip none' + (curBuddy ? '' : ' on'), title: '不带', onclick: () => (P.setBuddy(s, null), sfx('click'), game.persist(), renderShop()) }, h('span', null, '∅')),
+            ...buddies.map((f) => h('button', { class: 'lo-chip' + (curBuddy === f.boss ? ' on' : ''), title: `${D.monsters[f.boss].name}：${f.perkDesc}`, onclick: () => (P.setBuddy(s, f.boss), sfx('click'), game.persist(), renderShop()) }, TD.sprites.portrait(f.boss, 38))),
+          ]
+        : null;
       el.append(
         h(
           'div',
-          { class: 'slot-row' },
-          Object.keys(C.heroes).map((id) => {
-            const hd = C.heroes[id];
-            const open = P.heroUnlocked(s, id);
-            const on = P.heroId(s) === id;
-            const img = TD.sprites.heroPortrait(56, on ? 'win' : 'idle', undefined, id);
-            return h(
-              'button',
-              { class: 'slot hero-slot' + (on ? ' on' : '') + (open ? '' : ' locked'), title: hd.desc, onclick: () => (open && P.setHero(s, id) ? (sfx('click'), game.persist(), renderShop()) : sfx('error')) },
-              img,
-              h('div', null, h('div', { class: 'slot-content' }, hd.name + (on ? ' ✔' : '')), h('div', { class: 'slot-sub' }, open ? hd.role : `通关第 ${hd.unlock} 关`))
-            );
-          })
-        )
-      );
-      el.append(h('div', { class: 'hint hero-desc' }, C.heroes[P.heroId(s)].desc));
-    }
-
-    // 助战伙伴（设计书 51）：打败的 Boss 可以带一位
-    const buddies = D.town.filter((f) => P.buddyUnlocked(s, f.boss));
-    if (buddies.length) {
-      el.append(h('div', { class: 'section-title' }, '助战伙伴'));
-      const cur = P.buddyId(s);
-      el.append(
-        h(
-          'div',
-          { class: 'slot-row buddy-row' },
-          h('button', { class: 'slot buddy-slot' + (cur ? '' : ' on'), onclick: () => (P.setBuddy(s, null), sfx('click'), game.persist(), renderShop()) }, h('div', { class: 'slot-content' }, '不带')),
-          buddies.map((f) => {
-            const img = TD.sprites.portrait(f.boss, 44);
-            return h(
-              'button',
-              { class: 'slot buddy-slot' + (cur === f.boss ? ' on' : ''), title: `${D.monsters[f.boss].name}：${f.perkDesc}`, onclick: () => (P.setBuddy(s, f.boss), sfx('click'), game.persist(), renderShop()) },
-              img
-            );
-          })
-        )
-      );
-      if (cur) el.append(h('div', { class: 'hint slot-note' }, `${D.monsters[cur].name}：${D.town.find((f) => f.boss === cur).perkDesc}`));
-    }
-
-    // 武器：武器页还没开放时只显示已拥有的，并说明什么时候开放（设计书 6.5、41）
-    el.append(h('div', { class: 'section-title' }, '武器'));
-    const weaponsOpen = UI.tabUnlocked(s, 'weapons');
-    el.append(
-      h(
-        'div',
-        { class: 'slot-row' },
-        Object.keys(D.weapons)
-          .filter((id) => weaponsOpen || s.weapons[id].owned)
-          .map((id) =>
-          slotBox(
-            h('span', { style: { color: D.weaponRarity[D.weapons[id].rarity || 1].color } }, P.weaponDef(s, id).name),
-            s.weapons[id].owned ? (lo.weapon === id ? '✔ 使用中' : '点击装备') : null,
-            () => {
-              if (P.setWeapon(s, id)) {
-                sfx('click');
-                game.persist();
-                renderShop();
-              }
-            },
-            !s.weapons[id].owned,
-            s.weapons[id].owned ? `Lv.${s.weapons[id].lv}` : '去「装备」页解锁'
+          { class: 'lo-card lo-hero' },
+          h('div', { class: 'lo-hero-pic' }, TD.sprites.heroPortrait(84, 'win', undefined, P.heroId(s))),
+          h('div', { class: 'lo-hero-info' }, h('div', { class: 'lo-hero-name' }, cur.name, h('span', { class: 'lo-role' }, cur.role)), h('div', { class: 'lo-hero-desc' }, cur.desc)),
+          h(
+            'div',
+            { class: 'lo-hero-pick' },
+            Object.keys(C.heroes).some((id) => id !== 'dang' && P.heroUnlocked(s, id)) ? h('div', { class: 'lo-chip-row' }, h('span', { class: 'lo-chip-label' }, '英雄'), heroChips) : null,
+            buddyChips ? h('div', { class: 'lo-chip-row' }, h('span', { class: 'lo-chip-label' }, '助战伙伴'), buddyChips) : null,
+            curBuddy ? h('div', { class: 'lo-hint' }, `${D.monsters[curBuddy].name}：${D.town.find((f) => f.boss === curBuddy).perkDesc}`) : null
           )
-        ),
-        weaponsOpen ? null : h('span', { class: 'hint slot-note' }, `更多武器：在「装备」页的「武器」分类里解锁`)
-      )
-    );
-
-    // 消耗品：最多 7 种，每种最多带 3 个；栏位上显示"已装备 N 个 / 背包还有 M 个"（设计书 82）
-    const itemGroup = () => {
-      const n = P.slotCount(s, 'item');
-      const R = D.itemRules;
-      el.append(h('div', { class: 'section-title' }, `消耗品（最多带 ${R.kinds} 种，每种最多 ${R.perKind} 个；用一个少一个，每种有冷却）`));
-      el.append(
-        h(
-          'div',
-          { class: 'slot-row' },
-          Array.from({ length: R.kinds }, (_, i) => {
-            const id = lo.items[i];
-            const locked = i >= n;
-            const sub = locked ? `通关第 ${D.slotUnlocks.item[i]} 关解锁` : id ? `已装备 ${P.itemEquipped(s, id)} · 背包 ${P.itemStock(s, id)}` : null;
-            return slotBox(`槽 ${i + 1}`, !locked && id ? `${D.items[id].name} ×${P.itemEquipped(s, id)}` : null, () => pickItem(i), locked, sub);
-          })
         )
       );
-    };
-    const slotGroup = (kind, title, defs, owned) => {
-      const n = P.slotCount(s, kind);
-      const arr = lo[kind === 'item' ? 'items' : kind];
-      el.append(h('div', { class: 'section-title' }, title));
+    }
+
+    // ---- 武器：当前这把 + 已拥有的图标；没买的不显示，只提示还有几把 ----
+    {
+      const weaponsOpen = UI.tabUnlocked(s, 'weapons');
+      const ids = Object.keys(D.weapons);
+      const owned = ids.filter((id) => s.weapons[id].owned);
+      const cw = lo.weapon;
+      const wd = P.weaponDef(s, cw);
+      const rest = ids.length - owned.length;
       el.append(
-        h(
-          'div',
-          { class: 'slot-row' },
-          [0, 1, 2].map((i) =>
-            slotBox(
-              `槽 ${i + 1}`,
-              i < n && arr[i] ? defs[arr[i]].name : null,
-              () => pickFor(kind, i, defs, owned),
-              i >= n,
-              i >= n ? `通关第 ${D.slotUnlocks[kind][i]} 关解锁` : kind === 'item' && arr[i] ? `背包 ${s.inventory[arr[i]] || 0}` : null
+        card(
+          '武器',
+          weaponsOpen ? (rest > 0 ? `还有 ${rest} 把武器可以在「装备」页的「武器」分类里购买` : null) : '更多武器：在「装备」页的「武器」分类里解锁',
+          h('div', { class: 'lo-weapon-now', style: { '--rar': RC(D.weapons[cw].rarity) } }, TD.sprites.iconCanvas(cw, 52), h('div', null, h('div', { class: 'lo-weapon-name', style: { color: RC(D.weapons[cw].rarity) } }, wd.name, h('span', { class: 'lo-lv' }, `Lv.${s.weapons[cw].lv}`)), h('div', { class: 'lo-weapon-desc' }, wd.desc))),
+          h(
+            'div',
+            { class: 'lo-tiles' },
+            owned.map((id) =>
+              tile({
+                icon: TD.sprites.iconCanvas(id, 40),
+                name: P.weaponDef(s, id).name,
+                color: RC(D.weapons[id].rarity),
+                sub: `Lv.${s.weapons[id].lv}`,
+                on: cw === id,
+                title: P.weaponDef(s, id).desc,
+                onclick: () => {
+                  if (P.setWeapon(s, id)) {
+                    sfx('click');
+                    game.persist();
+                    renderShop();
+                  }
+                },
+              })
             )
           )
         )
       );
-    };
-    slotGroup('active', '主动技能', D.activeSkills, s.activeOwned);
-    // 技能协同提示（设计书 45）：带齐一对技能时点亮
-    const act = lo.active.slice(0, P.slotCount(s, 'active')).filter(Boolean);
-    el.append(
-      h(
-        'div',
-        { class: 'synergy-row' },
-        Object.keys(D.synergies).map((id) => {
-          const sy = D.synergies[id];
-          const on = sy.skills.every((k) => act.includes(k));
-          return h('span', { class: 'synergy' + (on ? ' on' : ''), title: sy.desc }, `${on ? '✨' : '·'} 协同「${sy.name}」：${sy.skills.map((k) => D.activeSkills[k].name).join(' + ')}${on ? '（已带齐）' : ''}`);
-        })
-      )
-    );
-    slotGroup('passive', '被动技能', D.passiveSkills, s.passiveOwned);
+    }
 
-    // 装备：装备页开放前只显示一行说明
-    el.append(h('div', { class: 'section-title' }, '装备'));
-    const eqNames = { helm: '头盔', cape: '披风', armor: '盔甲', quiver: '箭袋', trinket1: '饰品 1', trinket2: '饰品 2', trinket3: '饰品 3', boots: '鞋子' };
-    const anyEquip = Object.keys(s.equipOwned || {}).some((k) => s.equipOwned[k]);
-    if (!UI.tabUnlocked(s, 'equip') && !anyEquip) el.append(h('div', { class: 'hint slot-note' }, `通关第 ${TAB_UNLOCK.equip} 关后开放「装备」：头盔、披风、盔甲、箭袋、饰品和鞋子`));
-    else {
+    // ---- 技能：主动 | 被动 并排，协同提示放在下面 ----
+    {
+      const skillTiles = (kind, defs, owned, lvOf) => {
+        const n = P.slotCount(s, kind);
+        const arr = lo[kind];
+        return [0, 1, 2].map((i) => {
+          const id = i < n ? arr[i] : null;
+          return tile({
+            icon: id ? TD.sprites.iconCanvas(id, 40) : null,
+            name: id ? defs[id].name : null,
+            label: `槽 ${i + 1}`,
+            sub: i >= n ? lockSub(D.slotUnlocks[kind][i]) : id && lvOf ? lvOf(id) : null,
+            title: id ? defs[id].desc || null : null,
+            locked: i >= n,
+            onclick: () => pickFor(kind, i, defs, owned),
+          });
+        });
+      };
+      const act = lo.active.slice(0, P.slotCount(s, 'active')).filter(Boolean);
       el.append(
         h(
           'div',
-          { class: 'slot-row' },
-          Object.keys(eqNames).map((k) =>
-            k === 'quiver' && P.slotCount(s, 'quiver') < 1
-              ? slotBox(eqNames[k], null, () => {}, true, `通关第 ${D.slotUnlocks.quiver[0]} 关解锁`)
-              : slotBox(eqNames[k], lo.equip[k] ? h('span', { style: { color: D.weaponRarity[D.equipment[lo.equip[k]].rarity].color } }, D.equipment[lo.equip[k]].name) : null, () => pickEquip(k), false, lo.equip[k] ? D.equipment[lo.equip[k]].desc : null)
+          { class: 'lo-card' },
+          h(
+            'div',
+            { class: 'lo-two' },
+            h('div', null, h('div', { class: 'lo-head' }, h('b', null, '主动技能')), h('div', { class: 'lo-tiles' }, skillTiles('active', D.activeSkills, s.activeOwned, (id) => `Lv${P.skillLevel(s, id)}`))),
+            h('div', { class: 'lo-vline' }),
+            h('div', null, h('div', { class: 'lo-head' }, h('b', null, '被动技能')), h('div', { class: 'lo-tiles' }, skillTiles('passive', D.passiveSkills, s.passiveOwned, (id) => `Lv${P.passiveLevel(s, id)}`)))
+          ),
+          h(
+            'div',
+            { class: 'synergy-row' },
+            Object.keys(D.synergies).map((id) => {
+              const sy = D.synergies[id];
+              const on = sy.skills.every((k) => act.includes(k));
+              return h('span', { class: 'synergy' + (on ? ' on' : ''), title: sy.desc }, `${on ? '✨' : '·'} 协同「${sy.name}」：${sy.skills.map((k) => D.activeSkills[k].name).join(' + ')}${on ? '（已带齐）' : ''}`);
+            })
           )
         )
       );
-      const sets = P.activeSets(s);
-      if (sets.length) el.append(h('div', { class: 'synergy-row' }, sets.map((k) => h('span', { class: 'synergy on' }, `✨ 套装「${D.gearSets[k].name}」：${D.gearSets[k].desc}`))));
     }
 
-    itemGroup();
+    // ---- 装备：8 个格子排成一排（两行）----
+    {
+      const eqNames = { helm: '头盔', cape: '披风', armor: '盔甲', quiver: '箭袋', trinket1: '饰品 1', trinket2: '饰品 2', trinket3: '饰品 3', boots: '鞋子' };
+      const anyEquip = Object.keys(s.equipOwned || {}).some((k) => s.equipOwned[k]);
+      if (!UI.tabUnlocked(s, 'equip') && !anyEquip) el.append(card('装备', null, h('div', { class: 'hint slot-note' }, `通关第 ${TAB_UNLOCK.equip} 关后开放「装备」：头盔、披风、盔甲、箭袋、饰品和鞋子`)));
+      else {
+        const sets = P.activeSets(s);
+        el.append(
+          card(
+            '装备',
+            null,
+            h(
+              'div',
+              { class: 'lo-tiles lo-eq' },
+              Object.keys(eqNames).map((k) => {
+                if (k === 'quiver' && P.slotCount(s, 'quiver') < 1) return tile({ label: eqNames[k], locked: true, sub: lockSub(D.slotUnlocks.quiver[0]) });
+                const id = lo.equip[k];
+                const eq = id ? D.equipment[id] : null;
+                return tile({ icon: eq ? TD.sprites.gearIconCanvas(eq.slot, RC(eq.rarity), 40) : null, name: eq ? eq.name : null, label: eqNames[k], color: eq ? RC(eq.rarity) : null, sub: eq ? null : null, title: eq ? `${eq.name}：${eq.desc}` : eqNames[k], onclick: () => pickEquip(k) });
+              })
+            ),
+            sets.length ? h('div', { class: 'synergy-row' }, sets.map((k) => h('span', { class: 'synergy on' }, `✨ 套装「${D.gearSets[k].name}」：${D.gearSets[k].desc}`))) : null
+          )
+        );
+      }
+    }
 
-    // 目标优先级与自动释放
-    el.append(h('div', { class: 'section-title' }, '战斗设置'));
-    el.append(
-      h(
-        'div',
-        { class: 'slot-row' },
-        h(
-          'label',
-          { class: 'select-box' },
-          '目标优先级 ',
+    // ---- 消耗品 ----
+    {
+      const n = P.slotCount(s, 'item');
+      const R = D.itemRules;
+      el.append(
+        card(
+          `消耗品（最多带 ${R.kinds} 种，每种最多 ${R.perKind} 个；用一个少一个，每种有冷却）`,
+          null,
           h(
-            'select',
-            {
+            'div',
+            { class: 'lo-tiles lo-grid7' },
+            Array.from({ length: R.kinds }, (_, i) => {
+              const id = lo.items[i];
+              const locked = i >= n;
+              return tile({
+                icon: !locked && id ? TD.sprites.iconCanvas(id, 40) : null,
+                name: !locked && id ? D.items[id].name : null,
+                label: `槽 ${i + 1}`,
+                badge: !locked && id ? `×${P.itemEquipped(s, id)}` : null,
+                sub: locked ? lockSub(D.slotUnlocks.item[i]) : id ? `背包 ${P.itemStock(s, id)}` : null,
+                locked,
+                title: id && !locked ? D.items[id].desc || null : null,
+                onclick: () => pickItem(i),
+              });
+            })
+          )
+        )
+      );
+    }
+
+    // ---- 战斗设置 ----
+    el.append(
+      card(
+        '战斗设置',
+        null,
+        h(
+          'div',
+          { class: 'lo-settings' },
+          h(
+            'label',
+            { class: 'select-box' },
+            '目标优先级 ',
+            h(
+              'select',
+              {
+                onchange: (e) => {
+                  lo.target = e.target.value;
+                  game.persist();
+                },
+              },
+              Object.keys(D.targetModes).map((k) => h('option', { value: k, selected: lo.target === k ? true : null }, D.targetModes[k]))
+            )
+          ),
+          h(
+            'label',
+            { class: 'select-box' },
+            h('input', {
+              type: 'checkbox',
+              checked: lo.autoCast ? true : null,
               onchange: (e) => {
-                lo.target = e.target.value;
+                lo.autoCast = e.target.checked;
                 game.persist();
               },
-            },
-            Object.keys(D.targetModes).map((k) => h('option', { value: k, selected: lo.target === k ? true : null }, D.targetModes[k]))
+            }),
+            ' 技能自动释放'
           )
-        ),
-        h(
-          'label',
-          { class: 'select-box' },
-          h('input', {
-            type: 'checkbox',
-            checked: lo.autoCast ? true : null,
-            onchange: (e) => {
-              lo.autoCast = e.target.checked;
-              game.persist();
-            },
-          }),
-          ' 技能自动释放'
         )
       )
     );

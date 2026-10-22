@@ -2955,3 +2955,294 @@ html:not([lang='zh']):not([lang='zh-Hant']):not([lang='ja']):not([lang='ko']) .t
   font-size: 13px;
   opacity: 0.85;
 }
+
+/* ---------- 配装页（v0.99 重新设计）：分组卡片 + 统一的图标方块 ---------- */
+.lo-card {
+  margin: 0 0 12px;
+  padding: 12px 14px 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 220, 170, 0.16);
+}
+.lo-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin: 0 0 10px;
+}
+.lo-head b {
+  font-size: 16px;
+  font-weight: 900;
+  color: var(--gold);
+  letter-spacing: 1px;
+}
+.lo-hint {
+  font-size: 12px;
+  color: var(--dim);
+}
+.lo-tiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.lo-tile {
+  position: relative;
+  font: inherit;
+  width: 92px;
+  min-height: 92px;
+  padding: 8px 4px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  border-radius: 12px;
+  color: var(--ink);
+  cursor: pointer;
+  background: linear-gradient(rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.025));
+  border: 1.5px solid color-mix(in srgb, var(--rar, rgba(255, 220, 170, 0.5)) 55%, transparent);
+  transition: transform 0.12s, box-shadow 0.12s;
+}
+.lo-tile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
+}
+.lo-tile.on {
+  background: linear-gradient(rgba(255, 210, 130, 0.26), rgba(255, 190, 90, 0.08));
+  border-color: var(--gold);
+  box-shadow: 0 0 14px rgba(255, 200, 100, 0.35);
+}
+.lo-tile.empty {
+  background: transparent;
+  border: 1.5px dashed rgba(255, 220, 170, 0.28);
+}
+.lo-tile.locked {
+  cursor: not-allowed;
+  opacity: 0.5;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+}
+.lo-tile.locked:hover,
+.lo-tile.empty:hover {
+  transform: none;
+  box-shadow: none;
+}
+.lo-ico {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.lo-ico canvas {
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.5));
+}
+.lo-plus {
+  font-size: 26px;
+  color: rgba(255, 220, 170, 0.4);
+  font-weight: 300;
+}
+.lo-lock {
+  font-size: 22px;
+}
+.lo-name {
+  font-size: 12.5px;
+  font-weight: 800;
+  line-height: 1.15;
+  text-align: center;
+  max-width: 86px;
+}
+.lo-tile.empty .lo-name,
+.lo-tile.locked .lo-name {
+  color: var(--dim);
+  font-weight: 600;
+}
+.lo-sub {
+  font-size: 11px;
+  color: var(--dim);
+  text-align: center;
+  line-height: 1.15;
+}
+.lo-badge {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 900;
+  padding: 0 6px;
+  border-radius: 8px;
+  background: var(--primary);
+  color: #2a1a08;
+}
+.lo-check {
+  position: absolute;
+  top: 3px;
+  left: 6px;
+  font-style: normal;
+  font-size: 12px;
+  font-weight: 900;
+  color: var(--gold);
+}
+.lo-weapon-now {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  margin-bottom: 10px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--rar, #888) 22%, transparent), transparent);
+  border-left: 4px solid var(--rar, #888);
+}
+.lo-weapon-name {
+  font-size: 18px;
+  font-weight: 900;
+}
+.lo-lv {
+  margin-left: 8px;
+  font-size: 12px;
+  color: var(--dim);
+  font-weight: 700;
+}
+.lo-weapon-desc {
+  font-size: 13px;
+  color: var(--dim);
+  margin-top: 2px;
+}
+.lo-two {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+}
+.lo-two > div:not(.lo-vline) {
+  flex: 1;
+}
+.lo-vline {
+  align-self: stretch;
+  width: 1px;
+  background: rgba(255, 220, 170, 0.16);
+}
+.lo-two .lo-tile {
+  width: 84px;
+}
+.lo-eq .lo-tile {
+  width: 98px;
+}
+.lo-hero {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  background: linear-gradient(100deg, rgba(255, 210, 130, 0.12), rgba(255, 255, 255, 0.03) 60%);
+}
+.lo-hero-pic canvas {
+  display: block;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.5));
+}
+.lo-hero-info {
+  flex: 1;
+  min-width: 170px;
+}
+.lo-hero-name {
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--gold);
+}
+.lo-role {
+  margin-left: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--dim);
+}
+.lo-hero-desc {
+  font-size: 13px;
+  color: var(--dim);
+  margin-top: 4px;
+  line-height: 1.35;
+}
+.lo-hero-pick {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+.lo-chip-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.lo-chip-label {
+  width: 64px;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--dim);
+}
+.lo-chip {
+  position: relative;
+  font: inherit;
+  width: 46px;
+  height: 46px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1.5px solid rgba(255, 220, 170, 0.24);
+  overflow: hidden;
+}
+.lo-chip canvas {
+  max-width: 100%;
+  max-height: 100%;
+}
+.lo-chip.on {
+  border-color: var(--gold);
+  box-shadow: 0 0 12px rgba(255, 200, 100, 0.5);
+  background: rgba(255, 210, 130, 0.2);
+}
+.lo-chip.locked {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.lo-chip.locked canvas {
+  filter: grayscale(1);
+}
+.lo-chip.none {
+  font-size: 20px;
+  color: var(--dim);
+}
+.lo-chip-lock {
+  position: absolute;
+  right: 2px;
+  bottom: 0;
+  font-style: normal;
+  font-size: 12px;
+}
+.lo-settings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.lo-card .synergy-row {
+  margin: 10px 0 0;
+}
+.lo-eq,
+.lo-grid7 {
+  display: grid;
+  gap: 8px;
+}
+.lo-eq {
+  grid-template-columns: repeat(8, 1fr);
+}
+.lo-grid7 {
+  grid-template-columns: repeat(7, 1fr);
+}
+.lo-eq .lo-tile,
+.lo-grid7 .lo-tile {
+  width: auto;
+}
+.lo-eq .lo-name {
+  max-width: 100%;
+}

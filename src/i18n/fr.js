@@ -1913,4 +1913,6 @@ TD.i18n.register("fr", {
   "钢铁洪流": "Torrent d'acier",
   "风吹麦浪": "Vent dans les blés",
   "出手很快，暴击率 +15%，伤害比木弓还高一点。": "Tire vite, +15 % de chances de critique, un peu plus de dégâts que l'Arc en bois.",
+  "{0}：通关第 {1} 关解锁": "{0} : se débloque après le niveau {1}",
+  "还有 {0} 把武器可以在「装备」页的「武器」分类里购买": "{0} autres armes sont à acheter dans l'onglet « Armes » de la page Équipement",
 });

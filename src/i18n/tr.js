@@ -1913,4 +1913,6 @@ TD.i18n.register("tr", {
   "钢铁洪流": "Çelik Seli",
   "风吹麦浪": "Rüzgârda Dalgalanan Buğday",
   "出手很快，暴击率 +15%，伤害比木弓还高一点。": "Hızlı atar, kritik vuruş şansı +15%, hasarı Tahta Yay'dan biraz daha yüksek.",
+  "{0}：通关第 {1} 关解锁": "{0}: {1}. seviye geçilince açılır",
+  "还有 {0} 把武器可以在「装备」页的「武器」分类里购买": "Başka {0} silah, Ekipman sayfasındaki \"Silahlar\" bölümünden satın alınabilir",
 });

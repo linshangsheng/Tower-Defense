@@ -1913,4 +1913,6 @@ TD.i18n.register("en", {
   "钢铁洪流": "Tide of Steel",
   "风吹麦浪": "Wind in the Wheat",
   "出手很快，暴击率 +15%，伤害比木弓还高一点。": "Fires fast, +15% crit chance, and hits a bit harder than the Wooden Bow.",
+  "{0}：通关第 {1} 关解锁": "{0}: unlocks after clearing level {1}",
+  "还有 {0} 把武器可以在「装备」页的「武器」分类里购买": "{0} more weapons can be bought in the Weapons tab of the Gear page",
 });

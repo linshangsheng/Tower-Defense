@@ -1913,4 +1913,6 @@ TD.i18n.register("es", {
   "钢铁洪流": "Torrente de Acero",
   "风吹麦浪": "Trigales al Viento",
   "出手很快，暴击率 +15%，伤害比木弓还高一点。": "Dispara rápido, +15% de probabilidad de crítico y un poco más de daño que el Arco de Madera.",
+  "{0}：通关第 {1} 关解锁": "{0}: se desbloquea al pasar el nivel {1}",
+  "还有 {0} 把武器可以在「装备」页的「武器」分类里购买": "Puedes comprar {0} armas más en la categoría «Armas» de la página Equipo",
 });

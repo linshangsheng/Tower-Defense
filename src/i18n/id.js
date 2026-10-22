@@ -1913,4 +1913,6 @@ TD.i18n.register("id", {
   "钢铁洪流": "Arus Baja",
   "风吹麦浪": "Gelombang Gandum Tertiup Angin",
   "出手很快，暴击率 +15%，伤害比木弓还高一点。": "Tembakannya cepat, peluang kritikal +15%, damage sedikit lebih tinggi dari Busur Kayu.",
+  "{0}：通关第 {1} 关解锁": "{0}: terbuka setelah menamatkan level {1}",
+  "还有 {0} 把武器可以在「装备」页的「武器」分类里购买": "{0} senjata lagi bisa dibeli di kategori \"Senjata\" pada halaman Perlengkapan",
 });

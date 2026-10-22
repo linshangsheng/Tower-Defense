@@ -271,6 +271,243 @@
     },
   };
 
+  // 被动技能的图标（设计书 101）：精准 = 准星，连珠 = 并排的两支箭，灼烧 = 火焰，穿甲 = 一支箭穿过盾牌
+  S.moreIcons.precision = (ctx) => {
+    ctx.strokeStyle = '#ffd27a';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(0, 0, 12, 0, TAU);
+    ctx.stroke();
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    ctx.moveTo(0, -18);
+    ctx.lineTo(0, -6);
+    ctx.moveTo(0, 6);
+    ctx.lineTo(0, 18);
+    ctx.moveTo(-18, 0);
+    ctx.lineTo(-6, 0);
+    ctx.moveTo(6, 0);
+    ctx.lineTo(18, 0);
+    ctx.stroke();
+    ell(ctx, 0, 0, 3, 3, '#ff6a5a', OUT, 1.5);
+  };
+  S.moreIcons.combo = (ctx) => {
+    for (const [y, c] of [[-7, '#ffe6a0'], [7, '#ffd27a']]) {
+      ctx.strokeStyle = '#8a5a3c';
+      ctx.lineWidth = 2.6;
+      ctx.beginPath();
+      ctx.moveTo(-15, y);
+      ctx.lineTo(10, y);
+      ctx.stroke();
+      ctx.fillStyle = c;
+      ctx.strokeStyle = OUT;
+      ctx.lineWidth = 1.4;
+      ctx.beginPath();
+      ctx.moveTo(17, y);
+      ctx.lineTo(8, y - 5);
+      ctx.lineTo(8, y + 5);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = '#e8524a';
+      ctx.beginPath();
+      ctx.moveTo(-15, y);
+      ctx.lineTo(-19, y - 4);
+      ctx.lineTo(-11, y);
+      ctx.lineTo(-19, y + 4);
+      ctx.closePath();
+      ctx.fill();
+    }
+  };
+  S.moreIcons.burn = (ctx) => {
+    TD.art && TD.art.drawGlow && TD.art.drawGlow(ctx, 0, 0, 20, '#ff8a2a', 0.4);
+    flame(ctx, 0, 2, 1.05, '#ff8a2a', '#ffe28a');
+  };
+  S.moreIcons.pierceArmor = (ctx) => {
+    ctx.fillStyle = '#9fb0c8';
+    ctx.strokeStyle = OUT;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, -15);
+    ctx.lineTo(13, -10);
+    ctx.lineTo(12, 3);
+    ctx.quadraticCurveTo(10, 12, 0, 17);
+    ctx.quadraticCurveTo(-10, 12, -12, 3);
+    ctx.lineTo(-13, -10);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.strokeStyle = '#8a5a3c';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(-18, 6);
+    ctx.lineTo(14, -6);
+    ctx.stroke();
+    ctx.fillStyle = '#ffe6a0';
+    ctx.strokeStyle = OUT;
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(19, -8);
+    ctx.lineTo(10, -12);
+    ctx.lineTo(10, -2);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+  };
+
+  // 装备的图标（设计书 101）：按部位画剪影，颜色跟着品质走（同一个部位的不同装备靠颜色区分，名字写在图标下面）
+  S.gearIcon = function (ctx, slot, color, cx, cy, r) {
+    ctx.save();
+    ctx.translate(cx, cy);
+    const k = r / 20;
+    ctx.scale(k, k);
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    const lt = S.lighten(color, 0.45);
+    const dk = S.darken(color, 0.45);
+    const g = ctx.createLinearGradient(-14, -16, 14, 16);
+    g.addColorStop(0, lt);
+    g.addColorStop(1, dk);
+    ctx.fillStyle = g;
+    ctx.strokeStyle = OUT;
+    ctx.lineWidth = 2;
+    const fillStroke = () => {
+      ctx.fill();
+      ctx.stroke();
+    };
+    switch (slot) {
+      case 'helm':
+        ctx.beginPath();
+        ctx.moveTo(-14, 10);
+        ctx.quadraticCurveTo(-16, -14, 0, -15);
+        ctx.quadraticCurveTo(16, -14, 14, 10);
+        ctx.lineTo(8, 10);
+        ctx.lineTo(8, 3);
+        ctx.lineTo(-8, 3);
+        ctx.lineTo(-8, 10);
+        ctx.closePath();
+        fillStroke();
+        ctx.fillStyle = 'rgba(10,14,28,0.8)';
+        ctx.fillRect(-9, -3, 18, 4);
+        ctx.fillStyle = lt;
+        ctx.beginPath();
+        ctx.moveTo(-2, -15);
+        ctx.quadraticCurveTo(0, -22, 3, -15);
+        ctx.fill();
+        break;
+      case 'cape':
+        ctx.beginPath();
+        ctx.moveTo(-9, -14);
+        ctx.quadraticCurveTo(0, -18, 9, -14);
+        ctx.quadraticCurveTo(15, 0, 16, 16);
+        ctx.quadraticCurveTo(8, 12, 3, 17);
+        ctx.quadraticCurveTo(-2, 12, -6, 16);
+        ctx.quadraticCurveTo(-12, 12, -16, 16);
+        ctx.quadraticCurveTo(-14, 0, -9, -14);
+        ctx.closePath();
+        fillStroke();
+        ell(ctx, 0, -13, 3, 3, '#ffe08a', OUT, 1.5);
+        break;
+      case 'armor':
+        ctx.beginPath();
+        ctx.moveTo(-8, -15);
+        ctx.lineTo(-17, -9);
+        ctx.lineTo(-13, -1);
+        ctx.lineTo(-10, -3);
+        ctx.lineTo(-10, 16);
+        ctx.lineTo(10, 16);
+        ctx.lineTo(10, -3);
+        ctx.lineTo(13, -1);
+        ctx.lineTo(17, -9);
+        ctx.lineTo(8, -15);
+        ctx.quadraticCurveTo(0, -8, -8, -15);
+        ctx.closePath();
+        fillStroke();
+        ctx.strokeStyle = 'rgba(255,255,255,0.45)';
+        ctx.lineWidth = 1.6;
+        ctx.beginPath();
+        ctx.moveTo(0, -6);
+        ctx.lineTo(0, 14);
+        ctx.moveTo(-6, 3);
+        ctx.lineTo(6, 3);
+        ctx.stroke();
+        break;
+      case 'quiver':
+        ctx.save();
+        ctx.rotate(0.35);
+        for (const x of [-4, 0, 4]) {
+          ctx.strokeStyle = '#8a5a3c';
+          ctx.lineWidth = 1.8;
+          ctx.beginPath();
+          ctx.moveTo(x, -4);
+          ctx.lineTo(x, -17);
+          ctx.stroke();
+          ctx.fillStyle = x === 0 ? '#ffe6a0' : '#e8524a';
+          ctx.beginPath();
+          ctx.moveTo(x - 2.4, -13);
+          ctx.lineTo(x, -21);
+          ctx.lineTo(x + 2.4, -13);
+          ctx.closePath();
+          ctx.fill();
+        }
+        ctx.fillStyle = g;
+        ctx.strokeStyle = OUT;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(-7, -6);
+        ctx.lineTo(7, -6);
+        ctx.lineTo(5.5, 16);
+        ctx.quadraticCurveTo(0, 19, -5.5, 16);
+        ctx.closePath();
+        fillStroke();
+        ctx.restore();
+        break;
+      case 'trinket':
+        ctx.strokeStyle = '#d8c8a0';
+        ctx.lineWidth = 1.6;
+        ctx.beginPath();
+        ctx.moveTo(-10, -16);
+        ctx.quadraticCurveTo(0, -4, 10, -16);
+        ctx.stroke();
+        ell(ctx, 0, 6, 10, 10, g, OUT, 2);
+        ctx.fillStyle = 'rgba(255,255,255,0.85)';
+        ctx.beginPath();
+        ctx.moveTo(0, -1);
+        ctx.lineTo(5, 6);
+        ctx.lineTo(0, 13);
+        ctx.lineTo(-5, 6);
+        ctx.closePath();
+        ctx.fill();
+        break;
+      case 'boots':
+        ctx.beginPath();
+        ctx.moveTo(-9, -15);
+        ctx.lineTo(3, -15);
+        ctx.lineTo(3, 2);
+        ctx.quadraticCurveTo(15, 3, 17, 10);
+        ctx.lineTo(17, 15);
+        ctx.lineTo(-10, 15);
+        ctx.closePath();
+        fillStroke();
+        ctx.fillStyle = 'rgba(255,255,255,0.4)';
+        ctx.fillRect(-9, -15, 12, 4);
+        ctx.fillStyle = 'rgba(10,14,28,0.55)';
+        ctx.fillRect(-10, 11, 27, 4);
+        break;
+      default:
+        ell(ctx, 0, 0, 12, 12, g, OUT, 2);
+    }
+    ctx.restore();
+  };
+  S.gearIconCanvas = function (slot, color, px) {
+    const c = document.createElement('canvas');
+    c.width = px;
+    c.height = px;
+    S.gearIcon(c.getContext('2d'), slot, color, px / 2, px / 2, px * 0.42);
+    c.className = 'icon';
+    return c;
+  };
+
   // 新武器的图标（设计书 63.4）：直接画武器本身，并按品质加一圈底色
   for (const id of ['frostBow', 'flameCrossbow', 'piercer', 'meteorCannon', 'stormOrb', 'voidCrossbow', 'genesisBow', 'judgementStaff', 'chronoBoomerang', 'huntBow', 'mortar', 'twinCrossbow', 'galeBoomerang', 'thunderMortar', 'arcaneStaff', 'dragonBow', 'infernoStaff', 'worldCannon', 'starfallOrb']) {
     S.moreIcons[id] = (ctx) => {

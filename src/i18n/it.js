@@ -1913,4 +1913,6 @@ TD.i18n.register("it", {
   "钢铁洪流": "Fiume d'Acciaio",
   "风吹麦浪": "Onde di Grano al Vento",
   "出手很快，暴击率 +15%，伤害比木弓还高一点。": "Tira veloce, +15% di probabilità di critico, danno un po' più alto dell'Arco di legno.",
+  "{0}：通关第 {1} 关解锁": "{0}: si sblocca dopo il livello {1}",
+  "还有 {0} 把武器可以在「装备」页的「武器」分类里购买": "Altre {0} armi si possono comprare nella categoria «Armi» della pagina Equipaggiamento",
 });

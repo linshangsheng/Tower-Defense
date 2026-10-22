@@ -1913,4 +1913,6 @@ TD.i18n.register("de", {
   "钢铁洪流": "Stählerne Flut",
   "风吹麦浪": "Wind im Weizenfeld",
   "出手很快，暴击率 +15%，伤害比木弓还高一点。": "Schießt schnell, Krit.-Chance +15%, etwas mehr Schaden als der Holzbogen.",
+  "{0}：通关第 {1} 关解锁": "{0}: wird nach Level {1} freigeschaltet",
+  "还有 {0} 把武器可以在「装备」页的「武器」分类里购买": "{0} weitere Waffen gibt es auf der Ausrüstungsseite unter „Waffen“",
 });
