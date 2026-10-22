@@ -2252,6 +2252,8 @@ function mockAudioCtx() {
 
 test('音乐：标题 3 首 + 十章各 2 首共 23 首，每首 8 小节和弦、64 个八分音符位置，音高在合理范围', () => {
   globalThis.window = globalThis.window || undefined;
+  delete require.cache[require.resolve('../src/render/score.js')];
+  require('../src/render/score.js');
   delete require.cache[require.resolve('../src/render/music.js')];
   require('../src/render/music.js');
   const M = TD.music;
@@ -3763,4 +3765,131 @@ test('外放型被动：几率拉满时每次攻击都触发，各自造成伤�
   m.hp = m.maxHp = 1e9;
   for (let i = 0; i < 40; i++) b.step(0.05);
   assert.ok(m.slowAmt >= D.passiveSkills.frostNova.slow - 1e-9 || b.time > m.slowUntil, '霜爆减速');
+});
+
+// ---------- 交响乐配乐（设计书 105）：作曲层 + 新乐器 ----------
+test('和弦解析：七和弦、挂留、加九、减七、斜线低音', () => {
+  const SC = TD.score;
+  const c = (s) => SC.chord(s);
+  assert.deepStrictEqual([c('Dm7').third, c('Dm7').seventh], [3, 10]);
+  assert.strictEqual(c('Cmaj7').seventh, 11);
+  assert.strictEqual(c('G7').seventh, 10);
+  assert.strictEqual(c('Gsus4').third, 5);
+  assert.strictEqual(c('Fadd9').ninth, 14);
+  assert.deepStrictEqual([c('Bdim7').fifth, c('Bdim7').seventh], [6, 9]);
+  assert.strictEqual(c('C/E').bassPc, 4);
+  assert.strictEqual(c('C/E').pc, 0);
+  assert.deepStrictEqual(c('Am').tones, [57, 60, 64, 69]);
+  assert.throws(() => c('H#'));
+});
+
+test('作曲层：每首曲子展开成 4 段 × 8 小节的总谱，转调 / 回调、声部连接、对位旋律都合规', () => {
+  const M = TD.music;
+  const SC = TD.score;
+  const mod12 = (n) => ((n % 12) + 12) % 12;
+  for (const id of Object.keys(M.THEMES)) {
+    const th = M.THEMES[id];
+    const sc = th.score;
+    assert.ok(sc, `第 ${id} 首没有总谱`);
+    assert.deepStrictEqual(sc.sections.map((s) => s.name), ['A', "A'", 'B', "A''"]);
+    for (const s of sc.sections) {
+      assert.strictEqual(s.bars.length, 8);
+      assert.strictEqual(s.melody.length, 64);
+      assert.ok(s.melody.filter(Boolean).length >= 8, `第 ${id} 首 ${s.name} 段旋律太少`);
+      for (const n of s.melody.filter(Boolean)) assert.ok(n.midi >= 55 && n.midi <= 100, `第 ${id} 首 ${s.name} 段旋律音 ${n.midi} 越界`);
+      if (s.counter) for (const n of s.counter.filter(Boolean)) assert.ok(n.midi >= 52 && n.midi <= 79, `第 ${id} 首对位旋律音 ${n.midi} 越界`);
+      for (const b of s.bars) {
+        assert.strictEqual(b.voicing.length, 4);
+        assert.ok(b.voicing.every((m, i) => m >= 48 && m <= 78 && (i === 0 || m > b.voicing[i - 1])), '声部从低到高、在音域里');
+        assert.ok(b.voicing.some((m) => mod12(m) === mod12(b.chord.pc + b.chord.third)), `第 ${id} 首和弦 ${b.chord.sym} 的声部里没有三音`);
+      }
+    }
+    const [A, A2, B, C] = sc.sections;
+    // 第二段：旋律是装饰过的原旋律（音更多），对位旋律每个音都在旋律下方
+    assert.ok(A2.melody.filter(Boolean).length >= A.melody.filter(Boolean).length);
+    assert.ok(A2.counter.filter(Boolean).length === A.melody.filter(Boolean).length);
+    // 桥段最后两小节：新调（原调升大二度）的属七；高潮整体升大二度，最后一小节回到原调的属七
+    const t = sc.key.tonic;
+    assert.strictEqual(B.bars[7].chord.pc, mod12(t + 9));
+    assert.strictEqual(B.bars[7].chord.seventh, 10);
+    assert.strictEqual(C.trans, 2);
+    assert.strictEqual(C.bars[7].chord.pc, mod12(t + 7));
+    assert.strictEqual(C.bars[7].chord.seventh, 10);
+    assert.strictEqual(C.bars[0].chord.pc, mod12(th.chords[0].pc + 2));
+  }
+  // 调式识别
+  assert.deepStrictEqual([M.THEMES[0].score.key.tonic, M.THEMES[0].score.key.minor], [2, true]); // D 小调
+  assert.deepStrictEqual([M.THEMES[1].score.key.tonic, M.THEMES[1].score.key.minor], [9, true]); // A 小调
+  assert.deepStrictEqual([M.THEMES['1b'].score.key.tonic, M.THEMES['1b'].score.key.minor], [0, false]); // C 大调
+  assert.ok(SC.shiftSteps(60, 2, M.THEMES['1b'].score.key) === 64); // C 大调里 C 上行两级是 E
+});
+
+test('旋律每个音只弹一次（旧版在相邻的 16 分音符上又弹了一遍）；桥段换主奏，高潮转调', async () => {
+  const M = TD.music;
+  const ctx = mockAudioCtx();
+  const eng = new M.Engine(ctx, ctx.destination);
+  await eng.loadSamples(M.Engine.instrumentsFor(1));
+  const ev = [];
+  const orig = eng.samp.bind(eng);
+  eng.samp = (inst, m, t, dur, vol, o) => (ev.push({ inst, m, t }), orig(inst, m, t, dur, vol, o));
+  eng.tension = 1;
+  eng.setTheme(1, 'battle');
+  const th = eng.theme;
+  const sd = 60 / th.bpm / 4;
+  const total = 32 * 16;
+  while (eng.step < total) {
+    eng.scheduleStep(eng.step, eng.nextTime);
+    eng.nextTime += (sd / M.TEMPO_OF(1));
+    eng.step++;
+  }
+  const secOf = (e) => Math.floor(e.t / ((sd / M.TEMPO_OF(1)) * 16 * 8) - 0.0001);
+  // 第二段（小提琴唱）：小提琴起音数 = A' 旋律的音数
+  const vio = ev.filter((e) => e.inst === 'violin' && secOf(e) === 1);
+  assert.strictEqual(vio.length, th.score.sections[1].melody.filter(Boolean).length);
+  // 同一时刻不会有两个同音高的小提琴起音
+  assert.strictEqual(new Set(vio.map((e) => e.t.toFixed(4) + ':' + e.m)).size, vio.length);
+  // 桥段用单簧管 / 长笛等木管唱旋律，高潮出现小号和长号
+  assert.ok(ev.some((e) => e.inst === 'clarinet' && secOf(e) === 2));
+  assert.ok(ev.some((e) => e.inst === 'trumpet' && secOf(e) === 3));
+  assert.ok(ev.some((e) => e.inst === 'trombone' && secOf(e) === 3));
+  assert.ok(ev.some((e) => e.inst === 'tuba' && secOf(e) === 3));
+  // 第一段没有小号（高潮才进）
+  assert.ok(!ev.some((e) => e.inst === 'trumpet' && secOf(e) === 0));
+});
+
+test('交响乐新乐器：8 个新采样都在，标题 / 地图 / 战斗都用得到；音域折叠不越界', () => {
+  delete require.cache[require.resolve('../src/render/samples.js')];
+  require('../src/render/samples.js');
+  const S = TD.samples;
+  const inst = TD.music.Engine.instrumentsFor(1);
+  for (const n of ['viola', 'trumpet', 'trombone', 'tuba', 'bassoon', 'clarinet', 'voice_oohs', 'glockenspiel']) {
+    assert.ok(S[n] && Object.keys(S[n].notes).length >= 8, `缺少 ${n}`);
+    assert.ok(inst.includes(n), `${n} 没有在曲子里预加载`);
+    assert.ok(TD.music.GAIN[n] > 0, `${n} 没有音量标定`);
+  }
+  for (const n of ['viola', 'trumpet', 'trombone', 'tuba', 'bassoon', 'clarinet', 'voice_oohs']) assert.deepStrictEqual(S[n].loop, [0.8, 2.4]);
+  assert.strictEqual(S.glockenspiel.loop, null);
+  // 每种模式下，每首曲子的新乐器都真的发了声（不是白加载）
+  for (const [mode, ten] of [['title', 0], ['calm', 0], ['battle', 3]]) {
+    const ctx = mockAudioCtx();
+    const eng = new TD.music.Engine(ctx, ctx.destination);
+    eng.tension = ten;
+    eng.setTheme(mode === 'title' ? 0 : 1, mode);
+    eng.schedule(150);
+    assert.ok(ctx.calls.osc + ctx.calls.noise > 100, `${mode} 声音太少`);
+  }
+});
+
+test('结束音：胜利 / 失败 / 登场 / 新一波都用上了铜管、定音鼓滚奏等交响乐写法，声音事件更丰满', () => {
+  const M = TD.music;
+  const counts = {};
+  for (const name of ['boss', 'win', 'lose', 'wave']) {
+    const ctx = mockAudioCtx();
+    const eng = new M.Engine(ctx, ctx.destination);
+    eng.setTheme(1, 'battle');
+    eng.stinger(name);
+    counts[name] = ctx.calls.osc + ctx.calls.noise;
+  }
+  assert.ok(counts.win >= 40, `胜利号角应该很丰满：${counts.win}`);
+  assert.ok(counts.boss >= 30 && counts.lose >= 15 && counts.wave >= 6, JSON.stringify(counts));
 });

@@ -78,6 +78,11 @@ const SCENES = [
   { name: 'battle-ch5-t3', theme: 5, mode: 'battle', tension: 3, dur: 16 },
   { name: 'form-ch1-t0', theme: 1, mode: 'battle', tension: 0, dur: 82 },
   { name: 'form-ch1-t2', theme: 1, mode: 'battle', tension: 2, dur: 76 },
+  // v1.03：标题 32 小节一圈（A / A' / B / A''），也按四段量响度
+  { name: 'form-title-0', theme: 0, mode: 'title', tension: 0, dur: 118 },
+  { name: 'form-title-T1', theme: 'T1', mode: 'title', tension: 0, dur: 104 },
+  { name: 'form-ch1-t1', theme: 1, mode: 'battle', tension: 1, dur: 74 },
+  { name: 'form-ch5-t3', theme: 5, mode: 'battle', tension: 3, dur: 62 },
   { name: 'stinger-win', theme: 1, mode: 'calm', tension: 0, dur: 5, stinger: 'win', mute: true },
   { name: 'stinger-lose', theme: 1, mode: 'calm', tension: 0, dur: 6, stinger: 'lose', mute: true },
 ];
@@ -153,7 +158,9 @@ const calibrate = process.argv.includes('--calibrate');
     await browser.close();
     return;
   }
+  const only = process.argv.includes('--only') ? process.argv[process.argv.indexOf('--only') + 1].split(',') : null;
   for (const sc of SCENES) {
+    if (only && !only.includes(sc.name)) continue;
     const t0 = Date.now();
     const { b64, voices } = await page.evaluate(
       async ({ sc, SR }) => {
@@ -189,7 +196,7 @@ const calibrate = process.argv.includes('--calibrate');
     if (sc.name.startsWith('form-')) {
       const secLen = Math.floor(x.length / 4);
       const per = [0, 1, 2, 3].map((q) => { let sum = 0; for (let i = q * secLen; i < (q + 1) * secLen; i++) sum += x[i] * x[i]; return (10 * Math.log10(sum / secLen + 1e-12)).toFixed(1); });
-      console.log('  ' + sc.name + ' 四段（A/B/C/D）RMS dB：' + per.join(' / '));
+      console.log('  ' + sc.name + ' 四段（A / A\' / B / A\'\'）RMS dB：' + per.join(' / '));
     }
     rows.push({ name: sc.name, ...a, vps: Math.round(voices / sc.dur), sec: ((Date.now() - t0) / 1000).toFixed(1) });
     if (writeWav) fs.writeFileSync(path.join(out, sc.name + '.wav'), wav(x));

@@ -40,6 +40,15 @@ INST = {
     'marimba': dict(notes=notes(48, 96, 4), dur=1.4, loop=False),
     'pizzicato_strings': dict(notes=notes(48, 84, 4), dur=0.9, loop=False),
     'celesta': dict(notes=notes(72, 100, 4), dur=2.0, loop=False),
+    # v1.03 交响乐扩充（设计书 105）：中提琴、小号、长号、大号、巴松、单簧管、人声"哦"、钟琴
+    'viola': dict(notes=notes(48, 84, 4), dur=2.4, loop=True),
+    'trumpet': dict(notes=notes(54, 86, 4), dur=2.4, loop=True),
+    'trombone': dict(notes=notes(36, 72, 4), dur=2.4, loop=True),
+    'tuba': dict(notes=notes(24, 56, 4), dur=2.4, loop=True),
+    'bassoon': dict(notes=notes(34, 70, 4), dur=2.4, loop=True),
+    'clarinet': dict(notes=notes(50, 90, 4), dur=2.4, loop=True),
+    'voice_oohs': dict(notes=notes(48, 84, 4), dur=2.4, loop=True),
+    'glockenspiel': dict(notes=notes(72, 108, 4), dur=1.8, loop=False),
 }
 
 # 鼓组（设计书 69）：WebAudioFont 数据里的 FluidR3_GM「Power」鼓组（同一音色库，CC BY 3.0），每件鼓一个采样
