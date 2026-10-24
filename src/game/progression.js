@@ -184,8 +184,9 @@
     else if (!save.story[key]) save.story[key] = 'skipped';
     return P.checkAchievements(save);
   };
-  P.isCleared = (save, n) => P.levelRecord(save, n).clears > 0;
-  // 测试模式（v1.14，设置里输入密码开启）：所有关卡都能直接选
+  // 测试模式下所有关卡都算"已通关"：英雄 / 伙伴 / 小镇 / 栏位 / 商店页签 / 模式入口都跟着全部解锁（只影响判断，不改关卡记录）
+  P.isCleared = (save, n) => P.testMode(save) || P.levelRecord(save, n).clears > 0;
+  // 测试模式（v1.14，设置里输入密码开启）：资源拉满、所有关卡都能直接选、所有需要通关解锁的东西都解锁
   P.TEST_PASSWORD = '1314520';
   P.testMode = (save) => !!(save.settings && save.settings.testMode);
   P.enableTestMode = function (save, password) {
@@ -196,6 +197,7 @@
   };
   P.isUnlocked = (save, n) => n === 1 || P.testMode(save) || P.isCleared(save, n - 1);
   P.highestCleared = function (save) {
+    if (P.testMode(save)) return Math.max(...Object.keys(D.levels).map(Number));
     let h = 0;
     for (const k of Object.keys(save.levels)) if (save.levels[k].clears > 0) h = Math.max(h, +k);
     return h;

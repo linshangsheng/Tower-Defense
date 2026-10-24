@@ -4588,6 +4588,16 @@ test('测试模式：密码不对不开；密码对了资源拉满、第 200 关
   assert.strictEqual(s.gold, P.MAX_CURRENCY);
   assert.strictEqual(s.diamond, P.MAX_DIAMOND);
   assert.ok(!P.isUnlocked(P.newSave(), 200));
+  // 所有需要通关才能解锁的东西都解锁：英雄、伙伴、栏位、商店页签、小镇、各种模式
+  for (const id of Object.keys(TD.config.heroes)) assert.ok(P.heroUnlocked(s, id), '英雄 ' + id);
+  for (const f of D.town) assert.ok(P.buddyUnlocked(s, f.boss), '伙伴 ' + f.boss);
+  for (const kind of Object.keys(D.slotUnlocks)) assert.strictEqual(P.slotCount(s, kind), D.slotUnlocks[kind].length, '栏位 ' + kind);
+  assert.ok(TD.modes.endlessUnlocked(s) && TD.modes.dailyUnlocked(s) && TD.modes.towerUnlocked(s));
+  assert.strictEqual(P.highestCleared(s), Math.max(...Object.keys(D.levels).map(Number)));
+  const fresh = P.newSave();
+  assert.ok(Object.keys(TD.config.heroes).some((id) => !P.heroUnlocked(fresh, id)), '普通存档的英雄仍然要通关解锁');
+  assert.ok(Object.keys(D.slotUnlocks).some((k) => P.slotCount(fresh, k) < D.slotUnlocks[k].length), '普通存档的栏位仍然要通关解锁');
+  assert.strictEqual(Object.keys(s.levels).length, 0, '测试模式只改判断，不写关卡记录');
 });
 
 // ---------- v1.14：怪物所有属性随关卡增强；妖塔第 N 层 = 第 1 层的 N 倍 ----------
