@@ -192,8 +192,15 @@
   };
 
   TD.data.weaponAscend = { minLv: 5, cost: { silver: 8 } };
-  // 金色武器只能用钻石升级（v1.15）：第 lv 级 → lv+1 级要 ceil(1.25^lv) 钻（前 10 级共 37 钻），第 10 级以后按 extraCost 往上涨
-  TD.data.goldWeaponUpgrade = { growth: 1.25, diamondInCopper: 1e6 };
+  // 武器升级的货币按品质固定（v1.15）：绿 铜币；蓝、紫 银币；红 金币；金 钻石。
+  // 第 lv 级 → lv+1 级要 ceil(base × 1.3^lv) 个该货币（unit = 它值多少铜币，第 10 级以后按 extraCost 往上涨）
+  // 前 10 级合计：蓝 约 45 银、紫 约 55 银（和原来的铜币价值相当）、红 约 47 金币、金 47 钻
+  TD.data.weaponUpgradeCurrency = {
+    2: { cur: 'silver', base: 0.96, unit: 100 },
+    3: { cur: 'silver', base: 1.2, unit: 100 },
+    4: { cur: 'gold', base: 1, unit: 1e4 },
+    5: { cur: 'diamond', base: 1, unit: 1e6 },
+  };
 
   TD.data.weaponUpgrade = {
     perLevel: 0.08,

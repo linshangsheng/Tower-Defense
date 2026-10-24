@@ -172,10 +172,12 @@
   // 倍数写在这里，想再贵 / 便宜一点只改这一处。
   // 蓝色武器单独便宜一点（v1.10）：第二章的木乃伊护甲很厚，魔法杖几乎是必买的，原来要攒到第 16 关才买得起
   // 红色和金色武器大幅涨价（v1.15）：红 3 → 10（约 80–100 金币）、金 2 → 30（约 480–600 金币）
-  D.priceMult = { gear: { 1: 6, 2: 6, 3: 4, 4: 3, 5: 2 }, weapon: { 1: 6, 2: 4.5, 3: 4, 4: 10, 5: 30 }, passive: 8 };
+  // 装备（头盔、披风、盔甲、箭袋、饰品、鞋子）同样：红色 ×3 → ×10；金色用金币买的那件 ×2 → ×30，用钻石买的 ×2 → ×3（v1.15）
+  D.priceMult = { gear: { 1: 6, 2: 6, 3: 4, 4: 10, 5: { gold: 30, diamond: 3 } }, weapon: { 1: 6, 2: 4.5, 3: 4, 4: 10, 5: 30 }, passive: 8 };
+  // m 可以是一个数（所有货币同倍数），也可以是按货币写的对象
   const scaleCost = (cost, m) => {
     const out = {};
-    for (const k of Object.keys(cost || {})) out[k] = Math.round(cost[k] * m);
+    for (const k of Object.keys(cost || {})) out[k] = Math.round(cost[k] * (typeof m === 'object' ? m[k] || 1 : m));
     return out;
   };
   for (const e of Object.values(D.equipment)) e.cost = scaleCost(e.cost, D.priceMult.gear[e.rarity] || 1);

@@ -14,14 +14,14 @@
     const dps0 = P.estimateDps(st0);
     const ehp0 = st0.wallMax / (1 - st0.wallDr);
     const add = (label, cost, mutate, weight) => {
-      if (!cost || !cost.copper) return;
+      if (!cost || !P.costValue(cost)) return;
       const clone = TD.util.deepClone(save);
       mutate(clone);
       const st = P.heroStats(clone);
       const dGain = P.estimateDps(st) / dps0 - 1;
       const hGain = st.wallMax / (1 - st.wallDr) / ehp0 - 1;
       const gain = dGain + hGain * 0.55 * (weight || 1);
-      opts.push({ label, cost, value: gain / cost.copper, apply: mutate });
+      opts.push({ label, cost, value: gain / P.costValue(cost), apply: mutate }); // 蓝 / 紫武器升级收银币，按铜币价值折算
     };
     // 机器人只买到各项的基础上限（设计书 76.2）：战役关卡的数值是按这个强度标定的
     for (const k of Object.keys(D.attributes)) {
@@ -157,11 +157,20 @@
     // 铜币升级
     let guard = 0;
     while (guard++ < 200) {
-      const list = Bot.copperOptions(save);
+      let list = Bot.copperOptions(save);
+      // 蓝 / 紫武器升级收银币：性价比最高的是它、银币不够时，用铜币兑换（和原来直接花铜币等价）
+      const top = list[0];
+      if (top && top.cost.silver && !P.canAfford(save, top.cost)) {
+        const need = top.cost.silver - save.silver;
+        if (save.copper >= need * TD.config.exchange.copperPerSilver) {
+          P.exchange(save, 'copper', need);
+          list = Bot.copperOptions(save);
+        }
+      }
       const best = list.find((o) => P.canAfford(save, o.cost));
       if (!best || !list.length) break;
       // 最优项买不起时，存钱而不是去买次优项（仅当差距不大）
-      if (best !== list[0] && list[0].cost.copper <= save.copper * 1.6 && best.value < list[0].value * 0.6) break;
+      if (best !== list[0] && P.costValue(list[0].cost) <= save.copper * 1.6 && best.value < list[0].value * 0.6) break;
       const [kind, key] = best.label.split(':');
       if (kind === 'attr') P.buyAttr(save, key);
       else if (kind === 'weapon') P.upgradeWeapon(save, key);

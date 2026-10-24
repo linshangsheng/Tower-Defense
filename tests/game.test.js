@@ -2442,17 +2442,20 @@ test('武器：25 把，每个品质 5 把，价格逐档上涨，升级费用�
   assert.deepStrictEqual([1, 2, 3, 4, 5].map((r) => D.weaponRarity[r].name), ['绿', '蓝', '紫', '红', '金']);
   const s = P.newSave();
   for (const id of ['bow', 'frostBow', 'meteorCannon', 'genesisBow']) s.weapons[id] = { owned: true, lv: 3, asc: false };
-  const c = (id) => P.weaponUpgradeCost(s, id).copper;
-  assert.ok(c('bow') < c('frostBow') && c('frostBow') < c('meteorCannon'), '品质越高升级越贵（红色以下用铜币）');
-  // 金色武器：只能用钻石升级，每级都收钻
-  for (const id of ids.filter((x) => D.weapons[x].rarity === 5)) {
+  // 升级货币按品质：绿 铜币，蓝 / 紫 银币，红 金币，金 钻石；同色之间也是越高档越贵
+  const curOf = { 1: 'copper', 2: 'silver', 3: 'silver', 4: 'gold', 5: 'diamond' };
+  for (const id of ids) {
     s.weapons[id] = { owned: true, lv: 3, asc: false };
     const cost = P.weaponUpgradeCost(s, id);
-    assert.deepStrictEqual(Object.keys(cost), ['diamond'], id + ' 只收钻石');
-    assert.ok(P.weaponUpgradeCostAt(id, 0).diamond >= 1 && P.weaponUpgradeCostAt(id, 9).diamond > P.weaponUpgradeCostAt(id, 0).diamond && P.weaponUpgradeCostAt(id, 100).diamond > P.weaponUpgradeCostAt(id, 20).diamond);
+    assert.deepStrictEqual(Object.keys(cost), [curOf[D.weapons[id].rarity]], id + ' 的升级货币');
+    for (const lv of [0, 5, 9, 10, 50, 100]) assert.deepStrictEqual(Object.keys(P.weaponUpgradeCostAt(id, lv)), [curOf[D.weapons[id].rarity]], id + ' 第 ' + lv + ' 级的升级货币');
   }
-  const total10 = Array.from({ length: 10 }, (_, l) => P.weaponUpgradeCostAt('genesisBow', l).diamond).reduce((a, b) => a + b, 0);
-  assert.strictEqual(total10, 37, '金色武器前 10 级共 37 钻');
+  const v = (id, lv) => P.costValue(P.weaponUpgradeCostAt(id, lv));
+  for (const lv of [0, 5, 9, 50]) assert.ok(v('bow', lv) < v('frostBow', lv) && v('frostBow', lv) < v('meteorCannon', lv) && v('meteorCannon', lv) < v('genesisBow', lv), '品质越高升级越贵 @' + lv);
+  for (const id of ids.filter((x) => D.weapons[x].rarity === 5)) assert.ok(P.weaponUpgradeCostAt(id, 0).diamond >= 1 && P.weaponUpgradeCostAt(id, 9).diamond > P.weaponUpgradeCostAt(id, 0).diamond && P.weaponUpgradeCostAt(id, 100).diamond > P.weaponUpgradeCostAt(id, 20).diamond);
+  const total10 = (id) => Array.from({ length: 10 }, (_, l) => Object.values(P.weaponUpgradeCostAt(id, l))[0]).reduce((a, b) => a + b, 0);
+  assert.strictEqual(total10('genesisBow'), 47, '金色武器前 10 级共 47 钻');
+  assert.ok(total10('meteorCannon') > 30 && total10('meteorCannon') < 80, '红色武器前 10 级约 47 金币');
   for (const id of ids) if (D.weapons[id].look) assert.ok(['bow', 'crossbow', 'staff', 'orb', 'cannon', 'boomerang'].includes(D.weapons[id].look.base), id);
 });
 
@@ -3466,8 +3469,11 @@ test('银币只在首次通关小 Boss、大 Boss、精英挑战关时给', () =
   }
 });
 
-test('装备和被动技能涨价：价格 = 原价 × 倍数（装备 绿 6 / 蓝 6 / 紫 4 / 红 3 / 金 2，武器蓝色 4.5，被动 8）', () => {
-  assert.deepStrictEqual(D.priceMult, { gear: { 1: 6, 2: 6, 3: 4, 4: 3, 5: 2 }, weapon: { 1: 6, 2: 4.5, 3: 4, 4: 10, 5: 30 }, passive: 8 });
+test('装备和被动技能涨价：价格 = 原价 × 倍数（装备 绿 6 / 蓝 6 / 紫 4 / 红 10 / 金 30（金币）、3（钻石），武器蓝色 4.5、红 10、金 30，被动 8）', () => {
+  assert.deepStrictEqual(D.priceMult, { gear: { 1: 6, 2: 6, 3: 4, 4: 10, 5: { gold: 30, diamond: 3 } }, weapon: { 1: 6, 2: 4.5, 3: 4, 4: 10, 5: 30 }, passive: 8 });
+  // 红色装备用金币，价格 ×10；金色装备每类第 1 件用金币（×30），其余用钻石（×3）
+  for (const e of Object.values(D.equipment).filter((x) => x.rarity === 4 && x.gen)) assert.ok(e.cost.gold >= 50 && Object.keys(e.cost).join() === 'gold', e.name + ' 红色装备要用金币且 ≥ 50');
+  for (const e of Object.values(D.equipment).filter((x) => x.rarity === 5 && x.gen)) assert.ok(e.cost.diamond ? e.cost.diamond >= 30 : e.cost.gold >= 500, e.name + ' 金色装备价格');
   assert.deepStrictEqual(D.weapons.staff.cost, { silver: 36 }, 'v1.10：蓝色武器单独便宜（魔法杖原价 8 银 × 4.5）');
   assert.strictEqual(D.equipment.ironHelm.cost.copper, 720, '铁头盔原价 120 铜');
   assert.deepStrictEqual(D.passiveSkills.precision.cost, { silver: 24 }, '精准原价 3 银');
