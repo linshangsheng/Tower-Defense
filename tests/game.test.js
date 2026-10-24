@@ -2485,16 +2485,16 @@ test('寒霜弓和时之回旋命中减速；烈焰弩和创世之弓命中点�
   }
 });
 
-test('穿心长弓穿透 5 只；陨星炮对 Boss ×1.3 且无视 60% 护甲；风暴法球跳 5 次；时之回旋扔两支', () => {
+test('穿心长弓一次 3 箭、各穿透 3 只；陨星炮对 Boss ×1.3 且无视 60% 护甲；风暴法球跳 5 次；时之回旋扔三支', () => {
   const b = weaponBattle('piercer');
-  assert.strictEqual(b.weaponDef().pierce.count, 5);
-  const ms = [500, 540, 580, 620, 660, 700].map((x) => {
+  assert.strictEqual(b.weaponDef().pierce.count, 3);
+  const ms = [500, 540, 580, 620, 660].map((x) => {
     const m = b.spawnMonster('slime', 0, x);
     m.hp = m.maxHp = 1e9;
     return m;
   });
   b.pierceFrom(ms[0], { dmg: 100, crit: false, pierce: b.weaponDef().pierce, dmgType: 'phys' });
-  assert.strictEqual(ms.filter((m) => m.hp < m.maxHp).length, 5, '后面最多 5 只被穿透（不含第一只）');
+  assert.strictEqual(ms.filter((m) => m.hp < m.maxHp).length, 3, '后面最多 3 只被穿透（不含第一只）');
   const mc = weaponBattle('meteorCannon');
   assert.strictEqual(mc.weaponDef().bossMult, 1.3);
   assert.ok(Math.abs(mc.armorIgnore({ armorIgnore: mc.weaponDef().armorIgnore }) - 0.6) < 1e-9);
@@ -2503,7 +2503,7 @@ test('穿心长弓穿透 5 只；陨星炮对 Boss ×1.3 且无视 60% 护甲；
   const t = cb.spawnMonster('slime', 1, 500);
   t.hp = t.maxHp = 1e9;
   cb.fire([t]);
-  assert.strictEqual(cb.projectiles.filter((p) => p.kind === 'boomerang').length, 2);
+  assert.strictEqual(cb.projectiles.filter((p) => p.kind === 'boomerang').length, 3);
 });
 
 test('新武器的弹道带品质色；射出的弹道种类跟基础形状一致', () => {
@@ -3617,16 +3617,99 @@ test('新增武器都能上战场打一阵子：弹道、溅射、穿透、连�
 
 test('每个新武器的效果和描述对得上：数值字段都在', () => {
   const W = D.weapons;
-  assert.ok(W.huntBow.bonusCrit === 0.15 && W.huntBow.aspdMult > 1 && W.huntBow.dmgMult > W.bow.dmgMult);
+  assert.ok(W.huntBow.bonusCrit === 0.15 && W.huntBow.aspdMult > 1 && W.huntBow.dmgMult * W.huntBow.aspdMult > W.bow.dmgMult * W.bow.aspdMult);
   assert.ok(W.mortar.arc && W.mortar.splash);
   assert.ok(W.twinCrossbow.bolts === 2 && W.twinCrossbow.flyingMult === 1.3);
   assert.ok(W.galeBoomerang.boomerang && W.galeBoomerang.slow.amt === 0.25);
   assert.ok(W.thunderMortar.knock && W.thunderMortar.armorIgnore === 0.3);
   assert.ok(W.arcaneStaff.dmgType === 'magic' && W.arcaneStaff.bossMult === 1.2);
-  assert.ok(W.dragonBow.pierce.count === 4 && W.dragonBow.bossMult === 1.5);
+  assert.ok(W.dragonBow.pierce.count === 3 && W.dragonBow.bolts === 3 && W.dragonBow.bossMult === 1.5);
   assert.ok(W.infernoStaff.ignite && W.infernoStaff.dmgType === 'magic');
   assert.ok(W.worldCannon.armorIgnore === 0.8 && W.worldCannon.knock.dist === 70);
-  assert.ok(W.starfallOrb.chain.count === 7 && W.starfallOrb.bonusCrit === 0.1);
+  assert.ok(W.starfallOrb.chain.count === 8 && W.starfallOrb.bonusCrit === 0.12);
+});
+
+// ---------- v1.07：武器重新设计（设计书 109） ----------
+// 强度估值：单发伤害 × 攻速 × 一次几箭 × 范围收益 × 加成（炮弹慢、单发大，打折）
+function weaponScoreOf(w) {
+  const bolts = w.bolts || 1;
+  const bn = w.boomerangs || (w.twin ? 2 : 1);
+  let S = w.dmgMult * w.aspdMult * (bolts > 1 ? 1 + (bolts - 1) * (w.extraBoltMult || 0.5) : 1) * (w.boomerang ? 2 : 1) * (1 + (w.bonusCrit || 0));
+  let aoe = 1;
+  if (w.chain) for (let i = 1; i <= w.chain.count; i++) aoe += Math.pow(w.chain.falloff, i) * 0.45;
+  if (w.splash) aoe += w.splash.mult * 0.9 * Math.min(1.8, Math.max(0.7, w.splash.radius / 75));
+  if (bolts > 1) aoe += 0.05 + 0.1 * bolts;
+  if (w.boomerang) aoe += 0.25 + 0.2 * (bn - 1);
+  if (w.pierce) aoe += w.pierce.count * w.pierce.mult * 0.2;
+  if (w.slow || w.ignite) aoe += 0.08;
+  if (w.knock) aoe += 0.08;
+  let m = 1;
+  if (w.armorIgnore) m *= 1 + w.armorIgnore * 0.4;
+  if (w.bossMult) m *= 1 + (w.bossMult - 1) * 0.25;
+  if (w.flyingMult) m *= 1 + (w.flyingMult - 1) * 0.1;
+  if (w.dmgType === 'magic') m *= 1.1;
+  if (w.arc) m *= 0.6;
+  return S * aoe * m;
+}
+
+test('武器平衡：同品质的 5 把强度接近（最高 / 最低 ≤ 1.3），不同品质逐档拉开（下一档最弱的 ≥ 上一档最强的 1.3 倍）', () => {
+  const byR = {};
+  for (const id of Object.keys(D.weapons)) (byR[D.weapons[id].rarity] = byR[D.weapons[id].rarity] || []).push(weaponScoreOf(D.weapons[id]));
+  for (let r = 1; r <= 5; r++) assert.ok(Math.max(...byR[r]) / Math.min(...byR[r]) <= 1.3, '品质 ' + r + ' 内部差距太大');
+  for (let r = 1; r < 5; r++) assert.ok(Math.min(...byR[r + 1]) / Math.max(...byR[r]) >= 1.3, '品质 ' + (r + 1) + ' 和 ' + r + ' 差距不够');
+});
+
+test('多箭武器：寒霜弓 / 穿心长弓 / 屠龙弓 / 创世之弓默认 3 箭，升级后加箭；疾风镖 2 支、时之回旋 3 支', () => {
+  const W = D.weapons;
+  for (const id of ['frostBow', 'piercer', 'dragonBow', 'genesisBow']) assert.strictEqual(W[id].bolts, 3, id);
+  const at = (id, lv) => {
+    const s = P.newSave();
+    s.weapons[id] = { owned: true, lv, asc: false };
+    return P.weaponDef(s, id);
+  };
+  assert.strictEqual(at('frostBow', 5).bolts, 3);
+  assert.strictEqual(at('frostBow', 6).bolts, 5);
+  assert.strictEqual(at('piercer', 7).bolts, 3);
+  assert.strictEqual(at('piercer', 8).bolts, 4);
+  assert.strictEqual(at('dragonBow', 8).bolts, 4);
+  assert.deepStrictEqual([0, 4, 5, 9, 10].map((lv) => at('genesisBow', lv).bolts), [3, 3, 4, 4, 5]);
+  // 加箭以后单发伤害降一点，总输出只涨一截（同品质不会被甩开）
+  assert.ok(at('frostBow', 6).dmgMult < at('frostBow', 5).dmgMult);
+  assert.ok(weaponScoreOf(at('frostBow', 6)) > weaponScoreOf(at('frostBow', 5)) && weaponScoreOf(at('frostBow', 6)) < weaponScoreOf(at('frostBow', 5)) * 1.3);
+  // 开火：一次射出对应数量的箭，分别射向不同目标
+  const b = weaponBattle('frostBow');
+  const ms = [500, 540, 580, 620, 660].map((x, i) => {
+    const m = b.spawnMonster('slime', i % 2, x);
+    m.hp = m.maxHp = 1e9;
+    return m;
+  });
+  b.fire(ms);
+  assert.strictEqual(b.projectiles.filter((p) => p.kind === 'arrow').length, b.weaponDef().bolts);
+  assert.strictEqual(new Set(b.projectiles.map((p) => p.target.id)).size, b.weaponDef().bolts, '箭射向不同的怪');
+  // 回旋镖：疾风镖默认 2 支，时之回旋 3 支（目标车道 + 相邻车道）
+  const count = (id) => {
+    const bb = weaponBattle(id);
+    const t = bb.spawnMonster('slime', 1, 500);
+    t.hp = t.maxHp = 1e9;
+    bb.fire([t]);
+    return bb.projectiles.filter((p) => p.kind === 'boomerang').map((p) => p.lane);
+  };
+  assert.strictEqual(count('galeBoomerang').length, 2);
+  assert.deepStrictEqual(new Set(count('chronoBoomerang')).size, 3);
+  assert.strictEqual(count('boomerang').length, 1);
+});
+
+test('土炮：爆炸范围比原来大、一发更狠', () => {
+  const m = D.weapons.mortar;
+  assert.ok(m.splash.radius >= 90 && m.splash.mult >= 0.6 && m.dmgMult > 4.4);
+  const b = weaponBattle('mortar');
+  const t = b.spawnMonster('slime', 0, 500);
+  const near = b.spawnMonster('slime', 0, 500 + 85);
+  const far = b.spawnMonster('slime', 0, 500 + 140);
+  for (const x of [t, near, far]) x.hp = x.maxHp = 1e9;
+  b.splashAt(t.x, t.y + t.yOffset, { dmg: 100, splash: m.splash, dmgType: 'phys', armorIgnore: 0 }, t);
+  assert.ok(near.hp < near.maxHp, '85 像素内的怪被炸到');
+  assert.ok(far.hp === far.maxHp, '140 像素外的怪没事');
 });
 
 // ---------- v0.81：主角动作随武器、技能变化（设计书 92） ----------

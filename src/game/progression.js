@@ -251,6 +251,12 @@
     const w = save.weapons[id];
     let def = base;
     if (w && w.asc && base.ascend) def = Object.assign({}, base, base.ascend.weapon || {}, { name: base.ascend.name, ascended: true });
+    // 升级档（设计书 109）：武器升到某一级后多射几箭，并换上这一档的单发伤害
+    if (base.tiers && w) {
+      let tier = null;
+      for (const t of base.tiers) if (w.lv >= t.lv && (!tier || t.lv > tier.lv)) tier = t;
+      if (tier) def = Object.assign({}, def, { bolts: Math.max(def.bolts || 0, tier.bolts), dmgMult: tier.dmgMult });
+    }
     // 满级专精（设计书 53）
     if (P.hasMastery(save, id)) def = Object.assign({}, def, base.mastery.weapon(def), { mastered: true });
     return def;

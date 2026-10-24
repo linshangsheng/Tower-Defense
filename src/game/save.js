@@ -90,9 +90,9 @@
     // 范围伤害对成群的小怪更有价值
     let aoe = 1;
     if (w.chain) aoe += w.chain.count * 0.3;
-    if (w.splash) aoe += w.splash.mult * 0.9;
-    if (w.bolts) aoe += w.bolts > 3 ? 0.55 : 0.35;
-    if (w.boomerang) aoe += 0.25;
+    if (w.splash) aoe += w.splash.mult * 0.9 * Math.min(1.8, Math.max(0.7, w.splash.radius / 75));
+    if (w.bolts > 1) aoe += 0.05 + 0.1 * w.bolts;
+    if (w.boomerang) aoe += 0.25 + 0.2 * ((w.boomerangs || (w.twin ? 2 : 1)) - 1);
     if (w.pierce) aoe += w.pierce.count * w.pierce.mult * 0.2;
     if (w.slow || w.ignite) aoe += 0.08;
     if (lvl.type === 'union') aoe = 1 + (aoe - 1) * 1.4;

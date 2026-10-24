@@ -1223,7 +1223,10 @@
       }
       if (w.boomerang) {
         const lanes = [t0.lane];
-        if (w.twin && this.lanes > 1) lanes.push(t0.lane + 1 < this.lanes ? t0.lane + 1 : t0.lane - 1);
+        // 一次扔几支：目标车道最先，再往两侧相邻车道依次排（twin = 2 支，boomerangs = N 支）
+        const count = w.boomerangs || (w.twin ? 2 : 1);
+        for (let d = 1; lanes.length < count && d < this.lanes; d++)
+          for (const l of [t0.lane + d, t0.lane - d]) if (l >= 0 && l < this.lanes && lanes.length < count) lanes.push(l);
         for (const lane of lanes) {
           this.projectiles.push({
             kind: 'boomerang',
