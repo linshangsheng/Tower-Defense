@@ -2080,4 +2080,12 @@ TD.i18n.register("pt-PT", {
   "焚天巨龙吸足了寒气——寒冰要来了！": "O Dragão Queima-Céu aspira o frio: vem aí gelo!",
   "焚天巨龙压低了身体——冲撞要来了！": "O Dragão Queima-Céu baixa o corpo: vem aí uma investida!",
   "焚天巨龙召来了雷云——雷击要来了！": "O Dragão Queima-Céu invoca nuvens de tempestade: vêm aí raios!",
+  "17 种语言的译文由 AI 生成，没有经过母语者审校，欢迎指出错误。": "As traduções para 17 idiomas foram geradas por IA e não foram revistas por falantes nativos. Correções são bem-vindas.",
+  "反馈与更新": "Comentários e atualizações",
+  "关于": "Acerca de",
+  "译文": "Traduções",
+  "游戏设计、程序、美术、音效和乐曲编排都是在 Claude（Anthropic）的协助下完成的。画面和音效由代码在运行时绘制 / 合成，没有使用图像生成模型。": "O design do jogo, o código, a arte, o som e a orquestração foram feitos com a ajuda do Claude (Anthropic). Os gráficos e os efeitos sonoros são desenhados e sintetizados por código em tempo de execução; não foi usado nenhum modelo de geração de imagens.",
+  "有问题或建议，欢迎到 itch.io 的游戏页留言：": "Dúvidas ou sugestões? Deixe um comentário na página do jogo no itch.io:",
+  "制作": "Criação",
+  "音乐采样": "Amostras de música",
 });

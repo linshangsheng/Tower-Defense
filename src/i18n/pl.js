@@ -2080,4 +2080,12 @@ TD.i18n.register("pl", {
   "焚天巨龙吸足了寒气——寒冰要来了！": "Smok Niebospalacz wciąga chłód: nadchodzi mróz!",
   "焚天巨龙压低了身体——冲撞要来了！": "Smok Niebospalacz przykuca: nadchodzi taranowanie!",
   "焚天巨龙召来了雷云——雷击要来了！": "Smok Niebospalacz przywołuje burzowe chmury: nadchodzą pioruny!",
+  "17 种语言的译文由 AI 生成，没有经过母语者审校，欢迎指出错误。": "Tłumaczenia na 17 języków zostały wygenerowane przez AI i nie były sprawdzane przez native speakerów. Poprawki są mile widziane.",
+  "反馈与更新": "Opinie i aktualizacje",
+  "关于": "O grze",
+  "译文": "Tłumaczenia",
+  "游戏设计、程序、美术、音效和乐曲编排都是在 Claude（Anthropic）的协助下完成的。画面和音效由代码在运行时绘制 / 合成，没有使用图像生成模型。": "Projekt gry, kod, grafika, dźwięk i aranżacje muzyczne powstały przy pomocy Claude (Anthropic). Grafika i efekty dźwiękowe są rysowane i syntezowane przez kod w trakcie działania gry; nie użyto modeli generowania obrazów.",
+  "有问题或建议，欢迎到 itch.io 的游戏页留言：": "Masz pytania lub sugestie? Zostaw komentarz na stronie gry w itch.io:",
+  "制作": "Powstanie",
+  "音乐采样": "Próbki muzyczne",
 });

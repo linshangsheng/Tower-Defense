@@ -26,6 +26,7 @@ const STEPS = [
   ['settings', () => (TD.ui.showSettings(), document.querySelectorAll('.volume-row').length === 2 && [...document.querySelectorAll('.modal button')].some((b) => b.textContent.includes(TD.i18n.t('测试')) || b.textContent.includes('测试')))],
   ['test-login', () => (TD.ui.showTestLogin(), !!document.querySelector('.test-pass'))],
   ['help', () => (TD.ui.showHelp(), !!document.querySelector('.modal'))],
+  ['about', () => (TD.ui.showAbout(), !!document.querySelector('.about a[href*="itch.io"]') && document.querySelectorAll('.about h3').length === 5)],
   ['export', () => (TD.ui.showExport(), !!document.querySelector('textarea'))],
   ['import', () => (TD.ui.showImport(), !!document.querySelector('textarea'))],
   ...[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 15, 20].map((c) => [`map-${c}`, (c) => (TD.ui.closeModal(), TD.ui.showMap(c), document.querySelectorAll('.map-node').length === 10), c]),

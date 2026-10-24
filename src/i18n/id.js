@@ -2080,4 +2080,12 @@ TD.i18n.register("id", {
   "焚天巨龙吸足了寒气——寒冰要来了！": "Naga Pembakar Langit menghirup hawa dingin: es akan datang!",
   "焚天巨龙压低了身体——冲撞要来了！": "Naga Pembakar Langit merendahkan tubuhnya: tabrakan akan datang!",
   "焚天巨龙召来了雷云——雷击要来了！": "Naga Pembakar Langit memanggil awan badai: petir akan datang!",
+  "17 种语言的译文由 AI 生成，没有经过母语者审校，欢迎指出错误。": "Terjemahan ke 17 bahasa dibuat oleh AI dan belum ditinjau oleh penutur asli. Koreksi sangat diterima.",
+  "反馈与更新": "Masukan & pembaruan",
+  "关于": "Tentang",
+  "译文": "Terjemahan",
+  "游戏设计、程序、美术、音效和乐曲编排都是在 Claude（Anthropic）的协助下完成的。画面和音效由代码在运行时绘制 / 合成，没有使用图像生成模型。": "Desain game, kode, grafik, suara, dan aransemen musik dibuat dengan bantuan Claude (Anthropic). Grafik dan efek suara digambar dan disintesis oleh kode saat game berjalan; tidak ada model pembuat gambar yang digunakan.",
+  "有问题或建议，欢迎到 itch.io 的游戏页留言：": "Punya pertanyaan atau saran? Tinggalkan komentar di halaman game ini di itch.io:",
+  "制作": "Pembuatan",
+  "音乐采样": "Sampel musik",
 });

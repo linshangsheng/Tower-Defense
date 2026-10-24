@@ -2080,4 +2080,12 @@ TD.i18n.register("vi", {
   "焚天巨龙吸足了寒气——寒冰要来了！": "Rồng Thiêu Trời hít vào hơi lạnh: băng sắp tới!",
   "焚天巨龙压低了身体——冲撞要来了！": "Rồng Thiêu Trời hạ thấp người: cú húc sắp tới!",
   "焚天巨龙召来了雷云——雷击要来了！": "Rồng Thiêu Trời triệu hồi mây bão: sét sắp tới!",
+  "17 种语言的译文由 AI 生成，没有经过母语者审校，欢迎指出错误。": "Bản dịch sang 17 ngôn ngữ do AI tạo ra và chưa được người bản ngữ kiểm tra. Rất hoan nghênh góp ý sửa lỗi.",
+  "反馈与更新": "Phản hồi & cập nhật",
+  "关于": "Giới thiệu",
+  "译文": "Bản dịch",
+  "游戏设计、程序、美术、音效和乐曲编排都是在 Claude（Anthropic）的协助下完成的。画面和音效由代码在运行时绘制 / 合成，没有使用图像生成模型。": "Thiết kế game, lập trình, đồ họa, âm thanh và phối khí đều được thực hiện với sự hỗ trợ của Claude (Anthropic). Đồ họa và hiệu ứng âm thanh được mã lệnh vẽ và tổng hợp ngay khi chạy; không dùng mô hình tạo ảnh nào.",
+  "有问题或建议，欢迎到 itch.io 的游戏页留言：": "Có câu hỏi hoặc góp ý? Hãy để lại bình luận trên trang game ở itch.io:",
+  "制作": "Thực hiện",
+  "音乐采样": "Mẫu âm nhạc",
 });

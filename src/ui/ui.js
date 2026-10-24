@@ -171,7 +171,7 @@
         h('button', { class: 'btn big primary', onclick: () => (sfx('click'), has || game.save.settings.diffChosen ? UI.showMap() : UI.chooseDifficulty(() => UI.showMap())) }, has ? '继续游戏' : '开始游戏'),
         h('div', { class: 'btn-row' }, h('button', { class: 'btn', style: { flex: 1 }, onclick: () => (sfx('click'), UI.showBestiary()) }, '图鉴'), h('button', { class: 'btn', style: { flex: 1 }, onclick: () => (sfx('click'), UI.showAchievements()) }, '成就')),
         h('button', { class: 'btn', onclick: () => (sfx('click'), UI.showSettings()) }, '设置'),
-        h('button', { class: 'btn', onclick: () => (sfx('click'), UI.showHelp()) }, '玩法说明'),
+        h('div', { class: 'btn-row' }, h('button', { class: 'btn', style: { flex: 1 }, onclick: () => (sfx('click'), UI.showHelp()) }, '玩法说明'), h('button', { class: 'btn', style: { flex: 1 }, onclick: () => (sfx('click'), UI.showAbout()) }, '关于')),
         h('button', { class: 'btn', onclick: () => (sfx('click'), UI.showLanguage()) }, `🌐 Language · ${TD.i18n.languages.find((l) => l.code === TD.i18n.lang).native}`),
         // 嵌在别的网页里（itch.io 等）时网页没权限关窗口，按钮没有意义，不显示
         UI.embedded() ? null : h('button', { class: 'btn quit', onclick: () => (sfx('click'), UI.quitGame()) }, '退出游戏')
@@ -457,6 +457,7 @@
         )
       ),
       h('div', { class: 'hint credits' }, '音乐采样：FluidR3_GM 音色库（Frank Wen），CC BY 3.0，经 gleitz/midi-js-soundfonts 取得'),
+      h('div', { class: 'row' }, h('button', { class: 'btn small', onclick: () => UI.showAbout() }, '关于')),
       h('div', { class: 'row' }, h('button', { class: 'btn small', onclick: () => UI.showTestLogin() }, P.testMode(game.save) ? '测试（已开启）' : '测试')),
       h(
         'div',
@@ -616,6 +617,30 @@
         h('li', null, '每关结束会获得铜币，银币只有首次通关小 Boss、大 Boss 和精英挑战关才有（也可以去汇兑所用铜币换）。去商店升级属性、解锁武器和技能，再来挑战！'),
         h('li', null, '城墙剩余 ≥50% 得 2 星，≥80% 得 3 星。')
       ),
+      h('div', { class: 'modal-buttons' }, h('button', { class: 'btn primary', onclick: UI.closeModal }, '知道了'))
+    );
+    modal(body, { closeOnBack: true, cls: 'wide' });
+  };
+
+  // 关于（设计书 124）：作者、版本、制作方式、署名、反馈入口。标题画面和设置里都能打开
+  UI.ITCH_URL = 'https://linshangsheng.itch.io/archer-on-the-wall';
+  UI.showAbout = function () {
+    const body = h(
+      'div',
+      { class: 'help about' },
+      h('h2', null, '城头射手'),
+      h('p', { class: 'hint' }, C.version),
+      h('h3', null, '出品'),
+      h('p', null, 'linshangsheng'),
+      h('h3', null, '制作'),
+      h('p', null, '游戏设计、程序、美术、音效和乐曲编排都是在 Claude（Anthropic）的协助下完成的。画面和音效由代码在运行时绘制 / 合成，没有使用图像生成模型。'),
+      h('h3', null, '译文'),
+      h('p', null, '17 种语言的译文由 AI 生成，没有经过母语者审校，欢迎指出错误。'),
+      h('h3', null, '音乐采样'),
+      h('p', null, '音乐采样：FluidR3_GM 音色库（Frank Wen），CC BY 3.0，经 gleitz/midi-js-soundfonts 取得'),
+      h('h3', null, '反馈与更新'),
+      h('p', null, '有问题或建议，欢迎到 itch.io 的游戏页留言：'),
+      h('p', null, h('a', { href: UI.ITCH_URL, target: '_blank', rel: 'noopener noreferrer' }, UI.ITCH_URL)),
       h('div', { class: 'modal-buttons' }, h('button', { class: 'btn primary', onclick: UI.closeModal }, '知道了'))
     );
     modal(body, { closeOnBack: true, cls: 'wide' });

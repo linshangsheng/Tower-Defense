@@ -48,6 +48,7 @@ Free, runs in your browser, no install, no account. Your save lives in your brow
 
 ### Changelog
 
+- **v1.23** — Added an About screen (title screen and Settings): credits, how the game was made, music-sample attribution, and a link to this page for feedback.
 - **v1.22** — Phones held upright no longer show a "rotate your phone" wall: the game turns itself 90° to fill the screen (turn the phone sideways for a better view).
 - **v1.21** — Fixed the English (and other non-Chinese) UI turning back into Chinese a few seconds into a battle. Quit button hidden when embedded in a web page.
 - **v1.20** — The final dragon is redrawn from scratch as a vector model: new body, wings with finger bones and scalloped membrane, detailed head, and a dedicated charge-up and release animation for each of its four skills.

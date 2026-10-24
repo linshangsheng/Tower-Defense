@@ -2080,4 +2080,12 @@ TD.i18n.register("tr", {
   "焚天巨龙吸足了寒气——寒冰要来了！": "Gökyakan Ejderha soğuğu içine çekiyor: buz geliyor!",
   "焚天巨龙压低了身体——冲撞要来了！": "Gökyakan Ejderha gövdesini alçalttı: çarpma geliyor!",
   "焚天巨龙召来了雷云——雷击要来了！": "Gökyakan Ejderha fırtına bulutları çağırdı: yıldırım geliyor!",
+  "17 种语言的译文由 AI 生成，没有经过母语者审校，欢迎指出错误。": "17 dile yapılan çeviriler yapay zekâ tarafından üretildi ve ana dili konuşanlarca gözden geçirilmedi. Düzeltmeler memnuniyetle karşılanır.",
+  "反馈与更新": "Geri bildirim ve güncellemeler",
+  "关于": "Hakkında",
+  "译文": "Çeviriler",
+  "游戏设计、程序、美术、音效和乐曲编排都是在 Claude（Anthropic）的协助下完成的。画面和音效由代码在运行时绘制 / 合成，没有使用图像生成模型。": "Oyun tasarımı, kod, grafik, ses ve müzik düzenlemesi Claude (Anthropic) yardımıyla yapıldı. Grafikler ve ses efektleri çalışma anında kodla çizilir ve sentezlenir; görüntü üretim modeli kullanılmadı.",
+  "有问题或建议，欢迎到 itch.io 的游戏页留言：": "Soru veya önerileriniz mi var? Oyunun itch.io sayfasına yorum bırakın:",
+  "制作": "Yapım",
+  "音乐采样": "Müzik örnekleri",
 });

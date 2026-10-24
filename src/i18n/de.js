@@ -2080,4 +2080,12 @@ TD.i18n.register("de", {
   "焚天巨龙吸足了寒气——寒冰要来了！": "Der Himmelsbrand-Drache saugt die Kälte ein: Frost naht!",
   "焚天巨龙压低了身体——冲撞要来了！": "Der Himmelsbrand-Drache duckt sich: ein Rammstoß naht!",
   "焚天巨龙召来了雷云——雷击要来了！": "Der Himmelsbrand-Drache ruft Gewitterwolken: Blitze nahen!",
+  "17 种语言的译文由 AI 生成，没有经过母语者审校，欢迎指出错误。": "Die Übersetzungen in 17 Sprachen wurden von einer KI erstellt und nicht von Muttersprachlern geprüft. Korrekturen sind willkommen.",
+  "反馈与更新": "Feedback & Updates",
+  "关于": "Über das Spiel",
+  "译文": "Übersetzungen",
+  "游戏设计、程序、美术、音效和乐曲编排都是在 Claude（Anthropic）的协助下完成的。画面和音效由代码在运行时绘制 / 合成，没有使用图像生成模型。": "Spieldesign, Programmierung, Grafik, Sound und Musikarrangement entstanden mit Unterstützung von Claude (Anthropic). Grafiken und Soundeffekte werden zur Laufzeit per Code gezeichnet und synthetisiert; es wurden keine Bildgenerierungsmodelle verwendet.",
+  "有问题或建议，欢迎到 itch.io 的游戏页留言：": "Fragen oder Vorschläge? Hinterlasse einen Kommentar auf der itch.io-Seite des Spiels:",
+  "制作": "Entstehung",
+  "音乐采样": "Musik-Samples",
 });

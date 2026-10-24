@@ -2080,4 +2080,12 @@ TD.i18n.register("it", {
   "焚天巨龙吸足了寒气——寒冰要来了！": "Il Drago Brucia-Cielo aspira il freddo: sta arrivando il gelo!",
   "焚天巨龙压低了身体——冲撞要来了！": "Il Drago Brucia-Cielo si abbassa: sta arrivando una carica!",
   "焚天巨龙召来了雷云——雷击要来了！": "Il Drago Brucia-Cielo evoca nubi temporalesche: stanno arrivando i fulmini!",
+  "17 种语言的译文由 AI 生成，没有经过母语者审校，欢迎指出错误。": "Le traduzioni in 17 lingue sono state generate da un'IA e non sono state riviste da madrelingua. Le correzioni sono benvenute.",
+  "反馈与更新": "Feedback e aggiornamenti",
+  "关于": "Informazioni",
+  "译文": "Traduzioni",
+  "游戏设计、程序、美术、音效和乐曲编排都是在 Claude（Anthropic）的协助下完成的。画面和音效由代码在运行时绘制 / 合成，没有使用图像生成模型。": "Game design, codice, grafica, suoni e arrangiamenti musicali sono stati realizzati con l'aiuto di Claude (Anthropic). La grafica e gli effetti sonori sono disegnati e sintetizzati dal codice durante l'esecuzione; non sono stati usati modelli di generazione di immagini.",
+  "有问题或建议，欢迎到 itch.io 的游戏页留言：": "Domande o suggerimenti? Lascia un commento sulla pagina del gioco su itch.io:",
+  "制作": "Realizzazione",
+  "音乐采样": "Campioni musicali",
 });
