@@ -427,7 +427,7 @@
         }
         this.shake = Math.max(this.shake, 12);
       });
-      // 焚天巨龙（设计书 114、118）：嘴尖的位置由 creatures/abyss.js 的素材锚点算出（行走姿势 / 喷火姿势各一个），再乘绘制放大倍数
+      // 焚天巨龙（设计书 114、118）：嘴尖的位置由 creatures/abyss.js 按技能姿势算出，再乘绘制放大倍数
       const dragonMouth = (m, kind) => {
         const p = TD.creatures.dragonMouthAt(kind);
         return { x: m.x + p.x * DRAW_SCALE * m.def.size, y: m.y + m.yOffset + p.y * DRAW_SCALE * m.def.size };

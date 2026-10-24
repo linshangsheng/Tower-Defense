@@ -4700,34 +4700,43 @@ test('焚天巨龙两条命：第一条命倒下 → 趴下不受伤 → 化作�
   assert.ok(m.dead, '第二条命打光 = 死');
 });
 
-// ---------- v1.17：巨龙用美术素材（设计书 118） ----------
-test('巨龙美术素材：8 张图都在（红 / 黑 × 行走 + 3 张喷火），Service Worker 会缓存它们；没有 Image 时退回矢量画法不报错', () => {
+// ---------- v1.20：巨龙放弃图片素材，纯矢量重画（设计书 121） ----------
+test('巨龙矢量画法：红 / 黑 / 倒下 / 四个技能的预备和释放都能画，且不依赖图片素材；嘴的位置随技能变化', () => {
   const fs = require('fs');
   const path = require('path');
   const root = path.join(__dirname, '..');
-  for (const n of ['walk', 'fire1', 'fire2', 'fire3']) for (const sfx of ['', '_b']) {
-    const file = path.join(root, 'assets', 'dragon', n + sfx + '.webp');
-    assert.ok(fs.existsSync(file) && fs.statSync(file).size > 50000, file);
-    const buf = fs.readFileSync(file);
-    assert.strictEqual(buf.slice(0, 4).toString(), 'RIFF');
-    assert.strictEqual(buf.slice(8, 12).toString(), 'WEBP');
-  }
-  const sw = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');
-  assert.ok(sw.includes('assets/dragon/') && sw.includes("'fire3'"));
-  // 没有 Image（Node 环境）：画法退回矢量，不抛错（重新加载渲染用的画法文件，用完把原来的还回去）
+  assert.ok(!fs.existsSync(path.join(root, 'assets', 'dragon')), '图片素材已经删掉');
+  assert.ok(!fs.readFileSync(path.join(root, 'sw.js'), 'utf8').includes('assets/dragon'), 'Service Worker 不再缓存巨龙素材');
+  // 画法文件平时不在 Node 测试里加载：加载一份新的，用完把原来的还回去
   const saved = TD.creatures;
   for (const f of ['creatures.js', 'creatures/abyss.js']) delete require.cache[require.resolve(path.join(root, 'src', 'render', f))];
   delete TD.creatures;
   require(path.join(root, 'src', 'render', 'creatures.js'));
   require(path.join(root, 'src', 'render', 'creatures', 'abyss.js'));
-  const fresh = TD.creatures;
+  const K = TD.creatures;
   TD.creatures = saved;
   const calls = [];
-  const ctx = new Proxy({}, { get: (t, k) => (k === 'createLinearGradient' || k === 'createRadialGradient' ? () => ({ addColorStop() {} }) : k === 'measureText' ? () => ({ width: 1 }) : (...a) => calls.push(k)), set: () => true });
-  assert.doesNotThrow(() => fresh.drawers.abyssDragon(ctx, 290, 1, { ai: { form: 1, phase: 1, mode: 'walk' } }));
-  const m = fresh.dragonMouthAt(false);
-  const f = fresh.dragonMouthAt(true);
-  assert.ok(m.x < f.x && m.x < -1 && f.x < -0.5, '行走时头伸得更靠左，喷火姿势头缩回来一点');
+  const ctx = new Proxy({}, { get: (t, k) => (k === 'createLinearGradient' || k === 'createRadialGradient' ? () => ({ addColorStop() {} }) : k === 'createPattern' ? () => ({}) : k === 'measureText' ? () => ({ width: 1 }) : (...a) => calls.push(k)), set: () => true });
+  const draw = K.drawers.abyssDragon;
+  const states = [
+    { form: 1, phase: 1, mode: 'walk' },
+    { form: 1, phase: 3, mode: 'walk' },
+    { form: 2, phase: 2, mode: 'walk' },
+    { form: 1, phase: 1, fallen: true, rebirthTimer: 3, rebirthMax: 5 },
+    { form: 2, phase: 1, fallen: true, rebirthTimer: 1, rebirthMax: 5 },
+  ];
+  for (const skill of ['fire', 'shock', 'bolt', 'ice']) {
+    states.push({ form: 1, phase: 2, mode: 'warn', skill, warnTimer: 1, warnMax: 2 });
+    states.push({ form: 2, phase: 1, mode: 'walk', anim: { fire: 'fire', shock: 'ram', bolt: 'bolt', ice: 'ice' }[skill], animTimer: 0.8 });
+  }
+  for (const ai of states) for (const t of [0, 1.7, 4.2]) assert.doesNotThrow(() => draw(ctx, 290, t, { ai }), JSON.stringify(ai));
+  assert.ok(calls.length > 2000, '细节很多（鳞片、翼骨、牙、裂纹）');
+  const walk = K.dragonMouthAt('walk');
+  const fire = K.dragonMouthAt(true);
+  const bolt = K.dragonMouthAt('bolt');
+  assert.ok(walk.x < -0.5 && fire.x < -0.5 && bolt.x < -0.5, '嘴在身体左边（朝城墙）');
+  assert.ok(Math.abs(walk.x - fire.x) > 0.01 || Math.abs(walk.y - fire.y) > 0.01, '喷火时头的姿势和行走不同');
+  assert.ok(Math.abs(bolt.y - walk.y) > 0.01, '雷击时头的姿势也不同');
 });
 
 // ---------- v1.18：寒冰冻住英雄 3 秒、雷击电麻 2 秒（设计书 119） ----------
@@ -4764,7 +4773,4 @@ test('巨龙的寒冰和雷击：寒冰把英雄冻住 3 秒，雷击把英雄�
   m.ai.skill = 'ice';
   b.castDragonSkill(m);
   assert.ok(b.time < b.heroStunUntil);
-  // 四个技能的素材姿势都配好了
-  const fs = require('fs');
-  for (const n of ['ram', 'bolt1', 'bolt2', 'ice']) for (const sfx of ['', '_b']) assert.ok(fs.existsSync(require('path').join(__dirname, '..', 'assets', 'dragon', n + sfx + '.webp')), n + sfx);
 });

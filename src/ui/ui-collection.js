@@ -349,7 +349,6 @@
 
   UI.showBestiary = function (chapterId) {
     const s = G().save;
-    if (TD.creatures && TD.creatures.preloadDragon) TD.creatures.preloadDragon(); // 图鉴里有巨龙：提前加载它的美术素材
     chapterId = chapterId || 1;
     const seen = s.seenMonsters || {};
     const kills = s.stats.killsByType || {};
