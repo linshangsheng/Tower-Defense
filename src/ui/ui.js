@@ -173,7 +173,8 @@
         h('button', { class: 'btn', onclick: () => (sfx('click'), UI.showSettings()) }, '设置'),
         h('button', { class: 'btn', onclick: () => (sfx('click'), UI.showHelp()) }, '玩法说明'),
         h('button', { class: 'btn', onclick: () => (sfx('click'), UI.showLanguage()) }, `🌐 Language · ${TD.i18n.languages.find((l) => l.code === TD.i18n.lang).native}`),
-        h('button', { class: 'btn quit', onclick: () => (sfx('click'), UI.quitGame()) }, '退出游戏')
+        // 嵌在别的网页里（itch.io 等）时网页没权限关窗口，按钮没有意义，不显示
+        UI.embedded() ? null : h('button', { class: 'btn quit', onclick: () => (sfx('click'), UI.quitGame()) }, '退出游戏')
       ),
       h('div', { class: 'title-foot' }, `网页原型 ${C.version} · ${D.chapters.length} 章 ${Object.keys(D.levels).length} 关`, bgm && TD.music.enabled ? h('div', { class: 'title-bgm' }, '♪ ', h('span', null, bgm.name)) : null)
     );
@@ -205,6 +206,14 @@
       )
     );
     modal(h('div', null, h('h2', null, '🌐 Language'), h('div', { class: 'lang-grid' }, btns), h('div', { class: 'modal-buttons' }, h('button', { class: 'btn', onclick: UI.closeModal }, 'OK'))), { closeOnBack: true });
+  };
+
+  UI.embedded = function () {
+    try {
+      return globalThis.window.self !== globalThis.window.top;
+    } catch (e) {
+      return true; // 跨域访问 top 被拒绝，说明一定是嵌在别的页面里
+    }
   };
 
   // 退出游戏（v0.73）：存好档、停掉音乐、退出全屏，然后关闭窗口。
@@ -1882,13 +1891,22 @@
     if (battle.level.tip) UI.toast('💡 ' + battle.level.tip, 'tip');
   };
 
+  // 战斗界面每帧都要刷新的文字：内容没变就别碰 DOM。每次 textContent = … 都会换一个文字节点，
+  // 多语言的观察器（设计书 83 / 113）会把它当成"页面在被别的翻译器改"，60 帧下几秒就停止翻译，战斗界面变回中文
+  function setText(el, text) {
+    text = String(text);
+    if (el._raw === text) return;
+    el._raw = text;
+    el.textContent = text;
+  }
+
   UI.updateHud = function () {
     const b = hud.battle;
     if (!b || !screenEl || !screenEl.classList.contains('battle-hud')) return;
     const ratio = b.wall.hp / b.wall.max;
     hud.wallFill.style.width = ratio * 100 + '%';
     hud.wallFill.className = 'wall-fill' + (ratio < 0.3 ? ' low' : ratio < 0.6 ? ' mid' : '');
-    hud.wallText.textContent = `${Math.ceil(b.wall.hp)} / ${b.wall.max}`;
+    setText(hud.wallText, `${Math.ceil(b.wall.hp)} / ${b.wall.max}`);
     let waveText;
     if (b.waveState === 'prepare') waveText = `准备… ${Math.ceil(b.countdown)}`;
     else if (b.level.endless) waveText = `第 ${b.waveIndex + 1} 波 · 纪录 ${(game.save.endless || {}).best || 0}`;
@@ -1896,11 +1914,11 @@
     else waveText = `第 ${b.waveIndex + 1} / ${b.totalWaves} 波`;
     if (b.pendingSupply) waveText += ' · 补给中';
     else if (b.waveState === 'waiting') waveText += ` · 下一波 ${Math.max(0, Math.ceil(b.countdown))} 秒`;
-    hud.wave.textContent = waveText;
+    setText(hud.wave, waveText);
     const canCall = b.waveState === 'waiting' && b.waveIndex < b.totalWaves - 1 && !b.pendingSupply && b.countdown > 0;
     hud.callBtn.classList.toggle('hidden', !canCall);
-    if (canCall) hud.callBtn.textContent = `提前召唤 +${Math.max(0, Math.floor(b.countdown))}铜 (N)`;
-    hud.copper.textContent = Math.floor(b.killCopper + b.earlyCopper); // 多出来的小怪的铜币按强度折算，可能带小数
+    if (canCall) setText(hud.callBtn, `提前召唤 +${Math.max(0, Math.floor(b.countdown))}铜 (N)`);
+    setText(hud.copper, Math.floor(b.killCopper + b.earlyCopper)); // 多出来的小怪的铜币按强度折算，可能带小数
     b.skills.forEach((sk, i) => {
       const btn = hud.skillBtns[i];
       const cd = btn.querySelector('.cd');
@@ -1911,13 +1929,13 @@
       btn.classList.toggle('frozen', frozen);
       if (frozen) {
         cd.style.background = 'rgba(160,220,255,0.75)';
-        cd.textContent = '❄' + Math.ceil(sk.frozenUntil - b.time);
+        setText(cd, '❄' + Math.ceil(sk.frozenUntil - b.time));
       } else if (sk.cd > 0) {
         cd.style.background = `conic-gradient(rgba(30,20,10,0.65) ${(sk.cd / sk.def.cd) * 360}deg, transparent 0)`;
-        cd.textContent = Math.ceil(sk.cd);
+        setText(cd, Math.ceil(sk.cd));
       } else {
         cd.style.background = 'none';
-        cd.textContent = '';
+        setText(cd, '');
       }
     });
     b.items.forEach((it, i) => {
@@ -1925,22 +1943,22 @@
       btn.classList.toggle('used', it.left <= 0);
       btn.classList.toggle('cooling', it.left > 0 && it.cd > 0);
       const stock = btn.querySelector('.item-stock');
-      if (stock) stock.textContent = '×' + it.left;
+      if (stock) setText(stock, '×' + it.left);
       const cd = btn.querySelector('.cd');
       if (cd) {
         if (it.cd > 0 && it.left > 0) {
           cd.style.background = `conic-gradient(rgba(30,20,10,0.65) ${(it.cd / ((it.def.cd || 1) * Math.max(0.3, 1 + b.mods.cdMult * 0.5))) * 360}deg, transparent 0)`;
-          cd.textContent = Math.ceil(it.cd);
+          setText(cd, Math.ceil(it.cd));
         } else {
           cd.style.background = 'none';
-          cd.textContent = '';
+          setText(cd, '');
         }
       }
       btn.classList.toggle('armed', game.pendingLane && game.pendingLane.kind === 'item' && game.pendingLane.index === i);
     });
-    hud.targetBtn.textContent = '🎯 ' + D.targetModes[b.target];
-    hud.speedBtn.textContent = game.speed === 3 ? '⏭ 3倍速' : game.speed === 2 ? '⏩ 2倍速' : '▶ 1倍速';
-    hud.autoBtn.textContent = b.autoCast ? '自动释放：开' : '自动释放：关';
+    setText(hud.targetBtn, '🎯 ' + D.targetModes[b.target]);
+    setText(hud.speedBtn, game.speed === 3 ? '⏭ 3倍速' : game.speed === 2 ? '⏩ 2倍速' : '▶ 1倍速');
+    setText(hud.autoBtn, b.autoCast ? '自动释放：开' : '自动释放：关');
     hud.laneHint.classList.toggle('hidden', !game.pendingLane);
     // 新手引导（设计书 12.6）：前 4 关第一次可以放技能时提示
     let nudgeIdx = -1;

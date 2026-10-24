@@ -719,7 +719,7 @@
     if (!lowQ) {
       ctx.save();
       ctx.globalCompositeOperation = 'lighter';
-      ctx.globalAlpha = Math.min(0.75, 0.2 + heat * 0.4);
+      ctx.globalAlpha = Math.min(0.4, 0.1 + heat * 0.2);
       scaleFill(ctx, -0.95 * s, -0.7 * s, 1.15 * s, 0.35 * s, s * 0.055, LAVA, 0.5);
       ctx.restore();
     }

@@ -4774,3 +4774,20 @@ test('巨龙的寒冰和雷击：寒冰把英雄冻住 3 秒，雷击把英雄�
   b.castDragonSkill(m);
   assert.ok(b.time < b.heroStunUntil);
 });
+
+// ---------- v1.21：战斗 HUD 每帧刷新的文字不能每帧都改 DOM（设计书 122） ----------
+test('战斗 HUD：updateHud 里的文字都走 setText（内容没变不碰 DOM），否则 60 帧下多语言观察器会误判并停止翻译', () => {
+  const fs = require('fs');
+  const path = require('path');
+  const src = fs.readFileSync(path.join(__dirname, '..', 'src', 'ui', 'ui.js'), 'utf8');
+  const a = src.indexOf('UI.updateHud = function');
+  const body = src.slice(a, src.indexOf('\n  };\n', a));
+  assert.ok(a > 0 && body.length > 500);
+  assert.ok(!/\.textContent\s*=/.test(body), 'updateHud 里不要直接写 textContent');
+  assert.ok((body.match(/setText\(/g) || []).length >= 10);
+  // setText 本身：内容一样就不动
+  const h = src.slice(src.indexOf('function setText'), src.indexOf('UI.updateHud = function'));
+  assert.ok(/_raw === text\) return/.test(h));
+  // 嵌在网页里不显示「退出游戏」
+  assert.ok(/UI\.embedded\(\) \? null : h\('button', \{ class: 'btn quit'/.test(src));
+});
