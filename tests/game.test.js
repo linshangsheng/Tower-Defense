@@ -4687,3 +4687,33 @@ test('焚天巨龙两条命：第一条命倒下 → 趴下不受伤 → 化作�
   b.damage(m, m.maxHp * 4, { source: 'test' });
   assert.ok(m.dead, '第二条命打光 = 死');
 });
+
+// ---------- v1.17：巨龙用美术素材（设计书 118） ----------
+test('巨龙美术素材：8 张图都在（红 / 黑 × 行走 + 3 张喷火），Service Worker 会缓存它们；没有 Image 时退回矢量画法不报错', () => {
+  const fs = require('fs');
+  const path = require('path');
+  const root = path.join(__dirname, '..');
+  for (const n of ['walk', 'fire1', 'fire2', 'fire3']) for (const sfx of ['', '_b']) {
+    const file = path.join(root, 'assets', 'dragon', n + sfx + '.webp');
+    assert.ok(fs.existsSync(file) && fs.statSync(file).size > 50000, file);
+    const buf = fs.readFileSync(file);
+    assert.strictEqual(buf.slice(0, 4).toString(), 'RIFF');
+    assert.strictEqual(buf.slice(8, 12).toString(), 'WEBP');
+  }
+  const sw = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');
+  assert.ok(sw.includes('assets/dragon/') && sw.includes("'fire3'"));
+  // 没有 Image（Node 环境）：画法退回矢量，不抛错（重新加载渲染用的画法文件，用完把原来的还回去）
+  const saved = TD.creatures;
+  for (const f of ['creatures.js', 'creatures/abyss.js']) delete require.cache[require.resolve(path.join(root, 'src', 'render', f))];
+  delete TD.creatures;
+  require(path.join(root, 'src', 'render', 'creatures.js'));
+  require(path.join(root, 'src', 'render', 'creatures', 'abyss.js'));
+  const fresh = TD.creatures;
+  TD.creatures = saved;
+  const calls = [];
+  const ctx = new Proxy({}, { get: (t, k) => (k === 'createLinearGradient' || k === 'createRadialGradient' ? () => ({ addColorStop() {} }) : k === 'measureText' ? () => ({ width: 1 }) : (...a) => calls.push(k)), set: () => true });
+  assert.doesNotThrow(() => fresh.drawers.abyssDragon(ctx, 290, 1, { ai: { form: 1, phase: 1, mode: 'walk' } }));
+  const m = fresh.dragonMouthAt(false);
+  const f = fresh.dragonMouthAt(true);
+  assert.ok(m.x < f.x && m.x < -1 && f.x < -0.5, '行走时头伸得更靠左，喷火姿势头缩回来一点');
+});

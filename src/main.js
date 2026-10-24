@@ -32,6 +32,7 @@
 
   // mode：{ kind: 'endless' | 'daily', levelDef, stage, info }（普通关卡不传）
   game.startBattle = function (n, mode) {
+    if (n === 200 && TD.creatures && TD.creatures.preloadDragon) TD.creatures.preloadDragon(); // 巨龙的美术素材：进第 200 关才开始加载
     const s = game.save;
     game.mode = mode || null;
     const lo = P.battleLoadout(s);

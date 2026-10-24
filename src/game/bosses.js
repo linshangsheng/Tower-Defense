@@ -603,6 +603,7 @@
     updateAbyssDragon(m, dt) {
       const G = D.abyssDragon;
       const ai = m.ai;
+      if (ai.fireTimer > 0) ai.fireTimer -= dt; // 喷火的画面（素材里带火焰的姿势）持续多久
       if (ai.fallen) {
         ai.rebirthTimer -= dt;
         if (ai.rebirthTimer <= 0) this.dragonRebirth(m);
@@ -682,6 +683,7 @@
       const enraged = ai.phase === 3;
       if (skill === 'fire') {
         const k = enraged ? G.fire.enrage : 1;
+        ai.fireTimer = G.fire.anim;
         this.emit('dragonFire', { m, lane: ai.lane, twin: enraged });
         this.hitWall(this.dragonHit(m, G.fire.damage * k), m, true, 'fire', m.type);
         this.addWallDot(G.fire.dot * k * this.wall.max * (m.ai.form === 2 ? G.rebirthMult : 1), G.fire.dotTime, 'dragonFire', true, m.type);

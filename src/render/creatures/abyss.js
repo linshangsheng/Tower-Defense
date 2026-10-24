@@ -663,4 +663,147 @@
 
     ctx.restore();
   };
+
+  // ================= 美术素材版（v1.17，设计书 118） =================
+  // 用户提供的巨龙素材（assets/dragon/*.webp，朝右，透明背景）：行走姿势 1 张 + 喷火姿势 3 张；黑龙是同一批图调成黑色（*_b.webp）。
+  // 素材没加载好（离线首次、测试环境没有 Image）时，退回上面的矢量画法。
+  // 每张图的锚点（cx, cy = 龙身深色部分的重心，用来把不同姿势对齐）和嘴的位置（mx, my，单位：缩放后的素材像素）：
+  const POSES = {
+    walk: { w: 1394, h: 700, cx: 807, cy: 341, mx: 1391, my: 346 },
+    fire1: { w: 1389, h: 690, cx: 455, cy: 340, mx: 816, my: 300 },
+    fire2: { w: 1160, h: 518, cx: 414, cy: 247, mx: 716, my: 236 },
+    fire3: { w: 1174, h: 756, cx: 424, cy: 392, mx: 770, my: 324 },
+  };
+  const FIRE_FRAMES = ['fire1', 'fire2', 'fire3', 'fire2'];
+  const imgs = {};
+  let loadStarted = false;
+  K.preloadDragon = function () {
+    if (loadStarted || typeof Image === 'undefined') return;
+    loadStarted = true;
+    for (const name of Object.keys(POSES)) {
+      for (const suffix of ['', '_b']) {
+        const im = new Image();
+        im.onload = () => (im.ready = true);
+        im.src = 'assets/dragon/' + name + suffix + '.webp';
+        imgs[name + suffix] = im;
+      }
+    }
+  };
+  // 素材坐标 → 画法坐标（单位 s；锚点放在 (−0.25 s, −0.17 s)，整张图宽 2.6 s；朝左，所以 x 取反）
+  const unitScale = (s) => (2.6 * s) / POSES.walk.w;
+  const toLocal = (s, name, px, py) => {
+    const P = POSES[name];
+    const f = unitScale(s);
+    return [-0.25 * s - (px - P.cx) * f, -0.12 * s + (py - P.cy) * f];
+  };
+  // 嘴的位置（画法坐标，单位 s 的倍数）：行走姿势 / 喷火姿势——renderer 里放技能特效要用
+  K.dragonMouthAt = function (fire) {
+    const s = 1;
+    const [x, y] = toLocal(s, fire ? 'fire1' : 'walk', POSES[fire ? 'fire1' : 'walk'].mx, POSES[fire ? 'fire1' : 'walk'].my);
+    return { x, y };
+  };
+
+  const drawVector = D.abyssDragon;
+  D.abyssDragon = function (ctx, s, t, o) {
+    if (typeof Image === 'undefined') return drawVector(ctx, s, t, o);
+    if (!loadStarted) K.preloadDragon();
+    const ai = o.ai || {};
+    const fallen = !!ai.fallen;
+    const rebirth = fallen && ai.rebirthMax ? Math.min(1, Math.max(0, 1 - ai.rebirthTimer / ai.rebirthMax)) : 0;
+    const dark = ai.form === 2 ? 1 : rebirth; // 0 红龙 → 1 黑龙
+    const walk = imgs.walk;
+    if (!walk || !walk.ready) return drawVector(ctx, s, t, o);
+    const warn = ai.mode === 'warn';
+    const skill = warn ? ai.skill : null;
+    const k = warn && ai.warnMax ? Math.min(1, Math.max(0, 1 - ai.warnTimer / ai.warnMax)) : 0;
+    const phase = ai.phase || 1;
+    const rage = phase >= 3;
+    const firing = (ai.fireTimer || 0) > 0 && !fallen;
+    const f = unitScale(s);
+    const name = firing ? FIRE_FRAMES[Math.floor(t * 11) % FIRE_FRAMES.length] : 'walk';
+    const P = POSES[name];
+    const bob = fallen ? 0 : Math.sin(t * 1.5) * 0.014 * s;
+    // 姿态：龙吼 / 雷暴抬头、龙息蓄力往后仰一点、倒下时头垂下去；转轴在脚下
+    const lean = fallen ? -0.07 * (1 - rebirth * rebirth) : skill === 'shock' ? 0.07 * k : skill === 'bolt' ? 0.05 * k : skill === 'fire' ? 0.04 * k : firing ? 0.02 : Math.sin(t * 1.1) * 0.006;
+    const sag = fallen ? 0.07 * s * (1 - rebirth * rebirth) : 0;
+
+    const pose = (nm, alpha, suffix) => {
+      const im = imgs[nm + suffix];
+      if (!im || !im.ready) return;
+      const Q = POSES[nm];
+      ctx.save();
+      ctx.globalAlpha *= alpha;
+      ctx.translate(-0.25 * s, -0.12 * s + bob + sag);
+      ctx.scale(-1, 1);
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(im, -Q.cx * f, -Q.cy * f, Q.w * f, Q.h * f);
+      ctx.restore();
+    };
+
+    // 背光 + 地面影子
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    glow(ctx, 0.05 * s, -0.12 * s, s * 1.2, dark > 0.5 ? '#ff1a4a' : '#ff4a1a', 0.1 + (rage ? 0.08 : 0) + (firing ? 0.1 : 0));
+    ctx.restore();
+    ctx.save();
+    ctx.globalAlpha = 0.4;
+    shadow(ctx, s * 0.1, s * 0.5 - bob, s * 0.95);
+    ctx.restore();
+
+    ctx.save();
+    // 以脚下（图的底边中点）为转轴转一点
+    const pivotX = -0.25 * s;
+    const pivotY = -0.12 * s + (P.h - P.cy) * f;
+    ctx.translate(pivotX, pivotY);
+    ctx.rotate(lean);
+    ctx.translate(-pivotX, -pivotY);
+    if (dark > 0 && dark < 1) {
+      pose(name, 1 - dark, '');
+      pose(name, dark, '_b');
+    } else pose(name, 1, dark >= 1 ? '_b' : '');
+    ctx.restore();
+
+    // ---------- 技能预备的特效（加在素材上） ----------
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    const wm = toLocal(s, 'walk', POSES.walk.mx, POSES.walk.my);
+    if (skill === 'fire') {
+      glow(ctx, wm[0] + 0.02 * s, wm[1] + 0.03 * s, s * (0.1 + 0.3 * k), '#ffd070', 0.3 + 0.5 * k, true);
+    } else if (skill === 'shock') {
+      for (let i = 0; i < 3; i++) {
+        const q = (k * 1.6 + i * 0.33) % 1;
+        ctx.strokeStyle = rgba('#ffe0b0', (1 - q) * (0.25 + 0.5 * k));
+        ctx.lineWidth = s * 0.02 * (1 - q * 0.6);
+        ctx.beginPath();
+        ctx.arc(wm[0] + 0.05 * s, wm[1], s * (0.08 + q * 0.5), 0.55 * Math.PI, 1.45 * Math.PI);
+        ctx.stroke();
+      }
+      glow(ctx, wm[0] + 0.1 * s, wm[1], s * 0.4, '#ffd8a0', 0.18 * k);
+    } else if (skill === 'bolt') {
+      const fr = Math.floor(t * 14);
+      const n = 2 + Math.round(k * 5);
+      const spots = [[170, 250], [300, 420], [440, 70], [820, 60], [1080, 40], [1000, 330]];
+      for (let i = 0; i < n; i++) {
+        const [x, y] = toLocal(s, 'walk', spots[i % spots.length][0], spots[i % spots.length][1]);
+        veins(ctx, x, y, 0.24 * s, -1.6 + (i % 3) * 0.5, 2, '#bfe4ff', 0.5 + 0.4 * k, fr * 5 + i * 11, s * 0.014);
+      }
+      veins(ctx, wm[0] + 0.2 * s, wm[1] - 0.2 * s, 0.3 * s, -1.0, 2, '#e8f4ff', 0.6 + 0.35 * k, fr * 7, s * 0.016);
+      glow(ctx, 0, -0.1 * s, s * (0.5 + 0.3 * k), '#9fd0ff', 0.12 + 0.2 * k);
+    }
+    // 狂暴：整条龙裹着一层红光，身上冒火星
+    if (rage || dark > 0.5) {
+      glow(ctx, 0, -0.1 * s, s * 1.1, dark > 0.5 ? '#ff1a4a' : '#ff3a1a', 0.1 + 0.05 * Math.sin(t * 6) + (rage ? 0.05 : 0));
+      const rr = seeded(17);
+      for (let i = 0; i < (rage ? 12 : 6); i++) {
+        const q = (t * 0.7 + rr()) % 1;
+        const px = (rr() - 0.5) * 1.8 * s;
+        const py = -0.1 * s - q * 0.6 * s;
+        ctx.globalAlpha = (1 - q) * 0.8;
+        glow(ctx, px, py, s * 0.015 * (1 + rr()), i % 2 ? '#ffb040' : '#ff5a2a', 0.9);
+      }
+      ctx.globalAlpha = 1;
+    }
+    ctx.restore();
+  };
 })((globalThis.TD = globalThis.TD || {}));

@@ -427,8 +427,11 @@
         }
         this.shake = Math.max(this.shake, 12);
       });
-      // 焚天巨龙（设计书 114）：嘴尖的位置 = 身体中心向左 1.38 个身长、向上 0.34 个身长（画法里头和嘴的位置 × 绘制放大倍数）
-      const dragonMouth = (m) => ({ x: m.x - 1.38 * DRAW_SCALE * m.def.size, y: m.y + m.yOffset - 0.34 * DRAW_SCALE * m.def.size });
+      // 焚天巨龙（设计书 114、118）：嘴尖的位置由 creatures/abyss.js 的素材锚点算出（行走姿势 / 喷火姿势各一个），再乘绘制放大倍数
+      const dragonMouth = (m, fire) => {
+        const p = TD.creatures.dragonMouthAt(fire);
+        return { x: m.x + p.x * DRAW_SCALE * m.def.size, y: m.y + m.yOffset + p.y * DRAW_SCALE * m.def.size };
+      };
       on('dragonCast', (e) => {
         const txt = { fire: '焚天巨龙在蓄力喷火！集中火力打断它！', shock: '焚天巨龙张大了嘴——龙吼冲击要来了！', bolt: '焚天巨龙召来了雷云——雷暴要来了！' }[e.kind];
         if (txt) this.banner(txt);
@@ -440,7 +443,7 @@
       });
       on('dragonFire', (e) => {
         const m = e.m;
-        const p = dragonMouth(m);
+        const p = dragonMouth(m, true);
         const lanes = battle.lanes;
         const lh = (C.fieldBottom - C.fieldTop) / lanes;
         const lanesHit = e.twin && lanes > 1 ? [e.lane, e.lane + 1 < lanes ? e.lane + 1 : e.lane - 1] : [e.lane];
@@ -448,7 +451,7 @@
           for (const ln of lanesHit) {
             const ty = battle.laneY(ln);
             // 一条火龙从嘴里喷向城墙：几十道火舌 + 车道上烧起来的火 + 墙上的爆炸
-            for (let i = 0; i < 26; i++) V.comet(p.x - Math.random() * 30, p.y + (Math.random() - 0.5) * 24, C.wallX + 10 + Math.random() * 60, ty + (Math.random() - 0.5) * lh * 0.8, 0.35 + Math.random() * 0.4, i % 3 ? '#ff8a2a' : '#ffd070', 18 + Math.random() * 22);
+            for (let i = 0; i < 12; i++) V.comet(p.x - Math.random() * 30, p.y + (Math.random() - 0.5) * 24, C.wallX + 10 + Math.random() * 60, ty + (Math.random() - 0.5) * lh * 0.8, 0.35 + Math.random() * 0.4, i % 3 ? '#ff8a2a' : '#ffd070', 18 + Math.random() * 22);
             V.flameLane(C.wallX, p.x - 40, ty - lh / 2, lh, 1.8);
             V.fireballBoom(C.wallX + 30, ty, 150);
           }
