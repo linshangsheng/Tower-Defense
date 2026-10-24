@@ -2008,4 +2008,5 @@ TD.i18n.register("pl", {
   "一次射 3 支穿心箭，每支穿过同一车道最多 3 只怪（每只 75% 伤害），无视 20% 护甲；升到 8 级一次射 4 支。": "Strzela naraz 3 strzałami Przeszywacza Serc, każda przebija do 3 potworów na tym samym torze (po 75% obrażeń) i ignoruje 20% pancerza; od poz. 8 strzela 4.",
   "一次射 3 支创世之箭，暴击率 +12%，每支穿透 3 只怪并点燃目标；升到 5 级一次射 4 支，升到 10 级一次射 5 支。": "Strzela naraz 3 strzałami Genesis, szansa na krytyk +12%, każda przebija 3 potwory i podpala cel; od poz. 5 strzela 4, od poz. 10 strzela 5.",
   "一次射 3 支屠龙箭，每支穿透同一车道最多 3 只怪（每只 80% 伤害），对 Boss 伤害 +50%，无视 40% 护甲；升到 8 级一次射 4 支。": "Strzela naraz 3 strzałami Zabójcy Smoków, każda przebija do 3 potworów na tym samym torze (po 80% obrażeń), obrażenia wobec Bossów +50%, ignoruje 40% pancerza; od poz. 8 strzela 4.",
+  "回归的小 Boss 被击败：+{0} 银币": "Pokonano powracającego mini bossa: +{0} srebra",
 });

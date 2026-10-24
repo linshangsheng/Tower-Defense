@@ -73,6 +73,11 @@
         // 胜利：夜空 / 战场上空绽放一串彩色烟花（设计书 96）
         if (res.win) this.fireworks = { until: this.t + 4, next: 0 };
       });
+      // 回归的小 Boss 被击败：银币飞出来
+      on('silver', (e) => {
+        this.text(e.x, e.y - 30, '+' + e.amount + ' ●', '#dfe8f5', 30);
+        this.burst(e.x, e.y, '#e6eefc', 24, 260);
+      });
       on('wallHeal', (e) => {
         if (e.amount > 0) this.text(C.wallX - 70, C.fieldTop + 40, '+' + Math.round(e.amount), '#4fd36a', 26);
         this.burst(C.wallX - 60, (C.fieldTop + C.fieldBottom) / 2, '#7dff9a', 18, 220);

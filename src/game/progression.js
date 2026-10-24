@@ -909,6 +909,11 @@
       if (r > 0) out.notes.push(`援军鼓舞：下次挑战本关攻击和城墙 +${Math.round(r * 100)}%`);
     }
     out.baseCopper = Math.round(base);
+    // 回归的小 Boss 被击败：每个 1 银币（设计书 110），胜负都算
+    if (result.killSilver) {
+      out.silver += result.killSilver;
+      out.notes.push(`回归的小 Boss 被击败：+${result.killSilver} 银币`);
+    }
     const killCopper = result.killCopper || 0;
     out.killCopper = Math.round(killCopper);
     out.earlyCopper = result.earlyCopper || 0;

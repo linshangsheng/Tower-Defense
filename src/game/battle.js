@@ -145,6 +145,8 @@
       this.wallDots = []; // 城墙持续伤害：{ dps, until, src }
       this.dotTick = 0.5;
       this.extraPlan = this.planExtraMonsters(opts);
+      this.returnBosses = this.planReturnBosses(opts);
+      this.killSilver = 0;
       this.supplyWaves = this.computeSupplyWaves();
       this.supplyOffered = {};
       this.supplyPicked = [];
@@ -171,6 +173,31 @@
       this.wallDamageTaken = 0;
       // 战斗报告（设计书 32）
       this.report = { bySource: {}, raw: { phys: 0, magic: 0 }, real: { phys: 0, magic: 0 }, wallBy: {} };
+    }
+
+    // 回归的小 Boss（设计书 110）：第 51 关起，普通小关卡（不是小 Boss / 大 Boss / 精英挑战关）常常混进一个之前关卡里见过的小 Boss，
+    // 击败得 1 银币。是否出现、出现几个、是谁，用关卡号和种子单独算，不动战斗本身的随机数。返回 [{ wave, type }]
+    planReturnBosses(opts) {
+      if (opts.levelDef || typeof opts.level !== 'number' || !D.levels[opts.level] || this.level.tower || this.level.endless) return [];
+      const n = opts.level;
+      if (n < C.returnBossFromLevel || ['miniboss', 'boss', 'elite'].includes(this.level.type)) return [];
+      const rng = TD.util.rng((Math.floor(opts.seed || 1) % 100003) * 7919 + n * 131 + 17);
+      if (rng() >= C.returnBossChance) return [];
+      const pool = [];
+      for (let k = 1; k < n; k++) {
+        const lv = D.levels[k];
+        if (!lv || lv.type !== 'miniboss') continue;
+        for (const w of lv.waves) for (const [type] of w.groups) if (D.monsters[type].boss && !D.monsters[type].towerOf && !pool.includes(type)) pool.push(type);
+      }
+      if (!pool.length) return [];
+      const count = Math.min(pool.length, 1 + (n >= C.returnBossLateFrom && rng() < C.returnBossSecondChance ? 1 : 0));
+      const waves = this.level.waves.length;
+      const out = [];
+      for (let i = 0; i < count; i++) {
+        const type = pool.splice(Math.floor(rng() * pool.length), 1)[0];
+        out.push({ wave: i === 0 ? Math.min(waves - 1, Math.floor(waves * 0.6)) : waves - 1, type });
+      }
+      return out;
     }
 
     // 主线第 N 关（N ≥ C.extraFromLevel）多出的小怪（设计书 84）：总数 = N × C.extraMonstersPerLevel。先按各波原有小怪数量的比例
@@ -364,6 +391,7 @@
           }
         }
       }
+      for (const r of this.returnBosses) if (r.wave === i) queue.push('@' + r.type); // 回归的小 Boss 排在这一波最后
       this.spawnQueue = queue;
       // 数量倍率提高时出怪更密集，避免关卡时间被拉长
       const crowd = (cm > 1 ? cm : 1) * (baseMinions > 0 ? (baseMinions + extraNow) / baseMinions : 1);
@@ -407,8 +435,8 @@
         while (this.spawnTimer <= 0 && this.spawnQueue.length) {
           if (this.level.waves[this.waveIndex].burst) {
             // 联合关：所有车道同时各出一只
-            for (let lane = 0; lane < this.lanes && this.spawnQueue.length; lane++) this.spawnMonster(this.spawnQueue.shift(), lane);
-          } else this.spawnMonster(this.spawnQueue.shift());
+            for (let lane = 0; lane < this.lanes && this.spawnQueue.length; lane++) this.spawnFromQueue(this.spawnQueue.shift(), lane);
+          } else this.spawnFromQueue(this.spawnQueue.shift());
           this.spawnTimer += this.spawnGap;
         }
         if (!this.spawnQueue.length) {
@@ -453,6 +481,16 @@
     }
 
     // ---------- 怪物 ----------
+    // 出怪队列里的一项：'@类型' 是回归的小 Boss（血量打折，击败得银币），其余就是普通怪物
+    spawnFromQueue(entry, lane) {
+      if (entry[0] !== '@') return this.spawnMonster(entry, lane);
+      const m = this.spawnMonster(entry.slice(1), lane);
+      m.returning = true;
+      m.hp = m.maxHp = Math.max(1, Math.round(m.maxHp * C.returnBossHpMult));
+      this.emit('bossReturn', { m, type: m.type });
+      return m;
+    }
+
     spawnMonster(type, lane, x) {
       const def = D.monsters[type];
       if (lane === undefined && def.pack) {
@@ -1017,6 +1055,10 @@
         this.killsByType[m.type] = (this.killsByType[m.type] || 0) + 1;
       }
       this.killCopper += copper;
+      if (m.returning && !noReward) {
+        this.killSilver += C.returnBossSilver;
+        this.emit('silver', { x: m.x, y: m.y + m.yOffset, amount: C.returnBossSilver });
+      }
       // 回春箭：击杀回复城墙（静默回复，不弹字，免得刷屏）
       if (this.mods.killHeal && !noReward) this.wall.hp = Math.min(this.wall.max, this.wall.hp + this.wall.max * this.mods.killHeal);
       this.emit('death', { m, copper, noReward: !!noReward });
@@ -2447,6 +2489,7 @@
         wallRatio,
         stars: win ? TD.progression.starsFor(wallRatio) : 0,
         killCopper: this.killCopper,
+        killSilver: this.killSilver,
         earlyCopper: this.earlyCopper,
         kills: this.kills,
         time: this.time,

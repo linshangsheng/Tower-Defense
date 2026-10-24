@@ -2008,4 +2008,5 @@ TD.i18n.register("en", {
   "一次射 3 支穿心箭，每支穿过同一车道最多 3 只怪（每只 75% 伤害），无视 20% 护甲；升到 8 级一次射 4 支。": "Fires 3 piercing arrows at once, each passing through up to 3 monsters in the same lane (75% damage each), ignoring 20% armor. At level 8, fires 4.",
   "一次射 3 支创世之箭，暴击率 +12%，每支穿透 3 只怪并点燃目标；升到 5 级一次射 4 支，升到 10 级一次射 5 支。": "Fires 3 Genesis arrows at once, crit rate +12%; each pierces 3 monsters and ignites the target. At level 5, fires 4; at level 10, fires 5.",
   "一次射 3 支屠龙箭，每支穿透同一车道最多 3 只怪（每只 80% 伤害），对 Boss 伤害 +50%，无视 40% 护甲；升到 8 级一次射 4 支。": "Fires 3 dragonslayer arrows at once, each piercing up to 3 monsters in the same lane (80% damage each), +50% damage to Bosses, ignoring 40% armor. At level 8, fires 4.",
+  "回归的小 Boss 被击败：+{0} 银币": "Returning Mini Boss defeated: +{0} silver",
 });

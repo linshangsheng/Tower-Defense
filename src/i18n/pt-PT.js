@@ -2008,4 +2008,5 @@ TD.i18n.register("pt-PT", {
   "一次射 3 支穿心箭，每支穿过同一车道最多 3 只怪（每只 75% 伤害），无视 20% 护甲；升到 8 级一次射 4 支。": "Dispara 3 setas perfurantes de uma vez; cada uma atravessa até 3 monstros na mesma via (75% de dano cada) e ignora 20% da armadura. Ao Nv8, dispara 4.",
   "一次射 3 支创世之箭，暴击率 +12%，每支穿透 3 只怪并点燃目标；升到 5 级一次射 4 支，升到 10 级一次射 5 支。": "Dispara 3 setas da Génese de uma vez, taxa crítica +12%; cada uma atravessa 3 monstros e põe o alvo em chamas. Ao Nv5, dispara 4; ao Nv10, dispara 5.",
   "一次射 3 支屠龙箭，每支穿透同一车道最多 3 只怪（每只 80% 伤害），对 Boss 伤害 +50%，无视 40% 护甲；升到 8 级一次射 4 支。": "Dispara 3 setas mata-dragões de uma vez; cada uma atravessa até 3 monstros na mesma via (80% de dano cada), +50% de dano a Bosses e ignora 40% da armadura. Ao Nv8, dispara 4.",
+  "回归的小 Boss 被击败：+{0} 银币": "Mini chefe de regresso derrotado: +{0} de prata",
 });

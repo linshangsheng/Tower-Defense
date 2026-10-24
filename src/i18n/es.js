@@ -2008,4 +2008,5 @@ TD.i18n.register("es", {
   "一次射 3 支穿心箭，每支穿过同一车道最多 3 只怪（每只 75% 伤害），无视 20% 护甲；升到 8 级一次射 4 支。": "Dispara 3 flechas perforantes a la vez; cada una atraviesa hasta 3 monstruos de la misma vía (75% de daño cada uno) e ignora 20% de armadura. Al nv. 8 dispara 4.",
   "一次射 3 支创世之箭，暴击率 +12%，每支穿透 3 只怪并点燃目标；升到 5 级一次射 4 支，升到 10 级一次射 5 支。": "Dispara 3 flechas de la Creación a la vez, prob. crítica +12%; cada una atraviesa 3 monstruos y prende fuego al objetivo. Al nv. 5 dispara 4; al nv. 10 dispara 5.",
   "一次射 3 支屠龙箭，每支穿透同一车道最多 3 只怪（每只 80% 伤害），对 Boss 伤害 +50%，无视 40% 护甲；升到 8 级一次射 4 支。": "Dispara 3 flechas mata-dragones a la vez; cada una atraviesa hasta 3 monstruos de la misma vía (80% de daño cada uno), +50% de daño a jefes e ignora 40% de armadura. Al nv. 8 dispara 4.",
+  "回归的小 Boss 被击败：+{0} 银币": "Mini jefe regresado derrotado: +{0} de plata",
 });

@@ -39,7 +39,7 @@
     },
 
     // 游戏版本：与设计书版本号、sw.js 的缓存名保持一致（测试会检查）
-    version: 'v1.08',
+    version: 'v1.09',
 
     // 英雄（设计书 42）：在 hero 基础值上乘以倍率；所有升级共用
     heroes: {
@@ -97,6 +97,15 @@
     // 主线第 N 关（N ≥ extraFromLevel）整关总共多出 N × extraMonstersPerLevel 只小怪（设计书 84）
     extraFromLevel: 5,
     extraMonstersPerLevel: 5,
+
+    // 回归的小 Boss（设计书 110）：第 returnBossFromLevel 关起，普通小关卡有 returnBossChance 的几率混进一个之前见过的小 Boss
+    // （第 returnBossLateFrom 关起有 returnBossSecondChance 的几率再来第二个）；血量 × returnBossHpMult；击败后奖励 returnBossSilver 银币
+    returnBossFromLevel: 51,
+    returnBossChance: 0.6,
+    returnBossLateFrom: 80,
+    returnBossSecondChance: 0.3,
+    returnBossHpMult: 0.6,
+    returnBossSilver: 1,
 
     exchange: {
       copperPerSilver: 100,

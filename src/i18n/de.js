@@ -2008,4 +2008,5 @@ TD.i18n.register("de", {
   "一次射 3 支穿心箭，每支穿过同一车道最多 3 只怪（每只 75% 伤害），无视 20% 护甲；升到 8 级一次射 4 支。": "Schießt 3 Herzdurchbohrer-Pfeile auf einmal, jeder durchbohrt bis zu 3 Monster auf derselben Bahn (je 75% Schaden) und ignoriert 20% Rüstung; ab Stufe 8 sind es 4.",
   "一次射 3 支创世之箭，暴击率 +12%，每支穿透 3 只怪并点燃目标；升到 5 级一次射 4 支，升到 10 级一次射 5 支。": "Schießt 3 Schöpfungspfeile auf einmal, Krit.-Chance +12%, jeder durchbohrt 3 Monster und setzt das Ziel in Brand; ab Stufe 5 sind es 4, ab Stufe 10 sind es 5.",
   "一次射 3 支屠龙箭，每支穿透同一车道最多 3 只怪（每只 80% 伤害），对 Boss 伤害 +50%，无视 40% 护甲；升到 8 级一次射 4 支。": "Schießt 3 Drachentöter-Pfeile auf einmal, jeder durchbohrt bis zu 3 Monster auf derselben Bahn (je 80% Schaden), Schaden gegen Bosse +50%, ignoriert 40% Rüstung; ab Stufe 8 sind es 4.",
+  "回归的小 Boss 被击败：+{0} 银币": "Wiedergekehrter Mini-Boss besiegt: +{0} Silber",
 });

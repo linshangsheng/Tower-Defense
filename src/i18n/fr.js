@@ -2008,4 +2008,5 @@ TD.i18n.register("fr", {
   "一次射 3 支穿心箭，每支穿过同一车道最多 3 只怪（每只 75% 伤害），无视 20% 护甲；升到 8 级一次射 4 支。": "Tire 3 flèches perce-cœur à la fois, chacune traverse jusqu'à 3 monstres de la même voie (75 % de dégâts chacun) et ignore 20 % d'armure ; au niv. 8, en tire 4.",
   "一次射 3 支创世之箭，暴击率 +12%，每支穿透 3 只怪并点燃目标；升到 5 级一次射 4 支，升到 10 级一次射 5 支。": "Tire 3 flèches de la Genèse à la fois, taux de critique +12 %, chacune transperce 3 monstres et enflamme la cible ; au niv. 5, en tire 4, au niv. 10, en tire 5.",
   "一次射 3 支屠龙箭，每支穿透同一车道最多 3 只怪（每只 80% 伤害），对 Boss 伤害 +50%，无视 40% 护甲；升到 8 级一次射 4 支。": "Tire 3 flèches tueuses de dragon à la fois, chacune transperce jusqu'à 3 monstres de la même voie (80 % de dégâts chacun), dégâts contre les Boss +50 %, ignore 40 % d'armure ; au niv. 8, en tire 4.",
+  "回归的小 Boss 被击败：+{0} 银币": "Mini-boss de retour vaincu : +{0} d'argent",
 });

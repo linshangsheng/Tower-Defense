@@ -2008,4 +2008,5 @@ TD.i18n.register("id", {
   "一次射 3 支穿心箭，每支穿过同一车道最多 3 只怪（每只 75% 伤害），无视 20% 护甲；升到 8 级一次射 4 支。": "Menembakkan 3 panah penembus jantung, tiap panah menembus hingga 3 monster di jalur yang sama (masing-masing 75% damage), menembus 20% zirah; di Lv8 menembakkan 4 panah.",
   "一次射 3 支创世之箭，暴击率 +12%，每支穿透 3 只怪并点燃目标；升到 5 级一次射 4 支，升到 10 级一次射 5 支。": "Menembakkan 3 panah penciptaan, peluang krit +12%, tiap panah menembus 3 monster dan membakar sasaran; di Lv5 menembakkan 4 panah, di Lv10 menembakkan 5 panah.",
   "一次射 3 支屠龙箭，每支穿透同一车道最多 3 只怪（每只 80% 伤害），对 Boss 伤害 +50%，无视 40% 护甲；升到 8 级一次射 4 支。": "Menembakkan 3 panah pembunuh naga, tiap panah menembus hingga 3 monster di jalur yang sama (masing-masing 80% damage), damage terhadap Boss +50%, menembus 40% zirah; di Lv8 menembakkan 4 panah.",
+  "回归的小 Boss 被击败：+{0} 银币": "Mini Boss yang kembali dikalahkan: +{0} perak",
 });

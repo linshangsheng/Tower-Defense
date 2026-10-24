@@ -2008,4 +2008,5 @@ TD.i18n.register("it", {
   "一次射 3 支穿心箭，每支穿过同一车道最多 3 只怪（每只 75% 伤害），无视 20% 护甲；升到 8 级一次射 4 支。": "Scocca 3 frecce perforanti, ognuna trapassa fino a 3 mostri nella stessa corsia (75% dei danni ciascuno), ignora il 20% dell'armatura; al Lv8 ne scocca 4.",
   "一次射 3 支创世之箭，暴击率 +12%，每支穿透 3 只怪并点燃目标；升到 5 级一次射 4 支，升到 10 级一次射 5 支。": "Scocca 3 frecce della genesi, prob. critico +12%, ognuna trapassa 3 mostri e incendia il bersaglio; al Lv5 ne scocca 4, al Lv10 ne scocca 5.",
   "一次射 3 支屠龙箭，每支穿透同一车道最多 3 只怪（每只 80% 伤害），对 Boss 伤害 +50%，无视 40% 护甲；升到 8 级一次射 4 支。": "Scocca 3 frecce ammazzadraghi, ognuna trapassa fino a 3 mostri nella stessa corsia (80% dei danni ciascuno), +50% di danni ai Boss, ignora il 40% dell'armatura; al Lv8 ne scocca 4.",
+  "回归的小 Boss 被击败：+{0} 银币": "Mini boss tornato sconfitto: +{0} argento",
 });

@@ -2008,4 +2008,5 @@ TD.i18n.register("vi", {
   "一次射 3 支穿心箭，每支穿过同一车道最多 3 只怪（每只 75% 伤害），无视 20% 护甲；升到 8 级一次射 4 支。": "Bắn 3 mũi tên xuyên tim, mỗi mũi xuyên tối đa 3 con quái trong cùng làn (mỗi con 75% sát thương), bỏ qua 20% giáp; lên cấp 8 bắn 4 mũi.",
   "一次射 3 支创世之箭，暴击率 +12%，每支穿透 3 只怪并点燃目标；升到 5 级一次射 4 支，升到 10 级一次射 5 支。": "Bắn 3 mũi tên sáng thế, tỉ lệ chí mạng +12%, mỗi mũi xuyên 3 con quái và thiêu cháy mục tiêu; lên cấp 5 bắn 4 mũi, lên cấp 10 bắn 5 mũi.",
   "一次射 3 支屠龙箭，每支穿透同一车道最多 3 只怪（每只 80% 伤害），对 Boss 伤害 +50%，无视 40% 护甲；升到 8 级一次射 4 支。": "Bắn 3 mũi tên diệt rồng, mỗi mũi xuyên tối đa 3 con quái trong cùng làn (mỗi con 80% sát thương), sát thương lên Boss +50%, bỏ qua 40% giáp; lên cấp 8 bắn 4 mũi.",
+  "回归的小 Boss 被击败：+{0} 银币": "Đã hạ mini boss quay lại: +{0} bạc",
 });

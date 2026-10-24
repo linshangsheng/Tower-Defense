@@ -3344,6 +3344,7 @@ function queuedTotals(n, opts) {
   for (let i = 0; i < b.level.waves.length; i++) {
     b.startWave(i);
     for (const t of b.spawnQueue) {
+      if (t[0] === '@') continue; // 回归的小 Boss（设计书 110）另测
       types[t] = (types[t] || 0) + 1;
       if (D.monsters[t].boss) bosses++;
       else minions++;
@@ -4268,4 +4269,67 @@ test('结束音：胜利 / 失败 / 登场 / 新一波都用上了铜管、定�
   }
   assert.ok(counts.win >= 40, `胜利号角应该很丰满：${counts.win}`);
   assert.ok(counts.boss >= 30 && counts.lose >= 15 && counts.wave >= 6, JSON.stringify(counts));
+});
+
+// ---------- v1.10：回归的小 Boss（设计书 110） ----------
+test('回归的小 Boss：51 关起普通小关卡常常出现，是之前小 Boss 关里的小 Boss；小 Boss / 大 Boss / 精英挑战关和 51 关以前不出现', () => {
+  const s = P.newSave();
+  const mk = (n, seed) => new TD.Battle({ level: n, stats: P.heroStats(s), seed, loadout: { active: [], items: [] } });
+  const minis = new Set();
+  for (let k = 1; k <= 100; k++) if (D.levels[k].type === 'miniboss') for (const w of D.levels[k].waves) for (const [t] of w.groups) if (D.monsters[t].boss) minis.add(t);
+  let hit = 0;
+  let total = 0;
+  for (let n = 51; n <= 100; n++) {
+    if (['miniboss', 'boss', 'elite'].includes(D.levels[n].type)) {
+      assert.deepStrictEqual(mk(n, 1).returnBosses, [], `第 ${n} 关不加`);
+      continue;
+    }
+    for (let seed = 1; seed <= 4; seed++) {
+      const b = mk(n, seed);
+      total++;
+      if (b.returnBosses.length) hit++;
+      for (const r of b.returnBosses) {
+        assert.ok(minis.has(r.type), r.type + ' 是小 Boss');
+        // 只出现"之前"的小 Boss
+        assert.ok([...Array(n).keys()].some((k) => k >= 1 && k < n && D.levels[k].type === 'miniboss' && D.levels[k].waves.some((w) => w.groups.some(([t]) => t === r.type))), `第 ${n} 关出现的 ${r.type} 之前没打过`);
+        assert.ok(r.wave >= 0 && r.wave < D.levels[n].waves.length);
+      }
+      assert.ok(b.returnBosses.length <= (n >= TD.config.returnBossLateFrom ? 2 : 1));
+    }
+  }
+  assert.ok(hit / total > 0.45 && hit / total < 0.75, '大约 60% 的小关卡会出现：' + hit / total);
+  for (const n of [1, 30, 49, 50]) assert.deepStrictEqual(mk(n, 1).returnBosses, []);
+  // 自定义关卡不加；同一个种子结果固定
+  assert.deepStrictEqual(new TD.Battle({ level: 52, levelDef: D.levels[52], stats: P.heroStats(s), seed: 1, loadout: { active: [], items: [] } }).returnBosses, []);
+  assert.deepStrictEqual(mk(53, 3).returnBosses, mk(53, 3).returnBosses);
+});
+
+test('回归的小 Boss：排在那一波最后出场、血量打折，击败得 1 银币，通关结算加上；没击败不给', () => {
+  const s = P.newSave();
+  let b = null;
+  for (let seed = 1; seed < 40 && !b; seed++) {
+    const c = new TD.Battle({ level: 61, stats: P.heroStats(s), seed, loadout: { active: [], items: [] } });
+    if (c.returnBosses.length) b = c;
+  }
+  assert.ok(b);
+  const r = b.returnBosses[0];
+  b.startWave(r.wave);
+  assert.strictEqual(b.spawnQueue[b.spawnQueue.length - 1], '@' + r.type);
+  const m = b.spawnFromQueue('@' + r.type, 1);
+  const full = Math.round(D.monsters[r.type].hp * b.D * b.diffHp * TD.config.bossHpMult);
+  assert.ok(m.returning && Math.abs(m.maxHp - full * TD.config.returnBossHpMult) <= 1, '血量打折');
+  assert.strictEqual(b.killSilver, 0);
+  b.kill(m);
+  assert.strictEqual(b.killSilver, TD.config.returnBossSilver);
+  // 普通怪不给银币
+  const slime = b.spawnMonster('slime', 0);
+  b.kill(slime);
+  assert.strictEqual(b.killSilver, TD.config.returnBossSilver);
+  // 结算：银币和提示，普通关卡本来不给银币
+  const save = P.newSave();
+  const out = P.applyResult(save, 61, { win: true, wallRatio: 1, killCopper: 0, earlyCopper: 0, killSilver: 1 });
+  assert.strictEqual(out.silver, 1);
+  assert.ok(out.notes.some((x) => x.includes('回归的小 Boss')));
+  const out2 = P.applyResult(P.newSave(), 62, { win: true, wallRatio: 1, killCopper: 0, earlyCopper: 0, killSilver: 0 });
+  assert.strictEqual(out2.silver, 0);
 });

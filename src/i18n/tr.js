@@ -2008,4 +2008,5 @@ TD.i18n.register("tr", {
   "一次射 3 支穿心箭，每支穿过同一车道最多 3 只怪（每只 75% 伤害），无视 20% 护甲；升到 8 级一次射 4 支。": "Aynı anda 3 kalpleyen ok atar, her biri aynı şeritte en fazla 3 canavarı deler (her biri %75 hasar), zırhın %20'sini yok sayar; 8. seviyede 4 ok atar.",
   "一次射 3 支创世之箭，暴击率 +12%，每支穿透 3 只怪并点燃目标；升到 5 级一次射 4 支，升到 10 级一次射 5 支。": "Aynı anda 3 Yaratılış oku atar, kritik oranı +%12, her biri 3 canavarı deler ve hedefi tutuşturur; 5. seviyede 4, 10. seviyede 5 ok atar.",
   "一次射 3 支屠龙箭，每支穿透同一车道最多 3 只怪（每只 80% 伤害），对 Boss 伤害 +50%，无视 40% 护甲；升到 8 级一次射 4 支。": "Aynı anda 3 ejderha katili ok atar, her biri aynı şeritte en fazla 3 canavarı deler (her biri %80 hasar), Boss'lara hasar +%50, zırhın %40'ını yok sayar; 8. seviyede 4 ok atar.",
+  "回归的小 Boss 被击败：+{0} 银币": "Geri dönen mini patron yenildi: +{0} gümüş",
 });
