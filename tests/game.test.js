@@ -4425,3 +4425,20 @@ test('采样解码限流：同时最多 4 个，全部完成，失败也不卡�
   assert.ok(peak <= 4 && peak >= 2, '同时解码数 ' + peak);
   assert.strictEqual(out.filter((x) => x === 'fail').length, 3);
 });
+
+test('多出的小怪不会全堆进一波：每关各波分到的数量和该波原有小怪数量成比例（第 50 关以前是一波 250 只战车）', () => {
+  for (const n of [20, 30, 45, 50, 57, 70, 88, 100]) {
+    const b = queuedTotals(n).b;
+    const lv = D.levels[n];
+    const cm = lv.countMult || 1;
+    const per = b.extraPlan.map((p) => (p ? p.reduce((x, [, c]) => x + c, 0) : 0));
+    const total = per.reduce((x, y) => x + y, 0);
+    if (!total) continue;
+    const minions = lv.waves.map((w) => w.groups.reduce((x, [t, c]) => x + (D.monsters[t].boss ? 0 : Math.max(1, Math.round(c * cm))), 0));
+    const msum = minions.reduce((x, y) => x + y, 0);
+    per.forEach((e, i) => assert.ok(Math.abs(e - (total * minions[i]) / msum) <= 8, `第 ${n} 关第 ${i + 1} 波：多出 ${e} 只，按比例应约 ${Math.round((total * minions[i]) / msum)}`));
+  }
+  // 第 50 关：每一波都分到了
+  const e50 = queuedTotals(50).b.extraPlan;
+  assert.ok(e50.every((p) => p && p.length), '第 50 关每一波都有多出的小怪');
+});
