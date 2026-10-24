@@ -241,8 +241,126 @@
         } else if (e.id === 'chrono') {
           V.chronoRings(C.heroX + 10, battle.heroY, C.width, C.height);
           for (let l = 0; l < battle.lanes; l++) iceLane(l, 10);
-        }
+        } else itemFx(e);
       });
+      // v1.05 新增道具的特效（设计书 107）：大多是现成特效换颜色 / 组合，少数用 vfx3 里新做的石刺 / 雾 / 渔网
+      const heroPt = () => [C.heroX + 10, battle.heroY - 10];
+      const itemFx = (e) => {
+        const lane = e.lane;
+        const lb = lane !== undefined ? laneBox(lane) : null;
+        const x1 = Math.min(C.width - 20, C.wallX + battle.range + 140);
+        const field = [C.wallX, C.width, C.fieldTop, C.fieldBottom];
+        switch (e.id) {
+          case 'spikeTrap':
+            V.spikeRow(C.wallX + 90, x1, lb.y0 + lb.h * 0.7, 14, '#b8c4d6');
+            V.laneFlash(C.wallX, C.width, lb.y0, lb.h, '#cdd8ea');
+            this.shake = Math.max(this.shake, 5);
+            break;
+          case 'smokeBomb':
+            V.fogCloud(field[0], field[1], field[2], field[3], 3.5, '#b8bec8', 26);
+            break;
+          case 'bandage':
+            wallHeal(false);
+            break;
+          case 'whetstone':
+            V.shockwave(...heroPt(), '#ffd27a', 2);
+            V.star(C.heroX + 40, battle.heroY - 40, '#fff2c0', 40, 8, 0.4);
+            break;
+          case 'luckyCoin':
+            V.bloom(C.heroX + 10, battle.heroY - 40, '#ffd23f', 90);
+            V.spawn(20, () => ({ kind: 'mote', x: C.heroX + 10 + (Math.random() - 0.5) * 60, y: battle.heroY - 20, vx: (Math.random() - 0.5) * 60, vy: -80 - Math.random() * 90, g: 160, life: 1, r: 2.4, color: '#ffd23f' }));
+            break;
+          case 'ropeNet':
+            V.netCast(C.wallX + 40, x1, lb.y0, lb.h);
+            break;
+          case 'oilFlask':
+            V.laneFlash(C.wallX, C.width, lb.y0, lb.h, '#7a5a20');
+            V.fogCloud(C.wallX + 60, x1, lb.y0, lb.y0 + lb.h, 2.5, '#6a4a20', 10);
+            break;
+          case 'woodShield':
+            V.barrier(C.wallX - 20, C.fieldTop, C.fieldBottom);
+            break;
+          case 'farsightPotion':
+            V.shockwave(...heroPt(), '#7fe0ff', 3);
+            break;
+          case 'poisonFlask':
+            V.fogCloud(C.wallX + 40, x1, lb.y0 - 10, lb.y0 + lb.h + 10, 3, '#6fdc4a', 16);
+            V.laneFlash(C.wallX, C.width, lb.y0, lb.h, '#7fe05a');
+            break;
+          case 'mirrorShield':
+            V.barrier(C.wallX - 20, C.fieldTop, C.fieldBottom);
+            V.shockwave(C.wallX - 10, (C.fieldTop + C.fieldBottom) / 2, '#bfe6ff', 2);
+            break;
+          case 'vampDraught':
+            V.shockwave(...heroPt(), '#ff5a7a', 2);
+            wallHeal(false);
+            break;
+          case 'earthSpike':
+            V.quake(C.wallX + 40, C.wallX + 520, C.fieldTop, C.fieldBottom);
+            this.shake = Math.max(this.shake, 14);
+            break;
+          case 'glueTrap':
+            V.fogCloud(field[0], field[1], field[2], field[3], 3.5, '#d9a84a', 24);
+            break;
+          case 'rageDraught':
+            V.shockwave(...heroPt(), '#ff5a3a', 3);
+            V.bloom(C.heroX + 10, battle.heroY - 40, '#ff6a3a', 100);
+            break;
+          case 'thunderStorm':
+          case 'stormCall':
+            this.fx.push({ kind: 'flash', color: '#8aa0d8', life: 0.4, age: 0 });
+            break;
+          case 'steelArrows':
+            V.shockwave(...heroPt(), '#cfd8e6', 2);
+            break;
+          case 'dragonBreath':
+            for (let l = 0; l < battle.lanes; l++) {
+              const b = laneBox(l);
+              setTimeout(() => V.fireWall(C.wallX, C.width - 30, b.y0, b.h), l * 90);
+            }
+            this.fx.push({ kind: 'flash', color: '#ff9a4a', life: 0.4, age: 0 });
+            this.shake = Math.max(this.shake, 16);
+            break;
+          case 'blackHole':
+            this.fx.push({ kind: 'flash', color: '#4a2a8a', life: 0.4, age: 0 });
+            this.shake = Math.max(this.shake, 8);
+            break;
+          case 'sanctuary':
+            V.holyBeam(C.wallX - 30, C.fieldTop, C.fieldBottom);
+            V.barrier(C.wallX - 20, C.fieldTop, C.fieldBottom);
+            this.fx.push({ kind: 'flash', color: '#fff2c4', life: 0.4, age: 0 });
+            break;
+          case 'phoenixFeather':
+            wallHeal(true);
+            V.bloom(C.wallX - 10, (C.fieldTop + C.fieldBottom) / 2, '#ff8a2a', 180);
+            V.spawn(26, () => ({ kind: 'ember', x: C.wallX + (Math.random() - 0.5) * 80, y: C.fieldTop + Math.random() * (C.fieldBottom - C.fieldTop), vx: (Math.random() - 0.5) * 40, vy: -60 - Math.random() * 100, g: -20, life: 1.4, r: 2.4, color: Math.random() < 0.5 ? '#ffd27a' : '#ff7a3a' }));
+            this.fx.push({ kind: 'flash', color: '#ffb060', life: 0.35, age: 0 });
+            break;
+          case 'timeLoop':
+            V.chronoRings(C.heroX + 10, battle.heroY, C.width, C.height);
+            wallHeal(true);
+            break;
+          case 'godWrath':
+            this.fx.push({ kind: 'flash', color: '#ffffff', life: 0.5, age: 0 });
+            this.shake = Math.max(this.shake, 20);
+            break;
+          case 'goldenArrow':
+            V.bloom(C.heroX + 30, battle.heroY - 40, '#ffd23f', 110);
+            V.star(C.heroX + 30, battle.heroY - 40, '#fff2c0', 60, 8, 0.5);
+            break;
+          case 'plague':
+            V.fogCloud(field[0], field[1], field[2], field[3], 4.5, '#6fdc4a', 28);
+            break;
+          default:
+        }
+      };
+      on('popHit', (e) => {
+        if (!V) return;
+        V.boom(e.x, e.y, 0.55);
+        V.star(e.x, e.y - 10, e.color || '#ffb060', 34, 6, 0.3);
+      });
+      on('spikeHit', (e) => V && V.spikeRow(e.x - 24, e.x + 24, e.y + 14, 3, '#a89478'));
+      on('stormBolt', (e) => V && V.thunder(e.x, e.y, 0.6));
       on('scrollBolt', (e) => {
         if (!V) return;
         V.thunder(e.x, e.y, 0.75);

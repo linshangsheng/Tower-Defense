@@ -1968,15 +1968,308 @@ function itemBattle(id, level) {
 }
 const bigHp = (m) => ((m.hp = m.maxHp = 1e9), m);
 
-test('消耗品：共 16 种（含被动幸运符），价格按铜 → 银 → 金分档', () => {
+test('消耗品：共 45 种（铜 / 银 / 金每档 15 种，银档含被动幸运符），价格按铜 → 银 → 金分档', () => {
   const ids = Object.keys(D.items);
-  assert.strictEqual(ids.length, 16);
-  const tier = (it) => (it.cost.gold ? 3 : it.cost.silver ? 2 : 1);
+  assert.strictEqual(ids.length, 45);
+  const tier = (it) => (it.cost.gold || it.cost.diamond ? 3 : it.cost.silver ? 2 : 1);
+  const by = { 1: [], 2: [], 3: [] };
+  for (const id of ids) by[tier(D.items[id])].push(id);
+  assert.deepStrictEqual([by[1].length, by[2].length, by[3].length], [15, 15, 15]);
   for (const id of ['firebomb', 'bomb', 'patch', 'haste', 'freeze']) assert.strictEqual(tier(D.items[id]), 1, id);
   for (const id of ['thunderScroll', 'bigBomb', 'barrier', 'warBanner', 'quake']) assert.strictEqual(tier(D.items[id]), 2, id);
   for (const id of ['blizzard', 'flood', 'holyLight', 'meteor', 'chrono']) assert.strictEqual(tier(D.items[id]), 3, id);
   assert.ok(D.items.chrono.cost.gold > D.items.blizzard.cost.gold, '时间静止比暴风雪更贵');
   assert.ok(D.items.quake.cost.silver > D.items.thunderScroll.cost.silver);
+  // 每个道具都有冷却（被动的幸运符除外）、名字和说明，名字不重复
+  for (const id of ids) {
+    assert.ok(D.items[id].name && D.items[id].desc, id);
+    if (!D.items[id].passive) assert.ok(D.items[id].cd > 0, id + ' 没有冷却');
+  }
+  assert.strictEqual(new Set(ids.map((id) => D.items[id].name)).size, 45, '名字不重复');
+});
+
+test('新增 29 个道具：每个都能用出去、有效果、进冷却、少一个；需要选车道的会打在选定的车道上', () => {
+  const NEW = ['spikeTrap', 'smokeBomb', 'bandage', 'whetstone', 'luckyCoin', 'ropeNet', 'firecracker', 'oilFlask', 'woodShield', 'farsightPotion', 'chainScroll', 'poisonFlask', 'mirrorShield', 'vampDraught', 'earthSpike', 'glueTrap', 'rageDraught', 'thunderStorm', 'steelArrows', 'dragonBreath', 'blackHole', 'sanctuary', 'phoenixFeather', 'stormCall', 'timeLoop', 'godWrath', 'goldenArrow', 'plague', 'shadowLegion'];
+  assert.strictEqual(NEW.length, 29);
+  for (const id of NEW) {
+    const b = itemBattle(id);
+    const ms = [bigHp(b.spawnMonster('slime', 1, 500)), bigHp(b.spawnMonster('slime', 1, 640)), bigHp(b.spawnMonster('slime', 2, 560))];
+    b.wall.hp = b.wall.max * 0.5;
+    const hp0 = ms.map((m) => m.hp);
+    const left0 = b.items[0].left;
+    assert.ok(b.useItem(0, 1), id + ' 用不出去');
+    assert.strictEqual(b.items[0].left, left0 - 1, id + ' 没有少一个');
+    assert.ok(b.items[0].cd > 0, id + ' 没进冷却');
+    for (let i = 0; i < 400; i++) b.step(0.05); // 让延时 / 持续的效果走完，不应该报错
+  }
+});
+
+test('新道具的具体效果（铜档）', () => {
+  const step = (b, sec) => {
+    for (let i = 0; i < sec * 20; i++) b.step(0.05);
+  };
+  // 尖刺陷阱：选定车道受伤并减速，别的车道不受影响
+  let b = itemBattle('spikeTrap');
+  let a1 = bigHp(b.spawnMonster('slime', 1, 600));
+  let a2 = bigHp(b.spawnMonster('slime', 2, 600));
+  b.heroStunUntil = Infinity;
+  b.useItem(0, 1);
+  assert.ok(a1.hp < 1e9 && a1.slowAmt >= D.items.spikeTrap.slow - 1e-9 && a2.hp === 1e9);
+  // 烟雾弹：全场减速
+  b = itemBattle('smokeBomb');
+  a1 = bigHp(b.spawnMonster('slime', 1, 600));
+  a2 = bigHp(b.spawnMonster('slime', 3, 700));
+  b.useItem(0);
+  assert.ok(a1.slowAmt >= 0.35 - 1e-9 && a2.slowAmt >= 0.35 - 1e-9);
+  // 绷带：6 秒内逐渐回血，共 12%
+  b = itemBattle('bandage');
+  b.heroStunUntil = Infinity;
+  b.wall.hp = b.wall.max * 0.5;
+  b.useItem(0);
+  step(b, 1);
+  assert.ok(b.wall.hp > b.wall.max * 0.5 && b.wall.hp < b.wall.max * 0.62, '才过 1 秒，还没回完');
+  step(b, 7);
+  assert.ok(Math.abs(b.wall.hp - b.wall.max * 0.62) < b.wall.max * 0.002, `共回 12%：${b.wall.hp / b.wall.max}`);
+  // 磨刀石：暴击率 +25%，到时间失效
+  b = itemBattle('whetstone');
+  const c0 = b.rollHitCritRate ? 0 : 0;
+  b.useItem(0);
+  assert.ok(b.buffs.some((x) => x.crit === 0.25 && x.until > b.time));
+  // 幸运铜币：击败的怪掉 2 倍铜币，过期恢复
+  b = itemBattle('luckyCoin');
+  b.heroStunUntil = Infinity;
+  a1 = b.spawnMonster('slime', 1, 600);
+  const cu = a1.def.copper;
+  const k0 = b.killCopper;
+  b.useItem(0);
+  b.kill(a1);
+  assert.strictEqual(b.killCopper - k0, cu * 2);
+  b.time += 16;
+  const a3 = b.spawnMonster('slime', 1, 600);
+  const k1 = b.killCopper;
+  b.kill(a3);
+  assert.strictEqual(b.killCopper - k1, cu);
+  // 绳网：选定车道眩晕，Boss 只晕 0.8 秒
+  b = itemBattle('ropeNet');
+  a1 = bigHp(b.spawnMonster('slime', 1, 600));
+  const boss = bigHp(b.spawnMonster('boarKing', 1, 700));
+  a2 = bigHp(b.spawnMonster('slime', 2, 600));
+  b.useItem(0, 1);
+  assert.ok(Math.abs(a1.stunUntil - b.time - 2) < 1e-9 && Math.abs(boss.stunUntil - b.time - 0.8) < 1e-9 && a2.stunUntil <= b.time);
+  // 鞭炮：随机 8 只受伤并眩晕（怪不足 8 只就全打）
+  b = itemBattle('firecracker');
+  b.heroStunUntil = Infinity;
+  const crackers = Array.from({ length: 10 }, (_, i) => bigHp(b.spawnMonster('slime', i % 4, 500 + i * 30)));
+  b.useItem(0);
+  assert.strictEqual(crackers.filter((m) => m.hp < 1e9).length, 8);
+  assert.ok(crackers.filter((m) => m.hp < 1e9).every((m) => m.stunUntil > b.time));
+  // 油罐：减速 + 受到的伤害 +30%
+  b = itemBattle('oilFlask');
+  a1 = bigHp(b.spawnMonster('slime', 1, 600));
+  b.useItem(0, 1);
+  assert.ok(a1.slowAmt >= 0.5 - 1e-9);
+  const plain = bigHp(b.spawnMonster('slime', 2, 600));
+  assert.ok(Math.abs(b.damageMult(a1, { source: 'weapon' }) / b.damageMult(plain, { source: 'weapon' }) - 1.3) < 1e-9);
+  // 木盾：护盾吸收 12% 最大血量
+  b = itemBattle('woodShield');
+  b.useItem(0);
+  assert.ok(Math.abs(b.itemShield - b.wall.max * 0.12) < 1e-9);
+  // 远望药水：射程 +25%，到时间恢复
+  b = itemBattle('farsightPotion');
+  const r0 = b.range;
+  b.useItem(0);
+  assert.ok(Math.abs(b.range / r0 - 1.25) < 1e-9);
+  step(b, 16);
+  assert.ok(Math.abs(b.range - r0) < 1e-9, '射程恢复');
+});
+
+test('新道具的具体效果（银档）', () => {
+  const step = (b, sec) => {
+    for (let i = 0; i < sec * 20; i++) b.step(0.05);
+  };
+  // 连锁闪电符：劈血量最高的怪，再连锁跳（最多 8 次）
+  let b = itemBattle('chainScroll');
+  b.heroStunUntil = Infinity;
+  const ms = Array.from({ length: 10 }, (_, i) => bigHp(b.spawnMonster('slime', i % 4, 500 + i * 40)));
+  ms[3].hp = ms[3].maxHp = 2e9; // 血最多
+  b.useItem(0);
+  const hit = ms.filter((m) => m.hp < m.maxHp);
+  assert.strictEqual(hit.length, 9, `先劈 1 只 + 连锁 8 只：${hit.length}`);
+  assert.ok(ms[3].hp < ms[3].maxHp);
+  // 毒瓶：选定车道中毒，持续掉血共 ATK×6；别的车道没事
+  b = itemBattle('poisonFlask');
+  b.heroStunUntil = Infinity;
+  let a1 = bigHp(b.spawnMonster('slime', 1, 700));
+  let a2 = bigHp(b.spawnMonster('slime', 2, 700));
+  b.useItem(0, 1);
+  step(b, 7);
+  const dealt = 1e9 - a1.hp;
+  assert.ok(Math.abs(dealt / (b.atk * 6) - 1) < 0.15, `毒伤约 ATK×6：${dealt / b.atk}`);
+  assert.strictEqual(a2.hp, 1e9);
+  // 反射盾：怪打城墙时被反弹
+  b = itemBattle('mirrorShield');
+  b.heroStunUntil = Infinity;
+  a1 = bigHp(b.spawnMonster('slime', 1, 150));
+  b.useItem(0);
+  step(b, 3);
+  assert.ok(a1.hp < 1e9, '被反弹了');
+  // 吸血药剂：12 秒内每击败一只怪，回复 1.2% 城墙血量
+  b = itemBattle('vampDraught');
+  b.heroStunUntil = Infinity;
+  b.wall.hp = b.wall.max * 0.5;
+  b.useItem(0);
+  a1 = b.spawnMonster('slime', 1, 900);
+  b.kill(a1);
+  assert.ok(Math.abs(b.wall.hp - b.wall.max * 0.512) < 1e-6);
+  step(b, 13);
+  const hp1 = b.wall.hp;
+  b.kill(b.spawnMonster('slime', 1, 900));
+  assert.ok(Math.abs(b.wall.hp - hp1) < 1e-6, '到时间不再回血');
+  // 地刺符：离城墙近的怪受伤并眩晕，远处的不受影响
+  b = itemBattle('earthSpike');
+  b.heroStunUntil = Infinity;
+  const near = bigHp(b.spawnMonster('slime', 1, 300));
+  const far = bigHp(b.spawnMonster('slime', 1, 1000));
+  b.useItem(0);
+  assert.ok(near.hp < 1e9 && near.stunUntil > b.time && far.hp === 1e9);
+  // 粘胶：全场减速 60%，Boss 只减 30%
+  b = itemBattle('glueTrap');
+  a1 = bigHp(b.spawnMonster('slime', 1, 600));
+  const boss = bigHp(b.spawnMonster('boarKing', 2, 700));
+  b.useItem(0);
+  assert.ok(Math.abs(a1.slowAmt - 0.6) < 1e-9 && Math.abs(boss.slowAmt - 0.3) < 1e-9);
+  // 狂暴药水：攻击力 +40%、攻速 +30%
+  b = itemBattle('rageDraught');
+  const atk0 = b.atk;
+  const as0 = b.currentAspd();
+  b.useItem(0);
+  assert.ok(Math.abs(b.atk / atk0 - 1.4) < 1e-9 && b.currentAspd() > as0 * 1.25);
+  // 雷暴符：8 道落雷
+  b = itemBattle('thunderStorm');
+  b.heroStunUntil = Infinity;
+  bigHp(b.spawnMonster('slime', 1, 600));
+  let bolts = 0;
+  const old = b.emit.bind(b);
+  b.emit = (t, e) => (t === 'stormBolt' && bolts++, old(t, e));
+  b.useItem(0);
+  step(b, 5);
+  assert.strictEqual(bolts, 8);
+  // 钢箭：无视护甲 +40%，到时间恢复
+  b = itemBattle('steelArrows');
+  const ai0 = b.mods.armorIgnore;
+  b.useItem(0);
+  assert.ok(Math.abs(b.mods.armorIgnore - ai0 - 0.4) < 1e-9);
+  step(b, 13);
+  assert.ok(Math.abs(b.mods.armorIgnore - ai0) < 1e-9);
+});
+
+test('新道具的具体效果（金档）', () => {
+  const step = (b, sec) => {
+    for (let i = 0; i < sec * 20; i++) b.step(0.05);
+  };
+  // 龙息：全场魔法伤害 + 点燃 + 眩晕
+  let b = itemBattle('dragonBreath');
+  b.heroStunUntil = Infinity;
+  let a1 = bigHp(b.spawnMonster('slime', 0, 600));
+  let a2 = bigHp(b.spawnMonster('slime', 3, 900));
+  b.useItem(0);
+  assert.ok(a1.hp < 1e9 && a2.hp < 1e9 && a1.burnUntil > b.time && a2.stunUntil > b.time);
+  // 黑洞：把怪拉向中心
+  b = itemBattle('blackHole');
+  b.heroStunUntil = Infinity;
+  a1 = bigHp(b.spawnMonster('slime', 1, 560));
+  a2 = bigHp(b.spawnMonster('slime', 1, 780));
+  const gap = Math.abs(a1.x - a2.x);
+  assert.ok(b.useItem(0));
+  step(b, 1.5);
+  assert.ok(Math.abs(a1.x - a2.x) < gap * 0.6 && a1.hp < 1e9);
+  // 圣域：6 秒内城墙受到的伤害 −95%
+  b = itemBattle('sanctuary');
+  const w0 = b.wall.hp;
+  const hitAmt = w0 * 0.1;
+  b.hitWall(hitAmt, null);
+  const lossNormal = w0 - b.wall.hp;
+  b.wall.hp = w0;
+  b.useItem(0);
+  b.hitWall(hitAmt, null);
+  assert.ok((w0 - b.wall.hp) / lossNormal < 0.1, '圣域减伤');
+  // 凤凰之羽：城墙被打倒时复活并回 80%；只触发一次；已经武装 / 已经用过复活不能再用
+  b = itemBattle('phoenixFeather');
+  assert.ok(b.useItem(0));
+  b.hitWall(1e9, null);
+  assert.ok(!b.over && Math.abs(b.wall.hp - b.wall.max * 0.8) < 1e-6, '复活并回 80%');
+  b.hitWall(1e9, null);
+  assert.ok(b.over, '第二次被打倒就结束了');
+  // 风暴召唤：20 道落雷
+  b = itemBattle('stormCall');
+  b.heroStunUntil = Infinity;
+  bigHp(b.spawnMonster('slime', 1, 600));
+  let bolts = 0;
+  const old = b.emit.bind(b);
+  b.emit = (t, e) => (t === 'stormBolt' && bolts++, old(t, e));
+  b.useItem(0);
+  step(b, 6);
+  assert.strictEqual(bolts, 20);
+  // 时光回溯：技能冷却清零 + 回血 30%
+  const s = P.newSave();
+  clearUpTo(s, 69);
+  s.activeOwned.thunder = true;
+  s.loadout.active = ['thunder', null, null];
+  s.inventory = { timeLoop: 1 };
+  P.equipItem(s, 0, 'timeLoop', 1);
+  b = new TD.Battle({ level: 41, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 3 });
+  b.waveState = 'spawning';
+  b.skills[0].cd = 12;
+  b.wall.hp = b.wall.max * 0.4;
+  b.useItem(0);
+  assert.strictEqual(b.skills[0].cd, 0);
+  assert.ok(Math.abs(b.wall.hp - b.wall.max * 0.7) < 1e-6);
+  // 天罚：血量低于 40% 的普通怪当场抹杀，Boss 吃魔法伤害不会被秒
+  b = itemBattle('godWrath');
+  b.heroStunUntil = Infinity;
+  const weak = b.spawnMonster('slime', 0, 600);
+  weak.hp = weak.maxHp * 0.3;
+  const healthy = bigHp(b.spawnMonster('slime', 1, 600));
+  const lowBoss = bigHp(b.spawnMonster('boarKing', 2, 700));
+  lowBoss.hp = lowBoss.maxHp * 0.1;
+  b.useItem(0);
+  assert.ok(weak.dead, '低血量的当场抹杀');
+  assert.ok(!healthy.dead && healthy.hp < 1e9);
+  assert.ok(!lowBoss.dead, 'Boss 不会被直接抹杀');
+  // 黄金箭：接下来 10 次攻击必定暴击并额外放大
+  b = itemBattle('goldenArrow');
+  b.useItem(0);
+  assert.strictEqual(b.goldenShots, 10);
+  const r = b.rollHit(1);
+  assert.ok(r.crit && b.goldenShots === 9);
+  const normal = (() => {
+    const c = itemBattle('goldenArrow');
+    c.goldenShots = 0;
+    let best = 0;
+    for (let i = 0; i < 50; i++) best = Math.max(best, c.rollHit(1).dmg);
+    return best;
+  })();
+  assert.ok(r.dmg >= normal * 2.4, `放大后至少是普通暴击的 2.5 倍：${r.dmg} vs ${normal}`);
+  // 瘟疫：全场中毒，共 ATK×14
+  b = itemBattle('plague');
+  b.heroStunUntil = Infinity;
+  a1 = bigHp(b.spawnMonster('slime', 0, 700));
+  a2 = bigHp(b.spawnMonster('slime', 3, 900));
+  b.useItem(0);
+  step(b, 9);
+  assert.ok(Math.abs((1e9 - a1.hp) / (b.atk * 14) - 1) < 0.1 && Math.abs((1e9 - a2.hp) / (b.atk * 14) - 1) < 0.1);
+  // 影分身军团：12 秒内每次攻击多 3 箭
+  const shots = (use) => {
+    const c = itemBattle('shadowLegion');
+    const m = bigHp(c.spawnMonster('slime', 1, 400));
+    if (use) c.useItem(0);
+    let n = 0;
+    const o = c.emit.bind(c);
+    c.emit = (t, e) => (t === 'shoot' && n++, o(t, e));
+    step(c, 3);
+    return n;
+  };
+  assert.ok(shots(true) >= shots(false) * 3.5, '影分身多射 3 箭');
 });
 
 test('暴风雪卷轴：冻结全体 6 秒，Boss 3 秒，解冻后减速', () => {

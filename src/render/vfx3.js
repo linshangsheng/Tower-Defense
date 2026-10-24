@@ -93,6 +93,24 @@
     this.fx.push({ kind: 'ring', x, y, r0: 4, r1: 30, color: '#7fe0ff', w: 2.4, life: 0.3, age: 0 });
   };
 
+  // v1.05 道具特效：石刺、烟雾 / 毒雾、渔网
+  V.spikeRow = function (x0, x1, y, n, color) {
+    for (let i = 0; i < n; i++) {
+      const x = x0 + ((x1 - x0) * (i + 0.5)) / n + rnd(-8, 8);
+      this.fx.push({ kind: 'rockSpike', x, y: y + rnd(-10, 12), h: rnd(34, 74), w: rnd(8, 14), lean: rnd(-0.25, 0.2), color: color || '#a89478', life: 1.1, age: -(i % 5) * 0.04 });
+    }
+    this.spawn(Math.min(24, n * 2), () => ({ kind: 'smoke', x: rnd(x0, x1), y: y + rnd(-4, 14), vx: rnd(-14, 14), vy: rnd(-26, -8), life: 0.9, r: rnd(6, 11), color: '#8a7a68' }));
+  };
+  V.fogCloud = function (x0, x1, y0, y1, dur, color, count) {
+    const blobs = [];
+    for (let i = 0; i < (count || 20); i++) blobs.push({ x: rnd(x0, x1), y: rnd(y0, y1), r: rnd(40, 90), ph: rnd(0, TAU), sp: rnd(0.3, 0.9) });
+    this.fx.push({ kind: 'fogCloud', blobs, color, life: dur, age: 0 });
+    this.spawn(Math.min(16, count || 16), () => ({ kind: 'mote', x: rnd(x0, x1), y: rnd(y0, y1), vx: rnd(-8, 8), vy: rnd(-30, -10), life: rnd(0.8, 1.6), r: rnd(1.6, 3), color, drag: 0.98 }));
+  };
+  V.netCast = function (x0, x1, y0, h) {
+    this.fx.push({ kind: 'net', x0, x1, y0, h, life: 0.9, age: 0 });
+  };
+
   // ---------------- 绘制 ----------------
   const DRAW = {
     lance(ctx, f, k) {
@@ -242,6 +260,64 @@
       const [hx, hy] = bz(e);
       this.glow(ctx, hx, hy, 20, f.color, 0.9);
       this.glow(ctx, hx, hy, 9, '#ffffff', 1);
+    },
+    rockSpike(ctx, f, k) {
+      // 石刺：快速顶出（前 20%）→ 停留 → 碎掉淡出
+      const grow = 1 - Math.pow(1 - Math.min(1, k / 0.2), 3);
+      const fade = k > 0.7 ? (1 - k) / 0.3 : 1;
+      const h = f.h * grow;
+      ctx.translate(f.x, f.y);
+      ctx.rotate(f.lean);
+      ctx.globalAlpha = fade;
+      const g = ctx.createLinearGradient(-f.w, 0, f.w, 0);
+      g.addColorStop(0, rgba(f.color, 0.75));
+      g.addColorStop(0.5, '#e8dcc8');
+      g.addColorStop(1, rgba(f.color, 0.9));
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.moveTo(-f.w * 0.65, 0);
+      ctx.lineTo(-f.w * 0.1, -h * 0.6);
+      ctx.lineTo(f.w * 0.05, -h);
+      ctx.lineTo(f.w * 0.4, -h * 0.5);
+      ctx.lineTo(f.w * 0.65, 0);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(40,30,20,0.6)';
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
+    },
+    fogCloud(ctx, f, k) {
+      const fade = Math.min(1, f.age / 0.4) * (k > 0.75 ? (1 - k) / 0.25 : 1);
+      ctx.globalCompositeOperation = 'lighter';
+      for (const b of f.blobs) {
+        const x = b.x + Math.sin(f.age * b.sp + b.ph) * 18;
+        const y = b.y + Math.cos(f.age * b.sp * 0.8 + b.ph) * 8;
+        this.glow(ctx, x, y, b.r, f.color, 0.14 * fade);
+      }
+    },
+    net(ctx, f, k) {
+      const fade = k < 0.6 ? 1 : (1 - k) / 0.4;
+      const drop = easeOut(k / 0.25);
+      ctx.strokeStyle = rgba('#d8b878', 0.9 * fade);
+      ctx.lineWidth = 2.4;
+      const n = 14;
+      const cols = Math.floor((f.x1 - f.x0) / 36);
+      for (let i = 0; i <= cols; i++) {
+        const x = f.x0 + (i / cols) * (f.x1 - f.x0);
+        ctx.beginPath();
+        ctx.moveTo(x, f.y0 - 30 * (1 - drop));
+        ctx.lineTo(x, f.y0 + f.h * drop);
+        ctx.stroke();
+      }
+      for (let j = 0; j <= 4; j++) {
+        const y = f.y0 + (j / 4) * f.h * drop;
+        ctx.beginPath();
+        ctx.moveTo(f.x0, y);
+        ctx.lineTo(f.x1, y);
+        ctx.stroke();
+      }
+      ctx.fillStyle = rgba('#8a6a3a', 0.9 * fade);
+      for (let i = 0; i <= cols; i++) for (let j = 0; j <= 4; j++) ctx.fillRect(f.x0 + (i / cols) * (f.x1 - f.x0) - 2, f.y0 + (j / 4) * f.h * drop - 2, 4, 4);
     },
     crescent(ctx, f, k) {
       const fade = k > 0.85 ? (1 - k) / 0.15 : 1;

@@ -194,7 +194,7 @@
   };
 
   // ================= 战斗报告（设计书 32） =================
-  const SOURCE_NAMES = { buddy: '助战伙伴', weapon: '武器', splash: '溅射', chain: '闪电跳跃', arrowRain: '箭雨', thunder: '雷霆一击', pierce: '贯穿光矢', vortex: '引力漩涡', firewall: '烈焰之墙', procLightning: '雷鸣', procFrost: '霜爆', procFireball: '火球', procSpirit: '灵箭', procWave: '剑气', burn: '灼烧', thorns: '荆棘', bomb: '小炸弹', zap: '雷鸣箭袋', firefly: '萤火虫' };
+  const SOURCE_NAMES = { buddy: '助战伙伴', weapon: '武器', splash: '溅射', chain: '闪电跳跃', arrowRain: '箭雨', thunder: '雷霆一击', pierce: '贯穿光矢', vortex: '引力漩涡', firewall: '烈焰之墙', procLightning: '雷鸣', procFrost: '霜爆', procFireball: '火球', procSpirit: '灵箭', procWave: '剑气', spikeTrap: '尖刺陷阱', firecracker: '鞭炮', chainScroll: '连锁闪电符', poison: '中毒', earthSpike: '地刺符', thunderStorm: '雷暴符', stormCall: '风暴召唤', dragonBreath: '龙息', godWrath: '天罚', burn: '灼烧', thorns: '荆棘', bomb: '小炸弹', zap: '雷鸣箭袋', firefly: '萤火虫' };
   UI.reportEl = function (res, open) {
     const rp = res && res.report;
     if (!rp) return null;

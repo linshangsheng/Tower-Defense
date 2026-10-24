@@ -113,6 +113,13 @@
       this.fireflyCount = 0;
       this.itemShield = 0;
       this.meteors = [];
+      this.copperMult = 1; // 幸运铜币：这段时间内击败的怪掉落倍数
+      this.copperMultUntil = 0;
+      this.tempThorns = 0; // 反射盾
+      this.tempThornsUntil = 0;
+      this.goldenShots = 0; // 黄金箭：接下来几次攻击必定暴击
+      this.goldenMult = 1;
+      this.reviveHeal = 0.6; // 复活时回复的比例（凤凰之羽更高）
       this.timers = []; // 稍后执行的小动作（飞行中的火球、灵箭、剑气），{at, fn}
       this.procCd = {};
       this.vortexes = [];
@@ -568,6 +575,15 @@
       for (const m of this.monsters) {
         if (m.dead) continue;
         if (m.hitFlash > 0) m.hitFlash -= dt;
+        // 中毒（毒瓶 / 瘟疫）：每 0.5 秒一跳，不受护盾以外的减免
+        if (this.time < (m.poisonUntil || 0)) {
+          m.poisonTick -= dt;
+          if (m.poisonTick <= 0) {
+            m.poisonTick += 0.5;
+            this.damage(m, m.poisonDps * 0.5, { type: 'magic', fromFront: false, source: 'poison' });
+            if (m.dead) continue;
+          }
+        }
         // 灼烧
         if (this.time < m.burnUntil) {
           m.burnTick -= dt;
@@ -711,8 +727,9 @@
             if (m.attackTimer <= 0) {
               m.attackTimer += 1;
               this.hitWall(m.dps, m);
-              if (this.stats.thorns > 0 && !m.dead) {
-                this.damage(m, this.atk * this.stats.thorns, { type: 'magic', fromFront: false, source: 'thorns' });
+              const thorns = this.stats.thorns + (this.time < this.tempThornsUntil ? this.tempThorns : 0);
+              if (thorns > 0 && !m.dead) {
+                this.damage(m, this.atk * thorns, { type: 'magic', fromFront: false, source: 'thorns' });
               }
             }
           }
@@ -803,7 +820,7 @@
         // 神圣庇佑：第一次被打倒时复活（只有一次）
         if (this.mods.revive && !this.revived) {
           this.revived = true;
-          this.wall.hp = this.wall.max * 0.6;
+          this.wall.hp = this.wall.max * this.reviveHeal;
           this.emit('wallHeal', { amount: this.wall.hp, src: 'aegis' });
         } else this.finish(false);
       }
@@ -989,7 +1006,7 @@
       m.dead = true;
       m.hp = 0;
       m.diedAt = this.time;
-      const copper = noReward ? 0 : m.def.copper;
+      const copper = noReward ? 0 : m.def.copper * (this.time < this.copperMultUntil ? this.copperMult : 1);
       if (!noReward) {
         // 连击：1.2 秒内连续击败
         this.streak = this.time - this.lastKillAt <= 1.2 ? this.streak + 1 : 1;
@@ -1123,7 +1140,13 @@
       let dmg = this.atk * this.stats.weaponMult * mult * this.phantomScale;
       let buffCrit = 0;
       for (const b of this.buffs) if (b.crit && this.time < b.until) buffCrit += b.crit;
-      const crit = this.rng() < this.stats.crit + this.mods.crit + buffCrit;
+      let crit = this.rng() < this.stats.crit + this.mods.crit + buffCrit;
+      // 黄金箭：必定暴击，并额外放大
+      if (this.goldenShots > 0) {
+        this.goldenShots--;
+        crit = true;
+        dmg *= this.goldenMult;
+      }
       if (crit) dmg *= this.stats.critDmg + this.mods.critDmg;
       return { dmg, crit };
     }
@@ -1481,22 +1504,10 @@
         }
         case 'vortex': {
           // 引力漩涡：撕开在怪最密集的地方
-          const pool = this.monsters.filter((m) => this.isTargetable(m));
-          if (!pool.length) return false;
-          let best = null;
-          let bn = -1;
-          for (const m of pool) {
-            let n = 0;
-            for (const o of pool) if (Math.hypot(o.x - m.x, o.y + o.yOffset - (m.y + m.yOffset)) <= def.radius) n += 1 + (o.def.boss ? 3 : 0);
-            if (n > bn) {
-              bn = n;
-              best = m;
-            }
-          }
-          const vx = best.x;
-          const vy = best.y + best.yOffset;
-          this.vortexes.push({ x: vx, y: vy, start: this.time, until: this.time + def.duration, tick: 0.25, def });
-          this.emit('vortexOpen', { x: vx, y: vy, r: def.radius, dur: def.duration });
+          const spot = this.densestSpot(def.radius);
+          if (!spot) return false;
+          this.vortexes.push({ x: spot.x, y: spot.y, start: this.time, until: this.time + def.duration, tick: 0.25, def });
+          this.emit('vortexOpen', { x: spot.x, y: spot.y, r: def.radius, dur: def.duration });
           break;
         }
         case 'firewall':
@@ -1654,6 +1665,170 @@
             if (this.isTargetable(m)) this.damage(m, atk * def.atkMult, { type: 'magic', fromFront: false, source: 'flood' });
           }
           break;
+        // ---- v1.05 新增道具（设计书 107） ----
+        case 'spikeTrap':
+          for (const m of this.monsters.slice()) {
+            if (m.lane !== lane || !this.isTargetable(m)) continue;
+            this.damage(m, atk * def.atkMult, { type: 'phys', fromFront: false, source: 'spikeTrap' });
+            if (!m.dead) this.slowMonster(m, def.slow, def.slowTime, 0.5);
+          }
+          break;
+        case 'smokeBomb':
+          for (const m of this.monsters) if (!m.dead) this.slowMonster(m, def.slow, def.duration, 0.5);
+          break;
+        case 'bandage':
+          for (let k = 1; k <= 6; k++) this.later(k * (def.duration / 6), () => this.healWall((this.wall.max * def.healRatio) / 6, 'bandage'));
+          break;
+        case 'whetstone':
+          this.buffs.push({ crit: def.critBonus, until: this.time + def.duration, src: 'whetstone' });
+          break;
+        case 'luckyCoin':
+          this.copperMult = def.copperMult;
+          this.copperMultUntil = this.time + def.duration;
+          break;
+        case 'ropeNet':
+          for (const m of this.monsters) {
+            if (m.lane !== lane || m.dead) continue;
+            const boss = m.def.boss || m.def.bossPart;
+            m.stunUntil = Math.max(m.stunUntil, this.time + (boss ? def.bossStun : def.stun));
+          }
+          break;
+        case 'firecracker': {
+          const pool = this.monsters.filter((m) => this.isTargetable(m));
+          const picks = [];
+          while (picks.length < def.count && pool.length) picks.push(pool.splice(Math.floor(this.rng() * pool.length), 1)[0]);
+          for (const m of picks) {
+            this.emit('popHit', { x: m.x, y: m.y + m.yOffset, color: '#ffb060' });
+            this.damage(m, atk * def.atkMult, { type: 'phys', fromFront: false, source: 'firecracker' });
+            if (!m.dead && !(m.def.boss || m.def.bossPart)) m.stunUntil = Math.max(m.stunUntil, this.time + def.stun);
+          }
+          break;
+        }
+        case 'oilFlask':
+          for (const m of this.monsters) {
+            if (m.lane !== lane || m.dead) continue;
+            this.slowMonster(m, def.slow, def.slowTime, 0.5);
+            m.shatterUntil = Math.max(m.shatterUntil || 0, this.time + def.slowTime);
+            m.shatterAmt = Math.max(this.time < (m.shatterUntil || 0) ? m.shatterAmt || 0 : 0, def.shatter);
+          }
+          break;
+        case 'woodShield':
+          this.itemShield += this.wall.max * def.shieldRatio;
+          break;
+        case 'farsightPotion':
+          this.mods.range += def.rangeBonus;
+          this.later(def.duration, () => (this.mods.range -= def.rangeBonus));
+          break;
+        case 'chainScroll': {
+          const top = this.monsters.filter((m) => this.isTargetable(m)).sort((a, b) => b.hp - a.hp)[0];
+          if (!top) return false;
+          this.emit('scrollBolt', { x: top.x, y: top.y + top.yOffset });
+          this.damage(top, atk * def.atkMult, { type: 'magic', fromFront: false, source: 'chainScroll' });
+          this.chainFrom(top, { dmg: atk * def.atkMult, chain: { count: def.hops, range: def.range, falloff: def.falloff }, tint: '#bfe6ff' });
+          break;
+        }
+        case 'poisonFlask':
+          for (const m of this.monsters) {
+            if (m.lane !== lane || !this.isTargetable(m)) continue;
+            this.poison(m, atk * def.dotMult, def.duration);
+            this.slowMonster(m, def.slow, def.duration, 0.5);
+          }
+          break;
+        case 'mirrorShield':
+          this.tempThorns = def.thornsMult;
+          this.tempThornsUntil = this.time + def.duration;
+          break;
+        case 'vampDraught':
+          this.mods.killHeal += def.killHeal;
+          this.later(def.duration, () => (this.mods.killHeal -= def.killHeal));
+          break;
+        case 'earthSpike': {
+          const near = this.monsters.filter((m) => this.isTargetable(m) && m.x < C.wallX + def.near);
+          if (!near.length) return false;
+          for (const m of near) {
+            this.emit('spikeHit', { x: m.x, y: m.y + m.yOffset });
+            this.damage(m, atk * def.atkMult, { type: 'phys', fromFront: false, source: 'earthSpike' });
+            if (!m.dead) {
+              const boss = m.def.boss || m.def.bossPart;
+              m.stunUntil = Math.max(m.stunUntil, this.time + (boss ? def.bossStun : def.stun));
+            }
+          }
+          break;
+        }
+        case 'glueTrap':
+          for (const m of this.monsters) if (!m.dead) this.slowMonster(m, def.slow, def.duration, 0.5);
+          break;
+        case 'rageDraught':
+          this.buffs.push({ atk: def.atkBonus, aspd: def.aspdBonus, until: this.time + def.duration, src: 'rage' });
+          break;
+        case 'thunderStorm':
+        case 'stormCall':
+          for (let k = 0; k < def.count; k++) {
+            this.later((k * def.duration) / def.count, () => {
+              const m = this.randomTarget();
+              if (!m) return;
+              this.emit('stormBolt', { x: m.x, y: m.y + m.yOffset });
+              this.damage(m, this.atk * def.atkMult, { type: 'magic', fromFront: false, source: it.id });
+            });
+          }
+          break;
+        case 'steelArrows':
+          this.mods.armorIgnore += def.armorIgnore;
+          this.later(def.duration, () => (this.mods.armorIgnore -= def.armorIgnore));
+          break;
+        case 'dragonBreath':
+          for (const m of this.monsters.slice()) {
+            if (!this.isTargetable(m)) continue;
+            this.damage(m, atk * def.atkMult, { type: 'magic', fromFront: false, source: 'dragonBreath' });
+            if (m.dead) continue;
+            this.ignite(m);
+            const boss = m.def.boss || m.def.bossPart;
+            m.stunUntil = Math.max(m.stunUntil, this.time + (boss ? def.bossStun : def.stun));
+          }
+          break;
+        case 'blackHole': {
+          const spot = this.densestSpot(def.radius);
+          if (!spot) return false;
+          this.vortexes.push({ x: spot.x, y: spot.y, start: this.time, until: this.time + def.duration, tick: 0.25, def });
+          this.emit('vortexOpen', { x: spot.x, y: spot.y, r: def.radius, dur: def.duration });
+          break;
+        }
+        case 'sanctuary':
+          this.tempDr = { amt: 1, until: this.time + def.duration };
+          break;
+        case 'phoenixFeather':
+          if (this.mods.revive || this.revived) return false;
+          this.mods.revive = 1;
+          this.reviveHeal = def.reviveHeal;
+          break;
+        case 'timeLoop':
+          for (const sk of this.skills) sk.cd = 0;
+          this.healWall(this.wall.max * def.healRatio, 'timeLoop');
+          break;
+        case 'godWrath':
+          for (const m of this.monsters.slice()) {
+            if (!this.isTargetable(m)) continue;
+            this.emit('scrollBolt', { x: m.x, y: m.y + m.yOffset });
+            const boss = m.def.boss || m.def.bossPart;
+            if (!boss && m.hp < m.maxHp * def.executeBelow) this.damage(m, 1e12, { type: 'magic', fromFront: false, source: 'godWrath' });
+            else this.damage(m, atk * def.atkMult, { type: 'magic', fromFront: false, source: 'godWrath' });
+          }
+          break;
+        case 'goldenArrow':
+          this.goldenShots += def.shots;
+          this.goldenMult = def.mult;
+          break;
+        case 'plague':
+          for (const m of this.monsters) {
+            if (!this.isTargetable(m)) continue;
+            this.poison(m, atk * def.dotMult, def.duration);
+            this.slowMonster(m, def.slow, def.duration, 0.5);
+          }
+          break;
+        case 'shadowLegion':
+          this.buffs.push({ phantoms: def.phantoms, phantomMult: def.phantomMult, until: this.time + def.duration, src: 'legion' });
+          this.emit('clonesOn', { n: def.phantoms, dur: def.duration });
+          break;
         case 'holyLight':
           this.healWall(this.wall.max * def.healRatio, 'holyLight');
           if (def.drAmt >= this.tempDr.amt || this.time >= this.tempDr.until) this.tempDr = { amt: def.drAmt, until: this.time + def.drDuration };
@@ -1787,6 +1962,46 @@
     }
 
     // ---------- 新技能与外放型被动（设计书 103） ----------
+    // 给一只怪上减速（Boss 只吃 bossFactor 倍）
+    slowMonster(m, amt, dur, bossFactor) {
+      const boss = m.def.boss || m.def.bossPart;
+      const a = amt * (boss ? bossFactor : 1);
+      const prev = this.time < m.slowUntil ? m.slowAmt : 0;
+      m.slowAmt = Math.max(prev, a);
+      m.slowUntil = Math.max(m.slowUntil, this.time + dur);
+    }
+
+    // 中毒：dur 秒内共造成 total 点魔法伤害
+    poison(m, total, dur) {
+      const active = this.time < (m.poisonUntil || 0);
+      if (!active) m.poisonTick = 0.5;
+      m.poisonDps = Math.max(active ? m.poisonDps || 0 : 0, total / dur);
+      m.poisonUntil = this.time + dur;
+    }
+
+    // 怪最密集的地方（半径 radius 内的怪最多，Boss 算 4 只）；没有目标返回 null
+    densestSpot(radius) {
+      const pool = this.monsters.filter((m) => this.isTargetable(m));
+      if (!pool.length) return null;
+      let best = null;
+      let bn = -1;
+      for (const m of pool) {
+        let n = 0;
+        for (const o of pool) if (Math.hypot(o.x - m.x, o.y + o.yOffset - (m.y + m.yOffset)) <= radius) n += 1 + (o.def.boss ? 3 : 0);
+        if (n > bn) {
+          bn = n;
+          best = m;
+        }
+      }
+      return { x: best.x, y: best.y + best.yOffset };
+    }
+
+    // 随机挑一只能被打的怪（落雷用）
+    randomTarget() {
+      const pool = this.monsters.filter((m) => this.isTargetable(m));
+      return pool.length ? pool[Math.floor(this.rng() * pool.length)] : null;
+    }
+
     later(delay, fn) {
       this.timers.push({ at: this.time + delay, fn });
     }
@@ -2108,6 +2323,70 @@
               break;
             case 'chrono':
               go = all.filter((m) => m.x < C.wallX + 350).length >= 6 || all.some((m) => m.def.boss && m.x < C.wallX + 250);
+              break;
+            // v1.05 新增道具的自动使用规则
+            case 'spikeTrap':
+            case 'ropeNet':
+            case 'oilFlask':
+            case 'poisonFlask': {
+              const lane = this.bestLane();
+              go = all.filter((m) => m.lane === lane && m.x < C.wallX + 700).length >= 3;
+              break;
+            }
+            case 'smokeBomb':
+            case 'glueTrap':
+              go = all.filter((m) => m.x < C.wallX + 500).length >= 6;
+              break;
+            case 'bandage':
+              go = wallRatio < 0.75 && this.time >= this.wallSealedUntil;
+              break;
+            case 'whetstone':
+            case 'goldenArrow':
+            case 'steelArrows':
+              go = inRange.length >= 4 || (hasBoss && inRange.length > 0);
+              break;
+            case 'luckyCoin':
+              go = all.length >= 6;
+              break;
+            case 'firecracker':
+            case 'earthSpike':
+              go = all.filter((m) => m.x < C.wallX + 400).length >= 4;
+              break;
+            case 'woodShield':
+            case 'mirrorShield':
+              go = wallRatio < 0.8 && all.some((m) => m.x < C.wallX + 300);
+              break;
+            case 'farsightPotion':
+              go = all.length >= 5 && !inRange.length;
+              break;
+            case 'chainScroll':
+              go = inRange.length >= 4;
+              break;
+            case 'vampDraught':
+              go = wallRatio < 0.8 && inRange.length >= 5;
+              break;
+            case 'rageDraught':
+            case 'shadowLegion':
+              go = inRange.length >= 6 || (hasBoss && inRange.length > 0);
+              break;
+            case 'thunderStorm':
+            case 'stormCall':
+            case 'plague':
+            case 'dragonBreath':
+            case 'godWrath':
+              go = all.filter((m) => m.x < C.wallX + 450).length >= 6 || all.some((m) => m.def.boss && m.x < C.wallX + 300);
+              break;
+            case 'blackHole':
+              go = all.filter((m) => m.x < C.wallX + 600).length >= 7;
+              break;
+            case 'sanctuary':
+              go = wallRatio < 0.45 && this.time >= this.wallSealedUntil;
+              break;
+            case 'phoenixFeather':
+              go = !this.mods.revive && !this.revived && this.waveIndex >= 1;
+              break;
+            case 'timeLoop':
+              go = wallRatio < 0.4 && this.skills.some((sk) => sk.cd > 8);
               break;
           }
           if (go) this.useItem(i);

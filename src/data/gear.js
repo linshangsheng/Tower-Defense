@@ -417,10 +417,50 @@
     holyLight: { name: '圣光', cost: { gold: 2 }, healRatio: 0.7, drAmt: 0.6, drDuration: 8, desc: '城墙回复 70% 最大血量，之后 8 秒城墙受到的伤害 −60%。' },
     meteor: { name: '陨石雨', cost: { gold: 2 }, count: 12, duration: 3, atkMult: 8, radius: 110, splashMult: 0.6, desc: '12 颗陨石落在全场随机的怪身上，每颗攻击力 ×8 的伤害，周围 110 像素内的怪受到六成。' },
     chrono: { name: '时间静止', cost: { gold: 3 }, duration: 7, aspdBonus: 0.6, shatter: 1.2, desc: '冻结全体怪物 7 秒，连 Boss 也一起冻住，冻住期间它们受到的伤害 ×2.2；这期间英雄攻击速度 +60%。' },
+
+    // ---- v1.05 消耗品扩充（设计书 107）：铜 / 银 / 金每档都补到 15 种（银档的幸运符是被动的，也算一种）----
+    // 铜币档（10 种新增）
+    spikeTrap: { name: '尖刺陷阱', cost: { copper: 45 }, atkMult: 3, slow: 0.4, slowTime: 4, targetLane: true, desc: '选定车道上的怪受到攻击力 ×3 的伤害，并减速 40%，持续 4 秒。' },
+    smokeBomb: { name: '烟雾弹', cost: { copper: 40 }, slow: 0.35, duration: 6, desc: '全场怪物减速 35%，持续 6 秒。' },
+    bandage: { name: '绷带', cost: { copper: 50 }, healRatio: 0.12, duration: 6, desc: '城墙在 6 秒内逐渐回复 12% 最大血量。' },
+    whetstone: { name: '磨刀石', cost: { copper: 45 }, critBonus: 0.25, duration: 10, desc: '暴击率 +25%，持续 10 秒。' },
+    luckyCoin: { name: '幸运铜币', cost: { copper: 60 }, copperMult: 2, duration: 15, desc: '15 秒内击败的怪物掉落 2 倍铜币。' },
+    ropeNet: { name: '绳网', cost: { copper: 55 }, stun: 2, bossStun: 0.8, targetLane: true, desc: '选定车道上的怪被缠住 2 秒（Boss 0.8 秒）。' },
+    firecracker: { name: '鞭炮', cost: { copper: 50 }, count: 8, atkMult: 1.2, stun: 0.8, desc: '随机 8 只怪被炸响，各受到攻击力 ×1.2 的伤害，并眩晕 0.8 秒。' },
+    oilFlask: { name: '油罐', cost: { copper: 70 }, slow: 0.5, slowTime: 6, shatter: 0.3, targetLane: true, desc: '选定车道上的怪被油浸湿：减速 50%，受到的伤害 +30%，持续 6 秒。' },
+    woodShield: { name: '木盾', cost: { copper: 65 }, shieldRatio: 0.12, desc: '城墙获得一层护盾，能吸收 12% 最大血量的伤害，持续到本关结束。' },
+    farsightPotion: { name: '远望药水', cost: { copper: 40 }, rangeBonus: 0.25, duration: 15, desc: '射程 +25%，持续 15 秒。' },
+    // 银币档（9 种新增）
+    chainScroll: { name: '连锁闪电符', cost: { silver: 2 }, atkMult: 4, hops: 8, range: 280, falloff: 0.92, desc: '一道闪电劈中血量最高的怪，再连锁跳 8 次，每次造成攻击力 ×4 的魔法伤害（每跳衰减 8%）。' },
+    poisonFlask: { name: '毒瓶', cost: { silver: 2 }, dotMult: 6, duration: 6, slow: 0.2, targetLane: true, desc: '选定车道上的怪中毒：6 秒内共受到攻击力 ×6 的魔法伤害，并减速 20%。' },
+    mirrorShield: { name: '反射盾', cost: { silver: 3 }, thornsMult: 1.5, duration: 12, desc: '12 秒内怪物每次攻击城墙，都会受到攻击力 ×1.5 的反弹伤害。' },
+    vampDraught: { name: '吸血药剂', cost: { silver: 3 }, killHeal: 0.012, duration: 12, desc: '12 秒内每击败一只怪，城墙回复 1.2% 最大血量。' },
+    earthSpike: { name: '地刺符', cost: { silver: 3 }, atkMult: 4, stun: 1.5, bossStun: 0.6, near: 420, desc: '离城墙最近的怪（420 像素内）被地刺刺中：受到攻击力 ×4 的伤害并眩晕 1.5 秒（Boss 0.6 秒）。' },
+    glueTrap: { name: '粘胶', cost: { silver: 2 }, slow: 0.6, duration: 8, desc: '全场怪物减速 60%，持续 8 秒（Boss 减速 30%）。' },
+    rageDraught: { name: '狂暴药水', cost: { silver: 3 }, atkBonus: 0.4, aspdBonus: 0.3, duration: 8, desc: '英雄攻击力 +40%、攻击速度 +30%，持续 8 秒。' },
+    thunderStorm: { name: '雷暴符', cost: { silver: 4 }, count: 8, duration: 4, atkMult: 2.5, desc: '4 秒内降下 8 道落雷，随机劈中全场的怪，每道攻击力 ×2.5 的魔法伤害。' },
+    steelArrows: { name: '钢箭', cost: { silver: 2 }, armorIgnore: 0.4, duration: 12, desc: '无视目标 40% 护甲（含盾牌），持续 12 秒。' },
+    // 金币档（10 种新增）
+    dragonBreath: { name: '龙息', cost: { gold: 2 }, atkMult: 6, stun: 1, bossStun: 0.5, desc: '龙焰扫过全场：所有怪受到攻击力 ×6 的魔法伤害，被点燃并眩晕 1 秒（Boss 0.5 秒）。' },
+    blackHole: { name: '黑洞', cost: { gold: 3 }, duration: 4, atkMult: 8, radius: 260, pull: 320, burst: 6, desc: '在怪最密集的地方张开黑洞，4 秒内把周围 260 像素的怪不断拉向中心，共造成攻击力 ×8 的魔法伤害，结束时爆炸再造成攻击力 ×6。' },
+    sanctuary: { name: '圣域', cost: { gold: 3 }, duration: 6, desc: '6 秒内城墙受到的伤害 −95%。' },
+    phoenixFeather: { name: '凤凰之羽', cost: { gold: 3 }, reviveHeal: 0.8, desc: '城墙本关第一次被打倒时，立刻复活并回复 80% 最大血量（只触发一次，用了就生效到本关结束）。' },
+    stormCall: { name: '风暴召唤', cost: { gold: 2 }, count: 20, duration: 5, atkMult: 4, desc: '5 秒内降下 20 道落雷，随机劈中全场的怪，每道攻击力 ×4 的魔法伤害。' },
+    timeLoop: { name: '时光回溯', cost: { gold: 2 }, healRatio: 0.3, desc: '立刻刷新全部主动技能的冷却，并让城墙回复 30% 最大血量。' },
+    godWrath: { name: '天罚', cost: { gold: 3 }, executeBelow: 0.4, atkMult: 4, desc: '全场血量低于 40% 的怪被当场抹杀，其余怪（含 Boss）受到攻击力 ×4 的魔法伤害。' },
+    goldenArrow: { name: '黄金箭', cost: { gold: 2 }, shots: 10, mult: 2.5, desc: '接下来的 10 次攻击必定暴击，并额外造成 2.5 倍伤害。' },
+    plague: { name: '瘟疫', cost: { gold: 2 }, dotMult: 14, duration: 8, slow: 0.15, desc: '全场怪物中毒：8 秒内共受到攻击力 ×14 的魔法伤害，并减速 15%。' },
+    shadowLegion: { name: '影分身军团', cost: { gold: 3 }, phantoms: 3, phantomMult: 1, duration: 12, desc: '12 秒内每次攻击，3 个影分身各补一箭，伤害与本体相同。' },
   };
 
   // 道具冷却（秒，设计书 82）：用过一次以后，这一种道具要等冷却好才能再用；越强冷却越长。幸运符是战斗开始时自动生效的，没有冷却
-  TD.data.itemCd = { bomb: 12, patch: 18, haste: 20, freeze: 18, firebomb: 14, thunderScroll: 25, bigBomb: 22, barrier: 30, warBanner: 24, quake: 30, blizzard: 45, flood: 45, holyLight: 50, meteor: 45, chrono: 60 };
+  TD.data.itemCd = {
+    bomb: 12, patch: 18, haste: 20, freeze: 18, firebomb: 14, thunderScroll: 25, bigBomb: 22, barrier: 30, warBanner: 24, quake: 30, blizzard: 45, flood: 45, holyLight: 50, meteor: 45, chrono: 60,
+    // v1.05 新增
+    spikeTrap: 14, smokeBomb: 22, bandage: 20, whetstone: 22, luckyCoin: 30, ropeNet: 18, firecracker: 16, oilFlask: 20, woodShield: 25, farsightPotion: 25,
+    chainScroll: 24, poisonFlask: 20, mirrorShield: 35, vampDraught: 40, earthSpike: 28, glueTrap: 30, rageDraught: 35, thunderStorm: 40, steelArrows: 26,
+    dragonBreath: 50, blackHole: 55, sanctuary: 70, phoenixFeather: 90, stormCall: 50, timeLoop: 80, godWrath: 70, goldenArrow: 45, plague: 50, shadowLegion: 60,
+  };
   for (const id of Object.keys(TD.data.items)) if (TD.data.itemCd[id]) TD.data.items[id].cd = TD.data.itemCd[id];
   // 道具携带规则：最多带 7 种，每种最多带 3 个
   TD.data.itemRules = { kinds: 7, perKind: 3 };

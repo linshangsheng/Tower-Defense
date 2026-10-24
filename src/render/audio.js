@@ -237,6 +237,152 @@
       tone(880, 0.14, 'sine', 0.22, 1, 0.32);
       tone(440, 0.8, 'triangle', 0.308, 0.5, 0.5);
     },
+    // v1.05 新增道具的音效（设计书 107）
+    item_spikeTrap: () => {
+      noise(0.15, 0.4, 3000);
+      [180, 240, 300].forEach((f, i) => tone(f, 0.12, 'square', 0.12, 0.6, i * 0.04));
+    },
+    item_smokeBomb: () => {
+      noise(0.9, 0.3, 900);
+      tone(140, 0.5, 'sine', 0.2, 0.6);
+    },
+    item_bandage: () => [392, 494, 587].forEach((f, i) => tone(f, 0.25, 'sine', 0.18, 1, i * 0.1)),
+    item_whetstone: () => {
+      noise(0.5, 0.25, 7000);
+      tone(2600, 0.3, 'triangle', 0.07, 0.7);
+      tone(3400, 0.2, 'sine', 0.05, 0.7, 0.12);
+    },
+    item_luckyCoin: () => {
+      [1319, 1760, 2093, 2637].forEach((f, i) => tone(f, 0.18, 'square', 0.07, 1, i * 0.06));
+      tone(2093, 0.5, 'sine', 0.08, 1, 0.3);
+    },
+    item_ropeNet: () => {
+      noise(0.35, 0.25, 2200);
+      tone(330, 0.25, 'triangle', 0.14, 0.5);
+    },
+    item_firecracker: () => {
+      for (let i = 0; i < 8; i++) {
+        tone(900 + i * 70, 0.04, 'square', 0.1, 0.4, i * 0.05);
+        noise(0.05, 0.2, 5000);
+      }
+    },
+    item_oilFlask: () => {
+      tone(180, 0.3, 'sine', 0.2, 0.5);
+      noise(0.5, 0.18, 600);
+      tone(90, 0.5, 'triangle', 0.14, 0.7, 0.1);
+    },
+    item_woodShield: () => {
+      tone(150, 0.2, 'triangle', 0.3, 0.6);
+      tone(220, 0.15, 'square', 0.1, 0.7, 0.04);
+      noise(0.2, 0.2, 1200);
+    },
+    item_farsightPotion: () => {
+      [660, 880, 1175].forEach((f, i) => tone(f, 0.3, 'sine', 0.14, 1.03, i * 0.08));
+      tone(1760, 0.5, 'triangle', 0.05, 1, 0.25);
+    },
+    item_chainScroll: () => {
+      for (let i = 0; i < 6; i++) {
+        noise(0.12, 0.3, 3500);
+        tone(1200 - i * 120, 0.1, 'sawtooth', 0.1, 0.4, i * 0.06);
+      }
+      tone(70, 0.5, 'sawtooth', 0.18, 0.5);
+    },
+    item_poisonFlask: () => {
+      noise(0.6, 0.2, 1500);
+      [420, 380, 340, 300].forEach((f, i) => tone(f, 0.14, 'sine', 0.12, 1.3, i * 0.09));
+    },
+    item_mirrorShield: () => {
+      [1319, 1760, 2349].forEach((f, i) => tone(f, 0.5, 'triangle', 0.1, 0.98, i * 0.06));
+      tone(220, 0.3, 'sine', 0.2, 0.6);
+    },
+    item_vampDraught: () => {
+      tone(180, 0.6, 'sawtooth', 0.12, 0.6);
+      tone(300, 0.5, 'sine', 0.14, 1.5, 0.1);
+      noise(0.3, 0.12, 900);
+    },
+    item_earthSpike: () => {
+      noise(0.5, 0.5, 450);
+      tone(55, 0.5, 'sine', 0.45, 0.6);
+      [140, 180, 220].forEach((f, i) => tone(f, 0.1, 'square', 0.1, 0.6, 0.08 + i * 0.05));
+    },
+    item_glueTrap: () => {
+      tone(240, 0.5, 'sine', 0.2, 0.4);
+      tone(180, 0.6, 'triangle', 0.14, 0.5, 0.1);
+      noise(0.5, 0.14, 700);
+    },
+    item_rageDraught: () => {
+      tone(110, 0.5, 'sawtooth', 0.2, 1.6);
+      tone(165, 0.5, 'sawtooth', 0.14, 1.6, 0.05);
+      noise(0.4, 0.2, 2500);
+      tone(70, 0.3, 'sine', 0.4, 0.6);
+    },
+    item_thunderStorm: () => {
+      for (let i = 0; i < 4; i++) {
+        noise(0.35, 0.4, 2800);
+        tone(70 + i * 12, 0.4, 'sawtooth', 0.14, 0.5, i * 0.22);
+      }
+    },
+    item_steelArrows: () => {
+      [0, 1, 2].forEach((i) => {
+        tone(1200, 0.12, 'triangle', 0.09, 0.4, i * 0.06);
+        noise(0.08, 0.15, 6000);
+      });
+      tone(2400, 0.3, 'sine', 0.05, 0.8, 0.2);
+    },
+    item_dragonBreath: () => {
+      noise(1.4, 0.55, 1600);
+      tone(70, 1.2, 'sawtooth', 0.25, 0.5);
+      tone(140, 1, 'sawtooth', 0.12, 0.6, 0.1);
+      tone(45, 1.2, 'sine', 0.4, 0.6, 0.15);
+    },
+    item_blackHole: () => {
+      tone(900, 1.4, 'sine', 0.14, 0.12);
+      tone(450, 1.4, 'triangle', 0.12, 0.12, 0.1);
+      noise(1.4, 0.2, 400);
+      tone(40, 1.6, 'sine', 0.4, 0.8, 0.2);
+    },
+    item_sanctuary: () => {
+      [262, 392, 523, 659, 784].forEach((f, i) => tone(f, 1.6, 'sine', 0.14, 1, i * 0.1));
+      tone(1047, 1.4, 'triangle', 0.06, 1, 0.5);
+    },
+    item_phoenixFeather: () => {
+      [523, 659, 784, 1047, 1319, 1568].forEach((f, i) => tone(f, 0.5, 'triangle', 0.14, 1.05, i * 0.07));
+      noise(0.8, 0.14, 3500);
+      tone(196, 1.2, 'sine', 0.2, 1.3, 0.2);
+    },
+    item_stormCall: () => {
+      for (let i = 0; i < 6; i++) {
+        noise(0.4, 0.45, 2800);
+        tone(60 + i * 8, 0.5, 'sawtooth', 0.14, 0.5, i * 0.18);
+      }
+      noise(1.6, 0.18, 900);
+    },
+    item_timeLoop: () => {
+      [880, 784, 659, 523, 440, 523, 659, 880].forEach((f, i) => tone(f, 0.12, 'sine', 0.2, 1, i * 0.08));
+      tone(220, 0.8, 'triangle', 0.2, 0.6, 0.7);
+    },
+    item_godWrath: () => {
+      noise(1.2, 0.7, 3200);
+      tone(55, 1.2, 'sawtooth', 0.3, 0.5);
+      tone(1760, 0.3, 'square', 0.1, 0.3, 0.02);
+      [523, 784, 1047].forEach((f, i) => tone(f, 1, 'sine', 0.12, 1, 0.3 + i * 0.1));
+    },
+    item_goldenArrow: () => {
+      tone(1568, 0.2, 'triangle', 0.14, 1.3);
+      tone(2093, 0.4, 'sine', 0.1, 1.2, 0.05);
+      noise(0.2, 0.14, 7000);
+      [1319, 1760, 2349].forEach((f, i) => tone(f, 0.3, 'sine', 0.06, 1, 0.2 + i * 0.07));
+    },
+    item_plague: () => {
+      noise(1.4, 0.25, 700);
+      tone(98, 1.4, 'sawtooth', 0.1, 0.7);
+      [330, 310, 290, 270, 250].forEach((f, i) => tone(f, 0.2, 'triangle', 0.1, 1.1, i * 0.13));
+    },
+    item_shadowLegion: () => {
+      [196, 147, 110].forEach((f, i) => tone(f, 0.9, 'sawtooth', 0.12, 0.8, i * 0.12));
+      noise(0.6, 0.2, 1100);
+      tone(880, 0.5, 'sine', 0.06, 0.5, 0.3);
+    },
     meteorHit: () => {
       noise(0.6, 0.6, 600);
       tone(70, 0.6, 'sine', 0.5, 0.4);
