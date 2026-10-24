@@ -699,6 +699,24 @@
       ai: 'octoKing',
       desc: '第七章 Boss。章鱼大王：触手护身、吸盘回血、最后卷起大漩涡。先打触手！',
     },
+    // ---------- 深渊回响的终章 Boss（设计书 114）----------
+    abyssDragon: {
+      name: '焚天巨龙',
+      hp: 22000,
+      speed: 20,
+      dps: 60,
+      armor: 70,
+      copper: 3000,
+      size: 290, // 其他 Boss 最大 57（多数 44–54）：体型至少五倍；画出来宽约 850 像素，占满右半个战场
+      color: '#8a1c1c',
+      boss: 'major',
+      ai: 'abyssDragon',
+      flying: true,
+      abyss: true, // 不算进"击败全部 Boss"成就
+      noLit: true, // 太大，不走光影缓存，直接画
+      hitH: 0.06, // 受击光 / 伤害数字出在身体中心附近（普通怪是脚上方 0.6 个身高）
+      desc: '第二十章 Boss。深渊里沉睡的西方巨龙：体型是普通 Boss 的五倍，血量极厚。会喷火、龙吼冲击、召唤雷暴，还会招来飞行的小龙——它蓄力时集中火力可以打断！',
+    },
   };
 
   // 怪物类型标签（用于新敌人登场卡片、关卡预览）
@@ -758,6 +776,22 @@
     summonEvery: 7,
     whirlSpeed: 0.2,
   };
+  // 焚天巨龙的参数（设计书 114）
+  TD.data.abyssDragon = {
+    holdX: 800,
+    holdX3: 640, // 狂暴后向前压到这里
+    phase2Below: 0.66,
+    phase3Below: 0.33,
+    skillFirst: 4,
+    skillEvery: [9, 7, 5], // 每个阶段两次技能之间的间隔（秒）
+    interruptRatio: 0.012, // 蓄力期间累计伤害达到最大血量的 1.2% 就打断
+    stunOnInterrupt: 1.8,
+    fire: { warn: 2.2, damage: 110, dot: 16, dotTime: 6, enrage: 1.4 }, // 龙息：直接伤害 + 城墙持续燃烧
+    shock: { warn: 2.0, damage: 90, stun: 1.6 }, // 龙吼冲击波：伤害 + 英雄眩晕
+    bolt: { warn: 1.2, count: [5, 7, 10], spread: 1.8, damage: 45, heroStun: 0.5, heroStunChance: 0.2 }, // 雷暴：一串落雷
+    summon: { every: [16, 13, 10], count: [4, 5, 6], type: 'vulture', golem: 'lavaGolem' },
+  };
+
   // 雷雷的参数（设计书 33.3）
   TD.data.thunderKing = {
     holdX: 780,
@@ -967,7 +1001,7 @@
   for (const id of Object.keys(TD.data.monsters)) {
     const def = TD.data.monsters[id];
     if (!def.boss || def.bossPart) continue;
-    const tw = Object.assign({}, def, { art: id, towerOf: id, desc: '九层妖塔里的妖王：没有特殊行动，只管冲向城墙。' });
+    const tw = Object.assign({}, def, { art: id, towerOf: id, desc: '九层妖塔里的妖王：血量和关卡里的 Boss 一样厚，没有特殊行动，只管冲向城墙。' });
     delete tw.ai;
     delete tw.split;
     delete tw.onDeath;

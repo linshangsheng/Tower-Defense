@@ -69,6 +69,10 @@
     battle.on('scrollBolt', () => TD.audio.play('scrollBolt'));
     battle.on('barrierBreak', () => TD.audio.play('barrierBreak'));
     battle.on('bossWarn', () => TD.audio.play('warn'));
+    // 焚天巨龙（设计书 114）：用现成的音效凑——蓄力 = 警告音，龙息 = 陨石落地，龙吼 = 重击城墙，雷暴 = 落雷
+    battle.on('dragonFire', () => TD.audio.play('meteorHit'));
+    battle.on('dragonShock', () => TD.audio.play('bigWall'));
+    battle.on('dragonBolt', () => TD.audio.play('bolt'));
     battle.on('bossReturn', () => TD.audio.play('warn'));
     // Boss 登场：音乐给一记重击（设计书 64.5）
     battle.on('spawn', (m) => m.def && m.def.boss && TD.music.stinger('boss'));

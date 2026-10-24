@@ -420,11 +420,56 @@
         this.banner(e.text);
         // Boss 换阶段：身上一圈冲击环 + 强光 + 震屏（设计书 96）
         if (V && e.m) {
-          const y = e.m.y + e.m.yOffset - e.m.def.size * 0.6;
+          const y = e.m.y + e.m.yOffset - e.m.def.size * (e.m.def.hitH === undefined ? 0.6 : e.m.def.hitH);
           for (let i = 0; i < 3; i++) V.fx.push({ kind: 'ring', x: e.m.x, y, r0: 10, r1: e.m.def.size * (3 + i * 1.4), color: i % 2 ? '#ffffff' : '#ff6a4a', w: 3, life: 0.45 + i * 0.15, age: 0 });
           V.fx.push({ kind: 'flare', x: e.m.x, y, r: e.m.def.size * 4, color: '#ff8a5a', life: 0.4, age: 0 });
           this.burst(e.m.x, y, '#ff8a5a', 24, 260);
         }
+        this.shake = Math.max(this.shake, 12);
+      });
+      // 焚天巨龙（设计书 114）：嘴的位置 = 身体中心向左 1.2 个身长、向上 0.46 个身长（画法里头和嘴的位置 × 绘制放大倍数）
+      const dragonMouth = (m) => ({ x: m.x - 1.2 * DRAW_SCALE * m.def.size, y: m.y + m.yOffset - 0.46 * DRAW_SCALE * m.def.size });
+      on('dragonCast', (e) => {
+        const txt = { fire: '焚天巨龙在蓄力喷火！集中火力打断它！', shock: '焚天巨龙张大了嘴——龙吼冲击要来了！', bolt: '焚天巨龙召来了雷云——雷暴要来了！' }[e.kind];
+        if (txt) this.banner(txt);
+        if (V) {
+          const p = dragonMouth(e.m);
+          V.fx.push({ kind: 'ring', x: p.x, y: p.y, r0: 6, r1: 120, color: e.kind === 'bolt' ? '#bfe4ff' : '#ffb060', w: 3, life: Math.min(1.2, e.duration), age: 0 });
+        }
+        this.shake = Math.max(this.shake, 6);
+      });
+      on('dragonFire', (e) => {
+        const m = e.m;
+        const p = dragonMouth(m);
+        const lanes = battle.lanes;
+        const lh = (C.fieldBottom - C.fieldTop) / lanes;
+        const lanesHit = e.twin && lanes > 1 ? [e.lane, e.lane + 1 < lanes ? e.lane + 1 : e.lane - 1] : [e.lane];
+        if (V) {
+          for (const ln of lanesHit) {
+            const ty = battle.laneY(ln);
+            // 一条火龙从嘴里喷向城墙：几十道火舌 + 车道上烧起来的火 + 墙上的爆炸
+            for (let i = 0; i < 26; i++) V.comet(p.x - Math.random() * 30, p.y + (Math.random() - 0.5) * 24, C.wallX + 10 + Math.random() * 60, ty + (Math.random() - 0.5) * lh * 0.8, 0.35 + Math.random() * 0.4, i % 3 ? '#ff8a2a' : '#ffd070', 18 + Math.random() * 22);
+            V.flameLane(C.wallX, p.x - 40, ty - lh / 2, lh, 1.8);
+            V.fireballBoom(C.wallX + 30, ty, 150);
+          }
+          V.fx.push({ kind: 'flare', x: p.x, y: p.y, r: 220, color: '#ffd070', life: 0.4, age: 0 });
+        }
+        this.shake = Math.max(this.shake, 24);
+        this.fx.push({ kind: 'flash', color: '#ff9a4a', life: 0.45, age: 0 });
+      });
+      on('dragonShock', (e) => {
+        const p = dragonMouth(e.m);
+        if (V) {
+          for (let i = 0; i < 5; i++) V.fx.push({ kind: 'ring', x: p.x, y: p.y, r0: 20, r1: 900, color: i % 2 ? '#ffffff' : '#ffd8a0', w: 6 - i, life: 0.7 + i * 0.12, age: -i * 0.07 });
+          V.fx.push({ kind: 'flare', x: C.wallX + 40, y: (C.fieldTop + C.fieldBottom) / 2, r: 300, color: '#ffe0b0', life: 0.45, age: 0.1 });
+        }
+        this.shake = Math.max(this.shake, 34);
+        this.fx.push({ kind: 'flash', color: '#fff0d8', life: 0.35, age: 0 });
+      });
+      on('dragonBoltStart', () => this.fx.push({ kind: 'flash', color: '#bfe4ff', life: 0.3, age: 0 }));
+      on('dragonBolt', (e) => {
+        if (V) V.thunder(e.x, e.y, 0.9);
+        this.burst(e.x, e.y, '#bfe4ff', 12, 220);
         this.shake = Math.max(this.shake, 12);
       });
       on('split', (e) => this.burst(e.m.x, e.m.y - 20, '#7fd0ff', 14, 200));
@@ -673,13 +718,13 @@
       const big = e.crit;
       const color = e.source === 'burn' ? '#ff8a3d' : e.source === 'thunder' ? '#c58cff' : big ? '#ffd23f' : '#ffffff';
       const size = e.source === 'burn' ? 15 : big ? 30 : e.dmg >= 100 ? 24 : 19;
-      this.text(e.x + (Math.random() - 0.5) * 16, e.y - e.m.def.size * 1.4, (big ? '暴击 ' : '') + Math.round(e.dmg), color, size, big ? 0.9 : 0.6, big);
+      this.text(e.x + (Math.random() - 0.5) * 16, e.y - e.m.def.size * (e.m.def.hitH === undefined ? 1.4 : e.m.def.hitH + 0.5), (big ? '暴击 ' : '') + Math.round(e.dmg), color, size, big ? 0.9 : 0.6, big);
       // 武器打出的命中光和火花用武器品质的颜色（技能、灼烧等仍用原来的颜色）
       const wsrc = e.source === 'weapon' || e.source === 'splash' || e.source === 'chain';
       const wcol = wsrc ? this.wcolor() : null;
-      if (this.scene && !this.scene.none && e.source !== 'burn') this.fx.push({ kind: 'glow', x: e.x, y: e.y - e.m.def.size * 0.6, r: big ? 46 : 26, color: wcol || (big ? '#ffd970' : '#fff2cc'), life: big ? 0.28 : 0.16, age: 0 });
+      if (this.scene && !this.scene.none && e.source !== 'burn') this.fx.push({ kind: 'glow', x: e.x, y: e.y - e.m.def.size * (e.m.def.hitH === undefined ? 0.6 : e.m.def.hitH), r: big ? 46 : 26, color: wcol || (big ? '#ffd970' : '#fff2cc'), life: big ? 0.28 : 0.16, age: 0 });
       if (wcol && this.vfx && !big && this.fx.length < 240) {
-        const yy = e.y - e.m.def.size * 0.6;
+        const yy = e.y - e.m.def.size * (e.m.def.hitH === undefined ? 0.6 : e.m.def.hitH);
         this.vfx.spawn(3, () => {
           const a = Math.random() * Math.PI * 2;
           const v = 70 + Math.random() * 120;
@@ -690,7 +735,7 @@
       if (wsrc && this.battle && this.fx.length < 200) {
         const wd = this.battle.stats.weaponDef;
         const acc = wd && wd.look && wd.look.accent;
-        if (acc) this.accentHit(acc, e.x, e.y - e.m.def.size * 0.6, wcol, big);
+        if (acc) this.accentHit(acc, e.x, e.y - e.m.def.size * (e.m.def.hitH === undefined ? 0.6 : e.m.def.hitH), wcol, big);
       }
       // 按武器造型和品质追加命中的华丽效果（设计书 97）
       if (wsrc && this.vfx && this.battle && this.fx.length < 220) {
@@ -698,7 +743,7 @@
         const base = wd && wd.look ? wd.look.base : this.battle.stats.weapon;
         const rar = (wd && wd.rarity) || 1;
         const hx = e.x;
-        const hy = e.y - e.m.def.size * 0.6;
+        const hy = e.y - e.m.def.size * (e.m.def.hitH === undefined ? 0.6 : e.m.def.hitH);
         const V = this.vfx;
         const col = wcol || '#fff0c0';
         if (base === 'bow' || base === 'crossbow' || base === 'boomerang') V.slashes(hx, hy, col, big ? 6 : 3 + (rar >= 3 ? 1 : 0), big ? 66 : 46);
@@ -723,7 +768,7 @@
         if (this.vfx && this.battle) this.vfx.fx.push({ kind: 'flare', x: C.heroX + 10, y: this.battle.heroY - 30, r: 60, color: '#ffe080', life: 0.2, age: 0 });
         // 暴击：一圈金光 + 几道火花（设计书 60.4）
         if (this.vfx && e.source !== 'burn') {
-          const y = e.y - e.m.def.size * 0.6;
+          const y = e.y - e.m.def.size * (e.m.def.hitH === undefined ? 0.6 : e.m.def.hitH);
           this.vfx.fx.push({ kind: 'ring', x: e.x, y, r0: 6, r1: 44, color: wcol || '#ffd970', w: 2.5, life: 0.28, age: 0 });
           this.vfx.spawn(5, () => {
             const a = Math.random() * Math.PI * 2;
@@ -787,20 +832,20 @@
         // 化作一团光点慢慢升起（设计书 54.5）
         const n = m.def.boss ? 30 : 7;
         for (let i = 0; i < n; i++) {
-          this.fx.push({ kind: 'spirit', x: m.x + (Math.random() - 0.5) * m.def.size, y: m.y + m.yOffset - m.def.size * 0.6, vx: (Math.random() - 0.5) * 50, vy: -40 - Math.random() * 70, r: 6 + Math.random() * 8, color: this.scene.palette.mote, life: 0.8 + Math.random() * 0.6, age: 0 });
+          this.fx.push({ kind: 'spirit', x: m.x + (Math.random() - 0.5) * m.def.size, y: m.y + m.yOffset - m.def.size * (m.def.hitH === undefined ? 0.6 : m.def.hitH), vx: (Math.random() - 0.5) * 50, vy: -40 - Math.random() * 70, r: 6 + Math.random() * 8, color: this.scene.palette.mote, life: 0.8 + Math.random() * 0.6, age: 0 });
         }
-        this.fx.push({ kind: 'glow', x: m.x, y: m.y + m.yOffset - m.def.size * 0.6, r: m.def.size * 2.6, color: this.scene.palette.rim, life: 0.3, age: 0 });
+        this.fx.push({ kind: 'glow', x: m.x, y: m.y + m.yOffset - m.def.size * (m.def.hitH === undefined ? 0.6 : m.def.hitH), r: m.def.size * 2.6, color: this.scene.palette.rim, life: 0.3, age: 0 });
       }
-      this.burst(m.x, m.y + m.yOffset - m.def.size * 0.5, '#ffe28a', m.def.boss ? 40 : 10, m.def.boss ? 320 : 160);
+      this.burst(m.x, m.y + m.yOffset - m.def.size * (m.def.hitH === undefined ? 0.5 : m.def.hitH), '#ffe28a', m.def.boss ? 40 : 10, m.def.boss ? 320 : 160);
       // 死亡的冲击环（Boss 三圈 + 震屏）
       if (this.vfx && this.fx.length < 220) {
-        const dy = m.y + m.yOffset - m.def.size * 0.5;
+        const dy = m.y + m.yOffset - m.def.size * (m.def.hitH === undefined ? 0.5 : m.def.hitH);
         for (let i = 0; i < (m.def.boss ? 3 : 1); i++) this.vfx.fx.push({ kind: 'ring', x: m.x, y: dy, r0: 4, r1: m.def.size * (m.def.boss ? 3 + i : 1.8), color: i % 2 ? '#ffffff' : '#ffe28a', w: 2.4, life: 0.35 + i * 0.18, age: 0 });
         if (m.def.boss) {
           this.shake = Math.max(this.shake, 18);
           // Boss 倒下：全屏一闪、四散的彩色火花、一团大光（设计书 96）
           this.fx.push({ kind: 'flash', color: '#fff2d0', life: 0.35, age: 0 });
-          this.vfx.fx.push({ kind: 'flare', x: m.x, y: dy, r: m.def.size * 6, color: '#ffe28a', life: 0.5, age: 0 });
+          this.vfx.fx.push({ kind: 'flare', x: m.x, y: dy, r: Math.min(900, m.def.size * 6), color: '#ffe28a', life: 0.5, age: 0 });
           const PAL = ['#ffd23f', '#ff8a5a', '#ffffff', '#8affc8', '#b08aff'];
           this.vfx.spawn(36, (i) => {
             const a = Math.random() * Math.PI * 2;
@@ -809,7 +854,7 @@
           });
         }
       }
-      this.fx.push({ kind: 'poof', x: m.x, y: m.y + m.yOffset - m.def.size * 0.5, r: m.def.size, life: 0.35, age: 0 });
+      this.fx.push({ kind: 'poof', x: m.x, y: m.y + m.yOffset - m.def.size * (m.def.hitH === undefined ? 0.5 : m.def.hitH), r: m.def.size, life: 0.35, age: 0 });
       if (e.copper > 0) {
         for (let i = 0; i < Math.min(6, e.copper); i++) {
           this.fx.push({
@@ -2775,7 +2820,7 @@
           ctx.restore();
         }
         const mo = { flash: m.hitFlash, attack: m.state === 'attack' || m.state === 'hold', seed: m.id, ai: m.ai, shield: m.shield, regen, wool: m.woolMax ? m.wool / m.woolMax : null, shellIn: m.shellUntil > b.time, leap, scale: scale * DRAW_SCALE };
-        if (this.scene && !this.scene.none && TD.art.opts.lit && ctx.globalAlpha === 1) {
+        if (this.scene && !this.scene.none && TD.art.opts.lit && ctx.globalAlpha === 1 && !def.noLit) {
           // 光影缓存（设计书 54.5）：动画约 12 帧/秒。
           // 普通小怪按"类型 + 4 个动画相位 + 状态"共用缓存，几十只同种怪只需要重画几次；
           // 受击闪白的怪、Boss 用自己的缓存

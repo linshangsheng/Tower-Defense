@@ -1197,7 +1197,7 @@ test('连击：1.2 秒内连续击败才算，记录最高连击；不影响奖�
 });
 
 test('王国小镇：每个 Boss 都有房子和 3 句台词，关卡号对得上', () => {
-  const bosses = Object.keys(D.monsters).filter((t) => D.monsters[t].boss && !D.monsters[t].towerOf && !D.monsters[t].echo);
+  const bosses = Object.keys(D.monsters).filter((t) => D.monsters[t].boss && !D.monsters[t].towerOf && !D.monsters[t].echo && !D.monsters[t].abyss);
   for (const t of bosses) assert.ok(D.town.some((f) => f.boss === t), `${t} 没有房子`);
   for (const f of D.town) {
     assert.strictEqual(f.lines.length, 3);
@@ -3979,7 +3979,7 @@ test('通关奖励：随关卡越来越丰厚，第 100 关远多于以前', () 
   assert.ok(r.baseCopper >= Math.round(f(40) * 1.5) - 1);
 });
 
-test('Boss 血量：主线 Boss ×3，九层妖塔的妖王 ×1.5，普通小怪不变', () => {
+test('Boss 血量：主线 Boss ×3，九层妖塔的妖王和关卡 Boss 一样厚，普通小怪不变', () => {
   const s = P.newSave();
   const mk = (level) => new TD.Battle({ level, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 1 });
   const b = mk(10);
@@ -3989,10 +3989,16 @@ test('Boss 血量：主线 Boss ×3，九层妖塔的妖王 ×1.5，普通小怪
   assert.strictEqual(TD.config.bossHpMult, 3);
   assert.ok(Math.abs(boss.maxHp - Math.round(d(boss.def) * (1 + (b.level.bossHp || 0)) * 3)) <= 1);
   assert.ok(Math.abs(slime.maxHp - Math.round(d(slime.def))) <= 1);
-  const tower = Object.keys(D.monsters).find((k) => D.monsters[k].boss && D.monsters[k].towerOf);
-  if (tower) {
-    const t = b.spawnMonster(tower, 0, 600);
-    assert.ok(Math.abs(t.maxHp - Math.round(d(t.def) * 1.5)) <= 1);
+  const cs = P.newSave();
+  clearUpTo(cs, 70);
+  for (const floor of [1, 4]) {
+    const def = TD.modes.buildTower(cs, floor);
+    const tb = new TD.Battle({ level: 'tower', levelDef: def, stage: def.stage, stats: P.heroStats(cs), loadout: P.battleLoadout(cs), seed: 2 });
+    for (let i = 0; i < 60 * 30 && !tb.bossHpD; i++) tb.step(1 / 60); // 第一波开始后才用妖塔的难度
+    const t = tb.spawnMonster('tw_boarKing', 0, 600);
+    assert.ok(t.dps <= D.monsters.tw_boarKing.dps * TD.config.difficulty(70) * 0.04, '攻城伤害仍按妖塔的小难度 ' + t.dps + ' D=' + tb.D + ' hpD=' + tb.bossHpD);
+    const want = Math.round(D.monsters.tw_boarKing.hp * TD.config.difficulty(70) * Math.pow(D.tower.grow, floor - 1) * tb.diffHp * 3);
+    assert.ok(Math.abs(t.maxHp - want) <= 1, `第 ${floor} 层妖王血量 ${t.maxHp} ≠ ${want}`);
   }
 });
 
@@ -4467,6 +4473,7 @@ test('200 关：第 11–20 章是前 10 章的深渊版，第 100 + j 关由第
     assert.strictEqual(lv.type, o.type === 'tutorial' ? 'normal' : o.type, `第 ${100 + j} 关类型`);
     assert.ok(lv.lanes >= 3 && lv.waves.length === o.waves.length && lv.tip);
     for (const w of lv.waves) for (const [t, c] of w.groups) assert.ok(D.monsters[t] && c >= 1, `第 ${100 + j} 关的 ${t}`);
+    if (j === 100) continue; // 第 200 关的 Boss 换成了焚天巨龙（下面单独断言）
     // 原来的 Boss 都还在；大 Boss 关里本章的小 Boss 一起登场
     for (const b of bossTypes(j)) assert.ok(bossTypes(100 + j).has(b), `第 ${100 + j} 关少了 ${b}`);
     if (o.type === 'boss' || o.type === 'miniboss') assert.ok(lv.bossHp > 0);
@@ -4474,9 +4481,9 @@ test('200 关：第 11–20 章是前 10 章的深渊版，第 100 + j 关由第
     // 搭档章节的小怪混进来了（第 2 波起）
     if (lv.waves.length > 1) assert.ok(lv.waves[1].groups.length > o.waves[1].groups.length, `第 ${100 + j} 关第 2 波有搭档章节的小怪`);
   }
-  // 只有第 50 和第 200 关是最终 Boss（播结局）；第 200 关墨墨和它的回声一起
+  // 只有第 50 和第 200 关是最终 Boss（播结局）；第 200 关是焚天巨龙
   assert.deepStrictEqual(Object.keys(D.levels).filter((n) => D.levels[n].final).map(Number), [50, 200]);
-  assert.ok(bossTypes(200).has('chaosInk') && bossTypes(200).has('inkBoss'));
+  assert.deepStrictEqual([...bossTypes(200)], ['abyssDragon'], '第 200 关只有焚天巨龙一个 Boss');
   assert.ok(D.story.ch11 && D.story.post200 && D.storyOrder.includes('ch11') && D.storyOrder.includes('post200'));
   assert.ok(D.achievements.find((a) => a.id === 'abyss20').check(Object.assign(P.newSave(), { levels: { 200: { stars: 1, clears: 1 } } })));
 });
@@ -4518,3 +4525,39 @@ test('防翻译打架：页面声明不要被浏览器翻译；回调太密集�
   for (let s = 0; s < 6 && !stopped; s++) for (let i = 0; i < 400 && !stopped; i++) stopped = guard((now += 2.5));
   assert.ok(stopped, '来回改页面应该停下来');
 });
+
+// ---------- v1.13：第 200 关 Boss 焚天巨龙（设计书 114） ----------
+test('焚天巨龙：体型至少是其他 Boss 的 5 倍，血量最厚；停在 holdX 放技能，打断会眩晕', () => {
+  const M = TD.data.monsters;
+  const others = Object.entries(M).filter(([k, d]) => d.boss && !k.endsWith('abyssDragon')).map(([, d]) => d);
+  assert.ok(M.abyssDragon.size >= 5 * Math.max(...others.map((d) => d.size)), '体型 ≥ 5 倍');
+  assert.ok(M.abyssDragon.hp > Math.max(...others.map((d) => d.hp)), '血量最厚');
+  const b = newBattle(200);
+  b.wall.max = b.wall.hp = 1e15;
+  const m = b.spawnMonster('abyssDragon', 2, 1100);
+  const seen = new Set();
+  for (const ev of ['dragonFire', 'dragonShock', 'dragonBoltStart', 'dragonBolt', 'bossSummon', 'bossPhase']) b.on(ev, () => seen.add(ev));
+  const hp0 = b.wall.hp;
+  m.hp = m.maxHp; // 不让玩家打它
+  for (let i = 0; i < 60 * 40; i++) b.step(1 / 60);
+  assert.ok(Math.abs(m.x - D_dragon().holdX) < 2, '停在 holdX 附近');
+  for (const ev of ['dragonFire', 'dragonShock', 'dragonBoltStart', 'dragonBolt', 'bossSummon']) assert.ok(seen.has(ev), '放出过 ' + ev);
+  assert.ok(b.wall.hp < hp0, '技能伤到了城墙');
+  // 第二、三阶段
+  m.hp = m.maxHp * 0.6;
+  b.step(1 / 60);
+  assert.strictEqual(m.ai.phase, 2);
+  m.hp = m.maxHp * 0.3;
+  b.step(1 / 60);
+  assert.strictEqual(m.ai.phase, 3);
+  assert.strictEqual(m.ai.holdX, D_dragon().holdX3, '第三阶段压向城墙');
+  for (let i = 0; i < 60 * 15; i++) b.step(1 / 60);
+  assert.ok(m.x < D_dragon().holdX - 100, '第三阶段向前走');
+  assert.ok(m.x >= D_dragon().holdX3 - 1);
+  // 蓄力时集中火力可以打断
+  m.ai.mode = 'warn'; m.ai.skill = 'fire'; m.ai.warnMax = m.ai.warnTimer = 2; m.ai.chargeDmg = 0;
+  b.damage(m, m.maxHp * 0.1, { source: "test" });
+  assert.notStrictEqual(m.ai.mode, 'warn', '被打断');
+  assert.ok(m.stunUntil > b.time, '打断后眩晕');
+});
+function D_dragon() { return TD.data.abyssDragon; }

@@ -129,6 +129,8 @@
   // 难度按已通关的最高关卡折算（刚开始就按第 1 关）；越高的层血量越高
   M.towerStage = (save) => Math.max(1, Math.min(Math.max(...Object.keys(D.levels).map(Number)), P.highestCleared(save)));
   // 难度系数按第 70 关封顶：第 71 关以后的回声小妖本身就比旧怪物强（设计书 75.4）
+  // 妖王的血量：和同等进度的关卡 Boss 一样厚（不乘小妖用的 base），逐层 ×grow（v1.13）
+  M.towerBossHpD = (save, floor) => C.difficulty(Math.min(70, M.towerStage(save))) * Math.pow(T().grow, floor - 1);
   M.towerD = (save, floor) => C.difficulty(Math.min(70, M.towerStage(save))) * T().base * Math.pow(T().grow, floor - 1);
 
   // 把 n 只平均分给一组类型（余数依次补给前面的），返回 [[类型, 数量], ...]
@@ -172,7 +174,7 @@
       const nm = Math.round(cnt.minion / per) + (bosses.length ? 0 : Math.round(cnt.boss / per));
       // 出怪间隔：一波大约在 (12 + 2×层数) 秒里全部涌出
       const gap = Math.max(0.05, (12 + 2 * floor) / (nb + nm));
-      waves.push({ gap, groups: [...spread(minions, nm), ...spread(bosses, nb)], D: M.towerD(save, floor), chapter: D.chapterOf(Math.min(stage, 100)).id });
+      waves.push({ gap, groups: [...spread(minions, nm), ...spread(bosses, nb)], D: M.towerD(save, floor), bossHpD: M.towerBossHpD(save, floor), chapter: D.chapterOf(Math.min(stage, 100)).id });
     }
     return {
       name: `九层妖塔 · 第 ${floor} 层`,

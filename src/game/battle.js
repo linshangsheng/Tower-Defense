@@ -35,6 +35,7 @@
     thunderKing: 'updateThunderKing',
     pearlClam: 'updatePearlClam',
     octoKing: 'updateOctoKing',
+    abyssDragon: 'updateAbyssDragon',
   };
 
   // 不当"多出来的小怪"的怪（设计书 84）：Boss、妖塔分身，要停在远处的（成百上千只一起远程攻击没法玩），会影响别的怪或英雄的
@@ -377,6 +378,7 @@
       if (this.mods.waveStrike) this.delayed.push({ kind: 'airstrike', def: { after: 6, atkMult: 4 }, at: this.time + 6 });
       const wave = this.level.waves[i];
       if (wave.D) this.D = wave.D; // 无尽模式：每波有自己的难度
+      this.bossHpD = wave.bossHpD || 0; // 九层妖塔：妖王的血量按这个难度算（和关卡 Boss 一样厚），其余属性仍按 D
       // countMult：自动平衡工具（tools/tune.js）写入的每关数量倍率，Boss 不受影响
       const cm = (this.level.countMult || 1) * (1 + (this.rules.countBonus || 0));
       // 主线关卡越靠后小怪越多（设计书 84）：整关总共多出 关卡号 × C.extraMonstersPerLevel 只小怪，和原有的怪一模一样，Boss 还是一只
@@ -519,7 +521,8 @@
       if (lane === undefined) lane = this.rng.int(this.lanes);
       // bossHp：精英挑战里回归的小 Boss 是强化版（设计书 29.2）
       const bossMult = def.boss ? (1 + (this.level.bossHp || 0)) * (def.towerOf ? C.towerBossHpMult : C.bossHpMult) : 1;
-      const hp = Math.round(def.hp * this.D * (1 + (this.rules.monsterHp || 0)) * this.diffHp * bossMult);
+      const hpD = def.towerOf && this.bossHpD ? this.bossHpD : this.D;
+      const hp = Math.round(def.hp * hpD * (1 + (this.rules.monsterHp || 0)) * this.diffHp * bossMult);
       const m = {
         id: nextId++,
         type,

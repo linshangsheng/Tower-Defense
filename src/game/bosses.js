@@ -31,6 +31,7 @@
         const T = D.thunderKing;
         m.ai = { phase: 1, mode: 'walk', summonTimer: T.summonFirst, summons: 0, chargeTimer: T.chargeFirst, warnTimer: 0, chargeDmg: 0 };
       } else if (ai === 'pearlClam') m.ai = { phase: 1, mode: 'walk', open: false, cycleTimer: 0, pearlTimer: 0 };
+      else if (ai === 'abyssDragon') m.ai = { phase: 1, mode: 'walk', holdX: D.abyssDragon.holdX, skillTimer: D.abyssDragon.skillFirst, skill: null, last: null, idx: 0, warnTimer: 0, warnMax: 0, chargeDmg: 0, summonTimer: 7, boltsLeft: 0, boltTimer: 0 };
       else if (ai === 'octoKing') m.ai = { phase: 1, mode: 'walk', summonTimer: D.octoKing.summonFirst, slots: null, guarded: false, alive: 0 };
     },
 
@@ -564,6 +565,104 @@
       }
     },
 
+    // 焚天巨龙（设计书 114）：悬在战场右侧，三个阶段；技能 = 龙息 / 龙吼冲击 / 雷暴，都有蓄力预警，蓄力时累计伤害够了就打断；
+    // 定期招来飞行的小龙；血量 33% 以下狂暴：技能更频繁、龙息更痛、向前压到城墙前
+    updateAbyssDragon(m, dt) {
+      const G = D.abyssDragon;
+      const ai = m.ai;
+      const ratio = m.hp / m.maxHp;
+      const ph = () => ai.phase - 1;
+      if (ai.phase === 1 && ratio < G.phase2Below) {
+        ai.phase = 2;
+        ai.skillTimer = Math.min(ai.skillTimer, 2);
+        this.emit('bossPhase', { m, phase: 2, text: '巨龙怒了：技能越来越频繁！' });
+      }
+      if (ai.phase === 2 && ratio < G.phase3Below) {
+        ai.phase = 3;
+        ai.holdX = G.holdX3;
+        if (ai.mode === 'hold') ai.mode = 'walk';
+        this.emit('bossPhase', { m, phase: 3, text: '巨龙狂暴了！它压向城墙！' });
+      }
+      if (ai.mode === 'walk' && m.x <= ai.holdX) {
+        m.x = ai.holdX;
+        ai.mode = 'hold';
+      }
+      if (this.time < m.stunUntil) return;
+      // 雷暴：一串落雷，一道一道劈向城墙
+      if (ai.boltsLeft > 0) {
+        ai.boltTimer -= dt;
+        if (ai.boltTimer <= 0) {
+          ai.boltTimer += G.bolt.spread / G.bolt.count[ph()];
+          ai.boltsLeft--;
+          const lane = this.rng.int(this.lanes);
+          this.emit('dragonBolt', { m, x: C.wallX + 10 + this.rng() * 90, y: this.laneY(lane), lane });
+          this.hitWall(G.bolt.damage * this.D, m, false, 'bolt', m.type);
+          if (this.rng() < G.bolt.heroStunChance) this.stunHero(G.bolt.heroStun);
+        }
+      }
+      // 招来飞行的小龙（和熔岩傀儡）
+      if (m.x <= C.spawnX) {
+        ai.summonTimer -= dt;
+        if (ai.summonTimer <= 0) {
+          ai.summonTimer += G.summon.every[ph()];
+          for (let i = 0; i < G.summon.count[ph()]; i++) this.spawnMonster(G.summon.type, this.rng.int(this.lanes), Math.min(C.spawnX, m.x + 60 + this.rng() * 80));
+          if (ai.phase >= 2) this.spawnMonster(G.summon.golem, this.rng.int(this.lanes), Math.min(C.spawnX, m.x + 40));
+          this.emit('bossSummon', { m });
+        }
+      }
+      if (ai.mode === 'warn') {
+        ai.warnTimer -= dt;
+        if (ai.warnTimer > 0) return;
+        this.castDragonSkill(m);
+        return;
+      }
+      if (ai.mode !== 'hold' && ai.mode !== 'walk') return;
+      ai.skillTimer -= dt;
+      if (ai.skillTimer > 0) return;
+      // 选技能：第一阶段按龙息 → 冲击 → 雷暴的顺序，之后随机（不连着用同一个）
+      const list = ['fire', 'shock', 'bolt'];
+      let skill = list[ai.idx % 3];
+      if (ai.phase > 1) {
+        const pool = list.filter((k) => k !== ai.last);
+        skill = pool[this.rng.int(pool.length)];
+      }
+      ai.idx++;
+      ai.skill = skill;
+      ai.mode = 'warn';
+      ai.warnMax = ai.warnTimer = G[skill].warn;
+      ai.chargeDmg = 0;
+      ai.lane = skill === 'fire' ? this.rng.int(this.lanes) : Math.floor(this.lanes / 2);
+      this.emit('bossWarn', { m, lane: ai.lane, duration: ai.warnTimer });
+      this.emit('dragonCast', { m, kind: skill, duration: ai.warnTimer, lane: ai.lane });
+    },
+
+    // 蓄力结束，放出技能
+    castDragonSkill(m) {
+      const G = D.abyssDragon;
+      const ai = m.ai;
+      const skill = ai.skill;
+      const enraged = ai.phase === 3;
+      if (skill === 'fire') {
+        const k = enraged ? G.fire.enrage : 1;
+        this.emit('dragonFire', { m, lane: ai.lane, twin: enraged });
+        this.hitWall(G.fire.damage * k * this.D, m, true, 'fire', m.type);
+        this.addWallDot(G.fire.dot * k * this.D, G.fire.dotTime, 'dragonFire', true, m.type);
+        this.stunHero(0.4);
+      } else if (skill === 'shock') {
+        this.emit('dragonShock', { m });
+        this.hitWall(G.shock.damage * this.D, m, true, 'shock', m.type);
+        this.stunHero(G.shock.stun);
+      } else {
+        ai.boltsLeft = G.bolt.count[ai.phase - 1];
+        ai.boltTimer = 0;
+        this.emit('dragonBoltStart', { m });
+      }
+      ai.last = skill;
+      ai.skill = null;
+      ai.skillTimer = G.skillEvery[ai.phase - 1];
+      ai.mode = m.x > ai.holdX + 1 ? 'walk' : 'hold';
+    },
+
     // 贝贝：合壳（几乎打不动 + 召唤寄居蟹）↔ 张壳（易伤 + 吐珍珠）（设计书 52.3）
     updatePearlClam(m, dt) {
       const B = D.pearlClam;
@@ -708,6 +807,19 @@
     // 冲锋期间累计伤害，达到阈值就打断
     onBossDamaged(m, dmg) {
       const ai = m.ai;
+      if (m.def.ai === 'abyssDragon') {
+        if (ai.mode !== 'warn') return;
+        ai.chargeDmg += dmg;
+        if (ai.chargeDmg >= m.maxHp * D.abyssDragon.interruptRatio) {
+          ai.last = ai.skill;
+          ai.skill = null;
+          ai.skillTimer = D.abyssDragon.skillEvery[ai.phase - 1] * 0.6;
+          ai.mode = m.x > ai.holdX + 1 ? 'walk' : 'hold';
+          m.stunUntil = this.time + D.abyssDragon.stunOnInterrupt;
+          this.emit('bossInterrupt', { m });
+        }
+        return;
+      }
       if (m.def.ai === 'windGiant' || m.def.ai === 'thunderKing') {
         if (ai.mode !== 'warn') return;
         ai.chargeDmg += dmg;

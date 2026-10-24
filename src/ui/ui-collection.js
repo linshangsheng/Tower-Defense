@@ -77,7 +77,7 @@
           'ul',
           { class: 'mode-rules' },
           h('li', null, `每次挑战花 ${P.costText(D.tower.fee)}。`),
-          h('li', null, '怪物同时大量涌来，打怪没有任何收益；只有"过关"才有钻石。钻石只能在这里获得。越往上，妖王的比例越高：第 1 层 10%，第 9 层 50%。'),
+          h('li', null, '怪物同时大量涌来，打怪没有任何收益；只有"过关"才有钻石。钻石只能在这里获得。越往上，妖王的比例越高：第 1 层 10%，第 9 层 50%。妖王的血量和关卡里的大 Boss 一样厚。'),
           h('li', null, '每过一层可以领取这一层的钻石离开，或者继续往上：再过一层，钻石翻倍；失败了，什么都没有。'),
           h('li', null, `每往上一层，怪物的血量和攻城伤害都 ×${D.tower.grow}；城墙的血量接着上一层，不会恢复（只有修缮、补给卡、道具和技能能回血）。`),
           h('li', null, `难度按你通关的最高关卡折算（最高按第 70 关）；每一层补给 2 次；中途退出或刷新页面算失败。`)
@@ -340,7 +340,7 @@
 
   // 怪物首次出现的章节（召唤物、分裂产物跟随母体）
   function monsterChapter(type) {
-    const extra = { minijelly: 1, gobling: 1, minipumpkin: 3, snowball: 4, iceDragon: 4, inkClone: 5 };
+    const extra = { abyssDragon: 10, minijelly: 1, gobling: 1, minipumpkin: 3, snowball: 4, iceDragon: 4, inkClone: 5 };
     if (extra[type]) return extra[type];
     const nums = Object.keys(D.levels).map(Number).sort((a, b) => a - b);
     for (const n of nums) for (const w of D.levels[n].waves) for (const [t] of w.groups) if (t === type) return D.chapterOf(n).id;

@@ -1681,7 +1681,7 @@
 
   // ---------- 第 101–200 关：深渊回响（设计书 112）----------
   // 第 11–20 章沿用前 10 章的场景和音乐，加一层深渊的紫光；第 100 + j 关由第 j 关改来：
-  //   怪物数量 ×1.25，再混进"搭档章节"（隔 5 章）里的两种小怪；大 Boss 关里小 Boss 同时登场；Boss 血量逐章 +；第 200 关是墨墨和它的回声一起
+  //   怪物数量 ×1.25，再混进"搭档章节"（隔 5 章）里的两种小怪；大 Boss 关里小 Boss 同时登场；Boss 血量逐章 +；第 200 关的 Boss 是焚天巨龙
   const ABYSS_DENY = ['boss', 'towerOf', 'bossPart', 'ai', 'healer', 'ranged', 'chill', 'bubbler', 'fireZone', 'onDeath', 'staticShock', 'stealth'];
   const baseChapters = TD.data.chapters.slice(0, 10);
   const fodderOf = (ch) => {
@@ -1733,13 +1733,15 @@
       if (o.type === 'boss' || o.type === 'miniboss') lv.bossHp = +(0.2 + ci * 0.04).toFixed(2);
       if (isBoss && mini.length) waves[waves.length - 1].groups.push([mini[0], 1]);
       if (n === 200) {
-        // 终章：墨墨和它的回声一起
-        waves[waves.length - 1].groups.push(['inkBoss', 1]);
-        lv.name = '深渊 · 墨墨与回声';
+        // 终章：深渊尽头的焚天巨龙（设计书 114），取代墨墨的回声
+        const last = waves[waves.length - 1];
+        last.groups = last.groups.filter(([t]) => !TD.data.monsters[t].boss);
+        last.groups.push(['abyssDragon', 1]);
+        lv.name = '深渊 · ' + TD.data.monsters.abyssDragon.name;
         lv.shortName = lv.name;
         lv.bossHp = 0.6;
         lv.final = true;
-        lv.tip = '墨墨和它的回声一起来了——两个最终 Boss 同时登场。这是最后一关。';
+        lv.tip = '焚天巨龙盘踞在深渊的尽头：喷火、龙吼冲击、雷暴，还会招来飞行的小龙。它蓄力时集中火力可以打断——这是最后一关！';
       }
       TD.data.levels[n] = lv;
     });
