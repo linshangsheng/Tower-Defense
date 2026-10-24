@@ -963,6 +963,7 @@
       name: '剪羊毛大赛',
       type: 'rush',
       countMult: 1.34,
+      extraMult: 0.03, // v1.10：按机器人战役模拟下调多出的小怪
       lanes: 5,
       rushInterval: 12,
       waves: [
@@ -1060,7 +1061,8 @@
     63: {
       name: '飞鱼跳跳',
       type: 'rush',
-      countMult: 1.94,
+      countMult: 0.79,
+      extraMult: 0.2, // v1.10：按机器人战役模拟下调多出的小怪
       lanes: 5,
       rushInterval: 12,
       waves: [
