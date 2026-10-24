@@ -4791,3 +4791,25 @@ test('战斗 HUD：updateHud 里的文字都走 setText（内容没变不碰 DOM
   // 嵌在网页里不显示「退出游戏」
   assert.ok(/UI\.embedded\(\) \? null : h\('button', \{ class: 'btn quit'/.test(src));
 });
+
+// ---------- v1.22：手机竖屏时舞台转 90°，点击坐标要反算（设计书 123） ----------
+test('舞台坐标换算：不转时按比例；顺时针转 90° 后能把屏幕上的点还原成舞台里的点', () => {
+  const sp = TD.util.stagePoint;
+  // 不转：1280×720 的舞台放大 0.5 倍放在 (10, 20)
+  const r0 = { left: 10, top: 20, width: 640, height: 360 };
+  assert.deepStrictEqual(sp(10 + 320, 20 + 180, r0, 1280, 720, false), { x: 640, y: 360 });
+  assert.deepStrictEqual(sp(10 + 64, 20 + 36, r0, 1280, 720, false), { x: 128, y: 72 });
+  // 转 90°：缩放 0.5，舞台中心在屏幕 (200, 400)；外框宽 = 720×0.5，高 = 1280×0.5
+  const s = 0.5;
+  const rect = { left: 200 - (720 * s) / 2, top: 400 - (1280 * s) / 2, width: 720 * s, height: 1280 * s };
+  // 舞台里的 (x, y) → 屏幕：中心 + 顺时针 90°，偏移 = (-(y-360), x-640) * s
+  const toScreen = (x, y) => [200 - (y - 360) * s, 400 + (x - 640) * s];
+  for (const [x, y] of [[0, 0], [1280, 720], [640, 360], [100, 650], [1200, 40]]) {
+    const [cx, cy] = toScreen(x, y);
+    const p = sp(cx, cy, rect, 1280, 720, true);
+    assert.ok(Math.abs(p.x - x) < 1e-6 && Math.abs(p.y - y) < 1e-6, `${x},${y} -> ${p.x},${p.y}`);
+  }
+  // 舞台左上角（0, 0）在竖屏转过之后落在屏幕的右上角
+  const [tx, ty] = toScreen(0, 0);
+  assert.ok(tx > 200 && ty < 400);
+});

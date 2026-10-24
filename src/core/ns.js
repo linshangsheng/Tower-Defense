@@ -10,6 +10,14 @@
     lerp(a, b, t) {
       return a + (b - a) * t;
     },
+    // 屏幕上的一个点 → 舞台（1280×720）里的坐标。舞台转了 90° 时（手机竖屏，设计书 123），
+    // getBoundingClientRect 给的是转过之后的外框，要按旋转反算：顺时针 90° 时舞台里相对中心的 (u, v) 到了屏幕上是 (-v, u)
+    stagePoint(clientX, clientY, rect, W, H, rotated) {
+      if (!rotated) return { x: ((clientX - rect.left) / rect.width) * W, y: ((clientY - rect.top) / rect.height) * H };
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      return { x: W / 2 + (clientY - cy) * (W / rect.height), y: H / 2 - (clientX - cx) * (H / rect.width) };
+    },
     // 价格取整到 5
     round5(v) {
       return Math.max(5, Math.round(v / 5) * 5);

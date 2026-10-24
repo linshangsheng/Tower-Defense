@@ -1258,6 +1258,7 @@ body {
   flex-wrap: wrap;
 }
 /* ---------- 竖屏提示 ---------- */
+/* 竖着拿手机时游戏会自己转 90° 铺满屏幕（设计书 123）；这里只是顶部一条会自己淡出的小建议，不挡操作 */
 #rotate-hint {
   display: none;
 }
@@ -1265,22 +1266,35 @@ body {
   #rotate-hint {
     display: flex;
     position: fixed;
-    inset: 0;
+    left: 50%;
+    top: 8px;
+    transform: translateX(-50%);
     z-index: 100;
-    background: #2d3a24;
+    max-width: 86vw;
+    padding: 6px 14px;
+    border-radius: 16px;
+    background: rgba(20, 16, 36, 0.82);
     color: #fff8e8;
-    font-size: 22px;
+    font-size: 13px;
     font-weight: 700;
     align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 30px;
-    flex-direction: column;
-    gap: 16px;
+    gap: 8px;
+    pointer-events: none;
+    animation: hintFade 7s forwards;
   }
   #rotate-hint .phone {
-    font-size: 64px;
+    font-size: 18px;
     animation: rot 2s ease-in-out infinite;
+  }
+}
+@keyframes hintFade {
+  0%,
+  75% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
   }
 }
 @keyframes rot {

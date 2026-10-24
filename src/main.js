@@ -337,12 +337,18 @@
   }
 
   // ---------- 缩放适配 ----------
+  // 手机竖着拿（或者锁了自动旋转、在 App 内置浏览器里网页转不过来）时，把整个舞台顺时针转 90° 铺满屏幕：
+  // 玩家把手机侧过来看就是横屏，不转手机也能玩（设计书 123）。电脑上窗口再窄也不转（宽度 > 900 才算电脑）
   function fit() {
     const stage = document.getElementById('stage');
-    const s = Math.min(window.innerWidth / C.width, window.innerHeight / C.height);
-    stage.style.transform = `translate(-50%, -50%) scale(${s})`;
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    const rotated = h > w && w <= 900;
+    const s = rotated ? Math.min(h / C.width, w / C.height) : Math.min(w / C.width, h / C.height);
+    stage.style.transform = `translate(-50%, -50%) ${rotated ? 'rotate(90deg) ' : ''}scale(${s})`;
     game.scale = s;
-    // 大字模式（设计书 47）：自动 = 缩放小于 0.75（手机横屏）时开启
+    game.rotated = rotated;
+    // 大字模式（设计书 47）：自动 = 缩放小于 0.75（手机）时开启
     const lt = (game.save && game.save.settings.largeText) || 'auto';
     const large = lt === 'on' || (lt === 'auto' && s < 0.75);
     document.getElementById('ui').classList.toggle('large-text', large);
@@ -350,8 +356,7 @@
 
   function canvasPoint(e) {
     const canvas = game.renderer.canvas;
-    const r = canvas.getBoundingClientRect();
-    return { x: ((e.clientX - r.left) / r.width) * C.width, y: ((e.clientY - r.top) / r.height) * C.height };
+    return TD.util.stagePoint(e.clientX, e.clientY, canvas.getBoundingClientRect(), C.width, C.height, game.rotated);
   }
 
   // ---------- 主循环 ----------
@@ -436,6 +441,7 @@
     TD.ui.init(game);
     fit();
     window.addEventListener('resize', fit);
+    window.addEventListener('orientationchange', fit);
 
     // 首次交互时解锁音频
     // 浏览器只允许在用户操作里进全屏：第一次点击 / 按键就进（设计书 66.2）

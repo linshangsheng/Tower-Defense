@@ -386,9 +386,7 @@
       raf = requestAnimationFrame(draw);
     };
     cv.addEventListener('click', (e) => {
-      const r = cv.getBoundingClientRect();
-      const px = ((e.clientX - r.left) / r.width) * W;
-      const py = ((e.clientY - r.top) / r.height) * H;
+      const { x: px, y: py } = TD.util.stagePoint(e.clientX, e.clientY, cv.getBoundingClientRect(), W, H, G().rotated);
       T.forEach((f, i) => {
         const { x, y } = slot(i);
         if (Math.abs(px - x) < 70 && py > y - 170 && py < y + 20) {
