@@ -244,6 +244,26 @@
     }
   }
 
+  // 防"翻译打架"（设计书 113）：浏览器自带翻译 / 翻译插件也会改页面上的文字，我们的观察器再翻回来，两边来回改就把页面卡死了。
+  // 1) 页面里出现了别的翻译器的痕迹就不再盯着页面；2) 观察器回调太密集（1 秒超过 60 次、连续 3 秒）也停下来。
+  function makeLoopGuard(limit, windowMs, strikes) {
+    let start = 0;
+    let n = 0;
+    let bad = 0;
+    return (now) => {
+      if (now - start > windowMs) {
+        bad = n > limit ? bad + 1 : 0;
+        start = now;
+        n = 0;
+      }
+      n++;
+      return bad >= strikes || (n > limit * 4 && bad >= 1) || n > limit * 8; // 1 秒里就超过 480 次：马上停
+    };
+  }
+  function foreignTranslator() {
+    const root = document.documentElement;
+    return /translated-(ltr|rtl)/.test(root.className || '') || root.hasAttribute('_msthash') || !!document.querySelector('[_msttexthash], font[style*="vertical-align: inherit"], .immersive-translate-target-wrapper, [data-immersive-translate-walked]');
+  }
   function applyDocument() {
     if (typeof document === 'undefined') return;
     document.documentElement.lang = lang;
@@ -293,8 +313,14 @@
       if (typeof MutationObserver === 'undefined') return;
       const root = document.body;
       walk(root);
+      const tooBusy = makeLoopGuard(60, 1000, 3);
       observer = new MutationObserver((records) => {
         if (lang === 'zh') return;
+        if (tooBusy(Date.now()) || foreignTranslator()) {
+          observer.disconnect();
+          if (typeof console !== 'undefined') console.warn('i18n：页面正在被别的翻译器修改，已停止自动翻译');
+          return;
+        }
         for (const r of records) {
           if (r.type === 'characterData') translateTextNode(r.target);
           else if (r.type === 'attributes') translateAttrs(r.target);
@@ -303,6 +329,7 @@
       });
       observer.observe(root, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ATTRS });
     },
+    _makeLoopGuard: makeLoopGuard,
     // 只测试用：直接指定语言和词典
     _use(code, table) {
       lang = code;

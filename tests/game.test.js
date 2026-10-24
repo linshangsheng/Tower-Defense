@@ -4502,3 +4502,19 @@ test('深渊回响：难度系数继续增长；多出的小怪封顶 500；通�
     assert.ok(b.over, `第 ${n} 关没跑完`);
   }
 });
+
+// ---------- v1.12：浏览器翻译和游戏自己的翻译打架会卡死页面（设计书 113） ----------
+test('防翻译打架：页面声明不要被浏览器翻译；回调太密集时观察器会自己停下来', () => {
+  const fs = require('fs');
+  const html = fs.readFileSync(require('path').join(__dirname, '..', 'index.html'), 'utf8');
+  assert.ok(/<html[^>]*translate="no"/.test(html) && /<meta name="google" content="notranslate"/.test(html));
+  require('../src/core/i18n.js');
+  const guard = TD.i18n._makeLoopGuard(60, 1000, 3);
+  // 正常使用：每秒几十次变化，不会停
+  let now = 0;
+  for (let s = 0; s < 10; s++) for (let i = 0; i < 40; i++) assert.ok(!guard((now += 25)), '正常变化不该停');
+  // 翻译器和我们来回改：每秒几百次、连续 3 秒 → 停
+  let stopped = false;
+  for (let s = 0; s < 6 && !stopped; s++) for (let i = 0; i < 400 && !stopped; i++) stopped = guard((now += 2.5));
+  assert.ok(stopped, '来回改页面应该停下来');
+});
