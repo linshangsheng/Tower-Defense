@@ -2054,4 +2054,11 @@ TD.i18n.register("fr", {
   "通关第 200 关，击败深渊尽头的焚天巨龙": "Terminez le niveau 200 : battez le Dragon Brûle-Ciel au bout de l'abîme",
   "怪物同时大量涌来，打怪没有任何收益；只有\"过关\"才有钻石。钻石只能在这里获得。越往上，妖王的比例越高：第 1 层 10%，第 9 层 50%。妖王的血量和关卡里的大 Boss 一样厚。": "Les monstres déferlent tous en même temps et les vaincre ne rapporte rien ; seul « franchir » un étage donne des diamants. Les diamants ne s'obtiennent qu'ici. Plus on monte, plus il y a de rois démons : 10 % à l'étage 1, 50 % à l'étage 9. Les rois démons ont autant de points de vie que les gros boss des niveaux.",
   "九层妖塔里的妖王：血量和关卡里的 Boss 一样厚，没有特殊行动，只管冲向城墙。": "Un roi démon de la Tour des Démons à neuf étages : autant de points de vie qu’un boss de niveau, sans attaque spéciale, il fonce simplement sur la muraille.",
+  "测试": "Test",
+  "测试（已开启）": "Test (activé)",
+  "测试模式已开启：资源已拉满，所有关卡都可以选": "Mode test activé : ressources au maximum, tous les niveaux disponibles",
+  "密码": "Mot de passe",
+  "密码不对": "Mot de passe incorrect",
+  "输入密码开启测试模式：资源全部拉满，所有关卡都可以直接选。": "Entrez le mot de passe pour activer le mode test : ressources au maximum, tous les niveaux disponibles.",
+  "第 N 层所有怪物的属性（血量、攻城伤害、护甲）是第 1 层的 N 倍，第 9 层是第 1 层的 9 倍；城墙的血量接着上一层，不会恢复（只有修缮、补给卡、道具和技能能回血）。": "À l'étage N, tous les monstres ont N fois les statistiques de l'étage 1 (vie, dégâts à la muraille, armure) : l'étage 9 vaut 9 fois l'étage 1. La vie de la muraille est reprise de l'étage précédent et ne se régénère pas (seuls les réparations, cartes de ravitaillement, objets et compétences soignent).",
 });

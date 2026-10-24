@@ -1,7 +1,9 @@
-// 深渊回响（第 11–20 章）的终章 Boss：焚天巨龙（设计书 114）
-// 西方神话里的巨龙：侧面像，朝左（城墙方向）。坐标约定同 creatures.js：s 是 def.size（250），身体中心就在原点附近
-// （原点 = 悬停高度的身体中心，不是脚下）；向上为负。宽约 2.3 s，翼尖高约 0.75 s。
-// 状态（o.ai）：mode === 'warn' 时按 skill（fire / shock / bolt）和蓄力进度做预备动作；phase 3 狂暴。
+// 深渊回响（第 11–20 章）的终章 Boss：焚天巨龙（设计书 114、115）
+// 西方神话里的巨龙，侧面像，朝左（城墙方向），悬在半空、翅膀高举。
+// 坐标约定同 creatures.js：s 是 def.size，原点 = 身体中心（不是脚下），向上为负；整条龙宽约 2.5 s，翼尖高约 0.75 s。
+// v1.14 重画：脖子 + 躯干 + 尾巴是同一条"脊柱曲线"（Catmull-Rom）按粗细剖面生成的连续轮廓，
+// 不再是椭圆 + 圆串；四肢是大腿 / 小腿 / 脚三段的肌肉轮廓；翅膀有臂骨、四根指骨和扇贝形的后缘；头是真正的龙头侧面（眉骨、长吻、颧骨刺、双角）。
+// 状态（o.ai）：mode === 'warn' 时按 skill（fire / shock / bolt）和蓄力进度做预备动作；phase 2 发怒，phase 3 狂暴。
 (function (TD) {
   'use strict';
 
@@ -10,23 +12,93 @@
   const TAU = Math.PI * 2;
   const { deep, light, rgba, glow, shadow, veins, scales, seeded, linear } = K;
 
-  // 沿贝塞尔曲线取点
-  function bez(p0, p1, p2, p3, u) {
-    const v = 1 - u;
-    return [
-      v * v * v * p0[0] + 3 * v * v * u * p1[0] + 3 * v * u * u * p2[0] + u * u * u * p3[0],
-      v * v * v * p0[1] + 3 * v * v * u * p1[1] + 3 * v * u * u * p2[1] + u * u * u * p3[1],
-    ];
+  // 均匀 Catmull-Rom：点列 P（每点 [x, y, ...附加量]）→ n 个采样点，附加量同样平滑插值；每个采样点带单位切线 (tx, ty)
+  function spline(P, n) {
+    const m = P.length;
+    const g = (i) => P[Math.max(0, Math.min(m - 1, i))];
+    const out = [];
+    for (let k = 0; k < n; k++) {
+      const f = (k / (n - 1)) * (m - 1);
+      const i = Math.min(m - 2, Math.floor(f));
+      const u = f - i;
+      const a = g(i - 1), b = g(i), c = g(i + 1), d = g(i + 2);
+      const u2 = u * u, u3 = u2 * u;
+      const q = b.map((_, j) => 0.5 * (2 * b[j] + (-a[j] + c[j]) * u + (2 * a[j] - 5 * b[j] + 4 * c[j] - d[j]) * u2 + (-a[j] + 3 * b[j] - 3 * c[j] + d[j]) * u3));
+      out.push(q);
+    }
+    for (let k = 0; k < n; k++) {
+      const p = out[Math.max(0, k - 1)];
+      const q = out[Math.min(n - 1, k + 1)];
+      const dx = q[0] - p[0], dy = q[1] - p[1];
+      const l = Math.hypot(dx, dy) || 1;
+      out[k].tx = dx / l;
+      out[k].ty = dy / l;
+    }
+    return out;
   }
 
-  // 沿曲线串一串圆，半径从 r0 渐变到 r1：并集就是一条粗细渐变的"肉管"（脖子、尾巴）
-  function tube(ctx, pts, r0, r1) {
+  // 肉管轮廓：沿采样点，向"上"（切线左手边，(ty, −tx)）偏 w[2]，向"下"偏 w[3]；q 是整体粗细倍数
+  function edges(S, q) {
+    const top = S.map((p) => [p[0] + p.ty * p[2] * q, p[1] - p.tx * p[2] * q]);
+    const bot = S.map((p) => [p[0] - p.ty * p[3] * q, p[1] + p.tx * p[3] * q]);
+    return { top, bot };
+  }
+  function ribbonPath(ctx, S, q) {
+    const { top, bot } = edges(S, q || 1);
     ctx.beginPath();
-    pts.forEach(([x, y], i) => {
-      const r = r0 + (r1 - r0) * (i / (pts.length - 1));
-      ctx.moveTo(x + r, y);
-      ctx.arc(x, y, r, 0, TAU);
-    });
+    top.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)));
+    for (let i = bot.length - 1; i >= 0; i--) ctx.lineTo(bot[i][0], bot[i][1]);
+    ctx.closePath();
+    return { top, bot };
+  }
+  function polyline(ctx, pts, from, to) {
+    ctx.beginPath();
+    for (let i = from === undefined ? 0 : from; i <= (to === undefined ? pts.length - 1 : to); i++) (i === (from || 0) ? ctx.moveTo : ctx.lineTo).call(ctx, pts[i][0], pts[i][1]);
+  }
+  // 封闭的光滑曲线（头、下颌）
+  function closedPath(ctx, P) {
+    const m = P.length;
+    ctx.beginPath();
+    ctx.moveTo(P[0][0], P[0][1]);
+    for (let i = 0; i < m; i++) {
+      const p0 = P[(i + m - 1) % m], p1 = P[i], p2 = P[(i + 1) % m], p3 = P[(i + 2) % m];
+      ctx.bezierCurveTo(p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6, p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6, p2[0], p2[1]);
+    }
+    ctx.closePath();
+  }
+
+  // 鳞片：K.scales 每次要描上千条小弧线（龙身那么大，占了一帧的三分之二），改成先画一块可平铺的小图，再用图案铺满
+  const tiles = {};
+  function scaleFill(ctx, x0, y0, x1, y1, size, color, a) {
+    if (typeof document === 'undefined') return scales(ctx, x0, y0, x1, y1, size, color, a);
+    const key = color + a;
+    let tile = tiles[key];
+    if (!tile) {
+      const W = 32;
+      const RH = 22.4;
+      const c = document.createElement('canvas');
+      c.width = W;
+      c.height = RH * 2;
+      const g = c.getContext('2d');
+      g.strokeStyle = rgba(color, a);
+      g.lineWidth = 3.8;
+      for (let row = 0; row < 2; row++) {
+        const y = row * RH;
+        g.beginPath();
+        for (let x = (row ? W / 2 : 0) - W; x <= W * 2; x += W) {
+          g.moveTo(x - W / 2, y);
+          g.quadraticCurveTo(x, y + W * 0.65, x + W / 2, y);
+        }
+        g.stroke();
+      }
+      tile = tiles[key] = { c, pat: ctx.createPattern(c, 'repeat') };
+    }
+    const k = size / 32;
+    ctx.save();
+    ctx.scale(k, k);
+    ctx.fillStyle = tile.pat;
+    ctx.fillRect(x0 / k, y0 / k, (x1 - x0) / k, (y1 - y0) / k);
+    ctx.restore();
   }
 
   D.abyssDragon = function (ctx, s, t, o) {
@@ -34,418 +106,474 @@
     const warn = ai.mode === 'warn';
     const skill = warn ? ai.skill : null;
     const k = warn && ai.warnMax ? Math.min(1, Math.max(0, 1 - ai.warnTimer / ai.warnMax)) : 0; // 蓄力进度 0 → 1
-    const rage = (ai.phase || 1) >= 3;
-    const angry = (ai.phase || 1) >= 2;
-    const flap = Math.sin(t * (rage ? 3.4 : 2.3));
-    const flap2 = Math.sin(t * (rage ? 3.4 : 2.3) + 0.9);
-    const bob = Math.sin(t * 1.5) * 0.014 * s;
+    const phase = ai.phase || 1;
+    const rage = phase >= 3;
+    const angry = phase >= 2;
+    const spd = rage ? 3.2 : 2.2;
+    const flap = Math.sin(t * spd);
+    const flap2 = Math.sin(t * spd + 0.8);
+    const bob = Math.sin(t * 1.5) * 0.016 * s;
 
-    // 配色：深红的龙鳞、金色的腹甲、暗紫红的翼膜、岩浆一样的纹路
-    const BODY = rage ? '#7a1010' : '#5e1616';
-    const BELLY = '#e0a85a';
-    const MEMB = '#7a1840';
-    const BONE = '#e8d6a8';
+    // 配色：暗红的龙鳞（背亮腹暗）、金色腹甲、暗紫红翼膜、岩浆纹路
+    const BODY = rage ? '#7c1410' : '#641a18';
+    const BODY_LIT = rage ? '#c8442a' : '#a8342a';
+    const BELLY = '#e6b46a';
+    const MEMB = '#74183c';
+    const BONE = '#ecdcb0';
     const LAVA = rage ? '#ffd060' : '#ff8a2a';
     const heat = 0.25 + (angry ? 0.2 : 0) + (rage ? 0.25 : 0) + (skill === 'fire' ? 0.5 * k : 0);
+    const lw = (v) => Math.max(1, s * v);
+
+    // 头的姿态：待机略低头盯着城墙；龙息向前下方；龙吼和雷暴抬头
+    const headAng = skill === 'shock' ? 0.42 * k - 0.1 : skill === 'bolt' ? 0.3 * k - 0.1 : skill === 'fire' ? -0.2 - 0.05 * k : -0.12 + Math.sin(t * 1.1) * 0.03;
+    const jaw = skill ? 0.1 + (skill === 'fire' ? 0.5 : skill === 'shock' ? 0.62 : 0.3) * k : 0.04 + 0.03 * Math.sin(t * 2.1);
 
     ctx.save();
-    ctx.translate(0, bob);
+    ctx.translate(0, bob + 0.12 * s); // 整体下移一点：翼尖和头不要顶到 Boss 血条
 
     // 地面上的影子（龙悬在半空，影子落得很远很淡）
     ctx.save();
-    ctx.globalAlpha = 0.45;
-    shadow(ctx, s * 0.1, s * 0.48 - bob, s * 0.95);
+    ctx.globalAlpha = 0.4;
+    shadow(ctx, s * 0.1, s * 0.5 - bob, s * 0.95);
     ctx.restore();
 
-    // ---------- 关键点 ----------
-    const headTilt = skill === 'shock' ? -0.3 * k : skill === 'fire' ? -0.1 * k : skill === 'bolt' ? -0.2 * k : 0;
-    const H = [-0.9 * s, -0.5 * s + (skill === 'shock' ? -0.07 * s * k : 0)]; // 头的位置
-    const jaw = skill ? 0.12 + 0.5 * k : 0.05 + 0.03 * Math.sin(t * 2);
-    const chest = [-0.26 * s, -0.16 * s];
+    // ---------- 脊柱：头 → 脖子 → 胸 → 腹 → 尾（x, y, 背侧半宽, 腹侧半宽），单位 s ----------
+    const sw = (a, ph) => Math.sin(t * 1.7 + ph) * a;
+    const ctl = [
+      [-0.93, -0.55, 0.075, 0.075],
+      [-0.83, -0.59, 0.085, 0.09],
+      [-0.7, -0.5, 0.1, 0.105],
+      [-0.64, -0.35, 0.115, 0.125],
+      [-0.54, -0.22, 0.14, 0.16],
+      [-0.36, -0.12, 0.225, 0.26],
+      [-0.08, -0.09, 0.235, 0.3],
+      [0.22, -0.08, 0.215, 0.25],
+      [0.46, -0.03 + sw(0.01, 0), 0.155, 0.17],
+      [0.68, 0.06 + sw(0.04, 0.6), 0.11, 0.115],
+      [0.88, 0.13 + sw(0.07, 1.2), 0.075, 0.075],
+      [1.03, 0.1 + sw(0.09, 1.8), 0.045, 0.045],
+      [1.14, 0.0 + sw(0.1, 2.4), 0.02, 0.02],
+    ].map(([x, y, a, b]) => [x * s, y * s, a * s, b * s]);
+    const S = spline(ctl, 96);
+    const NECK = 38; // 采样点 0..NECK 是脖子，之后是躯干和尾巴
+    const TAIL0 = 62; // 尾巴从这里开始变细
 
-    // ---------- 远侧的翅膀（深一点，在身体后面） ----------
-    const wingDraw = (sx, sy, a0, flapv, near) => {
-      // 肩 (sx, sy)；臂沿 a0 + 扇动 伸到腕；四根指骨从腕向后向下撒开，翼膜在指骨之间下凹
-      const a = a0 + flapv * 0.3;
-      const L = 0.46 * s;
-      const W = [sx + Math.cos(a) * L, sy + Math.sin(a) * L];
-      const E = [sx + Math.cos(a - 0.35) * L * 0.55, sy + Math.sin(a - 0.35) * L * 0.55 - 0.04 * s]; // 肘（臂略弯）
-      const base = 0.35 - flapv * 0.18; // 指骨的起始方向（向后）
-      const tips = [0, 1, 2, 3].map((i) => {
-        const b = base + i * 0.5 - flapv * 0.12 * i;
-        const len = [0.62, 0.7, 0.62, 0.46][i] * s * (1 + flapv * 0.05);
-        return [W[0] + Math.cos(b) * len, W[1] + Math.sin(b) * len];
+    // ---------- 翅膀 ----------
+    // 肩 → 肘 → 腕 三节臂骨；腕上长出四根指骨，翼膜撑在指骨之间，后缘是下凹的扇贝；末端连到腰上
+    const wing = (sx, sy, rx, ry, f, near) => {
+      const a1 = -0.85 + 0.45 * f;
+      const E = [sx + Math.cos(a1) * 0.27 * s, sy + Math.sin(a1) * 0.27 * s];
+      const a2 = -1.65 + 0.5 * f;
+      const W = [E[0] + Math.cos(a2) * 0.31 * s, E[1] + Math.sin(a2) * 0.31 * s];
+      const lens = [0.8, 0.84, 0.74, 0.56];
+      const tips = lens.map((l, i) => {
+        const th = 0.12 + 0.42 * i + 0.22 * f;
+        return [W[0] + Math.cos(th) * l * s, W[1] + Math.sin(th) * l * s];
       });
-      const rear = [0.5 * s, -0.04 * s];
+      const R = [rx * s, ry * s];
+      const dk = near ? 0 : 0.45; // 远侧的翅膀整体暗一档
       ctx.save();
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
       // 翼膜
       ctx.beginPath();
       ctx.moveTo(sx, sy);
       ctx.lineTo(E[0], E[1]);
       ctx.lineTo(W[0], W[1]);
-      for (let i = 0; i < 4; i++) {
+      ctx.lineTo(tips[0][0], tips[0][1]);
+      for (let i = 1; i < 4; i++) {
+        const [px, py] = tips[i - 1];
         const [tx, ty] = tips[i];
-        const [px, py] = i ? tips[i - 1] : W;
-        ctx.quadraticCurveTo((px + tx) / 2 - 0.02 * s, (py + ty) / 2 + 0.05 * s, tx, ty);
+        // 控制点向腕部收：扇贝形的后缘
+        ctx.quadraticCurveTo((px + tx) / 2 + (W[0] - (px + tx) / 2) * 0.3, (py + ty) / 2 + (W[1] - (py + ty) / 2) * 0.3, tx, ty);
       }
-      ctx.quadraticCurveTo((tips[3][0] + rear[0]) / 2 - 0.05 * s, (tips[3][1] + rear[1]) / 2 + 0.06 * s, rear[0], rear[1]);
+      ctx.quadraticCurveTo((tips[3][0] + R[0]) / 2 + (W[0] - (tips[3][0] + R[0]) / 2) * 0.2, (tips[3][1] + R[1]) / 2 + (W[1] - (tips[3][1] + R[1]) / 2) * 0.2 + 0.02 * s, R[0], R[1]);
       ctx.closePath();
-      const g = linear(ctx, sx, sy - 0.2 * s, tips[3][0], tips[3][1], [[0, deep(MEMB, near ? 0.25 : 0.55)], [0.6, deep(MEMB, near ? 0.45 : 0.7)], [1, rgba('#ff7a3a', near ? 0.55 : 0.3)]]);
-      ctx.fillStyle = g;
+      ctx.fillStyle = linear(ctx, W[0], W[1], tips[3][0] * 0.7 + R[0] * 0.3, tips[3][1] + 0.1 * s, [
+        [0, deep(MEMB, 0.2 + dk)],
+        [0.55, deep(MEMB, 0.05 + dk * 0.8)],
+        [1, rgba(near ? '#ff7a44' : '#b8442a', near ? 0.8 : 0.55)],
+      ]);
       ctx.fill();
-      ctx.strokeStyle = rgba('#14060a', 0.9);
-      ctx.lineWidth = Math.max(1.5, s * 0.008);
-      ctx.stroke();
-      // 翼膜上透出的岩浆纹路
+      // 翼膜上：指骨之间的褶皱 + 岩浆纹路 + 靠近臂骨的暗影
       ctx.save();
       ctx.clip();
-      for (let i = 0; i < 4; i++) veins(ctx, W[0], W[1], 0.3 * s, Math.atan2(tips[i][1] - W[1], tips[i][0] - W[0]), 1, LAVA, (near ? 0.5 : 0.28) + heat * 0.25, 31 + i * 7 + (near ? 0 : 50), s * 0.012);
+      ctx.strokeStyle = rgba('#1a0610', 0.35);
+      ctx.lineWidth = lw(0.006);
+      for (let i = 0; i < 3; i++) {
+        const mx = (tips[i][0] + tips[i + 1][0]) / 2;
+        const my = (tips[i][1] + tips[i + 1][1]) / 2;
+        ctx.beginPath();
+        ctx.moveTo(W[0], W[1]);
+        ctx.quadraticCurveTo((W[0] + mx) / 2 + 0.02 * s, (W[1] + my) / 2 + 0.03 * s, mx, my);
+        ctx.stroke();
+      }
+      for (let i = 0; i < 4; i++) veins(ctx, W[0], W[1], 0.34 * s, Math.atan2(tips[i][1] - W[1], tips[i][0] - W[0]), 1, LAVA, (near ? 0.5 : 0.28) + heat * 0.22, 31 + i * 7 + (near ? 0 : 50), s * 0.011);
+      glow(ctx, sx + 0.1 * s, sy, s * 0.3, '#18040a', 0.35);
       ctx.restore();
-      // 臂骨和指骨
-      ctx.strokeStyle = deep(BONE, near ? 0.25 : 0.55);
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-      ctx.lineWidth = s * 0.034;
+      // 后缘一圈亮边
+      ctx.strokeStyle = rgba('#ffb078', near ? 0.4 : 0.18);
+      ctx.lineWidth = lw(0.007);
       ctx.beginPath();
-      ctx.moveTo(sx, sy);
-      ctx.lineTo(E[0], E[1]);
-      ctx.lineTo(W[0], W[1]);
+      ctx.moveTo(tips[0][0], tips[0][1]);
+      for (let i = 1; i < 4; i++) {
+        const [px, py] = tips[i - 1];
+        const [tx, ty] = tips[i];
+        ctx.quadraticCurveTo((px + tx) / 2 + (W[0] - (px + tx) / 2) * 0.3, (py + ty) / 2 + (W[1] - (py + ty) / 2) * 0.3, tx, ty);
+      }
       ctx.stroke();
-      ctx.lineWidth = s * 0.018;
+      // 指骨：粗 → 细
+      ctx.strokeStyle = deep(BONE, 0.25 + dk);
       for (const [tx, ty] of tips) {
+        ctx.lineWidth = lw(0.016);
         ctx.beginPath();
         ctx.moveTo(W[0], W[1]);
         ctx.lineTo(tx, ty);
         ctx.stroke();
-      }
-      // 腕上的爪
-      ctx.fillStyle = BONE;
-      ctx.beginPath();
-      ctx.moveTo(W[0], W[1]);
-      ctx.lineTo(W[0] - 0.05 * s, W[1] - 0.09 * s);
-      ctx.lineTo(W[0] + 0.03 * s, W[1] - 0.02 * s);
-      ctx.fill();
-      ctx.restore();
-      return { W, tips };
-    };
-    wingDraw(-0.02 * s, -0.3 * s, -1.2, flap2, false);
-
-    // ---------- 尾巴（粗 → 细，尖端是一枚骨刺） ----------
-    const tailSpine = [];
-    {
-      const p0 = [0.5 * s, -0.04 * s];
-      const p1 = [0.9 * s, 0.08 * s + Math.sin(t * 1.8) * 0.06 * s];
-      const p2 = [1.0 * s, -0.12 * s + Math.sin(t * 1.8 + 1.4) * 0.07 * s];
-      const p3 = [1.12 * s, 0.14 * s + Math.sin(t * 1.8 + 0.5) * 0.06 * s];
-      for (let i = 0; i <= 22; i++) tailSpine.push(bez(p0, p1, p2, p3, i / 22));
-    }
-    tube(ctx, tailSpine, 0.17 * s, 0.015 * s);
-    ctx.fillStyle = linear(ctx, 0.6 * s, -0.2 * s, 1.1 * s, 0.2 * s, [[0, deep(BODY, 0.1)], [1, deep(BODY, 0.65)]]);
-    ctx.fill();
-    // 尾巴上的背刺
-    ctx.fillStyle = deep(BONE, 0.25);
-    for (let i = 3; i < 21; i += 2) {
-      const [x, y] = tailSpine[i];
-      const r = (0.17 - 0.155 * (i / 22)) * s;
-      ctx.beginPath();
-      ctx.moveTo(x - r * 0.5, y - r * 0.9);
-      ctx.lineTo(x, y - r * 1.9);
-      ctx.lineTo(x + r * 0.5, y - r * 0.9);
-      ctx.fill();
-    }
-    {
-      // 尾尖的骨刺
-      const [x, y] = tailSpine[22];
-      const [px, py] = tailSpine[19];
-      const ang = Math.atan2(y - py, x - px);
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.rotate(ang);
-      ctx.fillStyle = BONE;
-      ctx.beginPath();
-      ctx.moveTo(-0.02 * s, 0);
-      ctx.lineTo(0.02 * s, -0.07 * s);
-      ctx.lineTo(0.14 * s, 0);
-      ctx.lineTo(0.02 * s, 0.07 * s);
-      ctx.fill();
-      ctx.restore();
-    }
-
-    // ---------- 后腿（在身体后面的那条）和前腿 ----------
-    const leg = (x0, y0, kx, ky, px, py, dark, scale) => {
-      ctx.save();
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-      ctx.strokeStyle = deep(BODY, dark);
-      ctx.lineWidth = s * 0.1 * scale;
-      ctx.beginPath();
-      ctx.moveTo(x0, y0);
-      ctx.lineTo(kx, ky);
-      ctx.stroke();
-      ctx.lineWidth = s * 0.065 * scale;
-      ctx.beginPath();
-      ctx.moveTo(kx, ky);
-      ctx.lineTo(px, py);
-      ctx.stroke();
-      // 爪子
-      ctx.fillStyle = BONE;
-      for (let i = -1; i <= 1; i++) {
+        ctx.fillStyle = deep(BONE, 0.2 + dk);
         ctx.beginPath();
-        ctx.moveTo(px + i * 0.035 * s - 0.02 * s, py);
-        ctx.lineTo(px + i * 0.045 * s - 0.06 * s, py + 0.09 * s);
-        ctx.lineTo(px + i * 0.035 * s + 0.02 * s, py);
+        ctx.arc(tx, ty, lw(0.014), 0, TAU);
         ctx.fill();
       }
-      ctx.restore();
-    };
-    const sway = Math.sin(t * 1.5) * 0.02 * s;
-    leg(0.32 * s, 0.0, 0.42 * s, 0.17 * s + sway, 0.3 * s, 0.36 * s + sway, 0.75, 0.9); // 远侧后腿
-    leg(-0.08 * s, 0.0, 0.0, 0.17 * s - sway, -0.14 * s, 0.34 * s - sway, 0.75, 0.9); // 远侧前腿
-
-    // ---------- 躯干 ----------
-    const torso = () => {
-      ctx.beginPath();
-      ctx.ellipse(0.12 * s, -0.1 * s, 0.52 * s, 0.29 * s, -0.12, 0, TAU);
-    };
-    // 脖子：从胸口弯向头
-    const neckSpine = [];
-    {
-      const p0 = [chest[0] + 0.08 * s, chest[1] + 0.02 * s];
-      const p1 = [-0.55 * s, -0.12 * s];
-      const p2 = [-0.62 * s, -0.5 * s + headTilt * 0.1 * s];
-      const p3 = [H[0] + 0.1 * s, H[1] + 0.05 * s];
-      for (let i = 0; i <= 14; i++) neckSpine.push(bez(p0, p1, p2, p3, i / 14));
-    }
-    // 把脖子和躯干画进同一条路径，一次填色
-    ctx.beginPath();
-    ctx.ellipse(0.12 * s, -0.1 * s, 0.52 * s, 0.29 * s, -0.12, 0, TAU);
-    neckSpine.forEach(([x, y], i) => {
-      const r = (0.2 - 0.1 * (i / 14)) * s;
-      ctx.moveTo(x + r, y);
-      ctx.arc(x, y, r, 0, TAU);
-    });
-    ctx.fillStyle = linear(ctx, 0.5 * s, -0.5 * s, -0.5 * s, 0.2 * s, [[0, deep(BODY, 0.0)], [0.5, deep(BODY, 0.35)], [1, deep(BODY, 0.75)]]);
-    ctx.fill();
-    ctx.save();
-    ctx.clip();
-    // 腹甲：身体下缘和脖子下缘的金色横纹
-    ctx.fillStyle = linear(ctx, 0, -0.1 * s, 0, 0.2 * s, [[0, rgba(BELLY, 0)], [0.5, rgba(BELLY, 0.85)], [1, rgba(BELLY, 0.95)]]);
-    ctx.beginPath();
-    ctx.ellipse(0.1 * s, 0.1 * s, 0.56 * s, 0.17 * s, -0.1, 0, TAU);
-    ctx.fill();
-    ctx.strokeStyle = rgba('#6a3a10', 0.55);
-    ctx.lineWidth = Math.max(1, s * 0.006);
-    for (let i = 0; i < 9; i++) {
-      const x = -0.34 * s + i * 0.1 * s;
-      ctx.beginPath();
-      ctx.moveTo(x, 0.0);
-      ctx.quadraticCurveTo(x - 0.02 * s, 0.1 * s, x + 0.01 * s, 0.2 * s);
+      // 臂骨：带肌肉的粗臂（肩粗腕细），骨色高光
+      const arm = spline([[sx, sy, 0.04 * s, 0.04 * s], [E[0], E[1], 0.028 * s, 0.028 * s], [W[0], W[1], 0.018 * s, 0.018 * s]], 14);
+      ribbonPath(ctx, arm);
+      ctx.fillStyle = linear(ctx, sx, sy - 0.1 * s, sx, sy + 0.1 * s, [[0, deep(BODY_LIT, 0.1 + dk)], [1, deep(BODY, 0.5 + dk)]]);
+      ctx.fill();
+      ctx.strokeStyle = rgba('#14060a', 0.8);
+      ctx.lineWidth = lw(0.005);
       ctx.stroke();
-    }
-    // 脖子下面的腹甲
-    ctx.strokeStyle = rgba(BELLY, 0.75);
-    ctx.lineWidth = s * 0.05;
-    ctx.lineCap = 'round';
-    ctx.beginPath();
-    neckSpine.forEach(([x, y], i) => {
-      const r = (0.2 - 0.1 * (i / 14)) * s;
-      if (i) ctx.lineTo(x - r * 0.1, y + r * 0.65);
-      else ctx.moveTo(x - r * 0.1, y + r * 0.65);
-    });
-    ctx.stroke();
-    // 鳞片
-    scales(ctx, -0.9 * s, -0.7 * s, 0.7 * s, 0.2 * s, s * 0.06, '#1a0606', 0.45);
-    scales(ctx, -0.9 * s, -0.7 * s, 0.7 * s, 0.2 * s, s * 0.06, '#ff8a6a', 0.08);
-    // 躯干上的岩浆纹路
-    veins(ctx, 0.0, -0.05 * s, 0.34 * s, -0.4, 2, LAVA, 0.35 + heat * 0.55, 3, s * 0.014);
-    veins(ctx, 0.36 * s, -0.12 * s, 0.26 * s, -0.9, 2, LAVA, 0.3 + heat * 0.5, 9, s * 0.012);
-    veins(ctx, -0.18 * s, -0.22 * s, 0.22 * s, -2.5, 1, LAVA, 0.25 + heat * 0.5, 15, s * 0.012);
-    // 胸口的火核（喷火前越来越亮）
-    glow(ctx, chest[0] + 0.1 * s, chest[1] + 0.04 * s, s * (0.16 + 0.1 * (skill === 'fire' ? k : 0)), LAVA, 0.25 + heat * 0.5);
-    // 右上的受光
-    ctx.fillStyle = linear(ctx, 0.5 * s, -0.5 * s, 0.1 * s, -0.05 * s, [[0, 'rgba(255,170,120,0.28)'], [1, 'rgba(255,170,120,0)']]);
-    ctx.fillRect(-1 * s, -1 * s, 2 * s, 1 * s);
-    ctx.restore();
-    // 背脊上的一排骨刺：沿躯干上缘、脖子上缘
-    ctx.fillStyle = deep(BONE, 0.2);
-    for (let i = 1; i < 14; i += 2) {
-      const [x, y] = neckSpine[i];
-      const r = (0.2 - 0.1 * (i / 14)) * s;
+      // 腕上的钩爪（翼拇指）
+      ctx.fillStyle = deep(BONE, dk);
       ctx.beginPath();
-      ctx.moveTo(x + r * 0.55, y - r * 0.55);
-      ctx.lineTo(x + r * 1.05, y - r * 1.35);
-      ctx.lineTo(x + r * 0.15, y - r * 0.95);
+      ctx.moveTo(W[0] - 0.02 * s, W[1] - 0.01 * s);
+      ctx.quadraticCurveTo(W[0] - 0.06 * s, W[1] - 0.06 * s, W[0] - 0.13 * s, W[1] - 0.08 * s);
+      ctx.quadraticCurveTo(W[0] - 0.07 * s, W[1] - 0.03 * s, W[0] + 0.02 * s, W[1] + 0.02 * s);
       ctx.fill();
-    }
-    for (let i = 0; i < 6; i++) {
-      const x = -0.18 * s + i * 0.15 * s;
-      const y = -0.1 * s - 0.285 * s * Math.sqrt(Math.max(0, 1 - Math.pow((x - 0.12 * s) / (0.52 * s), 2))) - 0.012 * s * (i - 2);
-      ctx.beginPath();
-      ctx.moveTo(x - 0.035 * s, y + 0.02 * s);
-      ctx.lineTo(x + 0.01 * s, y - 0.1 * s);
-      ctx.lineTo(x + 0.05 * s, y + 0.02 * s);
-      ctx.fill();
-    }
-    // 轮廓光
-    K.rimEdge(ctx, torso, '#ffb890', 0.35, s * 0.012, s * 0.012, s * 0.012);
-
-    // ---------- 头 ----------
-    ctx.save();
-    ctx.translate(H[0], H[1]);
-    ctx.rotate(headTilt);
-    const head = (open) => {
-      // 上颌 + 颅骨
-      ctx.beginPath();
-      ctx.moveTo(0.12 * s, -0.1 * s);
-      ctx.quadraticCurveTo(0.0, -0.17 * s, -0.12 * s, -0.12 * s);
-      ctx.lineTo(-0.32 * s, -0.03 * s);
-      ctx.quadraticCurveTo(-0.36 * s, 0.0, -0.31 * s, 0.03 * s);
-      ctx.lineTo(-0.06 * s, 0.05 * s);
-      ctx.quadraticCurveTo(0.1 * s, 0.07 * s, 0.14 * s, -0.02 * s);
-      ctx.closePath();
+      ctx.restore();
+      return { W, tips, E };
     };
-    // 下颌（绕着铰链张开）
-    ctx.save();
-    ctx.translate(0.04 * s, 0.06 * s);
-    ctx.rotate(jaw);
-    ctx.beginPath();
-    ctx.moveTo(0.06 * s, -0.01 * s);
-    ctx.lineTo(-0.28 * s, 0.0);
-    ctx.quadraticCurveTo(-0.31 * s, 0.03 * s, -0.27 * s, 0.05 * s);
-    ctx.lineTo(0.0, 0.07 * s);
-    ctx.quadraticCurveTo(0.08 * s, 0.07 * s, 0.06 * s, -0.01 * s);
-    ctx.fillStyle = linear(ctx, 0, -0.02 * s, 0, 0.08 * s, [[0, deep(BODY, 0.45)], [1, deep(BODY, 0.8)]]);
-    ctx.fill();
-    // 下颌的牙
-    ctx.fillStyle = '#f4ecd0';
-    for (let i = 0; i < 5; i++) {
-      const x = -0.26 * s + i * 0.05 * s;
-      ctx.beginPath();
-      ctx.moveTo(x, 0.0);
-      ctx.lineTo(x + 0.012 * s, -0.045 * s);
-      ctx.lineTo(x + 0.028 * s, 0.0);
+    wing(-0.02 * s, -0.27 * s, 0.38, -0.08, flap2, false);
+
+    // ---------- 肢体：大腿 / 小腿 / 脚三段的肌肉轮廓 + 趾爪 ----------
+    const limb = (pts, dark, claw) => {
+      const L = spline(pts.map(([x, y, w]) => [x * s, y * s, w * s, w * s]), 18);
+      ribbonPath(ctx, L);
+      ctx.fillStyle = linear(ctx, pts[0][0] * s, pts[0][1] * s - 0.1 * s, pts[0][0] * s, pts[0][1] * s + 0.3 * s, [[0, deep(BODY_LIT, dark + 0.3)], [0.5, deep(BODY, dark)], [1, deep(BODY, 0.7 + dark * 0.3)]]);
       ctx.fill();
-    }
-    ctx.restore();
-    // 嘴里的火光（张嘴的缝里）：喷火蓄力越久越亮；平时是暗红
-    const mouthA = skill === 'fire' ? 0.35 + 0.65 * k : skill ? 0.25 : 0.12 + (angry ? 0.12 : 0);
-    ctx.save();
-    ctx.globalCompositeOperation = 'lighter';
-    glow(ctx, -0.27 * s, 0.05 * s + Math.sin(jaw) * 0.1 * s * 0.4, s * (0.1 + (skill === 'fire' ? 0.22 * k : 0.03)), '#ff9a3a', mouthA, true);
-    ctx.restore();
-    // 颅骨
-    head();
-    ctx.fillStyle = linear(ctx, 0.12 * s, -0.15 * s, -0.3 * s, 0.05 * s, [[0, deep(BODY, 0.05)], [1, deep(BODY, 0.6)]]);
-    ctx.fill();
-    ctx.save();
-    head();
-    ctx.clip();
-    scales(ctx, -0.4 * s, -0.2 * s, 0.2 * s, 0.1 * s, s * 0.04, '#1a0606', 0.5);
-    veins(ctx, -0.02 * s, -0.05 * s, 0.14 * s, 3.3, 1, LAVA, 0.35 + heat * 0.4, 41, s * 0.008);
-    ctx.restore();
-    K.rimEdge(ctx, head, '#ffb890', 0.35, s * 0.01, s * 0.008, s * 0.008);
-    // 上颌的牙
-    ctx.fillStyle = '#f4ecd0';
-    for (let i = 0; i < 5; i++) {
-      const x = -0.3 * s + i * 0.052 * s;
-      ctx.beginPath();
-      ctx.moveTo(x, 0.035 * s);
-      ctx.lineTo(x + 0.014 * s, 0.085 * s);
-      ctx.lineTo(x + 0.03 * s, 0.04 * s);
-      ctx.fill();
-    }
-    // 角：向后弯的两只（远的那只暗一点）
-    for (const [dx, dy, a, c] of [[0.1 * s, -0.1 * s, 0.0, 0.5], [0.06 * s, -0.12 * s, 0.35, 0.0]]) {
       ctx.save();
-      ctx.translate(dx, dy);
-      ctx.rotate(a);
-      ctx.fillStyle = deep(BONE, c);
-      ctx.beginPath();
-      ctx.moveTo(0, 0);
-      ctx.quadraticCurveTo(0.14 * s, -0.04 * s, 0.26 * s, -0.17 * s);
-      ctx.quadraticCurveTo(0.13 * s, -0.1 * s, -0.01 * s, 0.03 * s);
-      ctx.fill();
-      ctx.strokeStyle = rgba('#3a2a14', 0.5);
-      ctx.lineWidth = Math.max(1, s * 0.005);
-      for (let i = 1; i < 4; i++) {
+      ctx.clip();
+      ctx.restore();
+      ctx.strokeStyle = rgba('#140404', 0.8);
+      ctx.lineWidth = lw(0.005);
+      ctx.stroke();
+      // 趾爪：向前（左）下方弯的三根
+      const [fx, fy] = [pts[pts.length - 1][0] * s, pts[pts.length - 1][1] * s];
+      ctx.fillStyle = deep(BONE, 0.2 + dark * 0.5);
+      for (let i = -1; i <= 1; i++) {
         ctx.beginPath();
-        ctx.moveTo(0.05 * s * i, -0.012 * s * i + 0.01 * s);
-        ctx.lineTo(0.05 * s * i - 0.006 * s, -0.012 * s * i - 0.012 * s);
+        ctx.moveTo(fx + i * 0.022 * s - 0.01 * s, fy - 0.01 * s);
+        ctx.quadraticCurveTo(fx + (i * 0.04 - 0.06 * claw) * s, fy + 0.04 * s, fx + (i * 0.05 - 0.09 * claw) * s, fy + 0.075 * s);
+        ctx.quadraticCurveTo(fx + (i * 0.03 - 0.02) * s, fy + 0.03 * s, fx + i * 0.022 * s + 0.02 * s, fy - 0.01 * s);
+        ctx.fill();
+      }
+    };
+    const sway = Math.sin(t * 1.5) * 0.015;
+    // 远侧后腿 / 前腿（暗一点，躲在身体后面）
+    limb([[0.4, -0.02, 0.1], [0.34, 0.18, 0.065], [0.5, 0.28 + sway, 0.035], [0.4, 0.44 + sway, 0.026]], 0.5, 1);
+    limb([[-0.22, 0.04, 0.075], [-0.2, 0.22, 0.045], [-0.3, 0.3 - sway, 0.03], [-0.38, 0.38 - sway, 0.022]], 0.5, 1);
+
+    // ---------- 尾巴的骨刺背脊和尾尖的刃（画在身体之前，被身体盖住一部分） ----------
+    {
+      const e = S[S.length - 1];
+      ctx.save();
+      ctx.translate(e[0], e[1]);
+      ctx.rotate(Math.atan2(e.ty, e.tx));
+      ctx.beginPath();
+      ctx.moveTo(-0.02 * s, 0);
+      ctx.quadraticCurveTo(0.03 * s, -0.09 * s, 0.17 * s, 0);
+      ctx.quadraticCurveTo(0.03 * s, 0.09 * s, -0.02 * s, 0);
+      ctx.fillStyle = linear(ctx, 0, -0.07 * s, 0.17 * s, 0, [[0, deep(BODY_LIT, 0.1)], [1, deep(BONE, 0.1)]]);
+      ctx.fill();
+      ctx.strokeStyle = rgba('#140404', 0.75);
+      ctx.lineWidth = lw(0.005);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // ---------- 躯干 + 脖子 + 尾巴：一个连续的轮廓 ----------
+    const bodyPath = () => ribbonPath(ctx, S);
+    const { top, bot } = bodyPath();
+    ctx.fillStyle = linear(ctx, 0, -0.62 * s, 0, 0.3 * s, [[0, deep(BODY_LIT, 0.0)], [0.38, BODY], [1, deep(BODY, 0.82)]]);
+    ctx.fill();
+    ctx.save();
+    bodyPath();
+    ctx.clip();
+    // 受光：从右上来，背脊上一条亮带；腹下一条暗带
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.strokeStyle = rgba('#ff9a70', 0.2);
+    ctx.lineWidth = s * 0.1;
+    polyline(ctx, top);
+    ctx.stroke();
+    ctx.strokeStyle = rgba('#ffc090', 0.28);
+    ctx.lineWidth = s * 0.035;
+    polyline(ctx, top);
+    ctx.stroke();
+    ctx.strokeStyle = rgba('#0a0204', 0.4);
+    ctx.lineWidth = s * 0.17;
+    polyline(ctx, bot);
+    ctx.stroke();
+    // 腹甲：脖子下缘到尾根的金色宽带，横向分成一块块甲片
+    {
+      const inner = S.map((p) => [p[0] - p.ty * p[3] * 0.42, p[1] + p.tx * p[3] * 0.42]);
+      const a = 4;
+      const b = 80;
+      ctx.beginPath();
+      for (let i = a; i <= b; i++) (i === a ? ctx.moveTo : ctx.lineTo).call(ctx, bot[i][0], bot[i][1]);
+      for (let i = b; i >= a; i--) ctx.lineTo(inner[i][0], inner[i][1]);
+      ctx.closePath();
+      ctx.fillStyle = linear(ctx, 0, -0.1 * s, 0, 0.3 * s, [[0, rgba(BELLY, 0.55)], [1, deep(BELLY, 0.25)]]);
+      ctx.fill();
+      ctx.strokeStyle = rgba('#6a3a10', 0.6);
+      ctx.lineWidth = lw(0.005);
+      for (let i = a + 1; i <= b; i += 3) {
+        ctx.beginPath();
+        ctx.moveTo(bot[i][0], bot[i][1]);
+        ctx.lineTo(inner[i][0] + S[i].tx * 0.012 * s, inner[i][1] + S[i].ty * 0.012 * s);
         ctx.stroke();
       }
-      ctx.restore();
     }
-    // 鼻孔：生气时喷火星 / 烟
-    const nx = -0.3 * s;
-    const ny = -0.015 * s;
-    ctx.fillStyle = '#120404';
+    // 鳞片（只画一遍，别的靠渐变）
+    scaleFill(ctx, -0.95 * s, -0.7 * s, 1.15 * s, 0.35 * s, s * 0.055, '#140404', 0.4);
+    // 岩浆纹路和胸口的火核
+    veins(ctx, -0.02 * s, -0.04 * s, 0.34 * s, -0.4, 2, LAVA, 0.3 + heat * 0.55, 3, s * 0.014);
+    veins(ctx, 0.34 * s, -0.1 * s, 0.26 * s, -0.7, 2, LAVA, 0.28 + heat * 0.5, 9, s * 0.012);
+    veins(ctx, -0.22 * s, -0.14 * s, 0.2 * s, -2.6, 1, LAVA, 0.25 + heat * 0.5, 15, s * 0.011);
+    glow(ctx, -0.36 * s, -0.06 * s, s * (0.16 + 0.1 * (skill === 'fire' ? k : 0)), LAVA, 0.22 + heat * 0.5);
+    ctx.restore();
+    // 轮廓线（细、暗）+ 受光边
+    bodyPath();
+    ctx.strokeStyle = rgba('#120304', 0.85);
+    ctx.lineWidth = lw(0.007);
+    ctx.stroke();
+    K.rimEdge(ctx, bodyPath, '#ffb890', 0.3, s * 0.012, s * 0.012, s * 0.012);
+
+    // 脊背上的骨刺：沿背侧轮廓，朝后倾；脖子上密而小，肩背最大，尾巴上渐小
+    const spikeCol = deep(BONE, 0.2);
+    for (let i = 3; i < S.length - 2; i += 3) {
+      const p = S[i];
+      const base = p[2];
+      const h = Math.max(0.012 * s, (i < NECK ? 0.035 : i < TAIL0 ? 0.075 : 0.05) * s * (1 - Math.max(0, (i - TAIL0) / (S.length - TAIL0)) * 0.8));
+      const [bx, by] = top[i];
+      const nx = p.ty;
+      const ny = -p.tx;
+      const back = 0.5;
+      const hw = Math.max(0.01 * s, base * 0.28);
+      ctx.beginPath();
+      ctx.moveTo(bx - p.tx * hw, by - p.ty * hw);
+      ctx.lineTo(bx + (nx * 1 + p.tx * back) * h, by + (ny * 1 + p.ty * back) * h);
+      ctx.lineTo(bx + p.tx * hw, by + p.ty * hw);
+      ctx.closePath();
+      ctx.fillStyle = spikeCol;
+      ctx.fill();
+    }
+
+    // ---------- 头 ----------
+    const Hp = S[0];
+    const hx = Hp[0] + 0.02 * s;
+    const hy = Hp[1] + 0.01 * s;
+    ctx.save();
+    ctx.translate(hx, hy);
+    ctx.rotate(headAng);
+    ctx.scale(1.12, 1.12);
+    const skull = [
+      [0.1, -0.11], [0.0, -0.145], [-0.1, -0.155], [-0.17, -0.115], [-0.3, -0.085], [-0.4, -0.06], [-0.435, -0.025],
+      [-0.42, 0.012], [-0.3, 0.032], [-0.15, 0.042], [-0.02, 0.07], [0.07, 0.1], [0.13, 0.0],
+    ].map(([x, y]) => [x * s, y * s]);
+    const jawPts = [
+      [-0.0, 0.04], [-0.18, 0.052], [-0.34, 0.045], [-0.395, 0.062], [-0.385, 0.092], [-0.24, 0.125], [-0.07, 0.15], [0.05, 0.13], [0.07, 0.07],
+    ].map(([x, y]) => [x * s, y * s]);
+
+    // 脖子上、头后面的鬃刺（先画，躲在头后面）
+    ctx.fillStyle = deep(BONE, 0.55);
+    for (let i = 0; i < 4; i++) {
+      ctx.beginPath();
+      ctx.moveTo((0.08 + i * 0.03) * s, (-0.07 + i * 0.045) * s);
+      ctx.lineTo((0.2 + i * 0.03) * s, (-0.1 + i * 0.06) * s);
+      ctx.lineTo((0.11 + i * 0.03) * s, (-0.01 + i * 0.045) * s);
+      ctx.fill();
+    }
+    // 双角：一对向后弯的粗角，近的亮、远的暗
+    for (const [x0, y0, d, rot] of [[0.1, -0.1, 0.55, 0.12], [0.08, -0.11, 0.0, -0.1]]) {
+      const hn = spline([[x0 * s, y0 * s, 0.03 * s, 0.03 * s], [(x0 + 0.1) * s, (y0 - 0.04 + rot * 0.2) * s, 0.026 * s, 0.026 * s], [(x0 + 0.2) * s, (y0 - 0.02 + rot * 0.2) * s, 0.015 * s, 0.015 * s], [(x0 + 0.29) * s, (y0 + 0.06 + rot * 0.2) * s, 0.003 * s, 0.003 * s]], 14);
+      ribbonPath(ctx, hn);
+      ctx.fillStyle = linear(ctx, x0 * s, y0 * s, (x0 + 0.29) * s, y0 * s, [[0, deep(BONE, 0.45 - d * 0.5)], [1, light(BONE, 0.05)]]);
+      ctx.fill();
+      ctx.strokeStyle = rgba('#2a1a0c', 0.7);
+      ctx.lineWidth = lw(0.004);
+      ctx.stroke();
+    }
+    // 颧骨刺（下颌后上方的一对短刺）
+    ctx.fillStyle = deep(BONE, 0.2);
+    for (let i = 0; i < 2; i++) {
+      ctx.beginPath();
+      ctx.moveTo((0.04 + i * 0.05) * s, (0.03 + i * 0.045) * s);
+      ctx.lineTo((0.19 + i * 0.03) * s, (0.07 + i * 0.075) * s);
+      ctx.lineTo((0.07 + i * 0.05) * s, (0.1 + i * 0.045) * s);
+      ctx.fill();
+    }
+    // 下颌（绕铰链张开）
+    ctx.save();
+    ctx.translate(0.05 * s, 0.07 * s);
+    ctx.rotate(jaw);
+    ctx.translate(-0.05 * s, -0.07 * s);
+    // 嘴里的火光（张嘴的缝里）：喷火蓄力越久越亮；平时是暗红
+    const mouthA = skill === 'fire' ? 0.35 + 0.65 * k : skill ? 0.3 : 0.14 + (angry ? 0.14 : 0);
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    glow(ctx, -0.25 * s, 0.03 * s, s * (0.12 + (skill === 'fire' ? 0.2 * k : 0.03)), '#ff9a3a', mouthA, true);
+    ctx.restore();
+    closedPath(ctx, jawPts);
+    ctx.fillStyle = linear(ctx, 0, 0.04 * s, 0, 0.15 * s, [[0, deep(BODY, 0.55)], [1, deep(BODY, 0.85)]]);
+    ctx.fill();
+    ctx.strokeStyle = rgba('#120304', 0.85);
+    ctx.lineWidth = lw(0.005);
+    ctx.stroke();
+    // 下颌的牙（向上）
+    ctx.fillStyle = '#f4ecd0';
+    for (let i = 0; i < 5; i++) {
+      const x = (-0.36 + i * 0.062) * s;
+      ctx.beginPath();
+      ctx.moveTo(x, 0.052 * s);
+      ctx.lineTo(x + 0.013 * s, 0.052 * s - (i === 0 ? 0.052 : 0.036) * s);
+      ctx.lineTo(x + 0.028 * s, 0.05 * s);
+      ctx.fill();
+    }
+    // 下巴上的几根尖刺
+    ctx.fillStyle = deep(BONE, 0.3);
+    for (let i = 0; i < 3; i++) {
+      ctx.beginPath();
+      ctx.moveTo((-0.2 + i * 0.07) * s, 0.12 * s);
+      ctx.lineTo((-0.17 + i * 0.07) * s, 0.18 * s);
+      ctx.lineTo((-0.13 + i * 0.07) * s, 0.135 * s);
+      ctx.fill();
+    }
+    ctx.restore();
+    // 颅骨 + 上颌
+    closedPath(ctx, skull);
+    ctx.fillStyle = linear(ctx, 0.1 * s, -0.16 * s, -0.3 * s, 0.07 * s, [[0, deep(BODY_LIT, 0.0)], [0.55, BODY], [1, deep(BODY, 0.55)]]);
+    ctx.fill();
+    ctx.save();
+    closedPath(ctx, skull);
+    ctx.clip();
+    scaleFill(ctx, -0.45 * s, -0.17 * s, 0.14 * s, 0.1 * s, s * 0.035, '#140404', 0.45);
+    // 眉骨的高光、嘴角的暗影
+    ctx.strokeStyle = rgba('#ffa880', 0.35);
+    ctx.lineWidth = s * 0.016;
+    ctx.beginPath();
+    ctx.moveTo(-0.17 * s, -0.12 * s);
+    ctx.quadraticCurveTo(-0.1 * s, -0.16 * s, 0.0 * s, -0.145 * s);
+    ctx.stroke();
+    ctx.strokeStyle = rgba('#0a0204', 0.4);
+    ctx.lineWidth = s * 0.03;
+    ctx.beginPath();
+    ctx.moveTo(-0.4 * s, 0.03 * s);
+    ctx.lineTo(0.05 * s, 0.075 * s);
+    ctx.stroke();
+    veins(ctx, 0.02 * s, -0.03 * s, 0.16 * s, 3.3, 1, LAVA, 0.3 + heat * 0.4, 41, s * 0.007);
+    ctx.restore();
+    ctx.strokeStyle = rgba('#120304', 0.9);
+    ctx.lineWidth = lw(0.006);
+    closedPath(ctx, skull);
+    ctx.stroke();
+    K.rimEdge(ctx, () => closedPath(ctx, skull), '#ffb890', 0.3, s * 0.01, s * 0.008, s * 0.008);
+    // 上颌的牙（向下），最前面一对是獠牙
+    ctx.fillStyle = '#f4ecd0';
+    for (let i = 0; i < 6; i++) {
+      const x = (-0.4 + i * 0.058) * s;
+      const hgt = (i === 1 ? 0.06 : 0.038) * s;
+      ctx.beginPath();
+      ctx.moveTo(x, 0.026 * s);
+      ctx.lineTo(x + 0.014 * s, 0.026 * s + hgt);
+      ctx.lineTo(x + 0.03 * s, 0.032 * s);
+      ctx.fill();
+    }
+    // 鼻孔 + 鼻梁上的突起；生气时喷火星 / 烟
+    const nx = -0.395 * s;
+    const ny = -0.03 * s;
+    ctx.fillStyle = '#100303';
     ctx.beginPath();
     ctx.ellipse(nx, ny, s * 0.014, s * 0.008, -0.3, 0, TAU);
     ctx.fill();
+    ctx.fillStyle = deep(BONE, 0.45);
+    for (let i = 0; i < 3; i++) {
+      ctx.beginPath();
+      ctx.moveTo((-0.34 + i * 0.06) * s, (-0.08 + i * 0.012) * s);
+      ctx.lineTo((-0.32 + i * 0.06) * s, (-0.115 + i * 0.012) * s);
+      ctx.lineTo((-0.29 + i * 0.06) * s, (-0.09 + i * 0.012) * s);
+      ctx.fill();
+    }
     if (angry || skill === 'fire') {
       const rr = seeded(9);
       for (let i = 0; i < 6; i++) {
         const f = (t * 1.2 + rr()) % 1;
         const px = nx - f * 0.12 * s - rr() * 0.02 * s;
-        const py = ny - f * 0.16 * s - Math.sin(f * 6 + i) * 0.01 * s;
+        const py = ny - f * 0.14 * s - Math.sin(f * 6 + i) * 0.01 * s;
         ctx.globalAlpha = (1 - f) * 0.8;
         glow(ctx, px, py, s * (0.012 + f * 0.015), i % 2 ? '#ffd070' : '#ff6a2a', 0.9);
       }
       ctx.globalAlpha = 1;
     }
-    // 眼睛：竖瞳，发着火光（狂暴时发白）
+    // 眼睛：杏仁形、竖瞳，压在眉骨下，发着火光（狂暴时发白）
     {
-      const ex = -0.1 * s;
-      const ey = -0.065 * s;
+      const ex = -0.115 * s;
+      const ey = -0.08 * s;
       const ec = rage ? '#fff0c0' : '#ffb830';
-      glow(ctx, ex, ey, s * 0.07, ec, 0.8);
-      ctx.fillStyle = ec;
+      glow(ctx, ex, ey, s * 0.075, ec, 0.75);
       ctx.beginPath();
-      ctx.ellipse(ex, ey, s * 0.034, s * 0.018, -0.4, 0, TAU);
+      ctx.moveTo(ex + 0.045 * s, ey - 0.028 * s);
+      ctx.quadraticCurveTo(ex - 0.005 * s, ey - 0.03 * s, ex - 0.05 * s, ey + 0.012 * s);
+      ctx.quadraticCurveTo(ex - 0.0 * s, ey + 0.026 * s, ex + 0.045 * s, ey - 0.028 * s);
+      ctx.fillStyle = ec;
       ctx.fill();
       ctx.fillStyle = '#2a0404';
       ctx.beginPath();
-      ctx.ellipse(ex - s * 0.004, ey, s * 0.007, s * 0.016, -0.4, 0, TAU);
+      ctx.ellipse(ex - 0.004 * s, ey - 0.002 * s, s * 0.0065, s * 0.017, -0.5, 0, TAU);
       ctx.fill();
       // 眉骨压下来的怒意
       ctx.strokeStyle = deep(BODY, 0.8);
-      ctx.lineWidth = s * 0.014;
+      ctx.lineWidth = s * 0.016;
       ctx.lineCap = 'round';
       ctx.beginPath();
-      ctx.moveTo(ex + s * 0.05, ey - s * 0.045);
-      ctx.lineTo(ex - s * 0.05, ey - s * 0.012);
+      ctx.moveTo(ex + s * 0.06, ey - s * 0.05);
+      ctx.lineTo(ex - s * 0.065, ey - s * 0.008);
       ctx.stroke();
-    }
-    // 脑后的鬃刺
-    ctx.fillStyle = deep(BONE, 0.3);
-    for (let i = 0; i < 4; i++) {
-      ctx.beginPath();
-      ctx.moveTo(0.12 * s + i * 0.02 * s, -0.06 * s + i * 0.045 * s);
-      ctx.lineTo(0.25 * s + i * 0.03 * s, -0.12 * s + i * 0.06 * s);
-      ctx.lineTo(0.14 * s + i * 0.02 * s, -0.01 * s + i * 0.05 * s);
-      ctx.fill();
     }
     ctx.restore(); // 头
 
-    // ---------- 近侧的腿 ----------
-    leg(0.4 * s, 0.03 * s, 0.5 * s, 0.2 * s - sway, 0.4 * s, 0.4 * s - sway, 0.3, 1.0);
-    leg(-0.14 * s, 0.03 * s, -0.04 * s, 0.2 * s + sway, -0.2 * s, 0.38 * s + sway, 0.3, 1.0);
+    // ---------- 近侧的腿（盖在身体前面）：大腿肌肉鼓出来 ----------
+    limb([[0.3, -0.05, 0.135], [0.2, 0.16, 0.085], [0.4, 0.28 - sway, 0.045], [0.3, 0.46 - sway, 0.03]], 0.0, 1);
+    limb([[-0.3, 0.0, 0.095], [-0.26, 0.21, 0.058], [-0.38, 0.3 + sway, 0.035], [-0.47, 0.39 + sway, 0.025]], 0.0, 1);
 
     // ---------- 近侧的翅膀（在最前面） ----------
-    const nw = wingDraw(0.04 * s, -0.32 * s, -1.1, flap, true);
+    const nw = wing(-0.12 * s, -0.27 * s, 0.32, -0.13, flap, true);
 
     // ---------- 技能预备的特效 ----------
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
+    const cosA = Math.cos(headAng);
+    const sinA = Math.sin(headAng);
+    const mouth = [hx + (-0.44 * cosA - 0.03 * sinA) * s, hy + (-0.44 * sinA + 0.03 * cosA) * s]; // 嘴尖的世界坐标
     if (skill === 'bolt') {
-      // 雷暴：角尖、翼尖之间窜动的电弧，越来越密
+      // 雷暴：翼尖、角尖之间窜动的电弧，越来越密
       const fr = Math.floor(t * 14);
       const n = 2 + Math.round(k * 5);
       for (let i = 0; i < n; i++) {
         const [tx, ty] = nw.tips[i % 4];
         veins(ctx, tx, ty, 0.24 * s, -1.6 + (i % 3) * 0.5, 2, '#bfe4ff', 0.5 + 0.4 * k, fr * 5 + i * 11, s * 0.014);
       }
-      veins(ctx, H[0] + 0.2 * s, H[1] - 0.15 * s, 0.3 * s, -1.0, 2, '#e8f4ff', 0.6 + 0.35 * k, fr * 7, s * 0.016);
+      veins(ctx, hx + 0.2 * s, hy - 0.15 * s, 0.3 * s, -1.0, 2, '#e8f4ff', 0.6 + 0.35 * k, fr * 7, s * 0.016);
       glow(ctx, 0, -0.1 * s, s * (0.5 + 0.3 * k), '#9fd0ff', 0.12 + 0.2 * k);
     } else if (skill === 'shock') {
       // 龙吼：头前一圈圈向外扩的声波
@@ -454,13 +582,13 @@
         ctx.strokeStyle = rgba('#ffe0b0', (1 - f) * (0.25 + 0.5 * k));
         ctx.lineWidth = s * 0.02 * (1 - f * 0.6);
         ctx.beginPath();
-        ctx.arc(H[0] - 0.3 * s, H[1] + 0.02 * s, s * (0.08 + f * 0.5), 0.55 * Math.PI, 1.45 * Math.PI);
+        ctx.arc(mouth[0] + 0.05 * s, mouth[1], s * (0.08 + f * 0.5), 0.55 * Math.PI, 1.45 * Math.PI);
         ctx.stroke();
       }
-      glow(ctx, H[0] - 0.2 * s, H[1], s * 0.4, '#ffd8a0', 0.18 * k);
+      glow(ctx, mouth[0] + 0.1 * s, mouth[1], s * 0.4, '#ffd8a0', 0.18 * k);
     } else if (skill === 'fire') {
-      // 龙息：胸口到嘴里一路火光，嘴边的火越聚越大
-      glow(ctx, H[0] - 0.3 * s, H[1] + 0.04 * s, s * (0.12 + 0.34 * k), '#ffd070', 0.35 + 0.5 * k, true);
+      // 龙息：嘴边的火越聚越大
+      glow(ctx, mouth[0] + 0.02 * s, mouth[1], s * (0.12 + 0.34 * k), '#ffd070', 0.35 + 0.5 * k, true);
     }
     // 狂暴：整条龙裹着一层红光，身上冒火星
     if (rage) {

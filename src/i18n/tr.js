@@ -2054,4 +2054,11 @@ TD.i18n.register("tr", {
   "通关第 200 关，击败深渊尽头的焚天巨龙": "200. seviyeyi bitir: uçurumun ucundaki Gökyakan Ejderha'yı yen",
   "怪物同时大量涌来，打怪没有任何收益；只有\"过关\"才有钻石。钻石只能在这里获得。越往上，妖王的比例越高：第 1 层 10%，第 9 层 50%。妖王的血量和关卡里的大 Boss 一样厚。": "Canavarlar bir anda üşüşür, canavar yenmek bir şey kazandırmaz; yalnızca \"katı geçince\" elmas verir. Elmas sadece burada kazanılır. Yükseldikçe iblis kral oranı artar: 1. katta %10, 9. katta %50. Şeytan krallarının canı, seviyelerdeki büyük patronlar kadar fazladır.",
   "九层妖塔里的妖王：血量和关卡里的 Boss 一样厚，没有特殊行动，只管冲向城墙。": "Dokuz Katlı Şeytan Kulesi'nden bir şeytan kral: seviye patronu kadar canlı, özel hamlesi yok, sadece surlara saldırır.",
+  "测试": "Test",
+  "测试（已开启）": "Test (açık)",
+  "测试模式已开启：资源已拉满，所有关卡都可以选": "Test modu açıldı: kaynaklar maksimumda, tüm seviyeler seçilebilir",
+  "密码": "Şifre",
+  "密码不对": "Şifre yanlış",
+  "输入密码开启测试模式：资源全部拉满，所有关卡都可以直接选。": "Test modunu açmak için şifreyi gir: tüm kaynaklar maksimumda, tüm seviyeler doğrudan seçilebilir.",
+  "第 N 层所有怪物的属性（血量、攻城伤害、护甲）是第 1 层的 N 倍，第 9 层是第 1 层的 9 倍；城墙的血量接着上一层，不会恢复（只有修缮、补给卡、道具和技能能回血）。": "N. katta tüm canavarların özellikleri (can, surlara hasar, zırh) 1. katın N katıdır: 9. kat, 1. katın 9 katıdır. Surların canı bir önceki kattan devam eder ve yenilenmez (yalnızca onarım, ikmal kartları, eşyalar ve yetenekler iyileştirir).",
 });

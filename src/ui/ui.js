@@ -448,6 +448,7 @@
         )
       ),
       h('div', { class: 'hint credits' }, '音乐采样：FluidR3_GM 音色库（Frank Wen），CC BY 3.0，经 gleitz/midi-js-soundfonts 取得'),
+      h('div', { class: 'row' }, h('button', { class: 'btn small', onclick: () => UI.showTestLogin() }, P.testMode(game.save) ? '测试（已开启）' : '测试')),
       h(
         'div',
         { class: 'row' },
@@ -474,6 +475,38 @@
       h('div', { class: 'modal-buttons' }, h('button', { class: 'btn', onclick: UI.closeModal }, '关闭'))
     );
     modal(body, { closeOnBack: true });
+  };
+
+  // 测试模式（v1.14）：输入密码后资源拉满、所有关卡随便选
+  UI.showTestLogin = function () {
+    const input = h('input', { type: 'password', class: 'test-pass', autocomplete: 'off', placeholder: '密码' });
+    const msg = h('p', { class: 'hint' }, '输入密码开启测试模式：资源全部拉满，所有关卡都可以直接选。');
+    const submit = () => {
+      if (!P.enableTestMode(game.save, input.value)) {
+        sfx('error');
+        msg.textContent = '密码不对';
+        input.value = '';
+        return;
+      }
+      game.persist();
+      sfx('click');
+      UI.toast('测试模式已开启：资源已拉满，所有关卡都可以选');
+      UI.closeModal();
+      UI.showTitle();
+    };
+    input.onkeydown = (e) => e.key === 'Enter' && submit();
+    modal(
+      h(
+        'div',
+        null,
+        h('h2', null, '测试'),
+        msg,
+        input,
+        h('div', { class: 'modal-buttons' }, h('button', { class: 'btn primary', onclick: submit }, '确定'), h('button', { class: 'btn', onclick: () => (UI.closeModal(), UI.showSettings()) }, '返回'))
+      ),
+      { closeOnBack: true }
+    );
+    setTimeout(() => input.focus(), 50);
   };
 
   // 存档导出 / 导入（设计书 13.3）

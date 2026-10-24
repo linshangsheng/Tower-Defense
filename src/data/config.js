@@ -29,6 +29,18 @@
       return f(70) * (1 + 0.01 * (n - 70));
     },
 
+    // 怪物的其他属性随关卡增强（v1.15）：生命和攻击早就乘难度 D；护甲 / 魔抗 和移动速度原来是固定值，现在也跟着关卡涨。
+    // 护甲 / 魔抗：第 10 关 ×1.2、第 50 关 ×1.7、第 100 关 ×2.1、第 200 关 ×2.4；移动速度：第 50 关 ×1.14、第 100 关 ×1.22、第 200 关 ×1.30。
+    // 护甲涨到 armorCap（120）为止——本来就比 120 高的不再涨（否则魔抗 250 的熔岩傀儡会打不动）
+    monsterScale(n) {
+      return { armor: 1 + 1.5 * (1 - Math.exp(-n / 80)), speed: 1 + 0.35 * (1 - Math.exp(-n / 100)) };
+    },
+    armorCap: 120,
+    scaledArmor(base, mult) {
+      if (!base || mult <= 1) return base || 0;
+      return Math.max(base, Math.min(base * mult, this.armorCap));
+    },
+
     hero: {
       atk: 10,
       aspd: 1.0,
@@ -39,7 +51,7 @@
     },
 
     // 游戏版本：与设计书版本号、sw.js 的缓存名保持一致（测试会检查）
-    version: 'v1.13',
+    version: 'v1.14',
 
     // 英雄（设计书 42）：在 hero 基础值上乘以倍率；所有升级共用
     heroes: {

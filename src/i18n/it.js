@@ -2054,4 +2054,11 @@ TD.i18n.register("it", {
   "通关第 200 关，击败深渊尽头的焚天巨龙": "Completa il livello 200: sconfiggi il Drago Brucia-Cielo in fondo all'abisso",
   "怪物同时大量涌来，打怪没有任何收益；只有\"过关\"才有钻石。钻石只能在这里获得。越往上，妖王的比例越高：第 1 层 10%，第 9 层 50%。妖王的血量和关卡里的大 Boss 一样厚。": "I mostri arrivano tutti insieme in massa e sconfiggerli non dà nulla: solo superare un piano dà diamanti. I diamanti si ottengono solo qui. Più si sale, più re demoni ci sono: 10% al piano 1, 50% al piano 9. I re demoni hanno tanta vita quanto i grandi boss dei livelli.",
   "九层妖塔里的妖王：血量和关卡里的 Boss 一样厚，没有特殊行动，只管冲向城墙。": "Un re demone della Torre dei Demoni a nove piani: tanta vita quanto un boss di livello, nessuna mossa speciale, carica e basta verso le mura.",
+  "测试": "Test",
+  "测试（已开启）": "Test (attivo)",
+  "测试模式已开启：资源已拉满，所有关卡都可以选": "Modalità test attiva: risorse al massimo, tutti i livelli selezionabili",
+  "密码": "Password",
+  "密码不对": "Password errata",
+  "输入密码开启测试模式：资源全部拉满，所有关卡都可以直接选。": "Inserisci la password per attivare la modalità test: risorse al massimo e tutti i livelli selezionabili.",
+  "第 N 层所有怪物的属性（血量、攻城伤害、护甲）是第 1 层的 N 倍，第 9 层是第 1 层的 9 倍；城墙的血量接着上一层，不会恢复（只有修缮、补给卡、道具和技能能回血）。": "Al piano N, tutti i mostri hanno N volte le statistiche del piano 1 (vita, danni alle mura, armatura): il piano 9 vale 9 volte il piano 1. La vita delle mura passa dal piano precedente e non si ripristina (curano solo riparazioni, carte rifornimento, oggetti e abilità).",
 });

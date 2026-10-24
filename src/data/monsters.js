@@ -786,9 +786,10 @@
     skillEvery: [9, 7, 5], // 每个阶段两次技能之间的间隔（秒）
     interruptRatio: 0.012, // 蓄力期间累计伤害达到最大血量的 1.2% 就打断
     stunOnInterrupt: 1.8,
-    fire: { warn: 2.2, damage: 110, dot: 16, dotTime: 6, enrage: 1.4 }, // 龙息：直接伤害 + 城墙持续燃烧
-    shock: { warn: 2.0, damage: 90, stun: 1.6 }, // 龙吼冲击波：伤害 + 英雄眩晕
-    bolt: { warn: 1.2, count: [5, 7, 10], spread: 1.8, damage: 45, heroStun: 0.5, heroStunChance: 0.2 }, // 雷暴：一串落雷
+    // 伤害按城墙最大血量的比例算（v1.14：原来按难度 × 固定值，第 200 关只有城墙的 4%，太轻）
+    fire: { warn: 2.2, damage: 0.15, dot: 0.015, dotTime: 6, enrage: 1.4 }, // 龙息：直接 15% + 持续燃烧每秒 1.5%（6 秒共 9%）
+    shock: { warn: 2.0, damage: 0.2, stun: 1.6 }, // 龙吼冲击波：20% + 英雄眩晕
+    bolt: { warn: 1.2, count: [5, 7, 10], spread: 1.8, damage: 0.03, heroStun: 0.5, heroStunChance: 0.2 }, // 雷暴：一串落雷，每道 3%
     summon: { every: [16, 13, 10], count: [4, 5, 6], type: 'vulture', golem: 'lavaGolem' },
   };
 
@@ -1010,5 +1011,5 @@
     TD.data.towerBossIds.push(id);
   }
   // 妖塔的数值：第 k 层怪物血量与攻城伤害 = D(关卡) × base × grow^(k−1)；每层 ×grow（v0.69 起每上一层怪物属性都会增加），base 由 tools/tower.js 标定
-  TD.data.tower = { floors: 9, bossPerFloor: 20, minionPerFloor: 180, bossShareLast: 0.5, base: 0.02, grow: 1.2, waves: 3, fee: { gold: 1 } };
+  TD.data.tower = { floors: 9, bossPerFloor: 20, minionPerFloor: 180, bossShareLast: 0.5, base: 0.02, waves: 3, fee: { gold: 1 } };
 })((globalThis.TD = globalThis.TD || {}));

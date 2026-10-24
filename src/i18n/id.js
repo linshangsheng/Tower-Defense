@@ -2054,4 +2054,11 @@ TD.i18n.register("id", {
   "通关第 200 关，击败深渊尽头的焚天巨龙": "Selesaikan level 200: kalahkan Naga Pembakar Langit di ujung jurang",
   "怪物同时大量涌来，打怪没有任何收益；只有\"过关\"才有钻石。钻石只能在这里获得。越往上，妖王的比例越高：第 1 层 10%，第 9 层 50%。妖王的血量和关卡里的大 Boss 一样厚。": "Monster menyerbu sekaligus dalam jumlah besar, dan mengalahkannya tidak memberi hadiah; hanya menyelesaikan lantai yang memberi berlian. Berlian hanya bisa didapat di sini. Makin tinggi, makin banyak raja iblis: 10% di lantai 1, 50% di lantai 9. Raja iblis punya HP sebanyak bos besar di level.",
   "九层妖塔里的妖王：血量和关卡里的 Boss 一样厚，没有特殊行动，只管冲向城墙。": "Raja iblis dari Menara Iblis Sembilan Lantai: HP-nya setebal bos level, tanpa gerakan khusus, hanya menyerbu tembok.",
+  "测试": "Uji",
+  "测试（已开启）": "Uji (aktif)",
+  "测试模式已开启：资源已拉满，所有关卡都可以选": "Mode uji aktif: sumber daya maksimal, semua level bisa dipilih",
+  "密码": "Kata sandi",
+  "密码不对": "Kata sandi salah",
+  "输入密码开启测试模式：资源全部拉满，所有关卡都可以直接选。": "Masukkan kata sandi untuk mengaktifkan mode uji: semua sumber daya maksimal, semua level bebas dipilih.",
+  "第 N 层所有怪物的属性（血量、攻城伤害、护甲）是第 1 层的 N 倍，第 9 层是第 1 层的 9 倍；城墙的血量接着上一层，不会恢复（只有修缮、补给卡、道具和技能能回血）。": "Di lantai N, semua monster punya atribut N kali lipat lantai 1 (HP, kerusakan ke tembok, armor): lantai 9 adalah 9 kali lantai 1. HP tembok dilanjutkan dari lantai sebelumnya dan tidak pulih (hanya perbaikan, kartu suplai, item, dan skill yang bisa memulihkan).",
 });

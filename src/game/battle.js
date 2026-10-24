@@ -378,6 +378,7 @@
       if (this.mods.waveStrike) this.delayed.push({ kind: 'airstrike', def: { after: 6, atkMult: 4 }, at: this.time + 6 });
       const wave = this.level.waves[i];
       if (wave.D) this.D = wave.D; // 无尽模式：每波有自己的难度
+      this.floorMult = wave.floorMult || 1; // 九层妖塔：第 N 层所有怪物的护甲 / 魔抗再 ×N
       this.bossHpD = wave.bossHpD || 0; // 九层妖塔：妖王的血量按这个难度算（和关卡 Boss 一样厚），其余属性仍按 D
       // countMult：自动平衡工具（tools/tune.js）写入的每关数量倍率，Boss 不受影响
       const cm = (this.level.countMult || 1) * (1 + (this.rules.countBonus || 0));
@@ -533,6 +534,8 @@
         yOffset: def.flying ? -34 : (this.rng() - 0.5) * 26,
         hp,
         maxHp: hp,
+        armorMult: C.monsterScale(this.stage).armor * (this.floorMult || 1),
+        speedMult: C.monsterScale(this.stage).speed,
         pending: 0,
         dps: def.dps * this.D,
         state: 'walk',
@@ -583,7 +586,7 @@
 
     monsterSpeed(m) {
       if (this.time < m.frozenUntil || this.time < m.stunUntil || this.time < m.shellUntil) return 0;
-      let s = m.def.speed * (1 + (this.rules.monsterSpeed || 0));
+      let s = m.def.speed * (m.speedMult || 1) * (1 + (this.rules.monsterSpeed || 0));
       if (m.def.ai === 'boarKing' && m.ai.phase === 3) s *= D.boarKing.enrageSpeedMult;
       if (m.burrowed && m.def.burrow) s *= m.def.burrow.speedMult;
       if (m.def.ai === 'pharaoh' && m.ai.phase === 3) s *= D.pharaoh.phase3SpeedMult;
@@ -901,7 +904,7 @@
     armorFactor(m, fromFront, type, weaponIgnore) {
       if (m.shield > 0) return type === 'magic' ? 0.5 : 0.1;
       if (type === 'magic') return 1;
-      let armor = (m.def.armor || 0) + (fromFront ? m.def.frontArmor || 0 : 0);
+      let armor = C.scaledArmor(m.def.armor, m.armorMult) + (fromFront ? m.def.frontArmor || 0 : 0);
       armor *= 1 - this.armorIgnore({ armorIgnore: weaponIgnore });
       return 1 - armor / (armor + 100);
     }
@@ -957,12 +960,12 @@
       const raw = amount;
       let armor = 0;
       if (opts.type !== 'magic') {
-        armor = (m.def.armor || 0) + (opts.fromFront ? m.def.frontArmor || 0 : 0);
+        armor = C.scaledArmor(m.def.armor, m.armorMult) + (opts.fromFront ? m.def.frontArmor || 0 : 0);
         armor *= 1 - this.armorIgnore(opts);
         // 灵体：物理伤害大打折扣（设计书 21.2）
         if (m.def.physResist) amount *= Math.min(1, 1 - m.def.physResist + this.mods.spiritPierce);
       } else {
-        armor = m.def.mres || 0;
+        armor = C.scaledArmor(m.def.mres, m.armorMult);
       }
       const dmg = Math.max(1, amount * (1 - armor / (armor + 100)));
       const rp = this.report;

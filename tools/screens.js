@@ -23,7 +23,8 @@ if (outDir) fs.mkdirSync(outDir, { recursive: true });
 const STEPS = [
   ['title', () => (TD.ui.showTitle(), !!document.querySelector('.title-foot') && [...document.querySelectorAll('.title-buttons .btn')].some((b) => ["退出游戏", TD.i18n.t('退出游戏')].includes(b.textContent)))],
   ['difficulty', () => (TD.ui.chooseDifficulty(() => {}), !!document.querySelector('.diff-card'))],
-  ['settings', () => (TD.ui.showSettings(), document.querySelectorAll('.volume-row').length === 2 && ![...document.querySelectorAll('.modal button')].some((b) => b.textContent.includes(TD.i18n.t('测试'))))],
+  ['settings', () => (TD.ui.showSettings(), document.querySelectorAll('.volume-row').length === 2 && [...document.querySelectorAll('.modal button')].some((b) => b.textContent.includes(TD.i18n.t('测试')) || b.textContent.includes('测试')))],
+  ['test-login', () => (TD.ui.showTestLogin(), !!document.querySelector('.test-pass'))],
   ['help', () => (TD.ui.showHelp(), !!document.querySelector('.modal'))],
   ['export', () => (TD.ui.showExport(), !!document.querySelector('textarea'))],
   ['import', () => (TD.ui.showImport(), !!document.querySelector('textarea'))],

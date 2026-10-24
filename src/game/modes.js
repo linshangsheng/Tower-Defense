@@ -130,8 +130,10 @@
   M.towerStage = (save) => Math.max(1, Math.min(Math.max(...Object.keys(D.levels).map(Number)), P.highestCleared(save)));
   // 难度系数按第 70 关封顶：第 71 关以后的回声小妖本身就比旧怪物强（设计书 75.4）
   // 妖王的血量：和同等进度的关卡 Boss 一样厚（不乘小妖用的 base），逐层 ×grow（v1.13）
-  M.towerBossHpD = (save, floor) => C.difficulty(Math.min(70, M.towerStage(save))) * Math.pow(T().grow, floor - 1);
-  M.towerD = (save, floor) => C.difficulty(Math.min(70, M.towerStage(save))) * T().base * Math.pow(T().grow, floor - 1);
+  // 第 N 层所有怪物的属性（生命、攻城伤害、护甲 / 魔抗）是第 1 层的 N 倍：第 9 层 = 第 1 层的 9 倍（v1.15；原来是每层 ×1.2）
+  M.towerMult = (floor) => floor;
+  M.towerBossHpD = (save, floor) => C.difficulty(Math.min(70, M.towerStage(save))) * M.towerMult(floor);
+  M.towerD = (save, floor) => C.difficulty(Math.min(70, M.towerStage(save))) * T().base * M.towerMult(floor);
 
   // 把 n 只平均分给一组类型（余数依次补给前面的），返回 [[类型, 数量], ...]
   function spread(types, n) {
@@ -174,7 +176,7 @@
       const nm = Math.round(cnt.minion / per) + (bosses.length ? 0 : Math.round(cnt.boss / per));
       // 出怪间隔：一波大约在 (12 + 2×层数) 秒里全部涌出
       const gap = Math.max(0.05, (12 + 2 * floor) / (nb + nm));
-      waves.push({ gap, groups: [...spread(minions, nm), ...spread(bosses, nb)], D: M.towerD(save, floor), bossHpD: M.towerBossHpD(save, floor), chapter: D.chapterOf(Math.min(stage, 100)).id });
+      waves.push({ gap, groups: [...spread(minions, nm), ...spread(bosses, nb)], D: M.towerD(save, floor), bossHpD: M.towerBossHpD(save, floor), floorMult: M.towerMult(floor), chapter: D.chapterOf(Math.min(stage, 100)).id });
     }
     return {
       name: `九层妖塔 · 第 ${floor} 层`,
@@ -186,7 +188,7 @@
       supplyEvery: 1,
       startWallRatio: (save.towerRun && save.towerRun.floor === floor && save.towerRun.wallRatio) || 1,
       stage,
-      tip: `第 ${floor} 层：${bosses.length ? cnt.boss : 0} 个妖王 + ${bosses.length ? cnt.minion : cnt.total} 只小妖同时涌来（强度 ×${Math.pow(T().grow, floor - 1).toFixed(2)}）。城墙血量接着上一层，不会恢复；打怪没有收益，只有过关才有钻石！`,
+      tip: `第 ${floor} 层：${bosses.length ? cnt.boss : 0} 个妖王 + ${bosses.length ? cnt.minion : cnt.total} 只小妖同时涌来（强度 ×${M.towerMult(floor)}）。城墙血量接着上一层，不会恢复；打怪没有收益，只有过关才有钻石！`,
     };
   };
 

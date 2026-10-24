@@ -596,7 +596,7 @@
           ai.boltsLeft--;
           const lane = this.rng.int(this.lanes);
           this.emit('dragonBolt', { m, x: C.wallX + 10 + this.rng() * 90, y: this.laneY(lane), lane });
-          this.hitWall(G.bolt.damage * this.D, m, false, 'bolt', m.type);
+          this.hitWall(G.bolt.damage * this.wall.max, m, false, 'bolt', m.type);
           if (this.rng() < G.bolt.heroStunChance) this.stunHero(G.bolt.heroStun);
         }
       }
@@ -645,12 +645,12 @@
       if (skill === 'fire') {
         const k = enraged ? G.fire.enrage : 1;
         this.emit('dragonFire', { m, lane: ai.lane, twin: enraged });
-        this.hitWall(G.fire.damage * k * this.D, m, true, 'fire', m.type);
-        this.addWallDot(G.fire.dot * k * this.D, G.fire.dotTime, 'dragonFire', true, m.type);
+        this.hitWall(G.fire.damage * k * this.wall.max, m, true, 'fire', m.type);
+        this.addWallDot(G.fire.dot * k * this.wall.max, G.fire.dotTime, 'dragonFire', true, m.type);
         this.stunHero(0.4);
       } else if (skill === 'shock') {
         this.emit('dragonShock', { m });
-        this.hitWall(G.shock.damage * this.D, m, true, 'shock', m.type);
+        this.hitWall(G.shock.damage * this.wall.max, m, true, 'shock', m.type);
         this.stunHero(G.shock.stun);
       } else {
         ai.boltsLeft = G.bolt.count[ai.phase - 1];

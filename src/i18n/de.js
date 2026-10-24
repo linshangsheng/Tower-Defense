@@ -2054,4 +2054,11 @@ TD.i18n.register("de", {
   "通关第 200 关，击败深渊尽头的焚天巨龙": "Schließe Level 200 ab: Besiege den Himmelsbrand-Drachen am Ende des Abgrunds",
   "怪物同时大量涌来，打怪没有任何收益；只有\"过关\"才有钻石。钻石只能在这里获得。越往上，妖王的比例越高：第 1 层 10%，第 9 层 50%。妖王的血量和关卡里的大 Boss 一样厚。": "Monster strömen alle auf einmal heran, und sie zu besiegen bringt nichts; nur das Abschließen einer Etage gibt Diamanten. Diamanten gibt es nur hier. Je höher du kommst, desto mehr Dämonenkönige: 10% auf Etage 1, 50% auf Etage 9. Dämonenkönige haben genauso viele Lebenspunkte wie die großen Bosse der Level.",
   "九层妖塔里的妖王：血量和关卡里的 Boss 一样厚，没有特殊行动，只管冲向城墙。": "Ein Dämonenkönig aus dem Neun-Etagen-Dämonenturm: so viele Lebenspunkte wie ein Level-Boss, keine Spezialangriffe, er stürmt nur auf die Mauer zu.",
+  "测试": "Test",
+  "测试（已开启）": "Test (an)",
+  "测试模式已开启：资源已拉满，所有关卡都可以选": "Testmodus an: Ressourcen maximal, alle Level wählbar",
+  "密码": "Passwort",
+  "密码不对": "Falsches Passwort",
+  "输入密码开启测试模式：资源全部拉满，所有关卡都可以直接选。": "Passwort eingeben, um den Testmodus zu aktivieren: alle Ressourcen maximal, alle Level frei wählbar.",
+  "第 N 层所有怪物的属性（血量、攻城伤害、护甲）是第 1 层的 N 倍，第 9 层是第 1 层的 9 倍；城墙的血量接着上一层，不会恢复（只有修缮、补给卡、道具和技能能回血）。": "In Etage N haben alle Monster das N-fache der Werte von Etage 1 (Leben, Mauerschaden, Rüstung): Etage 9 ist das 9-Fache von Etage 1. Die Mauer-LP werden aus der vorigen Etage übernommen und erholen sich nicht (nur Reparaturen, Versorgungskarten, Items und Fähigkeiten heilen).",
 });

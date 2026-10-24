@@ -427,8 +427,8 @@
         }
         this.shake = Math.max(this.shake, 12);
       });
-      // 焚天巨龙（设计书 114）：嘴的位置 = 身体中心向左 1.2 个身长、向上 0.46 个身长（画法里头和嘴的位置 × 绘制放大倍数）
-      const dragonMouth = (m) => ({ x: m.x - 1.2 * DRAW_SCALE * m.def.size, y: m.y + m.yOffset - 0.46 * DRAW_SCALE * m.def.size });
+      // 焚天巨龙（设计书 114）：嘴尖的位置 = 身体中心向左 1.38 个身长、向上 0.34 个身长（画法里头和嘴的位置 × 绘制放大倍数）
+      const dragonMouth = (m) => ({ x: m.x - 1.38 * DRAW_SCALE * m.def.size, y: m.y + m.yOffset - 0.34 * DRAW_SCALE * m.def.size });
       on('dragonCast', (e) => {
         const txt = { fire: '焚天巨龙在蓄力喷火！集中火力打断它！', shock: '焚天巨龙张大了嘴——龙吼冲击要来了！', bolt: '焚天巨龙召来了雷云——雷暴要来了！' }[e.kind];
         if (txt) this.banner(txt);

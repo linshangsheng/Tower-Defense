@@ -754,7 +754,7 @@ test('每日规则生效：危墙、疾风', () => {
   const info2 = { level: 3, rule: 'swift', seed: 1, key: 'x' };
   const b2 = new TD.Battle({ level: 3, levelDef: TD.modes.buildDaily(info2), stage: 3, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 1 });
   const m = b2.spawnMonster('slime', 0, 900);
-  assert.ok(Math.abs(b2.monsterSpeed(m) - D.monsters.slime.speed * 1.3) < 1e-9);
+  assert.ok(Math.abs(b2.monsterSpeed(m) - D.monsters.slime.speed * m.speedMult * 1.3) < 1e-9);
 });
 
 test('无尽模式：Boss 活着时下一波不来', () => {
@@ -1336,7 +1336,7 @@ test('九层妖塔：一开始就开放；第 N 层共 200N 只怪（妖王占�
   clearUpTo(s, 70);
   assert.strictEqual(TD.modes.towerBossList(s).length, 14);
   // 难度系数按关卡折算、再乘妖塔系数；每上一层，怪物的属性 ×grow，数量也随层数增加（设计书 77）
-  assert.ok(Math.abs(TD.modes.towerD(s, 9) - TD.modes.towerD(s, 1) * Math.pow(D.tower.grow, 8)) < 1e-9);
+  assert.ok(Math.abs(TD.modes.towerD(s, 9) - TD.modes.towerD(s, 1) * 9) < 1e-9);
   assert.ok(TD.modes.towerD(s, 1) < TD.config.difficulty(70) * 0.5, '妖塔系数把单只怪物的强度压到普通关卡的一小部分');
 });
 
@@ -3217,10 +3217,10 @@ test('技能 Lv3 以后继续变强，战斗里也用升级后的数值；机器
 test('九层妖塔：每上一层怪物属性都变强（×grow）；每层的城墙血量接着上一层，不会恢复', () => {
   const s = P.newSave();
   clearUpTo(s, 100);
-  assert.ok(D.tower.grow > 1 && D.tower.bossPerFloor === 20 && D.tower.minionPerFloor === 180);
+  assert.ok(D.tower.bossPerFloor === 20 && D.tower.minionPerFloor === 180);
   for (let k = 2; k <= 9; k++) {
     const r = TD.modes.towerD(s, k) / TD.modes.towerD(s, k - 1);
-    assert.ok(Math.abs(r - D.tower.grow) < 1e-9, `第 ${k} 层比第 ${k - 1} 层强 ×${D.tower.grow}`);
+    assert.ok(Math.abs(r - k / (k - 1)) < 1e-9, `第 ${k} 层是第 1 层的 ${k} 倍`);
     // 战斗里每一波都用本层的系数
     for (const w of TD.modes.buildTower(s, k).waves) assert.ok(Math.abs(w.D - TD.modes.towerD(s, k)) < 1e-9);
   }
@@ -3996,8 +3996,8 @@ test('Boss 血量：主线 Boss ×3，九层妖塔的妖王和关卡 Boss 一样
     const tb = new TD.Battle({ level: 'tower', levelDef: def, stage: def.stage, stats: P.heroStats(cs), loadout: P.battleLoadout(cs), seed: 2 });
     for (let i = 0; i < 60 * 30 && !tb.bossHpD; i++) tb.step(1 / 60); // 第一波开始后才用妖塔的难度
     const t = tb.spawnMonster('tw_boarKing', 0, 600);
-    assert.ok(t.dps <= D.monsters.tw_boarKing.dps * TD.config.difficulty(70) * 0.04, '攻城伤害仍按妖塔的小难度 ' + t.dps + ' D=' + tb.D + ' hpD=' + tb.bossHpD);
-    const want = Math.round(D.monsters.tw_boarKing.hp * TD.config.difficulty(70) * Math.pow(D.tower.grow, floor - 1) * tb.diffHp * 3);
+    assert.ok(t.dps <= D.monsters.tw_boarKing.dps * TD.config.difficulty(70) * 0.02 * floor * 1.01, '攻城伤害仍按妖塔的小难度 ' + t.dps + ' D=' + tb.D + ' hpD=' + tb.bossHpD);
+    const want = Math.round(D.monsters.tw_boarKing.hp * TD.config.difficulty(70) * floor * tb.diffHp * 3);
     assert.ok(Math.abs(t.maxHp - want) <= 1, `第 ${floor} 层妖王血量 ${t.maxHp} ≠ ${want}`);
   }
 });
@@ -4532,6 +4532,8 @@ test('焚天巨龙：体型至少是其他 Boss 的 5 倍，血量最厚；停�
   const others = Object.entries(M).filter(([k, d]) => d.boss && !k.endsWith('abyssDragon')).map(([, d]) => d);
   assert.ok(M.abyssDragon.size >= 5 * Math.max(...others.map((d) => d.size)), '体型 ≥ 5 倍');
   assert.ok(M.abyssDragon.hp > Math.max(...others.map((d) => d.hp)), '血量最厚');
+  const G = D_dragon();
+  assert.ok(G.fire.damage + G.fire.dot * G.fire.dotTime >= 0.2 && G.shock.damage >= 0.15 && G.bolt.damage * G.bolt.count[0] >= 0.1, '巨龙的伤害很大：龙息 ≥ 20%、冲击 ≥ 15%、一轮雷暴 ≥ 10% 城墙血量');
   const b = newBattle(200);
   b.wall.max = b.wall.hp = 1e15;
   const m = b.spawnMonster('abyssDragon', 2, 1100);
@@ -4539,10 +4541,19 @@ test('焚天巨龙：体型至少是其他 Boss 的 5 倍，血量最厚；停�
   for (const ev of ['dragonFire', 'dragonShock', 'dragonBoltStart', 'dragonBolt', 'bossSummon', 'bossPhase']) b.on(ev, () => seen.add(ev));
   const hp0 = b.wall.hp;
   m.hp = m.maxHp; // 不让玩家打它
-  for (let i = 0; i < 60 * 40; i++) b.step(1 / 60);
+  let worst = 1;
+  const topUp = () => {
+    worst = Math.min(worst, b.wall.hp / b.wall.max);
+    b.wall.hp = b.wall.max; // 技能按城墙最大血量的比例打，每帧补满，只看单次最大伤害
+  };
+  for (let i = 0; i < 60 * 40; i++) {
+    b.step(1 / 60);
+    topUp();
+  }
   assert.ok(Math.abs(m.x - D_dragon().holdX) < 2, '停在 holdX 附近');
   for (const ev of ['dragonFire', 'dragonShock', 'dragonBoltStart', 'dragonBolt', 'bossSummon']) assert.ok(seen.has(ev), '放出过 ' + ev);
-  assert.ok(b.wall.hp < hp0, '技能伤到了城墙');
+  assert.ok(worst < 0.9, '技能伤到了城墙：单次最多打掉 ' + Math.round((1 - worst) * 100) + '%');
+  void hp0;
   // 第二、三阶段
   m.hp = m.maxHp * 0.6;
   b.step(1 / 60);
@@ -4551,7 +4562,10 @@ test('焚天巨龙：体型至少是其他 Boss 的 5 倍，血量最厚；停�
   b.step(1 / 60);
   assert.strictEqual(m.ai.phase, 3);
   assert.strictEqual(m.ai.holdX, D_dragon().holdX3, '第三阶段压向城墙');
-  for (let i = 0; i < 60 * 15; i++) b.step(1 / 60);
+  for (let i = 0; i < 60 * 15; i++) {
+    b.step(1 / 60);
+    topUp();
+  }
   assert.ok(m.x < D_dragon().holdX - 100, '第三阶段向前走');
   assert.ok(m.x >= D_dragon().holdX3 - 1);
   // 蓄力时集中火力可以打断
@@ -4561,3 +4575,59 @@ test('焚天巨龙：体型至少是其他 Boss 的 5 倍，血量最厚；停�
   assert.ok(m.stunUntil > b.time, '打断后眩晕');
 });
 function D_dragon() { return TD.data.abyssDragon; }
+
+// ---------- v1.14：设置里的测试模式（密码开启：资源拉满、所有关卡随便选） ----------
+test('测试模式：密码不对不开；密码对了资源拉满、第 200 关也能直接选；普通存档不受影响', () => {
+  const s = P.newSave();
+  assert.ok(!P.isUnlocked(s, 200) && P.isUnlocked(s, 1));
+  assert.ok(!P.enableTestMode(s, 'wrong') && !P.testMode(s) && !P.isUnlocked(s, 5));
+  assert.ok(P.enableTestMode(s, 'linsstdtest'));
+  assert.ok(P.testMode(s) && P.isUnlocked(s, 200) && P.isUnlocked(s, 101));
+  assert.strictEqual(s.copper, P.MAX_CURRENCY);
+  assert.strictEqual(s.silver, P.MAX_CURRENCY);
+  assert.strictEqual(s.gold, P.MAX_CURRENCY);
+  assert.strictEqual(s.diamond, P.MAX_DIAMOND);
+  assert.ok(!P.isUnlocked(P.newSave(), 200));
+});
+
+// ---------- v1.14：怪物所有属性随关卡增强；妖塔第 N 层 = 第 1 层的 N 倍 ----------
+test('怪物属性随关卡增强：护甲 / 魔抗 / 速度单调增长，护甲有上限；妖塔第 9 层所有属性是第 1 层的 9 倍', () => {
+  const C = TD.config;
+  let pa = 0, ps = 0;
+  for (const n of [1, 10, 30, 50, 100, 150, 200]) {
+    const sc = C.monsterScale(n);
+    assert.ok(sc.armor >= pa && sc.speed >= ps, '随关卡单调增长');
+    pa = sc.armor; ps = sc.speed;
+  }
+  assert.ok(C.monsterScale(1).armor < 1.05 && C.monsterScale(200).armor > 2.2 && C.monsterScale(200).speed > 1.25);
+  assert.strictEqual(C.scaledArmor(0, 3), 0, '没有护甲的怪物不会凭空长出护甲');
+  assert.strictEqual(C.scaledArmor(250, 3), 250, '本来就超过上限的不再涨');
+  assert.strictEqual(C.scaledArmor(70, 3), C.armorCap, '涨到上限为止');
+  assert.ok(Math.abs(C.scaledArmor(20, 2) - 40) < 1e-9);
+  // 实战：第 100 关的有甲怪比第 1 关的更难打、更快
+  const b1 = newBattle(1);
+  const b100 = newBattle(100);
+  const armored = Object.keys(D.monsters).find((k) => !D.monsters[k].boss && D.monsters[k].armor >= 20 && D.monsters[k].armor <= 60 && !D.monsters[k].towerOf);
+  const m1 = b1.spawnMonster(armored, 0, 900);
+  const m100 = b100.spawnMonster(armored, 0, 900);
+  assert.ok(b100.armorFactor(m100, false, 'phys', 0) < b1.armorFactor(m1, false, 'phys', 0));
+  assert.ok(b100.monsterSpeed(m100) > b1.monsterSpeed(m1));
+  // 妖塔：第 N 层是第 1 层的 N 倍（生命、攻城伤害、护甲 / 魔抗的倍数）
+  const s = P.newSave();
+  clearUpTo(s, 70);
+  const mk = (floor) => {
+    const def = TD.modes.buildTower(s, floor);
+    const tb = new TD.Battle({ level: 'tower', levelDef: def, stage: def.stage, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 2 });
+    for (let i = 0; i < 60 * 30 && !tb.bossHpD; i++) tb.step(1 / 60);
+    const m = tb.spawnMonster('tw_boarKing', 0, 600);
+    const k = tb.spawnMonster('slime', 1, 600);
+    return { m, k };
+  };
+  const f1 = mk(1);
+  const f9 = mk(9);
+  for (const key of ['m', 'k']) {
+    assert.ok(Math.abs(f9[key].maxHp / f1[key].maxHp - 9) < (key === 'k' ? 1 : 0.01), key + ' 生命 ×9（小怪血量小，取整误差放宽）');
+    assert.ok(Math.abs(f9[key].dps / f1[key].dps - 9) < 0.01, key + ' 攻城伤害 ×9');
+    assert.ok(Math.abs(f9[key].armorMult / f1[key].armorMult - 9) < 1e-9, key + ' 护甲倍数 ×9');
+  }
+});

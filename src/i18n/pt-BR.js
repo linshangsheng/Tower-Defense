@@ -2054,4 +2054,11 @@ TD.i18n.register("pt-BR", {
   "通关第 200 关，击败深渊尽头的焚天巨龙": "Complete a fase 200: derrote o Dragão Queima-Céu no fim do abismo",
   "怪物同时大量涌来，打怪没有任何收益；只有\"过关\"才有钻石。钻石只能在这里获得。越往上，妖王的比例越高：第 1 层 10%，第 9 层 50%。妖王的血量和关卡里的大 Boss 一样厚。": "Os monstros chegam todos de uma vez, e derrotá-los não rende nada; só passar de andar dá diamantes. Diamantes só são obtidos aqui. Quanto mais alto, maior a proporção de reis demônios: 10% no andar 1, 50% no andar 9. Os reis demônios têm tanta vida quanto os grandes chefes das fases.",
   "九层妖塔里的妖王：血量和关卡里的 Boss 一样厚，没有特殊行动，只管冲向城墙。": "Um rei demônio da Torre Demoníaca de Nove Andares: tanta vida quanto um chefe de fase, sem movimentos especiais, só avança contra a muralha.",
+  "测试": "Teste",
+  "测试（已开启）": "Teste (ativo)",
+  "测试模式已开启：资源已拉满，所有关卡都可以选": "Modo de teste ativado: recursos no máximo, todas as fases liberadas",
+  "密码": "Senha",
+  "密码不对": "Senha incorreta",
+  "输入密码开启测试模式：资源全部拉满，所有关卡都可以直接选。": "Digite a senha para ativar o modo de teste: recursos no máximo e todas as fases liberadas.",
+  "第 N 层所有怪物的属性（血量、攻城伤害、护甲）是第 1 层的 N 倍，第 9 层是第 1 层的 9 倍；城墙的血量接着上一层，不会恢复（只有修缮、补给卡、道具和技能能回血）。": "No andar N, todos os monstros têm N vezes os atributos do andar 1 (vida, dano à muralha, armadura): o andar 9 é 9 vezes o andar 1. A vida da muralha vem do andar anterior e não se recupera (só com reparos, cartas de suprimento, itens e habilidades).",
 });

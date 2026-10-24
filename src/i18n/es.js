@@ -2054,4 +2054,11 @@ TD.i18n.register("es", {
   "通关第 200 关，击败深渊尽头的焚天巨龙": "Supera el nivel 200: derrota al Dragón Quemacielos del final del abismo",
   "怪物同时大量涌来，打怪没有任何收益；只有\"过关\"才有钻石。钻石只能在这里获得。越往上，妖王的比例越高：第 1 层 10%，第 9 层 50%。妖王的血量和关卡里的大 Boss 一样厚。": "Los monstruos llegan en masa a la vez y derrotarlos no da nada; solo \"superar\" el piso da diamantes. Los diamantes solo se consiguen aquí. Cuanto más alto, más reyes demonio: 10% en el piso 1, 50% en el piso 9. Los reyes demonio tienen tanta vida como los grandes jefes de los niveles.",
   "九层妖塔里的妖王：血量和关卡里的 Boss 一样厚，没有特殊行动，只管冲向城墙。": "Un rey demonio de la Torre Demoníaca de Nueve Pisos: tanta vida como un jefe de nivel, sin movimientos especiales, solo carga contra la muralla.",
+  "测试": "Prueba",
+  "测试（已开启）": "Prueba (activa)",
+  "测试模式已开启：资源已拉满，所有关卡都可以选": "Modo de prueba activado: recursos al máximo, todos los niveles disponibles",
+  "密码": "Contraseña",
+  "密码不对": "Contraseña incorrecta",
+  "输入密码开启测试模式：资源全部拉满，所有关卡都可以直接选。": "Introduce la contraseña para activar el modo de prueba: recursos al máximo y todos los niveles disponibles.",
+  "第 N 层所有怪物的属性（血量、攻城伤害、护甲）是第 1 层的 N 倍，第 9 层是第 1 层的 9 倍；城墙的血量接着上一层，不会恢复（只有修缮、补给卡、道具和技能能回血）。": "En el piso N, todos los monstruos tienen N veces los atributos del piso 1 (vida, daño a la muralla, armadura): el piso 9 es 9 veces el piso 1. La vida de la muralla pasa del piso anterior y no se recupera (solo con reparaciones, cartas de suministro, objetos y habilidades).",
 });

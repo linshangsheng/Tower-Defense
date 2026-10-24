@@ -2054,4 +2054,11 @@ TD.i18n.register("vi", {
   "通关第 200 关，击败深渊尽头的焚天巨龙": "Vượt màn 200: hạ gục Rồng Thiêu Trời ở tận cùng vực thẳm",
   "怪物同时大量涌来，打怪没有任何收益；只有\"过关\"才有钻石。钻石只能在这里获得。越往上，妖王的比例越高：第 1 层 10%，第 9 层 50%。妖王的血量和关卡里的大 Boss 一样厚。": "Quái ập đến cùng lúc rất đông, đánh quái không có thưởng; chỉ \"qua tầng\" mới có kim cương. Kim cương chỉ kiếm được ở đây. Càng lên cao, tỉ lệ yêu vương càng nhiều: tầng 1 là 10%, tầng 9 là 50%. Yêu vương có lượng máu dày như các boss lớn trong màn chơi.",
   "九层妖塔里的妖王：血量和关卡里的 Boss 一样厚，没有特殊行动，只管冲向城墙。": "Yêu vương trong Tháp Yêu Chín Tầng: máu dày như boss màn chơi, không có chiêu đặc biệt, chỉ lao thẳng vào tường.",
+  "测试": "Thử nghiệm",
+  "测试（已开启）": "Thử nghiệm (bật)",
+  "测试模式已开启：资源已拉满，所有关卡都可以选": "Đã bật chế độ thử nghiệm: tài nguyên đầy, chọn được mọi màn",
+  "密码": "Mật khẩu",
+  "密码不对": "Sai mật khẩu",
+  "输入密码开启测试模式：资源全部拉满，所有关卡都可以直接选。": "Nhập mật khẩu để bật chế độ thử nghiệm: tài nguyên đầy và chọn được mọi màn chơi.",
+  "第 N 层所有怪物的属性（血量、攻城伤害、护甲）是第 1 层的 N 倍，第 9 层是第 1 层的 9 倍；城墙的血量接着上一层，不会恢复（只有修缮、补给卡、道具和技能能回血）。": "Ở tầng N, mọi quái có chỉ số gấp N lần tầng 1 (máu, sát thương lên tường, giáp): tầng 9 gấp 9 lần tầng 1. Máu tường giữ nguyên từ tầng trước và không hồi lại (chỉ sửa chữa, thẻ tiếp tế, vật phẩm và kỹ năng mới hồi được).",
 });

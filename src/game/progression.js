@@ -185,7 +185,16 @@
     return P.checkAchievements(save);
   };
   P.isCleared = (save, n) => P.levelRecord(save, n).clears > 0;
-  P.isUnlocked = (save, n) => n === 1 || P.isCleared(save, n - 1);
+  // 测试模式（v1.14，设置里输入密码开启）：所有关卡都能直接选
+  P.TEST_PASSWORD = 'linsstdtest';
+  P.testMode = (save) => !!(save.settings && save.settings.testMode);
+  P.enableTestMode = function (save, password) {
+    if (password !== P.TEST_PASSWORD) return false;
+    save.settings.testMode = true;
+    P.maxResources(save);
+    return true;
+  };
+  P.isUnlocked = (save, n) => n === 1 || P.testMode(save) || P.isCleared(save, n - 1);
   P.highestCleared = function (save) {
     let h = 0;
     for (const k of Object.keys(save.levels)) if (save.levels[k].clears > 0) h = Math.max(h, +k);

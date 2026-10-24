@@ -2054,4 +2054,11 @@ TD.i18n.register("en", {
   "通关第 200 关，击败深渊尽头的焚天巨龙": "Clear level 200: defeat the Skyburn Dragon at the end of the abyss",
   "怪物同时大量涌来，打怪没有任何收益；只有\"过关\"才有钻石。钻石只能在这里获得。越往上，妖王的比例越高：第 1 层 10%，第 9 层 50%。妖王的血量和关卡里的大 Boss 一样厚。": "Monsters swarm in all at once, and defeating them earns nothing; only clearing a floor gives diamonds. Diamonds can only be earned here. The higher you climb, the more demon kings: 10% on floor 1, 50% on floor 9. Demon kings have as much HP as the big bosses in the levels.",
   "九层妖塔里的妖王：血量和关卡里的 Boss 一样厚，没有特殊行动，只管冲向城墙。": "A demon king from the Nine-Floor Demon Tower: as much HP as a level boss, no special moves, just charges the wall.",
+  "测试": "Test",
+  "测试（已开启）": "Test (on)",
+  "测试模式已开启：资源已拉满，所有关卡都可以选": "Test mode on: resources maxed, every level is selectable",
+  "密码": "Password",
+  "密码不对": "Wrong password",
+  "输入密码开启测试模式：资源全部拉满，所有关卡都可以直接选。": "Enter the password to turn on test mode: all resources maxed, every level selectable.",
+  "第 N 层所有怪物的属性（血量、攻城伤害、护甲）是第 1 层的 N 倍，第 9 层是第 1 层的 9 倍；城墙的血量接着上一层，不会恢复（只有修缮、补给卡、道具和技能能回血）。": "On floor N, every monster has N times the stats of floor 1 (HP, wall damage, armor): floor 9 is 9× floor 1. Wall HP carries over from the previous floor and does not recover (only repairs, supply cards, items and skills can heal it).",
 });
