@@ -31,7 +31,7 @@
         const T = D.thunderKing;
         m.ai = { phase: 1, mode: 'walk', summonTimer: T.summonFirst, summons: 0, chargeTimer: T.chargeFirst, warnTimer: 0, chargeDmg: 0 };
       } else if (ai === 'pearlClam') m.ai = { phase: 1, mode: 'walk', open: false, cycleTimer: 0, pearlTimer: 0 };
-      else if (ai === 'abyssDragon') m.ai = { phase: 1, mode: 'walk', holdX: D.abyssDragon.holdX, skillTimer: D.abyssDragon.skillFirst, skill: null, last: null, idx: 0, warnTimer: 0, warnMax: 0, chargeDmg: 0, summonTimer: 7, boltsLeft: 0, boltTimer: 0 };
+      else if (ai === 'abyssDragon') m.ai = { form: 1, phase: 1, mode: 'walk', holdX: D.abyssDragon.holdX, skillTimer: D.abyssDragon.skillFirst, skill: null, last: null, idx: 0, warnTimer: 0, warnMax: 0, chargeDmg: 0, summonTimer: 7, boltsLeft: 0, boltTimer: 0 };
       else if (ai === 'octoKing') m.ai = { phase: 1, mode: 'walk', summonTimer: D.octoKing.summonFirst, slots: null, guarded: false, alive: 0 };
     },
 
@@ -567,9 +567,47 @@
 
     // 焚天巨龙（设计书 114）：悬在战场右侧，三个阶段；技能 = 龙息 / 龙吼冲击 / 雷暴，都有蓄力预警，蓄力时累计伤害够了就打断；
     // 定期招来飞行的小龙；血量 33% 以下狂暴：技能更频繁、龙息更痛、向前压到城墙前
+    // 巨龙的一次技能打掉多少城墙血量：按最大血量的比例，第二条命 ×3，单次不超过 hitCap
+    dragonHit(m, ratio) {
+      const G = D.abyssDragon;
+      return Math.min(ratio * (m.ai.form === 2 ? G.rebirthMult : 1), G.hitCap) * this.wall.max;
+    },
+    // 第一条命倒下：趴在地上，剧情讲完（或 rebirthDelay 秒）后化作黑色巨龙
+    dragonFall(m) {
+      const ai = m.ai;
+      m.hp = 1;
+      m.fallen = true;
+      m.burnUntil = 0;
+      ai.fallen = true;
+      ai.mode = 'fallen';
+      ai.skill = null;
+      ai.boltsLeft = 0;
+      ai.rebirthTimer = D.abyssDragon.rebirthDelay;
+      ai.rebirthMax = D.abyssDragon.rebirthDelay;
+      this.emit('dragonFall', { m });
+    },
+    dragonRebirth(m) {
+      const G = D.abyssDragon;
+      const ai = m.ai;
+      m.fallen = false;
+      m.def = D.monsters.abyssDragon2;
+      m.type = 'abyssDragon2';
+      m.maxHp = Math.round(m.maxHp * G.rebirthMult);
+      m.hp = m.maxHp;
+      m.dps *= G.rebirthMult;
+      m.armorMult = (m.armorMult || 1) * G.rebirthMult; // 护甲实际封顶 120，和别的怪一样
+      Object.assign(ai, { form: 2, fallen: false, phase: 1, mode: 'walk', holdX: G.holdX, skill: null, last: null, idx: 0, skillTimer: G.skillFirst, summonTimer: 6, chargeDmg: 0, boltsLeft: 0 });
+      this.emit('dragonRebirth', { m });
+      this.emit('bossPhase', { m, phase: 1, text: '焚天巨龙倒下了……黑色的巨龙从灰烬里站了起来！' });
+    },
     updateAbyssDragon(m, dt) {
       const G = D.abyssDragon;
       const ai = m.ai;
+      if (ai.fallen) {
+        ai.rebirthTimer -= dt;
+        if (ai.rebirthTimer <= 0) this.dragonRebirth(m);
+        return;
+      }
       const ratio = m.hp / m.maxHp;
       const ph = () => ai.phase - 1;
       if (ai.phase === 1 && ratio < G.phase2Below) {
@@ -596,7 +634,7 @@
           ai.boltsLeft--;
           const lane = this.rng.int(this.lanes);
           this.emit('dragonBolt', { m, x: C.wallX + 10 + this.rng() * 90, y: this.laneY(lane), lane });
-          this.hitWall(G.bolt.damage * this.wall.max, m, false, 'bolt', m.type);
+          this.hitWall(this.dragonHit(m, G.bolt.damage), m, false, 'bolt', m.type);
           if (this.rng() < G.bolt.heroStunChance) this.stunHero(G.bolt.heroStun);
         }
       }
@@ -645,12 +683,12 @@
       if (skill === 'fire') {
         const k = enraged ? G.fire.enrage : 1;
         this.emit('dragonFire', { m, lane: ai.lane, twin: enraged });
-        this.hitWall(G.fire.damage * k * this.wall.max, m, true, 'fire', m.type);
-        this.addWallDot(G.fire.dot * k * this.wall.max, G.fire.dotTime, 'dragonFire', true, m.type);
+        this.hitWall(this.dragonHit(m, G.fire.damage * k), m, true, 'fire', m.type);
+        this.addWallDot(G.fire.dot * k * this.wall.max * (m.ai.form === 2 ? G.rebirthMult : 1), G.fire.dotTime, 'dragonFire', true, m.type);
         this.stunHero(0.4);
       } else if (skill === 'shock') {
         this.emit('dragonShock', { m });
-        this.hitWall(G.shock.damage * this.wall.max, m, true, 'shock', m.type);
+        this.hitWall(this.dragonHit(m, G.shock.damage), m, true, 'shock', m.type);
         this.stunHero(G.shock.stun);
       } else {
         ai.boltsLeft = G.bolt.count[ai.phase - 1];

@@ -715,9 +715,17 @@
       abyss: true, // 不算进"击败全部 Boss"成就
       noLit: true, // 太大，不走光影缓存，直接画
       hitH: 0.06, // 受击光 / 伤害数字出在身体中心附近（普通怪是脚上方 0.6 个身高）
-      desc: '第二十章 Boss。深渊里沉睡的西方巨龙：体型是普通 Boss 的五倍，血量极厚。会喷火、龙吼冲击、召唤雷暴，还会招来飞行的小龙——它蓄力时集中火力可以打断！',
+      desc: '第二十章 Boss。深渊里沉睡的西方巨龙：体型是普通 Boss 的五倍，血量极厚。会喷火、龙吼冲击、召唤雷暴，还会招来飞行的小龙——它蓄力时集中火力可以打断。它有两条命：第一条命倒下后，会化作黑色巨龙，各种属性再翻 3 倍！',
     },
   };
+  // 焚天巨龙的第二条命（设计书 115）：同一只怪物换上这份定义，画法沿用 abyssDragon（按 ai.form 换成黑色）
+  TD.data.monsters.abyssDragon2 = Object.assign({}, TD.data.monsters.abyssDragon, {
+    name: '灭世黑龙',
+    art: 'abyssDragon',
+    color: '#1a1020',
+    form2: true,
+    desc: '焚天巨龙的第二条命：倒下后化作的黑色巨龙，生命、伤害、护甲都是原来的 3 倍。'
+  });
 
   // 怪物类型标签（用于新敌人登场卡片、关卡预览）
   TD.data.monsterTags = function (def) {
@@ -753,7 +761,7 @@
     return t;
   };
   // 不单独介绍的怪物：分裂产物和 Boss 召唤物
-  TD.data.noIntro = { minijelly: true, minipumpkin: true, snowball: true, inkClone: true, iceDragon: true, tentacle: true };
+  TD.data.noIntro = { abyssDragon2: true, minijelly: true, minipumpkin: true, snowball: true, inkClone: true, iceDragon: true, tentacle: true };
 
   // 呼呼的参数（设计书 33.3）
   TD.data.windGiant = { holdX: 760, kiteFirst: 3, kiteEvery: 8, kiteCount: 2, gustFirst: 6, gustEvery: 10, gustEveryLow: 7, lowBelow: 0.3, gustWarn: 2, gustPush: 140, interruptRatio: 0.04 };
@@ -791,6 +799,10 @@
     shock: { warn: 2.0, damage: 0.2, stun: 1.6 }, // 龙吼冲击波：20% + 英雄眩晕
     bolt: { warn: 1.2, count: [5, 7, 10], spread: 1.8, damage: 0.03, heroStun: 0.5, heroStunChance: 0.2 }, // 雷暴：一串落雷，每道 3%
     summon: { every: [16, 13, 10], count: [4, 5, 6], type: 'vulture', golem: 'lavaGolem' },
+    // 第二条命（v1.15）：第一条命倒下后讲一段剧情，等 rebirthDelay 秒后化作黑色巨龙：生命、伤害、护甲 ×3，阶段重来；单次伤害最多打掉城墙的 hitCap
+    rebirthDelay: 3.5,
+    rebirthMult: 3,
+    hitCap: 0.6,
   };
 
   // 雷雷的参数（设计书 33.3）
@@ -1001,7 +1013,7 @@
   TD.data.towerBossIds = [];
   for (const id of Object.keys(TD.data.monsters)) {
     const def = TD.data.monsters[id];
-    if (!def.boss || def.bossPart) continue;
+    if (!def.boss || def.bossPart || def.form2) continue;
     const tw = Object.assign({}, def, { art: id, towerOf: id, desc: '九层妖塔里的妖王：血量和关卡里的 Boss 一样厚，没有特殊行动，只管冲向城墙。' });
     delete tw.ai;
     delete tw.split;

@@ -74,6 +74,16 @@
     battle.on('dragonShock', () => TD.audio.play('bigWall'));
     battle.on('dragonBolt', () => TD.audio.play('bolt'));
     battle.on('bossReturn', () => TD.audio.play('warn'));
+    // 焚天巨龙第一条命倒下：暂停战斗，讲一段剧情；剧情结束（或战斗里等满 rebirthDelay 秒）后化作黑色巨龙（设计书 115）
+    battle.on('dragonFall', () => {
+      TD.audio.play('bigWall');
+      game.introPaused = true;
+      TD.ui.playStory('dragonFall', () => (game.introPaused = game.introQueue.length > 0), { replay: true });
+    });
+    battle.on('dragonRebirth', () => {
+      TD.audio.play('warn');
+      (s.seenMonsters = s.seenMonsters || {}).abyssDragon2 = true;
+    });
     // Boss 登场：音乐给一记重击（设计书 64.5）
     battle.on('spawn', (m) => m.def && m.def.boss && TD.music.stinger('boss'));
     // 新敌人登场卡片：每种怪物只介绍一次

@@ -285,7 +285,7 @@
         [
           tile('累计击败', st.kills),
           fav ? tile(`击败最多：${D.monsters[fav].name}`, kt[fav], TD.sprites.portrait(fav, 40)) : tile('击败最多', '—'),
-          tile('遇见的怪物', `${Object.keys(s.seenMonsters || {}).length} 种`),
+          tile('遇见的怪物', `${P.testMode(s) ? Object.keys(D.monsters).filter((t) => !D.monsters[t].towerOf).length : Object.keys(s.seenMonsters || {}).length} 种`),
         ],
       ],
       ['操作', [tile('打断 Boss', st.interrupts || 0), tile('提前召唤', st.earlyCalls || 0), tile('选择补给', st.supplies || 0), tile('技能协同', st.combos || 0)]],
@@ -340,7 +340,7 @@
 
   // 怪物首次出现的章节（召唤物、分裂产物跟随母体）
   function monsterChapter(type) {
-    const extra = { abyssDragon: 10, minijelly: 1, gobling: 1, minipumpkin: 3, snowball: 4, iceDragon: 4, inkClone: 5 };
+    const extra = { abyssDragon: 10, abyssDragon2: 10, minijelly: 1, gobling: 1, minipumpkin: 3, snowball: 4, iceDragon: 4, inkClone: 5 };
     if (extra[type]) return extra[type];
     const nums = Object.keys(D.levels).map(Number).sort((a, b) => a - b);
     for (const n of nums) for (const w of D.levels[n].waves) for (const [t] of w.groups) if (t === type) return D.chapterOf(n).id;
@@ -356,11 +356,12 @@
     const all = Object.keys(D.monsters).filter((t) => !D.monsters[t].towerOf);
     const types = all.filter((t) => monsterChapter(t) === chapterId);
     const total = all.length;
-    const seenCount = all.filter((t) => seen[t] || kills[t]).length;
+    const testMode = P.testMode(s); // 测试模式：图鉴里所有怪物和妖王都算遇见过
+    const seenCount = all.filter((t) => testMode || seen[t] || kills[t]).length;
     const tabs = D.chapters.filter((c) => !c.abyss).map((c) => h('button', { class: 'btn small' + (c.id === chapterId ? ' primary' : ''), onclick: () => (sfx('click'), UI.showBestiary(c.id)) }, c.name));
     const cards = types.map((t) => {
       const def = D.monsters[t];
-      const known = seen[t] || kills[t];
+      const known = testMode || seen[t] || kills[t];
       let img;
       if (known) img = TD.sprites.portrait(t, 64);
       else {

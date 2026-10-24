@@ -581,7 +581,7 @@
     }
 
     isTargetable(m) {
-      return !m.dead && !m.burrowed && !m.bones && !m.hidden && !m.stealthed && !(m.leapUntil > this.time) && m.x <= C.width + 5;
+      return !m.dead && !m.burrowed && !m.bones && !m.fallen && !m.hidden && !m.stealthed && !(m.leapUntil > this.time) && m.x <= C.width + 5;
     }
 
     monsterSpeed(m) {
@@ -911,7 +911,7 @@
 
     // opts: { type: 'phys'|'magic', fromFront, crit, source }
     damage(m, amount, opts) {
-      if (m.dead) return 0;
+      if (m.dead || m.fallen) return 0; // 焚天巨龙倒下到重生之间不受伤害
       // 闪避（风筝怪）：只躲武器的物理普通攻击（设计书 33.2）
       if (m.def.dodge && opts.source === 'weapon' && opts.type !== 'magic' && this.rng() < Math.max(0, m.def.dodge - this.mods.dodgeCut)) {
         this.emit('dodge', { m, x: m.x, y: m.y + m.yOffset });
@@ -995,6 +995,7 @@
       }
       if (m.hp <= 0) {
         if (m.def.ai === 'boneMage' && !m.ai.revived) this.boneDown(m);
+        else if (m.def.ai === 'abyssDragon' && m.ai.form === 1) this.dragonFall(m);
         else this.kill(m);
       }
       return dmg;

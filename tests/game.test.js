@@ -2441,20 +2441,29 @@ test('武器：25 把，每个品质 5 把，价格逐档上涨，升级费用�
   assert.ok(mult[4] > mult[0]);
   assert.deepStrictEqual([1, 2, 3, 4, 5].map((r) => D.weaponRarity[r].name), ['绿', '蓝', '紫', '红', '金']);
   const s = P.newSave();
-  for (const id of ['bow', 'frostBow', 'genesisBow']) s.weapons[id] = { owned: true, lv: 3, asc: false };
+  for (const id of ['bow', 'frostBow', 'meteorCannon', 'genesisBow']) s.weapons[id] = { owned: true, lv: 3, asc: false };
   const c = (id) => P.weaponUpgradeCost(s, id).copper;
-  assert.ok(c('bow') < c('frostBow') && c('frostBow') < c('genesisBow'), '品质越高升级越贵');
+  assert.ok(c('bow') < c('frostBow') && c('frostBow') < c('meteorCannon'), '品质越高升级越贵（红色以下用铜币）');
+  // 金色武器：只能用钻石升级，每级都收钻
+  for (const id of ids.filter((x) => D.weapons[x].rarity === 5)) {
+    s.weapons[id] = { owned: true, lv: 3, asc: false };
+    const cost = P.weaponUpgradeCost(s, id);
+    assert.deepStrictEqual(Object.keys(cost), ['diamond'], id + ' 只收钻石');
+    assert.ok(P.weaponUpgradeCostAt(id, 0).diamond >= 1 && P.weaponUpgradeCostAt(id, 9).diamond > P.weaponUpgradeCostAt(id, 0).diamond && P.weaponUpgradeCostAt(id, 100).diamond > P.weaponUpgradeCostAt(id, 20).diamond);
+  }
+  const total10 = Array.from({ length: 10 }, (_, l) => P.weaponUpgradeCostAt('genesisBow', l).diamond).reduce((a, b) => a + b, 0);
+  assert.strictEqual(total10, 37, '金色武器前 10 级共 37 钻');
   for (const id of ids) if (D.weapons[id].look) assert.ok(['bow', 'crossbow', 'staff', 'orb', 'cannon', 'boomerang'].includes(D.weapons[id].look.base), id);
 });
 
 test('武器随时可买（只看钱）；老存档自动补上新武器', () => {
   const s = P.newSave();
   s.silver = 1000;
-  s.gold = 1000;
+  s.gold = 5000;
   assert.ok(P.buyWeapon(s, 'frostBow'), '没通关也能买蓝色');
   assert.ok(P.buyWeapon(s, 'meteorCannon'));
   assert.ok(P.buyWeapon(s, 'genesisBow'));
-  assert.strictEqual(s.gold, 1000 - D.weapons.meteorCannon.cost.gold - D.weapons.genesisBow.cost.gold);
+  assert.strictEqual(s.gold, 5000 - D.weapons.meteorCannon.cost.gold - D.weapons.genesisBow.cost.gold);
   const poor = P.newSave();
   poor.silver = 3;
   assert.ok(!P.buyWeapon(poor, 'frostBow'), '钱不够照样买不起');
@@ -3458,13 +3467,14 @@ test('银币只在首次通关小 Boss、大 Boss、精英挑战关时给', () =
 });
 
 test('装备和被动技能涨价：价格 = 原价 × 倍数（装备 绿 6 / 蓝 6 / 紫 4 / 红 3 / 金 2，武器蓝色 4.5，被动 8）', () => {
-  assert.deepStrictEqual(D.priceMult, { gear: { 1: 6, 2: 6, 3: 4, 4: 3, 5: 2 }, weapon: { 1: 6, 2: 4.5, 3: 4, 4: 3, 5: 2 }, passive: 8 });
+  assert.deepStrictEqual(D.priceMult, { gear: { 1: 6, 2: 6, 3: 4, 4: 3, 5: 2 }, weapon: { 1: 6, 2: 4.5, 3: 4, 4: 10, 5: 30 }, passive: 8 });
   assert.deepStrictEqual(D.weapons.staff.cost, { silver: 36 }, 'v1.10：蓝色武器单独便宜（魔法杖原价 8 银 × 4.5）');
   assert.strictEqual(D.equipment.ironHelm.cost.copper, 720, '铁头盔原价 120 铜');
   assert.deepStrictEqual(D.passiveSkills.precision.cost, { silver: 24 }, '精准原价 3 银');
   assert.deepStrictEqual(D.passiveSkills.combo.cost, { silver: 32 });
   assert.deepStrictEqual(D.weapons.crossbow.cost, { copper: 1800 }, '连发弩原价 300 铜');
-  assert.deepStrictEqual(D.weapons.genesisBow.cost, { gold: 40 });
+  assert.deepStrictEqual(D.weapons.genesisBow.cost, { gold: 600 }, 'v1.15：金色武器原价 20 金 × 30');
+  assert.deepStrictEqual(D.weapons.meteorCannon.cost, { gold: 80 }, 'v1.15：红色武器原价 8 金 × 10');
   // 金色装备除了每类第 1 件，其余仍然只用钻石，最便宜的比以前更贵
   const diamonds = Object.values(D.equipment).filter((e) => e.rarity === 5 && e.cost.diamond).map((e) => e.cost.diamond);
   assert.ok(diamonds.length >= 25 && Math.min(...diamonds) >= 20);
@@ -4529,7 +4539,7 @@ test('防翻译打架：页面声明不要被浏览器翻译；回调太密集�
 // ---------- v1.13：第 200 关 Boss 焚天巨龙（设计书 114） ----------
 test('焚天巨龙：体型至少是其他 Boss 的 5 倍，血量最厚；停在 holdX 放技能，打断会眩晕', () => {
   const M = TD.data.monsters;
-  const others = Object.entries(M).filter(([k, d]) => d.boss && !k.endsWith('abyssDragon')).map(([, d]) => d);
+  const others = Object.entries(M).filter(([k, d]) => d.boss && !/abyssDragon/.test(k)).map(([, d]) => d);
   assert.ok(M.abyssDragon.size >= 5 * Math.max(...others.map((d) => d.size)), '体型 ≥ 5 倍');
   assert.ok(M.abyssDragon.hp > Math.max(...others.map((d) => d.hp)), '血量最厚');
   const G = D_dragon();
@@ -4640,4 +4650,34 @@ test('怪物属性随关卡增强：护甲 / 魔抗 / 速度单调增长，护�
     assert.ok(Math.abs(f9[key].dps / f1[key].dps - 9) < 0.01, key + ' 攻城伤害 ×9');
     assert.ok(Math.abs(f9[key].armorMult / f1[key].armorMult - 9) < 1e-9, key + ' 护甲倍数 ×9');
   }
+});
+
+// ---------- v1.15：焚天巨龙有两条命 ----------
+test('焚天巨龙两条命：第一条命倒下 → 趴下不受伤 → 化作黑龙（生命 / 伤害 ×3、阶段重来）→ 第二条命打完才算赢', () => {
+  const G = TD.data.abyssDragon;
+  const b = newBattle(200);
+  b.wall.max = b.wall.hp = 1e15;
+  const m = b.spawnMonster('abyssDragon', 2, 800);
+  const hp1 = m.maxHp;
+  const seen = new Set();
+  for (const ev of ['dragonFall', 'dragonRebirth']) b.on(ev, () => seen.add(ev));
+  b.damage(m, hp1 * 4, { source: 'test' });
+  assert.ok(!m.dead && m.fallen && m.hp === 1 && seen.has('dragonFall'), '第一条命打光：没死，趴下了');
+  assert.ok(!b.isTargetable(m) && b.damage(m, 1e12, { source: 'test' }) === 0, '倒下期间打不到');
+  assert.strictEqual(b.monsters.filter((x) => !x.dead && x.def.boss).length, 1);
+  for (let i = 0; i < 60 * (G.rebirthDelay + 0.5); i++) b.step(1 / 60);
+  assert.ok(seen.has('dragonRebirth') && !m.fallen && m.ai.form === 2, '过一会儿化作黑龙');
+  assert.strictEqual(m.def.name, '灭世黑龙');
+  assert.strictEqual(m.maxHp, hp1 * G.rebirthMult);
+  assert.strictEqual(m.hp, m.maxHp, '满血');
+  assert.strictEqual(m.ai.phase, 1, '阶段重来');
+  assert.ok(b.isTargetable(m));
+  // 黑龙的伤害是原来的 3 倍，单次最多 hitCap
+  assert.ok(Math.abs(b.dragonHit(m, 0.15) - 0.45 * b.wall.max) < 1 && Math.abs(b.dragonHit(m, 0.2) - G.hitCap * b.wall.max) < 1);
+  m.ai.form = 1;
+  assert.ok(Math.abs(b.dragonHit(m, 0.15) - 0.15 * b.wall.max) < 1);
+  m.ai.form = 2;
+  // 第二条命打光才是真的死；关卡才能赢（第 200 关）
+  b.damage(m, m.maxHp * 4, { source: 'test' });
+  assert.ok(m.dead, '第二条命打光 = 死');
 });

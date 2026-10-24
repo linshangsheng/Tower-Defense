@@ -466,6 +466,29 @@
         this.shake = Math.max(this.shake, 34);
         this.fx.push({ kind: 'flash', color: '#fff0d8', life: 0.35, age: 0 });
       });
+      // 第一条命倒下：火焰熄灭、碎石 / 火星四溅；重生：黑色的冲击环向外炸开
+      on('dragonFall', (e) => {
+        const y = e.m.y + e.m.yOffset;
+        if (V) {
+          for (let i = 0; i < 3; i++) V.fx.push({ kind: 'ring', x: e.m.x, y, r0: 20, r1: 700 + i * 150, color: i % 2 ? '#ffd8a0' : '#ff6a2a', w: 5, life: 0.8 + i * 0.2, age: -i * 0.12 });
+          V.fx.push({ kind: 'flare', x: e.m.x, y, r: 420, color: '#ffb060', life: 0.6, age: 0 });
+        }
+        this.burst(e.m.x, y, '#ff8a2a', 40, 420);
+        this.shake = Math.max(this.shake, 40);
+        this.fx.push({ kind: 'flash', color: '#ffe0b0', life: 0.5, age: 0 });
+      });
+      on('dragonRebirth', (e) => {
+        const y = e.m.y + e.m.yOffset;
+        if (V) {
+          for (let i = 0; i < 5; i++) V.fx.push({ kind: 'ring', x: e.m.x, y, r0: 20, r1: 1000, color: i % 2 ? '#ff2a4a' : '#6a1a8a', w: 7 - i, life: 0.9 + i * 0.12, age: -i * 0.1 });
+          V.fx.push({ kind: 'flare', x: e.m.x, y, r: 600, color: '#ff3a5a', life: 0.7, age: 0 });
+          V.thunder(e.m.x - 200, y - 150, 1.2);
+          V.thunder(e.m.x + 200, y - 120, 1.2);
+        }
+        this.burst(e.m.x, y, '#ff3a5a', 50, 480);
+        this.shake = Math.max(this.shake, 48);
+        this.fx.push({ kind: 'flash', color: '#c01840', life: 0.6, age: 0 });
+      });
       on('dragonBoltStart', () => this.fx.push({ kind: 'flash', color: '#bfe4ff', life: 0.3, age: 0 }));
       on('dragonBolt', (e) => {
         if (V) V.thunder(e.x, e.y, 0.9);

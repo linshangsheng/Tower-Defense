@@ -587,6 +587,12 @@
     if (lv >= D.levelCap) return null;
     const k = P.weaponUpgradeMult(id);
     const soft = D.weaponUpgrade.max;
+    if (D.weapons[id].rarity === 5) {
+      // 金色武器：只收钻石
+      const G = D.goldWeaponUpgrade;
+      const dia = (l) => Math.max(1, Math.ceil(Math.pow(G.growth, l)));
+      return { diamond: lv < soft ? dia(lv) : Math.ceil(D.extraCost(dia(soft) * G.diamondInCopper, lv, soft) / G.diamondInCopper) };
+    }
     return lv < soft ? { copper: TD.util.round5(D.weaponUpgrade.cost(lv) * k) } : beyondCost(D.weaponUpgrade.cost(soft) * k, lv, soft);
   };
   P.weaponUpgradeCost = (save, id) => {

@@ -192,6 +192,8 @@
   };
 
   TD.data.weaponAscend = { minLv: 5, cost: { silver: 8 } };
+  // 金色武器只能用钻石升级（v1.15）：第 lv 级 → lv+1 级要 ceil(1.25^lv) 钻（前 10 级共 37 钻），第 10 级以后按 extraCost 往上涨
+  TD.data.goldWeaponUpgrade = { growth: 1.25, diamondInCopper: 1e6 };
 
   TD.data.weaponUpgrade = {
     perLevel: 0.08,
