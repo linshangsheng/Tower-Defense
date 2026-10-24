@@ -2442,30 +2442,32 @@ test('武器：25 把，每个品质 5 把，价格逐档上涨，升级费用�
   assert.deepStrictEqual([1, 2, 3, 4, 5].map((r) => D.weaponRarity[r].name), ['绿', '蓝', '紫', '红', '金']);
   const s = P.newSave();
   for (const id of ['bow', 'frostBow', 'meteorCannon', 'genesisBow']) s.weapons[id] = { owned: true, lv: 3, asc: false };
-  // 升级货币按品质：绿 铜币，蓝 / 紫 银币，红 金币，金 钻石；下一级用的资源是上一级的 2 倍；满级（10 级）后不能再升
+  // 升级货币按品质：绿 铜币，蓝 / 紫 银币，红 金币，金 钻石；每级费用 ×1.3；每种品质满级不同（20 / 40 / 60 / 80 / 100），满级后不能再升
   const curOf = { 1: 'copper', 2: 'silver', 3: 'silver', 4: 'gold', 5: 'diamond' };
-  const MAX = D.weaponUpgrade.max;
-  assert.strictEqual(MAX, 10);
+  const maxOf = { 1: 20, 2: 40, 3: 60, 4: 80, 5: 100 };
+  assert.deepStrictEqual(D.weaponMaxLevel, maxOf);
+  const base0 = { 1: 5, 2: 1, 3: 2, 4: 1, 5: 1 };
   for (const id of ids) {
+    const r = D.weapons[id].rarity;
+    const cur = curOf[r];
+    const MAX = P.weaponMaxLv(id);
+    assert.strictEqual(MAX, maxOf[r], id + ' 的满级');
     s.weapons[id] = { owned: true, lv: 3, asc: false };
-    const cur = curOf[D.weapons[id].rarity];
     assert.deepStrictEqual(Object.keys(P.weaponUpgradeCost(s, id)), [cur], id + ' 的升级货币');
     for (let lv = 0; lv < MAX; lv++) {
       const c = P.weaponUpgradeCostAt(id, lv);
       assert.deepStrictEqual(Object.keys(c), [cur], id + ' 第 ' + lv + ' 级的升级货币');
-      if (lv > 0) assert.strictEqual(c[cur], 2 * P.weaponUpgradeCostAt(id, lv - 1)[cur], `${id} 第 ${lv} 级是上一级的 2 倍`);
+      assert.strictEqual(c[cur], Math.ceil(base0[r] * Math.pow(1.3, lv)), `${id} 第 ${lv} 级 = 起步价 × 1.3^${lv}`);
+      if (lv > 0) assert.ok(c[cur] >= P.weaponUpgradeCostAt(id, lv - 1)[cur], '越往后越贵');
     }
-    for (const lv of [MAX, MAX + 1, 50, 999999]) assert.strictEqual(P.weaponUpgradeCostAt(id, lv), null, id + ' 满级后不能再升');
+    for (const lv of [MAX, MAX + 1, 500, 999999]) assert.strictEqual(P.weaponUpgradeCostAt(id, lv), null, id + ' 满级后不能再升');
     s.weapons[id].lv = MAX;
     assert.strictEqual(P.weaponUpgradeCost(s, id), null);
     P.maxResources(s);
     assert.ok(!P.upgradeWeapon(s, id) && s.weapons[id].lv === MAX, id + ' 满级后升级失败');
   }
   const v = (id, lv) => P.costValue(P.weaponUpgradeCostAt(id, lv));
-  for (const lv of [0, 5, 9]) assert.ok(v('bow', lv) < v('frostBow', lv) && v('frostBow', lv) < v('meteorCannon', lv) && v('meteorCannon', lv) < v('genesisBow', lv), '品质越高升级越贵 @' + lv);
-  const total10 = (id) => Array.from({ length: MAX }, (_, l) => Object.values(P.weaponUpgradeCostAt(id, l))[0]).reduce((a, b) => a + b, 0);
-  const purple = ids.find((x) => D.weapons[x].rarity === 3);
-  assert.deepStrictEqual([total10('bow'), total10('frostBow'), total10(purple), total10('meteorCannon'), total10('genesisBow')], [5115, 1023, 2046, 1023, 1023], '前 10 级合计');
+  for (const lv of [0, 5, 9, 15]) assert.ok(v('bow', lv) < v('frostBow', lv) && v('frostBow', lv) < v('meteorCannon', lv) && v('meteorCannon', lv) < v('genesisBow', lv), '品质越高升级越贵 @' + lv);
   for (const id of ids) if (D.weapons[id].look) assert.ok(['bow', 'crossbow', 'staff', 'orb', 'cannon', 'boomerang'].includes(D.weapons[id].look.base), id);
 });
 
@@ -3204,8 +3206,8 @@ test('批量升级：+10 / +100 / 最大；钱不够就升到买得起为止，d
   P.maxResources(rich);
   rich.activeOwned.thunder = true;
   rich.skillLv.thunder = 3;
-  assert.strictEqual(P.bulkUpgrade(rich, 'weapon', 'bow', 25).count, 10, '武器最多升到 10 级');
-  assert.strictEqual(rich.weapons.bow.lv, 10);
+  assert.strictEqual(P.bulkUpgrade(rich, 'weapon', 'bow', 25).count, 20, '绿色武器最多升到 20 级');
+  assert.strictEqual(rich.weapons.bow.lv, 20);
   assert.strictEqual(P.bulkUpgrade(rich, 'wall', 'level', 40).count, 40);
   assert.strictEqual(rich.wall.level, 41);
   assert.strictEqual(P.bulkUpgrade(rich, 'skill', 'thunder', 10).count, 10);

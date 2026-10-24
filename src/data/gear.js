@@ -193,23 +193,24 @@
 
   TD.data.weaponAscend = { minLv: 5, cost: { silver: 8 } };
   // 武器升级的货币按品质固定（v1.15）：绿 铜币；蓝、紫 银币；红 金币；金 钻石。
-  // 第 lv 级 → lv+1 级要 base × 2^lv 个该货币（v1.18：下一级是上一级的 2 倍；满级 = weaponUpgrade.max，不能再升）
-  // 前 10 级合计：绿 5115 铜、蓝 1023 银、紫 2046 银、红 1023 金币、金 1023 钻
+  // 第 lv 级 → lv+1 级要 ceil(base × growth^lv) 个该货币（v1.19：每级 ×1.3；满级见 weaponMaxLevel）
+  // ⚠️ 1.3 的幂涨得很快：红色 80 级、金色 100 级的最后几级是天文数字（金色第 99 级约 2×10^11 钻），想让满级够得着就把 growth 调小
   TD.data.weaponUpgradeCurrency = {
-    2: { cur: 'silver', base: 1 },
-    3: { cur: 'silver', base: 2 },
-    4: { cur: 'gold', base: 1 },
-    5: { cur: 'diamond', base: 1 },
+    2: { cur: 'silver', base: 1, growth: 1.3 },
+    3: { cur: 'silver', base: 2, growth: 1.3 },
+    4: { cur: 'gold', base: 1, growth: 1.3 },
+    5: { cur: 'diamond', base: 1, growth: 1.3 },
   };
 
   TD.data.weaponUpgrade = {
     perLevel: 0.08,
     beyond: 0.04, // 第 10 级以后每级只加 4%（设计书 76.2）
-    max: 10,
-    // 武器升级到 max 级就满了，不能再升（v1.18，之前第 10 级以后还能一直升到 999999 级，已经升过 10 级的存档保持原样、只是不能再升）
-    // 每升一级，用的资源是上一级的 2 倍：第 lv 级 → lv+1 级要 5 × 2^lv 铜币（绿色），其他品质见 weaponUpgradeCurrency
-    cost: (lv) => 5 * Math.pow(2, lv),
+    max: 10, // 每级 +8% 的"基础段"：10 级以内每级 +8%，之后 +4%；也是专精的解锁等级、机器人只升到的级数。真正的满级见 weaponMaxLevel
+    // 绿色武器：第 lv 级 → lv+1 级要 ceil(5 × 1.3^lv) 铜币；其他品质见 weaponUpgradeCurrency（v1.19：每级 ×1.3）
+    cost: (lv) => Math.ceil(5 * Math.pow(1.3, lv)),
   };
+  // 每种品质的满级不一样（v1.19）：满级后不能再升（旧存档里已经超过的保持原样，只是不能再升）
+  TD.data.weaponMaxLevel = { 1: 20, 2: 40, 3: 60, 4: 80, 5: 100 };
 
   TD.data.activeSkills = {
     drum: {

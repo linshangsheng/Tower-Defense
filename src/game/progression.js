@@ -583,11 +583,12 @@
   // 武器随时可买，只看钱（设计书 66.3）；minLevel 只是商店里的“推荐关卡”提示
   P.weaponUnlocked = () => true;
   P.weaponUpgradeMult = (id) => D.weaponRarity[D.weapons[id].rarity || 1].upgradeMult;
-  // 武器满级（D.weaponUpgrade.max）以后不能再升（返回 null）；下一级的费用是上一级的 2 倍，货币按品质固定（设计书 119）
+  // 武器满级（P.weaponMaxLv：绿 20 / 蓝 40 / 紫 60 / 红 80 / 金 100）以后不能再升（返回 null）；每级费用 ×1.3，货币按品质固定（设计书 119、120）
+  P.weaponMaxLv = (id) => D.weaponMaxLevel[D.weapons[id].rarity || 1];
   P.weaponUpgradeCostAt = (id, lv) => {
-    if (lv >= D.weaponUpgrade.max) return null;
+    if (lv >= P.weaponMaxLv(id)) return null;
     const cfg = D.weaponUpgradeCurrency[D.weapons[id].rarity];
-    if (cfg) return { [cfg.cur]: Math.ceil(cfg.base * Math.pow(2, lv)) };
+    if (cfg) return { [cfg.cur]: Math.ceil(cfg.base * Math.pow(cfg.growth, lv)) };
     return { copper: D.weaponUpgrade.cost(lv) };
   };
   P.weaponUpgradeCost = (save, id) => {

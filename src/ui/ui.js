@@ -1166,7 +1166,7 @@
           ws.owned ? lvText(ws.lv) : '可购买',
           h('span', null, w.desc, h('span', { class: 'good' }, ' 擅长：' + w.good)),
           right,
-          { cls: 'wr-' + (w.rarity || 1) + (ws.owned ? '' : ' unowned'), color: R.color, icon: TD.sprites.iconCanvas(id, 56), foot: h('div', { class: 'card-notes' }, ascLine, masteryLine, recTip), bar: ws.owned ? Math.min(1, ws.lv / D.weaponUpgrade.max) : null, barText: ws.owned ? `${ws.lv} / ${D.weaponUpgrade.max}` : null, over: ws.owned && ws.lv >= D.weaponUpgrade.max }
+          { cls: 'wr-' + (w.rarity || 1) + (ws.owned ? '' : ' unowned'), color: R.color, icon: TD.sprites.iconCanvas(id, 56), foot: h('div', { class: 'card-notes' }, ascLine, masteryLine, recTip), bar: ws.owned ? Math.min(1, ws.lv / P.weaponMaxLv(id)) : null, barText: ws.owned ? `${ws.lv} / ${P.weaponMaxLv(id)}` : null, over: ws.owned && ws.lv >= P.weaponMaxLv(id) }
         )
       );
     }
