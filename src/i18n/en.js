@@ -2075,4 +2075,9 @@ TD.i18n.register("en", {
   "那我们就把你也守住！Lyra，准备！": "Then we'll guard you too! Lyra, get ready!",
   "它在吸收裂缝里的墨水！小心，它在变——": "It's absorbing the Ink from the crack! Careful, it's changing...",
   "我守了太久，久到忘了自己是谁。现在，我只剩下黑暗。": "I guarded for so long that I forgot who I was. Now only darkness is left.",
+  "第二十章 Boss。深渊里沉睡的西方巨龙：体型是普通 Boss 的五倍，血量极厚。会喷火、冲撞、雷击（主角被电麻 2 秒）、寒冰（主角被冻住 3 秒），还会招来飞行的小龙——它蓄力时集中火力可以打断。它有两条命：第一条命倒下后，会化作黑色巨龙，各种属性再翻 3 倍！": "Chapter 20 boss. A Western dragon sleeping in the abyss: five times the size of a normal boss, with enormous HP. It breathes fire, rams the wall, strikes with lightning (the hero is paralyzed for 2 s), blasts frost (the hero is frozen for 3 s) and summons little flying dragons. Focus fire to interrupt it while it charges! It has two lives: after the first falls, it turns into a black dragon with all stats tripled!",
+  "焚天巨龙盘踞在深渊的尽头：喷火、冲撞、雷击（电麻 2 秒）、寒冰（冻住 3 秒），还会招来飞行的小龙。它蓄力时集中火力可以打断。它有两条命：倒下一次后会化作黑色巨龙，属性再翻 3 倍——这是最后一关！": "The Skyburn Dragon coils at the end of the abyss: fire breath, ramming, lightning (paralysis 2 s), frost (frozen 3 s), and little flying dragons. Focus fire to interrupt it while it charges. It has two lives: once it falls, it turns into a black dragon with all stats tripled. This is the final level!",
+  "焚天巨龙吸足了寒气——寒冰要来了！": "The Skyburn Dragon is drawing in the cold: frost is coming!",
+  "焚天巨龙压低了身体——冲撞要来了！": "The Skyburn Dragon lowers its body: a ram is coming!",
+  "焚天巨龙召来了雷云——雷击要来了！": "The Skyburn Dragon calls storm clouds: lightning is coming!",
 });

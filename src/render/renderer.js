@@ -428,22 +428,22 @@
         this.shake = Math.max(this.shake, 12);
       });
       // 焚天巨龙（设计书 114、118）：嘴尖的位置由 creatures/abyss.js 的素材锚点算出（行走姿势 / 喷火姿势各一个），再乘绘制放大倍数
-      const dragonMouth = (m, fire) => {
-        const p = TD.creatures.dragonMouthAt(fire);
+      const dragonMouth = (m, kind) => {
+        const p = TD.creatures.dragonMouthAt(kind);
         return { x: m.x + p.x * DRAW_SCALE * m.def.size, y: m.y + m.yOffset + p.y * DRAW_SCALE * m.def.size };
       };
       on('dragonCast', (e) => {
-        const txt = { fire: '焚天巨龙在蓄力喷火！集中火力打断它！', shock: '焚天巨龙张大了嘴——龙吼冲击要来了！', bolt: '焚天巨龙召来了雷云——雷暴要来了！' }[e.kind];
+        const txt = { fire: '焚天巨龙在蓄力喷火！集中火力打断它！', shock: '焚天巨龙压低了身体——冲撞要来了！', bolt: '焚天巨龙召来了雷云——雷击要来了！', ice: '焚天巨龙吸足了寒气——寒冰要来了！' }[e.kind];
         if (txt) this.banner(txt);
         if (V) {
           const p = dragonMouth(e.m);
-          V.fx.push({ kind: 'ring', x: p.x, y: p.y, r0: 6, r1: 120, color: e.kind === 'bolt' ? '#bfe4ff' : '#ffb060', w: 3, life: Math.min(1.2, e.duration), age: 0 });
+          V.fx.push({ kind: 'ring', x: p.x, y: p.y, r0: 6, r1: 120, color: e.kind === 'bolt' ? '#bfe4ff' : e.kind === 'ice' ? '#9fe0ff' : '#ffb060', w: 3, life: Math.min(1.2, e.duration), age: 0 });
         }
         this.shake = Math.max(this.shake, 6);
       });
       on('dragonFire', (e) => {
         const m = e.m;
-        const p = dragonMouth(m, true);
+        const p = dragonMouth(m, 'fire');
         const lanes = battle.lanes;
         const lh = (C.fieldBottom - C.fieldTop) / lanes;
         const lanesHit = e.twin && lanes > 1 ? [e.lane, e.lane + 1 < lanes ? e.lane + 1 : e.lane - 1] : [e.lane];
@@ -460,14 +460,28 @@
         this.shake = Math.max(this.shake, 24);
         this.fx.push({ kind: 'flash', color: '#ff9a4a', life: 0.45, age: 0 });
       });
-      on('dragonShock', (e) => {
-        const p = dragonMouth(e.m);
+      // 冲撞：巨龙扑过去，撞到城墙那一刻（约 0.65 秒后）冲击环炸开
+      on('dragonShock', () => {
+        const cy = (C.fieldTop + C.fieldBottom) / 2;
         if (V) {
-          for (let i = 0; i < 5; i++) V.fx.push({ kind: 'ring', x: p.x, y: p.y, r0: 20, r1: 900, color: i % 2 ? '#ffffff' : '#ffd8a0', w: 6 - i, life: 0.7 + i * 0.12, age: -i * 0.07 });
-          V.fx.push({ kind: 'flare', x: C.wallX + 40, y: (C.fieldTop + C.fieldBottom) / 2, r: 300, color: '#ffe0b0', life: 0.45, age: 0.1 });
+          for (let i = 0; i < 5; i++) V.fx.push({ kind: 'ring', x: C.wallX + 60, y: cy, r0: 20, r1: 900, color: i % 2 ? '#ffffff' : '#ffd8a0', w: 6 - i, life: 0.7 + i * 0.12, age: -0.6 - i * 0.07 });
+          V.fx.push({ kind: 'flare', x: C.wallX + 40, y: cy, r: 300, color: '#ffe0b0', life: 0.45, age: -0.6 });
         }
-        this.shake = Math.max(this.shake, 34);
-        this.fx.push({ kind: 'flash', color: '#fff0d8', life: 0.35, age: 0 });
+        this.shake = Math.max(this.shake, 28);
+        this.fx.push({ kind: 'flash', color: '#fff0d8', life: 0.35, age: -0.6 });
+      });
+      // 寒冰：冰晶从嘴里射向城墙，主角被冻住（冰块画在 drawHeroStun 里）
+      on('dragonIce', (e) => {
+        const p = dragonMouth(e.m, 'ice');
+        const hy = battle.heroY;
+        if (V) {
+          for (let i = 0; i < 14; i++) V.comet(p.x - Math.random() * 30, p.y + (Math.random() - 0.5) * 26, C.wallX + Math.random() * 90, hy - 60 + (Math.random() - 0.5) * 160, 0.35 + Math.random() * 0.4, i % 3 ? '#bfe8ff' : '#ffffff', 14 + Math.random() * 18);
+          for (let i = 0; i < 3; i++) V.fx.push({ kind: 'ring', x: C.heroX, y: hy - 60, r0: 10, r1: 160 + i * 50, color: i % 2 ? '#ffffff' : '#7fd0ff', w: 5 - i, life: 0.6 + i * 0.12, age: -i * 0.08 });
+          V.fx.push({ kind: 'flare', x: C.heroX, y: hy - 60, r: 200, color: '#bfe8ff', life: 0.5, age: 0 });
+        }
+        this.burst(C.heroX, hy - 60, '#bfe8ff', 24, 260);
+        this.shake = Math.max(this.shake, 14);
+        this.fx.push({ kind: 'flash', color: '#cfeaff', life: 0.4, age: 0 });
       });
       // 第一条命倒下：火焰熄灭、碎石 / 火星四溅；重生：黑色的冲击环向外炸开
       on('dragonFall', (e) => {
@@ -3779,13 +3793,76 @@
       ctx.restore();
     }
 
+    // 主角被控制时头顶 / 身上的表现：眩晕 = 转圈的星星；电麻 = 乱窜的电弧；冻结 = 一整块冰（设计书 119）
     drawHeroStun(b) {
       const ctx = this.ctx;
+      const kind = b.heroStunKind || 'stun';
+      const x = C.heroX;
+      const y = b.heroY;
       ctx.save();
-      ctx.fillStyle = '#ffd23f';
-      for (let i = 0; i < 3; i++) {
-        const a = this.t * 6 + (i * Math.PI * 2) / 3;
-        S.star(ctx, C.heroX + Math.cos(a) * 26, b.heroY - 100 + Math.sin(a) * 8, 6);
+      if (kind === 'freeze') {
+        // 冰块：半透明的浅蓝多边形 + 高光 + 底部的霜
+        const w = 38;
+        const top = y - 150;
+        ctx.beginPath();
+        ctx.moveTo(x - w, y + 8);
+        ctx.lineTo(x - w - 6, y - 60);
+        ctx.lineTo(x - w + 10, top + 18);
+        ctx.lineTo(x - 8, top);
+        ctx.lineTo(x + 14, top + 10);
+        ctx.lineTo(x + w + 4, top + 34);
+        ctx.lineTo(x + w + 8, y - 50);
+        ctx.lineTo(x + w, y + 8);
+        ctx.closePath();
+        const g = ctx.createLinearGradient(x - w, top, x + w, y);
+        g.addColorStop(0, 'rgba(220,245,255,0.7)');
+        g.addColorStop(0.5, 'rgba(120,200,255,0.5)');
+        g.addColorStop(1, 'rgba(60,140,230,0.6)');
+        ctx.fillStyle = g;
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(235,250,255,0.9)';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(x - w + 6, top + 30);
+        ctx.lineTo(x - 6, top + 8);
+        ctx.moveTo(x - w + 10, y - 40);
+        ctx.lineTo(x - w + 8, y - 90);
+        ctx.stroke();
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.fillStyle = 'rgba(160,220,255,0.25)';
+        ctx.fillRect(x - w, y - 4, w * 2, 12);
+      } else if (kind === 'shock') {
+        // 电麻：身边乱窜的电弧，一闪一闪
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.strokeStyle = 'rgba(190,225,255,0.95)';
+        ctx.lineWidth = 3;
+        ctx.lineCap = 'round';
+        const f = Math.floor(this.t * 16);
+        for (let i = 0; i < 4; i++) {
+          let px = x + Math.sin((f + i) * 12.9) * 30;
+          let py = y - 20 - i * 30 - (f % 3) * 4;
+          ctx.beginPath();
+          ctx.moveTo(px, py);
+          for (let k = 0; k < 4; k++) {
+            px += Math.sin((f * 7 + i * 3 + k) * 4.1) * 16;
+            py -= 14;
+            ctx.lineTo(px, py);
+          }
+          ctx.stroke();
+        }
+        ctx.fillStyle = 'rgba(190,225,255,0.18)';
+        ctx.beginPath();
+        ctx.arc(x, y - 60, 44 + Math.sin(this.t * 30) * 4, 0, Math.PI * 2);
+        ctx.fill();
+      } else {
+        ctx.fillStyle = '#ffd23f';
+        for (let i = 0; i < 3; i++) {
+          const a = this.t * 6 + (i * Math.PI * 2) / 3;
+          S.star(ctx, x + Math.cos(a) * 26, y - 100 + Math.sin(a) * 8, 6);
+        }
       }
       ctx.restore();
     }

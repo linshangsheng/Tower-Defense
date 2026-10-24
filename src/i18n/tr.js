@@ -2075,4 +2075,9 @@ TD.i18n.register("tr", {
   "那我们就把你也守住！Lyra，准备！": "O zaman seni de koruruz! Lyra, hazırlan!",
   "它在吸收裂缝里的墨水！小心，它在变——": "Yarıktaki Mürekkebi emiyor! Dikkat, değişiyor...",
   "我守了太久，久到忘了自己是谁。现在，我只剩下黑暗。": "O kadar uzun süre nöbet tuttum ki kim olduğumu unuttum. Şimdi geriye sadece karanlık kaldı.",
+  "第二十章 Boss。深渊里沉睡的西方巨龙：体型是普通 Boss 的五倍，血量极厚。会喷火、冲撞、雷击（主角被电麻 2 秒）、寒冰（主角被冻住 3 秒），还会招来飞行的小龙——它蓄力时集中火力可以打断。它有两条命：第一条命倒下后，会化作黑色巨龙，各种属性再翻 3 倍！": "20. bölüm patronu. Uçurumda uyuyan Batı tipi bir ejderha: sıradan bir patronun beş katı büyüklükte ve çok yüksek canlı. Ateş püskürtür, surlara çarpar, yıldırım çarptırır (kahraman 2 sn felç olur), buz üfler (kahraman 3 sn donar) ve küçük uçan ejderhalar getirir. Şarj olurken ateşi toplayıp kesintiye uğratabilirsin! İki canı var: ilki düşünce, tüm özellikleri üç katına çıkmış kara bir ejderhaya dönüşür!",
+  "焚天巨龙盘踞在深渊的尽头：喷火、冲撞、雷击（电麻 2 秒）、寒冰（冻住 3 秒），还会招来飞行的小龙。它蓄力时集中火力可以打断。它有两条命：倒下一次后会化作黑色巨龙，属性再翻 3 倍——这是最后一关！": "Gökyakan Ejderha uçurumun ucunda kıvrılmış duruyor: ateş nefesi, çarpma, yıldırım (felç 2 sn), buz (donma 3 sn) ve küçük uçan ejderhalar. Şarj olurken ateşi toplayıp kesintiye uğratabilirsin. İki canı var: düşünce tüm özellikleri üç katına çıkmış kara bir ejderhaya dönüşür. Bu son seviye!",
+  "焚天巨龙吸足了寒气——寒冰要来了！": "Gökyakan Ejderha soğuğu içine çekiyor: buz geliyor!",
+  "焚天巨龙压低了身体——冲撞要来了！": "Gökyakan Ejderha gövdesini alçalttı: çarpma geliyor!",
+  "焚天巨龙召来了雷云——雷击要来了！": "Gökyakan Ejderha fırtına bulutları çağırdı: yıldırım geliyor!",
 });

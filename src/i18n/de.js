@@ -2075,4 +2075,9 @@ TD.i18n.register("de", {
   "那我们就把你也守住！Lyra，准备！": "Dann beschützen wir auch dich! Lyra, mach dich bereit!",
   "它在吸收裂缝里的墨水！小心，它在变——": "Er saugt die Tinte aus dem Riss auf! Vorsicht, er verwandelt sich...",
   "我守了太久，久到忘了自己是谁。现在，我只剩下黑暗。": "Ich habe so lange gewacht, dass ich vergaß, wer ich war. Jetzt bleibt mir nur noch Dunkelheit.",
+  "第二十章 Boss。深渊里沉睡的西方巨龙：体型是普通 Boss 的五倍，血量极厚。会喷火、冲撞、雷击（主角被电麻 2 秒）、寒冰（主角被冻住 3 秒），还会招来飞行的小龙——它蓄力时集中火力可以打断。它有两条命：第一条命倒下后，会化作黑色巨龙，各种属性再翻 3 倍！": "Boss von Kapitel 20. Ein westlicher Drache, der im Abgrund schlief: fünfmal so groß wie ein normaler Boss und mit gewaltigen Lebenspunkten. Er speit Feuer, rammt die Mauer, schleudert Blitze (der Held ist 2 s gelähmt), haucht Frost (der Held ist 3 s eingefroren) und beschwört kleine fliegende Drachen. Konzentriert das Feuer, um ihn beim Aufladen zu unterbrechen! Er hat zwei Leben: Fällt das erste, wird er zu einem schwarzen Drachen mit verdreifachten Werten!",
+  "焚天巨龙盘踞在深渊的尽头：喷火、冲撞、雷击（电麻 2 秒）、寒冰（冻住 3 秒），还会招来飞行的小龙。它蓄力时集中火力可以打断。它有两条命：倒下一次后会化作黑色巨龙，属性再翻 3 倍——这是最后一关！": "Der Himmelsbrand-Drache liegt am Ende des Abgrunds: Feueratem, Rammstöße, Blitze (Lähmung 2 s), Frost (Einfrieren 3 s) und kleine fliegende Drachen. Konzentriert das Feuer, um ihn beim Aufladen zu unterbrechen. Er hat zwei Leben: Nach dem Fall wird er zu einem schwarzen Drachen mit verdreifachten Werten. Das ist das letzte Level!",
+  "焚天巨龙吸足了寒气——寒冰要来了！": "Der Himmelsbrand-Drache saugt die Kälte ein: Frost naht!",
+  "焚天巨龙压低了身体——冲撞要来了！": "Der Himmelsbrand-Drache duckt sich: ein Rammstoß naht!",
+  "焚天巨龙召来了雷云——雷击要来了！": "Der Himmelsbrand-Drache ruft Gewitterwolken: Blitze nahen!",
 });

@@ -809,12 +809,15 @@
     }
 
     // 英雄被震晕 / 电麻；"避雷针"补给免疫（设计书 33.4）
-    stunHero(duration) {
+    // kind：'stun' 眩晕（默认）、'shock' 电麻、'freeze' 冻结——只影响画面（设计书 119）
+    stunHero(duration, kind) {
       if (this.mods.stunImmune) {
         this.emit('stunBlocked', {});
         return;
       }
+      if (this.time + duration >= this.heroStunUntil) this.heroStunKind = kind || 'stun';
       this.heroStunUntil = Math.max(this.heroStunUntil, this.time + duration);
+      this.emit('heroStun', { kind: kind || 'stun', duration });
     }
 
     // 城墙持续伤害（毒液、毒雾）。refresh=true 时同来源只刷新时间不叠加

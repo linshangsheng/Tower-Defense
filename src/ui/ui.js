@@ -1132,8 +1132,8 @@
         right = h(
           'div',
           { class: 'btn-col' },
-          buyBtn(P.weaponUpgradeCost(s, id), () => P.upgradeWeapon(s, id), '升级'),
-          bulkRow('weapon', id),
+          buyBtn(P.weaponUpgradeCost(s, id), () => P.upgradeWeapon(s, id), P.weaponUpgradeCost(s, id) ? '升级' : '已满级'),
+          P.weaponUpgradeCost(s, id) ? bulkRow('weapon', id) : null,
           w.ascend && !ws.asc
             ? P.canAscend(s, id)
               ? buyBtn(D.weaponAscend.cost, () => P.ascendWeapon(s, id), '进阶')

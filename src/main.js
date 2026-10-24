@@ -74,6 +74,7 @@
     battle.on('dragonFire', () => TD.audio.play('meteorHit'));
     battle.on('dragonShock', () => TD.audio.play('bigWall'));
     battle.on('dragonBolt', () => TD.audio.play('bolt'));
+    battle.on('dragonIce', () => TD.audio.play('frost'));
     battle.on('bossReturn', () => TD.audio.play('warn'));
     // 焚天巨龙第一条命倒下：暂停战斗，讲一段剧情；剧情结束（或战斗里等满 rebirthDelay 秒）后化作黑色巨龙（设计书 115）
     battle.on('dragonFall', () => {

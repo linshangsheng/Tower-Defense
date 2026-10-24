@@ -582,6 +582,7 @@
       ai.mode = 'fallen';
       ai.skill = null;
       ai.boltsLeft = 0;
+      ai.animTimer = 0;
       ai.rebirthTimer = D.abyssDragon.rebirthDelay;
       ai.rebirthMax = D.abyssDragon.rebirthDelay;
       this.emit('dragonFall', { m });
@@ -596,14 +597,14 @@
       m.hp = m.maxHp;
       m.dps *= G.rebirthMult;
       m.armorMult = (m.armorMult || 1) * G.rebirthMult; // 护甲实际封顶 120，和别的怪一样
-      Object.assign(ai, { form: 2, fallen: false, phase: 1, mode: 'walk', holdX: G.holdX, skill: null, last: null, idx: 0, skillTimer: G.skillFirst, summonTimer: 6, chargeDmg: 0, boltsLeft: 0 });
+      Object.assign(ai, { form: 2, fallen: false, animTimer: 0, phase: 1, mode: 'walk', holdX: G.holdX, skill: null, last: null, idx: 0, skillTimer: G.skillFirst, summonTimer: 6, chargeDmg: 0, boltsLeft: 0 });
       this.emit('dragonRebirth', { m });
       this.emit('bossPhase', { m, phase: 1, text: '焚天巨龙倒下了……黑色的巨龙从灰烬里站了起来！' });
     },
     updateAbyssDragon(m, dt) {
       const G = D.abyssDragon;
       const ai = m.ai;
-      if (ai.fireTimer > 0) ai.fireTimer -= dt; // 喷火的画面（素材里带火焰的姿势）持续多久
+      if (ai.animTimer > 0) ai.animTimer -= dt; // 技能释放时画面里的姿势（喷火 / 冲撞 / 雷击 / 寒冰）持续多久
       if (ai.fallen) {
         ai.rebirthTimer -= dt;
         if (ai.rebirthTimer <= 0) this.dragonRebirth(m);
@@ -636,7 +637,6 @@
           const lane = this.rng.int(this.lanes);
           this.emit('dragonBolt', { m, x: C.wallX + 10 + this.rng() * 90, y: this.laneY(lane), lane });
           this.hitWall(this.dragonHit(m, G.bolt.damage), m, false, 'bolt', m.type);
-          if (this.rng() < G.bolt.heroStunChance) this.stunHero(G.bolt.heroStun);
         }
       }
       // 招来飞行的小龙（和熔岩傀儡）
@@ -658,9 +658,9 @@
       if (ai.mode !== 'hold' && ai.mode !== 'walk') return;
       ai.skillTimer -= dt;
       if (ai.skillTimer > 0) return;
-      // 选技能：第一阶段按龙息 → 冲击 → 雷暴的顺序，之后随机（不连着用同一个）
-      const list = ['fire', 'shock', 'bolt'];
-      let skill = list[ai.idx % 3];
+      // 选技能：第一阶段按龙息 → 冲撞 → 雷击 → 寒冰的顺序，之后随机（不连着用同一个）
+      const list = ['fire', 'shock', 'bolt', 'ice'];
+      let skill = list[ai.idx % list.length];
       if (ai.phase > 1) {
         const pool = list.filter((k) => k !== ai.last);
         skill = pool[this.rng.int(pool.length)];
@@ -683,19 +683,34 @@
       const enraged = ai.phase === 3;
       if (skill === 'fire') {
         const k = enraged ? G.fire.enrage : 1;
-        ai.fireTimer = G.fire.anim;
+        ai.anim = 'fire';
+        ai.animTimer = G.fire.anim;
         this.emit('dragonFire', { m, lane: ai.lane, twin: enraged });
         this.hitWall(this.dragonHit(m, G.fire.damage * k), m, true, 'fire', m.type);
         this.addWallDot(G.fire.dot * k * this.wall.max * (m.ai.form === 2 ? G.rebirthMult : 1), G.fire.dotTime, 'dragonFire', true, m.type);
         this.stunHero(0.4);
       } else if (skill === 'shock') {
+        // 冲撞：巨龙整个扑向城墙（画面里有一段冲刺）
+        ai.anim = 'ram';
+        ai.animTimer = G.shock.anim;
         this.emit('dragonShock', { m });
         this.hitWall(this.dragonHit(m, G.shock.damage), m, true, 'shock', m.type);
         this.stunHero(G.shock.stun);
-      } else {
+      } else if (skill === 'bolt') {
+        // 雷击：一串落雷劈向城墙，主角被电麻 G.bolt.heroStun 秒
+        ai.anim = 'bolt';
+        ai.animTimer = G.bolt.anim;
         ai.boltsLeft = G.bolt.count[ai.phase - 1];
         ai.boltTimer = 0;
         this.emit('dragonBoltStart', { m });
+        this.stunHero(G.bolt.heroStun, 'shock');
+      } else {
+        // 寒冰：寒气喷向城墙，主角被冻住 G.ice.freeze 秒
+        ai.anim = 'ice';
+        ai.animTimer = G.ice.anim;
+        this.emit('dragonIce', { m });
+        this.hitWall(this.dragonHit(m, G.ice.damage), m, true, 'ice', m.type);
+        this.stunHero(G.ice.freeze, 'freeze');
       }
       ai.last = skill;
       ai.skill = null;

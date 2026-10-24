@@ -193,20 +193,22 @@
 
   TD.data.weaponAscend = { minLv: 5, cost: { silver: 8 } };
   // 武器升级的货币按品质固定（v1.15）：绿 铜币；蓝、紫 银币；红 金币；金 钻石。
-  // 第 lv 级 → lv+1 级要 ceil(base × 1.3^lv) 个该货币（unit = 它值多少铜币，第 10 级以后按 extraCost 往上涨）
-  // 前 10 级合计：蓝 约 45 银、紫 约 55 银（和原来的铜币价值相当）、红 约 47 金币、金 47 钻
+  // 第 lv 级 → lv+1 级要 base × 2^lv 个该货币（v1.18：下一级是上一级的 2 倍；满级 = weaponUpgrade.max，不能再升）
+  // 前 10 级合计：绿 5115 铜、蓝 1023 银、紫 2046 银、红 1023 金币、金 1023 钻
   TD.data.weaponUpgradeCurrency = {
-    2: { cur: 'silver', base: 0.96, unit: 100 },
-    3: { cur: 'silver', base: 1.2, unit: 100 },
-    4: { cur: 'gold', base: 1, unit: 1e4 },
-    5: { cur: 'diamond', base: 1, unit: 1e6 },
+    2: { cur: 'silver', base: 1 },
+    3: { cur: 'silver', base: 2 },
+    4: { cur: 'gold', base: 1 },
+    5: { cur: 'diamond', base: 1 },
   };
 
   TD.data.weaponUpgrade = {
     perLevel: 0.08,
     beyond: 0.04, // 第 10 级以后每级只加 4%（设计书 76.2）
     max: 10,
-    cost: (lv) => TD.util.round5(80 * Math.pow(1.3, lv)),
+    // 武器升级到 max 级就满了，不能再升（v1.18，之前第 10 级以后还能一直升到 999999 级，已经升过 10 级的存档保持原样、只是不能再升）
+    // 每升一级，用的资源是上一级的 2 倍：第 lv 级 → lv+1 级要 5 × 2^lv 铜币（绿色），其他品质见 weaponUpgradeCurrency
+    cost: (lv) => 5 * Math.pow(2, lv),
   };
 
   TD.data.activeSkills = {

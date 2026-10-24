@@ -2075,4 +2075,9 @@ TD.i18n.register("pt-BR", {
   "那我们就把你也守住！Lyra，准备！": "Então vamos proteger você também! Lyra, prepare-se!",
   "它在吸收裂缝里的墨水！小心，它在变——": "Ele está absorvendo a Tinta da fenda! Cuidado, ele está mudando...",
   "我守了太久，久到忘了自己是谁。现在，我只剩下黑暗。": "Vigiei por tanto tempo que esqueci quem eu era. Agora só me resta a escuridão.",
+  "第二十章 Boss。深渊里沉睡的西方巨龙：体型是普通 Boss 的五倍，血量极厚。会喷火、冲撞、雷击（主角被电麻 2 秒）、寒冰（主角被冻住 3 秒），还会招来飞行的小龙——它蓄力时集中火力可以打断。它有两条命：第一条命倒下后，会化作黑色巨龙，各种属性再翻 3 倍！": "Chefe do capítulo 20. Um dragão ocidental que dormia no abismo: cinco vezes maior que um chefe comum, com uma quantidade enorme de vida. Cospe fogo, investe contra a muralha, solta raios (o herói fica paralisado por 2 s), sopra gelo (o herói fica congelado por 3 s) e chama pequenos dragões voadores. Concentre o fogo para interrompê-lo enquanto ele carrega! Ele tem duas vidas: depois que a primeira cai, vira um dragão negro com todos os atributos triplicados!",
+  "焚天巨龙盘踞在深渊的尽头：喷火、冲撞、雷击（电麻 2 秒）、寒冰（冻住 3 秒），还会招来飞行的小龙。它蓄力时集中火力可以打断。它有两条命：倒下一次后会化作黑色巨龙，属性再翻 3 倍——这是最后一关！": "O Dragão Queima-Céu se enrola no fim do abismo: sopro de fogo, investidas, raios (paralisia 2 s), gelo (congelamento 3 s) e pequenos dragões voadores. Concentre o fogo para interrompê-lo enquanto ele carrega. Ele tem duas vidas: ao cair, vira um dragão negro com todos os atributos triplicados. Esta é a fase final!",
+  "焚天巨龙吸足了寒气——寒冰要来了！": "O Dragão Queima-Céu aspira o frio: vem gelo por aí!",
+  "焚天巨龙压低了身体——冲撞要来了！": "O Dragão Queima-Céu abaixa o corpo: vem uma investida!",
+  "焚天巨龙召来了雷云——雷击要来了！": "O Dragão Queima-Céu invoca nuvens de tempestade: vêm raios!",
 });

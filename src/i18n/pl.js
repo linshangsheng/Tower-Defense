@@ -2075,4 +2075,9 @@ TD.i18n.register("pl", {
   "那我们就把你也守住！Lyra，准备！": "To ochronimy i ciebie! Lyra, szykuj się!",
   "它在吸收裂缝里的墨水！小心，它在变——": "Wchłania Atrament ze szczeliny! Uważaj, zmienia się...",
   "我守了太久，久到忘了自己是谁。现在，我只剩下黑暗。": "Strzegłem tak długo, że zapomniałem, kim jestem. Teraz zostaje mi tylko ciemność.",
+  "第二十章 Boss。深渊里沉睡的西方巨龙：体型是普通 Boss 的五倍，血量极厚。会喷火、冲撞、雷击（主角被电麻 2 秒）、寒冰（主角被冻住 3 秒），还会招来飞行的小龙——它蓄力时集中火力可以打断。它有两条命：第一条命倒下后，会化作黑色巨龙，各种属性再翻 3 倍！": "Boss 20. rozdziału. Zachodni smok śpiący w otchłani: pięć razy większy od zwykłego bossa i z ogromną ilością zdrowia. Zieje ogniem, taranuje mur, razi piorunami (bohater jest sparaliżowany na 2 s), dmucha mrozem (bohater jest zamrożony na 3 s) i wzywa małe latające smoki. Skup ogień, aby przerwać go podczas ładowania! Ma dwa życia: gdy pierwsze upadnie, zmienia się w czarnego smoka z potrojonymi statystykami!",
+  "焚天巨龙盘踞在深渊的尽头：喷火、冲撞、雷击（电麻 2 秒）、寒冰（冻住 3 秒），还会招来飞行的小龙。它蓄力时集中火力可以打断。它有两条命：倒下一次后会化作黑色巨龙，属性再翻 3 倍——这是最后一关！": "Smok Niebospalacz zwija się na końcu otchłani: ognisty oddech, taranowanie, pioruny (paraliż 2 s), mróz (zamrożenie 3 s) i małe latające smoki. Skup ogień, aby przerwać go podczas ładowania. Ma dwa życia: po upadku zmienia się w czarnego smoka z potrojonymi statystykami. To ostatni poziom!",
+  "焚天巨龙吸足了寒气——寒冰要来了！": "Smok Niebospalacz wciąga chłód: nadchodzi mróz!",
+  "焚天巨龙压低了身体——冲撞要来了！": "Smok Niebospalacz przykuca: nadchodzi taranowanie!",
+  "焚天巨龙召来了雷云——雷击要来了！": "Smok Niebospalacz przywołuje burzowe chmury: nadchodzą pioruny!",
 });

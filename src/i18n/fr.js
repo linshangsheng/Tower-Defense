@@ -2075,4 +2075,9 @@ TD.i18n.register("fr", {
   "那我们就把你也守住！Lyra，准备！": "Alors nous te protégerons aussi ! Lyra, prépare-toi !",
   "它在吸收裂缝里的墨水！小心，它在变——": "Il absorbe l’Encre de la faille ! Attention, il change...",
   "我守了太久，久到忘了自己是谁。现在，我只剩下黑暗。": "J'ai monté la garde si longtemps que j'ai oublié qui j'étais. Il ne me reste plus que les ténèbres.",
+  "第二十章 Boss。深渊里沉睡的西方巨龙：体型是普通 Boss 的五倍，血量极厚。会喷火、冲撞、雷击（主角被电麻 2 秒）、寒冰（主角被冻住 3 秒），还会招来飞行的小龙——它蓄力时集中火力可以打断。它有两条命：第一条命倒下后，会化作黑色巨龙，各种属性再翻 3 倍！": "Boss du chapitre 20. Un dragon occidental endormi dans l'abîme : cinq fois plus grand qu'un boss normal, avec énormément de points de vie. Il crache du feu, charge la muraille, frappe de la foudre (le héros est paralysé 2 s), souffle du givre (le héros est gelé 3 s) et appelle de petits dragons volants. Concentrez vos tirs pour l'interrompre pendant qu'il charge ! Il a deux vies : quand la première tombe, il devient un dragon noir aux statistiques triplées !",
+  "焚天巨龙盘踞在深渊的尽头：喷火、冲撞、雷击（电麻 2 秒）、寒冰（冻住 3 秒），还会招来飞行的小龙。它蓄力时集中火力可以打断。它有两条命：倒下一次后会化作黑色巨龙，属性再翻 3 倍——这是最后一关！": "Le Dragon Brûle-Ciel est lové au bout de l'abîme : souffle de feu, charges, foudre (paralysie 2 s), givre (gel 3 s) et petits dragons volants. Concentrez vos tirs pour l'interrompre pendant qu'il charge. Il a deux vies : une fois tombé, il devient un dragon noir aux statistiques triplées. C'est le dernier niveau !",
+  "焚天巨龙吸足了寒气——寒冰要来了！": "Le Dragon Brûle-Ciel aspire le froid : le givre arrive !",
+  "焚天巨龙压低了身体——冲撞要来了！": "Le Dragon Brûle-Ciel se ramasse : une charge arrive !",
+  "焚天巨龙召来了雷云——雷击要来了！": "Le Dragon Brûle-Ciel invoque des nuages d’orage : la foudre arrive !",
 });

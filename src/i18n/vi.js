@@ -2075,4 +2075,9 @@ TD.i18n.register("vi", {
   "那我们就把你也守住！Lyra，准备！": "Vậy bọn mình cũng sẽ bảo vệ cậu! Lyra, chuẩn bị đi!",
   "它在吸收裂缝里的墨水！小心，它在变——": "Nó đang hút Mực từ vết nứt! Cẩn thận, nó đang biến đổi...",
   "我守了太久，久到忘了自己是谁。现在，我只剩下黑暗。": "Tôi canh giữ lâu đến mức quên mất mình là ai. Giờ chỉ còn lại bóng tối.",
+  "第二十章 Boss。深渊里沉睡的西方巨龙：体型是普通 Boss 的五倍，血量极厚。会喷火、冲撞、雷击（主角被电麻 2 秒）、寒冰（主角被冻住 3 秒），还会招来飞行的小龙——它蓄力时集中火力可以打断。它有两条命：第一条命倒下后，会化作黑色巨龙，各种属性再翻 3 倍！": "Boss chương 20. Con rồng phương Tây ngủ say trong vực thẳm: to gấp năm lần boss thường, máu cực dày. Nó phun lửa, húc vào tường, giáng sét (anh hùng bị tê liệt 2 giây), thổi băng (anh hùng bị đóng băng 3 giây) và gọi những con rồng nhỏ biết bay. Tập trung hỏa lực để ngắt nó khi đang tích lực! Nó có hai mạng: sau khi mạng thứ nhất ngã xuống, nó hóa thành rồng đen với mọi chỉ số tăng gấp ba!",
+  "焚天巨龙盘踞在深渊的尽头：喷火、冲撞、雷击（电麻 2 秒）、寒冰（冻住 3 秒），还会招来飞行的小龙。它蓄力时集中火力可以打断。它有两条命：倒下一次后会化作黑色巨龙，属性再翻 3 倍——这是最后一关！": "Rồng Thiêu Trời cuộn mình ở tận cùng vực thẳm: hơi thở lửa, húc, sét (tê liệt 2 giây), băng (đóng băng 3 giây) và những con rồng nhỏ biết bay. Tập trung hỏa lực để ngắt nó khi đang tích lực. Nó có hai mạng: ngã một lần sẽ hóa thành rồng đen với mọi chỉ số gấp ba. Đây là màn cuối cùng!",
+  "焚天巨龙吸足了寒气——寒冰要来了！": "Rồng Thiêu Trời hít vào hơi lạnh: băng sắp tới!",
+  "焚天巨龙压低了身体——冲撞要来了！": "Rồng Thiêu Trời hạ thấp người: cú húc sắp tới!",
+  "焚天巨龙召来了雷云——雷击要来了！": "Rồng Thiêu Trời triệu hồi mây bão: sét sắp tới!",
 });

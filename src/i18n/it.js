@@ -2075,4 +2075,9 @@ TD.i18n.register("it", {
   "那我们就把你也守住！Lyra，准备！": "Allora proteggeremo anche te! Lyra, preparati!",
   "它在吸收裂缝里的墨水！小心，它在变——": "Sta assorbendo l’Inchiostro dalla frattura! Attenzione, sta cambiando...",
   "我守了太久，久到忘了自己是谁。现在，我只剩下黑暗。": "Ho fatto la guardia così a lungo da dimenticare chi ero. Ora mi resta solo l’oscurità.",
+  "第二十章 Boss。深渊里沉睡的西方巨龙：体型是普通 Boss 的五倍，血量极厚。会喷火、冲撞、雷击（主角被电麻 2 秒）、寒冰（主角被冻住 3 秒），还会招来飞行的小龙——它蓄力时集中火力可以打断。它有两条命：第一条命倒下后，会化作黑色巨龙，各种属性再翻 3 倍！": "Boss del capitolo 20. Un drago occidentale che dormiva nell'abisso: cinque volte più grande di un boss normale e con una quantità enorme di vita. Sputa fuoco, sfonda le mura, scaglia fulmini (l'eroe resta paralizzato 2 s), soffia gelo (l'eroe resta congelato 3 s) e chiama piccoli draghi volanti. Concentra il fuoco per interromperlo mentre si carica! Ha due vite: quando la prima cade, diventa un drago nero con tutte le statistiche triplicate!",
+  "焚天巨龙盘踞在深渊的尽头：喷火、冲撞、雷击（电麻 2 秒）、寒冰（冻住 3 秒），还会招来飞行的小龙。它蓄力时集中火力可以打断。它有两条命：倒下一次后会化作黑色巨龙，属性再翻 3 倍——这是最后一关！": "Il Drago Brucia-Cielo sta attorcigliato in fondo all'abisso: soffio di fuoco, cariche, fulmini (paralisi 2 s), gelo (congelamento 3 s) e piccoli draghi volanti. Concentra il fuoco per interromperlo mentre si carica. Ha due vite: una volta caduto, diventa un drago nero con tutte le statistiche triplicate. Questo è l'ultimo livello!",
+  "焚天巨龙吸足了寒气——寒冰要来了！": "Il Drago Brucia-Cielo aspira il freddo: sta arrivando il gelo!",
+  "焚天巨龙压低了身体——冲撞要来了！": "Il Drago Brucia-Cielo si abbassa: sta arrivando una carica!",
+  "焚天巨龙召来了雷云——雷击要来了！": "Il Drago Brucia-Cielo evoca nubi temporalesche: stanno arrivando i fulmini!",
 });

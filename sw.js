@@ -1,6 +1,6 @@
 // Service Worker（设计书 43）：首次打开时缓存全部文件，之后缓存优先，断网也能玩
 // 更新游戏时改 VERSION，旧缓存会在新版本启动时删除
-const VERSION = 'scyx-v1.17';
+const VERSION = 'scyx-v1.18';
 const CORE = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png'];
 
 self.addEventListener('install', (event) => {
@@ -16,7 +16,7 @@ self.addEventListener('install', (event) => {
       const langs = ['en', 'es', 'pt-BR', 'pt-PT', 'ru', 'ja', 'ko', 'de', 'fr', 'zh-Hant', 'tr', 'pl', 'it', 'id', 'vi', 'th'];
       await Promise.all(langs.map((l) => cache.add(`./src/i18n/${l}.js`).catch(() => {})));
       // 巨龙的美术素材（只在第 200 关用到，缺哪张都不影响安装：没缓存到就退回矢量画法）
-      const dragon = ['walk', 'fire1', 'fire2', 'fire3'].flatMap((n) => [n, n + '_b']);
+      const dragon = ['walk', 'fire1', 'fire2', 'fire3', 'ram', 'bolt1', 'bolt2', 'ice'].flatMap((n) => [n, n + '_b']);
       await Promise.all(dragon.map((n) => cache.add(`./assets/dragon/${n}.webp`).catch(() => {})));
       await self.skipWaiting();
     })()

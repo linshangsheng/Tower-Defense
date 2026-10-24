@@ -2442,20 +2442,30 @@ test('武器：25 把，每个品质 5 把，价格逐档上涨，升级费用�
   assert.deepStrictEqual([1, 2, 3, 4, 5].map((r) => D.weaponRarity[r].name), ['绿', '蓝', '紫', '红', '金']);
   const s = P.newSave();
   for (const id of ['bow', 'frostBow', 'meteorCannon', 'genesisBow']) s.weapons[id] = { owned: true, lv: 3, asc: false };
-  // 升级货币按品质：绿 铜币，蓝 / 紫 银币，红 金币，金 钻石；同色之间也是越高档越贵
+  // 升级货币按品质：绿 铜币，蓝 / 紫 银币，红 金币，金 钻石；下一级用的资源是上一级的 2 倍；满级（10 级）后不能再升
   const curOf = { 1: 'copper', 2: 'silver', 3: 'silver', 4: 'gold', 5: 'diamond' };
+  const MAX = D.weaponUpgrade.max;
+  assert.strictEqual(MAX, 10);
   for (const id of ids) {
     s.weapons[id] = { owned: true, lv: 3, asc: false };
-    const cost = P.weaponUpgradeCost(s, id);
-    assert.deepStrictEqual(Object.keys(cost), [curOf[D.weapons[id].rarity]], id + ' 的升级货币');
-    for (const lv of [0, 5, 9, 10, 50, 100]) assert.deepStrictEqual(Object.keys(P.weaponUpgradeCostAt(id, lv)), [curOf[D.weapons[id].rarity]], id + ' 第 ' + lv + ' 级的升级货币');
+    const cur = curOf[D.weapons[id].rarity];
+    assert.deepStrictEqual(Object.keys(P.weaponUpgradeCost(s, id)), [cur], id + ' 的升级货币');
+    for (let lv = 0; lv < MAX; lv++) {
+      const c = P.weaponUpgradeCostAt(id, lv);
+      assert.deepStrictEqual(Object.keys(c), [cur], id + ' 第 ' + lv + ' 级的升级货币');
+      if (lv > 0) assert.strictEqual(c[cur], 2 * P.weaponUpgradeCostAt(id, lv - 1)[cur], `${id} 第 ${lv} 级是上一级的 2 倍`);
+    }
+    for (const lv of [MAX, MAX + 1, 50, 999999]) assert.strictEqual(P.weaponUpgradeCostAt(id, lv), null, id + ' 满级后不能再升');
+    s.weapons[id].lv = MAX;
+    assert.strictEqual(P.weaponUpgradeCost(s, id), null);
+    P.maxResources(s);
+    assert.ok(!P.upgradeWeapon(s, id) && s.weapons[id].lv === MAX, id + ' 满级后升级失败');
   }
   const v = (id, lv) => P.costValue(P.weaponUpgradeCostAt(id, lv));
-  for (const lv of [0, 5, 9, 50]) assert.ok(v('bow', lv) < v('frostBow', lv) && v('frostBow', lv) < v('meteorCannon', lv) && v('meteorCannon', lv) < v('genesisBow', lv), '品质越高升级越贵 @' + lv);
-  for (const id of ids.filter((x) => D.weapons[x].rarity === 5)) assert.ok(P.weaponUpgradeCostAt(id, 0).diamond >= 1 && P.weaponUpgradeCostAt(id, 9).diamond > P.weaponUpgradeCostAt(id, 0).diamond && P.weaponUpgradeCostAt(id, 100).diamond > P.weaponUpgradeCostAt(id, 20).diamond);
-  const total10 = (id) => Array.from({ length: 10 }, (_, l) => Object.values(P.weaponUpgradeCostAt(id, l))[0]).reduce((a, b) => a + b, 0);
-  assert.strictEqual(total10('genesisBow'), 47, '金色武器前 10 级共 47 钻');
-  assert.ok(total10('meteorCannon') > 30 && total10('meteorCannon') < 80, '红色武器前 10 级约 47 金币');
+  for (const lv of [0, 5, 9]) assert.ok(v('bow', lv) < v('frostBow', lv) && v('frostBow', lv) < v('meteorCannon', lv) && v('meteorCannon', lv) < v('genesisBow', lv), '品质越高升级越贵 @' + lv);
+  const total10 = (id) => Array.from({ length: MAX }, (_, l) => Object.values(P.weaponUpgradeCostAt(id, l))[0]).reduce((a, b) => a + b, 0);
+  const purple = ids.find((x) => D.weapons[x].rarity === 3);
+  assert.deepStrictEqual([total10('bow'), total10('frostBow'), total10(purple), total10('meteorCannon'), total10('genesisBow')], [5115, 1023, 2046, 1023, 1023], '前 10 级合计');
   for (const id of ids) if (D.weapons[id].look) assert.ok(['bow', 'crossbow', 'staff', 'orb', 'cannon', 'boomerang'].includes(D.weapons[id].look.base), id);
 });
 
@@ -3194,8 +3204,8 @@ test('批量升级：+10 / +100 / 最大；钱不够就升到买得起为止，d
   P.maxResources(rich);
   rich.activeOwned.thunder = true;
   rich.skillLv.thunder = 3;
-  assert.strictEqual(P.bulkUpgrade(rich, 'weapon', 'bow', 25).count, 25);
-  assert.strictEqual(rich.weapons.bow.lv, 25);
+  assert.strictEqual(P.bulkUpgrade(rich, 'weapon', 'bow', 25).count, 10, '武器最多升到 10 级');
+  assert.strictEqual(rich.weapons.bow.lv, 10);
   assert.strictEqual(P.bulkUpgrade(rich, 'wall', 'level', 40).count, 40);
   assert.strictEqual(rich.wall.level, 41);
   assert.strictEqual(P.bulkUpgrade(rich, 'skill', 'thunder', 10).count, 10);
@@ -4554,7 +4564,7 @@ test('焚天巨龙：体型至少是其他 Boss 的 5 倍，血量最厚；停�
   b.wall.max = b.wall.hp = 1e15;
   const m = b.spawnMonster('abyssDragon', 2, 1100);
   const seen = new Set();
-  for (const ev of ['dragonFire', 'dragonShock', 'dragonBoltStart', 'dragonBolt', 'bossSummon', 'bossPhase']) b.on(ev, () => seen.add(ev));
+  for (const ev of ['dragonFire', 'dragonShock', 'dragonBoltStart', 'dragonBolt', 'dragonIce', 'bossSummon', 'bossPhase']) b.on(ev, () => seen.add(ev));
   const hp0 = b.wall.hp;
   m.hp = m.maxHp; // 不让玩家打它
   let worst = 1;
@@ -4562,12 +4572,12 @@ test('焚天巨龙：体型至少是其他 Boss 的 5 倍，血量最厚；停�
     worst = Math.min(worst, b.wall.hp / b.wall.max);
     b.wall.hp = b.wall.max; // 技能按城墙最大血量的比例打，每帧补满，只看单次最大伤害
   };
-  for (let i = 0; i < 60 * 40; i++) {
+  for (let i = 0; i < 60 * 75; i++) {
     b.step(1 / 60);
     topUp();
   }
   assert.ok(Math.abs(m.x - D_dragon().holdX) < 2, '停在 holdX 附近');
-  for (const ev of ['dragonFire', 'dragonShock', 'dragonBoltStart', 'dragonBolt', 'bossSummon']) assert.ok(seen.has(ev), '放出过 ' + ev);
+  for (const ev of ['dragonFire', 'dragonShock', 'dragonBoltStart', 'dragonBolt', 'dragonIce', 'bossSummon']) assert.ok(seen.has(ev), '放出过 ' + ev);
   assert.ok(worst < 0.9, '技能伤到了城墙：单次最多打掉 ' + Math.round((1 - worst) * 100) + '%');
   void hp0;
   // 第二、三阶段
@@ -4716,4 +4726,43 @@ test('巨龙美术素材：8 张图都在（红 / 黑 × 行走 + 3 张喷火）
   const m = fresh.dragonMouthAt(false);
   const f = fresh.dragonMouthAt(true);
   assert.ok(m.x < f.x && m.x < -1 && f.x < -0.5, '行走时头伸得更靠左，喷火姿势头缩回来一点');
+});
+
+// ---------- v1.18：寒冰冻住英雄 3 秒、雷击电麻 2 秒（设计书 119） ----------
+test('巨龙的寒冰和雷击：寒冰把英雄冻住 3 秒，雷击把英雄电麻 2 秒；避雷针（免疫眩晕）挡得住', () => {
+  const G = TD.data.abyssDragon;
+  assert.strictEqual(G.ice.freeze, 3);
+  assert.strictEqual(G.bolt.heroStun, 2);
+  const mk = () => {
+    const b = newBattle(200);
+    b.wall.max = b.wall.hp = 1e15;
+    const m = b.spawnMonster('abyssDragon', 2, 800);
+    return { b, m };
+  };
+  let { b, m } = mk();
+  const events = [];
+  b.on('heroStun', (e) => events.push(e));
+  m.ai.skill = 'ice';
+  b.castDragonSkill(m);
+  assert.ok(Math.abs(b.heroStunUntil - b.time - 3) < 1e-9 && b.heroStunKind === 'freeze', '冻住 3 秒');
+  assert.ok(b.wall.hp < b.wall.max, '寒冰也打城墙');
+  assert.deepStrictEqual(events.map((e) => [e.kind, e.duration]), [['freeze', 3]]);
+  ({ b, m } = mk());
+  m.ai.skill = 'bolt';
+  b.castDragonSkill(m);
+  assert.ok(Math.abs(b.heroStunUntil - b.time - 2) < 1e-9 && b.heroStunKind === 'shock', '电麻 2 秒');
+  // 避雷针：免疫
+  ({ b, m } = mk());
+  b.mods.stunImmune = 1;
+  m.ai.skill = 'ice';
+  b.castDragonSkill(m);
+  assert.strictEqual(b.heroStunUntil, 0, '免疫眩晕时冻不住');
+  // 英雄被控制时不能射击
+  ({ b, m } = mk());
+  m.ai.skill = 'ice';
+  b.castDragonSkill(m);
+  assert.ok(b.time < b.heroStunUntil);
+  // 四个技能的素材姿势都配好了
+  const fs = require('fs');
+  for (const n of ['ram', 'bolt1', 'bolt2', 'ice']) for (const sfx of ['', '_b']) assert.ok(fs.existsSync(require('path').join(__dirname, '..', 'assets', 'dragon', n + sfx + '.webp')), n + sfx);
 });

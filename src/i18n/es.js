@@ -2075,4 +2075,9 @@ TD.i18n.register("es", {
   "那我们就把你也守住！Lyra，准备！": "¡Entonces también te protegeremos a ti! ¡Lyra, prepárate!",
   "它在吸收裂缝里的墨水！小心，它在变——": "¡Está absorbiendo la Tinta de la grieta! Cuidado, está cambiando...",
   "我守了太久，久到忘了自己是谁。现在，我只剩下黑暗。": "Vigilé tanto tiempo que olvidé quién era. Ahora solo me queda la oscuridad.",
+  "第二十章 Boss。深渊里沉睡的西方巨龙：体型是普通 Boss 的五倍，血量极厚。会喷火、冲撞、雷击（主角被电麻 2 秒）、寒冰（主角被冻住 3 秒），还会招来飞行的小龙——它蓄力时集中火力可以打断。它有两条命：第一条命倒下后，会化作黑色巨龙，各种属性再翻 3 倍！": "Jefe del capítulo 20. Un dragón occidental que dormía en el abismo: cinco veces más grande que un jefe normal y con una enorme cantidad de vida. Escupe fuego, embiste la muralla, lanza rayos (el héroe queda paralizado 2 s), sopla escarcha (el héroe queda congelado 3 s) e invoca pequeños dragones voladores. ¡Concentra el fuego para interrumpirlo mientras se carga! Tiene dos vidas: al caer la primera, se convierte en un dragón negro con todos sus atributos triplicados.",
+  "焚天巨龙盘踞在深渊的尽头：喷火、冲撞、雷击（电麻 2 秒）、寒冰（冻住 3 秒），还会招来飞行的小龙。它蓄力时集中火力可以打断。它有两条命：倒下一次后会化作黑色巨龙，属性再翻 3 倍——这是最后一关！": "El Dragón Quemacielos se enrosca al final del abismo: aliento de fuego, embestidas, rayos (parálisis 2 s), escarcha (congelación 3 s) y pequeños dragones voladores. Concentra el fuego para interrumpirlo mientras se carga. Tiene dos vidas: al caer, se convierte en un dragón negro con todos sus atributos triplicados. ¡Es el último nivel!",
+  "焚天巨龙吸足了寒气——寒冰要来了！": "¡El Dragón Quemacielos inhala el frío: viene la escarcha!",
+  "焚天巨龙压低了身体——冲撞要来了！": "¡El Dragón Quemacielos baja el cuerpo: viene una embestida!",
+  "焚天巨龙召来了雷云——雷击要来了！": "¡El Dragón Quemacielos invoca nubes de tormenta: vienen los rayos!",
 });

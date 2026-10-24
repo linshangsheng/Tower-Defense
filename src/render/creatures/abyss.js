@@ -673,8 +673,13 @@
     fire1: { w: 1389, h: 690, cx: 455, cy: 340, mx: 816, my: 300 },
     fire2: { w: 1160, h: 518, cx: 414, cy: 247, mx: 716, my: 236 },
     fire3: { w: 1174, h: 756, cx: 424, cy: 392, mx: 770, my: 324 },
+    ram: { w: 1357, h: 661, cx: 767, cy: 351, mx: 1307, my: 533 },
+    bolt1: { w: 1207, h: 803, cx: 562, cy: 299, mx: 777, my: 359 },
+    bolt2: { w: 1184, h: 784, cx: 471, cy: 373, mx: 844, my: 462 },
+    ice: { w: 1184, h: 780, cx: 455, cy: 384, mx: 777, my: 402 },
   };
-  const FIRE_FRAMES = ['fire1', 'fire2', 'fire3', 'fire2'];
+  // 技能释放时（ai.anim / ai.animTimer）轮流用哪几张图
+  const ANIMS = { fire: ['fire1', 'fire2', 'fire3', 'fire2'], ram: ['ram'], bolt: ['bolt1', 'bolt2', 'bolt1', 'bolt2'], ice: ['ice'] };
   const imgs = {};
   let loadStarted = false;
   K.preloadDragon = function () {
@@ -697,9 +702,10 @@
     return [-0.25 * s - (px - P.cx) * f, -0.12 * s + (py - P.cy) * f];
   };
   // 嘴的位置（画法坐标，单位 s 的倍数）：行走姿势 / 喷火姿势——renderer 里放技能特效要用
-  K.dragonMouthAt = function (fire) {
-    const s = 1;
-    const [x, y] = toLocal(s, fire ? 'fire1' : 'walk', POSES[fire ? 'fire1' : 'walk'].mx, POSES[fire ? 'fire1' : 'walk'].my);
+  // kind：'walk'（默认，行走姿势）/ 'fire' / 'bolt' / 'ice'；也兼容旧的 true（= 'fire'）
+  K.dragonMouthAt = function (kind) {
+    const name = kind === true || kind === 'fire' ? 'fire1' : kind === 'bolt' ? 'bolt1' : kind === 'ice' ? 'ice' : 'walk';
+    const [x, y] = toLocal(1, name, POSES[name].mx, POSES[name].my);
     return { x, y };
   };
 
@@ -718,9 +724,17 @@
     const k = warn && ai.warnMax ? Math.min(1, Math.max(0, 1 - ai.warnTimer / ai.warnMax)) : 0;
     const phase = ai.phase || 1;
     const rage = phase >= 3;
-    const firing = (ai.fireTimer || 0) > 0 && !fallen;
+    const firing = (ai.animTimer || 0) > 0 && !!ANIMS[ai.anim] && !fallen;
     const f = unitScale(s);
-    const name = firing ? FIRE_FRAMES[Math.floor(t * 11) % FIRE_FRAMES.length] : 'walk';
+    const frames = firing ? ANIMS[ai.anim] : null;
+    const name = firing ? frames[Math.floor(t * 11) % frames.length] : 'walk';
+    // 冲撞：整条龙往城墙方向扑过去再退回来
+    let dash = 0;
+    if (firing && ai.anim === 'ram') {
+      const G = TD.data.abyssDragon;
+      const p = Math.min(1, Math.max(0, 1 - ai.animTimer / G.shock.anim));
+      dash = -Math.sin(Math.PI * p) * 0.8 * s;
+    }
     const P = POSES[name];
     const bob = fallen ? 0 : Math.sin(t * 1.5) * 0.014 * s;
     // 姿态：龙吼 / 雷暴抬头、龙息蓄力往后仰一点、倒下时头垂下去；转轴在脚下
@@ -733,7 +747,7 @@
       const Q = POSES[nm];
       ctx.save();
       ctx.globalAlpha *= alpha;
-      ctx.translate(-0.25 * s, -0.12 * s + bob + sag);
+      ctx.translate(-0.25 * s + dash, -0.12 * s + bob + sag);
       ctx.scale(-1, 1);
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = 'high';
@@ -744,7 +758,7 @@
     // 背光 + 地面影子
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
-    glow(ctx, 0.05 * s, -0.12 * s, s * 1.2, dark > 0.5 ? '#ff1a4a' : '#ff4a1a', 0.1 + (rage ? 0.08 : 0) + (firing ? 0.1 : 0));
+    glow(ctx, 0.05 * s, -0.12 * s, s * 1.2, firing && ai.anim === 'ice' ? '#4aa8ff' : firing && ai.anim === 'bolt' ? '#6a8aff' : dark > 0.5 ? '#ff1a4a' : '#ff4a1a', 0.1 + (rage ? 0.08 : 0) + (firing ? 0.1 : 0));
     ctx.restore();
     ctx.save();
     ctx.globalAlpha = 0.4;
@@ -753,7 +767,7 @@
 
     ctx.save();
     // 以脚下（图的底边中点）为转轴转一点
-    const pivotX = -0.25 * s;
+    const pivotX = -0.25 * s + dash;
     const pivotY = -0.12 * s + (P.h - P.cy) * f;
     ctx.translate(pivotX, pivotY);
     ctx.rotate(lean);
