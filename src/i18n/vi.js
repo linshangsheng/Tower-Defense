@@ -2061,4 +2061,6 @@ TD.i18n.register("vi", {
   "密码不对": "Sai mật khẩu",
   "输入密码开启测试模式：资源全部拉满，所有关卡都可以直接选。": "Nhập mật khẩu để bật chế độ thử nghiệm: tài nguyên đầy và chọn được mọi màn chơi.",
   "第 N 层所有怪物的属性（血量、攻城伤害、护甲）是第 1 层的 N 倍，第 9 层是第 1 层的 9 倍；城墙的血量接着上一层，不会恢复（只有修缮、补给卡、道具和技能能回血）。": "Ở tầng N, mọi quái có chỉ số gấp N lần tầng 1 (máu, sát thương lên tường, giáp): tầng 9 gấp 9 lần tầng 1. Máu tường giữ nguyên từ tầng trước và không hồi lại (chỉ sửa chữa, thẻ tiếp tế, vật phẩm và kỹ năng mới hồi được).",
+  "解锁成功": "Mở khóa thành công!",
+  "密码错误": "Sai mật khẩu",
 });

@@ -2061,4 +2061,6 @@ TD.i18n.register("en", {
   "密码不对": "Wrong password",
   "输入密码开启测试模式：资源全部拉满，所有关卡都可以直接选。": "Enter the password to turn on test mode: all resources maxed, every level selectable.",
   "第 N 层所有怪物的属性（血量、攻城伤害、护甲）是第 1 层的 N 倍，第 9 层是第 1 层的 9 倍；城墙的血量接着上一层，不会恢复（只有修缮、补给卡、道具和技能能回血）。": "On floor N, every monster has N times the stats of floor 1 (HP, wall damage, armor): floor 9 is 9× floor 1. Wall HP carries over from the previous floor and does not recover (only repairs, supply cards, items and skills can heal it).",
+  "解锁成功": "Unlocked!",
+  "密码错误": "Wrong password",
 });

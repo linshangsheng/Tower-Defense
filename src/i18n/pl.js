@@ -2061,4 +2061,6 @@ TD.i18n.register("pl", {
   "密码不对": "Błędne hasło",
   "输入密码开启测试模式：资源全部拉满，所有关卡都可以直接选。": "Wpisz hasło, aby włączyć tryb testowy: wszystkie zasoby na maksimum, wszystkie poziomy do wyboru.",
   "第 N 层所有怪物的属性（血量、攻城伤害、护甲）是第 1 层的 N 倍，第 9 层是第 1 层的 9 倍；城墙的血量接着上一层，不会恢复（只有修缮、补给卡、道具和技能能回血）。": "Na piętrze N wszystkie potwory mają N razy większe statystyki niż na piętrze 1 (zdrowie, obrażenia muru, pancerz): piętro 9 to 9 razy piętro 1. Zdrowie muru przechodzi z poprzedniego piętra i się nie regeneruje (leczą tylko naprawy, karty zaopatrzenia, przedmioty i umiejętności).",
+  "解锁成功": "Odblokowano!",
+  "密码错误": "Błędne hasło",
 });

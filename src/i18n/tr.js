@@ -2061,4 +2061,6 @@ TD.i18n.register("tr", {
   "密码不对": "Şifre yanlış",
   "输入密码开启测试模式：资源全部拉满，所有关卡都可以直接选。": "Test modunu açmak için şifreyi gir: tüm kaynaklar maksimumda, tüm seviyeler doğrudan seçilebilir.",
   "第 N 层所有怪物的属性（血量、攻城伤害、护甲）是第 1 层的 N 倍，第 9 层是第 1 层的 9 倍；城墙的血量接着上一层，不会恢复（只有修缮、补给卡、道具和技能能回血）。": "N. katta tüm canavarların özellikleri (can, surlara hasar, zırh) 1. katın N katıdır: 9. kat, 1. katın 9 katıdır. Surların canı bir önceki kattan devam eder ve yenilenmez (yalnızca onarım, ikmal kartları, eşyalar ve yetenekler iyileştirir).",
+  "解锁成功": "Kilit açıldı!",
+  "密码错误": "Şifre yanlış",
 });

@@ -2061,4 +2061,6 @@ TD.i18n.register("fr", {
   "密码不对": "Mot de passe incorrect",
   "输入密码开启测试模式：资源全部拉满，所有关卡都可以直接选。": "Entrez le mot de passe pour activer le mode test : ressources au maximum, tous les niveaux disponibles.",
   "第 N 层所有怪物的属性（血量、攻城伤害、护甲）是第 1 层的 N 倍，第 9 层是第 1 层的 9 倍；城墙的血量接着上一层，不会恢复（只有修缮、补给卡、道具和技能能回血）。": "À l'étage N, tous les monstres ont N fois les statistiques de l'étage 1 (vie, dégâts à la muraille, armure) : l'étage 9 vaut 9 fois l'étage 1. La vie de la muraille est reprise de l'étage précédent et ne se régénère pas (seuls les réparations, cartes de ravitaillement, objets et compétences soignent).",
+  "解锁成功": "Déverrouillé !",
+  "密码错误": "Mot de passe incorrect",
 });

@@ -2061,4 +2061,6 @@ TD.i18n.register("it", {
   "密码不对": "Password errata",
   "输入密码开启测试模式：资源全部拉满，所有关卡都可以直接选。": "Inserisci la password per attivare la modalità test: risorse al massimo e tutti i livelli selezionabili.",
   "第 N 层所有怪物的属性（血量、攻城伤害、护甲）是第 1 层的 N 倍，第 9 层是第 1 层的 9 倍；城墙的血量接着上一层，不会恢复（只有修缮、补给卡、道具和技能能回血）。": "Al piano N, tutti i mostri hanno N volte le statistiche del piano 1 (vita, danni alle mura, armatura): il piano 9 vale 9 volte il piano 1. La vita delle mura passa dal piano precedente e non si ripristina (curano solo riparazioni, carte rifornimento, oggetti e abilità).",
+  "解锁成功": "Sbloccato!",
+  "密码错误": "Password errata",
 });

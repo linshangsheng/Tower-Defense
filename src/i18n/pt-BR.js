@@ -2061,4 +2061,6 @@ TD.i18n.register("pt-BR", {
   "密码不对": "Senha incorreta",
   "输入密码开启测试模式：资源全部拉满，所有关卡都可以直接选。": "Digite a senha para ativar o modo de teste: recursos no máximo e todas as fases liberadas.",
   "第 N 层所有怪物的属性（血量、攻城伤害、护甲）是第 1 层的 N 倍，第 9 层是第 1 层的 9 倍；城墙的血量接着上一层，不会恢复（只有修缮、补给卡、道具和技能能回血）。": "No andar N, todos os monstros têm N vezes os atributos do andar 1 (vida, dano à muralha, armadura): o andar 9 é 9 vezes o andar 1. A vida da muralha vem do andar anterior e não se recupera (só com reparos, cartas de suprimento, itens e habilidades).",
+  "解锁成功": "Desbloqueado!",
+  "密码错误": "Senha incorreta",
 });

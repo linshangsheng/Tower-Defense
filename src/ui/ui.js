@@ -480,17 +480,17 @@
   // 测试模式（v1.14）：输入密码后资源拉满、所有关卡随便选
   UI.showTestLogin = function () {
     const input = h('input', { type: 'password', class: 'test-pass', autocomplete: 'off', placeholder: '密码' });
-    const msg = h('p', { class: 'hint' }, '输入密码开启测试模式：资源全部拉满，所有关卡都可以直接选。');
+    const msg = h('p', { class: 'hint test-msg' });
     const submit = () => {
       if (!P.enableTestMode(game.save, input.value)) {
         sfx('error');
-        msg.textContent = '密码不对';
+        msg.textContent = '密码错误';
         input.value = '';
         return;
       }
       game.persist();
       sfx('click');
-      UI.toast('测试模式已开启：资源已拉满，所有关卡都可以选');
+      UI.toast('解锁成功');
       UI.closeModal();
       UI.showTitle();
     };

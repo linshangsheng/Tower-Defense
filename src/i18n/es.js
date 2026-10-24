@@ -2061,4 +2061,6 @@ TD.i18n.register("es", {
   "密码不对": "Contraseña incorrecta",
   "输入密码开启测试模式：资源全部拉满，所有关卡都可以直接选。": "Introduce la contraseña para activar el modo de prueba: recursos al máximo y todos los niveles disponibles.",
   "第 N 层所有怪物的属性（血量、攻城伤害、护甲）是第 1 层的 N 倍，第 9 层是第 1 层的 9 倍；城墙的血量接着上一层，不会恢复（只有修缮、补给卡、道具和技能能回血）。": "En el piso N, todos los monstruos tienen N veces los atributos del piso 1 (vida, daño a la muralla, armadura): el piso 9 es 9 veces el piso 1. La vida de la muralla pasa del piso anterior y no se recupera (solo con reparaciones, cartas de suministro, objetos y habilidades).",
+  "解锁成功": "¡Desbloqueado!",
+  "密码错误": "Contraseña incorrecta",
 });

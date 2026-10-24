@@ -2061,4 +2061,6 @@ TD.i18n.register("id", {
   "密码不对": "Kata sandi salah",
   "输入密码开启测试模式：资源全部拉满，所有关卡都可以直接选。": "Masukkan kata sandi untuk mengaktifkan mode uji: semua sumber daya maksimal, semua level bebas dipilih.",
   "第 N 层所有怪物的属性（血量、攻城伤害、护甲）是第 1 层的 N 倍，第 9 层是第 1 层的 9 倍；城墙的血量接着上一层，不会恢复（只有修缮、补给卡、道具和技能能回血）。": "Di lantai N, semua monster punya atribut N kali lipat lantai 1 (HP, kerusakan ke tembok, armor): lantai 9 adalah 9 kali lantai 1. HP tembok dilanjutkan dari lantai sebelumnya dan tidak pulih (hanya perbaikan, kartu suplai, item, dan skill yang bisa memulihkan).",
+  "解锁成功": "Berhasil dibuka!",
+  "密码错误": "Kata sandi salah",
 });

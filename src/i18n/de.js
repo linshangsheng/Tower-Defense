@@ -2061,4 +2061,6 @@ TD.i18n.register("de", {
   "密码不对": "Falsches Passwort",
   "输入密码开启测试模式：资源全部拉满，所有关卡都可以直接选。": "Passwort eingeben, um den Testmodus zu aktivieren: alle Ressourcen maximal, alle Level frei wählbar.",
   "第 N 层所有怪物的属性（血量、攻城伤害、护甲）是第 1 层的 N 倍，第 9 层是第 1 层的 9 倍；城墙的血量接着上一层，不会恢复（只有修缮、补给卡、道具和技能能回血）。": "In Etage N haben alle Monster das N-fache der Werte von Etage 1 (Leben, Mauerschaden, Rüstung): Etage 9 ist das 9-Fache von Etage 1. Die Mauer-LP werden aus der vorigen Etage übernommen und erholen sich nicht (nur Reparaturen, Versorgungskarten, Items und Fähigkeiten heilen).",
+  "解锁成功": "Freigeschaltet!",
+  "密码错误": "Falsches Passwort",
 });
