@@ -1030,14 +1030,14 @@
       const a = D.attributes[key];
       const lv = s.attrs[key];
       const cur = { atk: st.atk, aspd: st.aspdBase, crit: st.crit, critDmg: st.critDmg, luck: st.luck }[key];
-      const step = lv < a.max ? a.per : a.beyond;
+      const step = lv < a.soft ? a.per : a.beyond;
       const next = cur + step * (key === 'atk' ? 1 + P.equipStats(s).atkPct : 1);
       const capped = (key === 'aspd' && st.aspdBase >= 20) || (key === 'crit' && st.crit >= 1) || (key === 'luck' && st.luck >= 10);
       grid.append(
         card(
           a.name,
           lvText(lv),
-          lv < D.levelCap && !capped ? h('span', { class: 'delta' }, h('b', { class: 'cur' }, a.fmt(cur)), ' → ', h('b', { class: 'up' }, a.fmt(next)), lv >= a.max ? h('span', { class: 'hint' }, ` （已超过基础上限 Lv${a.max}，每级收益变小，费用越来越高）`) : null) : h('span', { class: 'delta' }, h('b', { class: 'cur' }, a.fmt(cur)), capped ? '（已到上限）' : ''),
+          lv < D.levelCap && !capped ? h('span', { class: 'delta' }, h('b', { class: 'cur' }, a.fmt(cur)), ' → ', h('b', { class: 'up' }, a.fmt(next))) : h('span', { class: 'delta' }, h('b', { class: 'cur' }, a.fmt(cur)), capped ? '（已到上限）' : ''),
           h(
             'div',
             { class: 'btn-col' },

@@ -334,13 +334,14 @@
   // 被动技能升级费用：1→2 级 600 铜，之后每级 ×1.4（到 10 级约 6600 铜）；10 级以后按"超过基础上限"的规则越来越贵
   TD.data.passiveUpgrade = { base: 600, growth: 1.4 };
 
-  // 属性升级（设计书 18.1）
+  // 属性升级（设计书 18.1）。max = 基础等级 1000（进度条的满格）；soft = 成长期的长度：
+  // 前 soft 级每级加 per（费用走铜币公式），之后每级加 beyond，费用按 D.extraCost 一路上涨——1000 级时攻速、暴击、幸运也接近各自的效果上限
   TD.data.attributes = {
-    atk: { name: '攻击力', per: 2, beyond: 1, max: 30, base: 30, fmt: (v) => v.toFixed(0) },
-    aspd: { name: '攻击速度', per: 0.08, beyond: 0.02, max: 20, base: 40, fmt: (v) => v.toFixed(2) + '/秒' },
-    crit: { name: '暴击率', per: 0.02, beyond: 0.004, max: 15, base: 50, fmt: (v) => Math.round(v * 100) + '%' },
-    critDmg: { name: '暴击伤害', per: 0.1, beyond: 0.03, max: 15, base: 50, fmt: (v) => Math.round(v * 100) + '%' },
-    luck: { name: '幸运', per: 0.05, beyond: 0.01, max: 10, base: 60, fmt: (v) => '+' + Math.round(v * 100) + '%' },
+    atk: { name: '攻击力', per: 2, beyond: 1, soft: 30, max: 1000, base: 30, fmt: (v) => v.toFixed(0) },
+    aspd: { name: '攻击速度', per: 0.08, beyond: 0.02, soft: 20, max: 1000, base: 40, fmt: (v) => v.toFixed(2) + '/秒' },
+    crit: { name: '暴击率', per: 0.02, beyond: 0.004, soft: 15, max: 1000, base: 50, fmt: (v) => Math.round(v * 100) + '%' },
+    critDmg: { name: '暴击伤害', per: 0.1, beyond: 0.03, soft: 15, max: 1000, base: 50, fmt: (v) => Math.round(v * 100) + '%' },
+    luck: { name: '幸运', per: 0.05, beyond: 0.01, soft: 10, max: 1000, base: 60, fmt: (v) => '+' + Math.round(v * 100) + '%' },
   };
   TD.data.attributeGrowth = 1.2;
   TD.data.attributeCost = (key, lv) => TD.util.round5(TD.data.attributes[key].base * Math.pow(TD.data.attributeGrowth, lv));

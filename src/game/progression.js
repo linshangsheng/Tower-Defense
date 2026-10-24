@@ -357,7 +357,10 @@
   const MAX_ASPD = 20; // 攻击速度上限（次 / 秒）：战斗一帧最多出手一次
   const MAX_LUCK = 10; // 幸运上限：铜币收益 +1000%
   const MAX_WALL_DR = 0.75; // 城墙减伤上限
-  P.levelTotal = (def, lv, per) => per * Math.min(lv, def.max) + (def.beyond || 0) * Math.max(0, lv - def.max);
+  P.levelTotal = (def, lv, per) => {
+    const soft = def.soft || def.max;
+    return per * Math.min(lv, soft) + (def.beyond || 0) * Math.max(0, lv - soft);
+  };
   P.attrTotal = (key, lv) => P.levelTotal(D.attributes[key], lv, D.attributes[key].per);
   // 城墙等级对应的最大血量：30 级以内每级 ×1.1，之后线性增长
   P.wallHpAt = (level) => {
@@ -492,7 +495,7 @@
   const beyondCost = (v0, lv, soft) => D.tierCost(D.extraCost(v0, lv, soft));
   P.attrCostAt = (key, lv) => {
     if (lv >= D.levelCap) return null;
-    const soft = D.attributes[key].max;
+    const soft = D.attributes[key].soft;
     return lv < soft ? { copper: D.attributeCost(key, lv) } : beyondCost(D.attributeCost(key, soft), lv, soft);
   };
   P.attrCost = (save, key) => P.attrCostAt(key, save.attrs[key]);
