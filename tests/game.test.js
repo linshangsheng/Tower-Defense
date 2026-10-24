@@ -4580,8 +4580,8 @@ function D_dragon() { return TD.data.abyssDragon; }
 test('测试模式：密码不对不开；密码对了资源拉满、第 200 关也能直接选；普通存档不受影响', () => {
   const s = P.newSave();
   assert.ok(!P.isUnlocked(s, 200) && P.isUnlocked(s, 1));
-  assert.ok(!P.enableTestMode(s, 'wrong') && !P.testMode(s) && !P.isUnlocked(s, 5));
-  assert.ok(P.enableTestMode(s, 'linsstdtest'));
+  assert.ok(!P.enableTestMode(s, 'wrong') && !P.enableTestMode(s, 'linsstdtest') && !P.testMode(s) && !P.isUnlocked(s, 5));
+  assert.ok(P.enableTestMode(s, '1314520'));
   assert.ok(P.testMode(s) && P.isUnlocked(s, 200) && P.isUnlocked(s, 101));
   assert.strictEqual(s.copper, P.MAX_CURRENCY);
   assert.strictEqual(s.silver, P.MAX_CURRENCY);

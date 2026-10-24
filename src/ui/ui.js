@@ -494,7 +494,10 @@
       UI.closeModal();
       UI.showTitle();
     };
-    input.onkeydown = (e) => e.key === 'Enter' && submit();
+    // 注意：on* 属性处理函数返回 false 会取消按键的默认动作（输入不进去），所以用 if，不要直接 return 比较结果
+    input.onkeydown = (e) => {
+      if (e.key === 'Enter') submit();
+    };
     modal(
       h(
         'div',

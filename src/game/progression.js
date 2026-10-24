@@ -186,7 +186,7 @@
   };
   P.isCleared = (save, n) => P.levelRecord(save, n).clears > 0;
   // 测试模式（v1.14，设置里输入密码开启）：所有关卡都能直接选
-  P.TEST_PASSWORD = 'linsstdtest';
+  P.TEST_PASSWORD = '1314520';
   P.testMode = (save) => !!(save.settings && save.settings.testMode);
   P.enableTestMode = function (save, password) {
     if (password !== P.TEST_PASSWORD) return false;
