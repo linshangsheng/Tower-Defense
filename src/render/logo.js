@@ -244,10 +244,10 @@
   L.drawEmblem = function (ctx, cx, cy, R, o) {
     o = o || {};
     const t = o.t || 0;
-    const ring = o.ring ?? 1;
-    const outline = o.outline ?? 1;
-    const fill = o.fill ?? 1;
-    const glow = o.glow ?? 1;
+    const ring = o.ring !== undefined && o.ring !== null ? o.ring : 1;
+    const outline = o.outline !== undefined && o.outline !== null ? o.outline : 1;
+    const fill = o.fill !== undefined && o.fill !== null ? o.fill : 1;
+    const glow = o.glow !== undefined && o.glow !== null ? o.glow : 1;
     ctx.save();
     ctx.translate(cx, cy);
     // 背后的光

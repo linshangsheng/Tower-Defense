@@ -223,6 +223,34 @@
       return SHARED.concat(LEAD_INST[th.lead] || []);
     }
 
+    // 同时最多解码 4 个音（设计书 111）：一口气几百个 decodeAudioData 会让低配电脑 / 手机卡住甚至崩掉；每解完一个让出主线程
+    limited(fn) {
+      this._active = this._active || 0;
+      this._queue = this._queue || [];
+      return new Promise((resolve, reject) => {
+        const done = () => {
+          this._active--;
+          const next = this._queue.shift();
+          if (next) setTimeout(next, 0);
+        };
+        const run = () => {
+          this._active++;
+          fn().then(
+            (v) => {
+              done();
+              resolve(v);
+            },
+            (e) => {
+              done();
+              reject(e);
+            }
+          );
+        };
+        if (this._active < 4) run();
+        else this._queue.push(run);
+      });
+    }
+
     // 解码采样（只解码还没解码过的）；没有采样数据 / 解码失败就返回，保持合成声音
     loadSamples(names) {
       const data = TD.samples;
@@ -234,7 +262,7 @@
         if (!this.loading[name]) {
           const inst = data[name];
           this.loading[name] = Promise.all(
-            Object.keys(inst.notes).map(async (k) => {
+            Object.keys(inst.notes).map((k) => this.limited(async () => {
               const bin = typeof atob === 'function' ? atob(inst.notes[k]) : Buffer.from(inst.notes[k], 'base64').toString('binary');
               const ab = new ArrayBuffer(bin.length);
               const u8 = new Uint8Array(ab);
@@ -244,7 +272,7 @@
                 if (p && p.then) p.then(res, rej);
               });
               return { midi: +k, buf };
-            })
+            }))
           )
             .then((bufs) => {
               bufs.sort((a, b) => a.midi - b.midi);

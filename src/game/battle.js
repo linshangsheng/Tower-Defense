@@ -207,14 +207,23 @@
       const none = this.level.waves.map(() => null);
       if (opts.levelDef || typeof opts.level !== 'number' || !D.levels[opts.level] || this.level.tower || this.level.endless) return none;
       if (opts.level < (C.extraFromLevel || 1)) return none;
-      const total = Math.round(opts.level * (C.extraMonstersPerLevel || 0));
+      // extraMult：个别关卡（第 50 关这种一波同时涌来几百只快怪的）单独把多出的小怪打个折（v1.10）
+      const total = Math.round(opts.level * (C.extraMonstersPerLevel || 0) * (this.level.extraMult !== undefined ? this.level.extraMult : 1));
       const cm = (this.level.countMult || 1) * (1 + (this.rules.countBonus || 0));
       const count = (count) => Math.max(1, Math.round(count * cm));
       const fodder = (type) => !FODDER_DENY.some((k) => D.monsters[type][k]);
       // 本关一只能当小怪的都没有（比如全是远程怪）时，用本章别的关卡里最弱的候选，再没有就用史莱姆
       const levelHas = this.level.waves.some((w) => w.groups.some(([type]) => fodder(type)));
-      // 各波的权重：这一波里能当小怪的各组数量之和（没有候选时按这一波所有非 Boss 的怪）
-      const waveSums = this.level.waves.map((w) => w.groups.reduce((a, [type, c]) => a + ((levelHas ? fodder(type) : !D.monsters[type].boss) ? count(c) : 0), 0));
+      // 各波的权重：这一波所有非 Boss 的怪的数量之和（设计书 84：按各波原有小怪数量的比例分）。
+      // 以前只算"能当小怪"的那几组，结果小怪只有远程 / 隐身 / 爆炸怪的波一个也分不到，全堆进剩下的一波（第 50 关一波 250 只战车）
+      const waveSums = this.level.waves.map((w) => w.groups.reduce((a, [type, c]) => a + (D.monsters[type].boss ? 0 : count(c)), 0));
+      // 本关所有能当小怪的组（按种类合并），分到了"自己没有能当小怪的组"的那一波时，用这个
+      const levelGroups = [];
+      for (const w of this.level.waves) for (const [type, c] of w.groups) if (fodder(type)) {
+        const g = levelGroups.find((x) => x[0] === type);
+        if (g) g[1] += count(c);
+        else levelGroups.push([type, count(c)]);
+      }
       if (!total || !waveSums.some((x) => x > 0)) return none;
       const share = (weights, amount) => {
         const sum = weights.reduce((a, b) => a + b, 0);
@@ -235,7 +244,8 @@
       return this.level.waves.map((w, wi) => {
         if (!perWave[wi]) return null;
         if (fallback) return [[fallback, perWave[wi]]];
-        const groups = w.groups.filter(([type]) => fodder(type));
+        const own = w.groups.filter(([type]) => fodder(type));
+        const groups = own.length ? own : levelGroups;
         if (!groups.length) return null;
         return share(groups.map(([, c]) => count(c)), perWave[wi]).map((n, k) => [groups[k][0], n]).filter(([, n]) => n > 0);
       });

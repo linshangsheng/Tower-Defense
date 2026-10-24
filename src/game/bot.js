@@ -59,8 +59,14 @@
     // 银币：技能优先；第一章打完后先攒钱买魔法杖
     const silverOrder = opts.silverOrder || ['arrowRain', 'precision', 'thunder', 'burn', 'repair', 'frost', 'combo', 'pierceArmor'];
     const saveForStaff = P.highestCleared(save) >= 10 && !save.weapons.staff.owned;
+    // 武器、被动技能涨价以后（设计书 89），魔法杖要 48 银：第一章打完后先攒够钱买魔法杖，不够的部分用铜币兑换
+    const staffSilver = D.weapons.staff.cost.silver;
+    if (saveForStaff && save.silver < staffSilver) {
+      const need = staffSilver - save.silver;
+      if (save.copper >= need * TD.config.exchange.copperPerSilver) P.exchange(save, 'copper', need);
+    }
     for (const id of silverOrder) {
-      if (saveForStaff && save.silver - 8 < 3) break;
+      if (saveForStaff && save.silver - (D.activeSkills[id] || D.passiveSkills[id]).cost.silver < staffSilver) continue;
       if (D.activeSkills[id] && !save.activeOwned[id] && P.canAfford(save, D.activeSkills[id].cost)) {
         P.buyActive(save, id);
         bought.push(id);
@@ -146,6 +152,8 @@
       if (P.itemEquipped(save, id) + P.itemStock(save, id) > 0) P.equipItem(save, i, id, 1);
     }
     if (opts.silverOnly) return bought;
+    // 还在攒魔法杖的钱：铜币先留着兑换，不去买升级
+    if (!save.weapons.staff.owned && P.highestCleared(save) >= 10 && save.silver < staffSilver && save.copper < (staffSilver - save.silver) * TD.config.exchange.copperPerSilver) return bought;
     // 铜币升级
     let guard = 0;
     while (guard++ < 200) {

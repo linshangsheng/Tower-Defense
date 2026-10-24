@@ -17,7 +17,11 @@
   });
 
   game.persist = function () {
-    TD.saveStore.write(game.save);
+    // 浏览器不让存（无痕模式、禁用了本地存储、空间满了）：只提醒一次，别每次都弹
+    if (!TD.saveStore.write(game.save) && !game.saveWarned) {
+      game.saveWarned = true;
+      if (TD.ui && TD.ui.toast) TD.ui.toast('浏览器不允许保存存档（可能是无痕模式），关闭页面后进度会丢失。');
+    }
   };
 
   game.resetSave = function () {
@@ -65,6 +69,7 @@
     battle.on('scrollBolt', () => TD.audio.play('scrollBolt'));
     battle.on('barrierBreak', () => TD.audio.play('barrierBreak'));
     battle.on('bossWarn', () => TD.audio.play('warn'));
+    battle.on('bossReturn', () => TD.audio.play('warn'));
     // Boss 登场：音乐给一记重击（设计书 64.5）
     battle.on('spawn', (m) => m.def && m.def.boss && TD.music.stinger('boss'));
     // 新敌人登场卡片：每种怪物只介绍一次
@@ -175,6 +180,25 @@
     game.paused = false;
     game.persist();
     TD.ui.showMap(TD.data.chapterOf(n).id);
+  };
+
+  // 帧循环连续出错（设计书 111）：退回地图，别让界面卡死
+  game.crash = function (err) {
+    try {
+      if (game.battle) {
+        const n = game.battle.stage;
+        TD.ui.closeModal();
+        game.battle = null;
+        game.renderer.battle = null;
+        game.paused = false;
+        game.introPaused = false;
+        game.persist();
+        TD.ui.showMap(TD.data.chapterOf(n).id);
+      }
+      TD.ui.toast('游戏出了点小问题，已回到地图。如果反复出现，请刷新页面。');
+    } catch (e) {
+      /* 实在恢复不了就等玩家刷新页面 */
+    }
   };
 
   game.nextIntro = function () {
@@ -316,9 +340,28 @@
   }
 
   // ---------- 主循环 ----------
+  // 防卡死（设计书 111）：①先排下一帧再干活，某一帧出错也不会让整个游戏停住；②一帧里模拟逻辑最多花 20 毫秒，
+  // 电脑慢的时候宁可让游戏稍微变慢，也不让一帧越拖越长；③帧间隔交给自适应画质，持续太卡就自动降低画面负担；
+  // ④连续出错太多次（战斗卡在坏状态）就退回主页，不让界面卡死
   let last = 0;
+  let errStreak = 0;
   function frame(ts) {
-    const dt = Math.min(0.05, (ts - last) / 1000 || 0);
+    requestAnimationFrame(frame);
+    try {
+      frameBody(ts);
+      errStreak = 0;
+    } catch (e) {
+      errStreak++;
+      if (errStreak === 1 && typeof console !== 'undefined') console.error('frame loop error', e);
+      if (errStreak >= 40) {
+        errStreak = 0;
+        TD.game.crash && TD.game.crash(e);
+      }
+    }
+  }
+  function frameBody(ts) {
+    const raw = ts - last;
+    const dt = Math.min(0.05, raw / 1000 || 0);
     last = ts;
     const b = game.battle;
     let renderDt = dt;
@@ -327,13 +370,20 @@
       const step = 1 / C.tickRate;
       game.acc += dt * game.speed;
       let n = 0;
+      const t0 = typeof performance !== 'undefined' ? performance.now() : 0;
       while (game.acc >= step && n < 12) {
         b.step(step);
         game.acc -= step;
         n++;
+        if (t0 && performance.now() - t0 > 20) {
+          game.acc = Math.min(game.acc, step); // 来不及就不补了：游戏稍微变慢，但不会越补越卡
+          break;
+        }
       }
       renderDt = dt * game.speed;
     } else if (game.paused || game.introPaused) renderDt = 0;
+    // 暂停、切后台时的间隔不算
+    if (TD.quality && !document.hidden && !game.paused && !game.introPaused) TD.quality.record(raw);
     game.renderer.render(renderDt);
     if (b) {
       TD.ui.updateHud();
@@ -344,7 +394,6 @@
         TD.music.setTension(boss && low ? 3 : boss ? 2 : low ? 1 : 0);
       }
     }
-    requestAnimationFrame(frame);
   }
 
   function init() {
@@ -352,10 +401,21 @@
     game.save = TD.saveStore.load() || P.newSave();
     // 妖塔战斗中途刷新页面 = 失败（设计书 74.4）；已通过、等待选择的状态保留
     TD.modes.towerRunState(game.save, false);
+    // 画质（设计书 111）：网址带 ?q=low / medium / high 时临时强制（页面卡得连设置都点不开时用），否则按设置里的来
+    const urlQ = /[?&]q=(auto|high|medium|low)\b/.exec(location.search);
+    if (TD.quality) TD.quality.setMode(urlQ ? urlQ[1] : game.save.settings.quality || 'auto');
+    // 自动降画质时提醒一次，免得玩家以为画面坏了
+    if (TD.quality)
+      TD.quality.onChange = (level, why) => {
+        if (why === 'slow' && !game.qualityToasted && TD.ui && TD.ui.toast) {
+          game.qualityToasted = true;
+          TD.ui.toast('电脑有点吃力，已自动降低画面特效以保持流畅（可在设置里调整画质）。');
+        }
+      };
     TD.audio.enabled = game.save.settings.sound !== false;
     TD.music.enabled = game.save.settings.music !== false;
-    TD.audio.setVolume((game.save.settings.sfxVolume ?? 100) / 100);
-    TD.music.setVolume((game.save.settings.musicVolume ?? 100) / 100);
+    TD.audio.setVolume((game.save.settings.sfxVolume !== undefined ? game.save.settings.sfxVolume : 100) / 100);
+    TD.music.setVolume((game.save.settings.musicVolume !== undefined ? game.save.settings.musicVolume : 100) / 100);
     const canvas = document.getElementById('game');
     game.renderer = new TD.Renderer(canvas);
     TD.ui.init(game);

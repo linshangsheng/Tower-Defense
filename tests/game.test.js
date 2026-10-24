@@ -3361,7 +3361,7 @@ const baseCounts = (n) => {
     bosses: lv.waves.reduce((a, w) => a + w.groups.reduce((x, [t, c]) => x + (D.monsters[t].boss ? c : 0), 0), 0),
   };
 };
-const expectedExtra = (n) => (n < TD.config.extraFromLevel ? 0 : Math.round(n * TD.config.extraMonstersPerLevel));
+const expectedExtra = (n) => (n < TD.config.extraFromLevel ? 0 : Math.round(n * TD.config.extraMonstersPerLevel * (D.levels[n].extraMult !== undefined ? D.levels[n].extraMult : 1)));
 
 test('主线第 5 关起，第 N 关总共多出 N × 5 只小怪（和原有的同类怪一模一样），Boss 数量不变；前 4 关不加', () => {
   assert.strictEqual(TD.config.extraFromLevel, 5);
@@ -3457,8 +3457,9 @@ test('银币只在首次通关小 Boss、大 Boss、精英挑战关时给', () =
   }
 });
 
-test('装备和被动技能涨价：价格 = 原价 × 倍数（绿 6 / 蓝 6 / 紫 4 / 红 3 / 金 2，被动 8）', () => {
-  assert.deepStrictEqual(D.priceMult, { gear: { 1: 6, 2: 6, 3: 4, 4: 3, 5: 2 }, passive: 8 });
+test('装备和被动技能涨价：价格 = 原价 × 倍数（装备 绿 6 / 蓝 6 / 紫 4 / 红 3 / 金 2，武器蓝色 4.5，被动 8）', () => {
+  assert.deepStrictEqual(D.priceMult, { gear: { 1: 6, 2: 6, 3: 4, 4: 3, 5: 2 }, weapon: { 1: 6, 2: 4.5, 3: 4, 4: 3, 5: 2 }, passive: 8 });
+  assert.deepStrictEqual(D.weapons.staff.cost, { silver: 36 }, 'v1.10：蓝色武器单独便宜（魔法杖原价 8 银 × 4.5）');
   assert.strictEqual(D.equipment.ironHelm.cost.copper, 720, '铁头盔原价 120 铜');
   assert.deepStrictEqual(D.passiveSkills.precision.cost, { silver: 24 }, '精准原价 3 银');
   assert.deepStrictEqual(D.passiveSkills.combo.cost, { silver: 32 });
@@ -3637,14 +3638,15 @@ function weaponScoreOf(w) {
   const bn = w.boomerangs || (w.twin ? 2 : 1);
   let S = w.dmgMult * w.aspdMult * (bolts > 1 ? 1 + (bolts - 1) * (w.extraBoltMult || 0.5) : 1) * (w.boomerang ? 2 : 1) * (1 + (w.bonusCrit || 0));
   let aoe = 1;
-  if (w.chain) for (let i = 1; i <= w.chain.count; i++) aoe += Math.pow(w.chain.falloff, i) * 0.45;
+  if (w.chain) for (let i = 1; i <= w.chain.count; i++) aoe += Math.pow(w.chain.falloff, i) * 0.3;
   if (w.splash) aoe += w.splash.mult * 0.9 * Math.min(1.8, Math.max(0.7, w.splash.radius / 75));
   if (bolts > 1) aoe += 0.05 + 0.1 * bolts;
   if (w.boomerang) aoe += 0.25 + 0.2 * (bn - 1);
-  if (w.pierce) aoe += w.pierce.count * w.pierce.mult * 0.2;
+  if (w.pierce) aoe += w.pierce.count * w.pierce.mult * 0.3;
   if (w.slow || w.ignite) aoe += 0.08;
   if (w.knock) aoe += 0.08;
   let m = 1;
+  if (w.boomerang) m *= 1.6;
   if (w.armorIgnore) m *= 1 + w.armorIgnore * 0.4;
   if (w.bossMult) m *= 1 + (w.bossMult - 1) * 0.25;
   if (w.flyingMult) m *= 1 + (w.flyingMult - 1) * 0.1;
@@ -4332,4 +4334,94 @@ test('回归的小 Boss：排在那一波最后出场、血量打折，击败得
   assert.ok(out.notes.some((x) => x.includes('回归的小 Boss')));
   const out2 = P.applyResult(P.newSave(), 62, { win: true, wallRatio: 1, killCopper: 0, earlyCopper: 0, killSilver: 0 });
   assert.strictEqual(out2.silver, 0);
+});
+
+// ---------- v1.10：兼容性与卡死防护（设计书 111） ----------
+test('自适应画质：持续卡就一档档降，很卡一次降两档；手动档位不自动变；性能够了才慢慢升回来；刚升上去又掉下来的档位不再升', () => {
+  const fs = require('fs');
+  require('../src/core/quality.js');
+  const Q = TD.quality;
+  Q._reset();
+  Q.setMode('auto');
+  const frames = (n, ms) => {
+    for (let i = 0; i < n; i++) Q.record(ms);
+  };
+  assert.strictEqual(Q.level, 0);
+  frames(200, 16.7);
+  assert.strictEqual(Q.level, 0, '正常帧率不降');
+  frames(200, 33.4);
+  assert.strictEqual(Q.level, 0, '30 帧 / 秒（显示器就是 30Hz）不算卡');
+  frames(40, 55);
+  assert.strictEqual(Q.level, 1, '55 毫秒一帧：降一档');
+  frames(40, 110);
+  assert.strictEqual(Q.level, 3, '110 毫秒一帧：一次降两档，直到最低');
+  frames(500, 300);
+  assert.strictEqual(Q.level, 3, '超过 250 毫秒的单帧是切后台之类的，不算');
+  // 档位参数：越低画布越小、粒子越少、光影越少
+  const P0 = Q.LEVELS[0];
+  const P3 = Q.LEVELS[3];
+  assert.ok(P0.scale === 1 && P3.scale < P0.scale && P3.fx < P0.fx && P3.lit < P0.lit && P0.shafts && !P3.shafts && !P3.glow);
+  for (let i = 1; i < Q.LEVELS.length; i++) assert.ok(Q.LEVELS[i].scale <= Q.LEVELS[i - 1].scale && Q.LEVELS[i].fx <= Q.LEVELS[i - 1].fx);
+  // 性能回来了：稳定很久才升一档（不是一下子升回去）
+  frames(24 * 5, 16.5);
+  assert.strictEqual(Q.level, 3, '稳定时间不够不升');
+  frames(24 * 30, 16.5);
+  assert.ok(Q.level < 3, '稳定很久以后升一档');
+  // 手动档位：不受帧率影响
+  Q.setMode('low');
+  assert.strictEqual(Q.level, 2);
+  frames(300, 120);
+  assert.strictEqual(Q.level, 2);
+  Q.setMode('high');
+  assert.strictEqual(Q.level, 0);
+  Q.setMode('nonsense');
+  assert.strictEqual(Q.mode, 'auto');
+  // 档位变化会通知渲染器
+  const seen = [];
+  Q.onChange = (l) => seen.push(l);
+  Q.set(2);
+  Q.set(2);
+  assert.deepStrictEqual(seen, [2]);
+  Q._reset();
+});
+
+test('防卡死：入口页有浏览器检查和加载超时提示，乐器采样异步加载，质量模块在渲染器之前加载；帧循环先排下一帧并有出错保护', () => {
+  const fs = require('fs');
+  const html = fs.readFileSync(require('path').join(__dirname, '..', 'index.html'), 'utf8');
+  assert.ok(html.includes('兼容性检查') && html.includes('__tdOld') && html.includes('25000'));
+  assert.ok(/<script src="src\/render\/samples\.js" async><\/script>/.test(html), '采样 5 MB，异步加载不挡首屏');
+  assert.ok(html.indexOf('src/core/quality.js') > 0 && html.indexOf('src/core/quality.js') < html.indexOf('src/render/renderer.js'));
+  const main = fs.readFileSync(require('path').join(__dirname, '..', 'src', 'main.js'), 'utf8');
+  assert.ok(/function frame\(ts\) \{\s*requestAnimationFrame\(frame\);\s*try \{/.test(main), '先排下一帧再干活，出错也不会停');
+  assert.ok(main.includes('performance.now() - t0 > 20') && main.includes('game.crash'));
+  // 源码里没有老浏览器不认识的语法 / 接口（?? 和 ?. 要 Chrome 80+，这里全部换成老写法）
+  const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(require('path').join(d, e.name)) : [require('path').join(d, e.name)]));
+  for (const f of walk(require('path').join(__dirname, '..', 'src')).filter((x) => x.endsWith('.js') && !x.includes('/i18n/') && !x.endsWith('samples.js'))) {
+    const src = fs.readFileSync(f, 'utf8');
+    assert.ok(!/ \?\? /.test(src), f + ' 用了 ??');
+    assert.ok(!/\?\.[A-Za-z_\[(]/.test(src.replace(/'[^'\n]*'/g, '').replace(/`[^`]*`/g, '')), f + ' 用了 ?.');
+  }
+});
+
+test('采样解码限流：同时最多 4 个，全部完成，失败也不卡住队列', async () => {
+  delete require.cache[require.resolve('../src/render/music.js')];
+  require('../src/render/music.js');
+  const Engine = TD.music.Engine || (TD.music && TD.music._Engine);
+  if (!Engine || !Engine.prototype.limited) return; // 引擎类没有导出就跳过
+  const eng = Object.create(Engine.prototype);
+  let active = 0;
+  let peak = 0;
+  const job = (fail) => () =>
+    new Promise((res, rej) => {
+      active++;
+      peak = Math.max(peak, active);
+      setTimeout(() => {
+        active--;
+        fail ? rej(new Error('x')) : res(1);
+      }, 3);
+    });
+  const out = await Promise.all(Array.from({ length: 20 }, (_, i) => eng.limited(job(i % 7 === 3)).then(() => 'ok', () => 'fail')));
+  assert.strictEqual(out.length, 20);
+  assert.ok(peak <= 4 && peak >= 2, '同时解码数 ' + peak);
+  assert.strictEqual(out.filter((x) => x === 'fail').length, 3);
 });

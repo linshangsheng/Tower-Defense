@@ -364,7 +364,7 @@
             min: 0,
             max: 100,
             step: 5,
-            value: s[key] ?? 100,
+            value: s[key] !== undefined && s[key] !== null ? s[key] : 100,
             oninput: (e) => (e.target.nextSibling.textContent = e.target.value + '%'),
             onchange: (e) => {
               s[key] = +e.target.value;
@@ -372,7 +372,7 @@
               game.persist();
             },
           }),
-          h('span', { class: 'vol-val' }, `${s[key] ?? 100}%`)
+          h('span', { class: 'vol-val' }, `${s[key] !== undefined && s[key] !== null ? s[key] : 100}%`)
         )
       ),
       h(
@@ -389,6 +389,27 @@
             },
           },
           Object.keys(C.difficulties).map((id) => h('option', { value: id, selected: (s.difficulty || 'normal') === id ? true : null }, `${C.difficulties[id].name}：${C.difficulties[id].desc}`))
+        )
+      ),
+      h(
+        'label',
+        { class: 'row' },
+        '画质 ',
+        h(
+          'select',
+          {
+            onchange: (e) => {
+              s.quality = e.target.value;
+              if (TD.quality) TD.quality.setMode(s.quality);
+              game.persist();
+            },
+          },
+          [
+            ['auto', '自动（卡顿时自动降低特效）'],
+            ['high', '高'],
+            ['medium', '中'],
+            ['low', '低（最流畅）'],
+          ].map(([v, t]) => h('option', { value: v, selected: (s.quality || 'auto') === v ? true : null }, t))
         )
       ),
       h(
@@ -647,7 +668,7 @@
         rec.clears ? starsEl(rec.stars) : null,
         rec.crown ? h('span', { class: 'node-crown', title: '已在挑战难度通关' }, '👑') : null,
         rec.mission ? h('span', { class: 'node-mission', title: '关卡任务已完成' }, '🎯') : null,
-        h('span', { class: 'node-name' }, `${n}. ${lvl.name}`)
+        h('span', { class: 'node-name', title: lvl.name }, `${n}. ${lvl.name}`)
       );
     });
     // 路径

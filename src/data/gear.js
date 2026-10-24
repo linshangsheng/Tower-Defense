@@ -22,7 +22,7 @@
       name: '连发弩',
       rarity: 1,
       cost: { copper: 300 },
-      dmgMult: 0.84,
+      dmgMult: 0.95,
       aspdMult: 1.0,
       projSpeed: 950,
       bolts: 3,
@@ -36,7 +36,7 @@
       name: '回旋镖',
       rarity: 1,
       cost: { copper: 450 },
-      dmgMult: 1.39,
+      dmgMult: 0.85,
       aspdMult: 0.6,
       projSpeed: 750,
       boomerang: true,
@@ -48,7 +48,7 @@
       name: '魔法杖',
       rarity: 2,
       cost: { silver: 8 },
-      dmgMult: 2.54,
+      dmgMult: 2.9,
       aspdMult: 0.85,
       projSpeed: 700,
       dmgType: 'magic',
@@ -62,7 +62,7 @@
       name: '火炮',
       rarity: 2,
       cost: { silver: 10 },
-      dmgMult: 7.09, // v1.07：按品质重新标定
+      dmgMult: 8.2, // v1.07：按品质重新标定
       aspdMult: 0.4,
       projSpeed: 600,
       arc: true,
@@ -77,7 +77,7 @@
       name: '雷电法球',
       rarity: 3,
       cost: { gold: 4 },
-      dmgMult: 3.22,
+      dmgMult: 4.4,
       aspdMult: 0.9,
       projSpeed: 1500,
       dmgType: 'magic',
@@ -100,8 +100,8 @@
       desc: '一次射 3 支火焰弩箭，每支点燃目标，对飞行怪伤害 +50%。', good: '群怪、飞行怪', look: { base: 'crossbow', color: '#ff9a4a', accent: 'flame' },
     },
     piercer: {
-      name: '穿心长弓', rarity: 3, cost: { gold: 5 }, minLevel: 20, dmgMult: 1.66, aspdMult: 0.9, projSpeed: 1100, bolts: 3, extraBoltMult: 0.5, pierce: { count: 3, range: 520, mult: 0.75 }, armorIgnore: 0.2,
-      tiers: [{ lv: 8, bolts: 4, dmgMult: 1.44 }],
+      name: '穿心长弓', rarity: 3, cost: { gold: 5 }, minLevel: 20, dmgMult: 1.47, aspdMult: 0.9, projSpeed: 1100, bolts: 3, extraBoltMult: 0.5, pierce: { count: 3, range: 520, mult: 0.75 }, armorIgnore: 0.2,
+      tiers: [{ lv: 8, bolts: 4, dmgMult: 1.29 }],
       desc: '一次射 3 支穿心箭，每支穿过同一车道最多 3 只怪（每只 75% 伤害），无视 20% 护甲；升到 8 级一次射 4 支。', good: '排成长队的车道', look: { base: 'bow', color: '#d9a0ff', accent: 'lance' },
     },
     meteorCannon: {
@@ -109,24 +109,24 @@
       desc: '超重炮弹，爆炸半径 100，无视 60% 护甲，对 Boss 伤害 +30%。', good: '重甲怪、Boss', look: { base: 'cannon', color: '#ff6a3a', accent: 'meteor' },
     },
     stormOrb: {
-      name: '风暴法球', rarity: 4, cost: { gold: 9 }, minLevel: 40, dmgMult: 3.68, aspdMult: 1.0, projSpeed: 1600, dmgType: 'magic', chain: { count: 5, range: 240, falloff: 0.85 },
+      name: '风暴法球', rarity: 4, cost: { gold: 9 }, minLevel: 40, dmgMult: 5.4, aspdMult: 1.0, projSpeed: 1600, dmgType: 'magic', chain: { count: 5, range: 240, falloff: 0.85 },
       desc: '魔法闪电跳跃 5 次，每跳只衰减 15%。', good: '密集怪群、灵体', look: { base: 'orb', color: '#7ad0ff', accent: 'storm' },
     },
     voidCrossbow: {
-      name: '裂空弩', rarity: 4, cost: { gold: 10 }, minLevel: 40, dmgMult: 2.02, aspdMult: 1.0, projSpeed: 1000, bolts: 5, extraBoltMult: 0.42, flyingMult: 1.6, armorIgnore: 0.2,
+      name: '裂空弩', rarity: 4, cost: { gold: 10 }, minLevel: 40, dmgMult: 1.9, aspdMult: 1.0, projSpeed: 1000, bolts: 5, extraBoltMult: 0.42, flyingMult: 1.6, armorIgnore: 0.2,
       desc: '一次射 5 支箭，对飞行怪伤害 +60%，无视 20% 护甲。', good: '群怪、飞行怪', look: { base: 'crossbow', color: '#b060ff', accent: 'void' },
     },
     genesisBow: {
-      name: '创世之弓', rarity: 5, cost: { gold: 20 }, minLevel: 60, dmgMult: 3.32, aspdMult: 1.15, projSpeed: 1200, bonusCrit: 0.12, bolts: 3, extraBoltMult: 0.55, pierce: { count: 3, range: 420, mult: 0.7 }, ignite: true,
-      tiers: [{ lv: 5, bolts: 4, dmgMult: 2.79 }, { lv: 10, bolts: 5, dmgMult: 2.46 }],
+      name: '创世之弓', rarity: 5, cost: { gold: 20 }, minLevel: 60, dmgMult: 2.98, aspdMult: 1.15, projSpeed: 1200, bonusCrit: 0.12, bolts: 3, extraBoltMult: 0.55, pierce: { count: 3, range: 420, mult: 0.7 }, ignite: true,
+      tiers: [{ lv: 5, bolts: 4, dmgMult: 2.52 }, { lv: 10, bolts: 5, dmgMult: 2.21 }],
       desc: '一次射 3 支创世之箭，暴击率 +12%，每支穿透 3 只怪并点燃目标；升到 5 级一次射 4 支，升到 10 级一次射 5 支。', good: '通用、Boss', look: { base: 'bow', color: '#ffd860', accent: 'genesis' },
     },
     judgementStaff: {
-      name: '天罚之杖', rarity: 5, cost: { gold: 18 }, minLevel: 60, dmgMult: 5.07, aspdMult: 0.95, projSpeed: 760, dmgType: 'magic', splash: { radius: 125, mult: 0.9 }, chain: { count: 3, range: 220, falloff: 0.75 },
+      name: '天罚之杖', rarity: 5, cost: { gold: 18 }, minLevel: 60, dmgMult: 5.53, aspdMult: 0.95, projSpeed: 760, dmgType: 'magic', splash: { radius: 125, mult: 0.9 }, chain: { count: 3, range: 220, falloff: 0.75 },
       desc: '魔法，超大范围爆炸（半径 125、溅射 90%），再加 3 次闪电跳跃。', good: '成堆的怪、灵体、魔抗低的怪', look: { base: 'staff', color: '#fff0a0', accent: 'judgement' },
     },
     chronoBoomerang: {
-      name: '时之回旋', rarity: 5, cost: { gold: 16 }, minLevel: 60, dmgMult: 6.0, aspdMult: 0.8, projSpeed: 800, boomerang: true, boomerangs: 3, slow: { amt: 0.4, dur: 2 },
+      name: '时之回旋', rarity: 5, cost: { gold: 16 }, minLevel: 60, dmgMult: 3.75, aspdMult: 0.8, projSpeed: 800, boomerang: true, boomerangs: 3, slow: { amt: 0.4, dur: 2 },
       desc: '一次扔出三支回旋镖（本车道 + 两侧相邻车道），命中使目标减速 40%。', good: '长队、木盾哥布林', look: { base: 'boomerang', color: '#c8a8ff', accent: 'chrono' },
     },
   });
@@ -134,7 +134,7 @@
   // ---- v0.80 武器扩充（设计书 91）：每个品质 5 把（原来每个品质 3 把，再各加 2 把） ----
   Object.assign(TD.data.weapons, {
     huntBow: {
-      name: '猎弓', rarity: 1, cost: { copper: 350 }, dmgMult: 1.4, aspdMult: 1.4, projSpeed: 1000, bonusCrit: 0.15,
+      name: '猎弓', rarity: 1, cost: { copper: 350 }, dmgMult: 1.5, aspdMult: 1.4, projSpeed: 1000, bonusCrit: 0.15,
       desc: '出手很快（攻速 ×1.4），暴击率 +15%，每秒输出比木弓高。', good: '通用、速攻关', look: { base: 'bow', color: '#8fdc6a' },
     },
     mortar: {
@@ -142,15 +142,15 @@
       desc: '小号火炮：慢速抛射，落地爆炸范围大，一发伤害高。', good: '成团的怪', look: { base: 'cannon', color: '#9bd860' },
     },
     twinCrossbow: {
-      name: '双发弩', rarity: 2, cost: { silver: 9 }, dmgMult: 1.48, aspdMult: 1.0, projSpeed: 980, bolts: 2, extraBoltMult: 0.6, flyingMult: 1.3, armorIgnore: 0.2,
+      name: '双发弩', rarity: 2, cost: { silver: 9 }, dmgMult: 1.7, aspdMult: 1.0, projSpeed: 980, bolts: 2, extraBoltMult: 0.6, flyingMult: 1.3, armorIgnore: 0.2,
       desc: '一次射 2 支弩箭，对飞行怪伤害 +30%，无视 20% 护甲。', good: '飞行怪、轻甲怪', look: { base: 'crossbow', color: '#6fb0ff', accent: 'twin' },
     },
     galeBoomerang: {
-      name: '疾风镖', rarity: 2, cost: { silver: 11 }, dmgMult: 1.48, aspdMult: 0.75, projSpeed: 900, boomerang: true, twin: true, slow: { amt: 0.25, dur: 1.5 },
+      name: '疾风镖', rarity: 2, cost: { silver: 11 }, dmgMult: 0.93, aspdMult: 0.75, projSpeed: 900, boomerang: true, twin: true, slow: { amt: 0.25, dur: 1.5 },
       desc: '一次扔出两支飞得更快的回旋镖（本车道 + 相邻车道），往返命中，命中使目标减速 25%（1.5 秒）。', good: '长队、快怪', look: { base: 'boomerang', color: '#5ab8ff', accent: 'gale' },
     },
     thunderMortar: {
-      name: '雷鸣炮', rarity: 3, cost: { gold: 5 }, dmgMult: 9.35, aspdMult: 0.48, projSpeed: 620, arc: true, splash: { radius: 105, mult: 0.7 }, armorIgnore: 0.3, knock: { dist: 40, slow: 0.3, duration: 1 },
+      name: '雷鸣炮', rarity: 3, cost: { gold: 5 }, dmgMult: 8.4, aspdMult: 0.48, projSpeed: 620, arc: true, splash: { radius: 105, mult: 0.7 }, armorIgnore: 0.3, knock: { dist: 40, slow: 0.3, duration: 1 },
       desc: '落地大范围爆炸，无视 30% 护甲，把范围内的小怪向后震退 40 像素并减速 30%（1 秒）。', good: '成团的怪、重甲怪', look: { base: 'cannon', color: '#b86cff', accent: 'thunder' },
     },
     arcaneStaff: {
@@ -158,12 +158,12 @@
       desc: '魔法弹，爆炸范围更大（半径 75、溅射 75%），对 Boss 伤害 +20%。', good: '成堆的怪、Boss、灵体', look: { base: 'staff', color: '#c88cff', accent: 'arcane' },
     },
     dragonBow: {
-      name: '屠龙弓', rarity: 4, cost: { gold: 9 }, dmgMult: 2.28, aspdMult: 0.9, projSpeed: 1200, bolts: 3, extraBoltMult: 0.5, pierce: { count: 3, range: 560, mult: 0.8 }, bossMult: 1.5, armorIgnore: 0.4,
-      tiers: [{ lv: 8, bolts: 4, dmgMult: 1.99 }],
+      name: '屠龙弓', rarity: 4, cost: { gold: 9 }, dmgMult: 2.02, aspdMult: 0.9, projSpeed: 1200, bolts: 3, extraBoltMult: 0.5, pierce: { count: 3, range: 560, mult: 0.8 }, bossMult: 1.5, armorIgnore: 0.4,
+      tiers: [{ lv: 8, bolts: 4, dmgMult: 1.77 }],
       desc: '一次射 3 支屠龙箭，每支穿透同一车道最多 3 只怪（每只 80% 伤害），对 Boss 伤害 +50%，无视 40% 护甲；升到 8 级一次射 4 支。', good: 'Boss、重甲怪', look: { base: 'bow', color: '#ff6a4a', accent: 'dragon' },
     },
     infernoStaff: {
-      name: '炼狱杖', rarity: 4, cost: { gold: 9 }, dmgMult: 4.71, aspdMult: 0.95, projSpeed: 780, dmgType: 'magic', splash: { radius: 95, mult: 0.8 }, ignite: true,
+      name: '炼狱杖', rarity: 4, cost: { gold: 9 }, dmgMult: 4.4, aspdMult: 0.95, projSpeed: 780, dmgType: 'magic', splash: { radius: 95, mult: 0.8 }, ignite: true,
       desc: '魔法弹大范围爆炸（半径 95、溅射 80%），并点燃目标。', good: '成团的怪、灵体', look: { base: 'staff', color: '#ff7a3a', accent: 'inferno' },
     },
     worldCannon: {
@@ -171,7 +171,7 @@
       desc: '爆炸半径 140、溅射不衰减，无视 80% 护甲，对 Boss 伤害 +50%，并把范围内的小怪向后震退 70 像素。', good: 'Boss、成团的怪', look: { base: 'cannon', color: '#ffd35a', accent: 'world' },
     },
     starfallOrb: {
-      name: '星陨球', rarity: 5, cost: { gold: 17 }, dmgMult: 3.48, aspdMult: 1.1, projSpeed: 1700, dmgType: 'magic', bonusCrit: 0.12, chain: { count: 8, range: 270, falloff: 0.92 },
+      name: '星陨球', rarity: 5, cost: { gold: 17 }, dmgMult: 4.57, aspdMult: 1.1, projSpeed: 1700, dmgType: 'magic', bonusCrit: 0.12, chain: { count: 8, range: 270, falloff: 0.92 },
       desc: '魔法闪电跳跃 8 次，每跳只衰减 8%，暴击率 +12%。', good: '密集怪群、灵体、魔抗低的怪', look: { base: 'orb', color: '#fff0a8', accent: 'starfall' },
     },
   });

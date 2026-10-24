@@ -49,9 +49,45 @@
     <div id="rotate-hint"><div class="phone">📱</div>请把手机横过来玩《城头射手》</div>
     <noscript>请开启 JavaScript 后再游玩《城头射手》。</noscript>
 
+    <script>
+      // 兼容性检查（设计书 111）：浏览器太旧或不支持画布时，给出明确提示，而不是白屏 / 一直转圈
+      (function () {
+        function show(zh, en) {
+          var b = document.getElementById('boot');
+          if (!b) return;
+          b.innerHTML = '<div style="max-width:560px;padding:0 24px;text-align:center;line-height:1.7;font-size:16px;color:#f3c867"><div style="font-size:30px;font-weight:900;letter-spacing:8px;margin-bottom:14px">城头射手</div>' + zh + '<br><span style="opacity:.8;font-size:14px">' + en + '</span></div>';
+          b.classList.remove('gone');
+        }
+        var ok = true;
+        try {
+          new Function('class A { m() { return `${1}`; } } var f = async function () { await 0; }; return [1].map(function (x) { return x; });');
+          var c = document.createElement('canvas');
+          if (!(c.getContext && c.getContext('2d'))) ok = false;
+          if (!window.Promise || !window.requestAnimationFrame || !Object.assign || !Object.entries || !Object.fromEntries || !Array.prototype.flat || !Array.prototype.flatMap || !String.prototype.padStart) ok = false;
+        } catch (e) {
+          ok = false;
+        }
+        if (!ok) {
+          show('您的浏览器版本太旧，或不支持网页画布，无法运行游戏。<br>请换用较新版本的 Chrome、Edge、Firefox 或 Safari。', 'Your browser is too old (or has no canvas support) to run this game. Please use a recent Chrome, Edge, Firefox or Safari.');
+          window.__tdOld = true;
+          return;
+        }
+        // 25 秒还没进游戏：多半是文件没加载完整或浏览器卡住了，给个出路
+        setTimeout(function () {
+          var b = document.getElementById('boot');
+          if (b && !b.classList.contains('gone') && !window.__tdOld) {
+            var t = document.createElement('div');
+            t.style.cssText = 'max-width:520px;padding:0 24px;text-align:center;line-height:1.6;font-size:14px;color:#f3c867;opacity:.9';
+            t.innerHTML = '加载时间有点长……请检查网络后刷新页面（Ctrl+F5）。<br><span style="opacity:.8">Loading is taking long. Check your connection and reload the page (Ctrl+F5).</span>';
+            b.appendChild(t);
+          }
+        }, 25000);
+      })();
+    </script>
     <!-- 按顺序加载：基础 → 数据 → 逻辑 → 画面 → 界面 → 入口 -->
     <script src="src/core/ns.js"></script>
     <script src="src/core/i18n.js"></script>
+    <script src="src/core/quality.js"></script>
     <script>
       // 多语言（设计书 83）：同步加载所选语言的词典（默认英语；简体中文不需要词典）
       (function () {
@@ -82,7 +118,8 @@
     <script src="src/render/sprites.js"></script>
     <script src="src/render/icons2.js"></script>
     <script src="src/render/audio.js"></script>
-    <script src="src/render/samples.js"></script>
+    <!-- 乐器采样 5 MB：异步加载，不挡住首屏；采样还没到时音乐先用合成声音，之后的曲子就会用上采样 -->
+    <script src="src/render/samples.js" async></script>
     <script src="src/render/score.js"></script>
     <script src="src/render/music.js"></script>
     <script src="src/render/art.js"></script>

@@ -225,7 +225,7 @@
     12: {
       name: '绷带木乃伊',
       type: 'normal',
-      countMult: 1.18,
+      countMult: 0.76,
       lanes: 3,
       waves: [
         W(0.98, ['slime', 10], ['mummy', 2]),
@@ -241,7 +241,7 @@
     13: {
       name: '第四条路',
       type: 'normal',
-      countMult: 1,
+      countMult: 0.41,
       lanes: 4,
       waves: [
         W(0.83, ['scorpion', 11], ['slime', 11]),
@@ -257,7 +257,7 @@
     14: {
       name: '滚滚仙人掌',
       type: 'normal',
-      countMult: 1,
+      countMult: 0.8,
       lanes: 4,
       waves: [
         W(1.1, ['slime', 8], ['cactus', 4]),
@@ -273,7 +273,8 @@
     15: {
       name: '钳钳',
       type: 'miniboss',
-      countMult: 1.1,
+      countMult: 0.44,
+      bossHp: -0.6, // v1.10：机器人打不过原来的 Boss 血量，按战役模拟下调
       lanes: 4,
       waves: [
         W(1.0, ['scorpion', 10], ['slime', 8]),
@@ -356,7 +357,7 @@
     20: {
       name: '胖法老',
       type: 'boss',
-      countMult: 1.48,
+      countMult: 0.81,
       lanes: 4,
       waves: [
         W(1.1, ['mummy', 6], ['scorpion', 8]),
@@ -566,7 +567,7 @@
     33: {
       name: '雪原狂奔',
       type: 'rush',
-      countMult: 1.27,
+      countMult: 0.73,
       lanes: 5,
       rushInterval: 13,
       waves: [
@@ -650,7 +651,7 @@
     38: {
       name: '冰晶风暴',
       type: 'raid',
-      countMult: 1.8,
+      countMult: 1.44,
       lanes: 5,
       waves: [
         W(0.6, ['iceSprite', 4], ['bat', 10]),
@@ -684,7 +685,7 @@
     40: {
       name: '霜霜女王',
       type: 'boss',
-      countMult: 1.87,
+      countMult: 1.2,
       lanes: 5,
       waves: [
         W(0.7, ['snowman', 12], ['wolf', 9], ['iceSprite', 2]),
@@ -730,7 +731,7 @@
     43: {
       name: '熔岩巨人',
       type: 'armored',
-      countMult: 2.08,
+      countMult: 0.35,
       lanes: 5,
       waves: [
         W(0.9, ['lavaGolem', 3], ['magma', 8]),
@@ -780,7 +781,7 @@
     46: {
       name: '战车冲锋',
       type: 'rush',
-      countMult: 1.08,
+      countMult: 0.55,
       lanes: 5,
       rushInterval: 12,
       waves: [
@@ -797,7 +798,7 @@
     47: {
       name: '火雨天空',
       type: 'raid',
-      countMult: 1.47,
+      countMult: 0.31,
       lanes: 5,
       waves: [
         W(0.6, ['imp', 5], ['bat', 10]),
@@ -814,7 +815,7 @@
     48: {
       name: '万象',
       type: 'union',
-      countMult: 0.91,
+      countMult: 0.47,
       lanes: 5,
       waves: [
         B(2.0, ['magma', 10], ['assassin', 5]),
@@ -848,7 +849,8 @@
     50: {
       name: '墨墨',
       type: 'boss',
-      countMult: 2.02,
+      countMult: 1.2,
+      extraMult: 0.35, // v1.10：一波同时涌来几百只快怪，机器人完全撑不住，多出的小怪打个折
       lanes: 5,
       final: true,
       waves: [

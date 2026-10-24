@@ -2139,6 +2139,9 @@ body {
   border-color: rgba(255, 160, 140, 0.9);
 }
 .map-screen .node-name {
+  max-width: 170px; /* 英文等语言的关卡名很长，会盖住旁边关卡的星星：超出省略 */
+  overflow: hidden;
+  text-overflow: ellipsis;
   color: #fff3dc;
   background: rgba(10, 16, 28, 0.66);
   border: 1px solid rgba(255, 220, 160, 0.35);

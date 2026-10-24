@@ -24,6 +24,24 @@
       this.hoverLane = -1;
       this.mood = 'idle';
       this.bgCache = null;
+      this.k = 1; // 画布分辨率比例（自适应画质，设计书 111）
+      this._ql = -1;
+    }
+
+    // 自适应画质：按当前档位设置画布分辨率和各层光影开关
+    applyQuality() {
+      const Q = TD.quality;
+      if (!Q || this._ql === Q.level) return;
+      this._ql = Q.level;
+      const p = Q.params();
+      const w = Math.round(C.width * p.scale);
+      const h = Math.round(C.height * p.scale);
+      if (this.canvas.width !== w || this.canvas.height !== h) {
+        this.canvas.width = w;
+        this.canvas.height = h;
+      }
+      this.k = w / C.width;
+      if (TD.art) Object.assign(TD.art.opts, { shafts: p.shafts, motes: p.motes, glow: p.glow, front: p.front });
     }
 
     setChapter(ch) {
@@ -72,6 +90,18 @@
         if (!res.win && battle.wall.hp <= 0) this.collapse = { t0: this.t };
         // 胜利：夜空 / 战场上空绽放一串彩色烟花（设计书 96）
         if (res.win) this.fireworks = { until: this.t + 4, next: 0 };
+      });
+      // 回归的小 Boss 登场：入场处炸开一圈红光，屏幕轻轻一震（它是排在波末尾从最右边走进来的）
+      on('bossReturn', (e) => {
+        const V = this.vfx;
+        const x = Math.min(C.width - 60, e.m.x);
+        const y = e.m.y + e.m.yOffset;
+        if (V) {
+          V.fx.push({ kind: 'flare', x, y, r: 120, color: '#ff6a5a', life: 0.45, age: 0 });
+          V.fx.push({ kind: 'ring', x, y, r0: 10, r1: 110, color: '#ff8a6a', w: 4, life: 0.6, age: 0 });
+          V.fx.push({ kind: 'ring', x, y, r0: 6, r1: 60, color: '#ffffff', w: 2, life: 0.4, age: 0 });
+        }
+        this.shake = Math.max(this.shake, 10);
       });
       // 回归的小 Boss 被击败：银币飞出来
       on('silver', (e) => {
@@ -891,6 +921,9 @@
       this.t += dt;
       this.lastDt = dt;
       this.critAge += dt;
+      this.applyQuality();
+      ctx.setTransform(this.k, 0, 0, this.k, 0, 0);
+      const qp = TD.quality ? TD.quality.params() : { fx: 1, lit: 1 };
       if (this.fireworks) this.updateFireworks(dt);
       ctx.save();
       if (this.shake > 0.2) {
@@ -909,11 +942,11 @@
         // 怪物很多时降低光影缓存的刷新率（设计书 55.3）
         // 怪物很多时降低光影缓存的刷新率、合并动画相位（妖塔里同屏几百只，设计书 74.5）
         const tower = !!b.level.tower;
-        if (TD.art) TD.art.LIT_FPS = tower ? (alive.length > 150 ? 2 : 4) : alive.length > 60 ? 8 : 12;
+        if (TD.art) TD.art.LIT_FPS = Math.max(2, Math.round((tower ? (alive.length > 150 ? 2 : 4) : alive.length > 60 ? 8 : 12) * qp.lit));
         this.litGroups = tower ? 1 : alive.length > 100 ? 2 : 4;
         this.crowd = alive.length > 400 ? 0.62 : alive.length > 250 ? 0.72 : alive.length > 150 ? 0.82 : alive.length > 80 ? 1 : 0;
-        this.crowdBars = alive.length <= 250; // 同屏很多时，小妖不画血条（妖王照画）
-        if (TD.Vfx && TD.Vfx.setCap) TD.Vfx.setCap(alive.length > 40 ? 240 : 520);
+        this.crowdBars = alive.length <= (qp.fx < 0.5 ? 120 : 250); // 同屏很多时，小妖不画血条（妖王照画）
+        if (TD.Vfx && TD.Vfx.setCap) TD.Vfx.setCap(Math.max(40, Math.round((alive.length > 40 ? 240 : 520) * qp.fx)));
         alive.sort((a, c) => (a.def.flying ? 1 : 0) - (c.def.flying ? 1 : 0) || a.y - c.y);
         this.darkEyes = [];
         for (const m of alive) this.drawMonster(m, b);
@@ -3111,11 +3144,11 @@
         ctx.beginPath();
         ctx.arc(0, 0, 42 + Math.sin(this.t * 8) * 3, 0, Math.PI * 2);
         ctx.stroke();
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.setTransform(this.k, 0, 0, this.k, 0, 0);
         if (this.vfx && Math.random() < dt * 14) this.vfx.spawn(1, () => ({ kind: 'mote', x: x + (Math.random() - 0.5) * 80, y: y - Math.random() * 20, vx: 0, vy: -60 - Math.random() * 50, life: 0.9, r: 2, color: '#ffe6a0' }));
       }
       if (haste) {
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.setTransform(this.k, 0, 0, this.k, 0, 0);
         ctx.strokeStyle = 'rgba(140,255,216,0.5)';
         ctx.lineWidth = 1.6;
         ctx.lineCap = 'round';
