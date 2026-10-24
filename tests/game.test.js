@@ -4813,3 +4813,15 @@ test('舞台坐标换算：不转时按比例；顺时针转 90° 后能把屏�
   const [tx, ty] = toScreen(0, 0);
   assert.ok(tx > 200 && ty < 400);
 });
+
+// ---------- v1.24：手机上出不了声（设计书 125） ----------
+test('音频解锁：触摸设备要等手指抬起才算用户操作，所以 pointerup / touchend / click 都要监听，并处理 iOS 静音拨片', () => {
+  const fs = require('fs');
+  const path = require('path');
+  const main = fs.readFileSync(path.join(__dirname, '..', 'src', 'main.js'), 'utf8');
+  for (const ev of ['pointerdown', 'pointerup', 'touchend', 'click', 'keydown']) assert.ok(main.includes(`'${ev}'`), ev);
+  assert.ok(/UNLOCK_EVENTS/.test(main) && /visibilitychange/.test(main));
+  const audio = fs.readFileSync(path.join(__dirname, '..', 'src', 'render', 'audio.js'), 'utf8');
+  assert.ok(/audioSession/.test(audio) && /new Audio\(/.test(audio), 'iOS 静音拨片：audioSession + 无声 <audio>');
+  assert.ok(/return ctx\.state === 'running'/.test(audio), 'unlock 要告诉调用方有没有真的解锁');
+});

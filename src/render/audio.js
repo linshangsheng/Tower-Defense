@@ -26,9 +26,52 @@
     if (A.master) A.master.gain.value = 0.35 * A.volume;
   };
 
+  // 手机浏览器的限制（设计书 125）：触摸时 pointerdown 不算"用户操作"，要等手指抬起（pointerup / touchend / click）才允许出声；
+  // iOS 的静音拨片还会把网页音频一起静音，除非把音频会话设成"播放"类。所以：每次交互都试着解锁，直到真的 running 为止
+  let iosFixed = false;
+  let iosBusy = false;
+  function iosFix() {
+    if (iosFixed || iosBusy) return;
+    try {
+      if (typeof navigator !== 'undefined' && navigator.audioSession) navigator.audioSession.type = 'playback'; // iOS 17+
+    } catch (e) {
+      /* 不支持就算了 */
+    }
+    try {
+      // 老一点的 iOS：播一小段无声的 <audio>，网页音频才会跟着变成"播放"类，静音拨片不再管它。
+      // 要在真正的用户操作里播才成功，所以没成功就下次交互再试
+      const a = new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=');
+      a.setAttribute('playsinline', '');
+      const p = a.play();
+      if (p && p.then) {
+        iosBusy = true;
+        p.then(
+          () => {
+            iosFixed = true;
+            iosBusy = false;
+          },
+          () => {
+            iosBusy = false;
+          }
+        );
+      } else iosFixed = true;
+    } catch (e) {
+      iosFixed = true; // 没有 Audio 就算了
+    }
+  }
   A.unlock = function () {
     const ctx = ensure();
-    if (ctx && ctx.state === 'suspended') ctx.resume();
+    if (!ctx) return false;
+    if (ctx.state !== 'running') {
+      try {
+        const p = ctx.resume();
+        if (p && p.catch) p.catch(() => {});
+      } catch (e) {
+        /* 下次交互再试 */
+      }
+    }
+    iosFix();
+    return ctx.state === 'running';
   };
 
   function tone(freq, dur, type, vol, slide, delay) {

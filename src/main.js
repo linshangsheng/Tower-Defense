@@ -444,18 +444,28 @@
     window.addEventListener('orientationchange', fit);
 
     // 首次交互时解锁音频
-    // 浏览器只允许在用户操作里进全屏：第一次点击 / 按键就进（设计书 66.2）
+    // 手机上触摸的 pointerdown 不算"用户操作"，手指抬起（pointerup / touchend / click）才算：这些事件都监听，
+    // 直到音频真的 running 为止；之后不再监听，免得每次点击都白做一遍（设计书 125）
+    // 浏览器只允许在用户操作里进全屏：第一次点击 / 按键就进（设计书 66.2），同样要等手指抬起
     let triedFull = false;
-    const unlock = () => {
-      TD.audio.unlock();
-      setTimeout(() => TD.music.resume(), 50);
-      if (!triedFull) {
+    let audioOk = false;
+    const UNLOCK_EVENTS = ['pointerdown', 'pointerup', 'touchend', 'click', 'keydown'];
+    const unlock = (e) => {
+      if (!audioOk) {
+        audioOk = TD.audio.unlock();
+        setTimeout(() => TD.music.resume(), 50);
+      }
+      if (!triedFull && e.type !== 'pointerdown') {
         triedFull = true;
         if (game.save.settings.fullscreen !== false) TD.ui.setFullscreen(true);
       }
+      if (audioOk && triedFull) for (const ev of UNLOCK_EVENTS) window.removeEventListener(ev, unlock, true);
     };
-    window.addEventListener('pointerdown', unlock);
-    window.addEventListener('keydown', unlock);
+    for (const ev of UNLOCK_EVENTS) window.addEventListener(ev, unlock, true);
+    // 切回来（接完电话、从别的 App 回来）时 iOS 会把音频打断，回来后再试着恢复
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && audioOk) TD.audio.unlock();
+    });
 
     canvas.addEventListener('pointermove', (e) => {
       if (!game.pendingLane) return;

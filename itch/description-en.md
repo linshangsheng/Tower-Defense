@@ -48,6 +48,7 @@ Free, runs in your browser, no install, no account. Your save lives in your brow
 
 ### Changelog
 
+- **v1.24** — Fixed no sound on phones (audio is now unlocked on finger-up and handles the iOS silent switch).
 - **v1.23** — Added an About screen (title screen and Settings): credits, how the game was made, music-sample attribution, and a link to this page for feedback.
 - **v1.22** — Phones held upright no longer show a "rotate your phone" wall: the game turns itself 90° to fill the screen (turn the phone sideways for a better view).
 - **v1.21** — Fixed the English (and other non-Chinese) UI turning back into Chinese a few seconds into a battle. Quit button hidden when embedded in a web page.
