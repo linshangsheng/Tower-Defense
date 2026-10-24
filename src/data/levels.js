@@ -1679,6 +1679,87 @@
     });
   }
 
+  // ---------- 第 101–200 关：深渊回响（设计书 112）----------
+  // 第 11–20 章沿用前 10 章的场景和音乐，加一层深渊的紫光；第 100 + j 关由第 j 关改来：
+  //   怪物数量 ×1.25，再混进"搭档章节"（隔 5 章）里的两种小怪；大 Boss 关里小 Boss 同时登场；Boss 血量逐章 +；第 200 关是墨墨和它的回声一起
+  const ABYSS_DENY = ['boss', 'towerOf', 'bossPart', 'ai', 'healer', 'ranged', 'chill', 'bubbler', 'fireZone', 'onDeath', 'staticShock', 'stealth'];
+  const baseChapters = TD.data.chapters.slice(0, 10);
+  const fodderOf = (ch) => {
+    const out = [];
+    for (const n of ch.levels) for (const w of TD.data.levels[n].waves) for (const [t] of w.groups) {
+      const d = TD.data.monsters[t];
+      if (d && !ABYSS_DENY.some((k) => d[k]) && !out.includes(t)) out.push(t);
+    }
+    return out;
+  };
+  const bossesOf = (ch, kind) => {
+    const out = [];
+    for (const n of ch.levels) for (const w of TD.data.levels[n].waves) for (const [t] of w.groups) {
+      const d = TD.data.monsters[t];
+      if (d && d.boss === kind && !out.includes(t)) out.push(t);
+    }
+    return out;
+  };
+  baseChapters.forEach((ch, ci) => {
+    const partner = fodderOf(baseChapters[(ci + 5) % 10]);
+    const mini = bossesOf(ch, 'mini').filter((t) => ci !== 4 || t === 'rockGolem');
+    ch.levels.forEach((j, k) => {
+      const o = TD.data.levels[j];
+      const n = 100 + j;
+      const clone = JSON.parse(JSON.stringify(o.waves));
+      const isBoss = o.type === 'boss';
+      const waves = clone.map((w, wi) => {
+        const groups = w.groups.map(([t, c]) => [t, TD.data.monsters[t].boss ? c : Math.ceil(c * 1.25)]);
+        // 搭档章节的小怪：第 2 波起每波两种
+        if (wi >= 1 && partner.length) {
+          groups.push([partner[(j + wi) % partner.length], 3 + Math.floor(wi * 1.5) + ci]);
+          if (partner.length > 1) groups.push([partner[(j + wi * 2 + 1) % partner.length], 2 + Math.floor(wi) + ci]);
+        }
+        return Object.assign({}, w, { gap: +(w.gap * 0.9).toFixed(2), groups });
+      });
+      const lv = Object.assign({}, o, {
+        name: '深渊 · ' + o.name,
+        type: o.type === 'tutorial' ? 'normal' : o.type,
+        lanes: Math.max(3, o.lanes),
+        waves,
+        countMult: 0.7,
+        abyss: true,
+        echoOf: j,
+        shortName: o.name, // 地图上的关卡名不带"深渊 · "前缀（章节名里已经有了）
+      });
+      delete lv.final;
+      delete lv.extraMult;
+      // Boss 血量逐章加强；大 Boss 关里本章的小 Boss 一起登场
+      if (o.type === 'boss' || o.type === 'miniboss') lv.bossHp = +(0.2 + ci * 0.04).toFixed(2);
+      if (isBoss && mini.length) waves[waves.length - 1].groups.push([mini[0], 1]);
+      if (n === 200) {
+        // 终章：墨墨和它的回声一起
+        waves[waves.length - 1].groups.push(['inkBoss', 1]);
+        lv.name = '深渊 · 墨墨与回声';
+        lv.shortName = lv.name;
+        lv.bossHp = 0.6;
+        lv.final = true;
+        lv.tip = '墨墨和它的回声一起来了——两个最终 Boss 同时登场。这是最后一关。';
+      }
+      TD.data.levels[n] = lv;
+    });
+  });
+  // 章节 11–20：和前 10 章一一对应
+  baseChapters.forEach((ch, ci) => {
+    TD.data.chapters.push({
+      id: 11 + ci,
+      name: '深渊 · ' + ch.name,
+      theme: Object.assign({}, ch.theme, { abyss: true }),
+      levels: ch.levels.map((j) => 100 + j),
+      abyss: true,
+      music: ch.id,
+    });
+  });
+  // 章节序号的中文写法：第一章 … 第二十章
+  // （用 Unicode 转义写，免得被多语言提取工具当成界面文字；英文等语言里"第{0}章"的 {0} 由 i18n 换成阿拉伯数字，见 core/i18n.js）
+  const NUM = '\u4e00\u4e8c\u4e09\u56db\u4e94\u516d\u4e03\u516b\u4e5d\u5341'; // 一二三四五六七八九十
+  TD.data.chapterNo = (id) => (id <= 10 ? NUM[id - 1] : id < 20 ? NUM[9] + NUM[id - 11] : NUM[1] + NUM[9]);
+
   TD.data.levelTypeNames = {
     tutorial: '教学',
     tower: '九层妖塔',

@@ -629,7 +629,7 @@
     }
     const ch = D.chapters.find((c) => c.id === chapterId) || D.chapters[0];
     UI.mapChapter = ch.id;
-    TD.music.play(ch.id, 'calm');
+    TD.music.play(ch.music || ch.id, 'calm');
     game.renderer.setChapter(ch);
     // 章节切换：上一章 / 第 N 章（点开列表）/ 下一章；十章的页签太占横向位置（v0.68）
     const CN = '一二三四五六七八九十';
@@ -640,7 +640,7 @@
       'div',
       { class: 'chapter-nav' },
       h('button', { class: 'btn small icon-btn', title: prevCh ? prevCh.name : '', disabled: prevCh ? null : true, onclick: () => (sfx('click'), UI.showMap(prevCh.id)) }, '‹'),
-      h('button', { class: 'btn small chapter-pick', title: '选择章节', onclick: () => (sfx('click'), UI.showChapterList(ch.id)) }, `第${CN[ch.id - 1]}章 ▾`),
+      h('button', { class: 'btn small chapter-pick', title: '选择章节', onclick: () => (sfx('click'), UI.showChapterList(ch.id)) }, `第${D.chapterNo(ch.id)}章 ▾`),
       h('button', { class: 'btn small icon-btn', title: nextChap ? (nextOpen ? nextChap.name : `通关第 ${nextChap.levels[0] - 1} 关后开放`) : '', disabled: nextOpen ? null : true, onclick: () => (sfx('click'), UI.showMap(nextChap.id)) }, '›')
     );
     const nodes = ch.levels.map((n, i) => {
@@ -668,7 +668,7 @@
         rec.clears ? starsEl(rec.stars) : null,
         rec.crown ? h('span', { class: 'node-crown', title: '已在挑战难度通关' }, '👑') : null,
         rec.mission ? h('span', { class: 'node-mission', title: '关卡任务已完成' }, '🎯') : null,
-        h('span', { class: 'node-name', title: lvl.name }, `${n}. ${lvl.name}`)
+        h('span', { class: 'node-name', title: lvl.name }, `${n}. ${lvl.shortName || lvl.name}`)
       );
     });
     // 路径
@@ -692,14 +692,14 @@
         : h('div', { class: 'map-note' }, `恭喜通关「${ch.name}」！全部 ${D.chapters.length} 章都守住了。可以回头挑战三星和王冠，或者去无尽模式刷新纪录。`);
     screenEl = h(
       'div',
-      { class: 'screen map-screen' + (ch.theme.desert ? ' desert' : ch.theme.swamp ? ' swamp' : ch.theme.snow ? ' snow' : ch.theme.lava ? ' lava' : ch.theme.sky6 ? ' sky6' : ch.theme.sea7 ? ' sea7' : ch.theme.moon8 ? ' moon8' : ch.theme.forge9 ? ' forge9' : ch.theme.void10 ? ' void10' : '') },
+      { class: 'screen map-screen' + (ch.abyss ? ' abyss' : '') + (ch.theme.desert ? ' desert' : ch.theme.swamp ? ' swamp' : ch.theme.snow ? ' snow' : ch.theme.lava ? ' lava' : ch.theme.sky6 ? ' sky6' : ch.theme.sea7 ? ' sea7' : ch.theme.moon8 ? ' moon8' : ch.theme.forge9 ? ' forge9' : ch.theme.void10 ? ' void10' : '') },
       path,
       h(
         'div',
         { class: 'topbar' },
         h('button', { class: 'btn small', onclick: () => (sfx('click'), UI.showTitle()) }, '‹ 标题'),
         chapterNav,
-        h('div', { class: 'chapter-title', title: `第${'一二三四五六七八九十'[ch.id - 1]}章 · ${ch.name}` }, ch.name, h('span', { class: 'chapter-stars' }, ` ★ ${totalStars}/${ch.levels.length * 3}`), P.crowns(s, ch.levels) ? h('span', { class: 'chapter-crowns', title: '本章王冠（挑战难度通关）' }, `👑${P.crowns(s, ch.levels)}`) : null),
+        h('div', { class: 'chapter-title', title: `第${D.chapterNo(ch.id)}章 · ${ch.name}` }, ch.name, h('span', { class: 'chapter-stars' }, ` ★ ${totalStars}/${ch.levels.length * 3}`), P.crowns(s, ch.levels) ? h('span', { class: 'chapter-crowns', title: '本章王冠（挑战难度通关）' }, `👑${P.crowns(s, ch.levels)}`) : null),
         h('div', { class: 'power' }, '战力 ', h('b', null, P.power(s))),
         currencyBar(),
         P.isCleared(s, 5) ? h('button', { class: 'btn small icon-btn', title: '王国小镇', onclick: () => (sfx('click'), UI.showTown()) }, '🏘') : null,
@@ -827,7 +827,7 @@
           title: open ? c.name : `通关第 ${c.levels[0] - 1} 关后开放`,
           onclick: () => (sfx('click'), UI.closeModal(), UI.showMap(c.id)),
         },
-        h('b', null, open ? `第${CN[c.id - 1]}章` : '🔒'),
+        h('b', null, open ? `第${D.chapterNo(c.id)}章` : '🔒'),
         h('span', null, c.name),
         h('span', { class: 'dim' }, `${done}/${c.levels.length}`)
       );

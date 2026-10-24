@@ -208,7 +208,7 @@
       if (opts.levelDef || typeof opts.level !== 'number' || !D.levels[opts.level] || this.level.tower || this.level.endless) return none;
       if (opts.level < (C.extraFromLevel || 1)) return none;
       // extraMult：个别关卡（第 50 关这种一波同时涌来几百只快怪的）单独把多出的小怪打个折（v1.10）
-      const total = Math.round(opts.level * (C.extraMonstersPerLevel || 0) * (this.level.extraMult !== undefined ? this.level.extraMult : 1));
+      const total = Math.round(Math.min(opts.level, C.extraMaxLevel || opts.level) * (C.extraMonstersPerLevel || 0) * (this.level.extraMult !== undefined ? this.level.extraMult : 1));
       const cm = (this.level.countMult || 1) * (1 + (this.rules.countBonus || 0));
       const count = (count) => Math.max(1, Math.round(count * cm));
       const fodder = (type) => !FODDER_DENY.some((k) => D.monsters[type][k]);

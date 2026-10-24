@@ -933,6 +933,8 @@
 
       const lanes = b ? b.lanes : 3;
       this.drawBackground(lanes);
+      // 深渊回响（第 101–200 关）：整个战场罩一层紫光，四角更暗（只多画两次填充，很便宜）
+      if (this.theme.abyss) this.drawAbyssTint();
       if (b) this.drawLaneEffects(b);
       this.drawWall(b ? b.wall.hp / b.wall.max : 1);
       if (b) {
@@ -988,6 +990,20 @@
       if (b) this.drawBossBar(b);
       if (b) this.drawWallWarning(b);
       ctx.restore();
+    }
+
+    drawAbyssTint() {
+      const ctx = this.ctx;
+      ctx.fillStyle = 'rgba(110,50,180,0.13)';
+      ctx.fillRect(0, 0, C.width, C.height);
+      if (!this._abyssVig) {
+        const g = ctx.createRadialGradient(C.width / 2, C.height / 2, C.height * 0.35, C.width / 2, C.height / 2, C.width * 0.62);
+        g.addColorStop(0, 'rgba(40,10,80,0)');
+        g.addColorStop(1, 'rgba(40,10,80,0.5)');
+        this._abyssVig = g;
+      }
+      ctx.fillStyle = this._abyssVig;
+      ctx.fillRect(0, 0, C.width, C.height);
     }
 
     // 雷雷的暴风雨：斜着落下的雨丝 + 偶尔的闪光（设计书 33.3）

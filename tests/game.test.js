@@ -861,7 +861,7 @@ test('守城日记：每个段落都有台词，说话人都存在', () => {
   // 每章的小 Boss 和大 Boss 都有战前、战后
   for (const n of Object.keys(D.levels).map(Number)) {
     const t = D.levels[n].type;
-    if (t === 'boss' || t === 'miniboss') assert.ok(D.story['pre' + n] && D.story['post' + n], `第 ${n} 关缺对话`);
+    if ((t === 'boss' || t === 'miniboss') && !D.levels[n].abyss) assert.ok(D.story['pre' + n] && D.story['post' + n], `第 ${n} 关缺对话`);
   }
 });
 
@@ -2943,9 +2943,9 @@ test('补给卡（金）：神圣庇佑复活一次；狂暴全属性；时光�
 });
 
 // ---------- 第八至十章 · 混沌回声（设计书 75） ----------
-test('100 关：十章、每章 10 关，类型顺序固定，所有怪物都存在', () => {
-  assert.strictEqual(D.chapters.length, 10);
-  assert.strictEqual(Object.keys(D.levels).length, 100);
+test('前 100 关：十章、每章 10 关，类型顺序固定，所有怪物都存在', () => {
+  assert.strictEqual(D.chapters.length, 20);
+  assert.strictEqual(Object.keys(D.levels).length, 200);
   assert.strictEqual(D.chapterOf(75).id, 8);
   assert.strictEqual(D.chapterOf(85).id, 9);
   assert.strictEqual(D.chapterOf(100).id, 10);
@@ -4441,4 +4441,64 @@ test('多出的小怪不会全堆进一波：每关各波分到的数量和该�
   // 第 50 关：每一波都分到了
   const e50 = queuedTotals(50).b.extraPlan;
   assert.ok(e50.every((p) => p && p.length), '第 50 关每一波都有多出的小怪');
+});
+
+// ---------- v1.11：200 关，深渊回响（设计书 112） ----------
+test('200 关：第 11–20 章是前 10 章的深渊版，第 100 + j 关由第 j 关改来', () => {
+  assert.strictEqual(D.chapters.length, 20);
+  assert.strictEqual(Object.keys(D.levels).length, 200);
+  for (let n = 1; n <= 200; n++) assert.ok(D.levels[n], '第 ' + n + ' 关');
+  assert.strictEqual(D.chapterOf(101).id, 11);
+  assert.strictEqual(D.chapterOf(150).id, 15);
+  assert.strictEqual(D.chapterOf(200).id, 20);
+  assert.deepStrictEqual(['一', '十', '十一', '十五', '十九', '二十'], [1, 10, 11, 15, 19, 20].map(D.chapterNo));
+  for (let i = 0; i < 10; i++) {
+    const base = D.chapters[i];
+    const ab = D.chapters[10 + i];
+    assert.ok(ab.abyss && ab.theme.abyss && ab.name === '深渊 · ' + base.name && ab.music === base.id);
+    assert.deepStrictEqual(ab.levels, base.levels.map((j) => 100 + j));
+    assert.strictEqual(ab.theme.art, base.theme.art, '场景沿用前 10 章');
+  }
+  const bossTypes = (n) => new Set(D.levels[n].waves.flatMap((w) => w.groups.map(([t]) => t)).filter((t) => D.monsters[t].boss));
+  for (let j = 1; j <= 100; j++) {
+    const o = D.levels[j];
+    const lv = D.levels[100 + j];
+    assert.ok(lv.abyss && lv.echoOf === j && (lv.name === '深渊 · ' + o.name || j === 100), `第 ${100 + j} 关`);
+    assert.strictEqual(lv.type, o.type === 'tutorial' ? 'normal' : o.type, `第 ${100 + j} 关类型`);
+    assert.ok(lv.lanes >= 3 && lv.waves.length === o.waves.length && lv.tip);
+    for (const w of lv.waves) for (const [t, c] of w.groups) assert.ok(D.monsters[t] && c >= 1, `第 ${100 + j} 关的 ${t}`);
+    // 原来的 Boss 都还在；大 Boss 关里本章的小 Boss 一起登场
+    for (const b of bossTypes(j)) assert.ok(bossTypes(100 + j).has(b), `第 ${100 + j} 关少了 ${b}`);
+    if (o.type === 'boss' || o.type === 'miniboss') assert.ok(lv.bossHp > 0);
+    if (j % 10 === 0 && j !== 100) assert.ok(bossTypes(100 + j).size >= 2, `第 ${100 + j} 关应该是两个 Boss`);
+    // 搭档章节的小怪混进来了（第 2 波起）
+    if (lv.waves.length > 1) assert.ok(lv.waves[1].groups.length > o.waves[1].groups.length, `第 ${100 + j} 关第 2 波有搭档章节的小怪`);
+  }
+  // 只有第 50 和第 200 关是最终 Boss（播结局）；第 200 关墨墨和它的回声一起
+  assert.deepStrictEqual(Object.keys(D.levels).filter((n) => D.levels[n].final).map(Number), [50, 200]);
+  assert.ok(bossTypes(200).has('chaosInk') && bossTypes(200).has('inkBoss'));
+  assert.ok(D.story.ch11 && D.story.post200 && D.storyOrder.includes('ch11') && D.storyOrder.includes('post200'));
+  assert.ok(D.achievements.find((a) => a.id === 'abyss20').check(Object.assign(P.newSave(), { levels: { 200: { stars: 1, clears: 1 } } })));
+});
+
+test('深渊回响：难度系数继续增长；多出的小怪封顶 500；通关第 100 关才开放第 101 关；音乐沿用对应章节', () => {
+  assert.ok(TD.config.difficulty(150) > TD.config.difficulty(100) && TD.config.difficulty(200) > TD.config.difficulty(150));
+  assert.ok(Math.abs(TD.config.difficulty(200) / TD.config.difficulty(100) - (1 + 0.01 * 130) / (1 + 0.01 * 30)) < 1e-9);
+  const s = P.newSave();
+  const mk = (n) => new TD.Battle({ level: n, stats: P.heroStats(s), seed: 3, loadout: { active: [], items: [] } });
+  const total = (b) => b.extraPlan.reduce((a, p) => a + (p ? p.reduce((x, [, c]) => x + c, 0) : 0), 0);
+  assert.strictEqual(total(mk(100)), 500 * (D.levels[100].extraMult !== undefined ? D.levels[100].extraMult : 1));
+  for (const n of [101, 150, 200]) assert.strictEqual(total(mk(n)), 500, `第 ${n} 关多出的小怪封顶 500`);
+  assert.ok(!P.isUnlocked(s, 101));
+  s.levels[100] = { stars: 1, clears: 1 };
+  assert.ok(P.isUnlocked(s, 101));
+  // 战斗能正常跑完（深渊关的怪物种类混合）
+  for (const n of [101, 110, 135, 160, 200]) {
+    const st = Object.assign({}, P.heroStats(s), { atk: 1e8, aspd: 20 }); // 打得动才能跑完（每发只打一只，攻速也要高）：这里只验证深渊关能正常出怪、结算
+    const b = new TD.Battle({ level: n, stats: st, seed: 11, loadout: P.battleLoadout(s), autoSupply: true });
+    b.wall.max = b.wall.hp = 1e12;
+    let guard = 0;
+    while (!b.over && guard++ < 60 * 400) b.step(1 / 30);
+    assert.ok(b.over, `第 ${n} 关没跑完`);
+  }
 });

@@ -357,7 +357,7 @@
     const types = all.filter((t) => monsterChapter(t) === chapterId);
     const total = all.length;
     const seenCount = all.filter((t) => seen[t] || kills[t]).length;
-    const tabs = D.chapters.map((c) => h('button', { class: 'btn small' + (c.id === chapterId ? ' primary' : ''), onclick: () => (sfx('click'), UI.showBestiary(c.id)) }, c.name));
+    const tabs = D.chapters.filter((c) => !c.abyss).map((c) => h('button', { class: 'btn small' + (c.id === chapterId ? ' primary' : ''), onclick: () => (sfx('click'), UI.showBestiary(c.id)) }, c.name));
     const cards = types.map((t) => {
       const def = D.monsters[t];
       const known = seen[t] || kills[t];

@@ -27,7 +27,7 @@ const STEPS = [
   ['help', () => (TD.ui.showHelp(), !!document.querySelector('.modal'))],
   ['export', () => (TD.ui.showExport(), !!document.querySelector('textarea'))],
   ['import', () => (TD.ui.showImport(), !!document.querySelector('textarea'))],
-  ...[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((c) => [`map-${c}`, (c) => (TD.ui.closeModal(), TD.ui.showMap(c), document.querySelectorAll('.map-node').length === 10), c]),
+  ...[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 15, 20].map((c) => [`map-${c}`, (c) => (TD.ui.closeModal(), TD.ui.showMap(c), document.querySelectorAll('.map-node').length === 10), c]),
   ['preview', () => (TD.ui.showPreview(45), !!document.querySelector('.preview .mon-card'))],
   ...['loadout', 'attrs', 'skills', 'equip', 'wall', 'items', 'exchange'].map((t) => [`shop-${t}`, (t) => (TD.ui.showShop(45, t), !!document.querySelector('.shop, .screen')), t]),
   // 装备页的七个分类：武器 + 六类装备，每类 30 件（设计书 76.3）
@@ -41,7 +41,7 @@ const STEPS = [
     },
     i,
   ]),
-  ['chapter-list', () => (TD.ui.showMap(10), TD.ui.showChapterList(10), document.querySelectorAll('.chapter-card').length === 10)],
+  ['chapter-list', () => (TD.ui.showMap(10), TD.ui.showChapterList(10), document.querySelectorAll('.chapter-card').length === 20)],
   ['diary', () => (TD.ui.showMap(5), TD.ui.showDiary(), document.querySelectorAll('.diary-item').length === TD.data.storyOrder.length)],
   ['wardrobe', () => (TD.ui.showWardrobe(), document.querySelectorAll('.outfit-card').length === TD.data.outfits.length)],
   ['town', () => (TD.ui.showTown(), !!document.querySelector('.town-canvas'))],
@@ -124,7 +124,7 @@ const STEPS = [
   await page.evaluate(() => {
     const s = TD.game.save;
     s.settings.diffChosen = true;
-    for (let k = 1; k <= 70; k++) s.levels[k] = { stars: (k % 3) + 1, clears: 1, crown: k % 4 === 0, mission: k % 2 === 0 };
+    for (let k = 1; k <= 130; k++) s.levels[k] = { stars: (k % 3) + 1, clears: 1, crown: k % 4 === 0, mission: k % 2 === 0 };
     for (const k of TD.data.storyOrder) s.story[k] = 'read';
     for (const t of Object.keys(TD.data.monsters)) s.seenMonsters[t] = true;
     for (const w of Object.keys(s.weapons)) s.weapons[w].owned = true;

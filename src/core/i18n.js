@@ -36,6 +36,12 @@
 
   const SINGLE = ['铜', '银', '金', '钻', '红', '蓝', '绿', '紫'];
   const NUMERALS = '一二三四五六七八九十'; // 第"三"章：不用词典，直接换成阿拉伯数字（日语 / 中文保持汉字）
+  // 一 … 二十 对应的数字（十一 … 十九、二十 也认；第 11–20 章要用，设计书 112）；不是数字写法的返回 0
+  const numeralValue = (s) => {
+    if (s.length === 1) return NUMERALS.indexOf(s) + 1;
+    if (s.length === 2 && s[0] === NUMERALS[9]) return NUMERALS.indexOf(s[1]) >= 0 && s[1] !== NUMERALS[9] ? 10 + NUMERALS.indexOf(s[1]) + 1 : 0;
+    return s === NUMERALS[1] + NUMERALS[9] ? 20 : 0;
+  };
   const dicts = {}; // 语言代码 → { 中文原文: 译文 }
   let lang = 'en';
   let dict = null;
@@ -147,7 +153,10 @@
   function translateCore(core, noSplit) {
     const exact = dict[core];
     if (exact !== undefined) return exact;
-    if (core.length === 1 && !FULLWIDTH_OK[lang] && NUMERALS.includes(core)) return String(NUMERALS.indexOf(core) + 1);
+    if (core.length <= 2 && !FULLWIDTH_OK[lang]) {
+      const nv = numeralValue(core);
+      if (nv) return String(nv);
+    }
     const hit = matchPattern(core, !noSplit);
     if (hit !== null) return hit;
     if (!noSplit) {

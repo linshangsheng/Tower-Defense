@@ -80,7 +80,7 @@
     const el = h(
       'div',
       { class: 'story-overlay', onclick: advance },
-      h('div', { class: 'story-title' }, key.startsWith('ch') ? `第${'一二三四五六七八九十'[+key.slice(2) - 1]}章 · ${sc.title}` : sc.title),
+      h('div', { class: 'story-title' }, key.startsWith('ch') ? `第${TD.data.chapterNo(+key.slice(2))}章 · ${sc.title}` : sc.title),
       h('div', { class: 'story-box' }, avatar, h('div', { class: 'story-main' }, nameEl, textEl), nextEl),
       h('button', { class: 'btn small story-skip', onclick: (e) => (e.stopPropagation(), sfx('click'), end(false)) }, '跳过 ›')
     );

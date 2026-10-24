@@ -116,7 +116,7 @@
     });
     game.persist();
     const lvType = TD.data.levels[battle.stage] && TD.data.levels[battle.stage].type;
-    TD.music.play(TD.music.levelTheme(TD.data.chapterOf(battle.stage).id, battle.stage, lvType), 'battle');
+    TD.music.play(TD.music.levelTheme(TD.data.chapterOf(battle.stage).music || TD.data.chapterOf(battle.stage).id, battle.stage, lvType), 'battle');
     battle.on('waveStart', (e) => {
       if (e.chapter) TD.music.play(TD.music.levelTheme(e.chapter, battle.stage, lvType), 'battle');
     });
