@@ -371,8 +371,8 @@
   // 城墙等级对应的最大血量：30 级以内每级 ×1.1，之后线性增长
   P.wallHpAt = (level) => {
     const u = D.wallUpgrades.level;
-    const base = C.wall.baseHp * Math.pow(C.wall.hpGrowth, Math.min(level, u.max) - 1);
-    return level <= u.max ? base : base * (1 + u.beyond * (level - u.max));
+    const base = C.wall.baseHp * Math.pow(C.wall.hpGrowth, Math.min(level, u.soft) - 1);
+    return level <= u.soft ? base : base * (1 + u.beyond * (level - u.soft));
   };
 
   // 计算出战属性（不含战斗内临时增益）
@@ -515,7 +515,7 @@
   P.wallCostAt = (key, lv) => {
     const u = D.wallUpgrades[key];
     if (lv >= D.levelCap) return null;
-    return lv < u.max ? { copper: u.cost(lv) } : beyondCost(u.cost(u.max), lv, u.max);
+    return lv < u.soft ? { copper: u.cost(lv) } : beyondCost(u.cost(u.soft), lv, u.soft);
   };
   P.wallCost = (save, key) => P.wallCostAt(key, save.wall[key]);
   P.buyWall = function (save, key) {

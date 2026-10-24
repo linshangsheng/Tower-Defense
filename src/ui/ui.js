@@ -1313,8 +1313,7 @@
       const u = D.wallUpgrades[key];
       const lv = s.wall[key];
       let detail = u.desc;
-      if (key === 'level') detail = h('span', null, `${u.desc} 血量 ${st.wallMax} → `, h('b', { class: 'up' }, Math.round(P.wallHpAt(lv + 1) * (1 + P.equipStats(s).wallHpPct))), lv >= u.max ? h('span', { class: 'hint' }, ` （30 级以后每级 +${Math.round(u.beyond * 100)}% 的 30 级血量）`) : null);
-      else if (lv >= u.max) detail = h('span', null, u.desc, h('span', { class: 'hint' }, ' （超过基础上限后每级收益变小）'));
+      if (key === 'level') detail = h('span', null, `${u.desc} 血量 ${st.wallMax} → `, h('b', { class: 'up' }, Math.round(P.wallHpAt(lv + 1) * (1 + P.equipStats(s).wallHpPct))), lv >= u.soft ? h('span', { class: 'hint' }, ` （30 级以后每级 +${Math.round(u.beyond * 100)}% 的 30 级血量）`) : null);
       const capped = (key === 'fortify' && st.wallDr >= 0.75) || (key === 'mend' && st.mend >= 0.5);
       wallGrid.append(card(u.name, lvText(lv), capped ? h('span', null, detail, '（已到上限）') : detail, capped ? h('span', { class: 'equipped' }, '已到上限') : h('div', { class: 'btn-col' }, buyBtn(P.wallCost(s, key), () => P.buyWall(s, key), '升级'), bulkRow('wall', key)), { cls: 'v', icon: TD.sprites.iconCanvas('wall_' + key, 56), bar: lv / u.max, barText: `${lv} / ${u.max}`, over: lv >= u.max }));
     }

@@ -350,11 +350,12 @@
   TD.data.attributeGrowth = 1.2;
   TD.data.attributeCost = (key, lv) => TD.util.round5(TD.data.attributes[key].base * Math.pow(TD.data.attributeGrowth, lv));
 
-  // 城墙升级（设计书 18.6）。level 字段：城墙等级从 1 开始，其余从 0 开始
+  // 城墙升级（设计书 18.6）。level 字段：城墙等级从 1 开始，其余从 0 开始；max = 基础等级 1000，soft = 成长期（同属性，见设计书 108）
   TD.data.wallUpgrades = {
     level: {
       name: '城墙等级',
-      max: 30,
+      soft: 30,
+      max: 1000,
       beyond: 0.15, // 第 30 级以后每级血量 +15% × 第 30 级的血量（线性增长，不再 ×1.1）
       start: 1,
       cost: (lv) => TD.util.round5(60 * Math.pow(1.18, lv - 1)),
@@ -362,7 +363,8 @@
     },
     fortify: {
       name: '加固',
-      max: 10,
+      soft: 10,
+      max: 1000,
       beyond: 0.004,
       start: 0,
       per: 0.03,
@@ -371,7 +373,8 @@
     },
     mend: {
       name: '修缮',
-      max: 5,
+      soft: 5,
+      max: 1000,
       beyond: 0.002,
       start: 0,
       per: 0.02,
@@ -380,7 +383,8 @@
     },
     thorns: {
       name: '荆棘',
-      max: 5,
+      soft: 5,
+      max: 1000,
       beyond: 0.02,
       start: 0,
       per: 0.2,

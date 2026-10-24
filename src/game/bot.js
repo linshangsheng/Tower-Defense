@@ -30,8 +30,8 @@
     }
     const wid = save.loadout.weapon;
     if (save.weapons[wid].lv < D.weaponUpgrade.max) add('weapon:' + wid, P.weaponUpgradeCost(save, wid), (s) => s.weapons[wid].lv++);
-    if (save.wall.level < D.wallUpgrades.level.max) add('wall:level', P.wallCost(save, 'level'), (s) => s.wall.level++);
-    if (save.wall.fortify < D.wallUpgrades.fortify.max) add('wall:fortify', P.wallCost(save, 'fortify'), (s) => s.wall.fortify++);
+    if (save.wall.level < D.wallUpgrades.level.soft) add('wall:level', P.wallCost(save, 'level'), (s) => s.wall.level++);
+    if (save.wall.fortify < D.wallUpgrades.fortify.soft) add('wall:fortify', P.wallCost(save, 'fortify'), (s) => s.wall.fortify++);
     // 带在身上的被动技能升到基础上限（10 级）：和属性、武器升级按性价比一起比较（设计书 90）
     for (const id of save.loadout.passive) {
       if (!id || !save.passiveOwned[id]) continue;
