@@ -24,7 +24,7 @@ const SHOTS = path.join(OUT, 'screenshots');
 const ZIP = path.join(OUT, 'archer-on-the-wall-html5.zip');
 const DEMO_ZIP = path.join(OUT, 'archer-on-the-wall-demo-html5.zip');
 const GAME_FILES = ['index.html', 'manifest.webmanifest', 'sw.js', 'CREDITS.md', 'css', 'i18n', 'icons', 'src'];
-const what = process.argv[2] || 'all';
+const what = require.main === module ? process.argv[2] || 'all' : 'lib';
 const BATTLE_LEVEL = +process.env.BATTLE_LEVEL || 45;
 const want = (k) => what === 'all' || what === k;
 
@@ -517,6 +517,9 @@ async function verify(browser) {
   if (!info.title || nodes !== 10 || bad.length) process.exitCode = 1;
 }
 
+module.exports = { openGame, enterBattle, crowdShot, dragonScene };
+
+if (require.main === module)
 (async () => {
   fs.mkdirSync(OUT, { recursive: true });
   if (want('zip')) buildZip();
