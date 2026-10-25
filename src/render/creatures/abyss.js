@@ -140,6 +140,7 @@
   }
 
   // ================= 姿态：由 ai 状态和时间算出所有动作参数（画法和特效定位都用它） =================
+  const ART = 0.92; // 整条龙画得比 def.size 略小一点，给翅膀留出空间（嘴的位置 K.dragonMouthAt 同步缩放）
   const KIND = { fire: 'fire', shock: 'ram', bolt: 'bolt', ice: 'ice' }; // 技能 → 动作
   function durations() {
     const G = TD.data.abyssDragon || {};
@@ -248,7 +249,7 @@
     const dur = durations();
     const ai = dur[k] ? { anim: k, animTimer: dur[k] * 0.7, form: 1 } : { mode: 'idle' };
     const g = headGeometry(poseOf(ai, 0));
-    return { x: g.mouthX, y: g.mouthY };
+    return { x: g.mouthX * ART, y: g.mouthY * ART };
   };
 
   // ================= 火焰、冰晶（程序生成的技能特效，画在龙的坐标系里） =================
@@ -379,6 +380,7 @@
     const eyeGlow = fallen ? 0.15 + 0.85 * rebirth * rebirth : 1;
 
     ctx.save();
+    ctx.scale(ART, ART);
     ctx.translate(0, (q.bob + 0.12 + q.bodyY) * s);
 
     // 背光：身体是炭黑的，要靠光把轮廓从深紫的背景里托出来
@@ -440,17 +442,17 @@
     // 肩 → 肘 → 腕三节臂骨；腕上长出四根指骨，翼膜撑在指骨之间，后缘是下凹的扇贝，末端连到腰上
     const wing = (sx, sy, rx, ry, f, fl, near) => {
       const { raise, fold, droop } = q;
-      let a1 = -0.85 + 0.45 * f - 0.35 * raise;
+      let a1 = -0.7 + 0.45 * f - 0.35 * raise;
       a1 = lerp(a1, -0.12, fold);
       a1 = lerp(a1, 0.55, droop);
       const E = [sx + Math.cos(a1) * 0.27 * s, sy + Math.sin(a1) * 0.27 * s];
-      let a2 = -1.65 + 0.5 * f - 0.35 * raise;
+      let a2 = -1.4 + 0.5 * f - 0.35 * raise;
       a2 = lerp(a2, 0.15, fold);
       a2 = lerp(a2, 1.1, droop);
       const W = [E[0] + Math.cos(a2) * 0.31 * s, E[1] + Math.sin(a2) * 0.31 * s];
-      const lens = [0.7, 0.76, 0.68, 0.5].map((l) => l * (1 - 0.25 * fold) * (1 - 0.1 * droop));
+      const lens = [0.92, 0.98, 0.88, 0.66].map((l) => l * (1 - 0.25 * fold) * (1 - 0.1 * droop));
       const tips = lens.map((l, i) => {
-        let th = 0.12 + 0.42 * i + 0.24 * fl + 0.1 * i * raise;
+        let th = 0.1 + 0.44 * i + 0.24 * fl + 0.1 * i * raise;
         th = lerp(th, 0.25 + 0.12 * i, fold);
         th = lerp(th, 1.25 + 0.15 * i, droop);
         return [W[0] + Math.cos(th) * l * s, W[1] + Math.sin(th) * l * s];
@@ -461,8 +463,9 @@
       ctx.save();
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
-      const edge = () => {
-        ctx.moveTo(tips[0][0], tips[0][1]);
+      // 翼膜后缘：连着前面的路径画时用 lineTo（moveTo 会断开成两个子路径，指骨根部到手腕那一块就不上色了）；单独描边时用 moveTo
+      const edge = (join) => {
+        join ? ctx.lineTo(tips[0][0], tips[0][1]) : ctx.moveTo(tips[0][0], tips[0][1]);
         for (let i = 1; i < 4; i++) {
           const [px, py] = tips[i - 1];
           const [tx, ty] = tips[i];
@@ -474,7 +477,7 @@
       ctx.moveTo(sx, sy);
       ctx.lineTo(E[0], E[1]);
       ctx.lineTo(W[0], W[1]);
-      edge();
+      edge(true);
       ctx.quadraticCurveTo((tips[3][0] + R[0]) / 2 + (W[0] - (tips[3][0] + R[0]) / 2) * 0.2, (tips[3][1] + R[1]) / 2 + (W[1] - (tips[3][1] + R[1]) / 2) * 0.2 + 0.02 * s, R[0], R[1]);
       ctx.closePath();
       ctx.fillStyle = linear(ctx, W[0], W[1], tips[3][0] * 0.7 + R[0] * 0.3, tips[3][1] + 0.1 * s, [
@@ -595,6 +598,7 @@
       ctx.fill();
       ctx.save();
       ctx.clip();
+      if (!lowQ) scaleFill(ctx, (pts[0][0] - 0.3) * s, (pts[0][1] - 0.1) * s, (pts[0][0] + 0.3) * s, (pts[pts.length - 1][1] + 0.1) * s, s * 0.04, '#140404', 0.45);
       veins(ctx, pts[0][0] * s, pts[0][1] * s, 0.25 * s, 1.6, 1, LAVA, 0.3 + heat * 0.4, 61 + Math.round(pts[0][0] * 10), s * 0.011);
       glow(ctx, pts[1][0] * s, pts[1][1] * s, s * 0.07, LAVA, 0.25 + heat * 0.3);
       ctx.restore();
@@ -623,8 +627,8 @@
     // 腿的姿势：待机时自然垂着轻晃；冲撞时向后收（流线型）；倒下时摊开
     const lg = q.legs; // −1 摊开 … 0 垂着 … 1 收到身后
     const legPts = (base) => base.map(([x, y, w], i) => [x + (i ? 0.34 * lg * i * 0.28 : 0) + (lg < 0 ? 0.04 * lg * i : 0), y + (i ? -0.32 * lg * 0.3 * i : 0) - (lg > 0 ? 0.04 * lg * i : 0), w]);
-    limb(legPts([[0.4, -0.02, 0.1], [0.34, 0.18, 0.065], [0.5, 0.28 + sway, 0.035], [0.4, 0.44 + sway, 0.026]]), 0.5, 1);
-    limb(legPts([[-0.22, 0.04, 0.075], [-0.2, 0.22, 0.045], [-0.3, 0.3 - sway, 0.03], [-0.38, 0.38 - sway, 0.022]]), 0.5, 1);
+    limb(legPts([[0.4, -0.02, 0.12], [0.34, 0.18, 0.075], [0.5, 0.28 + sway, 0.04], [0.4, 0.44 + sway, 0.03]]), 0.5, 1);
+    limb(legPts([[-0.22, 0.04, 0.09], [-0.2, 0.22, 0.055], [-0.3, 0.3 - sway, 0.034], [-0.38, 0.38 - sway, 0.026]]), 0.5, 1);
 
     // ---------- 尾尖的刃 ----------
     {
@@ -834,26 +838,59 @@
     ctx.translate(hx, hy);
     ctx.rotate(q.hang);
     ctx.scale(G.sc, G.sc);
+    // 头的坐标：原点 = 颅骨后部，朝左；上唇线 lipY、下颌铰链 (HX, HY)；嘴张开 = 下颌绕铰链向下转 q.jaw
     const skull = [
-      [0.1, -0.11], [0.0, -0.145], [-0.1, -0.155], [-0.17, -0.115], [-0.3, -0.085], [-0.4, -0.06], [-0.435, -0.025],
-      [-0.42, 0.012], [-0.3, 0.032], [-0.15, 0.042], [-0.02, 0.07], [0.07, 0.1], [0.13, 0.0],
+      [0.11, -0.095], [0.04, -0.14], [-0.04, -0.168], [-0.1, -0.16], [-0.15, -0.135], [-0.24, -0.118], [-0.33, -0.122], [-0.405, -0.1], [-0.448, -0.062], [-0.458, -0.02],
+      [-0.44, 0.014], [-0.4, 0.026], [-0.3, 0.036], [-0.18, 0.046], [-0.08, 0.062], [0.0, 0.08], [0.075, 0.1], [0.135, 0.03],
     ].map(([x, y]) => [x * s, y * s]);
-    const jawPts = [
-      [-0.0, 0.04], [-0.18, 0.052], [-0.34, 0.045], [-0.395, 0.062], [-0.385, 0.092], [-0.24, 0.125], [-0.07, 0.15], [0.05, 0.13], [0.07, 0.07],
-    ].map(([x, y]) => [x * s, y * s]);
+    const lipY = (x) => 0.028 + (x + 0.4) * 0.1;
+    const HX = 0.045;
+    const HY = 0.078;
+    const jawTop = [[-0.405, 0.074], [-0.34, 0.062], [-0.26, 0.062], [-0.12, 0.066], [0.01, 0.062]];
+    const jawPts = [[0.01, 0.062], [-0.12, 0.066], [-0.26, 0.062], [-0.34, 0.062], [-0.405, 0.074], [-0.418, 0.098], [-0.34, 0.122], [-0.22, 0.146], [-0.1, 0.162], [0.0, 0.164], [0.07, 0.148], [0.085, 0.1]].map(([x, y]) => [x * s, y * s]);
+    const jr = q.jaw;
+    const rotJaw = ([x, y]) => {
+      const dx = x - HX;
+      const dy = y - HY;
+      return [HX + dx * Math.cos(jr) + dy * Math.sin(jr), HY - dx * Math.sin(jr) + dy * Math.cos(jr)];
+    };
 
-    // 脑后的鬃刺（先画，躲在头后面）
-    ctx.fillStyle = deep(SPIKE, 0.55);
-    for (let i = 0; i < 5; i++) {
+    // 脑后的颈蹼：五根向后散开的骨刺，中间撑一层带扇贝边的蹼（先画，躲在头后面）
+    {
+      const B = [0.1, -0.02];
+      const angs = [-1.05, -0.62, -0.2, 0.26, 0.7];
+      const lens = [0.2, 0.27, 0.3, 0.26, 0.2];
+      const tips = angs.map((an, i) => [B[0] + Math.cos(an) * lens[i], B[1] + Math.sin(an) * lens[i]]);
       ctx.beginPath();
-      ctx.moveTo((0.08 + i * 0.028) * s, (-0.08 + i * 0.04) * s);
-      ctx.lineTo((0.22 + i * 0.03) * s, (-0.12 + i * 0.058) * s);
-      ctx.lineTo((0.11 + i * 0.028) * s, (-0.01 + i * 0.042) * s);
+      ctx.moveTo(B[0] * s, B[1] * s);
+      ctx.lineTo(tips[0][0] * s, tips[0][1] * s);
+      for (let i = 1; i < tips.length; i++) {
+        const mx = (tips[i - 1][0] + tips[i][0]) / 2;
+        const my = (tips[i - 1][1] + tips[i][1]) / 2;
+        ctx.quadraticCurveTo(lerp(mx, B[0], 0.32) * s, lerp(my, B[1], 0.32) * s, tips[i][0] * s, tips[i][1] * s);
+      }
+      ctx.closePath();
+      ctx.fillStyle = linear(ctx, B[0] * s, B[1] * s, 0.4 * s, B[1] * s, [[0, deep(MEMB, 0.35)], [1, rgba(light(MEMB, 0.1), 0.85)]]);
       ctx.fill();
+      ctx.strokeStyle = rgba(RIM, 0.4);
+      ctx.lineWidth = lw(0.004);
+      ctx.stroke();
+      ctx.fillStyle = deep(SPIKE, 0.3);
+      for (const t2 of tips) {
+        const ang = Math.atan2(t2[1] - B[1], t2[0] - B[0]);
+        const nx2 = -Math.sin(ang) * 0.012;
+        const ny2 = Math.cos(ang) * 0.012;
+        ctx.beginPath();
+        ctx.moveTo((B[0] + nx2) * s, (B[1] + ny2) * s);
+        ctx.lineTo(t2[0] * s, t2[1] * s);
+        ctx.lineTo((B[0] - nx2) * s, (B[1] - ny2) * s);
+        ctx.closePath();
+        ctx.fill();
+      }
     }
     // 双角：一对向后弯的粗角，近的亮、远的暗，角上有一圈圈的环纹
     for (const [x0, y0, d, rot] of [[0.1, -0.1, 0.55, 0.12], [0.08, -0.11, 0.0, -0.1]]) {
-      const hn = spline([[x0 * s, y0 * s, 0.03 * s, 0.03 * s], [(x0 + 0.13) * s, (y0 - 0.07 + rot * 0.2) * s, 0.032 * s, 0.032 * s], [(x0 + 0.27) * s, (y0 - 0.06 + rot * 0.2) * s, 0.019 * s, 0.019 * s], [(x0 + 0.42) * s, (y0 + 0.07 + rot * 0.2) * s, 0.003 * s, 0.003 * s]], 14);
+      const hn = spline([[x0 * s, y0 * s, 0.034 * s, 0.034 * s], [(x0 + 0.13) * s, (y0 - 0.07 + rot * 0.2) * s, 0.034 * s, 0.034 * s], [(x0 + 0.27) * s, (y0 - 0.06 + rot * 0.2) * s, 0.02 * s, 0.02 * s], [(x0 + 0.42) * s, (y0 + 0.07 + rot * 0.2) * s, 0.003 * s, 0.003 * s]], 14);
       ribbonPath(ctx, hn);
       ctx.fillStyle = linear(ctx, x0 * s, y0 * s, (x0 + 0.42) * s, y0 * s, [[0, deep(SPIKE, 0.45 - d * 0.5)], [1, light(SPIKE, 0.05)]]);
       ctx.fill();
@@ -870,82 +907,134 @@
         ctx.stroke();
       }
     }
-    // 颧骨刺（下颌后上方的一排短刺）
+    // 颧骨刺：下颌铰链后上方三根向后下方的尖刺
     ctx.fillStyle = deep(SPIKE, 0.2);
+    ctx.strokeStyle = rgba(RIM, 0.4);
+    ctx.lineWidth = lw(0.003);
     for (let i = 0; i < 3; i++) {
       ctx.beginPath();
-      ctx.moveTo((0.03 + i * 0.045) * s, (0.02 + i * 0.045) * s);
-      ctx.lineTo((0.19 + i * 0.03) * s, (0.06 + i * 0.075) * s);
-      ctx.lineTo((0.06 + i * 0.045) * s, (0.1 + i * 0.045) * s);
+      ctx.moveTo((0.02 + i * 0.05) * s, (0.0 + i * 0.05) * s);
+      ctx.lineTo((0.2 + i * 0.03) * s, (0.07 + i * 0.075) * s);
+      ctx.lineTo((0.05 + i * 0.05) * s, (0.07 + i * 0.05) * s);
+      ctx.closePath();
       ctx.fill();
+      ctx.stroke();
     }
-    // 下颌（绕铰链张开）
+
+    // 嘴里：上唇线和下颌之间的口腔——暗红的肉、舌头，喷火 / 寒冰 / 雷击蓄力时嘴里发光
+    {
+      const up = [[-0.442, 0.014], [-0.4, 0.026], [-0.3, 0.036], [-0.18, 0.046], [-0.08, 0.062], [0.0, 0.08]];
+      const lo = jawTop.map(rotJaw);
+      ctx.beginPath();
+      up.forEach(([x, y], i) => (i ? ctx.lineTo(x * s, y * s) : ctx.moveTo(x * s, y * s)));
+      for (let i = lo.length - 1; i >= 0; i--) ctx.lineTo(lo[i][0] * s, lo[i][1] * s);
+      ctx.closePath();
+      ctx.fillStyle = linear(ctx, -0.2 * s, 0.03 * s, 0.0, 0.14 * s, [[0, '#7a1a22'], [1, '#2a060c']]);
+      ctx.fill();
+      if (jr > 0.18) {
+        // 舌头：从喉咙伸出来的一条，随时间轻晃
+        const w = Math.sin(t * 9) * 0.008;
+        const t0 = rotJaw([-0.02, 0.07]);
+        const t1 = rotJaw([-0.3, 0.066]);
+        ctx.beginPath();
+        ctx.moveTo(t0[0] * s, t0[1] * s);
+        ctx.quadraticCurveTo(((t0[0] + t1[0]) / 2) * s, (((t0[1] + t1[1]) / 2) - 0.02 + w) * s, t1[0] * s, t1[1] * s);
+        ctx.quadraticCurveTo(((t0[0] + t1[0]) / 2) * s, (((t0[1] + t1[1]) / 2) + 0.02) * s, t0[0] * s, t0[1] * s);
+        ctx.fillStyle = rgba('#c42a3a', 0.9);
+        ctx.fill();
+      }
+      const mouthC = kind === 'ice' ? '#9fdcff' : kind === 'bolt' ? '#9fc0ff' : '#ff9a3a';
+      const mouthA = kind ? 0.3 + 0.55 * (cast ? 1 : q.k) : 0.1 + (angry ? 0.12 : 0);
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      glow(ctx, -0.24 * s, (0.045 + Math.sin(jr) * 0.1) * s, s * (0.1 + (kind ? 0.2 * (cast ? 1 : q.k) : 0.03)), mouthC, mouthA, true);
+      ctx.restore();
+    }
+
+    // 下颌（绕铰链向下转开：头朝左，往下转要用负角度）
     ctx.save();
-    ctx.translate(0.05 * s, 0.07 * s);
-    ctx.rotate(q.jaw);
-    ctx.translate(-0.05 * s, -0.07 * s);
-    // 嘴里的光：喷火蓄力越久越亮；平时是暗红；寒冰是冰蓝，雷击是电蓝
-    const mouthC = kind === 'ice' ? '#9fdcff' : kind === 'bolt' ? '#9fc0ff' : '#ff9a3a';
-    const mouthA = kind ? 0.3 + 0.55 * (cast ? 1 : q.k) : 0.14 + (angry ? 0.14 : 0);
-    ctx.save();
-    ctx.globalCompositeOperation = 'lighter';
-    glow(ctx, -0.25 * s, 0.03 * s, s * (0.12 + (kind ? 0.2 * (cast ? 1 : q.k) : 0.03)), mouthC, mouthA, true);
-    ctx.restore();
+    ctx.translate(HX * s, HY * s);
+    ctx.rotate(-jr);
+    ctx.translate(-HX * s, -HY * s);
     closedPath(ctx, jawPts);
-    ctx.fillStyle = linear(ctx, 0, 0.04 * s, 0, 0.15 * s, [[0, deep(BODY, 0.55)], [1, deep(BODY, 0.85)]]);
+    ctx.fillStyle = linear(ctx, 0, 0.06 * s, 0, 0.17 * s, [[0, deep(BODY, 0.45)], [0.5, deep(BODY, 0.7)], [1, deep(BODY, 0.9)]]);
     ctx.fill();
-    ctx.strokeStyle = rgba('#120304', 0.85);
-    ctx.lineWidth = lw(0.005);
+    ctx.save();
+    closedPath(ctx, jawPts);
+    ctx.clip();
+    scaleFill(ctx, -0.45 * s, 0.05 * s, 0.1 * s, 0.17 * s, s * 0.03, '#140404', 0.4);
+    // 下颌下缘的受光边
+    ctx.strokeStyle = rgba(RIM, 0.3);
+    ctx.lineWidth = s * 0.012;
+    ctx.beginPath();
+    ctx.moveTo(-0.41 * s, 0.1 * s);
+    ctx.quadraticCurveTo(-0.2 * s, 0.158 * s, 0.05 * s, 0.158 * s);
     ctx.stroke();
-    // 舌头：嘴张开时露出来的一条暗红的舌，随时间轻晃
-    if (q.jaw > 0.2) {
-      ctx.beginPath();
-      ctx.moveTo(-0.02 * s, 0.07 * s);
-      ctx.quadraticCurveTo(-0.14 * s, (0.062 + Math.sin(t * 9) * 0.008) * s, -0.3 * s, 0.07 * s);
-      ctx.quadraticCurveTo(-0.14 * s, 0.1 * s, -0.02 * s, 0.1 * s);
-      ctx.fillStyle = rgba('#b01a2a', 0.9);
-      ctx.fill();
+    if (q.frost > 0.05) {
+      ctx.fillStyle = rgba('#a8ddff', 0.28 * q.frost);
+      ctx.fillRect(-0.5 * s, 0.04 * s, 0.7 * s, 0.15 * s);
     }
-    // 下颌的牙（向上）
+    ctx.restore();
+    ctx.strokeStyle = rgba('#120304', 0.9);
+    ctx.lineWidth = lw(0.005);
+    closedPath(ctx, jawPts);
+    ctx.stroke();
+    // 下颌的牙：沿下颌上缘朝上，和上颌的牙错开；最前面一对是长獠牙
     ctx.fillStyle = '#f4ecd0';
-    for (let i = 0; i < 6; i++) {
-      const x = (-0.37 + i * 0.056) * s;
+    ctx.strokeStyle = rgba('#5a4a30', 0.6);
+    ctx.lineWidth = lw(0.002);
+    for (let i = 0; i < 7; i++) {
+      const x = -0.385 + i * 0.05;
+      const y0 = 0.066 - (x < -0.3 ? 0.002 : 0);
+      const hgt = i === 0 ? 0.062 : i === 1 ? 0.04 : 0.032 - i * 0.002;
       ctx.beginPath();
-      ctx.moveTo(x, 0.052 * s);
-      ctx.lineTo(x + 0.013 * s, 0.052 * s - (i === 0 ? 0.056 : 0.036) * s);
-      ctx.lineTo(x + 0.028 * s, 0.05 * s);
+      ctx.moveTo(x * s, (y0 + 0.004) * s);
+      ctx.lineTo((x + 0.011) * s, (y0 - hgt) * s);
+      ctx.lineTo((x + 0.024) * s, (y0 + 0.004) * s);
+      ctx.closePath();
       ctx.fill();
+      ctx.stroke();
     }
     // 下巴上的几根尖刺
     ctx.fillStyle = deep(SPIKE, 0.3);
     for (let i = 0; i < 4; i++) {
       ctx.beginPath();
-      ctx.moveTo((-0.24 + i * 0.065) * s, 0.12 * s);
-      ctx.lineTo((-0.21 + i * 0.065) * s, 0.185 * s);
-      ctx.lineTo((-0.17 + i * 0.065) * s, 0.135 * s);
+      ctx.moveTo((-0.3 + i * 0.07) * s, (0.13 + i * 0.008) * s);
+      ctx.lineTo((-0.27 + i * 0.07) * s, (0.2 + i * 0.006) * s);
+      ctx.lineTo((-0.22 + i * 0.07) * s, (0.146 + i * 0.008) * s);
       ctx.fill();
     }
     ctx.restore();
+
     // 颅骨 + 上颌
     closedPath(ctx, skull);
-    ctx.fillStyle = linear(ctx, 0.1 * s, -0.16 * s, -0.3 * s, 0.07 * s, [[0, deep(BODY_LIT, 0.0)], [0.55, BODY], [1, deep(BODY, 0.55)]]);
+    ctx.fillStyle = linear(ctx, 0.1 * s, -0.17 * s, -0.3 * s, 0.07 * s, [[0, deep(BODY_LIT, 0.0)], [0.55, BODY], [1, deep(BODY, 0.55)]]);
     ctx.fill();
     ctx.save();
     closedPath(ctx, skull);
     ctx.clip();
-    scaleFill(ctx, -0.45 * s, -0.17 * s, 0.14 * s, 0.1 * s, s * 0.035, '#140404', 0.45);
-    ctx.strokeStyle = rgba('#ffa880', 0.35);
+    scaleFill(ctx, -0.47 * s, -0.18 * s, 0.14 * s, 0.1 * s, s * 0.035, '#140404', 0.45);
+    // 眉骨上缘的高光、鼻梁上的高光、上唇下的暗影
+    ctx.strokeStyle = rgba('#ffa880', 0.4);
     ctx.lineWidth = s * 0.016;
     ctx.beginPath();
-    ctx.moveTo(-0.17 * s, -0.12 * s);
-    ctx.quadraticCurveTo(-0.1 * s, -0.16 * s, 0.0 * s, -0.145 * s);
+    ctx.moveTo(-0.15 * s, -0.138 * s);
+    ctx.quadraticCurveTo(-0.07 * s, -0.176 * s, 0.03 * s, -0.145 * s);
     ctx.stroke();
-    ctx.strokeStyle = rgba('#0a0204', 0.4);
-    ctx.lineWidth = s * 0.03;
+    ctx.strokeStyle = rgba('#ffa880', 0.25);
+    ctx.lineWidth = s * 0.01;
     ctx.beginPath();
-    ctx.moveTo(-0.4 * s, 0.03 * s);
-    ctx.lineTo(0.05 * s, 0.075 * s);
+    ctx.moveTo(-0.4 * s, -0.098 * s);
+    ctx.quadraticCurveTo(-0.3 * s, -0.126 * s, -0.2 * s, -0.12 * s);
     ctx.stroke();
+    ctx.strokeStyle = rgba('#0a0204', 0.45);
+    ctx.lineWidth = s * 0.026;
+    ctx.beginPath();
+    ctx.moveTo(-0.44 * s, 0.018 * s);
+    ctx.lineTo(0.0 * s, 0.078 * s);
+    ctx.stroke();
+    // 眼眶下的暗影，让眼睛陷进去
+    glow(ctx, -0.12 * s, -0.07 * s, s * 0.09, '#0a0204', 0.35);
     veins(ctx, 0.02 * s, -0.03 * s, 0.16 * s, 3.3, 1, LAVA, 0.3 + heat * 0.4, 41, s * 0.007);
     if (q.frost > 0.05) {
       ctx.fillStyle = rgba('#a8ddff', 0.28 * q.frost);
@@ -957,45 +1046,47 @@
     closedPath(ctx, skull);
     ctx.stroke();
     K.rimEdge(ctx, () => closedPath(ctx, skull), '#ffb890', 0.3, s * 0.01, s * 0.008, s * 0.008);
-    // 上颌的牙（向下），第二颗是獠牙
+    // 上颌的牙：从上唇线垂下来，前面一对獠牙最长
     ctx.fillStyle = '#f4ecd0';
-    for (let i = 0; i < 7; i++) {
-      const x = (-0.4 + i * 0.05) * s;
-      const hgt = (i === 1 ? 0.07 : 0.038) * s;
+    ctx.strokeStyle = rgba('#5a4a30', 0.6);
+    ctx.lineWidth = lw(0.002);
+    for (let i = 0; i < 8; i++) {
+      const x = -0.4 + i * 0.045;
+      const hgt = i === 0 ? 0.078 : i === 1 ? 0.05 : 0.036 - i * 0.002;
+      const y0 = lipY(x);
       ctx.beginPath();
-      ctx.moveTo(x, 0.026 * s);
-      ctx.lineTo(x + 0.014 * s, 0.026 * s + hgt);
-      ctx.lineTo(x + 0.03 * s, 0.032 * s);
+      ctx.moveTo(x * s, (y0 - 0.004) * s);
+      ctx.lineTo((x + 0.012) * s, (y0 + hgt) * s);
+      ctx.lineTo((x + 0.026) * s, (y0 + 0.002 - 0.004) * s);
+      ctx.closePath();
       ctx.fill();
+      ctx.stroke();
     }
-    // 头冠：眉骨后面一排向后倾的尖刺，鼻梁上也有
+    // 鼻梁上的小角 + 眉骨后面一排向后倾的尖刺
     ctx.fillStyle = deep(SPIKE, 0.1);
     ctx.strokeStyle = rgba(RIM, 0.55);
     ctx.lineWidth = lw(0.004);
-    for (const [x, y, h] of [[-0.14, -0.14, 0.07], [-0.08, -0.155, 0.1], [-0.01, -0.148, 0.115], [0.05, -0.13, 0.1], [0.1, -0.1, 0.075]]) {
+    for (const [x, y, hh] of [[-0.32, -0.12, 0.05], [-0.12, -0.15, 0.08], [-0.05, -0.165, 0.11], [0.02, -0.15, 0.105], [0.08, -0.115, 0.08]]) {
       ctx.beginPath();
       ctx.moveTo((x - 0.025) * s, (y + 0.012) * s);
-      ctx.lineTo((x + h * 0.9) * s, (y - h * 0.8) * s);
+      ctx.lineTo((x + hh * 0.9) * s, (y - hh * 0.8) * s);
       ctx.lineTo((x + 0.03) * s, (y + 0.02) * s);
       ctx.closePath();
       ctx.fill();
       ctx.stroke();
     }
-    ctx.fillStyle = deep(SPIKE, 0.45);
-    for (let i = 0; i < 3; i++) {
-      ctx.beginPath();
-      ctx.moveTo((-0.34 + i * 0.06) * s, (-0.08 + i * 0.012) * s);
-      ctx.lineTo((-0.32 + i * 0.06) * s, (-0.115 + i * 0.012) * s);
-      ctx.lineTo((-0.29 + i * 0.06) * s, (-0.09 + i * 0.012) * s);
-      ctx.fill();
-    }
     // 鼻孔 + 喷烟：生气或蓄力时一缕缕烟 / 火星
-    const nx = -0.395 * s;
-    const ny = -0.03 * s;
+    const nx = -0.42 * s;
+    const ny = -0.04 * s;
     ctx.fillStyle = '#100303';
     ctx.beginPath();
-    ctx.ellipse(nx, ny, s * 0.014, s * 0.008, -0.3, 0, TAU);
+    ctx.ellipse(nx, ny, s * 0.014, s * 0.008, -0.5, 0, TAU);
     ctx.fill();
+    ctx.strokeStyle = rgba('#ffa880', 0.3);
+    ctx.lineWidth = lw(0.003);
+    ctx.beginPath();
+    ctx.ellipse(nx, ny, s * 0.02, s * 0.013, -0.5, Math.PI * 0.9, Math.PI * 1.9);
+    ctx.stroke();
     if (angry || kind) {
       const rr = seeded(9);
       for (let i = 0; i < 7; i++) {
@@ -1009,35 +1100,46 @@
     }
     // 眼睛：杏仁形竖瞳，压在眉骨下；偶尔眨一下；倒下时暗下去，重生时亮起来
     {
-      const ex = -0.115 * s;
-      const ey = -0.08 * s;
+      const ex = -0.125 * s;
+      const ey = -0.082 * s;
       const blink = t % 4.3 > 4.17 || (fallen && rebirth < 0.5);
-      glow(ctx, ex, ey, s * 0.075, EYE, 0.75 * eyeGlow);
+      glow(ctx, ex, ey, s * 0.085, EYE, 0.7 * eyeGlow);
       ctx.beginPath();
-      ctx.moveTo(ex + 0.045 * s, ey - 0.028 * s);
-      ctx.quadraticCurveTo(ex - 0.005 * s, ey - 0.03 * s, ex - 0.05 * s, ey + 0.012 * s);
-      ctx.quadraticCurveTo(ex - 0.0 * s, ey + 0.026 * s, ex + 0.045 * s, ey - 0.028 * s);
+      ctx.moveTo(ex + 0.055 * s, ey - 0.034 * s);
+      ctx.quadraticCurveTo(ex - 0.0 * s, ey - 0.04 * s, ex - 0.062 * s, ey + 0.014 * s);
+      ctx.quadraticCurveTo(ex - 0.0 * s, ey + 0.03 * s, ex + 0.055 * s, ey - 0.034 * s);
       ctx.fillStyle = blink ? deep(BODY, 0.3) : EYE;
       ctx.fill();
       if (!blink) {
         ctx.fillStyle = '#2a0404';
         ctx.beginPath();
-        ctx.ellipse(ex - 0.004 * s, ey - 0.002 * s, s * 0.0065, s * 0.017, -0.5, 0, TAU);
+        ctx.ellipse(ex - 0.006 * s, ey - 0.003 * s, s * 0.008, s * 0.021, -0.5, 0, TAU);
+        ctx.fill();
+        ctx.fillStyle = rgba('#ffffff', 0.8 * eyeGlow);
+        ctx.beginPath();
+        ctx.arc(ex + 0.012 * s, ey - 0.014 * s, s * 0.005, 0, TAU);
         ctx.fill();
       }
-      ctx.strokeStyle = deep(BODY, 0.8);
-      ctx.lineWidth = s * 0.016;
+      // 眉骨：压在眼睛上面的一道深色的粗眉，外端向下压（生气的样子）
+      ctx.strokeStyle = deep(BODY, 0.85);
+      ctx.lineWidth = s * 0.02;
       ctx.lineCap = 'round';
       ctx.beginPath();
-      ctx.moveTo(ex + s * 0.06, ey - s * 0.05);
-      ctx.lineTo(ex - s * 0.065, ey - s * 0.008);
+      ctx.moveTo(ex + s * 0.07, ey - s * 0.062);
+      ctx.lineTo(ex - s * 0.075, ey - s * 0.004);
+      ctx.stroke();
+      ctx.strokeStyle = rgba(RIM, 0.35);
+      ctx.lineWidth = s * 0.005;
+      ctx.beginPath();
+      ctx.moveTo(ex + s * 0.07, ey - s * 0.07);
+      ctx.lineTo(ex - s * 0.07, ey - s * 0.012);
       ctx.stroke();
     }
     ctx.restore(); // 头
 
     // ---------- 近侧的腿（盖在身体前面） ----------
-    limb(legPts([[0.3, -0.05, 0.1], [0.22, 0.16, 0.064], [0.4, 0.28 - sway, 0.04], [0.3, 0.46 - sway, 0.028]]), 0.0, 1);
-    limb(legPts([[-0.3, 0.0, 0.075], [-0.26, 0.21, 0.05], [-0.38, 0.3 + sway, 0.032], [-0.47, 0.39 + sway, 0.024]]), 0.0, 1);
+    limb(legPts([[0.3, -0.05, 0.12], [0.22, 0.16, 0.074], [0.4, 0.28 - sway, 0.045], [0.3, 0.46 - sway, 0.032]]), 0.0, 1);
+    limb(legPts([[-0.3, 0.0, 0.09], [-0.26, 0.21, 0.058], [-0.38, 0.3 + sway, 0.036], [-0.47, 0.39 + sway, 0.028]]), 0.0, 1);
 
     // ---------- 近侧的翅膀（在最前面） ----------
     const nearWing = wing(-0.12 * s, -0.27 * s, 0.32, -0.13, q.flap, q.lag, true);

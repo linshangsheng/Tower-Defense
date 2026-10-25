@@ -51,6 +51,7 @@ Free, runs in your browser, no install, no account. Your save lives in your brow
 
 ### Changelog
 
+- **v1.28** — The final dragon: fixed its jaw opening the wrong way, redrew the head (mouth interior, fangs, neck frill) and made its wings bigger with full membranes.
 - **v1.26** — Added a free browser demo (levels 1–100, green gear only); the full version is a download.
 - **v1.25** — The Nine-Floor Demon Tower now unlocks after you clear level 50.
 - **v1.24** — Fixed no sound on phones (audio is now unlocked on finger-up and handles the iOS silent switch).
