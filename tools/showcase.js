@@ -19,6 +19,7 @@ const W = 2532;
 const H = 1170;
 const GW = 2080; // 游戏画面宽（16:9，高 1170）
 const SHOW = (process.env.SHOW || 'shop,battle,skills').split(',');
+const ONLY = process.env.ONLY ? process.env.ONLY.split(',') : null; // items 组里只做这几个道具
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'showcase-'));
 let counter = 0;
 
@@ -132,6 +133,51 @@ async function skills(browser) {
   strip(tiles, '3-主动技能.png');
 }
 
+// 45 种消耗品：每种都在一场有很多怪的战斗里用一次，等特效铺开再截图；每个道具一格，存到 OUT/items-tiles/
+// 用法：SHOW=items node tools/showcase.js [输出目录]（ONLY=bomb,meteor 只做指定的）；挑出好看的再用 convert -append 拼成长图
+async function items(browser) {
+  const page = await newGame(browser);
+  const ids = await page.evaluate(() => Object.keys(TD.data.items));
+  const dir = path.join(OUT, 'items-tiles');
+  fs.mkdirSync(dir, { recursive: true });
+  let n = 0;
+  for (const id of ids) {
+    n++;
+    if (ONLY && !ONLY.includes(id)) continue;
+    await page.evaluate((id) => {
+      TD.ui.closeModal();
+      const s = TD.game.save;
+      s.inventory[id] = 5;
+      s.loadout.items = [id, null, null, null, null, null, null];
+      s.loadout.itemQty = { [id]: 3 };
+      s.loadout.autoCast = false;
+    }, id);
+    await enterBattle(page, 35, 0);
+    await page.evaluate((id) => {
+      const b = TD.game.battle;
+      b.stats.atk *= 0.3;
+      for (let i = 0; i < 60 * 120; i++) {
+        if (b.pendingSupply) TD.game.pickSupply(b.pendingSupply[0]);
+        b.step(1 / 60);
+        if (b.time > 8 && b.waveState !== 'prepare' && b.monsters.filter((m) => !m.dead && m.x > 400 && m.x < 1150).length >= 14) break;
+      }
+      TD.game.paused = true;
+      b.wall.hp = b.wall.max * 0.4; // 修复类道具要看得出来
+      b.useItem(0, 2);
+      const r = TD.game.renderer;
+      for (let i = 0; i < 20; i++) {
+        b.step(1 / 60);
+        r.update && r.update(1 / 60);
+        r.render(1 / 60);
+      }
+    }, id);
+    const tile = await snap(page, 'item-' + id);
+    fs.copyFileSync(tile, path.join(dir, `${String(n).padStart(2, '0')}-${id}.png`));
+    console.log('道具', n, id);
+  }
+  await page.close();
+}
+
 (async () => {
   fs.mkdirSync(OUT, { recursive: true });
   const browser = await chromium.launch();
@@ -139,6 +185,7 @@ async function skills(browser) {
     if (SHOW.includes('shop')) await shop(browser);
     if (SHOW.includes('battle')) await battle(browser);
     if (SHOW.includes('skills')) await skills(browser);
+    if (SHOW.includes('items')) await items(browser);
   } finally {
     await browser.close();
   }
