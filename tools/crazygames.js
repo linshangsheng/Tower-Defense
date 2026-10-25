@@ -59,6 +59,11 @@ function build() {
   const raw = execFileSync('unzip', ['-l', ZIP]).toString().trim().split('\n').pop().trim().split(/\s+/)[0];
   console.log(`zip：${list.length} 个文件，压缩后 ${(fs.statSync(ZIP).size / 1048576).toFixed(1)} MB，解压后 ${(+raw / 1048576).toFixed(1)} MB`);
   if (!list.includes('index.html')) throw new Error('index.html 不在压缩包根目录');
+  // CrazyGames 后台的上传区不接受压缩包，要把解压后的文件直接拖进去：同时放一份解开的文件夹 crazygames/game/
+  const game = path.join(OUT, 'game');
+  fs.rmSync(game, { recursive: true, force: true });
+  fs.cpSync(dir, game, { recursive: true });
+  console.log(`解开的文件夹：crazygames/game/（${list.length} 个文件，上传时把里面的内容全选拖进上传区）`);
   return dir;
 }
 

@@ -1,6 +1,10 @@
 # CrazyGames 版本《Archer on the Wall》
 
-`archer-on-the-wall-crazygames.zip` 是要上传到 CrazyGames 开发者后台（Developer Portal）的游戏包：68 个文件，压缩后 5.8 MB，解压后 10.7 MB，`index.html` 在压缩包根目录。
+**CrazyGames 的上传区不接受压缩包**（会提示 “Archive files are not supported, please drag and drop the files directly in the upload zone”），要把**解压后的文件**直接拖进去。所以这里有两份一样的东西：
+- `game/`：已经解开的文件夹，**上传用这个**：打开它，把里面的全部内容（`index.html`、`css`、`icons`、`src`、`manifest.webmanifest`、`CREDITS.md`）全选，拖进上传区；`index.html` 必须在最外层，不能多套一层文件夹。
+- `archer-on-the-wall-crazygames.zip`：同样内容的压缩包，留着备份。
+
+68 个文件，压缩后 5.8 MB，解压后 10.7 MB。
 重新生成：`node tools/crazygames.js`（先 `git pull`）。
 
 ## 和 itch 版有什么不一样
@@ -19,7 +23,7 @@
 ## 上传步骤（自己照着做）
 1. 注册并登录 CrazyGames 开发者后台，新建一个游戏。
 2. 填游戏名（`Archer on the Wall`）、简介、分类和标签。简介可以用 `itch/description-en.md` 里的文字，**但要去掉里面的 itch 链接、“demo / 下载正式版”之类的说法**，这个版本是完整免费版。
-3. 上传 `archer-on-the-wall-crazygames.zip`。
+3. 先点垃圾桶 / “Delete all files” 删掉已上传的 zip，再把 `game/` 里的全部内容拖进上传区（不要拖 zip，也不要把 `game` 文件夹本身拖进去）。
 4. 缩略图、截图的尺寸后台会写明，按要求准备。可以从 `itch/screenshots/` 和 `itch/cover-1260x1000.png` 里裁。
 5. 先在后台的**预览环境**里把游戏完整玩一遍：标题 → 打一关 → 暂停 → 结算 → 刷新后存档还在。
 6. 先提交 **Basic Launch**（文档说是 7–21 天的有限测试，只要基础要求，SDK 可选，这个阶段不能赚钱）。要全球发布和开广告分成，要走 **Full Launch**，需要完整接入 SDK 并通过完整 QA。

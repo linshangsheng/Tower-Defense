@@ -1,0 +1,1665 @@
+// 新消耗品的图标（设计书 62）：坐标系和 sprites.js 的 ICONS 一样，以图标中心为原点、范围约 ±20
+(function (TD) {
+  'use strict';
+
+  const S = TD.sprites;
+  const OUT = 'rgba(26,22,52,0.62)';
+  const TAU = Math.PI * 2;
+  const ell = (ctx, x, y, rx, ry, fill, stroke, w) => S.ellipse(ctx, x, y, rx, ry, fill, stroke, w);
+
+  function flame(ctx, x, y, s, c1, c2) {
+    ctx.fillStyle = c1;
+    ctx.beginPath();
+    ctx.moveTo(x, y - 16 * s);
+    ctx.bezierCurveTo(x + 10 * s, y - 6 * s, x + 11 * s, y + 8 * s, x, y + 9 * s);
+    ctx.bezierCurveTo(x - 11 * s, y + 8 * s, x - 10 * s, y - 6 * s, x, y - 16 * s);
+    ctx.fill();
+    ctx.fillStyle = c2;
+    ctx.beginPath();
+    ctx.moveTo(x, y - 6 * s);
+    ctx.bezierCurveTo(x + 5 * s, y, x + 5 * s, y + 6 * s, x, y + 7 * s);
+    ctx.bezierCurveTo(x - 5 * s, y + 6 * s, x - 5 * s, y, x, y - 6 * s);
+    ctx.fill();
+  }
+
+  S.moreIcons = {
+    firebomb(ctx) {
+      // 燃烧瓶：圆肚玻璃瓶 + 瓶口的火苗
+      ell(ctx, 0, 6, 12, 12, '#e8762a', OUT, 2);
+      ell(ctx, -4, 2, 4, 6, 'rgba(255,255,255,0.45)');
+      ctx.fillStyle = '#f2b36a';
+      ctx.fillRect(-4, -9, 8, 9);
+      ctx.strokeStyle = OUT;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(-4, -9, 8, 9);
+      ctx.fillStyle = '#7a4a28';
+      ctx.fillRect(-5, -12, 10, 4);
+      flame(ctx, 0, -16, 0.75, '#ff8a2a', '#ffe28a');
+    },
+    thunderScroll(ctx) {
+      // 雷霆符：卷轴 + 紫色闪电
+      ctx.fillStyle = '#f2e2b8';
+      ctx.strokeStyle = OUT;
+      ctx.lineWidth = 2;
+      S.roundRect(ctx, -12, -14, 24, 28, 3);
+      ctx.fill();
+      ctx.stroke();
+      ell(ctx, 0, -14, 12, 3.5, '#d9b878', OUT, 2);
+      ell(ctx, 0, 14, 12, 3.5, '#d9b878', OUT, 2);
+      ctx.fillStyle = '#b07aff';
+      ctx.beginPath();
+      ctx.moveTo(3, -10);
+      ctx.lineTo(-6, 2);
+      ctx.lineTo(-1, 2);
+      ctx.lineTo(-4, 11);
+      ctx.lineTo(7, -2);
+      ctx.lineTo(2, -2);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    },
+    bigBomb(ctx) {
+      // 重磅炸弹：更大的黑色炸弹，红色的箍，引信冒火花
+      ell(ctx, 0, 4, 15, 15, '#2c2a36', OUT, 2.2);
+      ell(ctx, -5, -1, 5, 6, 'rgba(255,255,255,0.35)');
+      ctx.fillStyle = '#c23a3a';
+      ctx.fillRect(-15, 2, 30, 5);
+      ctx.strokeStyle = OUT;
+      ctx.lineWidth = 1.6;
+      ctx.strokeRect(-15, 2, 30, 5);
+      ctx.fillStyle = '#6b6b78';
+      ctx.fillRect(-4, -14, 8, 6);
+      ctx.strokeStyle = '#8a5a3c';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(0, -14);
+      ctx.quadraticCurveTo(6, -19, 11, -16);
+      ctx.stroke();
+      ctx.fillStyle = '#ffd23f';
+      ctx.beginPath();
+      for (let i = 0; i < 8; i++) {
+        const a = (i / 8) * TAU;
+        const r = i % 2 ? 2.4 : 5.5;
+        ctx.lineTo(11 + Math.cos(a) * r, -16 + Math.sin(a) * r);
+      }
+      ctx.closePath();
+      ctx.fill();
+    },
+    barrier(ctx) {
+      // 守护符文：金色泡泡里一枚盾
+      ell(ctx, 0, 0, 17, 17, 'rgba(255,226,150,0.25)', '#f3c867', 2.4);
+      ctx.fillStyle = '#26355e';
+      ctx.strokeStyle = '#f3c867';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, -11);
+      ctx.quadraticCurveTo(7, -13, 11, -9);
+      ctx.lineTo(11, 0);
+      ctx.bezierCurveTo(11, 7, 5, 11, 0, 14);
+      ctx.bezierCurveTo(-5, 11, -11, 7, -11, 0);
+      ctx.lineTo(-11, -9);
+      ctx.quadraticCurveTo(-7, -13, 0, -11);
+      ctx.fill();
+      ctx.stroke();
+      ctx.strokeStyle = '#ffe6a0';
+      ctx.lineWidth = 1.8;
+      ctx.beginPath();
+      ctx.moveTo(0, -7);
+      ctx.lineTo(0, 8);
+      ctx.moveTo(-6, -1);
+      ctx.lineTo(6, -1);
+      ctx.stroke();
+      ell(ctx, -9, -10, 3, 2, 'rgba(255,255,255,0.7)');
+    },
+    warBanner(ctx) {
+      // 战旗：旗杆 + 红金旗面
+      ctx.strokeStyle = '#5b3c2a';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(-10, 18);
+      ctx.lineTo(-10, -17);
+      ctx.stroke();
+      ctx.fillStyle = '#d6403a';
+      ctx.strokeStyle = OUT;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(-9, -16);
+      ctx.quadraticCurveTo(2, -20, 14, -14);
+      ctx.lineTo(9, -7);
+      ctx.lineTo(14, 0);
+      ctx.quadraticCurveTo(2, -5, -9, -1);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = '#ffd23f';
+      ctx.beginPath();
+      for (let i = 0; i < 10; i++) {
+        const a = (i / 10) * TAU - Math.PI / 2;
+        const r = i % 2 ? 2.6 : 5.6;
+        ctx.lineTo(1 + Math.cos(a) * r, -9 + Math.sin(a) * r);
+      }
+      ctx.closePath();
+      ctx.fill();
+      ell(ctx, -10, -18, 2.6, 2.6, '#ffd23f', OUT, 1.4);
+    },
+    quake(ctx) {
+      // 地震符：裂开的地面，缝里透出橙光
+      ctx.fillStyle = '#7a6448';
+      ctx.strokeStyle = OUT;
+      ctx.lineWidth = 2;
+      S.roundRect(ctx, -17, -6, 34, 20, 3);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = '#ff9a3a';
+      ctx.beginPath();
+      ctx.moveTo(-3, -6);
+      ctx.lineTo(3, -1);
+      ctx.lineTo(-2, 4);
+      ctx.lineTo(4, 9);
+      ctx.lineTo(0, 14);
+      ctx.lineTo(-6, 9);
+      ctx.lineTo(-1, 4);
+      ctx.lineTo(-7, -1);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = '#2a1a10';
+      ctx.stroke();
+      ctx.fillStyle = '#9a8460';
+      for (const [x, y, r] of [[-12, -12, 3], [11, -14, 2.5], [4, -18, 2]]) ell(ctx, x, y, r, r, '#9a8460', OUT, 1.4);
+    },
+    blizzard(ctx) {
+      // 暴风雪卷轴：冰蓝色的圆里一朵雪花
+      ell(ctx, 0, 0, 17, 17, '#4a8ad8', OUT, 2);
+      ell(ctx, -5, -6, 8, 5, 'rgba(255,255,255,0.35)');
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 2.2;
+      for (let i = 0; i < 3; i++) {
+        const a = (i / 3) * Math.PI;
+        ctx.beginPath();
+        ctx.moveTo(Math.cos(a) * 12, Math.sin(a) * 12);
+        ctx.lineTo(-Math.cos(a) * 12, -Math.sin(a) * 12);
+        ctx.stroke();
+        for (const s of [-1, 1]) {
+          const bx = Math.cos(a) * 7 * s;
+          const by = Math.sin(a) * 7 * s;
+          ctx.beginPath();
+          ctx.moveTo(bx, by);
+          ctx.lineTo(bx + Math.cos(a + 0.9) * 4 * s, by + Math.sin(a + 0.9) * 4 * s);
+          ctx.moveTo(bx, by);
+          ctx.lineTo(bx + Math.cos(a - 0.9) * 4 * s, by + Math.sin(a - 0.9) * 4 * s);
+          ctx.stroke();
+        }
+      }
+    },
+    flood(ctx) {
+      // 洪水：三道叠起来的大浪
+      for (const [y, c] of [[-6, '#7ad0ff'], [2, '#3a9ae8'], [10, '#2a6ac0']]) {
+        ctx.fillStyle = c;
+        ctx.strokeStyle = OUT;
+        ctx.lineWidth = 1.8;
+        ctx.beginPath();
+        ctx.moveTo(-18, y + 10);
+        ctx.lineTo(-18, y);
+        ctx.bezierCurveTo(-13, y - 9, -7, y - 9, -3, y - 1);
+        ctx.bezierCurveTo(2, y - 9, 9, y - 9, 12, y - 3);
+        ctx.quadraticCurveTo(15, y - 6, 18, y - 2);
+        ctx.lineTo(18, y + 10);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+      }
+      ctx.fillStyle = '#ffffff';
+      for (const [x, y] of [[-8, -10], [4, -12], [13, -8]]) ell(ctx, x, y, 2.2, 2.2, '#ffffff');
+    },
+    holyLight(ctx) {
+      // 圣光：放射的金色光芒
+      ctx.strokeStyle = '#ffd27a';
+      ctx.lineWidth = 2.6;
+      for (let i = 0; i < 12; i++) {
+        const a = (i / 12) * TAU;
+        const r0 = 9;
+        const r1 = i % 2 ? 15 : 19;
+        ctx.beginPath();
+        ctx.moveTo(Math.cos(a) * r0, Math.sin(a) * r0);
+        ctx.lineTo(Math.cos(a) * r1, Math.sin(a) * r1);
+        ctx.stroke();
+      }
+      ell(ctx, 0, 0, 9, 9, '#fff6d8', '#e0a83a', 2);
+      ell(ctx, -2.5, -2.5, 3, 3, '#ffffff');
+    },
+    meteor(ctx) {
+      // 陨石：带火尾的石头
+      const g = ctx.createLinearGradient(16, -16, -4, 4);
+      g.addColorStop(0, 'rgba(255,90,40,0)');
+      g.addColorStop(1, 'rgba(255,170,70,0.9)');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.moveTo(17, -16);
+      ctx.lineTo(-8, -2);
+      ctx.lineTo(-2, 6);
+      ctx.closePath();
+      ctx.fill();
+      ell(ctx, -4, 5, 10, 9, '#6a5a52', OUT, 2);
+      ell(ctx, -7, 2, 3, 2.4, '#4a3e38');
+      ell(ctx, -1, 9, 2.4, 2, '#4a3e38');
+      ell(ctx, -7, 1, 4, 3, 'rgba(255,200,120,0.5)');
+      flame(ctx, 9, -10, 0.45, '#ff8a2a', '#ffe28a');
+    },
+    chrono(ctx) {
+      // 时间静止：紫色表盘，指针停在整点，周围一圈刻度
+      ell(ctx, 0, 0, 17, 17, '#3a2a7a', '#c8b8ff', 2.4);
+      ell(ctx, 0, 0, 13, 13, '#5a44b0');
+      ctx.strokeStyle = '#e8e0ff';
+      ctx.lineWidth = 1.6;
+      for (let i = 0; i < 12; i++) {
+        const a = (i / 12) * TAU;
+        ctx.beginPath();
+        ctx.moveTo(Math.cos(a) * 10, Math.sin(a) * 10);
+        ctx.lineTo(Math.cos(a) * (i % 3 ? 12 : 13), Math.sin(a) * (i % 3 ? 12 : 13));
+        ctx.stroke();
+      }
+      ctx.lineWidth = 2.6;
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(0, -9);
+      ctx.moveTo(0, 0);
+      ctx.lineTo(6, 3);
+      ctx.stroke();
+      ell(ctx, 0, 0, 2.2, 2.2, '#ffd23f');
+    },
+  };
+
+  // 被动技能的图标（设计书 101）：精准 = 准星，连珠 = 并排的两支箭，灼烧 = 火焰，穿甲 = 一支箭穿过盾牌
+  S.moreIcons.precision = (ctx) => {
+    ctx.strokeStyle = '#ffd27a';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(0, 0, 12, 0, TAU);
+    ctx.stroke();
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    ctx.moveTo(0, -18);
+    ctx.lineTo(0, -6);
+    ctx.moveTo(0, 6);
+    ctx.lineTo(0, 18);
+    ctx.moveTo(-18, 0);
+    ctx.lineTo(-6, 0);
+    ctx.moveTo(6, 0);
+    ctx.lineTo(18, 0);
+    ctx.stroke();
+    ell(ctx, 0, 0, 3, 3, '#ff6a5a', OUT, 1.5);
+  };
+  S.moreIcons.combo = (ctx) => {
+    for (const [y, c] of [[-7, '#ffe6a0'], [7, '#ffd27a']]) {
+      ctx.strokeStyle = '#8a5a3c';
+      ctx.lineWidth = 2.6;
+      ctx.beginPath();
+      ctx.moveTo(-15, y);
+      ctx.lineTo(10, y);
+      ctx.stroke();
+      ctx.fillStyle = c;
+      ctx.strokeStyle = OUT;
+      ctx.lineWidth = 1.4;
+      ctx.beginPath();
+      ctx.moveTo(17, y);
+      ctx.lineTo(8, y - 5);
+      ctx.lineTo(8, y + 5);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = '#e8524a';
+      ctx.beginPath();
+      ctx.moveTo(-15, y);
+      ctx.lineTo(-19, y - 4);
+      ctx.lineTo(-11, y);
+      ctx.lineTo(-19, y + 4);
+      ctx.closePath();
+      ctx.fill();
+    }
+  };
+  S.moreIcons.burn = (ctx) => {
+    TD.art && TD.art.drawGlow && TD.art.drawGlow(ctx, 0, 0, 20, '#ff8a2a', 0.4);
+    flame(ctx, 0, 2, 1.05, '#ff8a2a', '#ffe28a');
+  };
+  S.moreIcons.pierceArmor = (ctx) => {
+    ctx.fillStyle = '#9fb0c8';
+    ctx.strokeStyle = OUT;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, -15);
+    ctx.lineTo(13, -10);
+    ctx.lineTo(12, 3);
+    ctx.quadraticCurveTo(10, 12, 0, 17);
+    ctx.quadraticCurveTo(-10, 12, -12, 3);
+    ctx.lineTo(-13, -10);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.strokeStyle = '#8a5a3c';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(-18, 6);
+    ctx.lineTo(14, -6);
+    ctx.stroke();
+    ctx.fillStyle = '#ffe6a0';
+    ctx.strokeStyle = OUT;
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(19, -8);
+    ctx.lineTo(10, -12);
+    ctx.lineTo(10, -2);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+  };
+
+  // 新主动技能 / 外放型被动技能的图标（设计书 103）
+  S.moreIcons.pierce = (ctx) => {
+    // 贯穿光矢：一支发光的长矢穿过三个怪影
+    ctx.fillStyle = 'rgba(255,214,120,0.2)';
+    ctx.fillRect(-20, -6, 40, 12);
+    for (const x of [-9, 1, 11]) ell(ctx, x, 0, 3.4, 7, 'rgba(120,90,160,0.8)');
+    ctx.strokeStyle = '#fff2c0';
+    ctx.lineWidth = 3.2;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(-19, 0);
+    ctx.lineTo(13, 0);
+    ctx.stroke();
+    ctx.strokeStyle = '#ffd23f';
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(-19, 0);
+    ctx.lineTo(13, 0);
+    ctx.stroke();
+    ctx.fillStyle = '#fff6d0';
+    ctx.strokeStyle = OUT;
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(20, 0);
+    ctx.lineTo(10, -7);
+    ctx.lineTo(10, 7);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = '#ff8a3a';
+    ctx.beginPath();
+    ctx.moveTo(-19, 0);
+    ctx.lineTo(-14, -5);
+    ctx.lineTo(-11, -5);
+    ctx.lineTo(-13, 0);
+    ctx.lineTo(-11, 5);
+    ctx.lineTo(-14, 5);
+    ctx.closePath();
+    ctx.fill();
+  };
+  S.moreIcons.vortex = (ctx) => {
+    // 引力漩涡：紫色的螺旋
+    ell(ctx, 0, 0, 18, 18, 'rgba(60,30,110,0.85)', OUT, 2);
+    ctx.lineCap = 'round';
+    for (let arm = 0; arm < 3; arm++) {
+      ctx.strokeStyle = arm === 0 ? '#e8d0ff' : arm === 1 ? '#b98cff' : '#8a5cff';
+      ctx.lineWidth = 3 - arm * 0.5;
+      ctx.beginPath();
+      for (let i = 0; i <= 26; i++) {
+        const k = i / 26;
+        const a = arm * 2.094 + k * 5.4;
+        const r = 16 * (1 - k * 0.92);
+        const x = Math.cos(a) * r;
+        const y = Math.sin(a) * r;
+        if (i) ctx.lineTo(x, y);
+        else ctx.moveTo(x, y);
+      }
+      ctx.stroke();
+    }
+    ell(ctx, 0, 0, 2.6, 2.6, '#ffffff');
+  };
+  S.moreIcons.firewall = (ctx) => {
+    // 烈焰之墙：一排并肩的火舌
+    for (const [x, s] of [[-12, 0.7], [0, 1.0], [12, 0.75]]) flame(ctx, x, 8 - s * 2, s * 1.1, '#ff6a1a', '#ffe28a');
+    ctx.fillStyle = 'rgba(255,170,60,0.35)';
+    ctx.fillRect(-19, 13, 38, 4);
+    ctx.fillStyle = '#5a4a40';
+    ctx.fillRect(-19, 16, 38, 3);
+  };
+  S.moreIcons.mark = (ctx) => {
+    // 猎杀标记：红色的瞄准环 + 骷髅点
+    ctx.strokeStyle = '#ff4a4a';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(0, 0, 13, 0, TAU);
+    ctx.stroke();
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    for (const [x0, y0, x1, y1] of [[0, -20, 0, -8], [0, 8, 0, 20], [-20, 0, -8, 0], [8, 0, 20, 0]]) {
+      ctx.moveTo(x0, y0);
+      ctx.lineTo(x1, y1);
+    }
+    ctx.stroke();
+    ell(ctx, 0, -1, 5.2, 5.6, '#f2f2f2', OUT, 1.4);
+    ctx.fillStyle = '#16121c';
+    ctx.fillRect(-3, -2.4, 2, 2.4);
+    ctx.fillRect(1, -2.4, 2, 2.4);
+    ctx.fillRect(-1.6, 2.4, 3.2, 2.4);
+  };
+  S.moreIcons.clones = (ctx) => {
+    // 幻影连射：一张实弓 + 两张淡青色的虚影弓
+    for (const [dx, dy, a, c] of [[-9, 5, 0.35, '#7fe0ff'], [9, -5, 0.35, '#7fe0ff'], [0, 0, 1, '#ffd27a']]) {
+      ctx.save();
+      ctx.translate(dx, dy);
+      ctx.globalAlpha = a;
+      ctx.strokeStyle = c;
+      ctx.lineWidth = 3;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.arc(-4, 0, 13, -1.15, 1.15);
+      ctx.stroke();
+      ctx.lineWidth = 1.2;
+      ctx.strokeStyle = '#fff';
+      ctx.beginPath();
+      ctx.moveTo(-4 + Math.cos(-1.15) * 13, Math.sin(-1.15) * 13);
+      ctx.lineTo(-4 + Math.cos(1.15) * 13, Math.sin(1.15) * 13);
+      ctx.stroke();
+      ctx.restore();
+    }
+    ctx.strokeStyle = '#fff2c0';
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.moveTo(-14, 0);
+    ctx.lineTo(16, 0);
+    ctx.stroke();
+    ctx.fillStyle = '#fff2c0';
+    ctx.beginPath();
+    ctx.moveTo(20, 0);
+    ctx.lineTo(13, -4);
+    ctx.lineTo(13, 4);
+    ctx.closePath();
+    ctx.fill();
+  };
+  S.moreIcons.lightning = (ctx) => {
+    // 雷鸣：乌云 + 闪电
+    ell(ctx, -7, -8, 9, 7, '#5a5f78', OUT, 1.8);
+    ell(ctx, 5, -10, 10, 8, '#6a7090', OUT, 1.8);
+    ell(ctx, 0, -5, 15, 6, '#7a80a0');
+    ctx.fillStyle = '#ffe66a';
+    ctx.strokeStyle = OUT;
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(3, -3);
+    ctx.lineTo(-6, 8);
+    ctx.lineTo(-1, 8);
+    ctx.lineTo(-4, 19);
+    ctx.lineTo(9, 5);
+    ctx.lineTo(3, 5);
+    ctx.lineTo(7, -3);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+  };
+  S.moreIcons.frostNova = (ctx) => {
+    // 霜爆：雪花
+    ctx.strokeStyle = '#dff6ff';
+    ctx.lineWidth = 2.6;
+    ctx.lineCap = 'round';
+    for (let i = 0; i < 6; i++) {
+      const a = (i / 6) * TAU;
+      const c = Math.cos(a);
+      const s2 = Math.sin(a);
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(c * 18, s2 * 18);
+      ctx.moveTo(c * 10, s2 * 10);
+      ctx.lineTo(c * 10 + Math.cos(a + 0.8) * 6, s2 * 10 + Math.sin(a + 0.8) * 6);
+      ctx.moveTo(c * 10, s2 * 10);
+      ctx.lineTo(c * 10 + Math.cos(a - 0.8) * 6, s2 * 10 + Math.sin(a - 0.8) * 6);
+      ctx.stroke();
+    }
+    ell(ctx, 0, 0, 4, 4, '#8fe0ff', OUT, 1.4);
+  };
+  S.moreIcons.fireball = (ctx) => {
+    // 火球：带尾焰的大火球
+    ctx.fillStyle = 'rgba(255,120,30,0.55)';
+    ctx.beginPath();
+    ctx.moveTo(-20, -9);
+    ctx.quadraticCurveTo(-4, -8, 4, -4);
+    ctx.lineTo(4, 6);
+    ctx.quadraticCurveTo(-6, 9, -20, 12);
+    ctx.quadraticCurveTo(-10, 2, -20, -9);
+    ctx.fill();
+    ell(ctx, 7, 0, 12, 12, '#ff7a1a', OUT, 2);
+    ell(ctx, 8, 0, 8, 8, '#ffc23a');
+    ell(ctx, 9, -1, 4, 4, '#fff6c8');
+  };
+  S.moreIcons.spiritArrows = (ctx) => {
+    // 灵箭：三支发光的青色箭
+    for (const [dy, a] of [[-11, -0.12], [0, 0], [11, 0.12]]) {
+      ctx.save();
+      ctx.translate(0, dy);
+      ctx.rotate(a);
+      ctx.strokeStyle = 'rgba(127,224,255,0.4)';
+      ctx.lineWidth = 6;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(-18, 0);
+      ctx.lineTo(10, 0);
+      ctx.stroke();
+      ctx.strokeStyle = '#e8fbff';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(-18, 0);
+      ctx.lineTo(10, 0);
+      ctx.stroke();
+      ctx.fillStyle = '#7fe0ff';
+      ctx.strokeStyle = OUT;
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(19, 0);
+      ctx.lineTo(10, -4.5);
+      ctx.lineTo(10, 4.5);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+    }
+  };
+  S.moreIcons.bladeWave = (ctx) => {
+    // 剑气：一弯向前的月牙光刃
+    ctx.fillStyle = '#e8f6ff';
+    ctx.strokeStyle = OUT;
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.moveTo(-8, -19);
+    ctx.quadraticCurveTo(18, -12, 18, 0);
+    ctx.quadraticCurveTo(18, 12, -8, 19);
+    ctx.quadraticCurveTo(6, 8, 6, 0);
+    ctx.quadraticCurveTo(6, -8, -8, -19);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.strokeStyle = '#7fd0ff';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(-17, -6);
+    ctx.lineTo(-5, -6);
+    ctx.moveTo(-20, 0);
+    ctx.lineTo(-3, 0);
+    ctx.moveTo(-17, 6);
+    ctx.lineTo(-5, 6);
+    ctx.stroke();
+  };
+  S.moreIcons.renewal = (ctx) => {
+    // 回春：绿色的叶子托着一个十字
+    ctx.fillStyle = '#4fcf6a';
+    ctx.strokeStyle = OUT;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(-16, 14);
+    ctx.quadraticCurveTo(-18, -12, 14, -16);
+    ctx.quadraticCurveTo(18, 14, -16, 14);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.strokeStyle = '#1f8a3a';
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(-14, 12);
+    ctx.quadraticCurveTo(-2, 0, 10, -12);
+    ctx.stroke();
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 3.4;
+    ctx.beginPath();
+    ctx.moveTo(4, -2);
+    ctx.lineTo(4, 10);
+    ctx.moveTo(-2, 4);
+    ctx.lineTo(10, 4);
+    ctx.stroke();
+  };
+
+  // 属性 / 城墙升级的图标（设计书 102）：商店里每张升级卡片左边的大图标
+  const spike = (ctx, n, r1, r2, fill, stroke) => {
+    ctx.fillStyle = fill;
+    ctx.strokeStyle = stroke;
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    for (let i = 0; i < n * 2; i++) {
+      const a = (i / (n * 2)) * TAU - Math.PI / 2;
+      const r = i % 2 ? r1 : r2;
+      ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+    }
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+  };
+  S.moreIcons.attr_atk = (ctx) => {
+    ctx.save();
+    ctx.rotate(-Math.PI / 4);
+    ctx.fillStyle = '#dfe8f5';
+    ctx.strokeStyle = OUT;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, -20);
+    ctx.lineTo(5, -13);
+    ctx.lineTo(5, 7);
+    ctx.lineTo(-5, 7);
+    ctx.lineTo(-5, -13);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.strokeStyle = 'rgba(120,150,190,0.8)';
+    ctx.beginPath();
+    ctx.moveTo(0, -15);
+    ctx.lineTo(0, 5);
+    ctx.stroke();
+    ctx.fillStyle = '#e0a83a';
+    ctx.strokeStyle = OUT;
+    ctx.lineWidth = 2;
+    S.roundRect(ctx, -11, 7, 22, 5, 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = '#8a5a3c';
+    S.roundRect(ctx, -3, 12, 6, 9, 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+  };
+  S.moreIcons.attr_aspd = (ctx) => {
+    ell(ctx, 3, 3, 14, 14, '#2a3a5a', '#9fd0ff', 2.4);
+    ell(ctx, 3, 3, 11, 11, '#16233c');
+    ctx.fillStyle = '#9fd0ff';
+    ctx.fillRect(0, -15, 6, 4);
+    ctx.strokeStyle = '#ffd27a';
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    ctx.moveTo(3, 3);
+    ctx.lineTo(3, -6);
+    ctx.moveTo(3, 3);
+    ctx.lineTo(10, 7);
+    ctx.stroke();
+    ctx.strokeStyle = '#7fe0ff';
+    ctx.lineWidth = 2;
+    for (const [y, x] of [[-5, -18], [3, -20], [11, -18]]) {
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + 8, y);
+      ctx.stroke();
+    }
+  };
+  S.moreIcons.attr_crit = (ctx) => {
+    ell(ctx, 0, 0, 16, 16, '#f4f4f4', OUT, 2);
+    ell(ctx, 0, 0, 11.5, 11.5, '#e8524a');
+    ell(ctx, 0, 0, 7, 7, '#f4f4f4');
+    ell(ctx, 0, 0, 3.4, 3.4, '#e8524a');
+    ctx.strokeStyle = '#8a5a3c';
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    ctx.moveTo(1, -1);
+    ctx.lineTo(16, -16);
+    ctx.stroke();
+    ctx.fillStyle = '#ffd27a';
+    ctx.beginPath();
+    ctx.moveTo(20, -20);
+    ctx.lineTo(10, -19);
+    ctx.lineTo(19, -10);
+    ctx.closePath();
+    ctx.fill();
+  };
+  S.moreIcons.attr_critDmg = (ctx) => {
+    spike(ctx, 9, 9, 19, '#ff9a2a', OUT);
+    spike(ctx, 9, 5.5, 12, '#ffd84a', 'rgba(0,0,0,0)');
+    ell(ctx, 0, 0, 4.2, 4.2, '#fff6d0');
+  };
+  S.moreIcons.attr_luck = (ctx) => {
+    for (const [x, y] of [[-6, -6], [6, -6], [-6, 6], [6, 6]]) {
+      ell(ctx, x, y, 7.5, 7.5, '#5fd35f', OUT, 1.8);
+      ell(ctx, x - 1.6, y - 1.8, 2.6, 2.6, 'rgba(255,255,255,0.45)');
+    }
+    ctx.strokeStyle = '#2f8a3a';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(0, 2);
+    ctx.quadraticCurveTo(3, 12, 10, 19);
+    ctx.stroke();
+    ell(ctx, 0, 0, 3.2, 3.2, '#2f8a3a');
+  };
+  S.moreIcons.attr_range = (ctx) => {
+    ctx.strokeStyle = '#9fd0ff';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(-16, 0);
+    ctx.lineTo(16, 0);
+    ctx.moveTo(-16, -8);
+    ctx.lineTo(-16, 8);
+    ctx.moveTo(16, -8);
+    ctx.lineTo(16, 8);
+    ctx.stroke();
+    ctx.fillStyle = '#ffd27a';
+    ctx.strokeStyle = OUT;
+    ctx.lineWidth = 1.6;
+    for (const d of [-1, 1]) {
+      ctx.beginPath();
+      ctx.moveTo(d * 17, 0);
+      ctx.lineTo(d * 7, -7);
+      ctx.lineTo(d * 7, 7);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+    }
+  };
+  const brick = (ctx, x, y, w, h, c) => {
+    ctx.fillStyle = c;
+    ctx.strokeStyle = OUT;
+    ctx.lineWidth = 1.6;
+    ctx.fillRect(x, y, w, h);
+    ctx.strokeRect(x, y, w, h);
+  };
+  S.moreIcons.wall_level = (ctx) => {
+    ctx.fillStyle = '#b8b2a6';
+    ctx.strokeStyle = OUT;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(-17, 17);
+    ctx.lineTo(-17, -9);
+    ctx.lineTo(-17, -14);
+    ctx.lineTo(-10, -14);
+    ctx.lineTo(-10, -9);
+    ctx.lineTo(-4, -9);
+    ctx.lineTo(-4, -14);
+    ctx.lineTo(4, -14);
+    ctx.lineTo(4, -9);
+    ctx.lineTo(10, -9);
+    ctx.lineTo(10, -14);
+    ctx.lineTo(17, -14);
+    ctx.lineTo(17, 17);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.strokeStyle = 'rgba(60,56,80,0.55)';
+    ctx.lineWidth = 1.4;
+    for (const y of [-2, 6, 14]) {
+      ctx.beginPath();
+      ctx.moveTo(-17, y);
+      ctx.lineTo(17, y);
+      ctx.stroke();
+    }
+    for (const [x, y] of [[-6, -9], [6, -9], [-12, -2], [0, -2], [12, -2], [-6, 6], [6, 6]]) {
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x, y + 8);
+      ctx.stroke();
+    }
+    ctx.fillStyle = 'rgba(255,255,255,0.22)';
+    ctx.fillRect(-17, -14, 5, 31);
+  };
+  S.moreIcons.wall_fortify = (ctx) => {
+    ctx.fillStyle = '#6a8fd8';
+    ctx.strokeStyle = OUT;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, -18);
+    ctx.lineTo(15, -12);
+    ctx.lineTo(14, 3);
+    ctx.quadraticCurveTo(11, 14, 0, 19);
+    ctx.quadraticCurveTo(-11, 14, -14, 3);
+    ctx.lineTo(-15, -12);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = '#9ab8f0';
+    ctx.beginPath();
+    ctx.moveTo(0, -18);
+    ctx.lineTo(15, -12);
+    ctx.lineTo(14, 3);
+    ctx.quadraticCurveTo(11, 14, 0, 19);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = '#ffe6a0';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(0, -11);
+    ctx.lineTo(0, 12);
+    ctx.moveTo(-9, -2);
+    ctx.lineTo(9, -2);
+    ctx.stroke();
+  };
+  S.moreIcons.wall_mend = (ctx) => {
+    brick(ctx, -17, 2, 15, 8, '#c98a5a');
+    brick(ctx, -2, 2, 17, 8, '#d79a68');
+    brick(ctx, -17, 10, 9, 8, '#d79a68');
+    brick(ctx, -8, 10, 15, 8, '#c98a5a');
+    brick(ctx, 7, 10, 10, 8, '#d79a68');
+    ell(ctx, 0, -8, 10, 10, '#5fd35f', OUT, 2);
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 3.2;
+    ctx.beginPath();
+    ctx.moveTo(0, -13);
+    ctx.lineTo(0, -3);
+    ctx.moveTo(-5, -8);
+    ctx.lineTo(5, -8);
+    ctx.stroke();
+  };
+  S.moreIcons.wall_thorns = (ctx) => {
+    spike(ctx, 10, 8, 19, '#a9b3c8', OUT);
+    ell(ctx, 0, 0, 9, 9, '#6f7a92', OUT, 2);
+    ell(ctx, -2.5, -3, 3, 3, 'rgba(255,255,255,0.4)');
+  };
+
+  // ---------- v1.05 新增道具的图标（设计书 107）：29 个，铜 / 银 / 金每档 10 / 9 / 10 个 ----------
+  const rr = (ctx, x, y, w, h, r, fill, stroke, lw) => {
+    S.roundRect(ctx, x, y, w, h, r);
+    ctx.fillStyle = fill;
+    ctx.fill();
+    if (stroke) {
+      ctx.strokeStyle = stroke;
+      ctx.lineWidth = lw || 1.6;
+      ctx.stroke();
+    }
+  };
+  // 圆肚药瓶：液体色 + 瓶颈 + 软木塞；glyph 在瓶肚里画一个小标记
+  const flask = (ctx, liquid, glyph) => {
+    ell(ctx, 0, 6, 12.5, 12.5, 'rgba(210,235,255,0.35)', OUT, 2);
+    ctx.save();
+    ctx.beginPath();
+    ctx.ellipse(0, 6, 11.4, 11.4, 0, 0, TAU);
+    ctx.clip();
+    ctx.fillStyle = liquid;
+    ctx.fillRect(-14, 4, 28, 16);
+    ctx.fillStyle = 'rgba(255,255,255,0.22)';
+    ctx.fillRect(-14, 4, 28, 2);
+    ctx.restore();
+    ell(ctx, -5, 2, 3, 5.5, 'rgba(255,255,255,0.5)');
+    rr(ctx, -4, -9, 8, 9, 2, 'rgba(210,235,255,0.5)', OUT, 1.8);
+    rr(ctx, -5, -13, 10, 5, 2, '#a8794a', OUT, 1.6);
+    if (glyph) glyph(ctx);
+  };
+  const skull = (ctx, x, y, s2, c) => {
+    ell(ctx, x, y - s2 * 0.15, s2, s2 * 0.95, c);
+    ctx.fillStyle = '#16121c';
+    ctx.fillRect(x - s2 * 0.55, y - s2 * 0.35, s2 * 0.4, s2 * 0.45);
+    ctx.fillRect(x + s2 * 0.15, y - s2 * 0.35, s2 * 0.4, s2 * 0.45);
+    ctx.fillRect(x - s2 * 0.2, y + s2 * 0.45, s2 * 0.4, s2 * 0.4);
+  };
+  const bolt = (ctx, x, y, s2, c) => {
+    ctx.fillStyle = c;
+    ctx.strokeStyle = OUT;
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(x + 2 * s2, y - 9 * s2);
+    ctx.lineTo(x - 5 * s2, y + 1 * s2);
+    ctx.lineTo(x - 1 * s2, y + 1 * s2);
+    ctx.lineTo(x - 3 * s2, y + 10 * s2);
+    ctx.lineTo(x + 6 * s2, y - 2 * s2);
+    ctx.lineTo(x + 2 * s2, y - 2 * s2);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+  };
+  const arrowH = (ctx, x0, x1, y, shaft, head) => {
+    ctx.strokeStyle = shaft;
+    ctx.lineWidth = 2.4;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(x0, y);
+    ctx.lineTo(x1 - 4, y);
+    ctx.stroke();
+    ctx.fillStyle = head;
+    ctx.strokeStyle = OUT;
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(x1, y);
+    ctx.lineTo(x1 - 8, y - 4.5);
+    ctx.lineTo(x1 - 8, y + 4.5);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = '#e8524a';
+    ctx.beginPath();
+    ctx.moveTo(x0, y);
+    ctx.lineTo(x0 - 3, y - 4);
+    ctx.lineTo(x0 + 3, y);
+    ctx.lineTo(x0 - 3, y + 4);
+    ctx.closePath();
+    ctx.fill();
+  };
+  const M = S.moreIcons;
+  // ===== 铜币档 =====
+  M.spikeTrap = (ctx) => {
+    rr(ctx, -17, 6, 34, 9, 2, '#8a5a3c', OUT, 2);
+    for (let i = 0; i < 5; i++) {
+      const x = -13 + i * 6.5;
+      ctx.fillStyle = '#cdd6e3';
+      ctx.strokeStyle = OUT;
+      ctx.lineWidth = 1.4;
+      ctx.beginPath();
+      ctx.moveTo(x - 3, 7);
+      ctx.lineTo(x, -14 + (i % 2) * 3);
+      ctx.lineTo(x + 3, 7);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+    }
+  };
+  M.smokeBomb = (ctx) => {
+    for (const [x, y, r] of [[-7, -9, 6], [3, -13, 7], [10, -6, 5], [-1, -6, 6]]) ell(ctx, x, y, r, r, 'rgba(190,196,208,0.8)');
+    ell(ctx, 0, 8, 11, 11, '#4a4f5c', OUT, 2);
+    ell(ctx, -4, 4, 3.5, 4.5, 'rgba(255,255,255,0.3)');
+    ctx.strokeStyle = '#d8b878';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(4, -2);
+    ctx.quadraticCurveTo(8, -6, 12, -3);
+    ctx.stroke();
+    ell(ctx, 12, -3, 2.2, 2.2, '#ffb04a');
+  };
+  M.bandage = (ctx) => {
+    rr(ctx, -13, -6, 26, 18, 6, '#f2ead8', OUT, 2);
+    ctx.strokeStyle = 'rgba(150,130,100,0.6)';
+    ctx.lineWidth = 1.4;
+    for (const x of [-7, 0, 7]) {
+      ctx.beginPath();
+      ctx.moveTo(x, -5);
+      ctx.lineTo(x, 11);
+      ctx.stroke();
+    }
+    ell(ctx, 0, -6, 13, 4, '#fff8e8', OUT, 1.6);
+    ctx.fillStyle = '#e8524a';
+    ctx.fillRect(-2, 0, 4, 10);
+    ctx.fillRect(-5, 3, 10, 4);
+    ctx.fillStyle = '#f2ead8';
+    ctx.beginPath();
+    ctx.moveTo(10, 10);
+    ctx.quadraticCurveTo(18, 14, 17, 19);
+    ctx.lineTo(11, 15);
+    ctx.fill();
+  };
+  M.whetstone = (ctx) => {
+    ctx.save();
+    ctx.rotate(-0.25);
+    rr(ctx, -16, 2, 32, 12, 3, '#9aa0ac', OUT, 2);
+    ctx.fillStyle = 'rgba(255,255,255,0.25)';
+    ctx.fillRect(-14, 4, 28, 2.5);
+    ctx.restore();
+    ctx.fillStyle = '#e4ecf6';
+    ctx.strokeStyle = OUT;
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(-13, -1);
+    ctx.lineTo(12, -15);
+    ctx.lineTo(14, -11);
+    ctx.lineTo(-9, 3);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = '#ffe08a';
+    for (const [x, y] of [[-3, -3], [5, -8], [-9, -7]]) {
+      ctx.beginPath();
+      ctx.moveTo(x, y - 3);
+      ctx.lineTo(x + 1, y);
+      ctx.lineTo(x + 3, y + 1);
+      ctx.lineTo(x + 1, y + 2);
+      ctx.lineTo(x, y + 5);
+      ctx.lineTo(x - 1, y + 2);
+      ctx.lineTo(x - 3, y + 1);
+      ctx.lineTo(x - 1, y);
+      ctx.closePath();
+      ctx.fill();
+    }
+  };
+  M.luckyCoin = (ctx) => {
+    ell(ctx, 0, 0, 16, 16, '#e39a5a', OUT, 2.2);
+    ell(ctx, 0, 0, 12, 12, '#c9803f', 'rgba(60,30,10,0.5)', 1.4);
+    for (const [x, y] of [[-3.5, -3.5], [3.5, -3.5], [-3.5, 3.5], [3.5, 3.5]]) ell(ctx, x, y, 3.8, 3.8, '#6fdc86', 'rgba(20,70,30,0.7)', 1);
+    ell(ctx, 0, 0, 1.8, 1.8, '#2f8a3a');
+    ell(ctx, -8, -9, 3, 1.6, 'rgba(255,255,255,0.45)');
+    ctx.fillStyle = '#fff2c0';
+    ctx.beginPath();
+    ctx.moveTo(13, -14);
+    ctx.lineTo(14.2, -11);
+    ctx.lineTo(17, -10);
+    ctx.lineTo(14.2, -9);
+    ctx.lineTo(13, -6);
+    ctx.lineTo(11.8, -9);
+    ctx.lineTo(9, -10);
+    ctx.lineTo(11.8, -11);
+    ctx.closePath();
+    ctx.fill();
+  };
+  M.ropeNet = (ctx) => {
+    ctx.strokeStyle = '#c9a56a';
+    ctx.lineWidth = 2.2;
+    ctx.lineCap = 'round';
+    for (let i = -2; i <= 2; i++) {
+      ctx.beginPath();
+      ctx.moveTo(i * 7.5, -16);
+      ctx.quadraticCurveTo(i * 7.5 + 3, 0, i * 7.5, 16);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(-17, i * 7.5);
+      ctx.quadraticCurveTo(0, i * 7.5 + 3, 17, i * 7.5);
+      ctx.stroke();
+    }
+    for (let i = -2; i <= 2; i++) for (let j = -2; j <= 2; j++) ell(ctx, i * 7.5, j * 7.5, 2.2, 2.2, '#8a6a3a');
+  };
+  M.firecracker = (ctx) => {
+    ctx.save();
+    ctx.rotate(0.2);
+    for (const [x, c] of [[-8, '#d83a3a'], [0, '#e8524a'], [8, '#c82e2e']]) {
+      rr(ctx, x - 4, -7, 8, 20, 2, c, OUT, 1.8);
+      ctx.fillStyle = '#ffd27a';
+      ctx.fillRect(x - 4, -1, 8, 2.4);
+      ctx.fillRect(x - 4, 7, 8, 2.4);
+    }
+    ctx.strokeStyle = '#6a4a2a';
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(0, -7);
+    ctx.quadraticCurveTo(3, -13, 8, -12);
+    ctx.stroke();
+    ctx.restore();
+    ell(ctx, 8, -13, 3, 3, '#ffb04a');
+    ell(ctx, 8, -13, 1.4, 1.4, '#fff6d0');
+    ctx.fillStyle = '#ffe08a';
+    for (const [x, y] of [[13, -17], [4, -18], [14, -8]]) ell(ctx, x, y, 1.3, 1.3, '#ffe08a');
+  };
+  M.oilFlask = (ctx) => {
+    flask(ctx, '#3a2a14', (c) => {
+      ell(c, 0, 9, 8, 3, 'rgba(255,200,90,0.35)');
+      c.fillStyle = '#3a2a14';
+      c.beginPath();
+      c.moveTo(12, 0);
+      c.quadraticCurveTo(16, 6, 12, 10);
+      c.quadraticCurveTo(8, 6, 12, 0);
+      c.fill();
+    });
+  };
+  M.woodShield = (ctx) => {
+    ell(ctx, 0, 0, 16, 16, '#b0793e', OUT, 2.2);
+    ctx.strokeStyle = 'rgba(70,40,15,0.55)';
+    ctx.lineWidth = 1.4;
+    for (const x of [-8, -2.7, 2.7, 8]) {
+      ctx.beginPath();
+      ctx.moveTo(x, -Math.sqrt(256 - x * x));
+      ctx.lineTo(x, Math.sqrt(256 - x * x));
+      ctx.stroke();
+    }
+    ctx.strokeStyle = '#8f98a6';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(0, 0, 14.5, 0, TAU);
+    ctx.stroke();
+    ell(ctx, 0, 0, 4.5, 4.5, '#c9d1de', OUT, 1.6);
+  };
+  M.farsightPotion = (ctx) => {
+    flask(ctx, '#3ab0d8', (c) => {
+      ell(c, 0, 8, 6.5, 4.2, '#f4f8ff', OUT, 1.2);
+      ell(c, 0, 8, 2.6, 2.6, '#2a6ea8');
+      ell(c, 0, 8, 1.1, 1.1, '#0a1020');
+    });
+  };
+  // ===== 银币档 =====
+  M.chainScroll = (ctx) => {
+    ctx.fillStyle = '#f2e2b8';
+    ctx.strokeStyle = OUT;
+    ctx.lineWidth = 2;
+    S.roundRect(ctx, -12, -14, 24, 28, 3);
+    ctx.fill();
+    ctx.stroke();
+    ell(ctx, 0, -14, 12, 3.5, '#d9b878', OUT, 2);
+    ell(ctx, 0, 14, 12, 3.5, '#d9b878', OUT, 2);
+    ctx.strokeStyle = '#6fa8ff';
+    ctx.lineWidth = 2.6;
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(-7, -8);
+    ctx.lineTo(0, -3);
+    ctx.lineTo(-3, 2);
+    ctx.lineTo(5, 6);
+    ctx.lineTo(1, 11);
+    ctx.stroke();
+    for (const [x, y] of [[-7, -8], [0, -3], [5, 6]]) ell(ctx, x, y, 3, 3, '#e8f4ff', '#3a6ad8', 1.4);
+  };
+  M.poisonFlask = (ctx) => {
+    flask(ctx, '#58c84a', (c) => {
+      skull(c, 0, 8, 4.8, '#e8f4d8');
+      ell(c, 6, 2, 1.6, 1.6, 'rgba(220,255,200,0.8)');
+      ell(c, -7, 11, 1.3, 1.3, 'rgba(220,255,200,0.8)');
+    });
+  };
+  M.mirrorShield = (ctx) => {
+    ctx.fillStyle = '#c9d4e4';
+    ctx.strokeStyle = OUT;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, -17);
+    ctx.lineTo(14, -11);
+    ctx.lineTo(13, 4);
+    ctx.quadraticCurveTo(10, 13, 0, 18);
+    ctx.quadraticCurveTo(-10, 13, -13, 4);
+    ctx.lineTo(-14, -11);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    const g = ctx.createLinearGradient(-12, -14, 12, 14);
+    g.addColorStop(0, 'rgba(255,255,255,0.85)');
+    g.addColorStop(0.5, 'rgba(255,255,255,0)');
+    g.addColorStop(1, 'rgba(120,170,230,0.5)');
+    ctx.fillStyle = g;
+    ctx.fill();
+    ctx.strokeStyle = '#ff6a5a';
+    ctx.lineWidth = 2.4;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(-18, -10);
+    ctx.lineTo(0, 2);
+    ctx.lineTo(16, -12);
+    ctx.stroke();
+    ctx.fillStyle = '#ff6a5a';
+    ctx.beginPath();
+    ctx.moveTo(19, -15);
+    ctx.lineTo(11, -14);
+    ctx.lineTo(17, -8);
+    ctx.closePath();
+    ctx.fill();
+  };
+  M.vampDraught = (ctx) => {
+    flask(ctx, '#c82e4a', (c) => {
+      c.fillStyle = '#fff4f4';
+      c.strokeStyle = OUT;
+      c.lineWidth = 1;
+      for (const x of [-4, 4]) {
+        c.beginPath();
+        c.moveTo(x - 2.4, 4);
+        c.lineTo(x + 2.4, 4);
+        c.lineTo(x, 12);
+        c.closePath();
+        c.fill();
+        c.stroke();
+      }
+    });
+  };
+  M.earthSpike = (ctx) => {
+    ell(ctx, 0, 14, 17, 4, '#5a4636');
+    for (const [x, h, w] of [[-9, 20, 6], [0, 28, 8], [9, 17, 6]]) {
+      ctx.fillStyle = '#9a8268';
+      ctx.strokeStyle = OUT;
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.moveTo(x - w, 14);
+      ctx.lineTo(x + 0.6, 14 - h);
+      ctx.lineTo(x + w, 14);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = 'rgba(255,255,255,0.22)';
+      ctx.beginPath();
+      ctx.moveTo(x - w * 0.3, 14);
+      ctx.lineTo(x + 0.6, 14 - h);
+      ctx.lineTo(x + w * 0.2, 14);
+      ctx.fill();
+    }
+  };
+  M.glueTrap = (ctx) => {
+    ctx.fillStyle = '#e0a63a';
+    ctx.strokeStyle = OUT;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(-15, 8);
+    ctx.quadraticCurveTo(-17, -6, -4, -9);
+    ctx.quadraticCurveTo(6, -14, 12, -5);
+    ctx.quadraticCurveTo(19, 2, 13, 9);
+    ctx.lineTo(8, 9);
+    ctx.quadraticCurveTo(7, 17, 4, 9);
+    ctx.lineTo(-5, 9);
+    ctx.quadraticCurveTo(-7, 15, -9, 9);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ell(ctx, -5, -3, 5, 3, 'rgba(255,240,170,0.7)');
+    ctx.strokeStyle = 'rgba(255,230,150,0.9)';
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(14, 4);
+    ctx.quadraticCurveTo(19, 8, 17, 12);
+    ctx.stroke();
+  };
+  M.rageDraught = (ctx) => {
+    flask(ctx, '#ff6a2a', (c) => {
+      c.strokeStyle = '#fff2c0';
+      c.lineWidth = 2;
+      c.lineCap = 'round';
+      c.beginPath();
+      c.moveTo(-6, 4);
+      c.lineTo(-2, 7);
+      c.moveTo(6, 4);
+      c.lineTo(2, 7);
+      c.moveTo(-5, 12);
+      c.quadraticCurveTo(0, 9, 5, 12);
+      c.stroke();
+    });
+    flame(ctx, 10, -10, 0.55, '#ff8a2a', '#ffe28a');
+  };
+  M.thunderStorm = (ctx) => {
+    ell(ctx, -8, -8, 9, 7, '#4a4f68', OUT, 1.8);
+    ell(ctx, 5, -10, 11, 8, '#5a6080', OUT, 1.8);
+    ell(ctx, 0, -5, 16, 6, '#6a7090');
+    bolt(ctx, -9, 8, 0.9, '#ffe66a');
+    bolt(ctx, 1, 10, 1.1, '#fff6a0');
+    bolt(ctx, 11, 6, 0.8, '#ffe66a');
+  };
+  M.steelArrows = (ctx) => {
+    for (const [dy, a] of [[-9, -0.1], [0, 0], [9, 0.1]]) {
+      ctx.save();
+      ctx.translate(0, dy);
+      ctx.rotate(a);
+      arrowH(ctx, -17, 18, 0, '#aab4c4', '#dfe6f2');
+      ctx.restore();
+    }
+    ctx.strokeStyle = '#8a5a3c';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(-6, -13);
+    ctx.lineTo(-6, 13);
+    ctx.stroke();
+  };
+  // ===== 金币档 =====
+  M.dragonBreath = (ctx) => {
+    ctx.fillStyle = '#ff5a1a';
+    ctx.strokeStyle = OUT;
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.moveTo(-18, 4);
+    ctx.quadraticCurveTo(-4, -14, 18, -10);
+    ctx.quadraticCurveTo(8, -3, 19, 5);
+    ctx.quadraticCurveTo(2, 0, 10, 14);
+    ctx.quadraticCurveTo(-8, 4, -18, 4);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = '#ffc23a';
+    ctx.beginPath();
+    ctx.moveTo(-12, 3);
+    ctx.quadraticCurveTo(-2, -8, 12, -6);
+    ctx.quadraticCurveTo(4, 0, 12, 5);
+    ctx.quadraticCurveTo(0, 2, -12, 3);
+    ctx.fill();
+    ell(ctx, -12, 0, 4.4, 3, '#fff6d0', OUT, 1.2);
+    ctx.fillStyle = '#16121c';
+    ctx.fillRect(-12.6, -2, 1.8, 4);
+  };
+  M.blackHole = (ctx) => {
+    ctx.strokeStyle = 'rgba(190,140,255,0.8)';
+    ctx.lineWidth = 3.4;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 17, 6.5, -0.5, 0, TAU);
+    ctx.stroke();
+    ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 17, 6.5, -0.5, 0.4, 2.8);
+    ctx.stroke();
+    ell(ctx, 0, 0, 10, 10, '#0a0614', 'rgba(150,100,230,0.9)', 2);
+    ell(ctx, 0, 0, 5, 5, '#000');
+    for (const [x, y] of [[-15, 10], [14, -11], [-12, -13]]) ell(ctx, x, y, 1.4, 1.4, '#e8d8ff');
+  };
+  M.sanctuary = (ctx) => {
+    ctx.strokeStyle = 'rgba(255,230,150,0.55)';
+    ctx.lineWidth = 2;
+    for (let i = 0; i < 10; i++) {
+      const a = (i / 10) * Math.PI - Math.PI;
+      ctx.beginPath();
+      ctx.moveTo(Math.cos(a) * 12, 8 + Math.sin(a) * 12);
+      ctx.lineTo(Math.cos(a) * 20, 8 + Math.sin(a) * 20);
+      ctx.stroke();
+    }
+    ctx.fillStyle = 'rgba(255,240,190,0.35)';
+    ctx.strokeStyle = '#ffd86a';
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    ctx.arc(0, 8, 14, Math.PI, 0);
+    ctx.lineTo(14, 15);
+    ctx.lineTo(-14, 15);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = '#fff6d0';
+    ctx.fillRect(-2, 0, 4, 14);
+    ctx.fillRect(-6, 4, 12, 4);
+  };
+  M.phoenixFeather = (ctx) => {
+    ctx.save();
+    ctx.rotate(0.5);
+    const g = ctx.createLinearGradient(0, -20, 0, 18);
+    g.addColorStop(0, '#ffe28a');
+    g.addColorStop(0.5, '#ff8a2a');
+    g.addColorStop(1, '#c82e1a');
+    ctx.fillStyle = g;
+    ctx.strokeStyle = OUT;
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.moveTo(0, -20);
+    ctx.quadraticCurveTo(14, -8, 8, 10);
+    ctx.quadraticCurveTo(3, 16, 0, 18);
+    ctx.quadraticCurveTo(-3, 16, -8, 10);
+    ctx.quadraticCurveTo(-14, -8, 0, -20);
+    ctx.fill();
+    ctx.stroke();
+    ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(0, -18);
+    ctx.lineTo(0, 17);
+    ctx.stroke();
+    ctx.strokeStyle = 'rgba(120,30,10,0.5)';
+    ctx.lineWidth = 1;
+    for (let y = -12; y < 10; y += 5) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(7 - Math.abs(y) * 0.2, y + 5);
+      ctx.moveTo(0, y);
+      ctx.lineTo(-7 + Math.abs(y) * 0.2, y + 5);
+      ctx.stroke();
+    }
+    ctx.restore();
+    flame(ctx, 12, -12, 0.5, '#ff8a2a', '#ffe28a');
+  };
+  M.stormCall = (ctx) => {
+    ctx.strokeStyle = '#8fb8ff';
+    ctx.lineWidth = 3;
+    ctx.lineCap = 'round';
+    for (let arm = 0; arm < 2; arm++) {
+      ctx.beginPath();
+      for (let i = 0; i <= 20; i++) {
+        const k = i / 20;
+        const a = arm * Math.PI + k * 5;
+        const r = 17 * (1 - k * 0.85);
+        const x = Math.cos(a) * r;
+        const y = Math.sin(a) * r * 0.8 - 2;
+        if (i) ctx.lineTo(x, y);
+        else ctx.moveTo(x, y);
+      }
+      ctx.stroke();
+    }
+    ell(ctx, 0, -2, 4, 4, '#dfeaff');
+    bolt(ctx, 2, 8, 1.1, '#fff6a0');
+  };
+  M.timeLoop = (ctx) => {
+    ctx.strokeStyle = '#ffd86a';
+    ctx.lineWidth = 3.2;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.arc(0, 0, 16, -2.6, 2.4);
+    ctx.stroke();
+    ctx.fillStyle = '#ffd86a';
+    ctx.beginPath();
+    ctx.moveTo(-17, -9);
+    ctx.lineTo(-9, -12);
+    ctx.lineTo(-12, -3);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = '#e8f4ff';
+    ctx.strokeStyle = OUT;
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(-7, -9);
+    ctx.lineTo(7, -9);
+    ctx.lineTo(1, 0);
+    ctx.lineTo(7, 9);
+    ctx.lineTo(-7, 9);
+    ctx.lineTo(-1, 0);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = '#ffb83a';
+    ctx.beginPath();
+    ctx.moveTo(-4, 8);
+    ctx.lineTo(4, 8);
+    ctx.lineTo(0, 3);
+    ctx.fill();
+  };
+  M.godWrath = (ctx) => {
+    ctx.strokeStyle = 'rgba(255,240,170,0.6)';
+    ctx.lineWidth = 2;
+    for (let i = 0; i < 12; i++) {
+      const a = (i / 12) * TAU;
+      ctx.beginPath();
+      ctx.moveTo(Math.cos(a) * 13, Math.sin(a) * 13);
+      ctx.lineTo(Math.cos(a) * 19, Math.sin(a) * 19);
+      ctx.stroke();
+    }
+    ell(ctx, 0, 0, 12, 12, 'rgba(255,248,210,0.55)', '#ffd86a', 2);
+    bolt(ctx, 0, 0, 1.55, '#fffbe0');
+  };
+  M.goldenArrow = (ctx) => {
+    ctx.fillStyle = 'rgba(255,214,90,0.25)';
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 21, 9, 0, 0, TAU);
+    ctx.fill();
+    arrowH(ctx, -16, 19, 0, '#ffd23f', '#fff0a0');
+    ctx.strokeStyle = '#fff6d0';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(-14, -1);
+    ctx.lineTo(10, -1);
+    ctx.stroke();
+    ctx.fillStyle = '#fff2c0';
+    for (const [x, y] of [[-12, -9], [8, 8], [14, -8]]) {
+      ctx.beginPath();
+      ctx.moveTo(x, y - 3);
+      ctx.lineTo(x + 1, y);
+      ctx.lineTo(x + 3, y + 1);
+      ctx.lineTo(x + 1, y + 2);
+      ctx.lineTo(x, y + 5);
+      ctx.lineTo(x - 1, y + 2);
+      ctx.lineTo(x - 3, y + 1);
+      ctx.lineTo(x - 1, y);
+      ctx.closePath();
+      ctx.fill();
+    }
+  };
+  M.plague = (ctx) => {
+    ell(ctx, 0, 0, 18, 15, 'rgba(110,200,80,0.35)');
+    for (const [x, y, r] of [[-12, -8, 4], [13, -10, 3.2], [-14, 9, 3], [14, 8, 4.2]]) ell(ctx, x, y, r, r, 'rgba(150,230,110,0.8)', OUT, 1);
+    skull(ctx, 0, 1, 10, '#dff0c8');
+    ctx.strokeStyle = OUT;
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.ellipse(0, 0.5, 10, 9.5, 0, 0, TAU);
+    ctx.stroke();
+  };
+  M.shadowLegion = (ctx) => {
+    for (const [x, y, s2, a] of [[-10, 3, 0.8, 0.6], [10, 3, 0.8, 0.6], [0, 0, 1, 1]]) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.scale(s2, s2);
+      ctx.globalAlpha = a;
+      ctx.fillStyle = '#3a2a5a';
+      ctx.strokeStyle = OUT;
+      ctx.lineWidth = 1.8;
+      ctx.beginPath();
+      ctx.arc(0, -4, 8, Math.PI, 0);
+      ctx.lineTo(8, 8);
+      ctx.lineTo(-8, 8);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = '#ff6ad8';
+      ctx.fillRect(-6, -4, 5, 2.4);
+      ctx.fillRect(1, -4, 5, 2.4);
+      ctx.fillStyle = '#8a6ad8';
+      ctx.beginPath();
+      ctx.moveTo(0, -12);
+      ctx.lineTo(-3, -4);
+      ctx.lineTo(3, -4);
+      ctx.fill();
+      ctx.restore();
+    }
+  };
+
+  // 装备的图标（设计书 101）：按部位画剪影，颜色跟着品质走（同一个部位的不同装备靠颜色区分，名字写在图标下面）
+  S.gearIcon = function (ctx, slot, color, cx, cy, r) {
+    ctx.save();
+    ctx.translate(cx, cy);
+    const k = r / 20;
+    ctx.scale(k, k);
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    const lt = S.lighten(color, 0.45);
+    const dk = S.darken(color, 0.45);
+    const g = ctx.createLinearGradient(-14, -16, 14, 16);
+    g.addColorStop(0, lt);
+    g.addColorStop(1, dk);
+    ctx.fillStyle = g;
+    ctx.strokeStyle = OUT;
+    ctx.lineWidth = 2;
+    const fillStroke = () => {
+      ctx.fill();
+      ctx.stroke();
+    };
+    switch (slot) {
+      case 'helm':
+        ctx.beginPath();
+        ctx.moveTo(-14, 10);
+        ctx.quadraticCurveTo(-16, -14, 0, -15);
+        ctx.quadraticCurveTo(16, -14, 14, 10);
+        ctx.lineTo(8, 10);
+        ctx.lineTo(8, 3);
+        ctx.lineTo(-8, 3);
+        ctx.lineTo(-8, 10);
+        ctx.closePath();
+        fillStroke();
+        ctx.fillStyle = 'rgba(10,14,28,0.8)';
+        ctx.fillRect(-9, -3, 18, 4);
+        ctx.fillStyle = lt;
+        ctx.beginPath();
+        ctx.moveTo(-2, -15);
+        ctx.quadraticCurveTo(0, -22, 3, -15);
+        ctx.fill();
+        break;
+      case 'cape':
+        ctx.beginPath();
+        ctx.moveTo(-9, -14);
+        ctx.quadraticCurveTo(0, -18, 9, -14);
+        ctx.quadraticCurveTo(15, 0, 16, 16);
+        ctx.quadraticCurveTo(8, 12, 3, 17);
+        ctx.quadraticCurveTo(-2, 12, -6, 16);
+        ctx.quadraticCurveTo(-12, 12, -16, 16);
+        ctx.quadraticCurveTo(-14, 0, -9, -14);
+        ctx.closePath();
+        fillStroke();
+        ell(ctx, 0, -13, 3, 3, '#ffe08a', OUT, 1.5);
+        break;
+      case 'armor':
+        ctx.beginPath();
+        ctx.moveTo(-8, -15);
+        ctx.lineTo(-17, -9);
+        ctx.lineTo(-13, -1);
+        ctx.lineTo(-10, -3);
+        ctx.lineTo(-10, 16);
+        ctx.lineTo(10, 16);
+        ctx.lineTo(10, -3);
+        ctx.lineTo(13, -1);
+        ctx.lineTo(17, -9);
+        ctx.lineTo(8, -15);
+        ctx.quadraticCurveTo(0, -8, -8, -15);
+        ctx.closePath();
+        fillStroke();
+        ctx.strokeStyle = 'rgba(255,255,255,0.45)';
+        ctx.lineWidth = 1.6;
+        ctx.beginPath();
+        ctx.moveTo(0, -6);
+        ctx.lineTo(0, 14);
+        ctx.moveTo(-6, 3);
+        ctx.lineTo(6, 3);
+        ctx.stroke();
+        break;
+      case 'quiver':
+        ctx.save();
+        ctx.rotate(0.35);
+        for (const x of [-4, 0, 4]) {
+          ctx.strokeStyle = '#8a5a3c';
+          ctx.lineWidth = 1.8;
+          ctx.beginPath();
+          ctx.moveTo(x, -4);
+          ctx.lineTo(x, -17);
+          ctx.stroke();
+          ctx.fillStyle = x === 0 ? '#ffe6a0' : '#e8524a';
+          ctx.beginPath();
+          ctx.moveTo(x - 2.4, -13);
+          ctx.lineTo(x, -21);
+          ctx.lineTo(x + 2.4, -13);
+          ctx.closePath();
+          ctx.fill();
+        }
+        ctx.fillStyle = g;
+        ctx.strokeStyle = OUT;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(-7, -6);
+        ctx.lineTo(7, -6);
+        ctx.lineTo(5.5, 16);
+        ctx.quadraticCurveTo(0, 19, -5.5, 16);
+        ctx.closePath();
+        fillStroke();
+        ctx.restore();
+        break;
+      case 'trinket':
+        ctx.strokeStyle = '#d8c8a0';
+        ctx.lineWidth = 1.6;
+        ctx.beginPath();
+        ctx.moveTo(-10, -16);
+        ctx.quadraticCurveTo(0, -4, 10, -16);
+        ctx.stroke();
+        ell(ctx, 0, 6, 10, 10, g, OUT, 2);
+        ctx.fillStyle = 'rgba(255,255,255,0.85)';
+        ctx.beginPath();
+        ctx.moveTo(0, -1);
+        ctx.lineTo(5, 6);
+        ctx.lineTo(0, 13);
+        ctx.lineTo(-5, 6);
+        ctx.closePath();
+        ctx.fill();
+        break;
+      case 'boots':
+        ctx.beginPath();
+        ctx.moveTo(-9, -15);
+        ctx.lineTo(3, -15);
+        ctx.lineTo(3, 2);
+        ctx.quadraticCurveTo(15, 3, 17, 10);
+        ctx.lineTo(17, 15);
+        ctx.lineTo(-10, 15);
+        ctx.closePath();
+        fillStroke();
+        ctx.fillStyle = 'rgba(255,255,255,0.4)';
+        ctx.fillRect(-9, -15, 12, 4);
+        ctx.fillStyle = 'rgba(10,14,28,0.55)';
+        ctx.fillRect(-10, 11, 27, 4);
+        break;
+      default:
+        ell(ctx, 0, 0, 12, 12, g, OUT, 2);
+    }
+    ctx.restore();
+  };
+  S.gearIconCanvas = function (slot, color, px) {
+    const c = document.createElement('canvas');
+    c.width = px;
+    c.height = px;
+    S.gearIcon(c.getContext('2d'), slot, color, px / 2, px / 2, px * 0.42);
+    c.className = 'icon';
+    return c;
+  };
+
+  // 新武器的图标（设计书 63.4）：直接画武器本身，并按品质加一圈底色
+  for (const id of ['frostBow', 'flameCrossbow', 'piercer', 'meteorCannon', 'stormOrb', 'voidCrossbow', 'genesisBow', 'judgementStaff', 'chronoBoomerang', 'huntBow', 'mortar', 'twinCrossbow', 'galeBoomerang', 'thunderMortar', 'arcaneStaff', 'dragonBow', 'infernoStaff', 'worldCannon', 'starfallOrb']) {
+    S.moreIcons[id] = (ctx) => {
+      const K = TD.creatures;
+      const w = TD.data.weapons[id];
+      const rc = TD.data.weaponRarity[w.rarity].color;
+      if (TD.art && TD.art.drawGlow) TD.art.drawGlow(ctx, 0, 0, 22, rc, 0.45);
+      if (!K) return;
+      ctx.save();
+      ctx.translate(-9, 0);
+      K.weapon(ctx, id, 22, undefined, { shieldHi: '#ffe08a' }, 0.6);
+      ctx.restore();
+    };
+  }
+})((globalThis.TD = globalThis.TD || {}));
