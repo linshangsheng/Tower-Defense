@@ -1301,9 +1301,18 @@ test('技能协同：碎冰（冰冻领域里雷霆加伤）、鼓点箭雨（�
   assert.strictEqual(d.combos.drumRain, 1);
 });
 
-test('九层妖塔：一开始就开放；第 N 层共 200N 只怪（妖王占比 10% → 50%），分 3 波；钻石 2^(N−1)', () => {
+test('九层妖塔：通关第 50 关后开放（v1.25）；第 N 层共 200N 只怪（妖王占比 10% → 50%），分 3 波；钻石 2^(N−1)', () => {
   const s = P.newSave();
-  assert.ok(TD.modes.towerUnlocked(s), '新存档也能进');
+  assert.ok(!TD.modes.towerUnlocked(s), '新存档进不去');
+  assert.ok(!TD.modes.towerCanStart(Object.assign(P.newSave(), { gold: 5 })), '没通关第 50 关，有金币也开不了');
+  const t = P.newSave();
+  clearUpTo(t, 49);
+  assert.ok(!TD.modes.towerUnlocked(t), '通关到第 49 关还不行');
+  clearUpTo(t, 50);
+  assert.ok(TD.modes.towerUnlocked(t), '通关第 50 关就开放');
+  const tm = P.newSave();
+  P.enableTestMode(tm, P.TEST_PASSWORD);
+  assert.ok(TD.modes.towerUnlocked(tm), '测试模式直接开放');
   assert.strictEqual(TD.modes.towerStage(s), 1, '难度按通关进度折算，刚开始按第 1 关');
   // 还没有小镇朋友时没有妖王可用：名额换成小妖，总数不变
   const first = TD.modes.buildTower(s, 3);

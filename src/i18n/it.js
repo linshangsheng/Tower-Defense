@@ -739,8 +739,6 @@ TD.i18n.register("it", {
   "解锁第 {0} 个{1}": "Sblocca {1} n. {0}",
   "解锁第八章「月影古堡」——混沌裂缝里掉出了回声怪物": "Sblocca il capitolo 8 \"Castello d'Ombra Lunare\": dalla Frattura del Caos sono caduti mostri-eco",
   "解锁第九章「赤铁熔炉」": "Sblocca il capitolo 9 \"Fornace di Ferro Rosso\"",
-  "解锁第六章「云端王国」": "Sblocca il capitolo 6 \"Regno delle Nuvole\"",
-  "解锁第七章「珊瑚海湾」和「九层妖塔」（地图右下角）": "Sblocca il capitolo 7 \"Baia dei Coralli\" e la \"Torre Demoniaca dei Nove Piani\" (in basso a destra sulla mappa)",
   "解锁第十章「虚空天域」——最后一章": "Sblocca il capitolo 10 \"Reame del Cielo Vuoto\", l'ultimo capitolo",
   "解锁全部主动技能和被动技能": "Sblocca tutte le abilità attive e passive",
   "解锁推荐武器「{0}」：{1}（{2}）": "Sblocca l'arma consigliata \"{0}\": {1} ({2})",
@@ -2088,4 +2086,6 @@ TD.i18n.register("it", {
   "有问题或建议，欢迎到 itch.io 的游戏页留言：": "Domande o suggerimenti? Lascia un commento sulla pagina del gioco su itch.io:",
   "制作": "Realizzazione",
   "音乐采样": "Campioni musicali",
+  "解锁第六章「云端王国」和「九层妖塔」（地图右下角）": "Sblocca il capitolo 6 \"Regno delle Nuvole\" e la \"Torre Demoniaca dei Nove Piani\" (in basso a destra sulla mappa)",
+  "解锁第七章「珊瑚海湾」": "Sblocca il capitolo 7 \"Baia dei Coralli\"",
 });

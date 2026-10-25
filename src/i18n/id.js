@@ -739,8 +739,6 @@ TD.i18n.register("id", {
   "解锁第 {0} 个{1}": "Buka {1} ke-{0}",
   "解锁第八章「月影古堡」——混沌裂缝里掉出了回声怪物": "Membuka Bab 8 \"Kastil Bayangan Bulan\". Monster gema jatuh dari Retakan Kekacauan",
   "解锁第九章「赤铁熔炉」": "Membuka Bab 9 \"Tungku Besi Merah\"",
-  "解锁第六章「云端王国」": "Membuka Bab 6 \"Kerajaan Awan\"",
-  "解锁第七章「珊瑚海湾」和「九层妖塔」（地图右下角）": "Membuka Bab 7 \"Teluk Karang\" dan \"Menara Iblis Sembilan Lantai\" (kanan bawah peta)",
   "解锁第十章「虚空天域」——最后一章": "Membuka Bab 10 \"Wilayah Langit Hampa\", bab terakhir",
   "解锁全部主动技能和被动技能": "Membuka semua skill aktif dan pasif",
   "解锁推荐武器「{0}」：{1}（{2}）": "Membuka senjata rekomendasi \"{0}\": {1} ({2})",
@@ -2088,4 +2086,6 @@ TD.i18n.register("id", {
   "有问题或建议，欢迎到 itch.io 的游戏页留言：": "Punya pertanyaan atau saran? Tinggalkan komentar di halaman game ini di itch.io:",
   "制作": "Pembuatan",
   "音乐采样": "Sampel musik",
+  "解锁第六章「云端王国」和「九层妖塔」（地图右下角）": "Membuka Bab 6 \"Kerajaan Awan\" dan \"Menara Iblis Sembilan Lantai\" (kanan bawah peta)",
+  "解锁第七章「珊瑚海湾」": "Membuka Bab 7 \"Teluk Karang\"",
 });

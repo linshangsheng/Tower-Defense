@@ -739,8 +739,6 @@ TD.i18n.register("pl", {
   "解锁第 {0} 个{1}": "Odblokuj {1} nr {0}",
   "解锁第八章「月影古堡」——混沌裂缝里掉出了回声怪物": "Odblokowuje rozdział 8 „Zamek Księżycowego Cienia”. Z Szczeliny Chaosu wypadły potwory-echa",
   "解锁第九章「赤铁熔炉」": "Odblokowuje rozdział 9 „Kuźnia Czerwonego Żelaza”",
-  "解锁第六章「云端王国」": "Odblokowuje rozdział 6 „Królestwo Chmur”",
-  "解锁第七章「珊瑚海湾」和「九层妖塔」（地图右下角）": "Odblokowuje rozdział 7 „Koralowa Zatoka” i „Dziewięciopiętrową Wieżę Demonów” (prawy dolny róg mapy)",
   "解锁第十章「虚空天域」——最后一章": "Odblokowuje rozdział 10 „Niebiosa Pustki”, ostatni rozdział",
   "解锁全部主动技能和被动技能": "Odblokowuje wszystkie umiejętności aktywne i pasywne",
   "解锁推荐武器「{0}」：{1}（{2}）": "Odblokowuje polecaną broń „{0}”: {1} ({2})",
@@ -2088,4 +2086,6 @@ TD.i18n.register("pl", {
   "有问题或建议，欢迎到 itch.io 的游戏页留言：": "Masz pytania lub sugestie? Zostaw komentarz na stronie gry w itch.io:",
   "制作": "Powstanie",
   "音乐采样": "Próbki muzyczne",
+  "解锁第六章「云端王国」和「九层妖塔」（地图右下角）": "Odblokowuje rozdział 6 „Królestwo Chmur” i „Dziewięciopiętrową Wieżę Demonów” (prawy dolny róg mapy)",
+  "解锁第七章「珊瑚海湾」": "Odblokowuje rozdział 7 „Koralowa Zatoka”",
 });

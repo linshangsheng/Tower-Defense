@@ -109,8 +109,9 @@
 
   // ---------- 九层妖塔（设计书 74；取代原来的 Boss 连战） ----------
   const T = () => D.tower;
-  // 一开始就开放（v0.77 起不用先通关第 60 关）；难度随你通关的进度走，见 towerStage
-  M.towerUnlocked = () => true;
+  // 通关第 50 关后开放（v1.25；v0.77～v1.24 是一开始就开放）；难度随你通关的进度走，见 towerStage
+  M.TOWER_LEVEL = 50;
+  M.towerUnlocked = (save) => P.isCleared(save, M.TOWER_LEVEL);
 
   // 可以出场的妖王：已经搬进小镇的朋友（设计书 52.7）的"妖塔版"
   M.towerBossList = (save) => D.town.filter((f) => !save || P.isCleared(save, f.level)).map((f) => f.boss);

@@ -739,8 +739,6 @@ TD.i18n.register("de", {
   "解锁第 {0} 个{1}": "Schalte {1} Nr. {0} frei",
   "解锁第八章「月影古堡」——混沌裂缝里掉出了回声怪物": "Schaltet Kapitel 8 „Mondschatten-Burg“ frei. Echo-Monster sind aus dem Chaosriss gefallen",
   "解锁第九章「赤铁熔炉」": "Schaltet Kapitel 9 „Roteisen-Schmiede“ frei",
-  "解锁第六章「云端王国」": "Schaltet Kapitel 6 „Wolkenreich“ frei",
-  "解锁第七章「珊瑚海湾」和「九层妖塔」（地图右下角）": "Schaltet Kapitel 7 „Korallenbucht“ und den „Neunstöckigen Dämonenturm“ frei (unten rechts auf der Karte)",
   "解锁第十章「虚空天域」——最后一章": "Schaltet Kapitel 10 „Leere Himmelsweiten“ frei, das letzte Kapitel",
   "解锁全部主动技能和被动技能": "Schaltet alle aktiven und passiven Fähigkeiten frei",
   "解锁推荐武器「{0}」：{1}（{2}）": "Schaltet die empfohlene Waffe „{0}“ frei: {1} ({2})",
@@ -2088,4 +2086,6 @@ TD.i18n.register("de", {
   "有问题或建议，欢迎到 itch.io 的游戏页留言：": "Fragen oder Vorschläge? Hinterlasse einen Kommentar auf der itch.io-Seite des Spiels:",
   "制作": "Entstehung",
   "音乐采样": "Musik-Samples",
+  "解锁第六章「云端王国」和「九层妖塔」（地图右下角）": "Schaltet Kapitel 6 „Wolkenreich“ und den „Neunstöckigen Dämonenturm“ frei (unten rechts auf der Karte)",
+  "解锁第七章「珊瑚海湾」": "Schaltet Kapitel 7 „Korallenbucht“ frei",
 });

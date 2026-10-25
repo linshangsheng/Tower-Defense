@@ -739,8 +739,6 @@ TD.i18n.register("tr", {
   "解锁第 {0} 个{1}": "{0}. {1} aç",
   "解锁第八章「月影古堡」——混沌裂缝里掉出了回声怪物": "8. Dünya \"Ay Gölgesi Kalesi\"ni açar. Kaos Yarığı'ndan yankı canavarları düştü",
   "解锁第九章「赤铁熔炉」": "9. Dünya \"Kızıl Demir Ocağı\"nı açar",
-  "解锁第六章「云端王国」": "6. Dünya \"Bulut Krallığı\"nı açar",
-  "解锁第七章「珊瑚海湾」和「九层妖塔」（地图右下角）": "7. Dünya \"Mercan Koyu\"nu ve \"Dokuz Katlı İblis Kulesi\"ni açar (haritanın sağ altı)",
   "解锁第十章「虚空天域」——最后一章": "10. Dünya \"Boşluk Gökyüzü\"nü açar, son dünya",
   "解锁全部主动技能和被动技能": "Tüm aktif ve pasif yetenekleri açar",
   "解锁推荐武器「{0}」：{1}（{2}）": "Önerilen silah \"{0}\" açıldı: {1} ({2})",
@@ -2088,4 +2086,6 @@ TD.i18n.register("tr", {
   "有问题或建议，欢迎到 itch.io 的游戏页留言：": "Soru veya önerileriniz mi var? Oyunun itch.io sayfasına yorum bırakın:",
   "制作": "Yapım",
   "音乐采样": "Müzik örnekleri",
+  "解锁第六章「云端王国」和「九层妖塔」（地图右下角）": "6. Dünya \"Bulut Krallığı\"nı ve \"Dokuz Katlı İblis Kulesi\"ni açar (haritanın sağ altı)",
+  "解锁第七章「珊瑚海湾」": "7. Dünya \"Mercan Koyu\"nu açar",
 });

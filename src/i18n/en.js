@@ -739,8 +739,6 @@ TD.i18n.register("en", {
   "解锁第 {0} 个{1}": "Unlock {1} #{0}",
   "解锁第八章「月影古堡」——混沌裂缝里掉出了回声怪物": "Unlocks Chapter 8 \"Moonshadow Castle\". Echo monsters fell out of the Chaos Rift",
   "解锁第九章「赤铁熔炉」": "Unlocks Chapter 9 \"Red Iron Forge\"",
-  "解锁第六章「云端王国」": "Unlocks Chapter 6 \"Cloud Kingdom\"",
-  "解锁第七章「珊瑚海湾」和「九层妖塔」（地图右下角）": "Unlocks Chapter 7 \"Coral Bay\" and the \"Nine-Floor Demon Tower\" (bottom right of the map)",
   "解锁第十章「虚空天域」——最后一章": "Unlocks Chapter 10 \"Void Sky Realm\", the final chapter",
   "解锁全部主动技能和被动技能": "Unlocks all active and passive skills",
   "解锁推荐武器「{0}」：{1}（{2}）": "Unlocks recommended weapon \"{0}\": {1} ({2})",
@@ -2088,4 +2086,6 @@ TD.i18n.register("en", {
   "有问题或建议，欢迎到 itch.io 的游戏页留言：": "Questions or suggestions? Leave a comment on the game's itch.io page:",
   "制作": "Made with",
   "音乐采样": "Music samples",
+  "解锁第六章「云端王国」和「九层妖塔」（地图右下角）": "Unlocks Chapter 6 \"Cloud Kingdom\" and the \"Nine-Floor Demon Tower\" (bottom right of the map)",
+  "解锁第七章「珊瑚海湾」": "Unlocks Chapter 7 \"Coral Bay\"",
 });

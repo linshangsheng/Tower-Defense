@@ -739,8 +739,6 @@ TD.i18n.register("fr", {
   "解锁第 {0} 个{1}": "Débloquer {1} n° {0}",
   "解锁第八章「月影古堡」——混沌裂缝里掉出了回声怪物": "Débloque le chapitre 8 « Château d'ombre-lune » : des monstres-échos sont tombés de la Faille du chaos",
   "解锁第九章「赤铁熔炉」": "Débloque le chapitre 9 « Fournaise de fer rouge »",
-  "解锁第六章「云端王国」": "Débloque le chapitre 6 « Royaume des nuages »",
-  "解锁第七章「珊瑚海湾」和「九层妖塔」（地图右下角）": "Débloque le chapitre 7 « Baie de corail » et la « Tour démoniaque à neuf étages » (en bas à droite de la carte)",
   "解锁第十章「虚空天域」——最后一章": "Débloque le chapitre 10 « Royaume du ciel vide », le dernier",
   "解锁全部主动技能和被动技能": "Débloque toutes les compétences actives et passives",
   "解锁推荐武器「{0}」：{1}（{2}）": "Débloque l'arme conseillée « {0} » : {1} ({2})",
@@ -2088,4 +2086,6 @@ TD.i18n.register("fr", {
   "有问题或建议，欢迎到 itch.io 的游戏页留言：": "Une question ou une suggestion ? Laissez un commentaire sur la page itch.io du jeu :",
   "制作": "Réalisation",
   "音乐采样": "Échantillons musicaux",
+  "解锁第六章「云端王国」和「九层妖塔」（地图右下角）": "Débloque le chapitre 6 « Royaume des nuages » et la « Tour démoniaque à neuf étages » (en bas à droite de la carte)",
+  "解锁第七章「珊瑚海湾」": "Débloque le chapitre 7 « Baie de corail »",
 });

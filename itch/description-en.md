@@ -11,7 +11,7 @@ Free, runs in your browser, no install, no account. Your save lives in your brow
 - **200 levels in 20 chapters** — green meadows, golden desert, foggy swamp, frozen tundra, lava rift, cloud kingdom, coral bay, moonlit castle, iron forge, the void sky… and, once you clear level 100, the **Abyss Echo**: ten more chapters with tougher remixes of everything you've fought.
 - **14 bosses + 6 "echo" bosses**, each with phases and a trick to learn — interrupt the charge-up, strike in the window, break the shield first. The last one is a **two-life dragon**: it breathes fire, rams the wall, calls lightning that **paralyzes your archer for 2 s** and ice that **freezes them for 3 s** — and when it falls, it comes back black and three times as strong.
 - **5 heroes**, **25 weapons** in five quality tiers (green → blue → purple → red → gold; the top ones fire multiple arrows, pierce, ignite), **10 active skills**, **10 passive skills** (lightning, frost nova, fireballs, spirit arrows…), **180 pieces of gear** in six slots, **45 consumables**, wall upgrades, a **wardrobe** of 10 characters.
-- **Nine-Floor Demon Tower**, **Endless mode**, **Daily Challenge**, a monster codex, achievements, and an optional mission on every level.
+- **Nine-Floor Demon Tower** (unlocks after level 50), **Endless mode**, **Daily Challenge**, a monster codex, achievements, and an optional mission on every level.
 - **Three difficulties** (relaxed / normal / challenge — with crowns for the hardest clears) and "reinforcements" help if you keep failing a level.
 - **Hand-lit 2D look**: each chapter has its own light, fog, light shafts and drifting motes; the wall cracks as it takes damage; every skill has its own animation. The game lowers effects automatically if your machine struggles (Settings → Graphics Quality).
 - **Symphonic soundtrack** with 23 pieces that layer up with the tension of the fight.
@@ -48,6 +48,7 @@ Free, runs in your browser, no install, no account. Your save lives in your brow
 
 ### Changelog
 
+- **v1.25** — The Nine-Floor Demon Tower now unlocks after you clear level 50.
 - **v1.24** — Fixed no sound on phones (audio is now unlocked on finger-up and handles the iOS silent switch).
 - **v1.23** — Added an About screen (title screen and Settings): credits, how the game was made, music-sample attribution, and a link to this page for feedback.
 - **v1.22** — Phones held upright no longer show a "rotate your phone" wall: the game turns itself 90° to fill the screen (turn the phone sideways for a better view).

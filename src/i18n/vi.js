@@ -739,8 +739,6 @@ TD.i18n.register("vi", {
   "解锁第 {0} 个{1}": "Mở khóa {1} thứ {0}",
   "解锁第八章「月影古堡」——混沌裂缝里掉出了回声怪物": "Mở khóa chương 8 \"Cổ bảo Nguyệt ảnh\" — quái Tiếng vọng rơi ra từ Khe nứt Hỗn độn",
   "解锁第九章「赤铁熔炉」": "Mở khóa chương 9 \"Lò luyện Thiết đỏ\"",
-  "解锁第六章「云端王国」": "Mở khóa chương 6 \"Vương quốc Mây\"",
-  "解锁第七章「珊瑚海湾」和「九层妖塔」（地图右下角）": "Mở khóa chương 7 \"Vịnh San hô\" và \"Tháp Yêu Chín Tầng\" (góc dưới bên phải bản đồ)",
   "解锁第十章「虚空天域」——最后一章": "Mở khóa chương 10 \"Thiên vực Hư không\" — chương cuối cùng",
   "解锁全部主动技能和被动技能": "Mở khóa toàn bộ kỹ năng chủ động và bị động",
   "解锁推荐武器「{0}」：{1}（{2}）": "Mở khóa vũ khí đề xuất \"{0}\": {1} ({2})",
@@ -2088,4 +2086,6 @@ TD.i18n.register("vi", {
   "有问题或建议，欢迎到 itch.io 的游戏页留言：": "Có câu hỏi hoặc góp ý? Hãy để lại bình luận trên trang game ở itch.io:",
   "制作": "Thực hiện",
   "音乐采样": "Mẫu âm nhạc",
+  "解锁第六章「云端王国」和「九层妖塔」（地图右下角）": "Mở khóa chương 6 \"Vương quốc Mây\" và \"Tháp Yêu Chín Tầng\" (góc dưới bên phải bản đồ)",
+  "解锁第七章「珊瑚海湾」": "Mở khóa chương 7 \"Vịnh San hô\"",
 });
