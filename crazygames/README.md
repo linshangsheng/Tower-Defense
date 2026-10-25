@@ -7,6 +7,9 @@
 68 个文件，压缩后 5.8 MB，解压后 10.7 MB。
 重新生成：`node tools/crazygames.js`（先 `git pull`）。
 
+## 封面图（`covers/`）
+后台要三张封面：`landscape-1920x1080.png`（横 16:9）、`portrait-800x1200.png`（竖 2:3）、`square-800x800.png`（方 1:1），尺寸和后台要求一致，直接上传到对应的框。重新生成：`node tools/itch.js covers`。
+
 ## 和 itch 版有什么不一样
 | | itch 版 | CrazyGames 版 |
 |---|---|---|

@@ -412,6 +412,60 @@ async function cover(browser) {
   }
 }
 
+// ---------- CrazyGames 的三张封面：横 1920×1080、竖 800×1200、方 800×800（输出到 crazygames/covers/） ----------
+async function covers(browser) {
+  const gp = await openGame(browser, { width: 1920, height: 1080 });
+  await enterBattle(gp, 200, 0, 'b.autoCast = false; b.stats.atk = 0;');
+  await dragonScene(gp, 'fire');
+  await gp.addStyleTag({ content: '.hud-top,.hud-bottom,.boss-bar,.hud-boss,.toast,.lane-hint{display:none!important}' });
+  await gp.evaluate(() => {
+    TD.game.renderer.drawBossBar = () => {};
+    TD.game.battle.projectiles.length = 0;
+  });
+  await gp.waitForTimeout(800);
+  const src = (await gp.screenshot()).toString('base64');
+  await gp.close();
+  const logo = fs.readFileSync(path.join(ROOT, 'icons', 'icon-512.png')).toString('base64');
+  const common = `html,body{margin:0;overflow:hidden;background:#0a0716}
+    .bg{position:absolute;inset:0;background:linear-gradient(180deg,#1a0d33 0%,#2a1450 40%,#120a22 100%)}
+    .plate{position:absolute;background:url(data:image/png;base64,${src}) no-repeat}
+    .logo{position:absolute;filter:drop-shadow(0 0 22px rgba(255,200,100,.65))}
+    .t1{position:absolute;font:900 var(--fs)/1 Inter,system-ui,sans-serif;color:#f6c657;text-shadow:0 4px 0 #6b3b0c,0 0 30px rgba(255,170,60,.6),0 8px 18px rgba(0,0,0,.8);white-space:nowrap}
+    .t2{position:absolute;font:700 var(--fs2)/1 Inter,system-ui,sans-serif;letter-spacing:.2em;color:#ffe9bd;text-shadow:0 2px 8px #000;white-space:nowrap}`;
+  const L = `<!doctype html><meta charset="utf-8"><style>${common}
+    html,body{width:1920px;height:1080px}
+    .plate{inset:0;background-size:1920px 1080px}
+    .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,5,20,.25) 0%,rgba(8,5,20,0) 30%,rgba(8,5,20,.2) 60%,rgba(8,5,20,.9) 100%)}
+    .logo{left:90px;top:760px;width:190px}
+    .t1{--fs:124px;left:310px;top:765px}
+    .t2{--fs2:34px;left:316px;top:912px}</style>
+    <div class="bg"></div><div class="plate"></div><div class="shade"></div>
+    <img class="logo" src="data:image/png;base64,${logo}"><div class="t1">Archer on the Wall</div><div class="t2">TOWER DEFENSE · BOSS BATTLES</div>`;
+  const stack = (W, H, plateTop, bandTop, fs, fs2, logoW) => `<!doctype html><meta charset="utf-8"><style>${common}
+    html,body{width:${W}px;height:${H}px}
+    .plate{left:0;top:${plateTop}px;width:${W}px;height:540px;background-size:960px 540px;background-position:-175px 0}
+    .shade{position:absolute;left:0;right:0;top:${plateTop + 300}px;bottom:0;background:linear-gradient(180deg,rgba(18,10,34,0) 0%,rgba(18,10,34,.95) 55%,#120a22 100%)}
+    .logo{left:50%;top:${bandTop}px;width:${logoW}px;margin-left:-${logoW / 2}px}
+    .t1{--fs:${fs}px;left:0;right:0;text-align:center;top:${bandTop + logoW + 10}px}
+    .t2{--fs2:${fs2}px;left:0;right:0;text-align:center;top:${bandTop + logoW + 10 + fs + 28}px}</style>
+    <div class="bg"></div><div class="plate"></div><div class="shade"></div>
+    <img class="logo" src="data:image/png;base64,${logo}"><div class="t1">Archer on the Wall</div><div class="t2">TOWER DEFENSE · BOSS BATTLES</div>`;
+  const dir = path.join(ROOT, 'crazygames', 'covers');
+  fs.mkdirSync(dir, { recursive: true });
+  for (const [name, W, H, html] of [
+    ['landscape-1920x1080.png', 1920, 1080, L],
+    ['portrait-800x1200.png', 800, 1200, stack(800, 1200, 230, 700, 76, 22, 150)],
+    ['square-800x800.png', 800, 800, stack(800, 800, 70, 520, 62, 20, 110)],
+  ]) {
+    const page = await browser.newPage({ viewport: { width: W, height: H } });
+    await page.setContent(html);
+    await page.waitForTimeout(400);
+    await page.screenshot({ path: path.join(dir, name) });
+    await page.close();
+    console.log('CrazyGames 封面', name);
+  }
+}
+
 // ---------- 验证：模拟 itch 的嵌入方式 ----------
 async function verify(browser) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'itch-zip-'));
@@ -468,7 +522,7 @@ async function verify(browser) {
   if (want('zip')) buildZip();
   let demoDir = null;
   if (want('demo')) demoDir = buildDemoZip();
-  if (['all', 'shots', 'gif', 'cover', 'verify', 'peek', 'demo'].includes(what)) {
+  if (['all', 'shots', 'gif', 'cover', 'verify', 'peek', 'demo', 'covers'].includes(what)) {
     const browser = await chromium.launch();
     try {
       if (what === 'peek') await peek(browser, (process.argv[3] || '5,15,25,35,45,55,65,95').split(',').map(Number));
@@ -476,6 +530,7 @@ async function verify(browser) {
       if (want('gif')) await gif(browser);
       if (want('cover')) await cover(browser);
       if (want('verify')) await verify(browser);
+      if (what === 'covers' || what === 'all') await covers(browser);
       if (demoDir) await verifyDemo(browser, demoDir);
     } finally {
       await browser.close();
