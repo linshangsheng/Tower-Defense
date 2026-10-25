@@ -10,6 +10,7 @@
     "perf": "NODE_PATH=${NODE_PATH:-/opt/node22/lib/node_modules} node tools/perf.js",
     "pwa": "NODE_PATH=${NODE_PATH:-/opt/node22/lib/node_modules} node tools/pwa.js",
     "screens": "NODE_PATH=${NODE_PATH:-/opt/node22/lib/node_modules} node tools/screens.js",
-    "mobile": "NODE_PATH=${NODE_PATH:-/opt/node22/lib/node_modules} node tools/mobile.js"
+    "mobile": "NODE_PATH=${NODE_PATH:-/opt/node22/lib/node_modules} node tools/mobile.js",
+    "crazygames": "NODE_PATH=${NODE_PATH:-/opt/node22/lib/node_modules} node tools/crazygames.js"
   }
 }

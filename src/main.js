@@ -405,6 +405,8 @@
     // 暂停、切后台时的间隔不算
     if (TD.quality && !document.hidden && !game.paused && !game.introPaused) TD.quality.record(raw);
     game.renderer.render(renderDt);
+    // 门户（设计书 128）：战斗进行中、没暂停、没在播开场 / 剧情 = 真正在玩
+    TD.portal.setPlaying(!!b && !b.over && !game.paused && !game.introPaused && !document.hidden);
     if (b) {
       TD.ui.updateHud();
       if (!b.over) {
@@ -436,6 +438,8 @@
     TD.music.enabled = game.save.settings.music !== false;
     TD.audio.setVolume((game.save.settings.sfxVolume !== undefined ? game.save.settings.sfxVolume : 100) / 100);
     TD.music.setVolume((game.save.settings.musicVolume !== undefined ? game.save.settings.musicVolume : 100) / 100);
+    TD.portal.init();
+    TD.portal.loadingStart();
     const canvas = document.getElementById('game');
     game.renderer = new TD.Renderer(canvas);
     TD.ui.init(game);
@@ -518,6 +522,7 @@
     const boot = document.getElementById('boot');
     const wantSplash = TD.logo && (!navigator.webdriver || /splash/.test(location.search));
     if (wantSplash) TD.logo.playSplash(document.getElementById('stage'));
+    TD.portal.loadingStop();
     if (boot) {
       boot.classList.add('gone');
       setTimeout(() => boot.remove(), 600);

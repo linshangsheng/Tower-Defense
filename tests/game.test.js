@@ -4899,3 +4899,59 @@ test('试玩版：tools/itch.js 打包时只改 demo 开关和缓存名；界面
   assert.ok(ui.includes('UI.showDemoNotice') && ui.includes('demo-lock') && ui.includes('P.demoItemLocked(e.rarity)') && ui.includes('P.demoItemLocked(w.rarity)'));
   assert.ok(/UI\.showPreview = function \(n\) \{\n    if \(P\.demoLevelLocked\(n\)\) return UI\.showDemoNotice\(\);/.test(ui), '预览入口被拦住，所有进关的路径都经过它');
 });
+
+// ---------- v1.27：CrazyGames 版（设计书 128） ----------
+test('门户 SDK：普通版什么都不做；门户版按 init → loadingStart → loadingStop、gameplayStart / Stop 通知；SDK 缺失或出错时不影响游戏', async () => {
+  const fs = require('fs');
+  const path = require('path');
+  const load = () => {
+    const p = path.join(__dirname, '..', 'src', 'core', 'portal.js');
+    delete require.cache[require.resolve(p)];
+    delete TD.portal;
+    require(p);
+    return TD.portal;
+  };
+  const C = TD.config;
+  assert.strictEqual(C.portal, null, '源码里 portal 永远是 null');
+  // 普通版：空操作
+  globalThis.CrazyGames = { SDK: { init: () => { throw new Error('不该被调用'); }, game: {} } };
+  let portal = load();
+  portal.init();
+  portal.loadingStart();
+  portal.setPlaying(true);
+  assert.strictEqual(portal.ready, false);
+  // 门户版
+  const calls = [];
+  globalThis.CrazyGames = { SDK: { init: () => (calls.push('init'), Promise.resolve()), game: { loadingStart: () => calls.push('loadingStart'), loadingStop: () => calls.push('loadingStop'), gameplayStart: () => calls.push('gameplayStart'), gameplayStop: () => calls.push('gameplayStop') } } };
+  C.portal = 'crazygames';
+  try {
+    portal = load();
+    portal.init();
+    portal.loadingStart();
+    portal.loadingStart(); // 重复调用不重复通知
+    portal.setPlaying(true); // init 还没完成：先排队
+    await new Promise((r) => setTimeout(r, 10));
+    portal.loadingStop();
+    portal.setPlaying(true); // 状态没变：不重复
+    portal.setPlaying(false);
+    portal.setPlaying(true);
+    assert.deepStrictEqual(calls, ['init', 'loadingStart', 'gameplayStart', 'loadingStop', 'gameplayStop', 'gameplayStart']);
+    // SDK 的某个调用抛错：不往外抛
+    globalThis.CrazyGames = { SDK: { init: () => Promise.resolve(), game: { gameplayStart: () => { throw new Error('x'); }, gameplayStop() {} } } };
+    portal = load();
+    portal.init();
+    await new Promise((r) => setTimeout(r, 10));
+    assert.doesNotThrow(() => portal.setPlaying(true));
+    // 没有 SDK
+    delete globalThis.CrazyGames;
+    portal = load();
+    portal.init();
+    assert.ok(portal.failed);
+    assert.doesNotThrow(() => (portal.loadingStart(), portal.setPlaying(true), portal.setPlaying(false), portal.loadingStop()));
+  } finally {
+    C.portal = null;
+    delete globalThis.CrazyGames;
+  }
+  const itch = fs.readFileSync(path.join(__dirname, '..', 'tools', 'crazygames.js'), 'utf8');
+  assert.ok(itch.includes("'    portal: null,', \"    portal: 'crazygames',\""));
+});

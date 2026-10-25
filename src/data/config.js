@@ -51,12 +51,16 @@
     },
 
     // 游戏版本：与设计书版本号、sw.js 的缓存名保持一致（测试会检查）
-    version: 'v1.26',
+    version: 'v1.27',
 
     // 试玩版（设计书 127）：打试玩版压缩包时 tools/itch.js 把 demo 改成 true；正式版永远是 false
     demo: false,
     demoMaxLevel: 100, // 试玩版只到第 100 关，后面的关卡灰色、点了提示下载正式版
     demoMaxRarity: 1, // 试玩版的装备和武器只能买绿色（品质 1）
+
+    // 游戏门户版（设计书 128）：打 CrazyGames 包时 tools/crazygames.js 把 portal 改成 'crazygames'；平时是 null。
+    // 门户版：接入门户的 SDK、不放外链、不用 Service Worker、不自己请求全屏（门户页面有全屏按钮）
+    portal: null,
 
     // 英雄（设计书 42）：在 hero 基础值上乘以倍率；所有升级共用
     heroes: {

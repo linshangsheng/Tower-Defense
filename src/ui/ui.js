@@ -131,6 +131,7 @@
 
   // 全屏（设计书 66.2）：浏览器要求在用户操作里调用；失败（不支持 / 被拒绝）就算了
   UI.setFullscreen = function (on) {
+    if (C.portal) return; // 门户页面自己有全屏按钮（设计书 128）
     try {
       const d = globalThis.document;
       if (!d || !d.documentElement) return;
@@ -332,7 +333,7 @@
         }),
         ' 背景音乐'
       ),
-      h(
+      C.portal ? null : h(
         'label',
         { class: 'row' },
         h('input', {
@@ -458,7 +459,7 @@
       ),
       h('div', { class: 'hint credits' }, '音乐采样：FluidR3_GM 音色库（Frank Wen），CC BY 3.0，经 gleitz/midi-js-soundfonts 取得'),
       h('div', { class: 'row' }, h('button', { class: 'btn small', onclick: () => UI.showAbout() }, '关于')),
-      C.demo ? null : h('div', { class: 'row' }, h('button', { class: 'btn small', onclick: () => UI.showTestLogin() }, P.testMode(game.save) ? '测试（已开启）' : '测试')),
+      C.demo || C.portal ? null : h('div', { class: 'row' }, h('button', { class: 'btn small', onclick: () => UI.showTestLogin() }, P.testMode(game.save) ? '测试（已开启）' : '测试')),
       h(
         'div',
         { class: 'row' },
@@ -658,9 +659,10 @@
       h('p', null, '17 种语言的译文由 AI 生成，没有经过母语者审校，欢迎指出错误。'),
       h('h3', null, '音乐采样'),
       h('p', null, '音乐采样：FluidR3_GM 音色库（Frank Wen），CC BY 3.0，经 gleitz/midi-js-soundfonts 取得'),
-      h('h3', null, '反馈与更新'),
-      h('p', null, '有问题或建议，欢迎到 itch.io 的游戏页留言：'),
-      h('p', null, h('a', { href: UI.ITCH_URL, target: '_blank', rel: 'noopener noreferrer' }, UI.ITCH_URL)),
+      // 门户版不放外链（设计书 128）
+      C.portal ? null : h('h3', null, '反馈与更新'),
+      C.portal ? null : h('p', null, '有问题或建议，欢迎到 itch.io 的游戏页留言：'),
+      C.portal ? null : h('p', null, h('a', { href: UI.ITCH_URL, target: '_blank', rel: 'noopener noreferrer' }, UI.ITCH_URL)),
       h('div', { class: 'modal-buttons' }, h('button', { class: 'btn primary', onclick: UI.closeModal }, '知道了'))
     );
     modal(body, { closeOnBack: true, cls: 'wide' });
