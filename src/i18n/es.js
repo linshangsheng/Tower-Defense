@@ -2088,4 +2088,12 @@ TD.i18n.register("es", {
   "音乐采样": "Muestras de música",
   "解锁第六章「云端王国」和「九层妖塔」（地图右下角）": "Desbloquea el capítulo 6 \"Reino de las Nubes\" y la \"Torre Demoníaca de Nueve Pisos\" (abajo a la derecha del mapa)",
   "解锁第七章「珊瑚海湾」": "Desbloquea el capítulo 7 \"Bahía de Coral\"",
+  "恭喜通关「{0}」！试玩版到这里结束，下载正式版可以继续挑战第 101–200 关。": "¡Felicidades por superar \"{0}\"! La demo termina aquí. Descarga la versión completa para seguir con los niveles 101–200.",
+  "试玩版": "Demo",
+  "试玩版 {0} · 前 {1} 章 {2} 关": "Demo {0} · primeros {1} capítulos, {2} niveles",
+  "试玩版只有前 10 章": "La demo solo tiene los primeros 10 capítulos",
+  "通关第 100 关！试玩版到这里结束，下载正式版可以继续挑战第 101–200 关。": "¡Nivel 100 superado! La demo termina aquí. Descarga la versión completa para continuar con los niveles 101–200.",
+  "下载正式版": "Descargar versión completa",
+  "下载正式版 ›": "Descargar versión completa ›",
+  "这是试玩版，请下载正式版，解锁全部功能。": "Esta es la versión de demostración. Descarga la versión completa para desbloquear todas las funciones.",
 });

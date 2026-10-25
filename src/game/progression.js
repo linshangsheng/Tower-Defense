@@ -188,14 +188,18 @@
   P.isCleared = (save, n) => P.testMode(save) || P.levelRecord(save, n).clears > 0;
   // 测试模式（v1.14，设置里输入密码开启）：资源拉满、所有关卡都能直接选、所有需要通关解锁的东西都解锁
   P.TEST_PASSWORD = '1314520';
-  P.testMode = (save) => !!(save.settings && save.settings.testMode);
+  // 试玩版里没有测试模式（设计书 127）
+  P.testMode = (save) => !C.demo && !!(save.settings && save.settings.testMode);
+  // 试玩版的限制：第 100 关以后的关卡、绿色以外的装备和武器都不可用
+  P.demoLevelLocked = (n) => !!C.demo && n > C.demoMaxLevel;
+  P.demoItemLocked = (rarity) => !!C.demo && (rarity || 1) > C.demoMaxRarity;
   P.enableTestMode = function (save, password) {
-    if (password !== P.TEST_PASSWORD) return false;
+    if (C.demo || password !== P.TEST_PASSWORD) return false;
     save.settings.testMode = true;
     P.maxResources(save);
     return true;
   };
-  P.isUnlocked = (save, n) => n === 1 || P.testMode(save) || P.isCleared(save, n - 1);
+  P.isUnlocked = (save, n) => !P.demoLevelLocked(n) && (n === 1 || P.testMode(save) || P.isCleared(save, n - 1));
   P.highestCleared = function (save) {
     if (P.testMode(save)) return Math.max(...Object.keys(D.levels).map(Number));
     let h = 0;
@@ -575,7 +579,7 @@
 
   P.buyWeapon = function (save, id) {
     const w = save.weapons[id];
-    if (w.owned || !P.weaponUnlocked(save, id)) return false;
+    if (w.owned || !P.weaponUnlocked(save, id) || P.demoItemLocked(D.weapons[id].rarity)) return false;
     if (!P.pay(save, D.weapons[id].cost)) return false;
     w.owned = true;
     return true;
@@ -684,7 +688,7 @@
   };
 
   P.buyEquip = function (save, id) {
-    if (save.equipOwned[id] || !P.equipAvailable(save, id)) return false;
+    if (save.equipOwned[id] || !P.equipAvailable(save, id) || P.demoItemLocked(D.equipment[id].rarity)) return false;
     if (!P.pay(save, D.equipment[id].cost)) return false;
     save.equipOwned[id] = true;
     const slots = P.equipSlotsFor(D.equipment[id].slot);
@@ -958,7 +962,8 @@
     // 首次通关时的功能解锁提示（设计书 38、39）
     if (firstClear) {
       const FEATURE = { 5: '解锁「王国小镇」（地图上的 🏘）和「每日挑战」（地图右下角）', 10: '解锁 3 倍速：战斗右下角的速度按钮', 20: '解锁「无尽模式」（地图右下角）', 50: '解锁第六章「云端王国」和「九层妖塔」（地图右下角）', 60: '解锁第七章「珊瑚海湾」', 70: '解锁第八章「月影古堡」——混沌裂缝里掉出了回声怪物', 80: '解锁第九章「赤铁熔炉」', 90: '解锁第十章「虚空天域」——最后一章', 100: '通关第 100 关！深渊回响开启：第十一至二十章（第 101–200 关）', 200: '通关全部 200 关！' };
-      if (FEATURE[n]) out.unlocks.push(FEATURE[n]);
+      if (C.demo && n === C.demoMaxLevel) out.unlocks.push('通关第 100 关！试玩版到这里结束，下载正式版可以继续挑战第 101–200 关。');
+      else if (FEATURE[n]) out.unlocks.push(FEATURE[n]);
     }
     return out;
   };

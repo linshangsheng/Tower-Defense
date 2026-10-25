@@ -2088,4 +2088,12 @@ TD.i18n.register("pl", {
   "音乐采样": "Próbki muzyczne",
   "解锁第六章「云端王国」和「九层妖塔」（地图右下角）": "Odblokowuje rozdział 6 „Królestwo Chmur” i „Dziewięciopiętrową Wieżę Demonów” (prawy dolny róg mapy)",
   "解锁第七章「珊瑚海湾」": "Odblokowuje rozdział 7 „Koralowa Zatoka”",
+  "恭喜通关「{0}」！试玩版到这里结束，下载正式版可以继续挑战第 101–200 关。": "Gratulacje, ukończono „{0}”! Demo kończy się tutaj. Pobierz pełną wersję, aby grać dalej na poziomach 101–200.",
+  "试玩版": "Demo",
+  "试玩版 {0} · 前 {1} 章 {2} 关": "Demo {0} · pierwsze {1} rozdziałów, {2} poziomów",
+  "试玩版只有前 10 章": "Demo zawiera tylko pierwsze 10 rozdziałów",
+  "通关第 100 关！试玩版到这里结束，下载正式版可以继续挑战第 101–200 关。": "Poziom 100 ukończony! Demo kończy się tutaj. Pobierz pełną wersję, aby grać dalej na poziomach 101–200.",
+  "下载正式版": "Pobierz pełną wersję",
+  "下载正式版 ›": "Pobierz pełną wersję ›",
+  "这是试玩版，请下载正式版，解锁全部功能。": "To jest wersja demo. Pobierz pełną wersję, aby odblokować wszystkie funkcje.",
 });

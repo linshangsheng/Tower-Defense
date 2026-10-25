@@ -2088,4 +2088,12 @@ TD.i18n.register("id", {
   "音乐采样": "Sampel musik",
   "解锁第六章「云端王国」和「九层妖塔」（地图右下角）": "Membuka Bab 6 \"Kerajaan Awan\" dan \"Menara Iblis Sembilan Lantai\" (kanan bawah peta)",
   "解锁第七章「珊瑚海湾」": "Membuka Bab 7 \"Teluk Karang\"",
+  "恭喜通关「{0}」！试玩版到这里结束，下载正式版可以继续挑战第 101–200 关。": "Selamat, kamu menamatkan \"{0}\"! Demo berakhir di sini. Unduh versi lengkap untuk melanjutkan ke level 101–200.",
+  "试玩版": "Demo",
+  "试玩版 {0} · 前 {1} 章 {2} 关": "Demo {0} · {1} bab pertama, {2} level",
+  "试玩版只有前 10 章": "Demo hanya memiliki 10 bab pertama",
+  "通关第 100 关！试玩版到这里结束，下载正式版可以继续挑战第 101–200 关。": "Level 100 selesai! Demo berakhir di sini. Unduh versi lengkap untuk melanjutkan ke level 101–200.",
+  "下载正式版": "Unduh versi lengkap",
+  "下载正式版 ›": "Unduh versi lengkap ›",
+  "这是试玩版，请下载正式版，解锁全部功能。": "Ini adalah versi demo. Silakan unduh versi lengkap untuk membuka semua fitur.",
 });

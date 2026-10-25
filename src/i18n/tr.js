@@ -2088,4 +2088,12 @@ TD.i18n.register("tr", {
   "音乐采样": "Müzik örnekleri",
   "解锁第六章「云端王国」和「九层妖塔」（地图右下角）": "6. Dünya \"Bulut Krallığı\"nı ve \"Dokuz Katlı İblis Kulesi\"ni açar (haritanın sağ altı)",
   "解锁第七章「珊瑚海湾」": "7. Dünya \"Mercan Koyu\"nu açar",
+  "恭喜通关「{0}」！试玩版到这里结束，下载正式版可以继续挑战第 101–200 关。": "\"{0}\" bölümünü tamamladınız! Demo burada bitiyor. 101–200. seviyelere devam etmek için tam sürümü indirin.",
+  "试玩版": "Demo",
+  "试玩版 {0} · 前 {1} 章 {2} 关": "Demo {0} · ilk {1} bölüm, {2} seviye",
+  "试玩版只有前 10 章": "Demoda sadece ilk 10 bölüm var",
+  "通关第 100 关！试玩版到这里结束，下载正式版可以继续挑战第 101–200 关。": "100. seviye tamamlandı! Demo burada bitiyor. 101–200. seviyelere devam etmek için tam sürümü indirin.",
+  "下载正式版": "Tam sürümü indir",
+  "下载正式版 ›": "Tam sürümü indir ›",
+  "这是试玩版，请下载正式版，解锁全部功能。": "Bu bir demodur. Tüm özelliklerin kilidini açmak için lütfen tam sürümü indirin.",
 });

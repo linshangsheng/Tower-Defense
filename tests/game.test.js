@@ -4834,3 +4834,68 @@ test('音频解锁：触摸设备要等手指抬起才算用户操作，所以 p
   assert.ok(/audioSession/.test(audio) && /new Audio\(/.test(audio), 'iOS 静音拨片：audioSession + 无声 <audio>');
   assert.ok(/return ctx\.state === 'running'/.test(audio), 'unlock 要告诉调用方有没有真的解锁');
 });
+
+// ---------- v1.26：试玩版（设计书 127） ----------
+test('试玩版：只到第 100 关、只能买绿色装备和武器、没有测试模式；正式版（demo = false）不受影响', () => {
+  const C = TD.config;
+  assert.strictEqual(C.demo, false, '正式版的 demo 是 false');
+  assert.strictEqual(C.demoMaxLevel, 100);
+  assert.strictEqual(C.demoMaxRarity, 1);
+  const rich = () => {
+    const s = P.newSave();
+    clearUpTo(s, 150);
+    s.copper = s.silver = s.gold = 1e9;
+    s.diamond = 1e6;
+    return s;
+  };
+  // 正式版：什么都能买、101 关能开
+  let s = rich();
+  const blue = Object.keys(D.weapons).find((id) => D.weapons[id].rarity === 2);
+  const gold = Object.keys(D.weapons).find((id) => D.weapons[id].rarity === 5);
+  const gear2 = Object.keys(D.equipment).find((id) => D.equipment[id].rarity === 2);
+  assert.ok(P.isUnlocked(s, 101) && P.buyWeapon(s, blue) && P.buyEquip(s, gear2));
+  C.demo = true;
+  try {
+    s = rich();
+    s.settings.testMode = true;
+    assert.ok(!P.testMode(s), '试玩版里测试模式不生效');
+    assert.ok(!P.enableTestMode(s, P.TEST_PASSWORD), '试玩版里输密码也开不了测试模式');
+    assert.ok(P.isUnlocked(s, 100) && !P.isUnlocked(s, 101) && !P.isUnlocked(s, 200), '第 100 关以后锁住（哪怕存档里已经通关了）');
+    assert.ok(P.demoLevelLocked(101) && !P.demoLevelLocked(100));
+    // 武器：绿色能买，蓝 / 紫 / 红 / 金都买不了（钱再多也不行）
+    const green = Object.keys(D.weapons).find((id) => D.weapons[id].rarity === 1 && !s.weapons[id].owned);
+    assert.ok(P.buyWeapon(s, green));
+    for (const r of [2, 3, 4, 5]) {
+      const id = Object.keys(D.weapons).find((k) => D.weapons[k].rarity === r);
+      assert.ok(P.demoItemLocked(r) && !P.buyWeapon(s, id) && !s.weapons[id].owned, `品质 ${r} 的武器买不了`);
+    }
+    assert.ok(!s.weapons[gold].owned);
+    // 装备：同样
+    const gear1 = Object.keys(D.equipment).find((id) => D.equipment[id].rarity === 1);
+    assert.ok(P.buyEquip(s, gear1));
+    for (const r of [2, 3, 4, 5]) {
+      const id = Object.keys(D.equipment).find((k) => D.equipment[k].rarity === r);
+      assert.ok(!P.buyEquip(s, id) && !s.equipOwned[id], `品质 ${r} 的装备买不了`);
+    }
+    // 通关第 100 关的提示
+    const fresh = P.newSave();
+    clearUpTo(fresh, 99);
+    const out = P.applyResult(fresh, 100, { win: true, wave: 6, wallRatio: 1, stars: 3, kills: 10, stats: {} });
+    assert.ok((out.unlocks || []).some((u) => /试玩版到这里结束/.test(u)), '通关第 100 关提示试玩版结束');
+  } finally {
+    C.demo = false;
+  }
+  assert.ok(P.isUnlocked(rich(), 150), '改回去之后又正常了');
+});
+
+test('试玩版：tools/itch.js 打包时只改 demo 开关和缓存名；界面里买不了的东西有灰色样式和提示弹窗', () => {
+  const fs = require('fs');
+  const path = require('path');
+  const itch = fs.readFileSync(path.join(__dirname, '..', 'tools', 'itch.js'), 'utf8');
+  assert.ok(itch.includes("'    demo: false,', '    demo: true,'") && itch.includes('archer-on-the-wall-demo-html5.zip'));
+  const cfg = fs.readFileSync(path.join(__dirname, '..', 'src', 'data', 'config.js'), 'utf8');
+  assert.ok(cfg.includes('    demo: false,'), '源码里 demo 永远是 false');
+  const ui = fs.readFileSync(path.join(__dirname, '..', 'src', 'ui', 'ui.js'), 'utf8');
+  assert.ok(ui.includes('UI.showDemoNotice') && ui.includes('demo-lock') && ui.includes('P.demoItemLocked(e.rarity)') && ui.includes('P.demoItemLocked(w.rarity)'));
+  assert.ok(/UI\.showPreview = function \(n\) \{\n    if \(P\.demoLevelLocked\(n\)\) return UI\.showDemoNotice\(\);/.test(ui), '预览入口被拦住，所有进关的路径都经过它');
+});

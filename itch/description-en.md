@@ -4,6 +4,9 @@
 
 Free, runs in your browser, no install, no account. Your save lives in your browser (export / import in Settings).
 
+> **Two versions.** The version you play in the browser here is the **demo**: levels 1–100, and only green weapons and gear can be bought. The **full version** (all 200 levels, every weapon and piece of gear) is a download on this page — unzip it and open `index.html`.
+
+
 ![Boss fight](screenshots/01-dragon-boss.png)
 
 ### What's in the game
@@ -48,6 +51,7 @@ Free, runs in your browser, no install, no account. Your save lives in your brow
 
 ### Changelog
 
+- **v1.26** — Added a free browser demo (levels 1–100, green gear only); the full version is a download.
 - **v1.25** — The Nine-Floor Demon Tower now unlocks after you clear level 50.
 - **v1.24** — Fixed no sound on phones (audio is now unlocked on finger-up and handles the iOS silent switch).
 - **v1.23** — Added an About screen (title screen and Settings): credits, how the game was made, music-sample attribution, and a link to this page for feedback.

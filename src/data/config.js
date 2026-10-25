@@ -51,7 +51,12 @@
     },
 
     // 游戏版本：与设计书版本号、sw.js 的缓存名保持一致（测试会检查）
-    version: 'v1.25',
+    version: 'v1.26',
+
+    // 试玩版（设计书 127）：打试玩版压缩包时 tools/itch.js 把 demo 改成 true；正式版永远是 false
+    demo: false,
+    demoMaxLevel: 100, // 试玩版只到第 100 关，后面的关卡灰色、点了提示下载正式版
+    demoMaxRarity: 1, // 试玩版的装备和武器只能买绿色（品质 1）
 
     // 英雄（设计书 42）：在 hero 基础值上乘以倍率；所有升级共用
     heroes: {

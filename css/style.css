@@ -4132,3 +4132,25 @@ html[lang='ko'] .title-main {
   color: #8fd0ff;
   word-break: break-all;
 }
+
+/* ---------- 试玩版（设计书 127）：锁住的关卡、装备、武器是灰的，但能点（点了提示下载正式版） ---------- */
+.card.demo-locked {
+  filter: grayscale(1);
+  opacity: 0.6;
+}
+.btn.demo-lock {
+  filter: grayscale(1);
+  opacity: 0.85;
+  cursor: pointer;
+}
+.map-node.demo-locked {
+  cursor: pointer;
+  filter: grayscale(1);
+}
+.chapter-card.demo-locked {
+  filter: grayscale(1);
+  opacity: 0.7;
+}
+.demo-notice {
+  text-align: center;
+}

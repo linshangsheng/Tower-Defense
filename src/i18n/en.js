@@ -2088,4 +2088,12 @@ TD.i18n.register("en", {
   "音乐采样": "Music samples",
   "解锁第六章「云端王国」和「九层妖塔」（地图右下角）": "Unlocks Chapter 6 \"Cloud Kingdom\" and the \"Nine-Floor Demon Tower\" (bottom right of the map)",
   "解锁第七章「珊瑚海湾」": "Unlocks Chapter 7 \"Coral Bay\"",
+  "恭喜通关「{0}」！试玩版到这里结束，下载正式版可以继续挑战第 101–200 关。": "Congratulations on clearing \"{0}\"! The demo ends here. Download the full version to keep going with levels 101–200.",
+  "试玩版": "Demo",
+  "试玩版 {0} · 前 {1} 章 {2} 关": "Demo {0} · first {1} chapters, {2} levels",
+  "试玩版只有前 10 章": "The demo has only the first 10 chapters",
+  "通关第 100 关！试玩版到这里结束，下载正式版可以继续挑战第 101–200 关。": "Level 100 cleared! The demo ends here. Download the full version to continue with levels 101–200.",
+  "下载正式版": "Download full version",
+  "下载正式版 ›": "Download full version ›",
+  "这是试玩版，请下载正式版，解锁全部功能。": "This is the demo. Please download the full version to unlock all features.",
 });

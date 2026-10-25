@@ -1,5 +1,6 @@
 // itch.io 上架素材生成器：HTML5 压缩包 + 截图 + GIF + 封面（输出到 itch/）
 // 用法：node tools/itch.js [zip|shots|gif|cover|verify|all]   默认 all
+//   demo   试玩版（第 100 关以后和绿色以外的装备 / 武器都锁住，设计书 127）：打成 itch/archer-on-the-wall-demo-html5.zip，并检查锁得对不对
 //   zip    把游戏需要的文件打成 itch/archer-on-the-wall-html5.zip（index.html 在压缩包根目录）
 //   shots  用一个"展示用存档"（英文界面、顶级装备）拍 6 张 1280×720 截图
 //   gif    按固定帧率推进战斗，导出 itch/gameplay.gif
@@ -21,6 +22,7 @@ const ROOT = path.resolve(__dirname, '..');
 const OUT = path.join(ROOT, 'itch');
 const SHOTS = path.join(OUT, 'screenshots');
 const ZIP = path.join(OUT, 'archer-on-the-wall-html5.zip');
+const DEMO_ZIP = path.join(OUT, 'archer-on-the-wall-demo-html5.zip');
 const GAME_FILES = ['index.html', 'manifest.webmanifest', 'sw.js', 'CREDITS.md', 'css', 'i18n', 'icons', 'src'];
 const what = process.argv[2] || 'all';
 const BATTLE_LEVEL = +process.env.BATTLE_LEVEL || 45;
@@ -31,12 +33,146 @@ function buildZip() {
   fs.mkdirSync(OUT, { recursive: true });
   if (fs.existsSync(ZIP)) fs.unlinkSync(ZIP);
   execFileSync('zip', ['-q', '-r', '-X', ZIP, ...GAME_FILES], { cwd: ROOT });
+  // 正式版是当下载版卖的：压缩包里放一份怎么运行的说明
+  const readme = path.join(os.tmpdir(), 'README.txt');
+  fs.writeFileSync(
+    readme,
+    [
+      'Archer on the Wall — full version / 城头射手 正式版',
+      '',
+      'How to play / 怎么玩',
+      '1. Unzip the whole folder. / 把整个压缩包解压到一个文件夹。',
+      '2. Double-click index.html (Chrome, Edge or Firefox). / 用 Chrome、Edge 或 Firefox 双击打开 index.html。',
+      '3. No installation, no internet needed. / 不用安装，也不需要联网。',
+      '',
+      'Your save lives in the browser. Use Settings > Export save to back it up. / 存档保存在浏览器里，建议在「设置」里定期「导出存档」备份。',
+      '',
+      'Feedback / 反馈: https://linshangsheng.itch.io/archer-on-the-wall',
+      'Credits / 致谢: see CREDITS.md',
+      '',
+    ].join('\r\n')
+  );
+  execFileSync('zip', ['-q', '-j', ZIP, readme]);
   const list = execFileSync('unzip', ['-Z1', ZIP]).toString().split('\n').filter((f) => f && !f.endsWith('/'));
   const mb = fs.statSync(ZIP).size / 1048576;
   console.log(`zip：${list.length} 个文件，${mb.toFixed(1)} MB`);
   if (!list.includes('index.html')) throw new Error('index.html 不在压缩包根目录');
   if (list.length > 1000) throw new Error('itch.io 的 HTML5 压缩包最多 1000 个文件');
   if (mb > 500) throw new Error('压缩包超过 500 MB');
+}
+
+// ---------- 试玩版 ----------
+// 复制一份游戏文件，把 config.js 里的 demo: false 改成 true、sw.js 的缓存名加 -demo，再打包。正式版的源码不动
+function buildDemoDir() {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'itch-demo-'));
+  for (const f of GAME_FILES) fs.cpSync(path.join(ROOT, f), path.join(dir, f), { recursive: true });
+  const patch = (file, from, to) => {
+    const p = path.join(dir, file);
+    const src = fs.readFileSync(p, 'utf8');
+    if (!src.includes(from)) throw new Error(`${file} 里找不到 ${from}`);
+    fs.writeFileSync(p, src.replace(from, to));
+  };
+  patch('src/data/config.js', '    demo: false,', '    demo: true,');
+  patch('sw.js', "const VERSION = 'scyx-", "const VERSION = 'scyx-demo-");
+  return dir;
+}
+function buildDemoZip() {
+  const dir = buildDemoDir();
+  if (fs.existsSync(DEMO_ZIP)) fs.unlinkSync(DEMO_ZIP);
+  execFileSync('zip', ['-q', '-r', '-X', DEMO_ZIP, ...GAME_FILES], { cwd: dir });
+  const list = execFileSync('unzip', ['-Z1', DEMO_ZIP]).toString().split('\n').filter((f) => f && !f.endsWith('/'));
+  console.log(`demo zip：${list.length} 个文件，${(fs.statSync(DEMO_ZIP).size / 1048576).toFixed(1)} MB`);
+  if (!list.includes('index.html')) throw new Error('index.html 不在压缩包根目录');
+  return dir;
+}
+
+async function verifyDemo(browser, dir) {
+  const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
+  const errors = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+  await page.addInitScript(() => localStorage.setItem('shouchengyingxiong.lang', 'en'));
+  await page.goto('file://' + path.join(dir, 'index.html'));
+  await page.waitForTimeout(1200);
+  let fail = 0;
+  const check = (ok, msg) => {
+    console.log(`${ok ? '✓' : '✗'} 试玩版：${msg}`);
+    if (!ok) fail++;
+  };
+  check(await page.evaluate(() => TD.config.demo === true), 'config.demo 是 true');
+  check((await page.evaluate(() => document.querySelector('.title-foot').textContent)).startsWith('Demo '), '标题底部写着 Demo');
+  await page.evaluate(() => {
+    TD.quality.setMode('high');
+    const s = TD.game.save;
+    s.settings.diffChosen = true;
+    s.stats.shopGuided = true;
+    s.copper = 1e9;
+    s.silver = 1e9;
+    s.gold = 1e9;
+    s.diamond = 1e6;
+    for (let k = 1; k <= 100; k++) s.levels[k] = { stars: 3, clears: 1 };
+    s.settings.testMode = true; // 试玩版里测试模式不该生效
+  });
+  check(await page.evaluate(() => !TD.progression.testMode(TD.game.save) && !TD.progression.isUnlocked(TD.game.save, 101) && TD.progression.isUnlocked(TD.game.save, 100)), '通关到第 100 关：第 101 关锁着，测试模式不生效');
+  // 商店：武器
+  await page.evaluate(() => {
+    TD.ui.showShop(45, 'equip');
+    document.querySelectorAll('.equip-cats .cat')[0].click();
+  });
+  await page.waitForTimeout(300);
+  const wcards = await page.evaluate(() => [...document.querySelectorAll('.shop-content .card')].map((c) => ({ locked: c.classList.contains('demo-locked'), green: c.classList.contains('wr-1') })));
+  check(wcards.filter((c) => c.green).every((c) => !c.locked) && wcards.filter((c) => !c.green).length > 0 && wcards.filter((c) => !c.green).every((c) => c.locked), '武器页：绿色的正常，其余颜色都是灰的');
+  await page.evaluate(() => {
+    const el = [...document.querySelectorAll('.shop-content .card.demo-locked .buy')][0];
+    el.scrollIntoView({ block: 'center' });
+  });
+  await page.waitForTimeout(200);
+  await page.screenshot({ path: path.join(os.tmpdir(), 'demo-shop.png') });
+  await page.click('.shop-content .card.demo-locked .buy >> nth=0');
+  await page.waitForTimeout(300);
+  check(await page.evaluate(() => !!document.querySelector('.demo-notice')), '点灰色武器的购买：弹出试玩版提示');
+  await page.screenshot({ path: path.join(os.tmpdir(), 'demo-notice.png') });
+  await page.evaluate(() => TD.ui.closeModal());
+  const owned0 = await page.evaluate(() => Object.keys(TD.data.weapons).filter((id) => TD.game.save.weapons[id].owned && TD.data.weapons[id].rarity > 1).length);
+  check(owned0 === 0, '灰色武器没有被买下来（钱再多也不行）');
+  check(await page.evaluate(() => { const P = TD.progression; const id = Object.keys(TD.data.weapons).find((k) => TD.data.weapons[k].rarity === 1 && !TD.game.save.weapons[k].owned); return P.buyWeapon(TD.game.save, id) && TD.game.save.weapons[id].owned; }), '绿色武器可以买');
+  check(await page.evaluate(() => { const P = TD.progression; const s = TD.game.save; const id = Object.keys(TD.data.equipment).find((k) => TD.data.equipment[k].rarity === 2); const g = Object.keys(TD.data.equipment).find((k) => TD.data.equipment[k].rarity === 1); return !P.buyEquip(s, id) && !s.equipOwned[id] && P.buyEquip(s, g); }), '装备：蓝色买不了、绿色能买');
+  // 装备页：点灰色装备的购买
+  await page.evaluate(() => {
+    TD.ui.showShop(45, 'equip');
+    document.querySelectorAll('.equip-cats .cat')[1].click();
+  });
+  await page.waitForTimeout(300);
+  const gcards = await page.evaluate(() => [...document.querySelectorAll('.shop-content .card')].map((c) => ({ locked: c.classList.contains('demo-locked'), green: c.classList.contains('wr-1') })));
+  check(gcards.length > 0 && gcards.every((c) => (c.green ? !c.locked : c.locked)), '装备页：绿色正常，其余颜色都是灰的');
+  await page.click('.shop-content .card.demo-locked .buy >> nth=0');
+  await page.waitForTimeout(300);
+  check(await page.evaluate(() => !!document.querySelector('.demo-notice')), '点灰色装备的购买：弹出试玩版提示');
+  await page.evaluate(() => TD.ui.closeModal());
+  // 地图
+  await page.evaluate(() => TD.ui.showMap(10));
+  await page.waitForTimeout(300);
+  check(await page.evaluate(() => document.querySelector('.map-note') && /demo|Demo/.test(document.querySelector('.map-note').textContent)), '第 10 章通关后的提示是试玩版结束');
+  await page.screenshot({ path: path.join(os.tmpdir(), 'demo-map10.png') });
+  await page.evaluate(() => TD.ui.showMap(11));
+  await page.waitForTimeout(300);
+  check(await page.evaluate(() => [...document.querySelectorAll('.map-node')].length === 10 && [...document.querySelectorAll('.map-node')].every((n) => n.classList.contains('demo-locked'))), '第 11 章的 10 个关卡全是灰的');
+  await page.screenshot({ path: path.join(os.tmpdir(), 'demo-map11-grey.png') });
+  await page.click('.map-node >> nth=0');
+  await page.waitForTimeout(300);
+  check(await page.evaluate(() => !!document.querySelector('.demo-notice')), '点第 101 关：弹出试玩版提示');
+  await page.screenshot({ path: path.join(os.tmpdir(), 'demo-map11.png') });
+  await page.evaluate(() => TD.ui.closeModal());
+  check(await page.evaluate(() => { TD.ui.showPreview(150); return !!document.querySelector('.demo-notice'); }), '直接打开第 150 关的预览也被拦住');
+  await page.evaluate(() => TD.ui.closeModal());
+  // 章节列表
+  await page.evaluate(() => TD.ui.showChapterList(10));
+  await page.waitForTimeout(200);
+  check(await page.evaluate(() => document.querySelectorAll('.chapter-card.demo-locked').length === 10), '章节列表：后 10 章是灰的');
+  await page.evaluate(() => (TD.ui.closeModal(), TD.ui.showSettings()));
+  check(await page.evaluate(() => ![...document.querySelectorAll('.modal button')].some((b) => /^(Test|测试)/.test(b.textContent))), '设置里没有「测试」按钮');
+  check(errors.length === 0, errors.length ? errors.join('; ') : '没有报错');
+  await page.close();
+  if (fail) process.exitCode = 1;
 }
 
 // ---------- 展示用存档 ----------
@@ -330,7 +466,9 @@ async function verify(browser) {
 (async () => {
   fs.mkdirSync(OUT, { recursive: true });
   if (want('zip')) buildZip();
-  if (['all', 'shots', 'gif', 'cover', 'verify', 'peek'].includes(what)) {
+  let demoDir = null;
+  if (want('demo')) demoDir = buildDemoZip();
+  if (['all', 'shots', 'gif', 'cover', 'verify', 'peek', 'demo'].includes(what)) {
     const browser = await chromium.launch();
     try {
       if (what === 'peek') await peek(browser, (process.argv[3] || '5,15,25,35,45,55,65,95').split(',').map(Number));
@@ -338,6 +476,7 @@ async function verify(browser) {
       if (want('gif')) await gif(browser);
       if (want('cover')) await cover(browser);
       if (want('verify')) await verify(browser);
+      if (demoDir) await verifyDemo(browser, demoDir);
     } finally {
       await browser.close();
     }

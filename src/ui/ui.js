@@ -176,7 +176,7 @@
         // 嵌在别的网页里（itch.io 等）时网页没权限关窗口，按钮没有意义，不显示
         UI.embedded() ? null : h('button', { class: 'btn quit', onclick: () => (sfx('click'), UI.quitGame()) }, '退出游戏')
       ),
-      h('div', { class: 'title-foot' }, `网页原型 ${C.version} · ${D.chapters.length} 章 ${Object.keys(D.levels).length} 关`, bgm && TD.music.enabled ? h('div', { class: 'title-bgm' }, '♪ ', h('span', null, bgm.name)) : null)
+      h('div', { class: 'title-foot' }, C.demo ? `试玩版 ${C.version} · 前 ${Math.ceil(C.demoMaxLevel / 10)} 章 ${C.demoMaxLevel} 关` : `网页原型 ${C.version} · ${D.chapters.length} 章 ${Object.keys(D.levels).length} 关`, bgm && TD.music.enabled ? h('div', { class: 'title-bgm' }, '♪ ', h('span', null, bgm.name)) : null)
     );
     root.appendChild(screenEl);
   };
@@ -458,7 +458,7 @@
       ),
       h('div', { class: 'hint credits' }, '音乐采样：FluidR3_GM 音色库（Frank Wen），CC BY 3.0，经 gleitz/midi-js-soundfonts 取得'),
       h('div', { class: 'row' }, h('button', { class: 'btn small', onclick: () => UI.showAbout() }, '关于')),
-      h('div', { class: 'row' }, h('button', { class: 'btn small', onclick: () => UI.showTestLogin() }, P.testMode(game.save) ? '测试（已开启）' : '测试')),
+      C.demo ? null : h('div', { class: 'row' }, h('button', { class: 'btn small', onclick: () => UI.showTestLogin() }, P.testMode(game.save) ? '测试（已开启）' : '测试')),
       h(
         'div',
         { class: 'row' },
@@ -622,6 +622,26 @@
     modal(body, { closeOnBack: true, cls: 'wide' });
   };
 
+  // 试玩版（设计书 127）：点了被锁住的关卡 / 装备时的提示
+  UI.showDemoNotice = function () {
+    sfx('error');
+    modal(
+      h(
+        'div',
+        { class: 'demo-notice' },
+        h('h2', null, '试玩版'),
+        h('p', { class: 'confirm-text' }, '这是试玩版，请下载正式版，解锁全部功能。'),
+        h(
+          'div',
+          { class: 'modal-buttons' },
+          h('button', { class: 'btn', onclick: UI.closeModal }, '知道了'),
+          h('button', { class: 'btn primary', onclick: () => (window.open(UI.ITCH_URL, '_blank', 'noopener,noreferrer'), UI.closeModal()) }, '下载正式版')
+        )
+      ),
+      { closeOnBack: true }
+    );
+  };
+
   // 关于（设计书 124）：作者、版本、制作方式、署名、反馈入口。标题画面和设置里都能打开
   UI.ITCH_URL = 'https://linshangsheng.itch.io/archer-on-the-wall';
   UI.showAbout = function () {
@@ -705,7 +725,8 @@
     const CN = '一二三四五六七八九十';
     const prevCh = D.chapters.find((c) => c.id === ch.id - 1);
     const nextChap = D.chapters.find((c) => c.id === ch.id + 1);
-    const nextOpen = !!nextChap && P.isUnlocked(s, nextChap.levels[0]);
+    // 试玩版：第 100 关以后的章节也能点进去看（节点都是灰的，点了提示下载正式版）
+    const nextOpen = !!nextChap && (P.isUnlocked(s, nextChap.levels[0]) || (P.demoLevelLocked(nextChap.levels[0]) && P.isCleared(s, nextChap.levels[0] - 1)));
     const chapterNav = h(
       'div',
       { class: 'chapter-nav' },
@@ -717,13 +738,15 @@
       const lvl = D.levels[n];
       const rec = P.levelRecord(s, n);
       const unlocked = P.isUnlocked(s, n);
-      const cls = ['map-node', lvl.type, unlocked ? '' : 'locked', rec.clears ? 'cleared' : '', unlocked && !rec.clears ? 'current' : ''].join(' ');
+      const demoLock = P.demoLevelLocked(n);
+      const cls = ['map-node', lvl.type, unlocked ? '' : 'locked', demoLock ? 'demo-locked' : '', rec.clears ? 'cleared' : '', unlocked && !rec.clears ? 'current' : ''].join(' ');
       return h(
         'button',
         {
           class: cls,
           style: { left: NODE_POS[i][0] + 'px', top: NODE_POS[i][1] + 'px' },
           onclick: () => {
+            if (demoLock) return UI.showDemoNotice();
             if (!unlocked) {
               sfx('error');
               UI.toast(`先通关第 ${n - 1} 关`);
@@ -756,7 +779,9 @@
     const lastLevel = ch.levels[ch.levels.length - 1];
     const nextCh = D.chapters.find((c) => c.id === ch.id + 1);
     let note = null;
-    if (P.isCleared(s, lastLevel))
+    if (P.isCleared(s, lastLevel) && nextCh && P.demoLevelLocked(nextCh.levels[0]))
+      note = h('div', { class: 'map-note' }, `恭喜通关「${ch.name}」！试玩版到这里结束，下载正式版可以继续挑战第 101–200 关。`, h('button', { class: 'btn small primary', onclick: () => UI.showDemoNotice() }, '下载正式版 ›'));
+    else if (P.isCleared(s, lastLevel))
       note = nextCh
         ? h('div', { class: 'map-note' }, `恭喜通关「${ch.name}」！新的章节「${nextCh.name}」已经开放。`, h('button', { class: 'btn small primary', onclick: () => UI.showMap(nextCh.id) }, '前往 ›'))
         : h('div', { class: 'map-note' }, `恭喜通关「${ch.name}」！全部 ${D.chapters.length} 章都守住了。可以回头挑战三星和王冠，或者去无尽模式刷新纪录。`);
@@ -835,6 +860,7 @@
   }
 
   UI.showPreview = function (n) {
+    if (P.demoLevelLocked(n)) return UI.showDemoNotice();
     const s = game.save;
     const lvl = D.levels[n];
     const rec = P.levelRecord(s, n);
@@ -888,16 +914,17 @@
     const CN = '一二三四五六七八九十';
     const btns = D.chapters.map((c) => {
       const open = P.isUnlocked(s, c.levels[0]);
+      const demoLock = P.demoLevelLocked(c.levels[0]);
       const done = c.levels.filter((n) => P.isCleared(s, n)).length;
       return h(
         'button',
         {
-          class: 'btn chapter-card' + (c.id === current ? ' primary' : ''),
-          disabled: open ? null : true,
-          title: open ? c.name : `通关第 ${c.levels[0] - 1} 关后开放`,
-          onclick: () => (sfx('click'), UI.closeModal(), UI.showMap(c.id)),
+          class: 'btn chapter-card' + (c.id === current ? ' primary' : '') + (demoLock ? ' demo-locked' : ''),
+          disabled: open || demoLock ? null : true,
+          title: open ? c.name : demoLock ? '试玩版只有前 10 章' : `通关第 ${c.levels[0] - 1} 关后开放`,
+          onclick: () => (demoLock ? UI.showDemoNotice() : (sfx('click'), UI.closeModal(), UI.showMap(c.id))),
         },
-        h('b', null, open ? `第${D.chapterNo(c.id)}章` : '🔒'),
+        h('b', null, open || demoLock ? `第${D.chapterNo(c.id)}章` : '🔒'),
         h('span', null, c.name),
         h('span', { class: 'dim' }, `${done}/${c.levels.length}`)
       );
@@ -1030,9 +1057,11 @@
     );
   }
 
-  function buyBtn(cost, onBuy, label) {
+  function buyBtn(cost, onBuy, label, demoLocked) {
     const s = game.save;
     if (!cost) return h('button', { class: 'btn small', disabled: true }, label || '已满级');
+    // 试玩版里锁住的东西：按钮灰着但能点，点了提示下载正式版（设计书 127）
+    if (demoLocked) return h('button', { class: 'btn small buy demo-lock', onclick: () => UI.showDemoNotice() }, label || '购买', ' ', costEl(cost));
     const can = P.canAfford(s, cost);
     return h(
       'button',
@@ -1161,7 +1190,7 @@
       }
       let right;
       if (!ws.owned) {
-        right = buyBtn(w.cost, () => P.buyWeapon(s, id), '购买');
+        right = buyBtn(w.cost, () => P.buyWeapon(s, id), '购买', P.demoItemLocked(w.rarity));
       } else
         right = h(
           'div',
@@ -1200,7 +1229,7 @@
           ws.owned ? lvText(ws.lv) : '可购买',
           h('span', null, w.desc, h('span', { class: 'good' }, ' 擅长：' + w.good)),
           right,
-          { cls: 'wr-' + (w.rarity || 1) + (ws.owned ? '' : ' unowned'), color: R.color, icon: TD.sprites.iconCanvas(id, 56), foot: h('div', { class: 'card-notes' }, ascLine, masteryLine, recTip), bar: ws.owned ? Math.min(1, ws.lv / P.weaponMaxLv(id)) : null, barText: ws.owned ? `${ws.lv} / ${P.weaponMaxLv(id)}` : null, over: ws.owned && ws.lv >= P.weaponMaxLv(id) }
+          { cls: 'wr-' + (w.rarity || 1) + (ws.owned ? '' : ' unowned') + (!ws.owned && P.demoItemLocked(w.rarity) ? ' demo-locked' : ''), color: R.color, icon: TD.sprites.iconCanvas(id, 56), foot: h('div', { class: 'card-notes' }, ascLine, masteryLine, recTip), bar: ws.owned ? Math.min(1, ws.lv / P.weaponMaxLv(id)) : null, barText: ws.owned ? `${ws.lv} / ${P.weaponMaxLv(id)}` : null, over: ws.owned && ws.lv >= P.weaponMaxLv(id) }
         )
       );
     }
@@ -1377,10 +1406,10 @@
         );
       const right = s.equipOwned[id]
         ? h('div', { class: 'btn-col' }, isWorn ? h('span', { class: 'equipped' }, '穿戴中') : null, wearBtn(), sellBtn())
-        : buyBtn(e.cost, () => P.buyEquip(s, id));
+        : buyBtn(e.cost, () => P.buyEquip(s, id), null, P.demoItemLocked(e.rarity));
       const recTip = !s.equipOwned[id] && P.recommended(s, e) ? h('div', { class: 'rec-tip' }, `推荐通关第 ${e.minLevel} 关后购买`) : null;
       const name = h('span', { class: 'rar-name', style: { color: R.color } }, e.name, h('span', { class: 'rar-tag', style: { background: R.color } }, R.name));
-      gearGrid.append(card(name, null, h('span', null, e.desc, e.set ? setLine(s, e.set) : null, recTip), right, { cls: 'wr-' + e.rarity + (s.equipOwned[id] ? '' : ' unowned') + (isWorn ? ' worn' : ''), color: R.color, icon: TD.sprites.gearIconCanvas(e.slot, R.color, 56) }));
+      gearGrid.append(card(name, null, h('span', null, e.desc, e.set ? setLine(s, e.set) : null, recTip), right, { cls: 'wr-' + e.rarity + (s.equipOwned[id] ? '' : ' unowned') + (!s.equipOwned[id] && P.demoItemLocked(e.rarity) ? ' demo-locked' : '') + (isWorn ? ' worn' : ''), color: R.color, icon: TD.sprites.gearIconCanvas(e.slot, R.color, 56) }));
     }
   }
 

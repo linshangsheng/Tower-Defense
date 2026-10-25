@@ -2088,4 +2088,12 @@ TD.i18n.register("vi", {
   "音乐采样": "Mẫu âm nhạc",
   "解锁第六章「云端王国」和「九层妖塔」（地图右下角）": "Mở khóa chương 6 \"Vương quốc Mây\" và \"Tháp Yêu Chín Tầng\" (góc dưới bên phải bản đồ)",
   "解锁第七章「珊瑚海湾」": "Mở khóa chương 7 \"Vịnh San hô\"",
+  "恭喜通关「{0}」！试玩版到这里结束，下载正式版可以继续挑战第 101–200 关。": "Chúc mừng bạn đã hoàn thành \"{0}\"! Bản chơi thử kết thúc tại đây. Hãy tải bản đầy đủ để tiếp tục các màn 101–200.",
+  "试玩版": "Chơi thử",
+  "试玩版 {0} · 前 {1} 章 {2} 关": "Chơi thử {0} · {1} chương đầu, {2} màn",
+  "试玩版只有前 10 章": "Bản chơi thử chỉ có 10 chương đầu",
+  "通关第 100 关！试玩版到这里结束，下载正式版可以继续挑战第 101–200 关。": "Đã hoàn thành màn 100! Bản chơi thử kết thúc tại đây. Hãy tải bản đầy đủ để tiếp tục các màn 101–200.",
+  "下载正式版": "Tải bản đầy đủ",
+  "下载正式版 ›": "Tải bản đầy đủ ›",
+  "这是试玩版，请下载正式版，解锁全部功能。": "Đây là bản chơi thử. Vui lòng tải bản đầy đủ để mở khóa mọi tính năng.",
 });

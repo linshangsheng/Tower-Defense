@@ -2088,4 +2088,12 @@ TD.i18n.register("de", {
   "音乐采样": "Musik-Samples",
   "解锁第六章「云端王国」和「九层妖塔」（地图右下角）": "Schaltet Kapitel 6 „Wolkenreich“ und den „Neunstöckigen Dämonenturm“ frei (unten rechts auf der Karte)",
   "解锁第七章「珊瑚海湾」": "Schaltet Kapitel 7 „Korallenbucht“ frei",
+  "恭喜通关「{0}」！试玩版到这里结束，下载正式版可以继续挑战第 101–200 关。": "Glückwunsch, du hast „{0}“ geschafft! Die Demo endet hier. Lade die Vollversion herunter, um mit den Levels 101–200 weiterzuspielen.",
+  "试玩版": "Demo",
+  "试玩版 {0} · 前 {1} 章 {2} 关": "Demo {0} · die ersten {1} Kapitel, {2} Level",
+  "试玩版只有前 10 章": "Die Demo enthält nur die ersten 10 Kapitel",
+  "通关第 100 关！试玩版到这里结束，下载正式版可以继续挑战第 101–200 关。": "Level 100 geschafft! Die Demo endet hier. Lade die Vollversion herunter, um mit den Levels 101–200 weiterzuspielen.",
+  "下载正式版": "Vollversion herunterladen",
+  "下载正式版 ›": "Vollversion herunterladen ›",
+  "这是试玩版，请下载正式版，解锁全部功能。": "Das ist die Demo. Lade die Vollversion herunter, um alle Funktionen freizuschalten.",
 });
