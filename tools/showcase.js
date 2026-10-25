@@ -38,7 +38,7 @@ async function hiRes(page) {
 async function snap(page, name) {
   await page.waitForTimeout(500);
   const raw = path.join(tmp, `${String(counter++).padStart(3, '0')}-${name}.png`);
-  await page.screenshot({ path: raw });
+  await page.screenshot({ path: raw, timeout: 180000 }); // 特效很多的道具（影分身军团）软件渲染下一张要好几十秒
   // 填满 2532 宽：背景 = 同一画面放大、模糊、压暗；中间放清晰的游戏画面
   const out = raw.replace('.png', '-tile.png');
   execFileSync('convert', [raw, '-resize', `${W}x${H}^`, '-gravity', 'center', '-extent', `${W}x${H}`, '-blur', '0x30', '-brightness-contrast', '-28x0', '(', raw, ')', '-gravity', 'center', '-composite', out]);
