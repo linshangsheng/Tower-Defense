@@ -2348,4 +2348,13 @@ TD.i18n.register("vi", {
   "Nova 怕黑，所以把灯提得高高的。提着提着，她自己也不怕了。": "Nova sợ bóng tối nên giơ đèn thật cao. Giơ mãi giơ mãi, bạn ấy cũng hết sợ.",
   "Rowan 的树": "Cây của Rowan",
   "Rowan 每年都去看一棵老树。今年，他约了我一起去。": "Rowan năm nào cũng đi thăm một cây cổ thụ. Năm nay, cậu ấy rủ mình đi cùng.",
+  "别数还有几层，只看脚下这一级。": "Đừng đếm còn bao nhiêu tầng, chỉ nhìn bậc thang dưới chân thôi.",
+  "到了塔的腰上，风变冷了。": "Lên đến lưng chừng tháp, gió trở lạnh rồi.",
+  "每一层的回声，都比上一层更重。": "Tiếng vọng của mỗi tầng đều nặng hơn tầng trước.",
+  "门廊里的灯，还亮着。": "Ngọn đèn ngoài hành lang vẫn còn sáng.",
+  "墙上的刻痕，是一代代挑战者留下的。": "Những vết khắc trên tường là do bao thế hệ người thử thách để lại.",
+  "塔顶的光，已经看得见了。": "Đã thấy ánh sáng trên đỉnh tháp rồi.",
+  "台阶很陡，可是向上走的人从不回头。": "Bậc thang dốc lắm, nhưng người đi lên chẳng bao giờ ngoảnh lại.",
+  "妖王们在黑暗里磨着牙。": "Các yêu vương đang nghiến răng trong bóng tối.",
+  "最后一层。没有退路，也没有遗憾。": "Tầng cuối cùng. Không đường lui, cũng không hối tiếc.",
 });

@@ -2348,4 +2348,13 @@ TD.i18n.register("tr", {
   "Nova 怕黑，所以把灯提得高高的。提着提着，她自己也不怕了。": "Nova karanlıktan korktuğu için fenerini yukarıda tutuyor. Tuta tuta kendisi de korkmaz oldu.",
   "Rowan 的树": "Rowan'ın Ağacı",
   "Rowan 每年都去看一棵老树。今年，他约了我一起去。": "Rowan her yıl yaşlı bir ağacı ziyaret ediyor. Bu yıl beni de davet etti.",
+  "别数还有几层，只看脚下这一级。": "Kaç kat kaldığını sayma, yalnızca ayağının altındaki basamağa bak.",
+  "到了塔的腰上，风变冷了。": "Kulenin ortasına gelince rüzgâr soğudu.",
+  "每一层的回声，都比上一层更重。": "Her katın yankısı bir öncekinden daha ağır.",
+  "门廊里的灯，还亮着。": "Koridordaki kandil hâlâ yanıyor.",
+  "墙上的刻痕，是一代代挑战者留下的。": "Duvardaki çentikleri nesiller boyu meydan okuyanlar bıraktı.",
+  "塔顶的光，已经看得见了。": "Kulenin tepesindeki ışık artık görünüyor.",
+  "台阶很陡，可是向上走的人从不回头。": "Basamaklar dik ama yukarı çıkan kimse geriye bakmaz.",
+  "妖王们在黑暗里磨着牙。": "İblis krallar karanlıkta diş gıcırdatıyor.",
+  "最后一层。没有退路，也没有遗憾。": "Son kat. Geri dönüş yok, pişmanlık da yok.",
 });

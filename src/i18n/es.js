@@ -2348,4 +2348,13 @@ TD.i18n.register("es", {
   "Nova 怕黑，所以把灯提得高高的。提着提着，她自己也不怕了。": "Nova le tiene miedo a la oscuridad, así que levanta bien alto su farol. De tanto levantarlo, ella también dejó de tener miedo.",
   "Rowan 的树": "El árbol de Rowan",
   "Rowan 每年都去看一棵老树。今年，他约了我一起去。": "Rowan visita un árbol viejo todos los años. Este año me invitó a ir con él.",
+  "别数还有几层，只看脚下这一级。": "No cuentes los pisos que faltan. Mira solo el escalón bajo tus pies.",
+  "到了塔的腰上，风变冷了。": "A mitad de la torre, el viento se vuelve frío.",
+  "每一层的回声，都比上一层更重。": "El eco de cada piso pesa más que el anterior.",
+  "门廊里的灯，还亮着。": "La lámpara del pasillo sigue encendida.",
+  "墙上的刻痕，是一代代挑战者留下的。": "Las marcas en el muro las dejaron generaciones de retadores.",
+  "塔顶的光，已经看得见了。": "Ya se ve la luz de la cima de la torre.",
+  "台阶很陡，可是向上走的人从不回头。": "Los escalones son empinados, pero quien sube nunca mira atrás.",
+  "妖王们在黑暗里磨着牙。": "Los reyes demonio rechinan los dientes en la oscuridad.",
+  "最后一层。没有退路，也没有遗憾。": "El último piso. Sin retirada y sin arrepentimientos.",
 });
