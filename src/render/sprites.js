@@ -3121,14 +3121,14 @@
     const def = TD.data.monsters[type];
     opts = opts || {};
     if (type === 'abyssDragon') {
-      // 龙的画法以身体中心为原点：全身占 2.6 个 s 宽，头在左边 1.14 s、上面 0.35 s 的地方
+      // 龙的画法以身体中心为原点：全身占 2.6 个 s 宽，头在左边约 1.15 s、上面约 0.45 s 的地方（v1.34 重画后）
       const ai = { form: opts.dark ? 2 : 1 };
       if (opts.head) {
-        const s = px * 0.85;
-        ctx.translate(px * 0.46 + 1.14 * s, px * 0.5 + 0.35 * s);
+        const s = px * (px <= 130 ? 0.78 : 0.62);
+        ctx.translate(px * 0.6 + 1.15 * s - (px <= 130 ? 0.2 * s : 0), px * 0.52 + 0.45 * s);
         S.monster(ctx, type, 0, 0, s, 0.5, { ai });
       } else {
-        S.monster(ctx, type, px * 0.52, px * 0.6, px * 0.36, 0.5, { ai });
+        S.monster(ctx, type, px * 0.57, px * 0.62, px * 0.33, 0.5, { ai });
       }
       return c;
     }

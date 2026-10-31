@@ -73,6 +73,7 @@
     battle.on('bossWarn', () => TD.audio.play('warn'));
     // 焚天巨龙（设计书 114）：用现成的音效凑——蓄力 = 警告音，龙息 = 陨石落地，龙吼 = 重击城墙，雷暴 = 落雷
     battle.on('dragonFire', () => TD.audio.play('meteorHit'));
+    battle.on('dragonRamStart', () => TD.audio.play('gust')); // 俯冲的破空声
     battle.on('dragonShock', () => TD.audio.play('bigWall'));
     battle.on('dragonBolt', () => TD.audio.play('bolt'));
     battle.on('dragonIce', () => TD.audio.play('frost'));

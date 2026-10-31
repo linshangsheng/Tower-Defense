@@ -5162,3 +5162,40 @@ test('终极技能：Boss 照样掉血，但不会被冻住（设计书 133）',
   assert.ok(boss.dead || hp0 - boss.hp >= boss.maxHp * 0.3, `10 秒里 Boss 至少掉 30% 最大血量（实际 ${Math.round(((hp0 - boss.hp) / boss.maxHp) * 100)}%）`);
   assert.ok(minionFrozen > 0, '同屏的小怪被冻住了');
 });
+
+test('巨龙冲撞：蓄力时先飞起来，撞上城墙的那一刻才结算伤害（设计书 134）', () => {
+  const G = D.abyssDragon;
+  assert.ok(G.shock.hitAt > 0.2 && G.shock.hitAt < 0.7 && G.shock.anim >= 1.5);
+  const s = P.newSave();
+  const lo = P.battleLoadout(s);
+  const b = new TD.Battle({ level: 200, stats: P.heroStats(s), loadout: lo, seed: 5, autoSupply: true });
+  b.wall.hp = b.wall.max = 1e13;
+  b.stats.atk *= 0.001;
+  let m = null;
+  for (let i = 0; i < 60 * 400 && !b.over; i++) {
+    b.step(1 / 60);
+    m = b.monsters.find((x) => x.def.ai === 'abyssDragon' && !x.dead);
+    if (m && m.ai.mode === 'hold') break;
+  }
+  assert.ok(m && m.ai.mode === 'hold', '巨龙到位');
+  b.monsters = b.monsters.filter((x) => x === m);
+  m.ai.skillTimer = 0;
+  m.ai.idx = 1; // 第一阶段的技能顺序：龙息 → 冲撞，所以下一个是冲撞
+  const events = [];
+  b.on('dragonRamStart', () => events.push(['start', b.time]));
+  b.on('dragonShock', () => events.push(['hit', b.time]));
+  const hp0 = b.wall.hp;
+  let castAt = null;
+  let hitAt = null;
+  for (let i = 0; i < 60 * 6; i++) {
+    b.step(1 / 60);
+    if (castAt === null && m.ai.anim === 'ram' && m.ai.animTimer > 0) castAt = b.time;
+    if (hitAt === null && events.some((e) => e[0] === 'hit')) hitAt = b.time;
+    if (castAt !== null && hitAt === null) assert.strictEqual(b.wall.hp, hp0, '撞上之前城墙不掉血');
+  }
+  assert.ok(castAt !== null && hitAt !== null, '放出冲撞并且撞上了');
+  assert.ok(Math.abs(hitAt - castAt - G.shock.anim * G.shock.hitAt) < 0.1, `撞上的时刻 = 放出后 ${G.shock.anim * G.shock.hitAt} 秒（实际 ${(hitAt - castAt).toFixed(2)}）`);
+  assert.ok(b.wall.hp < hp0, '撞上以后城墙掉血了');
+  assert.strictEqual(events.filter((e) => e[0] === 'hit').length, 1, '只撞一次');
+  assert.ok(m.ai.ramDx > 60, '画面里要冲的距离算出来了');
+});

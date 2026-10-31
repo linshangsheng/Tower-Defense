@@ -2369,4 +2369,5 @@ TD.i18n.register("id", {
   "终极技能，每场战斗一次：拉满弓向天空射出一箭，随后 5 分钟里漫天箭雨覆盖整个战场——命中的怪被冰冻，Boss 不会被冻住，但照样受伤。放箭时所有怪物暂停。": "Skill pamungkas, sekali per pertarungan: tarik busur sekuat tenaga dan lepaskan satu panah ke langit, lalu selama 5 menit badai panah menutupi seluruh medan perang. Monster yang terkena akan membeku; Boss tidak membeku tetapi tetap terluka. Saat panah dilepaskan, semua monster berhenti.",
   "终极技能（每场战斗一次）": "Skill pamungkas (sekali per pertarungan)",
   "终极技能，每场战斗一次：拉满弓向天空射出一箭，随后 10 秒里漫天箭雨覆盖整个战场——伤害很高，命中的怪被冰冻；Boss 不会被冻住，但会被打掉大约一半的血量。放箭时所有怪物暂停。": "Skill pamungkas, sekali per pertarungan: tarik busur sekuat tenaga dan lepaskan satu panah ke langit, lalu selama 10 detik badai panah menutupi seluruh medan perang dengan damage yang sangat tinggi. Monster yang terkena akan membeku; Boss tidak membeku tetapi kehilangan sekitar separuh HP-nya. Saat panah dilepaskan, semua monster berhenti.",
+  "焚天巨龙飞向了高空——它要俯冲撞墙了！": "Naga Pembakar Langit terbang ke angkasa: ia akan menukik menabrak tembok!",
 });

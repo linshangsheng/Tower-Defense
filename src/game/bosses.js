@@ -606,9 +606,20 @@
       const ai = m.ai;
       if (ai.animTimer > 0) ai.animTimer -= dt; // 技能释放时画面里的姿势（喷火 / 冲撞 / 雷击 / 寒冰）持续多久
       if (ai.fallen) {
+        ai.ramHit = 0;
         ai.rebirthTimer -= dt;
         if (ai.rebirthTimer <= 0) this.dragonRebirth(m);
         return;
+      }
+      // 冲撞撞上城墙的那一刻：结算伤害、英雄眩晕（不受 Boss 自己被眩晕影响，动画已经在播了）
+      if (ai.ramHit > 0) {
+        ai.ramHit -= dt;
+        if (ai.ramHit <= 0) {
+          ai.ramHit = 0;
+          this.emit('dragonShock', { m });
+          this.hitWall(this.dragonHit(m, D.abyssDragon.shock.damage), m, true, 'shock', m.type);
+          this.stunHero(D.abyssDragon.shock.stun);
+        }
       }
       const ratio = m.hp / m.maxHp;
       const ph = () => ai.phase - 1;
@@ -690,12 +701,13 @@
         this.addWallDot(G.fire.dot * k * this.wall.max * (m.ai.form === 2 ? G.rebirthMult : 1), G.fire.dotTime, 'dragonFire', true, m.type);
         this.stunHero(0.4);
       } else if (skill === 'shock') {
-        // 冲撞：巨龙整个扑向城墙（画面里有一段冲刺）
+        // 冲撞：蓄力时（warn）巨龙已经飞到高处；现在俯冲撞向城墙，撞上的那一刻（hitAt）才结算伤害（设计书 134）
         ai.anim = 'ram';
         ai.animTimer = G.shock.anim;
-        this.emit('dragonShock', { m });
-        this.hitWall(this.dragonHit(m, G.shock.damage), m, true, 'shock', m.type);
-        this.stunHero(G.shock.stun);
+        ai.ramHit = G.shock.anim * G.shock.hitAt;
+        // 画面里要冲多远：龙头从当前位置一直撞到城墙（龙头在身体中心左边约 1.4 个体长 × 0.92）
+        ai.ramDx = Math.max(80, m.x - 1.4 * m.def.size * 0.92 - (C.wallX + 30));
+        this.emit('dragonRamStart', { m });
       } else if (skill === 'bolt') {
         // 雷击：一串落雷劈向城墙，主角被电麻 G.bolt.heroStun 秒
         ai.anim = 'bolt';

@@ -796,7 +796,7 @@
     stunOnInterrupt: 1.8,
     // 伤害按城墙最大血量的比例算（v1.14：原来按难度 × 固定值，第 200 关只有城墙的 4%，太轻）
     fire: { warn: 2.2, anim: 1.6, damage: 0.15, dot: 0.015, dotTime: 6, enrage: 1.4 }, // 龙息：直接 15% + 持续燃烧每秒 1.5%（6 秒共 9%）
-    shock: { warn: 2.0, anim: 1.3, damage: 0.2, stun: 1.6 }, // 冲撞：整条龙扑向城墙，20% + 英雄眩晕
+    shock: { warn: 2.0, anim: 1.8, hitAt: 0.4, damage: 0.2, stun: 1.6 }, // 冲撞：蓄力时先飞到高处（warn），然后俯冲撞墙（anim 的 hitAt 处撞上，这一刻才结算 20% + 英雄眩晕）
     bolt: { warn: 1.2, anim: 1.8, count: [5, 7, 10], spread: 1.8, damage: 0.03, heroStun: 2 }, // 雷击：一串落雷，每道 3%，主角被电麻 2 秒
     ice: { warn: 1.8, anim: 1.6, damage: 0.12, freeze: 3 }, // 寒冰：12%，主角被冻住 3 秒
     summon: { every: [16, 13, 10], count: [4, 5, 6], type: 'vulture', golem: 'lavaGolem' },
