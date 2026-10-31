@@ -509,15 +509,15 @@
   const WING_D = { a1: -0.25, a2: 0.2, f: [-0.25, 0.15, 0.55, 0.95], c: 0.1 };
   const WING_U = { a1: -0.95, a2: -1.3, f: [-2.35, -1.85, -1.3, -0.75], c: -0.14 };
   const WING_F = { a1: -0.1, a2: 2.95, f: [-0.04, 0.05, 0.14, 0.22], c: 0.03 };
-  const WING_LEN = [0.6, 0.72, 0.66, 0.5];
+  const WING_LEN = [0.68, 0.82, 0.76, 0.58];
   // 算一只翅膀的骨架（单位 s）；u = 0（下拍）…1（上举），fold = 收拢程度，lag = 指骨的延迟
   function wingRig(sx, sy, u, lagU, fold, s) {
     const mixA = (a, b, k) => a + (b - a) * k;
     const pose = (k, key) => mixA(WING_D[key], WING_U[key], k);
     const a1 = mixA(pose(u, 'a1'), WING_F.a1, fold);
     const a2 = mixA(pose(u, 'a2'), WING_F.a2, fold);
-    const L1 = 0.22;
-    const L2 = 0.34;
+    const L1 = 0.25;
+    const L2 = 0.38;
     const E = [sx + Math.cos(a1) * L1, sy + Math.sin(a1) * L1];
     const W = [E[0] + Math.cos(a2) * L2, E[1] + Math.sin(a2) * L2];
     const fingers = [];
@@ -920,21 +920,22 @@
     const kind = q.kind;
     const cast = q.stage === 'cast';
     const lw = (v) => Math.max(1, s * v);
-    // 画质降档（TD.quality，设计书 55）时省掉最费的几层：鳞片纹理、肌肉高光、翼膜细脉
-    const lowQ = !!(TD.quality && TD.quality.params().lit <= 0.5);
+    // 画质降档（TD.quality，设计书 55）也不删细节：龙是全场唯一的主角，鳞片、肌肉、翼膜的脉络一直画（一帧约 2–3 ms）
+    const lowQ = false;
 
     // ---------- 配色：红龙是黑褐的鳞甲 + 铜红的受光面 + 浅黄褐的腹甲 + 深红翼膜 + 岩浆裂纹；黑龙几乎全黑，裂纹和眼睛是血红色 ----------
-    const SKIN = mixc(rage ? '#2c1316' : '#251518', '#0b0810', dark);
-    const SKIN2 = mixc(rage ? '#552428' : '#52302a', '#1a0f20', dark);
-    const SKIN_HI = mixc(rage ? '#c05838' : '#b0693c', '#5a2c6a', dark);
-    const BELLY = mixc('#a07048', '#33203a', dark);
-    const BELLY_HI = mixc('#d8a878', '#5a3a64', dark);
-    const MEMB = mixc('#7a1022', '#3a1240', dark);
-    const MEMB_HI = mixc('#e8643a', '#a040a8', dark);
-    const BONE = mixc('#d6c2a0', '#a88cae', dark);
-    const BONE_DK = mixc('#7a6248', '#4a3858', dark);
-    const RIM = mixc('#ffa868', '#ff5a8a', dark);
-    const LAVA = dark > 0.5 ? '#ff2a5a' : rage ? '#ffd060' : '#ff8a2a';
+    // 黑曜石一样的鳞甲（偏冷的蓝紫高光）+ 岩浆的橙光（裂纹、腹甲、翼膜、眼睛）；黑龙偏紫黑、红光
+    const SKIN = mixc(rage ? '#1c0f18' : '#17111e', '#0a0710', dark);
+    const SKIN2 = mixc(rage ? '#33202c' : '#2a2034', '#150c1e', dark);
+    const SKIN_HI = mixc(rage ? '#8a5a78' : '#6d6290', '#5a3a7a', dark);
+    const BELLY = mixc('#6a2c1c', '#2c1632', dark);
+    const BELLY_HI = mixc('#f08a40', '#8a3a8a', dark);
+    const MEMB = mixc('#5a0c1c', '#2e0c38', dark);
+    const MEMB_HI = mixc('#ff7a3a', '#c050c8', dark);
+    const BONE = mixc('#cdbfa8', '#a890b8', dark);
+    const BONE_DK = mixc('#5a4a3e', '#44305a', dark);
+    const RIM = mixc('#ff9a50', '#ff5a9a', dark);
+    const LAVA = dark > 0.5 ? '#ff2a6a' : rage ? '#ffd060' : '#ff8a2a';
     const tone = kind === 'ice' ? '#7fd0ff' : kind === 'bolt' ? '#8fb4ff' : kind === 'fire' ? '#ffb040' : null;
     const toneA = q.stage ? (cast ? 1 : q.k) : 0;
     const EYE = kind === 'ice' ? '#bfeaff' : kind === 'bolt' ? '#dfeaff' : mixc(rage ? '#fff0c0' : '#ffb830', '#ff4a50', dark);
@@ -998,12 +999,12 @@
       [-0.88 + q.hdx * 0.8 + sw2, -0.57 + q.hdy * 0.85, 0.125, 0.13],
       [-0.76 + q.hdx * 0.5 + sw1 * 1.4, -0.49 + q.hdy * 0.55, 0.15, 0.165],
       [-0.635 + q.hdx * 0.22 + sw1, -0.35 + q.hdy * 0.22, 0.18, 0.2],
-      [-0.5, -0.19, 0.21, 0.24],
-      [-0.34, -0.05, 0.23, 0.3 + breathe],
-      [-0.14, -0.03, 0.225, 0.3 + breathe],
-      [0.08, -0.04, 0.17, 0.2],
-      [0.31, -0.05, 0.185, 0.2],
-      [0.55, -0.01 + tw(0.2), 0.15, 0.145],
+      [-0.5, -0.19, 0.22, 0.27],
+      [-0.34, -0.06, 0.245, 0.36 + breathe],
+      [-0.14, -0.04, 0.235, 0.36 + breathe],
+      [0.08, -0.04, 0.18, 0.22],
+      [0.31, -0.05, 0.2, 0.245],
+      [0.55, -0.01 + tw(0.2), 0.165, 0.16],
       [0.82, 0.05 + tw(0.5), 0.095, 0.09],
       [1.12, 0.1 + tw(0.8), 0.055, 0.05],
       [1.52, 0.07 + tw(1.1), 0.016, 0.015],
@@ -1086,6 +1087,16 @@
       // 透光：膜被背后的光照亮，靠近指骨处更亮
       ctx.globalCompositeOperation = 'lighter';
       glow(ctx, (Wp[0] + F[2].T[0]) / 2, (Wp[1] + F[2].T[1]) / 2, s * 0.55, MEMB_HI, 0.09 * shade * (0.6 + 0.4 * heat));
+      // 后缘一圈透光的橙边：膜越薄的地方越亮
+      ctx.strokeStyle = rgba(mc(MEMB_HI), 0.22 * shade);
+      ctx.lineWidth = lw(0.05);
+      ctx.beginPath();
+      ctx.moveTo(F[0].T[0], F[0].T[1]);
+      scallop(F[0].T, F[1].T, 0.26);
+      scallop(F[1].T, F[2].T, 0.26);
+      scallop(F[2].T, F[3].T, 0.26);
+      scallop(F[3].T, body, 0.18);
+      ctx.stroke();
       ctx.globalCompositeOperation = 'source-over';
       if (!lowQ) {
         // 膜上的细脉：指骨之间一根根分叉的血管
@@ -1138,8 +1149,8 @@
       ctx.restore();
 
       // 骨：肱骨 → 前臂（粗）→ 腕 → 四根指骨（细，各有一个关节）
-      const BN = mc(BONE_DK);
-      const BH = mc(mixc(BONE, BONE_DK, 0.35));
+      const BN = mc(mixc(SKIN2, '#000000', 0.15));
+      const BH = mc(mixc(SKIN_HI, MEMB_HI, 0.25));
       ctx.save();
       ctx.lineJoin = 'round';
       taper(ctx, Sp, Ep, lw(0.036), lw(0.03), mc(mixc(SKIN2, '#000000', 0.2)), rgba(mc(SKIN_HI), 0.6));
@@ -1155,6 +1166,24 @@
         // 指尖的小钩爪
         claw(ctx, F[i].T[0], F[i].T[1], F[i].ang + 0.4, lw(0.04), lw(0.007), mc(BONE), null);
       }
+      // 指骨和臂骨上一道发橙的热光
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.strokeStyle = rgba(MEMB_HI, 0.35 * shade * (0.5 + 0.5 * heat));
+      ctx.lineWidth = lw(0.004);
+      for (let i = 0; i < 4; i++) {
+        ctx.beginPath();
+        ctx.moveTo(Wp[0], Wp[1]);
+        ctx.lineTo(F[i].J[0], F[i].J[1]);
+        ctx.lineTo(F[i].T[0], F[i].T[1]);
+        ctx.stroke();
+      }
+      ctx.beginPath();
+      ctx.moveTo(Sp[0], Sp[1]);
+      ctx.lineTo(Ep[0], Ep[1]);
+      ctx.lineTo(Wp[0], Wp[1]);
+      ctx.stroke();
+      ctx.restore();
       // 关节处的突起
       for (const jp of [Ep, Wp]) {
         ctx.fillStyle = mc(mixc(SKIN2, SKIN_HI, 0.3));
@@ -1176,12 +1205,12 @@
 
     // ================= 肢体 =================
     // 一条腿：关节点列表（单位 s），每点 [x, y, 半宽]；legs: -1 蜷起 … 0 自然 … 1 前伸
-    const hindBase = [[0.3, -0.03, 0.15], [0.21, 0.17, 0.095], [0.34, 0.34, 0.052], [0.27, 0.47, 0.04], [0.18, 0.54, 0.036]];
-    const hindTuck = [[0.3, -0.03, 0.15], [0.12, 0.1, 0.1], [0.36, 0.13, 0.05], [0.26, 0.22, 0.04], [0.12, 0.23, 0.035]];
-    const hindFwd = [[0.3, -0.03, 0.15], [0.06, 0.13, 0.095], [-0.12, 0.22, 0.052], [-0.3, 0.3, 0.04], [-0.42, 0.34, 0.036]];
-    const foreBase = [[-0.24, -0.02, 0.115], [-0.3, 0.15, 0.072], [-0.2, 0.29, 0.045], [-0.3, 0.41, 0.04], [-0.37, 0.47, 0.036]];
-    const foreTuck = [[-0.24, -0.02, 0.115], [-0.18, 0.12, 0.07], [-0.34, 0.14, 0.045], [-0.26, 0.22, 0.04], [-0.38, 0.24, 0.036]];
-    const foreFwd = [[-0.24, -0.02, 0.115], [-0.4, 0.1, 0.07], [-0.6, 0.16, 0.045], [-0.76, 0.22, 0.04], [-0.88, 0.26, 0.036]];
+    const hindBase = [[0.3, -0.03, 0.17], [0.21, 0.17, 0.125], [0.34, 0.34, 0.07], [0.27, 0.47, 0.052], [0.18, 0.54, 0.046]];
+    const hindTuck = [[0.3, -0.03, 0.17], [0.12, 0.1, 0.12], [0.36, 0.13, 0.065], [0.26, 0.22, 0.05], [0.12, 0.23, 0.045]];
+    const hindFwd = [[0.3, -0.03, 0.17], [0.06, 0.13, 0.12], [-0.12, 0.22, 0.068], [-0.3, 0.3, 0.052], [-0.42, 0.34, 0.046]];
+    const foreBase = [[-0.24, -0.02, 0.14], [-0.3, 0.15, 0.092], [-0.2, 0.29, 0.058], [-0.3, 0.41, 0.05], [-0.37, 0.47, 0.044]];
+    const foreTuck = [[-0.24, -0.02, 0.14], [-0.18, 0.12, 0.09], [-0.34, 0.14, 0.056], [-0.26, 0.22, 0.05], [-0.38, 0.24, 0.044]];
+    const foreFwd = [[-0.24, -0.02, 0.14], [-0.4, 0.1, 0.09], [-0.6, 0.16, 0.056], [-0.76, 0.22, 0.05], [-0.88, 0.26, 0.044]];
     const poseLeg = (base, tuck, fwd) => {
       const a = q.legs < 0 ? tuck : fwd;
       const w = Math.abs(q.legs);
@@ -1205,17 +1234,47 @@
       polyline(ctx, E2(Sl).top);
       ctx.stroke();
       glow(ctx, P[0][0] + 0.02 * s, P[0][1] + 0.08 * s, s * 0.12, SKIN_HI, near ? 0.22 : 0.08);
+      // 肢体的立体感：下 / 后缘一圈暗，上 / 前缘一道暖色边光，大腿根部再抹一块肌肉的高光
+      const eL = E2(Sl);
+      ctx.strokeStyle = 'rgba(0,0,0,0.5)';
+      ctx.lineWidth = lw(0.05);
+      ctx.lineJoin = 'round';
+      polyline(ctx, eL.bot);
+      ctx.stroke();
+      ctx.strokeStyle = rgba(RIM, near ? 0.5 : 0.22);
+      ctx.lineWidth = lw(0.008);
+      polyline(ctx, eL.top);
+      ctx.stroke();
       ctx.restore();
       ribbonPath(ctx, Sl, 1);
       ctx.strokeStyle = OUT;
       ctx.lineWidth = lw(0.005);
       ctx.stroke();
-      // 膝 / 腕的关节鼓包
-      ctx.fillStyle = mixc(SKIN2, '#000000', dim);
-      for (const idx of [1, 2]) {
+      // 膝 / 肘的护甲刺（朝后）+ 小腿上的两道甲板缝，缝里透着岩浆光
+      const k1 = P[1];
+      const k2 = P[2];
+      claw(ctx, k1[0], k1[1] - k1[2] * 0.2, 2.45 + (near ? 0 : 0.1), s * 0.11, s * 0.026, mixc(BONE_DK, '#000000', dim), rgba(mixc(BONE, '#000000', dim), 0.55));
+      claw(ctx, k2[0], k2[1], 0.55, s * 0.07, s * 0.018, mixc(BONE_DK, '#000000', dim), null);
+      ctx.strokeStyle = 'rgba(0,0,0,0.5)';
+      ctx.lineWidth = lw(0.005);
+      for (const f of [0.35, 0.7]) {
+        const mid = Sl[Math.floor(Sl.length * (0.3 + f * 0.5))];
+        const wd = mid[2] * 0.9;
         ctx.beginPath();
-        ctx.ellipse(P[idx][0], P[idx][1], lw(0.03), lw(0.03), 0, 0, TAU);
-        ctx.fill();
+        ctx.moveTo(mid[0] + mid.ty * wd, mid[1] - mid.tx * wd);
+        ctx.lineTo(mid[0] - mid.ty * wd, mid[1] + mid.tx * wd);
+        ctx.stroke();
+        if (near) {
+          ctx.save();
+          ctx.globalCompositeOperation = 'lighter';
+          ctx.strokeStyle = rgba(LAVA, 0.4 * (0.5 + 0.5 * heat));
+          ctx.lineWidth = lw(0.003);
+          ctx.beginPath();
+          ctx.moveTo(mid[0] + mid.ty * wd, mid[1] - mid.tx * wd);
+          ctx.lineTo(mid[0] - mid.ty * wd, mid[1] + mid.tx * wd);
+          ctx.stroke();
+          ctx.restore();
+        }
       }
       // 脚趾 + 爪
       const foot = P[P.length - 1];
@@ -1311,11 +1370,27 @@
         ctx.stroke();
       }
     }
+    // 胸甲：一道道肋骨一样的甲板缝，缝里的岩浆随呼吸明暗；龙骨（胸骨）处最亮
+    {
+      ctx.globalCompositeOperation = 'lighter';
+      for (let i = 0; i < 7; i++) {
+        const x = -0.4 + i * 0.05;
+        const a = rgba(LAVA, (0.28 + 0.22 * Math.sin(t * 1.9 - i * 0.5) + 0.25 * q.chest + 0.15 * heat) * (i === 0 ? 1.4 : 1));
+        ctx.strokeStyle = a;
+        ctx.lineWidth = lw(0.0055);
+        ctx.beginPath();
+        ctx.moveTo(x * s, 0.0 * s);
+        ctx.quadraticCurveTo((x - 0.045) * s, 0.12 * s, (x - 0.07) * s, 0.27 * s);
+        ctx.stroke();
+      }
+      glow(ctx, -0.4 * s, 0.16 * s, s * 0.14, LAVA, 0.18 + 0.2 * q.chest + 0.1 * heat);
+      ctx.globalCompositeOperation = 'source-over';
+    }
     // 岩浆裂纹：沿着身体的几条发光细缝
     ctx.globalCompositeOperation = 'lighter';
     const rr = seeded(7);
     const crackCol = LAVA;
-    for (let i = 0; i < 9; i++) {
+    for (let i = 0; i < 22; i++) {
       const sp = S[18 + Math.floor(rr() * 78)];
       const side = rr() * 2 - 1;
       const x0 = sp[0] + sp.ty * sp[2] * side * 0.8;
@@ -1323,8 +1398,8 @@
       const ang = rr() * TAU;
       const len = (0.05 + rr() * 0.11) * s;
       const pts = jag(x0, y0, x0 + Math.cos(ang) * len, y0 + Math.sin(ang) * len, 40 + i, 0.04 * s, 3);
-      ctx.strokeStyle = rgba(crackCol, (0.4 + 0.35 * heat) * (0.7 + 0.3 * Math.sin(t * 2.2 + i)));
-      ctx.lineWidth = lw(0.005);
+      ctx.strokeStyle = rgba(crackCol, (0.55 + 0.4 * heat) * (0.7 + 0.3 * Math.sin(t * 2.2 + i)));
+      ctx.lineWidth = lw(0.0065);
       polyline(ctx, pts);
       ctx.stroke();
       ctx.strokeStyle = rgba('#fff0b0', 0.35 * heat);
@@ -1355,6 +1430,83 @@
     ctx.lineJoin = 'round';
     ctx.stroke();
     ctx.restore();
+
+    // 轮廓外面一圈很淡的暖光（让黑色的身体从深色背景里分离出来）+ 腹下岩浆的反光
+    {
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      ribbonPath(ctx, S, 1.03);
+      ctx.strokeStyle = rgba(RIM, 0.1 + 0.05 * heat);
+      ctx.lineWidth = lw(0.03);
+      ctx.lineJoin = 'round';
+      ctx.stroke();
+      polyline(ctx, E.bot);
+      ctx.strokeStyle = rgba(LAVA, 0.18 + 0.12 * heat);
+      ctx.lineWidth = lw(0.014);
+      ctx.stroke();
+      ctx.restore();
+    }
+    // ---------- 背甲：沿脊背一块压一块的黑曜石甲板，板缝里透出岩浆的光 ----------
+    {
+      const stepLen = 0.062 * s;
+      let lastX = -1e9;
+      let lastY = -1e9;
+      const seams = [];
+      for (let i = 6; i < 112; i++) {
+        const sp = S[i];
+        const bx = E.top[i][0];
+        const by = E.top[i][1];
+        if (Math.hypot(bx - lastX, by - lastY) < stepLen * (S[i][0] > 0.4 * s ? 0.8 : 1)) continue;
+        lastX = bx;
+        lastY = by;
+        const nx = sp.ty;
+        const ny = -sp.tx;
+        const wdt = stepLen * 0.55;
+        const hgt = Math.min(0.07 * s, sp[2] * 0.62);
+        // 板：贴着背线的圆角梯形，往身体里伸 hgt
+        const x0 = bx - sp.tx * wdt;
+        const y0 = by - sp.ty * wdt;
+        const x1 = bx + sp.tx * wdt;
+        const y1 = by + sp.ty * wdt;
+        const gr = ctx.createLinearGradient(bx, by, bx - nx * hgt, by - ny * hgt);
+        gr.addColorStop(0, mixc(SKIN2, SKIN_HI, 0.5));
+        gr.addColorStop(0.55, SKIN2);
+        gr.addColorStop(1, SKIN);
+        ctx.fillStyle = gr;
+        ctx.beginPath();
+        ctx.moveTo(x0, y0);
+        ctx.quadraticCurveTo(x0 + nx * hgt * 0.15 + nx * 0.0, y0 + ny * hgt * 0.15, x0 - nx * hgt * 0.9 - sp.tx * wdt * 0.2, y0 - ny * hgt * 0.9 - sp.ty * wdt * 0.2);
+        ctx.lineTo(x1 - nx * hgt * 0.9 + sp.tx * wdt * 0.2, y1 - ny * hgt * 0.9 + sp.ty * wdt * 0.2);
+        ctx.quadraticCurveTo(x1 + nx * hgt * 0.15, y1 + ny * hgt * 0.15, x1, y1);
+        ctx.closePath();
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(4,2,8,0.85)';
+        ctx.lineWidth = lw(0.004);
+        ctx.stroke();
+        // 板上沿的高光
+        ctx.strokeStyle = rgba(SKIN_HI, 0.55);
+        ctx.lineWidth = lw(0.0035);
+        ctx.beginPath();
+        ctx.moveTo(x0 - nx * hgt * 0.2, y0 - ny * hgt * 0.2);
+        ctx.lineTo(x1 - nx * hgt * 0.2, y1 - ny * hgt * 0.2);
+        ctx.stroke();
+        seams.push([x1 - nx * hgt * 0.2, y1 - ny * hgt * 0.2, x1 - nx * hgt * 0.95, y1 - ny * hgt * 0.95]);
+      }
+      // 板缝里的岩浆光（加色）
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      for (let i = 0; i < seams.length; i++) {
+        const [ax, ay, bx2, by2] = seams[i];
+        ctx.strokeStyle = rgba(LAVA, (0.5 + 0.3 * Math.sin(t * 2 + i * 0.7)) * (0.6 + 0.4 * heat));
+        ctx.lineWidth = lw(0.005);
+        ctx.beginPath();
+        ctx.moveTo(ax, ay);
+        ctx.lineTo(bx2, by2);
+        ctx.stroke();
+        glow(ctx, (ax + bx2) / 2, (ay + by2) / 2, s * 0.03, LAVA, 0.35 * (0.5 + 0.5 * heat));
+      }
+      ctx.restore();
+    }
 
     // ---------- 背上的骨刺：肩背最大，脖子上密而小，尾巴渐小 ----------
     {
@@ -1424,43 +1576,40 @@
       void base;
     }
 
-    // 大腿 / 肩的肌肉块：压在躯干上，让腿看起来是从一团肌肉里长出来的
-    if (!lowQ) {
-      const mass = (cx, cy, rx, ry, rot) => {
-        // 先在躯干上落一圈暗影（接触阴影），再画受光的肌肉块
+    // 大腿 / 肩的肌肉：不再叠一个带描边的圆球，而是在躯干上落一圈接触阴影，再抹一块"顺着肌肉走向"的高光，
+    // 并让大腿 / 上臂根部从躯干里长出来（肢体的第一段比躯干略亮，见 limb）
+    {
+      const mass = (cx, cy, rx, ry, rot, hl) => {
         ctx.save();
         ctx.translate(cx * s, cy * s);
         ctx.rotate(rot);
-        const ao = ctx.createRadialGradient(0, 0, rx * s * 0.6, 0, 0, rx * s * 1.35);
-        ao.addColorStop(0, 'rgba(0,0,0,0.45)');
+        const ao = ctx.createRadialGradient(0, 0, rx * s * 0.5, 0, 0, rx * s * 1.4);
+        ao.addColorStop(0, 'rgba(0,0,0,0.42)');
         ao.addColorStop(1, 'rgba(0,0,0,0)');
         ctx.fillStyle = ao;
         ctx.beginPath();
-        ctx.ellipse(0, 0, rx * s * 1.35, ry * s * 1.3, 0, 0, TAU);
+        ctx.ellipse(0, 0, rx * s * 1.4, ry * s * 1.35, 0, 0, TAU);
         ctx.fill();
-        const gr = ctx.createRadialGradient(-rx * s * 0.35, -ry * s * 0.45, 2, 0, 0, Math.max(rx, ry) * s);
-        gr.addColorStop(0, mixc(SKIN2, SKIN_HI, 0.55));
-        gr.addColorStop(0.6, SKIN2);
-        gr.addColorStop(1, SKIN);
+        const gr = ctx.createRadialGradient(-rx * s * 0.25, -ry * s * 0.55, 1, -rx * s * 0.1, -ry * s * 0.2, Math.max(rx, ry) * s * 0.95);
+        gr.addColorStop(0, rgba(SKIN_HI, hl));
+        gr.addColorStop(1, rgba(SKIN_HI, 0));
         ctx.fillStyle = gr;
         ctx.beginPath();
         ctx.ellipse(0, 0, rx * s, ry * s, 0, 0, TAU);
         ctx.fill();
-        ctx.strokeStyle = 'rgba(8,4,10,0.7)';
+        // 肌肉的分瓣：两三道顺势的暗线
+        ctx.strokeStyle = 'rgba(0,0,0,0.38)';
         ctx.lineWidth = lw(0.006);
         ctx.beginPath();
-        ctx.ellipse(0, 0, rx * s, ry * s, 0, 0.3, 3.0);
+        ctx.moveTo(-rx * s * 0.2, -ry * s * 0.9);
+        ctx.quadraticCurveTo(rx * s * 0.35, -ry * s * 0.1, -rx * s * 0.05, ry * s * 0.85);
+        ctx.moveTo(rx * s * 0.35, -ry * s * 0.7);
+        ctx.quadraticCurveTo(rx * s * 0.75, 0, rx * s * 0.4, ry * s * 0.7);
         ctx.stroke();
-        ctx.strokeStyle = rgba(RIM, 0.35);
-        ctx.lineWidth = lw(0.006);
-        ctx.beginPath();
-        ctx.ellipse(0, 0, rx * s, ry * s, 0, 3.5, 5.6);
-        ctx.stroke();
-        scaleFill(ctx, -rx * s, -ry * s, rx * s, ry * s, s * 0.05, '#000000', 0.22);
         ctx.restore();
       };
-      mass(0.29, 0.05, 0.16, 0.2, -0.3);
-      mass(-0.27, 0.04, 0.12, 0.17, 0.25);
+      mass(0.29, 0.03, 0.17, 0.2, -0.3, 0.38);
+      mass(-0.27, 0.02, 0.13, 0.18, 0.25, 0.34);
     }
     // 近侧的腿（盖在身体前面）
     limb(poseLeg(hindBase, hindTuck, hindFwd), true, 3, swing);
@@ -1561,6 +1710,21 @@
         glow(ctx, px, py, s * (0.06 + u * 0.1), '#12081a', (1 - u) * 0.3 * (fallen ? 0.5 + 0.5 * (1 - rebirth) : 1));
       }
     }
+
+    // 身上飘起来的火星：从背和翅膀根部慢慢升起，一闪一闪
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    {
+      const r4 = seeded(29);
+      const n = fallen ? 4 : rage ? 16 : 10;
+      for (let i = 0; i < n; i++) {
+        const u = (t * (0.18 + r4() * 0.2) + r4()) % 1;
+        const px = (-0.45 + r4() * 1.3 + Math.sin(t + i) * 0.03) * s;
+        const py = (-0.2 - u * 0.75) * s;
+        glow(ctx, px, py, s * 0.012 * (1 + r4()), i % 3 ? '#ff9a3a' : '#ffd890', 0.8 * (1 - u) * (0.5 + 0.5 * Math.sin(t * 7 + i * 3)) * (fallen ? 0.4 + 0.6 * rebirth : 1));
+      }
+    }
+    ctx.restore();
 
     ctx.restore();
   };
