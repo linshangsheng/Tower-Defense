@@ -22,6 +22,8 @@
 
   // 对话场景属于哪一章（背景用这一章的场景画）
   function storyChapter(key) {
+    const SIDE_BG = { side_ding: 4, side_yan: 5, side_ying: 3, side_mu: 1 }; // 番外的背景：各自的家乡
+    if (SIDE_BG[key]) return D.chapters.find((c) => c.id === SIDE_BG[key]);
     const m = /^(ch|pre|post)(\d+)$/.exec(key);
     if (!m) return key === 'dragonFall' ? D.chapters[D.chapters.length - 1] : null;
     return m[1] === 'ch' ? D.chapters.find((c) => c.id === +m[2]) : D.chapterOf(+m[2]);
