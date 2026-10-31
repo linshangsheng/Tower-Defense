@@ -51,7 +51,7 @@
     },
 
     // 游戏版本：与设计书版本号、sw.js 的缓存名保持一致（测试会检查）
-    version: 'v1.34',
+    version: 'v1.35',
 
     // 试玩版（设计书 127）：打试玩版压缩包时 tools/itch.js 把 demo 改成 true；正式版永远是 false
     demo: false,
@@ -85,6 +85,8 @@
     rewards: {
       // 通关奖励随关卡越来越丰厚（v0.95）：原来 40 + 10n（第 100 关才 1040），现在 50 + 15n + 0.9n²（第 100 关 10550）
       baseCopper: (n) => Math.round(50 + 15 * n + 0.9 * n * n),
+      // 战场补给的"刷新"（设计书 135）：第一次的价格按关卡定（约等于第一次补给时手里铜币的四分之一），之后每次翻倍，直到这一关结束
+      supplyRefreshBase: (n) => Math.round((15 + 4 * Math.min(n, 100)) / 5) * 5,
       starMult: [0, 1, 1.25, 1.5],
       repeatMult: 0.5,
       failMult: 0.15,

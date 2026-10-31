@@ -4509,3 +4509,16 @@ html[lang='ko'] .title-main {
   min-width: 34px;
   text-align: right;
 }
+
+/* 补给刷新按钮（设计书 135） */
+.supply-refresh {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.supply-refresh .btn[disabled] {
+  opacity: 0.5;
+}

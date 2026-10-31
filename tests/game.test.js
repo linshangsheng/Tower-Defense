@@ -5199,3 +5199,52 @@ test('巨龙冲撞：蓄力时先飞起来，撞上城墙的那一刻才结算�
   assert.strictEqual(events.filter((e) => e[0] === 'hit').length, 1, '只撞一次');
   assert.ok(m.ai.ramDx > 60, '画面里要冲的距离算出来了');
 });
+
+test('补给刷新：价格按关卡定，每刷新一次翻倍，一直到这一关结束；花的是战斗里攒的铜币（设计书 135）', () => {
+  const C = TD.config;
+  assert.ok(C.rewards.supplyRefreshBase(1) >= 10 && C.rewards.supplyRefreshBase(100) > C.rewards.supplyRefreshBase(30) && C.rewards.supplyRefreshBase(30) > C.rewards.supplyRefreshBase(5));
+  assert.strictEqual(C.rewards.supplyRefreshBase(150), C.rewards.supplyRefreshBase(100), '100 关以后不再涨');
+  const s = P.newSave();
+  clearUpTo(s, 40);
+  const b = new TD.Battle({ level: 20, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 9 });
+  b.wall.hp = b.wall.max = 1e13;
+  for (let i = 0; i < 60 * 300 && !b.pendingSupply; i++) b.step(1 / 60);
+  assert.ok(b.pendingSupply && b.pendingSupply.length === 3, '补给来了');
+  const base = C.rewards.supplyRefreshBase(20);
+  assert.strictEqual(b.supplyRefreshCost(), base);
+  // 铜币不够：不能刷新
+  b.killCopper = base - 1;
+  b.earlyCopper = 0;
+  assert.ok(!b.canRefreshSupply() && !b.refreshSupply());
+  assert.strictEqual(b.supplyRefreshes, 0);
+  // 够了：第一次 base，第二次 2×base，第三次 4×base；扣的是手里的铜币
+  b.killCopper = base * 20;
+  const before = b.killCopper;
+  const first = b.pendingSupply.slice();
+  let asked = 0;
+  b.on('supply', (e) => asked += e.refreshed ? 1 : 0);
+  assert.ok(b.refreshSupply());
+  assert.strictEqual(b.killCopper, before - base);
+  assert.strictEqual(b.supplyRefreshCost(), base * 2);
+  assert.ok(b.pendingSupply.length === 3 && b.pendingSupply.every((id) => !first.includes(id)), '刷新出来的和原来的不重复');
+  assert.ok(b.refreshSupply());
+  assert.strictEqual(b.killCopper, before - base * 3);
+  assert.strictEqual(b.supplyRefreshCost(), base * 4);
+  assert.ok(b.refreshSupply());
+  assert.strictEqual(b.killCopper, before - base * 7);
+  assert.strictEqual(asked, 3);
+  // 战斗里攒的铜币不够时先扣 killCopper，再扣 earlyCopper
+  b.killCopper = 10;
+  b.earlyCopper = b.supplyRefreshCost();
+  const need = b.supplyRefreshCost();
+  assert.ok(b.refreshSupply());
+  assert.strictEqual(b.killCopper, 0);
+  assert.ok(Math.abs(b.earlyCopper - (b.earlyCopper)) < 1e-9 && need > 10);
+  // 选一张以后继续；下一次补给的价格继续翻倍（直到这一关结束）
+  const id = b.pendingSupply[0];
+  assert.ok(b.chooseSupply(id));
+  assert.ok(b.supplyPicked.includes(id));
+  assert.strictEqual(b.supplyRefreshes, 4);
+  assert.strictEqual(b.supplyRefreshCost(), base * 16);
+  assert.ok(!b.refreshSupply(), '没有补给在等待时不能刷新');
+});

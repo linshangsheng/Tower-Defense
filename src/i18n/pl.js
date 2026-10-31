@@ -2370,4 +2370,8 @@ TD.i18n.register("pl", {
   "终极技能（每场战斗一次）": "Umiejętność ostateczna (raz na walkę)",
   "终极技能，每场战斗一次：拉满弓向天空射出一箭，随后 10 秒里漫天箭雨覆盖整个战场——伤害很高，命中的怪被冰冻；Boss 不会被冻住，但会被打掉大约一半的血量。放箭时所有怪物暂停。": "Umiejętność ostateczna, raz na walkę: napnij łuk do końca i wystrzel strzałę w niebo, a potem przez 10 sekund burza strzał pokrywa całe pole bitwy, zadając ogromne obrażenia. Trafione potwory zamarzają; Bossowie nie zamarzają, ale tracą mniej więcej połowę zdrowia. Gdy strzelasz, wszystkie potwory się zatrzymują.",
   "焚天巨龙飞向了高空——它要俯冲撞墙了！": "Smok Niebospalacz wzbija się w niebo: zaraz runie na mur!",
+  "🔄 刷新（{0} 铜币）· R": "🔄 Odśwież ({0} miedziaków) · R",
+  "本关已刷新 {0} 次，每刷新一次价格翻倍；你现在有 {1} 铜币": "Odświeżono {0} razy w tym etapie, cena za każdym razem rośnie dwukrotnie; masz {1} miedziaków",
+  "换一批补给卡；本关每刷新一次价格翻倍；你现在有 {0} 铜币": "Wymień karty zaopatrzenia; w tym etapie cena podwaja się przy każdym odświeżeniu; masz {0} miedziaków",
+  "铜币不够：刷新要 {0} 铜币（你现在有 {1}）": "Za mało miedziaków: odświeżenie kosztuje {0} (masz {1})",
 });

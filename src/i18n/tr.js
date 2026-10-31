@@ -2370,4 +2370,8 @@ TD.i18n.register("tr", {
   "终极技能（每场战斗一次）": "Efsanevi yetenek (savaş başına bir kez)",
   "终极技能，每场战斗一次：拉满弓向天空射出一箭，随后 10 秒里漫天箭雨覆盖整个战场——伤害很高，命中的怪被冰冻；Boss 不会被冻住，但会被打掉大约一半的血量。放箭时所有怪物暂停。": "Efsanevi yetenek, savaş başına bir kez: yayı sonuna kadar ger ve gökyüzüne bir ok at; ardından 10 saniye boyunca bir ok fırtınası çok yüksek hasarla tüm savaş alanını kaplar. Vurulan canavarlar donar; Boss'lar donmaz ama canlarının yaklaşık yarısını kaybeder. Ok atılırken tüm canavarlar durur.",
   "焚天巨龙飞向了高空——它要俯冲撞墙了！": "Gökyakan Ejderha yükseldi: surlara dalış yapacak!",
+  "🔄 刷新（{0} 铜币）· R": "🔄 Yenile ({0} bakır sikke) · R",
+  "本关已刷新 {0} 次，每刷新一次价格翻倍；你现在有 {1} 铜币": "Bu bölümde {0} kez yenilendi, fiyat her seferinde iki katına çıkar; {1} bakır sikken var",
+  "换一批补给卡；本关每刷新一次价格翻倍；你现在有 {0} 铜币": "İkmal kartlarını değiştir; bu bölümde fiyat her yenilemede iki katına çıkar; {0} bakır sikken var",
+  "铜币不够：刷新要 {0} 铜币（你现在有 {1}）": "Yeterli bakır sikke yok: yenileme {0} bakır sikke tutuyor ({1} sikken var)",
 });

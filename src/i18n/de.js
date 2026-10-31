@@ -2370,4 +2370,8 @@ TD.i18n.register("de", {
   "终极技能（每场战斗一次）": "Ultimative Fähigkeit (einmal pro Kampf)",
   "终极技能，每场战斗一次：拉满弓向天空射出一箭，随后 10 秒里漫天箭雨覆盖整个战场——伤害很高，命中的怪被冰冻；Boss 不会被冻住，但会被打掉大约一半的血量。放箭时所有怪物暂停。": "Ultimative Fähigkeit, einmal pro Kampf: Spanne den Bogen ganz und schieße einen Pfeil in den Himmel, dann bedeckt 10 Sekunden lang ein Pfeilsturm das ganze Schlachtfeld und richtet sehr hohen Schaden an. Getroffene Monster werden eingefroren; Bosse werden nicht eingefroren, verlieren aber etwa die Hälfte ihrer Lebenspunkte. Während des Schusses pausieren alle Monster.",
   "焚天巨龙飞向了高空——它要俯冲撞墙了！": "Der Himmelsbrand-Drache steigt in die Lüfte: gleich stürzt er sich auf die Mauer!",
+  "🔄 刷新（{0} 铜币）· R": "🔄 Neu mischen ({0} Kupfermünzen) · R",
+  "本关已刷新 {0} 次，每刷新一次价格翻倍；你现在有 {1} 铜币": "In diesem Level {0}× neu gemischt, der Preis verdoppelt sich jedes Mal; du hast {1} Kupfermünzen",
+  "换一批补给卡；本关每刷新一次价格翻倍；你现在有 {0} 铜币": "Tausche die Nachschubkarten aus; der Preis verdoppelt sich in diesem Level mit jedem Neumischen; du hast {0} Kupfermünzen",
+  "铜币不够：刷新要 {0} 铜币（你现在有 {1}）": "Nicht genug Kupfermünzen: Neu mischen kostet {0} (du hast {1})",
 });

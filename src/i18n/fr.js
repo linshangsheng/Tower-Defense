@@ -2370,4 +2370,8 @@ TD.i18n.register("fr", {
   "终极技能（每场战斗一次）": "Compétence ultime (une fois par combat)",
   "终极技能，每场战斗一次：拉满弓向天空射出一箭，随后 10 秒里漫天箭雨覆盖整个战场——伤害很高，命中的怪被冰冻；Boss 不会被冻住，但会被打掉大约一半的血量。放箭时所有怪物暂停。": "Compétence ultime, une fois par combat : bandez l'arc à fond et tirez une flèche vers le ciel, puis pendant 10 secondes une tempête de flèches couvre tout le champ de bataille en infligeant de très gros dégâts. Les monstres touchés sont gelés ; les Boss ne le sont pas, mais perdent environ la moitié de leurs PV. Tous les monstres se figent pendant le tir.",
   "焚天巨龙飞向了高空——它要俯冲撞墙了！": "Le Dragon Brûle-Ciel s'envole très haut : il va plonger sur le rempart !",
+  "🔄 刷新（{0} 铜币）· R": "🔄 Actualiser ({0} de cuivre) · R",
+  "本关已刷新 {0} 次，每刷新一次价格翻倍；你现在有 {1} 铜币": "Actualisé {0} fois ce niveau, le prix double à chaque fois ; vous avez {1} de cuivre",
+  "换一批补给卡；本关每刷新一次价格翻倍；你现在有 {0} 铜币": "Change les cartes de ravitaillement ; le prix double à chaque actualisation ce niveau ; vous avez {0} de cuivre",
+  "铜币不够：刷新要 {0} 铜币（你现在有 {1}）": "Pas assez de cuivre : actualiser coûte {0} (vous avez {1})",
 });

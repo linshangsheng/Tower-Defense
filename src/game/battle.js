@@ -153,6 +153,7 @@
       this.supplyWaves = this.computeSupplyWaves();
       this.supplyOffered = {};
       this.supplyPicked = [];
+      this.supplyRefreshes = 0; // 这一关已经刷新过几次补给
       this.delayed = []; // 下一波开始后才触发的补给效果（空袭、冰封令）
       this.pendingSupply = null;
       this.autoSupply = !!opts.autoSupply;
@@ -284,13 +285,16 @@
       return this.stats.range * (1 + this.mods.range) * dark;
     }
 
-    offerSupply() {
-      const all = Object.keys(D.supplies).filter((id) => {
+    // 抽 3 张补给卡；exclude 里的（刷新时正在显示的）尽量不再出现
+    rollSupply(exclude) {
+      const ok = (id) => {
         if (this.supplyPicked.includes(id)) return false;
         if (D.supplies[id].needSkills && !this.skills.length) return false;
         if (D.supplies[id].minLevel && this.stage < D.supplies[id].minLevel) return false;
         return true;
-      });
+      };
+      let all = Object.keys(D.supplies).filter((id) => ok(id) && !(exclude || []).includes(id));
+      if (all.length < 3) all = Object.keys(D.supplies).filter(ok); // 卡不够了：允许重复
       // 按档抽卡（设计书 73）：蓝 / 紫 / 红 / 金，品质越高概率越低；抽不到的档位回退到别的档
       const W = D.supplyWeights[Math.min(D.supplyWeights.length - 1, this.supplyPicked.length)];
       const tiers = ['blue', 'purple', 'red', 'gold'];
@@ -310,10 +314,37 @@
         all.splice(all.indexOf(id), 1);
         choices.push(id);
       }
+      return choices;
+    }
+
+    offerSupply() {
+      const choices = this.rollSupply();
       this.supplyOffered[this.waveIndex] = true;
       this.pendingSupply = choices;
       this.emit('supply', { choices });
       if (this.autoSupply) this.chooseSupply(this.botSupplyChoice(choices));
+    }
+
+    // ---------- 补给刷新（设计书 135）：花战斗里攒的铜币重抽这 3 张；第一次的价格按关卡定，之后每次翻倍，一直到这一关结束 ----------
+    supplyRefreshCost() {
+      return C.rewards.supplyRefreshBase(this.stage) * Math.pow(2, this.supplyRefreshes);
+    }
+
+    canRefreshSupply() {
+      return !!this.pendingSupply && this.killCopper + this.earlyCopper >= this.supplyRefreshCost();
+    }
+
+    refreshSupply() {
+      if (!this.canRefreshSupply()) return false;
+      let cost = this.supplyRefreshCost();
+      const fromKill = Math.min(this.killCopper, cost);
+      this.killCopper -= fromKill;
+      cost -= fromKill;
+      this.earlyCopper -= cost;
+      this.supplyRefreshes++;
+      this.pendingSupply = this.rollSupply(this.pendingSupply);
+      this.emit('supply', { choices: this.pendingSupply, refreshed: true });
+      return true;
     }
 
     botSupplyChoice(choices) {

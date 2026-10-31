@@ -2370,4 +2370,8 @@ TD.i18n.register("id", {
   "终极技能（每场战斗一次）": "Skill pamungkas (sekali per pertarungan)",
   "终极技能，每场战斗一次：拉满弓向天空射出一箭，随后 10 秒里漫天箭雨覆盖整个战场——伤害很高，命中的怪被冰冻；Boss 不会被冻住，但会被打掉大约一半的血量。放箭时所有怪物暂停。": "Skill pamungkas, sekali per pertarungan: tarik busur sekuat tenaga dan lepaskan satu panah ke langit, lalu selama 10 detik badai panah menutupi seluruh medan perang dengan damage yang sangat tinggi. Monster yang terkena akan membeku; Boss tidak membeku tetapi kehilangan sekitar separuh HP-nya. Saat panah dilepaskan, semua monster berhenti.",
   "焚天巨龙飞向了高空——它要俯冲撞墙了！": "Naga Pembakar Langit terbang ke angkasa: ia akan menukik menabrak tembok!",
+  "🔄 刷新（{0} 铜币）· R": "🔄 Segarkan ({0} koin tembaga) · R",
+  "本关已刷新 {0} 次，每刷新一次价格翻倍；你现在有 {1} 铜币": "Sudah disegarkan {0} kali di level ini, harga berlipat ganda tiap kali; kamu punya {1} koin tembaga",
+  "换一批补给卡；本关每刷新一次价格翻倍；你现在有 {0} 铜币": "Ganti kartu perbekalan; harga berlipat ganda setiap penyegaran di level ini; kamu punya {0} koin tembaga",
+  "铜币不够：刷新要 {0} 铜币（你现在有 {1}）": "Koin tembaga kurang: penyegaran butuh {0} (kamu punya {1})",
 });
