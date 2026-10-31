@@ -63,6 +63,64 @@
   V.smokeVeil = function (x0, x1, y0, y1, dur) {
     this.fx.push({ kind: 'smokeVeil', x0, x1, y0, y1, life: dur, age: 0, seed: Math.random() * 50 });
   };
+  // 怪物倒下时按章节主题多溅一点"这个地方的东西"（设计书 131）：草原的叶子、沙漠的沙尘、沼泽的萤火、雪原的冰晶、
+  // 熔岩的火星和焦烟、云端的白色光点、海边的水珠、月影的蓝光、熔炉的金属火花、虚空的紫色光点
+  V.deathFlavor = function (art, x, y, size, boss) {
+    const k = boss ? 2.2 : 1;
+    const n = (v) => Math.round(v * 1.5 * k);
+    const fan = (speed, up) => {
+      const a = rnd(0, TAU);
+      const v = rnd(0.35, 1) * speed * 1.7;
+      return [Math.cos(a) * v, Math.sin(a) * v - up];
+    };
+    const puff = (color, cnt) =>
+      this.spawn(n(cnt), () => ({ kind: 'smoke', x: x + rnd(-size * 0.4, size * 0.4), y: y + rnd(-size * 0.3, size * 0.2), vx: rnd(-26, 26), vy: rnd(-40, -10), life: rnd(0.5, 0.9), r: rnd(12, 20) * (boss ? 1.6 : 1), color }));
+    const bits = (kind, color, cnt, speed, up, g, life, r) =>
+      this.spawn(n(cnt), () => {
+        const [vx, vy] = fan(speed, up);
+        return { kind, x, y, vx, vy, g, life: rnd(life * 0.7, life * 1.2), r: rnd(r * 0.7, r * 1.3) * 1.5, color: Array.isArray(color) ? color[Math.floor(Math.random() * color.length)] : color, rot: rnd(0, TAU), vr: rnd(-7, 7), drag: 0.93 };
+      });
+    switch (art) {
+      case 'meadow':
+        bits('leaf', ['#a6e86a', '#7fd05a', '#d8f09a'], 8, 150, 70, 120, 0.9, 5);
+        break;
+      case 'desert':
+        puff('#d8b878', 6);
+        bits('mote', ['#f0d79a', '#e8c070'], 5, 110, 40, 60, 0.7, 1.8);
+        break;
+      case 'swamp':
+        puff('#7ab088', 4);
+        bits('mote', ['#9cffb0', '#c4ffd0'], 6, 50, 60, -30, 1.1, 2.2);
+        break;
+      case 'snow':
+        bits('shard', ['#dff4ff', '#bfe4ff', '#ffffff'], 8, 190, 90, 380, 0.7, 4);
+        puff('#e8f6ff', 3);
+        break;
+      case 'lava':
+        bits('ember', ['#ff9a3a', '#ffd070', '#ff6a2a'], 9, 170, 110, 320, 0.8, 2.2);
+        puff('#3a2a2c', 3);
+        break;
+      case 'cloud':
+        bits('mote', ['#ffffff', '#ffd0e4', '#d8ecff'], 8, 80, 90, -60, 1.0, 2.2);
+        break;
+      case 'sea':
+        bits('spark', ['#9fe6ff', '#dff8ff'], 9, 190, 120, 520, 0.55, 1.8);
+        bits('mote', ['#c8f2ff'], 4, 40, 40, -80, 1.0, 2.4);
+        break;
+      case 'moon':
+        bits('mote', ['#b8c8ff', '#e0e8ff'], 8, 90, 70, -50, 1.1, 2.2);
+        break;
+      case 'forge':
+        bits('spark', ['#ffd070', '#ff9a3a', '#fff2c0'], 10, 260, 120, 640, 0.5, 1.8);
+        puff('#2e2426', 3);
+        break;
+      case 'void':
+        bits('mote', ['#d8b8ff', '#a47cff', '#ffffff'], 9, 120, 80, -40, 1.0, 2.2);
+        break;
+      default:
+        break;
+    }
+  };
   // 回声低语：一行淡紫色的斜体字从下方缓缓浮起、淡出（delay 秒后才出现，让开场横幅先过去）
   V.whisper = function (str, delay) {
     this.fx.push({ kind: 'whisper', str: TD.i18n ? TD.i18n.t(str) : str, life: 5.2, age: -(delay || 0) });

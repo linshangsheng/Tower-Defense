@@ -2347,4 +2347,13 @@ TD.i18n.register("id", {
   "Nova 怕黑，所以把灯提得高高的。提着提着，她自己也不怕了。": "Nova takut gelap, jadi dia mengangkat lenteranya tinggi-tinggi. Lama-lama mengangkatnya, dia sendiri juga jadi nggak takut.",
   "Rowan 的树": "Pohon Rowan",
   "Rowan 每年都去看一棵老树。今年，他约了我一起去。": "Rowan menengok pohon tua setiap tahun. Tahun ini, dia mengajakku ikut.",
+  "别数还有几层，只看脚下这一级。": "Jangan hitung sisa lantainya. Lihat saja anak tangga di bawah kakimu.",
+  "到了塔的腰上，风变冷了。": "Di pertengahan menara, angin mulai terasa dingin.",
+  "每一层的回声，都比上一层更重。": "Gema di setiap lantai lebih berat daripada lantai sebelumnya.",
+  "门廊里的灯，还亮着。": "Lampu di serambi masih menyala.",
+  "墙上的刻痕，是一代代挑战者留下的。": "Goresan di dinding ditinggalkan oleh para penantang dari generasi ke generasi.",
+  "塔顶的光，已经看得见了。": "Cahaya di puncak menara sudah terlihat.",
+  "台阶很陡，可是向上走的人从不回头。": "Anak tangganya curam, tapi orang yang mendaki tak pernah menoleh ke belakang.",
+  "妖王们在黑暗里磨着牙。": "Para raja iblis menggertakkan gigi di dalam gelap.",
+  "最后一层。没有退路，也没有遗憾。": "Lantai terakhir. Tak ada jalan mundur, tak ada penyesalan.",
 });
