@@ -617,6 +617,477 @@
   };
 
 
+  // ================= 终极技能 CG：拉满弓，箭尖发光，射向天空（设计书 133） =================
+  // 纯 canvas 的"2.5D"：分层视差（远山 / 地面透视线 / 前景虚化墙）、镜头推进和轻微环绕（主角错切）、景深（背景拿缩小的画布拉大 = 虚化）、
+  // 光晕和镜头星芒。三个镜头：① 低机位推近，主角缓缓拉弓 ② 箭尖特写，停留 ③ 松手，镜头跟着箭往上摇，白光吞没画面。
+  // 播的时候战斗是停着的（game.introPaused），所有怪物都暂停；点一下 / 按空格 / 回车 / Esc 跳过。
+  UI.playUltimateCg = function (onDone) {
+    const W = C.width;
+    const H = C.height;
+    const T = 5.8; // 总时长（秒）：① 0–2.4 ② 2.4–4.2 ③ 4.2–5.8
+    const T_CUT1 = 2.4;
+    const T_CUT2 = 4.2;
+    const cv = h('canvas', { class: 'ult-cv', width: W, height: H });
+    const ctx = cv.getContext('2d');
+    const el = h('div', { class: 'ult-cg' }, cv, h('div', { class: 'ult-skip' }, '点击跳过'));
+    R().appendChild(el);
+    const clamp = TD.util.clamp;
+    const lerp = (a, b, k) => a + (b - a) * k;
+    const ease = (x) => {
+      x = clamp(x, 0, 1);
+      return x * x * (3 - 2 * x);
+    };
+    const hash = (i, s) => {
+      const v = Math.sin(i * 127.1 + s * 311.7) * 43758.5453;
+      return v - Math.floor(v);
+    };
+    const glow = (x, y, r, color, a) => TD.art.drawGlow(ctx, x, y, r, color, a, true);
+    // 背景：这一章的天空，缩小再拉大 = 虚化
+    const sky = document.createElement('canvas');
+    sky.width = 96;
+    sky.height = 54;
+    {
+      const g = sky.getContext('2d');
+      const gr = g.createLinearGradient(0, 0, 0, 54);
+      gr.addColorStop(0, '#0b1230');
+      gr.addColorStop(0.6, '#2a2a5a');
+      gr.addColorStop(1, '#6a4a6a');
+      g.fillStyle = gr;
+      g.fillRect(0, 0, 96, 54);
+      try {
+        const r = G().renderer;
+        const sc = r && r.sceneFor && G().battle && r.sceneFor(G().battle.lanes);
+        if (sc) {
+          g.globalAlpha = 0.75;
+          g.drawImage(sc.back, 0, 0, W, C.fieldTop + 40, 0, 0, 96, 54);
+          g.globalAlpha = 1;
+        }
+      } catch (e) {
+        /* 没有场景就用渐变 */
+      }
+      g.fillStyle = 'rgba(8,6,24,0.55)';
+      g.fillRect(0, 0, 96, 54);
+    }
+    const bokeh = [];
+    for (let i = 0; i < 26; i++) bokeh.push({ x: hash(i, 1) * W, y: hash(i, 2) * H, r: 10 + hash(i, 3) * 38, d: 0.3 + hash(i, 4) * 1.2, a: 0.05 + hash(i, 5) * 0.12 });
+    const motes = []; // 向弓聚拢的光点
+    let t0 = null;
+    let raf = 0;
+    let done = false;
+    let lastT = 0;
+    let played = { charge: false, release: false };
+    const finish = () => {
+      if (done) return;
+      done = true;
+      cancelAnimationFrame(raf);
+      el.remove();
+      window.removeEventListener('keydown', onKey, true);
+      UI.introClose = null;
+      onDone && onDone();
+    };
+    const onKey = (e) => {
+      if (e.key === ' ' || e.key === 'Enter' || e.key === 'Escape') {
+        e.preventDefault();
+        e.stopPropagation();
+        finish();
+      }
+    };
+    window.addEventListener('keydown', onKey, true);
+    UI.introClose = finish;
+    let born = performance.now();
+    el.addEventListener('click', () => {
+      if (performance.now() - born > 350) finish();
+    });
+
+    // ---- 公共：黑边、暗角 ----
+    function bars(t) {
+      const k = ease(t / 0.5) * 70;
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, W, k);
+      ctx.fillRect(0, H - k, W, k);
+    }
+    function vignette(a) {
+      const g = ctx.createRadialGradient(W / 2, H / 2, H * 0.3, W / 2, H / 2, W * 0.7);
+      g.addColorStop(0, 'rgba(0,0,10,0)');
+      g.addColorStop(1, `rgba(0,0,10,${a})`);
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, W, H);
+    }
+    // 镜头星芒：四道长光 + 八道短光 + 中心亮点
+    function flare(x, y, size, a, rot) {
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      glow(x, y, size * 1.6, '#ffb84a', 0.45 * a);
+      glow(x, y, size * 0.7, '#ffe9a8', 0.8 * a);
+      ctx.translate(x, y);
+      ctx.rotate(rot);
+      for (let i = 0; i < 8; i++) {
+        const len = size * (i % 2 ? 1.0 : 2.2);
+        const g = ctx.createLinearGradient(0, 0, len, 0);
+        g.addColorStop(0, `rgba(255,244,200,${0.9 * a})`);
+        g.addColorStop(1, 'rgba(255,200,100,0)');
+        ctx.fillStyle = g;
+        ctx.save();
+        ctx.rotate((i * Math.PI) / 4);
+        ctx.beginPath();
+        ctx.moveTo(0, -size * 0.045);
+        ctx.lineTo(len, 0);
+        ctx.lineTo(0, size * 0.045);
+        ctx.fill();
+        ctx.restore();
+      }
+      glow(0, 0, size * 0.28, '#ffffff', a);
+      ctx.restore();
+    }
+    // 背景：天 + 远山 + 地面透视线；cam = { x, y, zoom }
+    function backdrop(cam, horizon, dim) {
+      ctx.save();
+      ctx.imageSmoothingEnabled = true;
+      ctx.drawImage(sky, -80 - cam.x * 0.06, -40 + (cam.y * 0.1 - 0), W + 160, H * 1.1);
+      ctx.fillStyle = `rgba(6,4,20,${dim})`;
+      ctx.fillRect(0, 0, W, H);
+      // 远山（两层视差）
+      for (let L = 0; L < 2; L++) {
+        const f = 0.12 + L * 0.2;
+        ctx.fillStyle = L ? 'rgba(14,12,34,0.95)' : 'rgba(30,26,62,0.9)';
+        ctx.beginPath();
+        ctx.moveTo(0, H);
+        for (let i = 0; i <= 14; i++) {
+          const x = i * 100 - ((cam.x * f) % 100) - 100;
+          const hh = 70 + hash(i + L * 20, 9) * 130 + L * 40;
+          ctx.lineTo(x, horizon - hh * (L ? 0.55 : 0.75) + cam.y * f);
+          ctx.lineTo(x + 50, horizon - hh * (L ? 0.35 : 0.5) + cam.y * f);
+        }
+        ctx.lineTo(W + 100, H);
+        ctx.fill();
+      }
+      // 地面：从地平线向下，渐变 + 向灭点汇聚的线（透视）
+      const gy = horizon + cam.y * 0.4;
+      const gg = ctx.createLinearGradient(0, gy, 0, H);
+      gg.addColorStop(0, '#1a1a38');
+      gg.addColorStop(1, '#05040e');
+      ctx.fillStyle = gg;
+      ctx.fillRect(0, gy, W, H - gy);
+      ctx.strokeStyle = 'rgba(120,130,200,0.18)';
+      ctx.lineWidth = 1.5;
+      const vx = W * 0.5 - cam.x * 0.3;
+      for (let i = -12; i <= 12; i++) {
+        ctx.beginPath();
+        ctx.moveTo(vx + i * 14, gy);
+        ctx.lineTo(vx + i * 160 - cam.x * 0.2, H);
+        ctx.stroke();
+      }
+      for (let j = 1; j <= 7; j++) {
+        const y = gy + (H - gy) * Math.pow(j / 7, 2.1);
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(W, y);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+    function bokehPass(cam, t, alpha) {
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      for (const b of bokeh) {
+        const x = (((b.x - cam.x * b.d * 0.5 + t * 6 * b.d) % (W + 120)) + W + 120) % (W + 120) - 60;
+        const y = b.y - t * 8 * b.d;
+        const yy = ((y % H) + H) % H;
+        glow(x, yy, b.r * cam.zoom, '#ffd890', b.a * alpha);
+      }
+      ctx.restore();
+    }
+    function heroAt(x, y, scale, st, skew) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.transform(1, 0, skew || 0, 1, 0, 0);
+      ctx.scale(scale, scale);
+      TD.sprites.hero(ctx, 0, 0, st);
+      ctx.restore();
+    }
+    const outfit = G().save.outfit;
+    const heroId = P.heroId(G().save);
+
+    // ---------- 镜头 ① ----------
+    function shot1(t) {
+      const k = clamp(t / T_CUT1, 0, 1);
+      const cam = { x: lerp(-90, 50, ease(k)), y: lerp(0, -30, ease(k)), zoom: lerp(1, 1.5, ease(k)) };
+      backdrop(cam, H * 0.62, 0.15);
+      // 主角：缓缓推近，从侧面稍微绕到斜后方（错切 + 位置）
+      const scale = lerp(3.4, 5.6, ease(k));
+      const hx = W * 0.42 - cam.x * 0.35;
+      const hy = lerp(H * 0.86, H * 0.99, ease(k));
+      const draw = clamp((t - 0.35) / 1.6, 0, 1); // 拉弓进度
+      const shake = draw * draw * 1.6 * (Math.sin(t * 61) + Math.sin(t * 37));
+      const st = { t, weapon: 'bow', aimAngle: -1.12 - 0.04 * draw, readyIn: Math.max(0.001, 0.3 * (1 - draw)), shotAge: 9, mood: 'focus', critAge: 9, outfit, hero: heroId };
+      // 主角身后的金色辉光
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      glow(hx + shake, hy - scale * 40, scale * 70, '#ffb84a', 0.18 + 0.4 * draw);
+      ctx.restore();
+      heroAt(hx + shake, hy, scale, st, lerp(-0.22, 0.14, ease(k)));
+      // 箭尖的位置（主角局部坐标 → 屏幕）：肩 (4, -50)，沿瞄准方向 52 个单位
+      const a = st.aimAngle;
+      const tipX = hx + shake + (4 + Math.cos(a) * 54) * scale + (-50 + Math.sin(a) * 54) * scale * lerp(-0.22, 0.14, ease(k));
+      const tipY = hy + (-50 + Math.sin(a) * 54) * scale;
+      // 光点向弓聚拢
+      if (draw > 0.05) for (let i = 0; i < 3; i++) motes.push({ x: tipX + (Math.random() - 0.5) * 900, y: tipY + (Math.random() - 0.5) * 600, life: 0, max: 0.9 + Math.random() * 0.6, tx: tipX, ty: tipY });
+      bokehPass(cam, t, 0.8);
+      // 箭尖闪光：随拉弓越来越亮
+      flare(tipX, tipY, 26 + 60 * draw, 0.25 + 0.75 * draw, t * 0.5);
+      return { tipX, tipY, draw };
+    }
+    // ---------- 镜头 ② 箭尖特写 ----------
+    function shot2(t) {
+      const k = clamp((t - T_CUT1) / (T_CUT2 - T_CUT1), 0, 1);
+      const cam = { x: lerp(0, 40, k), y: 0, zoom: lerp(1.1, 1.35, k) };
+      // 背景：暗，主角虚化成一团剪影
+      ctx.fillStyle = '#05030c';
+      ctx.fillRect(0, 0, W, H);
+      ctx.drawImage(sky, 0, 0, W, H);
+      ctx.fillStyle = 'rgba(4,2,12,0.86)';
+      ctx.fillRect(0, 0, W, H);
+      bokehPass(cam, t, 1.2);
+      const pulse = 0.5 + 0.5 * Math.sin(t * 8.8); // 心跳
+      const shake = (0.6 + 2.2 * k) * (Math.sin(t * 73) + Math.cos(t * 51));
+      ctx.save();
+      ctx.translate(W * 0.36 + shake, H * 0.64 + shake * 0.6);
+      const z = lerp(0.92, 1.12, ease(k));
+      ctx.scale(z, z);
+      ctx.rotate(-0.42);
+      // 弓臂（左侧大块虚化的深色弧）+ 弓弦，拉得紧紧的
+      ctx.strokeStyle = 'rgba(40,24,16,0.95)';
+      ctx.lineWidth = 46;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.arc(-120, 0, 340, -1.05, 1.05);
+      ctx.stroke();
+      ctx.strokeStyle = 'rgba(120,80,50,0.7)';
+      ctx.lineWidth = 8;
+      ctx.beginPath();
+      ctx.arc(-120, 0, 360, -1.0, 1.0);
+      ctx.stroke();
+      const nockX = -330 - 8 * k;
+      const tipYY = 340 * Math.sin(1.05);
+      ctx.strokeStyle = `rgba(255,236,190,${0.55 + 0.3 * pulse})`;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(-120 + 340 * Math.cos(1.05), -tipYY);
+      ctx.lineTo(nockX, 0);
+      ctx.lineTo(-120 + 340 * Math.cos(1.05), tipYY);
+      ctx.stroke();
+      // 箭杆
+      const sg = ctx.createLinearGradient(nockX, 0, 520, 0);
+      sg.addColorStop(0, '#6a4a2c');
+      sg.addColorStop(0.5, '#d8b070');
+      sg.addColorStop(1, '#fff0c0');
+      ctx.strokeStyle = sg;
+      ctx.lineWidth = 12;
+      ctx.beginPath();
+      ctx.moveTo(nockX, 0);
+      ctx.lineTo(430, 0);
+      ctx.stroke();
+      // 尾羽
+      ctx.fillStyle = 'rgba(230,80,70,0.9)';
+      for (const sy of [-1, 1]) {
+        ctx.beginPath();
+        ctx.moveTo(nockX + 6, 0);
+        ctx.lineTo(nockX + 70, sy * 34);
+        ctx.lineTo(nockX + 120, sy * 30);
+        ctx.lineTo(nockX + 96, 0);
+        ctx.fill();
+      }
+      // 箭头：大块金属，几个面，亮边
+      const hx = 430;
+      const hg = ctx.createLinearGradient(hx, -60, hx + 200, 60);
+      hg.addColorStop(0, '#8a96a8');
+      hg.addColorStop(0.5, '#f4f8ff');
+      hg.addColorStop(1, '#9aa6b8');
+      ctx.fillStyle = hg;
+      ctx.beginPath();
+      ctx.moveTo(hx - 20, -58);
+      ctx.lineTo(hx + 210, 0);
+      ctx.lineTo(hx - 20, 58);
+      ctx.lineTo(hx + 20, 0);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = 'rgba(255,255,255,0.35)';
+      ctx.beginPath();
+      ctx.moveTo(hx + 20, 0);
+      ctx.lineTo(hx + 210, 0);
+      ctx.lineTo(hx - 20, -58);
+      ctx.fill();
+      ctx.strokeStyle = `rgba(255,248,220,${0.6 + 0.4 * pulse})`;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(hx - 20, -58);
+      ctx.lineTo(hx + 210, 0);
+      ctx.lineTo(hx - 20, 58);
+      ctx.stroke();
+      // 一道高光从箭头上扫过
+      const sweep = (t * 1.1) % 1.3;
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(hx - 20, -58);
+      ctx.lineTo(hx + 210, 0);
+      ctx.lineTo(hx - 20, 58);
+      ctx.lineTo(hx + 20, 0);
+      ctx.closePath();
+      ctx.clip();
+      ctx.globalCompositeOperation = 'lighter';
+      const sx = hx - 40 + sweep * 300;
+      const swg = ctx.createLinearGradient(sx - 30, 0, sx + 30, 0);
+      swg.addColorStop(0, 'rgba(255,255,255,0)');
+      swg.addColorStop(0.5, 'rgba(255,255,255,0.95)');
+      swg.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = swg;
+      ctx.fillRect(sx - 30, -80, 60, 160);
+      ctx.restore();
+      // 箭尖上的星芒：随心跳一胀一缩
+      flare(hx + 210, 0, 70 + 38 * pulse + 40 * k, 0.8 + 0.2 * pulse, t * 0.6);
+      ctx.restore();
+      // 向箭尖汇聚的光尘 + 横向拉长的光斑（假镜头）
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      for (let i = 0; i < 20; i++) {
+        const ph = (t * (0.4 + hash(i, 6) * 0.5) + hash(i, 7)) % 1;
+        const x = lerp(hash(i, 8) * W, W * 0.72, ph);
+        const y = lerp(hash(i, 9) * H, H * 0.36, ph);
+        glow(x, y, 4 + 10 * ph, '#ffe0a0', 0.5 * ph);
+      }
+      ctx.restore();
+    }
+    // ---------- 镜头 ③ 松手，镜头往上摇 ----------
+    function shot3(t) {
+      const k = clamp((t - T_CUT2) / (T - T_CUT2), 0, 1);
+      const tilt = ease(clamp(k / 0.85, 0, 1)); // 镜头往上摇的进度
+      const cam = { x: 50, y: lerp(-30, 520, tilt), zoom: 1.5 };
+      backdrop(cam, H * 0.62 - cam.y * 0.0, 0.25);
+      ctx.save();
+      ctx.translate(0, cam.y * 0.9); // 整个场景随镜头往下滑（镜头上摇）
+      const shotAge = Math.max(0, t - T_CUT2);
+      const hx = W * 0.42 - cam.x * 0.35;
+      const hy = H * 0.99;
+      const scale = 5.6;
+      const sk = 0.14;
+      const st = { t, weapon: 'bow', aimAngle: -1.16, readyIn: shotAge < 0.02 ? 0.001 : 0, shotAge, mood: 'focus', critAge: 9, outfit, hero: heroId };
+      heroAt(hx, hy, scale, st, sk);
+      ctx.restore();
+      // 箭：从弓上飞出，一道长长的光尾冲向天空（屏幕随镜头上摇，箭相对屏幕往上飞得更快）
+      const ak = clamp((t - T_CUT2) / 0.9, 0, 1);
+      const a = -1.16;
+      const sx0 = hx + (4 + Math.cos(a) * 54) * scale + (-50 + Math.sin(a) * 54) * scale * sk;
+      const sy0 = hy + (-50 + Math.sin(a) * 54) * scale + cam.y * 0.9;
+      const ax = sx0 + Math.cos(a) * 1500 * ease(ak) * 0.75;
+      const ay = sy0 + Math.sin(a) * 1500 * ease(ak);
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      const tg = ctx.createLinearGradient(sx0, sy0, ax, ay);
+      tg.addColorStop(0, 'rgba(255,200,100,0)');
+      tg.addColorStop(1, 'rgba(255,244,210,0.95)');
+      ctx.strokeStyle = tg;
+      ctx.lineWidth = 14 * (1 - ak * 0.6);
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(sx0, sy0);
+      ctx.lineTo(ax, ay);
+      ctx.stroke();
+      glow(ax, ay, 90, '#fff2c0', 0.9);
+      ctx.restore();
+      flare(ax, ay, 50, 0.9, t);
+      // 松手的一瞬间：冲击波环 + 白闪
+      const rk = clamp((t - T_CUT2) / 0.35, 0, 1);
+      if (rk < 1) {
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.strokeStyle = `rgba(255,236,190,${0.9 * (1 - rk)})`;
+        ctx.lineWidth = 6 * (1 - rk);
+        ctx.beginPath();
+        ctx.ellipse(sx0, sy0, 30 + 300 * rk, 18 + 120 * rk, 0, 0, 6.283);
+        ctx.stroke();
+        ctx.restore();
+      }
+      // 天空裂开、光芒四射，最后整片变白
+      const wk = clamp((k - 0.55) / 0.45, 0, 1);
+      if (wk > 0) {
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        const cx = W * 0.5;
+        const cy = H * 0.12;
+        for (let i = 0; i < 14; i++) {
+          const ang = (i / 14) * 6.283 + t * 0.4;
+          const g = ctx.createLinearGradient(cx, cy, cx + Math.cos(ang) * 1200, cy + Math.sin(ang) * 1200);
+          g.addColorStop(0, `rgba(200,230,255,${0.5 * wk})`);
+          g.addColorStop(1, 'rgba(200,230,255,0)');
+          ctx.fillStyle = g;
+          ctx.beginPath();
+          ctx.moveTo(cx, cy);
+          ctx.lineTo(cx + Math.cos(ang - 0.05) * 1400, cy + Math.sin(ang - 0.05) * 1400);
+          ctx.lineTo(cx + Math.cos(ang + 0.05) * 1400, cy + Math.sin(ang + 0.05) * 1400);
+          ctx.fill();
+        }
+        glow(cx, cy, 600 * wk, '#bfe4ff', 0.8 * wk);
+        ctx.restore();
+        ctx.fillStyle = `rgba(235,246,255,${Math.pow(wk, 2.2)})`;
+        ctx.fillRect(0, 0, W, H);
+      }
+    }
+
+    function frame(ts) {
+      if (done) return;
+      if (t0 === null) t0 = ts;
+      const t = (ts - t0) / 1000;
+      const dt = Math.min(0.05, t - lastT);
+      lastT = t;
+      if (!played.charge) {
+        played.charge = true;
+        TD.audio.play('ult_charge');
+      }
+      if (!played.release && t >= T_CUT2) {
+        played.release = true;
+        TD.audio.play('ult_release');
+      }
+      ctx.clearRect(0, 0, W, H);
+      if (t < T_CUT1) shot1(t);
+      else if (t < T_CUT2) shot2(t);
+      else shot3(t);
+      // 光点：向箭尖聚拢（镜头 ① 里）
+      if (t < T_CUT1 + 0.3) {
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        for (let i = motes.length - 1; i >= 0; i--) {
+          const m = motes[i];
+          m.life += dt;
+          const k = m.life / m.max;
+          if (k >= 1) {
+            motes.splice(i, 1);
+            continue;
+          }
+          const e = k * k;
+          glow(lerp(m.x, m.tx, e), lerp(m.y, m.ty, e), 3 + 6 * (1 - k), '#ffe9a8', 0.8 * Math.sin(k * Math.PI));
+        }
+        ctx.restore();
+      } else motes.length = 0;
+      vignette(0.55);
+      bars(t);
+      // 切镜头的一闪
+      for (const cut of [T_CUT1, T_CUT2]) {
+        const d = t - cut;
+        if (d >= 0 && d < 0.18) {
+          ctx.fillStyle = `rgba(255,248,230,${0.55 * (1 - d / 0.18)})`;
+          ctx.fillRect(0, 0, W, H);
+        }
+      }
+      // 结尾淡出，回到战斗画面
+      if (t > T - 0.35) {
+        el.style.opacity = String(clamp((T - t) / 0.35, 0, 1));
+      }
+      if (t >= T) return finish();
+      raf = requestAnimationFrame(frame);
+    }
+    raf = requestAnimationFrame(frame);
+  };
+
   // ================= 王国小镇（设计书 39） =================
   UI.showTown = function () {
     const s = G().save;

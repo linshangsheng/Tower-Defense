@@ -419,6 +419,22 @@
     return { diamond: Math.ceil(v / 1e6) };
   };
 
+  // 终极技能（设计书 133）：钻石买断，通关第 100 关后开放；每场战斗只能放一次
+  // 放出来时先播一段拉弓的 CG（怪物全部暂停），再向天空射出一支箭，之后 duration 秒里漫天箭雨落下：
+  //   每 volleyEvery 秒随机挑 hits 只怪（全屏范围）各挨一箭（攻击力 ×atkMult），非 Boss 的怪被冰冻 freeze 秒；Boss 照常受伤但不会被冻住
+  TD.data.ultimate = {
+    id: 'skyfall',
+    name: '万箭天降',
+    cost: { diamond: 150 },
+    unlock: 100,
+    duration: 300,
+    volleyEvery: 0.25,
+    hits: 4,
+    atkMult: 0.35,
+    freeze: 3,
+    desc: '终极技能，每场战斗一次：拉满弓向天空射出一箭，随后 5 分钟里漫天箭雨覆盖整个战场——命中的怪被冰冻，Boss 不会被冻住，但照样受伤。放箭时所有怪物暂停。',
+  };
+
   TD.data.items = {
     bomb: { name: '小炸弹', cost: { copper: 30 }, atkMult: 5, targetLane: true, desc: '对选定车道上所有怪造成攻击力 ×5 的伤害。' },
     patch: { name: '修补包', cost: { copper: 40 }, healRatio: 0.15, desc: '城墙回复 15% 最大血量。' },

@@ -155,6 +155,18 @@
         } else this.fx.push({ kind: 'bolt', x: e.x, y: e.y, life: 0.35, age: 0, seed: Math.random() });
         this.shake = Math.max(this.shake, e.idx ? 5 : 9);
       });
+      // 终极技能「万箭天降」（设计书 133）：那一箭射向天空、漫天箭雨、结束提示
+      on('ultStart', (e) => {
+        if (V) V.ultShot(e.x, e.y);
+        this.fx.push({ kind: 'flash', color: '#e8f6ff', life: 0.35, age: 0 });
+        this.shake = Math.max(this.shake, 8);
+        this.banner('万箭天降！');
+        if (TD.audio) TD.audio.play('ult_release');
+      });
+      on('ultVolley', (e) => {
+        if (V) V.ultVolley(e.hits, C.wallX + 30, C.width - 10, C.fieldTop + 10, C.fieldBottom - 6, this.fx.length > 200 || (TD.quality && TD.quality.params().fx < 0.5));
+      });
+      on('ultEnd', () => this.banner('万箭天降结束了'));
       on('skill', (e) => {
         if (!V) {
           if (e.id === 'drum') this.burst(C.heroX, battle.heroY - 40, '#ffb347', 20, 200);
@@ -1052,6 +1064,7 @@
       this.drawBackground(lanes);
       // 深渊回响（第 101–200 关）：整个战场罩一层紫光，四角更暗（只多画两次填充，很便宜）
       if (this.theme.abyss) this.drawAbyssTint();
+      if (b && b.ult && b.ult.state === 'active') this.drawUltTint(b);
       if (b) this.drawLaneEffects(b);
       this.drawWall(b ? b.wall.hp / b.wall.max : 1);
       if (b) {
@@ -1109,6 +1122,33 @@
       ctx.restore();
     }
 
+    // 万箭天降进行中：整个战场罩一层冰蓝的冷光，四周更暗，上方有一圈缓缓流动的光（设计书 133）
+    drawUltTint(b) {
+      const ctx = this.ctx;
+      const u = b.ult;
+      const k = Math.min(1, (b.time - u.start) / 0.8) * Math.min(1, Math.max(0, u.until - b.time) / 1.5);
+      ctx.save();
+      ctx.fillStyle = `rgba(120,190,255,${0.1 * k})`;
+      ctx.fillRect(0, 0, C.width, C.height);
+      if (!this._ultVig) {
+        const g = ctx.createRadialGradient(C.width / 2, C.height / 2, C.height * 0.4, C.width / 2, C.height / 2, C.width * 0.62);
+        g.addColorStop(0, 'rgba(10,30,70,0)');
+        g.addColorStop(1, 'rgba(10,30,70,0.45)');
+        this._ultVig = g;
+        const t = ctx.createLinearGradient(0, 0, 0, 260);
+        t.addColorStop(0, 'rgba(190,230,255,0.38)');
+        t.addColorStop(1, 'rgba(190,230,255,0)');
+        this._ultTop = t;
+      }
+      ctx.globalAlpha = k;
+      ctx.fillStyle = this._ultVig;
+      ctx.fillRect(0, 0, C.width, C.height);
+      ctx.globalAlpha = k * (0.7 + 0.3 * Math.sin(this.t * 3));
+      ctx.fillStyle = this._ultTop;
+      ctx.fillRect(0, 0, C.width, 260);
+      ctx.restore();
+    }
+
     drawAbyssTint() {
       const ctx = this.ctx;
       ctx.fillStyle = 'rgba(110,50,180,0.13)';
@@ -1121,6 +1161,21 @@
       }
       ctx.fillStyle = this._abyssVig;
       ctx.fillRect(0, 0, C.width, C.height);
+      // 深渊的"回声"：一粒粒紫色的光从地面慢慢升起、飘散（画质降档时不画）
+      if (!TD.quality || TD.quality.params().lit > 0.5) {
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        for (let i = 0; i < 26; i++) {
+          const ph = (this.t * (0.05 + (i % 5) * 0.012) + i * 0.137) % 1;
+          const x = (i * 173.7 + Math.sin(this.t * 0.6 + i) * 24) % C.width;
+          const y = C.fieldBottom + 10 - ph * (C.fieldBottom - C.fieldTop + 40);
+          ctx.fillStyle = `rgba(${200 + (i % 3) * 18},${150 + (i % 4) * 20},255,${0.5 * Math.sin(ph * Math.PI)})`;
+          ctx.beginPath();
+          ctx.arc(x, y, 1.6 + (i % 3) * 0.9, 0, 6.283);
+          ctx.fill();
+        }
+        ctx.restore();
+      }
     }
 
     // 雷雷的暴风雨：斜着落下的雨丝 + 偶尔的闪光（设计书 33.3）
