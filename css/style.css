@@ -1872,11 +1872,6 @@ body {
     transform: translateX(-50%) scale(1);
   }
 }
-@media (max-width: 760px) {
-  .story-actor {
-    display: none;
-  }
-}
 
 .diary-list {
   max-height: 440px;
