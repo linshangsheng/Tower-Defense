@@ -2367,4 +2367,5 @@ TD.i18n.register("vi", {
   "这一场的万箭天降已经用过了": "Trận này đã dùng Mưa Tên rồi",
   "终极技能，每场战斗一次：拉满弓向天空射出一箭，随后 5 分钟里漫天箭雨覆盖整个战场——命中的怪被冰冻，Boss 不会被冻住，但照样受伤。放箭时所有怪物暂停。": "Kỹ năng tối thượng, mỗi trận một lần: giương cung hết cỡ bắn một mũi tên lên trời, sau đó trong 5 phút bão tên phủ kín cả chiến trường. Quái vật trúng tên sẽ bị đóng băng; Boss không bị đóng băng nhưng vẫn chịu sát thương. Khi bắn tên, mọi quái vật đều dừng lại.",
   "终极技能（每场战斗一次）": "Kỹ năng tối thượng (mỗi trận một lần)",
+  "终极技能，每场战斗一次：拉满弓向天空射出一箭，随后 10 秒里漫天箭雨覆盖整个战场——伤害很高，命中的怪被冰冻；Boss 不会被冻住，但会被打掉大约一半的血量。放箭时所有怪物暂停。": "Kỹ năng tối thượng, mỗi trận một lần: giương cung hết cỡ bắn một mũi tên lên trời, sau đó trong 10 giây bão tên phủ kín cả chiến trường với sát thương cực cao. Quái vật trúng tên sẽ bị đóng băng; Boss không bị đóng băng nhưng mất khoảng một nửa máu. Khi bắn tên, mọi quái vật đều dừng lại.",
 });

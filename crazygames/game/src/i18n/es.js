@@ -2367,4 +2367,5 @@ TD.i18n.register("es", {
   "这一场的万箭天降已经用过了": "La Lluvia de Flechas ya se usó en esta batalla",
   "终极技能，每场战斗一次：拉满弓向天空射出一箭，随后 5 分钟里漫天箭雨覆盖整个战场——命中的怪被冰冻，Boss 不会被冻住，但照样受伤。放箭时所有怪物暂停。": "Habilidad definitiva, una vez por batalla: tensa el arco al máximo y dispara una flecha al cielo; después, durante 5 minutos, una tormenta de flechas cubre todo el campo de batalla. Los monstruos alcanzados quedan congelados; los jefes no se congelan, pero sí reciben daño. Todos los monstruos se detienen mientras disparas.",
   "终极技能（每场战斗一次）": "Habilidad definitiva (una vez por batalla)",
+  "终极技能，每场战斗一次：拉满弓向天空射出一箭，随后 10 秒里漫天箭雨覆盖整个战场——伤害很高，命中的怪被冰冻；Boss 不会被冻住，但会被打掉大约一半的血量。放箭时所有怪物暂停。": "Habilidad definitiva, una vez por batalla: tensa el arco al máximo y dispara una flecha al cielo; después, durante 10 segundos, una tormenta de flechas cubre todo el campo de batalla con un daño altísimo. Los monstruos alcanzados quedan congelados; los jefes no se congelan, pero pierden aproximadamente la mitad de su vida. Todos los monstruos se detienen mientras disparas.",
 });

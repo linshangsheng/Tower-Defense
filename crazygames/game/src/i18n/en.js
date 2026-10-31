@@ -2367,4 +2367,5 @@ TD.i18n.register("en", {
   "这一场的万箭天降已经用过了": "Skyfall of Arrows has already been used this battle",
   "终极技能，每场战斗一次：拉满弓向天空射出一箭，随后 5 分钟里漫天箭雨覆盖整个战场——命中的怪被冰冻，Boss 不会被冻住，但照样受伤。放箭时所有怪物暂停。": "Ultimate skill, once per battle: draw the bow fully and shoot an arrow into the sky, then for 5 minutes a storm of arrows covers the whole battlefield. Monsters it hits are frozen; Bosses aren't frozen but still take damage. All monsters pause while you shoot.",
   "终极技能（每场战斗一次）": "Ultimate skill (once per battle)",
+  "终极技能，每场战斗一次：拉满弓向天空射出一箭，随后 10 秒里漫天箭雨覆盖整个战场——伤害很高，命中的怪被冰冻；Boss 不会被冻住，但会被打掉大约一半的血量。放箭时所有怪物暂停。": "Ultimate skill, once per battle: draw the bow fully and shoot an arrow into the sky, then for 10 seconds a storm of arrows covers the whole battlefield with very high damage. Monsters it hits are frozen; Bosses aren't frozen but lose about half of their HP. All monsters pause while you shoot.",
 });

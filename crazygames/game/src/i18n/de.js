@@ -2367,4 +2367,5 @@ TD.i18n.register("de", {
   "这一场的万箭天降已经用过了": "Der Pfeilregen wurde in diesem Kampf schon benutzt",
   "终极技能，每场战斗一次：拉满弓向天空射出一箭，随后 5 分钟里漫天箭雨覆盖整个战场——命中的怪被冰冻，Boss 不会被冻住，但照样受伤。放箭时所有怪物暂停。": "Ultimative Fähigkeit, einmal pro Kampf: Spanne den Bogen ganz und schieße einen Pfeil in den Himmel, dann bedeckt 5 Minuten lang ein Pfeilsturm das ganze Schlachtfeld. Getroffene Monster werden eingefroren; Bosse werden nicht eingefroren, nehmen aber trotzdem Schaden. Während des Schusses pausieren alle Monster.",
   "终极技能（每场战斗一次）": "Ultimative Fähigkeit (einmal pro Kampf)",
+  "终极技能，每场战斗一次：拉满弓向天空射出一箭，随后 10 秒里漫天箭雨覆盖整个战场——伤害很高，命中的怪被冰冻；Boss 不会被冻住，但会被打掉大约一半的血量。放箭时所有怪物暂停。": "Ultimative Fähigkeit, einmal pro Kampf: Spanne den Bogen ganz und schieße einen Pfeil in den Himmel, dann bedeckt 10 Sekunden lang ein Pfeilsturm das ganze Schlachtfeld und richtet sehr hohen Schaden an. Getroffene Monster werden eingefroren; Bosse werden nicht eingefroren, verlieren aber etwa die Hälfte ihrer Lebenspunkte. Während des Schusses pausieren alle Monster.",
 });
