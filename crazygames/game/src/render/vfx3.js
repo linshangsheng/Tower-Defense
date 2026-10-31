@@ -63,6 +63,10 @@
   V.smokeVeil = function (x0, x1, y0, y1, dur) {
     this.fx.push({ kind: 'smokeVeil', x0, x1, y0, y1, life: dur, age: 0, seed: Math.random() * 50 });
   };
+  // 回声低语：一行淡紫色的斜体字从下方缓缓浮起、淡出（delay 秒后才出现，让开场横幅先过去）
+  V.whisper = function (str, delay) {
+    this.fx.push({ kind: 'whisper', str: TD.i18n ? TD.i18n.t(str) : str, life: 5.2, age: -(delay || 0) });
+  };
   // Boss 登场：屏幕正中亮出名牌（大 Boss 更大更红），地面震一下
   V.bossCard = function (name, major, color, quote) {
     this.fx.push({ kind: 'bossCard', str: name, quote: quote || '', major: !!major, color: color || '#ff5a3a', life: major ? 2.6 : 1.9, age: 0 });
@@ -394,6 +398,20 @@
         ctx.arc(x, y, r, 0, TAU);
         ctx.fill();
       }
+    },
+    whisper(ctx, f, k) {
+      const t = f.age;
+      const a = Math.min(1, t / 1.2) * (f.life - t < 1.4 ? Math.max(0, (f.life - t) / 1.4) : 1);
+      const W = C_W();
+      const y = 372 - t * 5;
+      ctx.textAlign = 'center';
+      ctx.font = 'italic 24px Georgia, "Trebuchet MS", serif';
+      ctx.globalAlpha = a * 0.9;
+      ctx.shadowColor = 'rgba(190,140,255,0.9)';
+      ctx.shadowBlur = 18;
+      ctx.fillStyle = '#efe4ff';
+      ctx.fillText(f.str, W / 2, y, W - 160);
+      ctx.shadowBlur = 0;
     },
     bossCard(ctx, f, k) {
       const t = f.age;

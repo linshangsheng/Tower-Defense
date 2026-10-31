@@ -153,7 +153,11 @@
 
   // ---------- 守城日记（设计书 28） ----------
   // 段落是否已解锁（日记本里可以看）：章节开场 = 章节开放；战前 = Boss 关开放；战后 = Boss 关已通关
+  // 番外：用某位同伴通关满一定场数后解锁（设计书 131）
+  P.SIDE_STORIES = { side_ding: { hero: 'ding', need: 12 }, side_yan: { hero: 'yan', need: 12 }, side_ying: { hero: 'ying', need: 12 }, side_mu: { hero: 'mu', need: 12 } };
+  P.sideWins = (save, key) => ((save.stats || {}).heroWins || {})[(P.SIDE_STORIES[key] || {}).hero] || 0;
   P.storyUnlocked = function (save, key) {
+    if (P.SIDE_STORIES[key]) return P.sideWins(save, key) >= P.SIDE_STORIES[key].need;
     const m = /^(ch|pre|post)(\d+)$/.exec(key);
     if (!m) return false;
     const k = +m[2];
@@ -165,6 +169,7 @@
   };
   // 段落的时机是否已经过去（老存档迁移用）：章节开场 = 该章第一关已通关；战前 / 战后 = 该关已通关
   P.storyPassed = function (save, key) {
+    if (P.SIDE_STORIES[key]) return false;
     const m = /^(ch|pre|post)(\d+)$/.exec(key);
     if (!m) return false;
     const k = +m[2];
@@ -178,6 +183,8 @@
   P.storyDue = function (save, key) {
     return !!(D.story && D.story[key]) && !(save.story || {})[key] && P.storyUnlocked(save, key);
   };
+  // 现在该播的番外（没播过、已解锁），没有就返回 null
+  P.sideStoryDue = (save) => Object.keys(P.SIDE_STORIES).find((k) => P.storyDue(save, k)) || null;
   P.markStory = function (save, key, read) {
     save.story = save.story || {};
     if (read) save.story[key] = 'read';
@@ -972,7 +979,12 @@
   P.recordStats = function (save, result, win) {
     const st = save.stats;
     st.battles++;
-    if (win) st.wins++;
+    if (win) {
+      st.wins++;
+      st.heroWins = st.heroWins || {};
+      const hid = P.heroId(save);
+      st.heroWins[hid] = (st.heroWins[hid] || 0) + 1;
+    }
     st.kills += result.kills || 0;
     st.bestStreak = Math.max(st.bestStreak || 0, result.bestStreak || 0);
     for (const v of Object.values(result.combos || {})) st.combos = (st.combos || 0) + v;

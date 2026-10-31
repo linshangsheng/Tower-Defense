@@ -22,6 +22,8 @@
 
   // 对话场景属于哪一章（背景用这一章的场景画）
   function storyChapter(key) {
+    const SIDE_BG = { side_ding: 4, side_yan: 5, side_ying: 3, side_mu: 1 }; // 番外的背景：各自的家乡
+    if (SIDE_BG[key]) return D.chapters.find((c) => c.id === SIDE_BG[key]);
     const m = /^(ch|pre|post)(\d+)$/.exec(key);
     if (!m) return key === 'dragonFall' ? D.chapters[D.chapters.length - 1] : null;
     return m[1] === 'ch' ? D.chapters.find((c) => c.id === +m[2]) : D.chapterOf(+m[2]);
@@ -34,12 +36,13 @@
     const wrap = h('div', { class: 'story-bg' });
     const theme = chapter && chapter.theme;
     const back = h('canvas', { class: 'story-bg-scene' });
-    back.width = 640;
-    back.height = 360;
+    // 画在很小的画布上再拉大 = 免费的虚化（不用 CSS filter：带动画的 filter 在软件渲染的手机上很卡）
+    back.width = 128;
+    back.height = 72;
     try {
       const r = G().renderer;
       const sc = theme && r && r.paintScene && r.paintScene(theme, 5, '5:' + (theme.art || ''));
-      if (sc) back.getContext('2d').drawImage(sc.back, 0, 0, 640, 360);
+      if (sc) back.getContext('2d').drawImage(sc.back, 0, 0, 128, 72);
     } catch (e) {
       /* 没有场景就只剩渐变 */
     }
@@ -218,13 +221,14 @@
     const items = order.map((key) => {
       const sc = D.story[key];
       const open = P.storyUnlocked(s, key);
-      const kind = key.startsWith('ch') ? '章节' : key.startsWith('pre') ? '战前' : '战后';
+      const side = P.SIDE_STORIES[key];
+      const kind = side ? '番外' : key.startsWith('ch') ? '章节' : key.startsWith('pre') ? '战前' : '战后';
       const state = (s.story || {})[key];
       return h(
         'div',
         { class: 'diary-item' + (open ? '' : ' locked') + (key.startsWith('ch') ? ' chapter' : '') },
         h('span', { class: 'diary-kind' }, kind),
-        h('div', { class: 'diary-main' }, h('b', null, open ? sc.title : '？？？'), open && sc.diary ? h('p', null, '✎ ' + sc.diary) : null),
+        h('div', { class: 'diary-main' }, h('b', null, open ? sc.title : '？？？'), open && sc.diary ? h('p', null, '✎ ' + sc.diary) : null, !open && side ? h('p', null, `用${D.speakers[side.hero].name}通关 ${side.need} 场后解锁（${P.sideWins(s, key)}/${side.need}）`) : null),
         open
           ? h(
               'button',

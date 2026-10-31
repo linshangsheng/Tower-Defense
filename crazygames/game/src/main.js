@@ -171,7 +171,10 @@
         });
         return;
       }
-      TD.ui.showResult(battle, reward);
+      // 番外：刚好用这位同伴通关到了一定场数，先播一段小故事再看结算
+      const side = battle.result.win ? P.sideStoryDue(game.save) : null;
+      if (side) TD.ui.maybeStory(side, () => TD.ui.showResult(battle, reward));
+      else TD.ui.showResult(battle, reward);
     };
     // 首次打败 Boss：先播战后对话（设计书 28.3）
     if (battle.result.win && reward.firstClear) TD.ui.maybeStory('post' + battle.levelNo, after);
