@@ -2368,4 +2368,5 @@ TD.i18n.register("pt-PT", {
   "终极技能，每场战斗一次：拉满弓向天空射出一箭，随后 5 分钟里漫天箭雨覆盖整个战场——命中的怪被冰冻，Boss 不会被冻住，但照样受伤。放箭时所有怪物暂停。": "Habilidade suprema, uma vez por batalha: estica o arco ao máximo e dispara uma flecha para o céu; depois, durante 5 minutos, uma tempestade de flechas cobre todo o campo de batalha. Os monstros atingidos ficam congelados; os Bosses não congelam, mas sofrem dano na mesma. Todos os monstros param enquanto disparas.",
   "终极技能（每场战斗一次）": "Habilidade suprema (uma vez por batalha)",
   "终极技能，每场战斗一次：拉满弓向天空射出一箭，随后 10 秒里漫天箭雨覆盖整个战场——伤害很高，命中的怪被冰冻；Boss 不会被冻住，但会被打掉大约一半的血量。放箭时所有怪物暂停。": "Habilidade suprema, uma vez por batalha: estica o arco ao máximo e dispara uma flecha para o céu; depois, durante 10 segundos, uma tempestade de flechas cobre todo o campo de batalha com dano muito elevado. Os monstros atingidos ficam congelados; os Bosses não congelam, mas perdem cerca de metade da vida. Todos os monstros param enquanto disparas.",
+  "焚天巨龙飞向了高空——它要俯冲撞墙了！": "O Dragão Queima-Céu voa para o alto: vai mergulhar contra a muralha!",
 });

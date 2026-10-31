@@ -2368,4 +2368,5 @@ TD.i18n.register("tr", {
   "终极技能，每场战斗一次：拉满弓向天空射出一箭，随后 5 分钟里漫天箭雨覆盖整个战场——命中的怪被冰冻，Boss 不会被冻住，但照样受伤。放箭时所有怪物暂停。": "Efsanevi yetenek, savaş başına bir kez: yayı sonuna kadar ger ve gökyüzüne bir ok at; ardından 5 dakika boyunca bir ok fırtınası tüm savaş alanını kaplar. Vurulan canavarlar donar; Boss'lar donmaz ama yine de hasar alır. Ok atılırken tüm canavarlar durur.",
   "终极技能（每场战斗一次）": "Efsanevi yetenek (savaş başına bir kez)",
   "终极技能，每场战斗一次：拉满弓向天空射出一箭，随后 10 秒里漫天箭雨覆盖整个战场——伤害很高，命中的怪被冰冻；Boss 不会被冻住，但会被打掉大约一半的血量。放箭时所有怪物暂停。": "Efsanevi yetenek, savaş başına bir kez: yayı sonuna kadar ger ve gökyüzüne bir ok at; ardından 10 saniye boyunca bir ok fırtınası çok yüksek hasarla tüm savaş alanını kaplar. Vurulan canavarlar donar; Boss'lar donmaz ama canlarının yaklaşık yarısını kaybeder. Ok atılırken tüm canavarlar durur.",
+  "焚天巨龙飞向了高空——它要俯冲撞墙了！": "Gökyakan Ejderha yükseldi: surlara dalış yapacak!",
 });

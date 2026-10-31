@@ -457,7 +457,7 @@
         return { x: m.x + p.x * DRAW_SCALE * m.def.size, y: m.y + m.yOffset + p.y * DRAW_SCALE * m.def.size };
       };
       on('dragonCast', (e) => {
-        const txt = { fire: '焚天巨龙在蓄力喷火！集中火力打断它！', shock: '焚天巨龙压低了身体——冲撞要来了！', bolt: '焚天巨龙召来了雷云——雷击要来了！', ice: '焚天巨龙吸足了寒气——寒冰要来了！' }[e.kind];
+        const txt = { fire: '焚天巨龙在蓄力喷火！集中火力打断它！', shock: '焚天巨龙飞向了高空——它要俯冲撞墙了！', bolt: '焚天巨龙召来了雷云——雷击要来了！', ice: '焚天巨龙吸足了寒气——寒冰要来了！' }[e.kind];
         if (txt) this.banner(txt);
         if (V) {
           const p = dragonMouth(e.m);
@@ -485,14 +485,27 @@
         this.fx.push({ kind: 'flash', color: '#ff9a4a', life: 0.45, age: 0 });
       });
       // 冲撞：巨龙扑过去，撞到城墙那一刻（约 0.65 秒后）冲击环炸开
+      // 冲撞开始：龙从高处俯冲下来——先给一道破空的光和一声震动，撞上城墙那一刻（dragonShock）才炸开
+      on('dragonRamStart', () => {
+        this.fx.push({ kind: 'flash', color: '#ffe8c8', life: 0.18, age: 0 });
+        this.shake = Math.max(this.shake, 5);
+      });
       on('dragonShock', () => {
         const cy = (C.fieldTop + C.fieldBottom) / 2;
         if (V) {
-          for (let i = 0; i < 5; i++) V.fx.push({ kind: 'ring', x: C.wallX + 60, y: cy, r0: 20, r1: 900, color: i % 2 ? '#ffffff' : '#ffd8a0', w: 6 - i, life: 0.7 + i * 0.12, age: -0.6 - i * 0.07 });
-          V.fx.push({ kind: 'flare', x: C.wallX + 40, y: cy, r: 300, color: '#ffe0b0', life: 0.45, age: -0.6 });
+          for (let i = 0; i < 5; i++) V.fx.push({ kind: 'ring', x: C.wallX + 60, y: cy, r0: 20, r1: 900, color: i % 2 ? '#ffffff' : '#ffd8a0', w: 6 - i, life: 0.7 + i * 0.12, age: -i * 0.07 });
+          V.fx.push({ kind: 'flare', x: C.wallX + 40, y: cy, r: 340, color: '#ffe0b0', life: 0.5, age: 0 });
+          // 碎石和尘土：从撞击点向右、向上炸开
+          V.spawn(36, () => {
+            const a = -Math.PI * 0.95 + Math.random() * Math.PI * 0.9;
+            const v = 140 + Math.random() * 420;
+            return { kind: 'ember', x: C.wallX + 30, y: cy + (Math.random() - 0.5) * 220, vx: Math.cos(a) * v * 0.7 + 60, vy: Math.sin(a) * v, g: 520, life: 0.7 + Math.random() * 0.7, r: 2 + Math.random() * 3, color: Math.random() < 0.5 ? '#ffb060' : '#d8c8a8' };
+          });
+          V.spawn(14, () => ({ kind: 'smoke', x: C.wallX + 30 + Math.random() * 80, y: cy + (Math.random() - 0.5) * 240, vx: 20 + Math.random() * 80, vy: -30 - Math.random() * 40, life: 1.0 + Math.random() * 0.8, r: 26 + Math.random() * 30, color: '#8a7a6a' }));
         }
-        this.shake = Math.max(this.shake, 28);
-        this.fx.push({ kind: 'flash', color: '#fff0d8', life: 0.35, age: -0.6 });
+        for (let i = 0; i < 18; i++) this.fx.push({ kind: 'rock', x: C.wallX + 10, y: cy + (Math.random() - 0.5) * 240, vx: 60 + Math.random() * 220, vy: -200 - Math.random() * 260, life: 1.0, age: 0, r: 3 + Math.random() * 5 });
+        this.shake = Math.max(this.shake, 34);
+        this.fx.push({ kind: 'flash', color: '#fff0d8', life: 0.35, age: 0 });
       });
       // 寒冰：冰晶从嘴里射向城墙，主角被冻住（冰块画在 drawHeroStun 里）
       on('dragonIce', (e) => {
