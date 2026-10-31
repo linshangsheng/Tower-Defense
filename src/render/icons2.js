@@ -1662,4 +1662,58 @@
       ctx.restore();
     };
   }
+
+  // 终极技能「万箭天降」的图标（设计书 133）：冰蓝光晕里一支竖直的大箭，四周几支斜落的小箭和雪花
+  S.moreIcons.skyfall = (ctx) => {
+    if (TD.art && TD.art.drawGlow) TD.art.drawGlow(ctx, 0, 0, 24, '#7fd0ff', 0.55);
+    ctx.save();
+    ctx.lineCap = 'round';
+    for (const [x, y, a, l] of [[-13, -4, 0.2, 12], [13, -6, -0.18, 12], [-7, 11, 0.12, 10], [9, 12, -0.12, 10]]) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(Math.PI / 2 + a);
+      ctx.strokeStyle = '#cfe9ff';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(-l / 2, 0);
+      ctx.lineTo(l / 2, 0);
+      ctx.stroke();
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.moveTo(l / 2 + 4, 0);
+      ctx.lineTo(l / 2 - 2, -3);
+      ctx.lineTo(l / 2 - 2, 3);
+      ctx.fill();
+      ctx.restore();
+    }
+    // 中间那支大箭：箭头朝下，金色箭杆，箭头闪光
+    ctx.strokeStyle = '#ffd88a';
+    ctx.lineWidth = 3.4;
+    ctx.beginPath();
+    ctx.moveTo(0, -17);
+    ctx.lineTo(0, 8);
+    ctx.stroke();
+    ctx.fillStyle = '#f4faff';
+    ctx.strokeStyle = 'rgba(26,22,52,0.6)';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(0, 17);
+    ctx.lineTo(-6, 6);
+    ctx.lineTo(0, 8.5);
+    ctx.lineTo(6, 6);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = '#e04848';
+    ctx.beginPath();
+    ctx.moveTo(0, -17);
+    ctx.lineTo(-5, -20);
+    ctx.lineTo(-2, -12);
+    ctx.lineTo(0, -14);
+    ctx.lineTo(2, -12);
+    ctx.lineTo(5, -20);
+    ctx.fill();
+    if (TD.art && TD.art.drawGlow) TD.art.drawGlow(ctx, 0, 14, 8, '#ffffff', 0.9);
+    ctx.restore();
+  };
 })((globalThis.TD = globalThis.TD || {}));

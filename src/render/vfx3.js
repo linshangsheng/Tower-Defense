@@ -129,6 +129,36 @@
   V.bossCard = function (name, major, color, quote) {
     this.fx.push({ kind: 'bossCard', str: name, quote: quote || '', major: !!major, color: color || '#ff5a3a', life: major ? 2.6 : 1.9, age: 0 });
   };
+  // 终极技能「万箭天降」（设计书 133）
+  // 那一支射向天空的箭：从主角手里一路拖着光尾飞出画面顶端，最后在天上炸开一团冰蓝的光
+  V.ultShot = function (x, y) {
+    this.fx.push({ kind: 'ultShot', x, y, life: 0.75, age: 0 });
+    this.fx.push({ kind: 'flare', x, y, r: 170, color: '#e8f6ff', life: 0.35, age: 0 });
+    this.fx.push({ kind: 'ring', x, y, r0: 10, r1: 150, color: '#bfe8ff', w: 4, life: 0.5, age: 0, flat: 0.5 });
+    this.fx.push({ kind: 'ring', x: x + 40, y: 20, r0: 20, r1: 520, color: '#e8faff', w: 6, life: 0.7, age: -0.62 });
+    this.fx.push({ kind: 'flare', x: x + 40, y: 20, r: 620, color: '#bfe4ff', life: 0.55, age: -0.62 });
+  };
+  // 一阵箭雨：hits 是这一轮真正命中的怪 [{ x, y, boss }]，另外再随机落一批"陪衬"的箭，让整个画面都在下箭
+  V.ultVolley = function (hits, fieldX0, fieldX1, fieldY0, fieldY1, lite) {
+    const addArrow = (tx, ty, boss, decor) => {
+      const delay = Math.random() * 0.24;
+      const life = 0.24 + Math.random() * 0.14;
+      this.fx.push({ kind: 'skyArrow', x: tx, y: ty, life, age: -delay, boss, decor, slant: 90 + Math.random() * 70 });
+      if (decor) {
+        if (Math.random() < 0.35) this.fx.push({ kind: 'ring', x: tx, y: ty, r0: 2, r1: 18, color: '#cfeaff', w: 1.6, life: 0.22, age: -(delay + life), flat: 0.5 });
+        return;
+      }
+      this.fx.push({ kind: 'ring', x: tx, y: ty - 6, r0: 4, r1: boss ? 44 : 38, color: boss ? '#ffe28a' : '#e8faff', w: 2.6, life: 0.35, age: -(delay + life) });
+      this.spawn(boss ? 4 : 7, () => {
+        const a = rnd(-Math.PI * 0.95, -Math.PI * 0.05);
+        const v = rnd(60, 190);
+        return { kind: boss ? 'spark' : 'shard', x: tx, y: ty - 6, vx: Math.cos(a) * v, vy: Math.sin(a) * v, g: 380, life: rnd(0.35, 0.7), r: boss ? 1.8 : rnd(2.5, 4.5), color: boss ? '#ffe28a' : '#dff4ff', rot: rnd(0, TAU), vr: rnd(-8, 8), delay: delay + life };
+      });
+    };
+    for (const h of hits) addArrow(h.x, h.y, h.boss, false);
+    const n = lite ? 16 : 48;
+    for (let i = 0; i < n; i++) addArrow(rnd(fieldX0, fieldX1), rnd(fieldY0, fieldY1), false, true);
+  };
   // 烈焰之墙：整条车道上持续燃烧 dur 秒
   V.flameLane = function (x0, x1, y0, h, dur) {
     this.fx.push({ kind: 'flameLane', x0, x1, y0, h, life: dur, age: 0 });
@@ -456,6 +486,64 @@
         ctx.arc(x, y, r, 0, TAU);
         ctx.fill();
       }
+    },
+    ultShot(ctx, f, k) {
+      // 从 (f.x, f.y) 斜着飞向右上方，飞出画面
+      const e = 1 - Math.pow(1 - clamp01(f.age / (f.life * 0.82)), 2);
+      const x1 = f.x + 40 + (f.x + 40 - f.x) * 0;
+      const hx = f.x + (x1 - f.x) * e;
+      const hy = f.y + (-40 - f.y) * e;
+      const tail = 0.28;
+      const te = Math.max(0, e - tail);
+      const tx = f.x + (x1 - f.x) * te;
+      const ty = f.y + (-40 - f.y) * te;
+      const fade = f.age > f.life * 0.82 ? Math.max(0, 1 - (f.age - f.life * 0.82) / (f.life * 0.18)) : 1;
+      ctx.globalCompositeOperation = 'lighter';
+      const g = ctx.createLinearGradient(tx, ty, hx, hy);
+      g.addColorStop(0, 'rgba(160,220,255,0)');
+      g.addColorStop(1, `rgba(240,250,255,${0.95 * fade})`);
+      ctx.strokeStyle = g;
+      ctx.lineWidth = 9;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(tx, ty);
+      ctx.lineTo(hx, hy);
+      ctx.stroke();
+      this.glow(ctx, hx, hy, 70, '#e8faff', 0.9 * fade);
+      this.glow(ctx, hx, hy, 26, '#ffffff', fade);
+    },
+    skyArrow(ctx, f, k) {
+      // 从屏幕上方斜着落到 (f.x, f.y)：一道冰蓝的光尾 + 一个亮点箭头
+      const p = clamp01(f.age / f.life);
+      const sx = f.x + f.slant;
+      const sy = f.y - 420;
+      const e = p * p * 0.6 + p * 0.4;
+      const hx = sx + (f.x - sx) * e;
+      const hy = sy + (f.y - sy) * e;
+      const tl = Math.max(0, e - 0.34);
+      const tx = sx + (f.x - sx) * tl;
+      const ty = sy + (f.y - sy) * tl;
+      const col = f.boss ? '255,226,138' : '200,232,255';
+      ctx.globalCompositeOperation = 'lighter';
+      const g = ctx.createLinearGradient(tx, ty, hx, hy);
+      g.addColorStop(0, `rgba(${col},0)`);
+      g.addColorStop(1, `rgba(${col},${f.decor ? 0.8 : 1})`);
+      ctx.strokeStyle = g;
+      ctx.lineWidth = f.decor ? 3.4 : 4.6;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(tx, ty);
+      ctx.lineTo(hx, hy);
+      ctx.stroke();
+      this.glow(ctx, hx, hy, f.decor ? 12 : 20, f.boss ? '#ffe28a' : '#ffffff', f.decor ? 0.75 : 1);
+      // 小小的三角箭头
+      const ang = Math.atan2(f.y - sy, f.x - sx);
+      ctx.fillStyle = f.boss ? '#fff0b0' : '#ffffff';
+      ctx.beginPath();
+      ctx.moveTo(hx + Math.cos(ang) * (f.decor ? 8 : 11), hy + Math.sin(ang) * (f.decor ? 8 : 11));
+      ctx.lineTo(hx + Math.cos(ang + 2.6) * 6, hy + Math.sin(ang + 2.6) * 6);
+      ctx.lineTo(hx + Math.cos(ang - 2.6) * 6, hy + Math.sin(ang - 2.6) * 6);
+      ctx.fill();
     },
     whisper(ctx, f, k) {
       const t = f.age;

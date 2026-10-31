@@ -4418,3 +4418,94 @@ html[lang='ko'] .title-main {
 .demo-notice {
   text-align: center;
 }
+
+/* ---------- 终极技能 CG（设计书 133） ---------- */
+.ult-cg {
+  position: absolute;
+  inset: 0;
+  z-index: 70;
+  background: #000;
+  cursor: pointer;
+}
+.ult-cv {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.ult-skip {
+  position: absolute;
+  right: 22px;
+  bottom: 84px;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 1px;
+  text-shadow: 0 1px 3px #000;
+  pointer-events: none;
+}
+
+/* 战斗里的终极技能按钮和倒计时条（设计书 133） */
+.battle-hud .ult-btn {
+  width: 104px;
+  border-color: rgba(160, 220, 255, 0.6);
+  background: linear-gradient(rgba(34, 70, 120, 0.85), rgba(10, 22, 48, 0.92));
+}
+.battle-hud .ult-btn.ready {
+  border-color: rgba(200, 240, 255, 0.95);
+  background: linear-gradient(rgba(60, 130, 210, 0.9), rgba(14, 36, 80, 0.95));
+  box-shadow: 0 0 20px rgba(140, 210, 255, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  animation: ultPulse 1.2s ease-in-out infinite alternate;
+}
+.battle-hud .ult-btn.active {
+  border-color: rgba(220, 250, 255, 1);
+  box-shadow: 0 0 22px rgba(170, 230, 255, 0.9);
+}
+.battle-hud .ult-btn.used {
+  opacity: 0.45;
+  filter: grayscale(0.6);
+}
+@keyframes ultPulse {
+  from {
+    box-shadow: 0 0 12px rgba(140, 210, 255, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  }
+  to {
+    box-shadow: 0 0 26px rgba(170, 230, 255, 1), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  }
+}
+.ult-bar {
+  position: absolute;
+  top: 58px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 3px 14px;
+  border-radius: 14px;
+  background: linear-gradient(rgba(20, 50, 90, 0.78), rgba(8, 18, 40, 0.85));
+  border: 1.5px solid rgba(170, 225, 255, 0.7);
+  box-shadow: 0 0 14px rgba(120, 190, 255, 0.5);
+  color: #e8f6ff;
+  font-weight: 800;
+  font-size: 14px;
+  z-index: 3;
+}
+.ult-bar.hidden {
+  display: none;
+}
+.ult-track {
+  width: 170px;
+  height: 8px;
+  border-radius: 5px;
+  background: rgba(10, 20, 40, 0.8);
+  overflow: hidden;
+}
+.ult-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #7fd0ff, #e8faff);
+  box-shadow: 0 0 8px rgba(160, 225, 255, 0.9);
+}
+.ult-text {
+  min-width: 34px;
+  text-align: right;
+}

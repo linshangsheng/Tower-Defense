@@ -21,6 +21,7 @@
       wall: { level: 1, fortify: 0, mend: 0, thorns: 0 },
       weapons: Object.fromEntries(Object.keys(D.weapons).map((id) => [id, { owned: id === 'bow', lv: 0 }])),
       activeOwned: { drum: true },
+      ultimateOwned: false, // 终极技能「万箭天降」（设计书 133）
       skillLv: {},
       passiveOwned: {},
       passiveLv: {}, // 被动技能等级（设计书 90）；买下来是 1 级
@@ -614,6 +615,17 @@
     return true;
   };
 
+  // ---------- 终极技能（设计书 133） ----------
+  // 试玩版没有；通关第 100 关后在商店「技能」页用钻石买断；测试模式直接拥有
+  P.ultimateUnlocked = (save) => !C.demo && (P.testMode(save) || P.isCleared(save, D.ultimate.unlock));
+  P.ultimateOwned = (save) => !C.demo && !!(save.ultimateOwned || P.testMode(save));
+  P.buyUltimate = function (save) {
+    if (C.demo || save.ultimateOwned || !P.ultimateUnlocked(save)) return false;
+    if (!P.pay(save, D.ultimate.cost)) return false;
+    save.ultimateOwned = true;
+    return true;
+  };
+
   P.buyActive = function (save, id) {
     if (save.activeOwned[id]) return false;
     if (!P.pay(save, D.activeSkills[id].cost)) return false;
@@ -837,7 +849,7 @@
         itemQty[id] = Math.min(D.itemRules.perKind, q);
       }
     });
-    return { active, activeLv, items, itemQty, target: lo.target, autoCast: lo.autoCast, buddy: P.buddyId(save) };
+    return { active, activeLv, items, itemQty, target: lo.target, autoCast: lo.autoCast, buddy: P.buddyId(save), ultimate: P.ultimateOwned(save) };
   };
 
   // 战斗里用掉一个道具：已装备的个数减 1；用完了栏位清空（背包里还有的话，要重新装备才会带进下一场）

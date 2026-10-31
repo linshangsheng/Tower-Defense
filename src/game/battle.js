@@ -82,6 +82,8 @@
         return { id, lv, def, cd: 0 };
       });
       this.tempDr = { amt: 0, until: 0 };
+      // 终极技能（设计书 133）：state = 'ready'（还没放）| 'active'（箭雨中）| 'done'（放完了）；没买 / 这场不能用就是 null
+      this.ult = opts.loadout.ultimate ? { def: D.ultimate, state: 'ready', start: 0, until: 0, timer: 0 } : null;
       // 道具（设计书 82）：每种带 1–3 个（itemQty），用一次少一个；用完一次要等这一种的冷却；left = 剩余个数，cd = 冷却剩余秒数
       const qty = opts.loadout.itemQty || {};
       this.items = (opts.loadout.items || [])
@@ -1619,6 +1621,58 @@
       return true;
     }
 
+    // ---------- 终极技能：万箭天降（设计书 133） ----------
+    // 能不能放：没放过、战斗还没结束、不在"准备"倒计时里
+    ultReady() {
+      return !!this.ult && this.ult.state === 'ready' && !this.over && this.waveState !== 'prepare';
+    }
+
+    // 拉弓动画（CG）播完以后调用：开始 duration 秒的箭雨，主角做一个向天空射箭的动作
+    startUltimate() {
+      if (!this.ultReady()) return false;
+      const u = this.ult;
+      u.state = 'active';
+      u.start = this.time;
+      u.until = this.time + u.def.duration;
+      u.timer = 0.3; // 那一箭飞上天需要一小会儿
+      this.hero.castId = 'arrowRain';
+      this.hero.castAt = this.time;
+      this.hero.castLane = undefined;
+      this.hero.castStrikes = 0;
+      this.hero.castEvery = 0;
+      this.castCount++;
+      this.skillsCast++;
+      this.emit('ultStart', { x: C.heroX + 30, y: this.heroY - 40 });
+      return true;
+    }
+
+    // 箭雨进行中：每隔 volleyEvery 秒，全屏随机挑 hits 只怪各挨一箭；非 Boss 被冰冻，Boss 只掉血
+    updateUltimate(dt) {
+      const u = this.ult;
+      if (!u || u.state !== 'active') return;
+      if (this.time >= u.until) {
+        u.state = 'done';
+        this.emit('ultEnd', {});
+        return;
+      }
+      u.timer -= dt;
+      while (u.timer <= 0) {
+        u.timer += u.def.volleyEvery;
+        const pool = this.monsters.filter((m) => this.isTargetable(m));
+        const hits = [];
+        const n = Math.min(u.def.hits, pool.length);
+        for (let i = 0; i < n; i++) {
+          const k = this.rng.int ? this.rng.int(pool.length) : Math.floor(this.rng() * pool.length);
+          const m = pool.splice(k, 1)[0];
+          const boss = !!(m.def.boss || m.def.bossPart);
+          hits.push({ x: m.x, y: m.y + m.yOffset, boss });
+          this.damage(m, this.atk * u.def.atkMult, { type: 'phys', fromFront: false, source: 'ultimate' });
+          if (!m.dead && !boss) this.freezeMonster(m, u.def.freeze);
+        }
+        this.emit('ultVolley', { hits });
+      }
+    }
+
     // 助战伙伴的主动能力：墨墨的墨团、雷雷的小闪电（设计书 51）
     updateBuddy(dt) {
       const shot = this.buddy.perk.shot;
@@ -2494,6 +2548,7 @@
       this.updateFireWalls();
       this.updateHero(dt);
       this.updateRain(dt);
+      this.updateUltimate(dt);
       this.updateThunder(dt);
       this.updateMeteors();
       this.updateProjectiles(dt);

@@ -1239,6 +1239,25 @@
 
   function shopSkills(el) {
     const s = game.save;
+    // 终极技能（设计书 133）：通关第 100 关开放，钻石买断，每场战斗一次；试玩版里是灰的
+    {
+      const U = D.ultimate;
+      const owned = P.ultimateOwned(s);
+      const open = P.ultimateUnlocked(s);
+      let right;
+      if (C.demo) right = buyBtn(U.cost, null, '购买', true);
+      else if (owned) right = h('button', { class: 'btn small', disabled: true }, '已拥有');
+      else if (!open) right = h('button', { class: 'btn small', disabled: true }, `通关第 ${U.unlock} 关解锁`);
+      else right = buyBtn(U.cost, () => P.buyUltimate(s), '购买');
+      el.append(h('div', { class: 'section-title' }, '终极技能（每场战斗一次）'));
+      el.append(
+        h(
+          'div',
+          { class: 'card-grid' },
+          card(U.name, owned ? '已拥有 · 战斗里按 V 键或点按钮' : `通关第 ${U.unlock} 关解锁`, U.desc, right, { cls: 'v' + (owned ? '' : ' unowned') + (C.demo ? ' demo-locked' : ''), color: '#7fd0ff', icon: TD.sprites.iconCanvas('skyfall', 56) })
+        )
+      );
+    }
     el.append(h('div', { class: 'section-title' }, '主动技能（战斗中点击释放）'));
     const skillGrid = h('div', { class: 'card-grid' });
     el.append(skillGrid);
@@ -1914,6 +1933,13 @@
         h('span', { class: 'cd' })
       )
     );
+    // 终极技能「万箭天降」（设计书 133）：买了才有；每场一次，放出来以后按钮上转圈显示剩余时间
+    hud.ultBtn = battle.ult
+      ? h('button', { class: 'skill-btn ult-btn', title: D.ultimate.desc, onclick: () => game.tryUltimate() }, h('span', { class: 'key' }, 'V'), TD.sprites.iconCanvas('skyfall', 40), h('span', { class: 'skill-name' }, D.ultimate.name), h('span', { class: 'cd' }))
+      : null;
+    hud.ultFill = h('div', { class: 'ult-fill' });
+    hud.ultText = h('span', { class: 'ult-text' });
+    hud.ultBar = h('div', { class: 'ult-bar hidden' }, h('span', { class: 'ult-label' }, '万箭天降'), h('div', { class: 'ult-track' }, hud.ultFill), hud.ultText);
     hud.nudge = h('div', { class: 'nudge-bubble hidden' }, '点我释放技能！');
     hud.skillBtns = skillBtns;
     hud.itemBtns = itemBtns;
@@ -1938,9 +1964,10 @@
         h('div', { class: 'hud-copper' }, coinIcon('copper'), hud.copper),
         h('button', { class: 'btn small', onclick: () => game.togglePause() }, '❚❚')
       ),
+      hud.ultBar,
       hud.laneHint,
       hud.nudge,
-      h('div', { class: 'hud-bottom' }, h('div', { class: 'skill-bar' }, skillBtns, battle.skills.length ? null : h('span', { class: 'hint' }, '没有携带主动技能')), h('div', { class: 'item-bar' }, itemBtns), h('div', { class: 'ctrl-bar' }, hud.targetBtn, hud.autoBtn, hud.speedBtn))
+      h('div', { class: 'hud-bottom' }, h('div', { class: 'skill-bar' }, skillBtns, hud.ultBtn, battle.skills.length || battle.ult ? null : h('span', { class: 'hint' }, '没有携带主动技能')), h('div', { class: 'item-bar' }, itemBtns), h('div', { class: 'ctrl-bar' }, hud.targetBtn, hud.autoBtn, hud.speedBtn))
     );
     root.appendChild(screenEl);
     UI.updateHud();
@@ -1994,6 +2021,27 @@
         setText(cd, '');
       }
     });
+    // 终极技能按钮和顶部的倒计时条
+    if (hud.ultBtn && b.ult) {
+      const u = b.ult;
+      const cd = hud.ultBtn.querySelector('.cd');
+      const left = Math.max(0, u.until - b.time);
+      hud.ultBtn.classList.toggle('ready', b.ultReady());
+      hud.ultBtn.classList.toggle('active', u.state === 'active');
+      hud.ultBtn.classList.toggle('used', u.state === 'done');
+      if (u.state === 'active') {
+        cd.style.background = `conic-gradient(rgba(30,20,10,0.65) ${(1 - left / u.def.duration) * 360}deg, transparent 0)`;
+        setText(cd, `${Math.floor(left / 60)}:${String(Math.floor(left % 60)).padStart(2, '0')}`);
+      } else {
+        cd.style.background = 'none';
+        setText(cd, u.state === 'done' ? '已用' : '');
+      }
+      hud.ultBar.classList.toggle('hidden', u.state !== 'active');
+      if (u.state === 'active') {
+        hud.ultFill.style.width = (left / u.def.duration) * 100 + '%';
+        setText(hud.ultText, `${Math.floor(left / 60)}:${String(Math.floor(left % 60)).padStart(2, '0')}`);
+      }
+    }
     b.items.forEach((it, i) => {
       const btn = hud.itemBtns[i];
       btn.classList.toggle('used', it.left <= 0);

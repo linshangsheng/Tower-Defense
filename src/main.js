@@ -38,6 +38,8 @@
     const rules = (mode && mode.levelDef.rules) || {};
     if (rules.noSkills) lo.active = [];
     if (rules.noItems) lo.items = [];
+    // 终极技能（设计书 133）：九层妖塔和禁用技能的挑战里不能用
+    if ((mode && mode.kind === 'tower') || rules.noSkills) lo.ultimate = false;
     // 幸运符在战斗开始时生效并消耗
     if (lo.items.includes('charm')) P.consumeItem(s, 'charm');
     const stats = P.heroStats(s, rules.forceBow ? { weapon: 'bow' } : undefined);
@@ -310,6 +312,27 @@
     b.castSkill(i, 0);
   };
 
+  // 终极技能：先停住所有怪物、播拉弓 CG，播完（或被点击跳过）再放出箭雨
+  game.tryUltimate = function () {
+    const b = game.battle;
+    if (!b || !b.ult || game.paused || game.introPaused || b.over) return;
+    if (!b.ultReady()) {
+      TD.audio.play('error');
+      if (b.ult.state === 'active') TD.ui.toast('万箭天降正在进行中');
+      else if (b.ult.state === 'done') TD.ui.toast('这一场的万箭天降已经用过了');
+      else TD.ui.toast('第一波怪物出来后才能用万箭天降');
+      return;
+    }
+    setPending(null);
+    game.introPaused = true; // 战斗逻辑和画面都停住：所有怪物暂停
+    const prevClose = TD.ui.introClose;
+    TD.ui.playUltimateCg(() => {
+      TD.ui.introClose = prevClose;
+      game.introPaused = false;
+      b.startUltimate();
+    });
+  };
+
   game.tryItem = function (i) {
     const b = game.battle;
     if (!b || game.paused || b.over) return;
@@ -510,6 +533,7 @@
       if (game.paused) return;
       if (k >= '1' && k <= '3') game.trySkill(+k - 1);
       else if (k.length === 1 && 'qwerzxc'.includes(k)) game.tryItem('qwerzxc'.indexOf(k));
+      else if (k === 'v') game.tryUltimate();
       else if (k === 'f') game.toggleSpeed();
       else if (k === 'n') game.callWave();
       else if (k === 't') game.cycleTarget();
