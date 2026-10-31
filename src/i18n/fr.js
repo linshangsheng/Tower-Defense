@@ -2368,4 +2368,5 @@ TD.i18n.register("fr", {
   "这一场的万箭天降已经用过了": "La Pluie de flèches a déjà été utilisée pendant ce combat",
   "终极技能，每场战斗一次：拉满弓向天空射出一箭，随后 5 分钟里漫天箭雨覆盖整个战场——命中的怪被冰冻，Boss 不会被冻住，但照样受伤。放箭时所有怪物暂停。": "Compétence ultime, une fois par combat : bandez l'arc à fond et tirez une flèche vers le ciel, puis pendant 5 minutes une tempête de flèches couvre tout le champ de bataille. Les monstres touchés sont gelés ; les Boss ne le sont pas, mais subissent quand même des dégâts. Tous les monstres se figent pendant le tir.",
   "终极技能（每场战斗一次）": "Compétence ultime (une fois par combat)",
+  "终极技能，每场战斗一次：拉满弓向天空射出一箭，随后 10 秒里漫天箭雨覆盖整个战场——伤害很高，命中的怪被冰冻；Boss 不会被冻住，但会被打掉大约一半的血量。放箭时所有怪物暂停。": "Compétence ultime, une fois par combat : bandez l'arc à fond et tirez une flèche vers le ciel, puis pendant 10 secondes une tempête de flèches couvre tout le champ de bataille en infligeant de très gros dégâts. Les monstres touchés sont gelés ; les Boss ne le sont pas, mais perdent environ la moitié de leurs PV. Tous les monstres se figent pendant le tir.",
 });

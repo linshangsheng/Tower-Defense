@@ -1646,7 +1646,7 @@
       return true;
     }
 
-    // 箭雨进行中：每隔 volleyEvery 秒，全屏随机挑 hits 只怪各挨一箭；非 Boss 被冰冻，Boss 只掉血
+    // 箭雨进行中：每隔 volleyEvery 秒一轮——全屏随机挑 hits 只小怪各挨一箭并被冰冻；Boss 每一轮都吃一箭（扣最大血量的 bossPct），不会被冻住
     updateUltimate(dt) {
       const u = this.ult;
       if (!u || u.state !== 'active') return;
@@ -1660,14 +1660,18 @@
         u.timer += u.def.volleyEvery;
         const pool = this.monsters.filter((m) => this.isTargetable(m));
         const hits = [];
-        const n = Math.min(u.def.hits, pool.length);
+        const bosses = pool.filter((m) => m.def.boss || m.def.bossPart);
+        const minions = pool.filter((m) => !(m.def.boss || m.def.bossPart));
+        for (const m of bosses) {
+          hits.push({ x: m.x, y: m.y + m.yOffset, boss: true });
+          this.damage(m, m.maxHp * u.def.bossPct, { type: 'phys', fromFront: false, source: 'ultimate' });
+        }
+        const n = Math.min(u.def.hits, minions.length);
         for (let i = 0; i < n; i++) {
-          const k = this.rng.int ? this.rng.int(pool.length) : Math.floor(this.rng() * pool.length);
-          const m = pool.splice(k, 1)[0];
-          const boss = !!(m.def.boss || m.def.bossPart);
-          hits.push({ x: m.x, y: m.y + m.yOffset, boss });
-          this.damage(m, this.atk * u.def.atkMult, { type: 'phys', fromFront: false, source: 'ultimate' });
-          if (!m.dead && !boss) this.freezeMonster(m, u.def.freeze);
+          const m = minions.splice(this.rng.int(minions.length), 1)[0];
+          hits.push({ x: m.x, y: m.y + m.yOffset, boss: false });
+          this.damage(m, this.atk * u.def.atkMult + m.maxHp * u.def.minionPct, { type: 'phys', fromFront: false, source: 'ultimate' });
+          if (!m.dead) this.freezeMonster(m, u.def.freeze);
         }
         this.emit('ultVolley', { hits });
       }

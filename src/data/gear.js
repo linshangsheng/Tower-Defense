@@ -420,19 +420,22 @@
   };
 
   // 终极技能（设计书 133）：钻石买断，通关第 100 关后开放；每场战斗只能放一次
-  // 放出来时先播一段拉弓的 CG（怪物全部暂停），再向天空射出一支箭，之后 duration 秒里漫天箭雨落下：
-  //   每 volleyEvery 秒随机挑 hits 只怪（全屏范围）各挨一箭（攻击力 ×atkMult），非 Boss 的怪被冰冻 freeze 秒；Boss 照常受伤但不会被冻住
+  // 放出来时先播一段拉弓的 CG（怪物全部暂停），再向天空射出一支箭，之后 duration 秒（10 秒）里漫天箭雨落下，伤害很高：
+  //   每 volleyEvery 秒一轮：全屏随机挑 hits 只小怪各挨一箭（攻击力 ×atkMult，再加这只怪最大血量的 minionPct——保证"伤害很高"，不会因为英雄攻击力低就打不动），被命中的小怪冰冻 freeze 秒；
+  //   Boss（含小 Boss 和 Boss 部件）每一轮都吃一箭：按它最大血量的 bossPct 扣血（10 秒共约一半血），不会被冻住
   TD.data.ultimate = {
     id: 'skyfall',
     name: '万箭天降',
     cost: { diamond: 150 },
     unlock: 100,
-    duration: 300,
-    volleyEvery: 0.25,
-    hits: 4,
-    atkMult: 0.35,
+    duration: 10,
+    volleyEvery: 0.2,
+    hits: 14,
+    atkMult: 4,
+    minionPct: 0.4,
+    bossPct: 0.01,
     freeze: 3,
-    desc: '终极技能，每场战斗一次：拉满弓向天空射出一箭，随后 5 分钟里漫天箭雨覆盖整个战场——命中的怪被冰冻，Boss 不会被冻住，但照样受伤。放箭时所有怪物暂停。',
+    desc: '终极技能，每场战斗一次：拉满弓向天空射出一箭，随后 10 秒里漫天箭雨覆盖整个战场——伤害很高，命中的怪被冰冻；Boss 不会被冻住，但会被打掉大约一半的血量。放箭时所有怪物暂停。',
   };
 
   TD.data.items = {

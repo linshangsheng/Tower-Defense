@@ -5059,7 +5059,7 @@ test('妖塔每层一句话、怪物倒下按章节主题溅东西（设计书 1
 
 test('终极技能「万箭天降」：钻石买断、通关 100 关解锁、每场一次、冰冻小怪不冻 Boss（设计书 133）', () => {
   const U = D.ultimate;
-  assert.ok(U.cost.diamond > 0 && U.unlock === 100 && U.duration === 300);
+  assert.ok(U.cost.diamond > 0 && U.unlock === 100 && U.duration === 10 && U.bossPct > 0);
   const s = P.newSave();
   s.diamond = 1000;
   assert.ok(!P.ultimateUnlocked(s) && !P.ultimateOwned(s) && !P.buyUltimate(s), '没通关 100 关不能买');
@@ -5089,30 +5089,29 @@ test('终极技能「万箭天降」：钻石买断、通关 100 关解锁、每
   let volleys = 0;
   let frozenSeen = 0;
   let bossFrozen = false;
+  const ended = [];
+  b.on('ultEnd', () => ended.push(1));
   b.on('ultVolley', (e) => {
     volleys++;
     for (const h of e.hits) assert.ok(typeof h.x === 'number' && typeof h.boss === 'boolean');
   });
-  const fire = [];
-  b.on('ultStart', () => fire.push(1));
-  for (let i = 0; i < 60 * 12 && !b.over; i++) {
+  const present = b.monsters.filter((m) => !m.dead && !m.def.boss && m.x < 1280);
+  for (let i = 0; i < 60 * 9 && !b.over; i++) {
     b.step(1 / 60);
     for (const m of b.monsters) {
       if (m.dead) continue;
-      if (m.def.boss || m.def.bossPart) {
-        if (b.time < m.frozenUntil && !m.ultFrozenCheck) bossFrozen = bossFrozen || b.time < m.frozenUntil;
-      } else if (b.time < m.frozenUntil) frozenSeen++;
+      if (m.def.boss || m.def.bossPart) bossFrozen = bossFrozen || b.time < m.frozenUntil;
+      else if (b.time < m.frozenUntil) frozenSeen++;
     }
   }
-  assert.ok(volleys >= 12 * 3, `12 秒里至少 ${12 * 3} 轮（实际 ${volleys}）`);
+  assert.ok(volleys >= 9 * 5 * 0.9, `9 秒里至少 ${Math.floor(9 * 5 * 0.9)} 轮（实际 ${volleys}）`);
   assert.ok(frozenSeen > 0, '小怪被冻住');
   assert.ok(!bossFrozen, 'Boss 不会被冻住');
   assert.ok((b.report.bySource.ultimate || 0) > 0, '伤害记在万箭天降名下');
-  // 5 分钟后结束
-  b.ult.until = b.time + 0.2;
-  const ended = [];
-  b.on('ultEnd', () => ended.push(1));
-  for (let i = 0; i < 60; i++) b.step(1 / 60);
+  const killed = present.filter((m) => m.dead).length;
+  assert.ok(killed >= present.length * 0.6, `放箭时在场的小怪 10 秒里至少倒 6 成（${killed} / ${present.length}）`);
+  // 10 秒后结束，只发一次 ultEnd
+  for (let i = 0; i < 60 * 3 && !b.over; i++) b.step(1 / 60);
   assert.strictEqual(b.ult.state, 'done');
   assert.strictEqual(ended.length, 1);
   void boss;
@@ -5153,12 +5152,13 @@ test('终极技能：Boss 照样掉血，但不会被冻住（设计书 133）',
   const hp0 = boss.hp;
   let frozen = 0;
   let minionFrozen = 0;
-  for (let i = 0; i < 60 * 8 && !b.over && !boss.dead; i++) {
+  for (let i = 0; i < 60 * 10 && !b.over && !boss.dead; i++) {
     b.step(1 / 60);
     if (b.time < boss.frozenUntil || b.time < boss.stunUntil) frozen++;
     for (const m of b.monsters) if (!m.dead && !m.def.boss && b.time < m.frozenUntil) minionFrozen++;
   }
   assert.strictEqual(frozen, 0, 'Boss 一帧也没被冻住 / 眩晕');
   assert.ok(boss.dead || boss.hp < hp0, 'Boss 掉血了');
+  assert.ok(boss.dead || hp0 - boss.hp >= boss.maxHp * 0.3, `10 秒里 Boss 至少掉 30% 最大血量（实际 ${Math.round(((hp0 - boss.hp) / boss.maxHp) * 100)}%）`);
   assert.ok(minionFrozen > 0, '同屏的小怪被冻住了');
 });

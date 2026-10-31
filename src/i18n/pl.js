@@ -2368,4 +2368,5 @@ TD.i18n.register("pl", {
   "这一场的万箭天降已经用过了": "Deszcz Strzał został już użyty w tej walce",
   "终极技能，每场战斗一次：拉满弓向天空射出一箭，随后 5 分钟里漫天箭雨覆盖整个战场——命中的怪被冰冻，Boss 不会被冻住，但照样受伤。放箭时所有怪物暂停。": "Umiejętność ostateczna, raz na walkę: napnij łuk do końca i wystrzel strzałę w niebo, a potem przez 5 minut burza strzał pokrywa całe pole bitwy. Trafione potwory zamarzają; Bossowie nie zamarzają, ale i tak otrzymują obrażenia. Gdy strzelasz, wszystkie potwory się zatrzymują.",
   "终极技能（每场战斗一次）": "Umiejętność ostateczna (raz na walkę)",
+  "终极技能，每场战斗一次：拉满弓向天空射出一箭，随后 10 秒里漫天箭雨覆盖整个战场——伤害很高，命中的怪被冰冻；Boss 不会被冻住，但会被打掉大约一半的血量。放箭时所有怪物暂停。": "Umiejętność ostateczna, raz na walkę: napnij łuk do końca i wystrzel strzałę w niebo, a potem przez 10 sekund burza strzał pokrywa całe pole bitwy, zadając ogromne obrażenia. Trafione potwory zamarzają; Bossowie nie zamarzają, ale tracą mniej więcej połowę zdrowia. Gdy strzelasz, wszystkie potwory się zatrzymują.",
 });
