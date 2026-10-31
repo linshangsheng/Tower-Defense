@@ -1121,6 +1121,21 @@
       }
       ctx.fillStyle = this._abyssVig;
       ctx.fillRect(0, 0, C.width, C.height);
+      // 深渊的"回声"：一粒粒紫色的光从地面慢慢升起、飘散（画质降档时不画）
+      if (!TD.quality || TD.quality.params().lit > 0.5) {
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        for (let i = 0; i < 26; i++) {
+          const ph = (this.t * (0.05 + (i % 5) * 0.012) + i * 0.137) % 1;
+          const x = (i * 173.7 + Math.sin(this.t * 0.6 + i) * 24) % C.width;
+          const y = C.fieldBottom + 10 - ph * (C.fieldBottom - C.fieldTop + 40);
+          ctx.fillStyle = `rgba(${200 + (i % 3) * 18},${150 + (i % 4) * 20},255,${0.5 * Math.sin(ph * Math.PI)})`;
+          ctx.beginPath();
+          ctx.arc(x, y, 1.6 + (i % 3) * 0.9, 0, 6.283);
+          ctx.fill();
+        }
+        ctx.restore();
+      }
     }
 
     // 雷雷的暴风雨：斜着落下的雨丝 + 偶尔的闪光（设计书 33.3）
