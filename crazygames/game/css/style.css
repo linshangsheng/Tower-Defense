@@ -1177,6 +1177,15 @@ body {
   top: 60px;
   width: 640px;
 }
+.ending.true .ending-text {
+  background: rgba(10, 6, 24, 0.5);
+  border-radius: 16px;
+  padding: 12px 18px 2px;
+  width: 600px;
+}
+.ending.true .ending-text:empty {
+  display: none;
+}
 .ending-line {
   font-size: 26px;
   font-weight: 700;
@@ -1607,6 +1616,264 @@ body {
   position: absolute;
   top: 84px;
   right: 20px;
+}
+
+/* 对话场景：章节背景虚化压暗、上下黑边、人物站台、说话的人亮起来（设计书 130） */
+.story-overlay {
+  background: rgba(10, 6, 20, 0.5);
+  overflow: hidden;
+}
+.story-overlay.abyss {
+  background: rgba(24, 8, 48, 0.62);
+}
+.story-overlay.dragon {
+  background: rgba(40, 6, 6, 0.6);
+}
+.story-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.story-bg canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.story-bg-scene {
+  filter: blur(3px) brightness(0.62) saturate(1.1);
+  transform: scale(1.06);
+  animation: storyDrift 18s ease-in-out infinite alternate;
+}
+.story-overlay.abyss .story-bg-scene {
+  filter: blur(3px) brightness(0.55) saturate(1.25) hue-rotate(18deg);
+}
+.story-overlay.dragon .story-bg-scene {
+  filter: blur(3px) brightness(0.5) saturate(1.4) sepia(0.45) hue-rotate(-18deg);
+}
+.story-overlay.dragon::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 100%, rgba(255, 90, 40, 0.28), transparent 62%);
+  animation: storyPulse 2.4s ease-in-out infinite alternate;
+}
+@keyframes storyDrift {
+  from {
+    transform: scale(1.06) translateX(-8px);
+  }
+  to {
+    transform: scale(1.09) translateX(8px);
+  }
+}
+@keyframes storyPulse {
+  from {
+    opacity: 0.5;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.story-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 54px;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0));
+  z-index: 2;
+  pointer-events: none;
+}
+.story-bar.top {
+  top: 0;
+}
+.story-bar.bottom {
+  bottom: 0;
+  transform: scaleY(-1);
+}
+.story-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+.story-actor {
+  position: absolute;
+  bottom: 168px;
+  width: 260px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  opacity: 0;
+  filter: brightness(0.45) saturate(0.7);
+  transform: translateY(14px) scale(0.92);
+  transition: filter 0.3s, transform 0.3s, opacity 0.3s;
+}
+.story-actor.left {
+  left: 5%;
+}
+.story-actor.right {
+  right: 5%;
+}
+.story-actor.enter {
+  opacity: 0.85;
+}
+.story-actor.active {
+  opacity: 1;
+  filter: brightness(1) saturate(1.05) drop-shadow(0 0 14px rgba(255, 240, 200, 0.45));
+  transform: translateY(0) scale(1.04);
+  animation: actorBob 1.6s ease-in-out infinite alternate;
+}
+.story-actor canvas {
+  width: 240px;
+  height: 240px;
+  display: block;
+}
+.story-actor.right {
+  width: 300px;
+}
+.story-actor.right canvas {
+  width: 300px;
+  height: 300px;
+}
+.story-actor.big-boss {
+  width: 380px;
+}
+.story-actor.big-boss canvas {
+  width: 380px;
+  height: 380px;
+}
+.story-actor .story-emoji.big {
+  font-size: 150px;
+  line-height: 1;
+}
+.story-actor.shout {
+  animation: actorShout 0.36s;
+}
+@keyframes actorBob {
+  from {
+    margin-bottom: 0;
+  }
+  to {
+    margin-bottom: 6px;
+  }
+}
+@keyframes actorShout {
+  0% {
+    transform: translate(0, 0) scale(1.04);
+  }
+  20% {
+    transform: translate(-6px, 2px) scale(1.12);
+  }
+  40% {
+    transform: translate(6px, -2px) scale(1.1);
+  }
+  60% {
+    transform: translate(-4px, 1px) scale(1.08);
+  }
+  100% {
+    transform: translate(0, 0) scale(1.04);
+  }
+}
+.story-overlay.rumble .story-bg-scene {
+  animation: storyRumble 0.5s linear infinite;
+}
+@keyframes storyRumble {
+  0% {
+    transform: scale(1.08) translate(0, 0);
+  }
+  25% {
+    transform: scale(1.08) translate(-3px, 2px);
+  }
+  50% {
+    transform: scale(1.08) translate(2px, -2px);
+  }
+  75% {
+    transform: scale(1.08) translate(-2px, -1px);
+  }
+  100% {
+    transform: scale(1.08) translate(0, 0);
+  }
+}
+.story-box {
+  z-index: 4;
+}
+.story-title {
+  z-index: 5;
+}
+.story-skip {
+  z-index: 6;
+}
+.story-name {
+  display: inline-block;
+  padding: 1px 12px;
+  border-radius: 10px;
+  color: #fff;
+  background: var(--primary-dark);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
+}
+.story-name.hero {
+  background: #3f78c8;
+}
+.story-name.king {
+  background: #b88a20;
+}
+.story-name.foe {
+  background: #a8402e;
+}
+.story-dots {
+  position: absolute;
+  left: 152px;
+  bottom: 10px;
+  display: flex;
+  gap: 5px;
+}
+.story-dots i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(60, 40, 20, 0.22);
+}
+.story-dots i.done {
+  background: rgba(60, 40, 20, 0.5);
+}
+.story-dots i.now {
+  background: var(--primary-dark);
+  transform: scale(1.3);
+}
+/* 章节开场和最终战：标题先在正中间亮相，再升到上面 */
+.story-title.big {
+  animation: storyTitleBig 2.4s ease both;
+  font-size: 22px;
+}
+@keyframes storyTitleBig {
+  0% {
+    top: 36%;
+    opacity: 0;
+    transform: translateX(-50%) scale(1.5);
+  }
+  25% {
+    top: 36%;
+    opacity: 1;
+    transform: translateX(-50%) scale(1.7);
+  }
+  70% {
+    top: 36%;
+    opacity: 1;
+    transform: translateX(-50%) scale(1.7);
+  }
+  100% {
+    top: 26px;
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+}
+@media (max-width: 760px) {
+  .story-actor {
+    display: none;
+  }
 }
 
 .diary-list {
