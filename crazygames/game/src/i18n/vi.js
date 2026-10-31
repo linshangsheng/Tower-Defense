@@ -2369,4 +2369,8 @@ TD.i18n.register("vi", {
   "终极技能（每场战斗一次）": "Kỹ năng tối thượng (mỗi trận một lần)",
   "终极技能，每场战斗一次：拉满弓向天空射出一箭，随后 10 秒里漫天箭雨覆盖整个战场——伤害很高，命中的怪被冰冻；Boss 不会被冻住，但会被打掉大约一半的血量。放箭时所有怪物暂停。": "Kỹ năng tối thượng, mỗi trận một lần: giương cung hết cỡ bắn một mũi tên lên trời, sau đó trong 10 giây bão tên phủ kín cả chiến trường với sát thương cực cao. Quái vật trúng tên sẽ bị đóng băng; Boss không bị đóng băng nhưng mất khoảng một nửa máu. Khi bắn tên, mọi quái vật đều dừng lại.",
   "焚天巨龙飞向了高空——它要俯冲撞墙了！": "Rồng Thiêu Trời bay vút lên cao: nó sắp bổ nhào đâm vào tường thành!",
+  "🔄 刷新（{0} 铜币）· R": "🔄 Làm mới ({0} xu đồng) · R",
+  "本关已刷新 {0} 次，每刷新一次价格翻倍；你现在有 {1} 铜币": "Đã làm mới {0} lần trong màn này, mỗi lần giá nhân đôi; bạn có {1} xu đồng",
+  "换一批补给卡；本关每刷新一次价格翻倍；你现在有 {0} 铜币": "Đổi thẻ tiếp tế; trong màn này mỗi lần làm mới giá nhân đôi; bạn có {0} xu đồng",
+  "铜币不够：刷新要 {0} 铜币（你现在有 {1}）": "Không đủ xu đồng: làm mới cần {0} (bạn có {1})",
 });

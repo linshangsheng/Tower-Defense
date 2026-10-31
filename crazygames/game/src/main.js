@@ -101,7 +101,8 @@
     });
     battle.on('supply', (e) => {
       setPending(null);
-      TD.audio.play('skill');
+      TD.audio.play(e.refreshed ? 'click' : 'skill');
+      if (e.refreshed) TD.ui.closeModal();
       TD.ui.showSupply(battle, e.choices);
     });
     battle.on('bossInterrupt', () => TD.audio.play('interrupt'));
@@ -242,6 +243,16 @@
       game.persist();
       TD.audio.play('buy');
       TD.ui.closeModal();
+    }
+  };
+
+  // 补给刷新（设计书 135）：花战斗里攒的铜币，重抽 3 张
+  game.refreshSupply = function () {
+    const b = game.battle;
+    if (!b || !b.pendingSupply) return;
+    if (!b.refreshSupply()) {
+      TD.audio.play('error');
+      TD.ui.toast(`铜币不够：刷新要 ${Math.ceil(b.supplyRefreshCost())} 铜币（你现在有 ${Math.floor(b.killCopper + b.earlyCopper)}）`);
     }
   };
 
@@ -523,6 +534,7 @@
       }
       if (b.pendingSupply) {
         if (k >= '1' && k <= '3' && b.pendingSupply[+k - 1]) game.pickSupply(b.pendingSupply[+k - 1]);
+        else if (k === 'r') game.refreshSupply();
         return;
       }
       if (k === ' ' || k === 'escape') {

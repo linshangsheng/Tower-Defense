@@ -2121,6 +2121,18 @@
         h('h2', null, '📦 补给箱到了！'),
         h('div', { class: 'hint' }, first ? '战斗暂停中。选一张补给卡，效果持续到本关结束（颜色从低到高：蓝、紫、红、金，越高越强）。按 1 / 2 / 3 也可以选。' : `选一张补给卡（本关有效） · 第 ${battle.supplyPicked.length + 1} 次补给`),
         h('div', { class: 'supply-row' }, cards),
+        // 刷新（设计书 135）：花战斗里攒的铜币重抽这 3 张；这一关第一次的价格按关卡定，之后每次翻倍
+        (() => {
+          const cost = Math.ceil(battle.supplyRefreshCost());
+          const have = Math.floor(battle.killCopper + battle.earlyCopper);
+          const can = battle.canRefreshSupply();
+          return h(
+            'div',
+            { class: 'supply-refresh' },
+            h('button', { class: 'btn' + (can ? ' primary' : ''), disabled: can ? null : true, onclick: () => game.refreshSupply() }, `🔄 刷新（${cost} 铜币）· R`),
+            h('span', { class: 'hint' }, battle.supplyRefreshes ? `本关已刷新 ${battle.supplyRefreshes} 次，每刷新一次价格翻倍；你现在有 ${have} 铜币` : `换一批补给卡；本关每刷新一次价格翻倍；你现在有 ${have} 铜币`)
+          );
+        })(),
         battle.supplyPicked.length ? h('div', { class: 'hint' }, '已选：' + battle.supplyPicked.map((x) => D.supplies[x].name).join('、')) : null
       ),
       { cls: 'supply-modal' }

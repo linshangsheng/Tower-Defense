@@ -2369,4 +2369,8 @@ TD.i18n.register("es", {
   "终极技能（每场战斗一次）": "Habilidad definitiva (una vez por batalla)",
   "终极技能，每场战斗一次：拉满弓向天空射出一箭，随后 10 秒里漫天箭雨覆盖整个战场——伤害很高，命中的怪被冰冻；Boss 不会被冻住，但会被打掉大约一半的血量。放箭时所有怪物暂停。": "Habilidad definitiva, una vez por batalla: tensa el arco al máximo y dispara una flecha al cielo; después, durante 10 segundos, una tormenta de flechas cubre todo el campo de batalla con un daño altísimo. Los monstruos alcanzados quedan congelados; los jefes no se congelan, pero pierden aproximadamente la mitad de su vida. Todos los monstruos se detienen mientras disparas.",
   "焚天巨龙飞向了高空——它要俯冲撞墙了！": "¡El Dragón Quemacielos se eleva por los cielos: va a lanzarse en picado contra la muralla!",
+  "🔄 刷新（{0} 铜币）· R": "🔄 Renovar ({0} monedas de cobre) · R",
+  "本关已刷新 {0} 次，每刷新一次价格翻倍；你现在有 {1} 铜币": "Renovadas {0} veces en este nivel, el precio se duplica cada vez; tienes {1} monedas de cobre",
+  "换一批补给卡；本关每刷新一次价格翻倍；你现在有 {0} 铜币": "Cambia las cartas de suministro; el precio se duplica con cada renovación en este nivel; tienes {0} monedas de cobre",
+  "铜币不够：刷新要 {0} 铜币（你现在有 {1}）": "Monedas de cobre insuficientes: renovar cuesta {0} (tienes {1})",
 });

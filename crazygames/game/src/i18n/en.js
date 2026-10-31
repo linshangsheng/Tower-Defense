@@ -2369,4 +2369,8 @@ TD.i18n.register("en", {
   "终极技能（每场战斗一次）": "Ultimate skill (once per battle)",
   "终极技能，每场战斗一次：拉满弓向天空射出一箭，随后 10 秒里漫天箭雨覆盖整个战场——伤害很高，命中的怪被冰冻；Boss 不会被冻住，但会被打掉大约一半的血量。放箭时所有怪物暂停。": "Ultimate skill, once per battle: draw the bow fully and shoot an arrow into the sky, then for 10 seconds a storm of arrows covers the whole battlefield with very high damage. Monsters it hits are frozen; Bosses aren't frozen but lose about half of their HP. All monsters pause while you shoot.",
   "焚天巨龙飞向了高空——它要俯冲撞墙了！": "The Skyburn Dragon soars skyward: it's about to dive into the wall!",
+  "🔄 刷新（{0} 铜币）· R": "🔄 Refresh ({0} copper coins) · R",
+  "本关已刷新 {0} 次，每刷新一次价格翻倍；你现在有 {1} 铜币": "Refreshed {0} times this level, price doubles each time; you have {1} copper coins",
+  "换一批补给卡；本关每刷新一次价格翻倍；你现在有 {0} 铜币": "Swap the supply cards; price doubles with each refresh this level; you have {0} copper coins",
+  "铜币不够：刷新要 {0} 铜币（你现在有 {1}）": "Not enough copper coins: refresh costs {0} (you have {1})",
 });

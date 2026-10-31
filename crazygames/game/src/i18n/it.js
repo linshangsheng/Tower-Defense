@@ -2369,4 +2369,8 @@ TD.i18n.register("it", {
   "终极技能（每场战斗一次）": "Abilità suprema (una volta per battaglia)",
   "终极技能，每场战斗一次：拉满弓向天空射出一箭，随后 10 秒里漫天箭雨覆盖整个战场——伤害很高，命中的怪被冰冻；Boss 不会被冻住，但会被打掉大约一半的血量。放箭时所有怪物暂停。": "Abilità suprema, una volta per battaglia: tendi l'arco al massimo e scocca una freccia verso il cielo; poi per 10 secondi una tempesta di frecce copre l'intero campo di battaglia con danni altissimi. I mostri colpiti vengono congelati; i Boss non si congelano, ma perdono circa metà della loro salute. Mentre scocchi, tutti i mostri si fermano.",
   "焚天巨龙飞向了高空——它要俯冲撞墙了！": "Il Drago Brucia-Cielo si alza in volo: sta per tuffarsi contro le mura!",
+  "🔄 刷新（{0} 铜币）· R": "🔄 Aggiorna ({0} monete di rame) · R",
+  "本关已刷新 {0} 次，每刷新一次价格翻倍；你现在有 {1} 铜币": "Aggiornato {0} volte in questo livello, il prezzo raddoppia ogni volta; hai {1} monete di rame",
+  "换一批补给卡；本关每刷新一次价格翻倍；你现在有 {0} 铜币": "Cambia le carte rifornimento; il prezzo raddoppia a ogni aggiornamento in questo livello; hai {0} monete di rame",
+  "铜币不够：刷新要 {0} 铜币（你现在有 {1}）": "Monete di rame insufficienti: aggiornare costa {0} (ne hai {1})",
 });
