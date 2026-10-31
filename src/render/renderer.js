@@ -532,6 +532,9 @@
         // 深渊篇：第一波和打到一半时，飘过一句回声低语
         const wh = battle.level.abyss && !battle.mode && TD.data.whispers && TD.data.whispers[TD.data.chapterOf(battle.levelNo).id];
         if (wh && V && (e.index === 0 || e.index === Math.floor(battle.totalWaves / 2))) V.whisper(wh[e.index === 0 ? 0 : 1], 2.2);
+        // 九层妖塔：每一层开场一句
+        const tw = battle.mode && battle.mode.kind === 'tower' && TD.data.towerWhispers && TD.data.towerWhispers[(battle.level.floor || 1) - 1];
+        if (tw && V && e.index === 0) V.whisper(tw, 2.2);
         // 一道光带从右向左扫过战场（最后一波是红色的，并震一下）
         this.fx.push({ kind: 'waveSweep', last, life: 0.9, age: 0 });
         if (last) this.shake = Math.max(this.shake, 6);
@@ -904,6 +907,8 @@
         this.fx.push({ kind: 'glow', x: m.x, y: m.y + m.yOffset - m.def.size * (m.def.hitH === undefined ? 0.6 : m.def.hitH), r: m.def.size * 2.6, color: this.scene.palette.rim, life: 0.3, age: 0 });
       }
       this.burst(m.x, m.y + m.yOffset - m.def.size * (m.def.hitH === undefined ? 0.5 : m.def.hitH), '#ffe28a', m.def.boss ? 40 : 10, m.def.boss ? 320 : 160);
+      // 按章节主题多溅一点"这个地方的东西"（叶子 / 沙尘 / 冰晶 / 火星 …）
+      if (this.vfx && this.theme && this.theme.art && this.fx.length < 220) this.vfx.deathFlavor(this.theme.art, m.x, m.y + m.yOffset - m.def.size * (m.def.hitH === undefined ? 0.5 : m.def.hitH), m.def.size, !!m.def.boss);
       // 死亡的冲击环（Boss 三圈 + 震屏）
       if (this.vfx && this.fx.length < 220) {
         const dy = m.y + m.yOffset - m.def.size * (m.def.hitH === undefined ? 0.5 : m.def.hitH);

@@ -874,6 +874,19 @@
     20: ['再往下，没有墙了。只有那扇门。', '门后有谁在说"别过来"……可那声音，像是在哭。'],
   };
 
+  // 九层妖塔每一层开场飘过的一句话（设计书 132）
+  TD.data.towerWhispers = [
+    '门廊里的灯，还亮着。',
+    '墙上的刻痕，是一代代挑战者留下的。',
+    '台阶很陡，可是向上走的人从不回头。',
+    '妖王们在黑暗里磨着牙。',
+    '到了塔的腰上，风变冷了。',
+    '每一层的回声，都比上一层更重。',
+    '别数还有几层，只看脚下这一级。',
+    '塔顶的光，已经看得见了。',
+    '最后一层。没有退路，也没有遗憾。',
+  ];
+
   // 日记本的顺序
   TD.data.storyOrder = ['ch1', 'pre5', 'post5', 'pre10', 'post10', 'ch2', 'pre15', 'post15', 'pre20', 'post20', 'ch3', 'pre25', 'post25', 'pre30', 'post30', 'ch4', 'pre35', 'post35', 'pre40', 'post40', 'ch5', 'pre45', 'post45', 'pre50', 'post50', 'ch6', 'pre55', 'post55', 'pre60', 'post60', 'ch7', 'pre65', 'post65', 'pre70', 'post70', 'ch8', 'pre75', 'post75', 'pre80', 'post80', 'ch9', 'pre85', 'post85', 'pre90', 'post90', 'ch10', 'pre95', 'post95', 'pre100', 'post100', 'ch11', 'pre105', 'post105', 'pre110', 'post110', 'ch12', 'pre115', 'post115', 'pre120', 'post120', 'ch13', 'pre125', 'post125', 'pre130', 'post130', 'ch14', 'pre135', 'post135', 'pre140', 'post140', 'ch15', 'pre145', 'post145', 'pre150', 'post150', 'ch16', 'pre155', 'post155', 'pre160', 'post160', 'ch17', 'pre165', 'post165', 'pre170', 'post170', 'ch18', 'pre175', 'post175', 'pre180', 'post180', 'ch19', 'pre185', 'post185', 'pre190', 'post190', 'ch20', 'pre195', 'post195', 'pre200', 'post200', 'side_ding', 'side_yan', 'side_ying', 'side_mu'];
 })((globalThis.TD = globalThis.TD || {}));

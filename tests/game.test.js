@@ -5044,3 +5044,15 @@ test('深渊回响低语：每章两句，战斗里第一波和打到一半时�
   const r = require('fs').readFileSync(require('path').join(__dirname, '..', 'src/render/renderer.js'), 'utf8');
   assert.ok(r.includes('V.whisper('));
 });
+
+test('妖塔每层一句话、怪物倒下按章节主题溅东西（设计书 132）', () => {
+  assert.strictEqual(D.towerWhispers.length, 9);
+  const src = (f) => require('fs').readFileSync(require('path').join(__dirname, '..', f), 'utf8');
+  const r = src('src/render/renderer.js');
+  assert.ok(r.includes('TD.data.towerWhispers') && r.includes('this.vfx.deathFlavor('));
+  const v = src('src/render/vfx3.js');
+  const arts = ['meadow', 'desert', 'swamp', 'snow', 'lava', 'cloud', 'sea', 'moon', 'forge', 'void'];
+  for (const a of arts) assert.ok(v.includes(`case '${a}':`), a);
+  // 每个章节主题都有对应的倒下效果
+  for (const ch of D.chapters) assert.ok(arts.includes(ch.theme.art), `章节 ${ch.id} 的 art ${ch.theme.art}`);
+});
