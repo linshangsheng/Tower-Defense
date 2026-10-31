@@ -3110,14 +3110,28 @@
     return c;
   };
 
-  // 把怪物画成头像（用于关卡预览、图鉴）
-  S.portrait = function (type, size) {
+  // 把怪物画成头像（用于关卡预览、图鉴、对话）
+  // opts.dark：黑龙；opts.head：只取头部特写（焚天巨龙全身太大，圆形小头像里看不清）
+  S.portrait = function (type, size, opts) {
     const c = document.createElement('canvas');
     const px = size || 64;
     c.width = px;
     c.height = px;
     const ctx = c.getContext('2d');
     const def = TD.data.monsters[type];
+    opts = opts || {};
+    if (type === 'abyssDragon') {
+      // 龙的画法以身体中心为原点：全身占 2.6 个 s 宽，头在左边 1.14 s、上面 0.35 s 的地方
+      const ai = { form: opts.dark ? 2 : 1 };
+      if (opts.head) {
+        const s = px * 0.85;
+        ctx.translate(px * 0.46 + 1.14 * s, px * 0.5 + 0.35 * s);
+        S.monster(ctx, type, 0, 0, s, 0.5, { ai });
+      } else {
+        S.monster(ctx, type, px * 0.52, px * 0.6, px * 0.36, 0.5, { ai });
+      }
+      return c;
+    }
     const s = def.boss ? px * 0.27 : px * 0.3;
     const y = def.flying ? px * 0.75 : px * 0.88;
     S.monster(ctx, type, px / 2, y, s, 0.3, {});

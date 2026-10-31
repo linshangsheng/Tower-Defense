@@ -293,6 +293,7 @@
             break;
           case 'smokeBomb':
             V.fogCloud(field[0], field[1], field[2], field[3], 3.5, '#b8bec8', 26);
+            V.smokeVeil(field[0], field[1], field[2], field[3], 6);
             break;
           case 'bandage':
             wallHeal(false);
@@ -311,6 +312,7 @@
           case 'oilFlask':
             V.laneFlash(C.wallX, C.width, lb.y0, lb.h, '#7a5a20');
             V.fogCloud(C.wallX + 60, x1, lb.y0, lb.y0 + lb.h, 2.5, '#6a4a20', 10);
+            V.oilPuddle(C.wallX + 40, Math.min(C.width - 10, x1 + 60), lb.y0, lb.h, 6);
             break;
           case 'woodShield':
             V.barrier(C.wallX - 20, C.fieldTop, C.fieldBottom);
@@ -409,6 +411,16 @@
         this.shake = Math.max(this.shake, 9);
       });
       on('barrierBreak', () => V && V.barrierBreak(C.wallX - 20, C.fieldTop, C.fieldBottom));
+      // Boss 登场：屏幕上亮出名牌（巨龙的名牌更红更久）
+      on('spawn', (m) => {
+        if (!V || !m.def || (m.def.boss !== 'major' && m.def.boss !== 'mini')) return;
+        if (m.summoned || m.fromBoss) return;
+        // 名牌下面带一句这个 Boss 在战前对话里的第一句台词（有的话）
+        const sc = TD.data.story && TD.data.story['pre' + battle.levelNo];
+        const quote = sc && (sc.lines.find((l) => l[0] === m.type) || [])[1];
+        V.bossCard(m.def.name, m.def.boss === 'major', m.type === 'abyssDragon' ? '#ff4a2a' : m.def.boss === 'major' ? '#ff6a4a' : '#ffb04a', quote && TD.i18n ? TD.i18n.t(quote) : quote);
+        this.shake = Math.max(this.shake, m.def.boss === 'major' ? 9 : 4);
+      });
       on('bossWarn', (e) => this.flashes.push({ lane: e.lane, until: battle.time + e.duration, color: '255,60,60', m: e.m }));
       on('bossInterrupt', (e) => {
         this.text(e.m.x, e.m.y - 90, '打断！', '#ffd23f', 34, 1.2);
@@ -727,7 +739,19 @@
     // ---------- 特效工具 ----------
     text(x, y, str, color, size, life, crit) {
       if (this.fx.length > 300 && !crit) return;
-      this.fx.push({ kind: 'text', x, y, str, color, size: size || 20, life: life || 0.8, age: 0, vy: -50, crit });
+      size = size || 20;
+      // 飘字不叠在一起：新的飘字和刚出现的飘字撞了，就往上摞一层（最多 4 层，普通伤害摞不下就不显示）
+      const wOf = (s, z) => Array.from(s).reduce((a, ch) => a + (ch.charCodeAt(0) > 255 ? 1 : 0.58), 0) * z;
+      const w = wOf(str, size);
+      let stacked = 0;
+      for (; stacked < 4; stacked++) {
+        const hit = this.fx.find((f) => f.kind === 'text' && f.age < 0.5 && Math.abs(f.x - x) < (w + wOf(f.str, f.size)) / 2 && Math.abs(f.y - y) < (size + f.size) * 0.55);
+        if (!hit) break;
+        y = hit.y - (size + hit.size) * 0.55;
+      }
+      if ((stacked >= 4 && !crit) || y < 70) return;
+      if (stacked >= 4) x += (Math.random() - 0.5) * w * 1.2; // 暴击摞满了：在旁边散开一点
+      this.fx.push({ kind: 'text', x, y, str, color, size, life: life || 0.8, age: 0, vy: -50, crit });
     }
     burst(x, y, color, n, speed) {
       for (let i = 0; i < n; i++) {

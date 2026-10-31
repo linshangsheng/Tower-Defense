@@ -12,6 +12,7 @@
     const n = parseInt(hex.slice(1), 16);
     return `rgba(${n >> 16},${(n >> 8) & 255},${n & 255},${a})`;
   }
+  const C_W = () => (TD.config && TD.config.width) || 1280;
   const hash = (i, s) => {
     const v = Math.sin(i * 127.1 + s * 311.7) * 43758.5453;
     return v - Math.floor(v);
@@ -52,6 +53,19 @@
       const v = rnd(120, 360);
       return { kind: 'mote', x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v * 0.6, g: 0, life: rnd(0.4, 0.8), r: rnd(1.6, 3.2), color: Math.random() < 0.5 ? '#d8b8ff' : '#ffffff', drag: 0.93 };
     });
+  };
+  // 油罐：车道上泼开一片油，亮晶晶的油膜（持续 dur 秒，和减速时间一致）
+  V.oilPuddle = function (x0, x1, y0, h, dur) {
+    this.fx.push({ kind: 'oilPuddle', x0, x1, y0, h, life: dur, age: 0 });
+    this.spawn(16, (i) => ({ kind: 'spark', x: x0 + 30 + (i / 16) * (x1 - x0 - 60), y: y0 + h * 0.5 + rnd(-8, 8), vx: rnd(-20, 20), vy: rnd(-160, -60), g: 360, life: rnd(0.4, 0.8), r: rnd(1.6, 3), color: '#d8a850', drag: 0.97, delay: (i / 16) * 0.3 }));
+  };
+  // 烟雾弹：整个战场飘过一层灰烟，慢慢散去
+  V.smokeVeil = function (x0, x1, y0, y1, dur) {
+    this.fx.push({ kind: 'smokeVeil', x0, x1, y0, y1, life: dur, age: 0, seed: Math.random() * 50 });
+  };
+  // Boss 登场：屏幕正中亮出名牌（大 Boss 更大更红），地面震一下
+  V.bossCard = function (name, major, color, quote) {
+    this.fx.push({ kind: 'bossCard', str: name, quote: quote || '', major: !!major, color: color || '#ff5a3a', life: major ? 2.6 : 1.9, age: 0 });
   };
   // 烈焰之墙：整条车道上持续燃烧 dur 秒
   V.flameLane = function (x0, x1, y0, h, dur) {
@@ -318,6 +332,130 @@
       }
       ctx.fillStyle = rgba('#8a6a3a', 0.9 * fade);
       for (let i = 0; i <= cols; i++) for (let j = 0; j <= 4; j++) ctx.fillRect(f.x0 + (i / cols) * (f.x1 - f.x0) - 2, f.y0 + (j / 4) * f.h * drop - 2, 4, 4);
+    },
+    oilPuddle(ctx, f, k) {
+      const rest = f.life - f.age;
+      const fade = Math.min(1, f.age / 0.4) * (rest < 0.8 ? Math.max(0, rest / 0.8) : 1);
+      const w = f.x1 - f.x0;
+      const cy = f.y0 + f.h * 0.62;
+      // 油膜：几块互相叠着的深褐色椭圆，边缘比中间亮
+      for (let i = 0; i < 9; i++) {
+        const cx = f.x0 + 30 + hash(i, 1) * (w - 60);
+        const rx = 46 + hash(i, 2) * 70;
+        const ry = (f.h * 0.28 + hash(i, 3) * 10) * Math.min(1, f.age / 0.35 + 0.15);
+        const y = cy + (hash(i, 4) - 0.5) * f.h * 0.35;
+        const g = ctx.createRadialGradient(cx, y, 2, cx, y, rx);
+        g.addColorStop(0, rgba('#3a2610', 0.52 * fade));
+        g.addColorStop(0.7, rgba('#6a4818', 0.42 * fade));
+        g.addColorStop(1, rgba('#a8782a', 0));
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.ellipse(cx, y, rx, ry, 0, 0, TAU);
+        ctx.fill();
+      }
+      // 油面上的彩色反光：一条条缓缓滑动的细弧
+      ctx.globalCompositeOperation = 'lighter';
+      const cols = ['#ffd27a', '#8fe0c8', '#d8a0ff', '#ffb070'];
+      for (let i = 0; i < 18; i++) {
+        const cx = f.x0 + 30 + ((hash(i, 7) * (w - 60) + f.age * (8 + i * 1.5)) % (w - 60));
+        const y = cy + (hash(i, 8) - 0.5) * f.h * 0.34;
+        ctx.strokeStyle = rgba(cols[i % 4], (0.45 + 0.35 * Math.sin(f.age * 2.4 + i)) * fade);
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.ellipse(cx, y, 10 + hash(i, 9) * 22, 2.6 + hash(i, 10) * 3, 0, Math.PI * 1.05, Math.PI * 1.95);
+        ctx.stroke();
+      }
+      // 偶尔冒一个油泡
+      for (let i = 0; i < 5; i++) {
+        const ph = (f.age * 0.7 + hash(i, 11)) % 1;
+        const cx = f.x0 + 40 + hash(i, 12) * (w - 80);
+        ctx.fillStyle = rgba('#ffe6a8', 0.5 * Math.sin(ph * Math.PI) * fade);
+        ctx.beginPath();
+        ctx.arc(cx, cy - ph * 14, 2 + hash(i, 13) * 2.4, 0, TAU);
+        ctx.fill();
+      }
+    },
+    smokeVeil(ctx, f, k) {
+      const rest = f.life - f.age;
+      const fade = Math.min(1, f.age / 0.5) * (rest < 1.2 ? Math.max(0, rest / 1.2) : 1);
+      const w = f.x1 - f.x0;
+      const h = f.y1 - f.y0;
+      for (let i = 0; i < 26; i++) {
+        const sp = 14 + hash(i, 1) * 22;
+        const x = f.x0 + (((hash(i, 2) * w - f.age * sp) % w) + w) % w;
+        const y = f.y0 + hash(i, 3) * h + Math.sin(f.age * 0.9 + i) * 10;
+        const r = 54 + hash(i, 4) * 60 + f.age * 6;
+        const g = ctx.createRadialGradient(x, y, 4, x, y, r);
+        g.addColorStop(0, rgba('#d4d8e0', 0.52 * fade));
+        g.addColorStop(0.6, rgba('#b4bac6', 0.3 * fade));
+        g.addColorStop(1, rgba('#aab0bc', 0));
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, TAU);
+        ctx.fill();
+      }
+    },
+    bossCard(ctx, f, k) {
+      const t = f.age;
+      const inK = easeOut(t / 0.35);
+      const outK = f.life - t < 0.5 ? Math.max(0, (f.life - t) / 0.5) : 1;
+      const a = Math.min(inK, outK);
+      const W = C_W();
+      const cy = f.major ? 170 : 150;
+      const bh = (f.major ? 112 : 74) + (f.quote ? 26 : 0);
+      // 暗红色的横带，从两边合拢
+      const spread = (f.major ? 1 : 0.8) * W * 0.5 * inK;
+      const g = ctx.createLinearGradient(W / 2 - spread, 0, W / 2 + spread, 0);
+      g.addColorStop(0, rgba('#1a0408', 0));
+      g.addColorStop(0.18, rgba('#1a0408', 0.78 * a));
+      g.addColorStop(0.82, rgba('#1a0408', 0.78 * a));
+      g.addColorStop(1, rgba('#1a0408', 0));
+      ctx.fillStyle = g;
+      ctx.fillRect(W / 2 - spread, cy - bh / 2, spread * 2, bh);
+      // 上下两条亮线 + 中间的小菱形
+      ctx.globalCompositeOperation = 'lighter';
+      for (const dy of [-bh / 2, bh / 2]) {
+        const lg = ctx.createLinearGradient(W / 2 - spread, 0, W / 2 + spread, 0);
+        lg.addColorStop(0, rgba(f.color, 0));
+        lg.addColorStop(0.5, rgba(f.color, 0.9 * a));
+        lg.addColorStop(1, rgba(f.color, 0));
+        ctx.fillStyle = lg;
+        ctx.fillRect(W / 2 - spread, cy + dy - 1.5, spread * 2, 3);
+      }
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.globalAlpha = a;
+      ctx.font = 'bold 15px "Trebuchet MS", sans-serif';
+      ctx.fillStyle = rgba(f.color, 0.95);
+      ctx.fillText(f.major ? '—  B O S S  —' : '—  M I N I   B O S S  —', W / 2, cy - bh * (f.quote ? 0.36 : 0.3));
+      // 名字：字从大到正常缩进来，带红色辉光
+      const sc = 1 + (1 - inK) * 0.8;
+      ctx.save();
+      ctx.translate(W / 2, cy + (f.quote ? -10 : bh * 0.08));
+      ctx.scale(sc, sc);
+      ctx.font = `bold ${f.major ? 48 : 34}px "Trebuchet MS", sans-serif`;
+      ctx.shadowColor = rgba(f.color, 0.95);
+      ctx.shadowBlur = 20;
+      ctx.fillStyle = '#fff2e0';
+      ctx.fillText(f.str, 0, 0);
+      ctx.restore();
+      ctx.shadowBlur = 0;
+      if (f.quote) {
+        ctx.font = 'italic 17px "Trebuchet MS", sans-serif';
+        ctx.fillStyle = rgba('#ffe8d0', 0.88 * Math.min(1, Math.max(0, (t - 0.3) / 0.4)));
+        ctx.fillText('「' + f.quote + '」', W / 2, cy + bh * 0.34, 820);
+      }
+      ctx.textBaseline = 'alphabetic';
+      // 登场瞬间的一圈冲击光
+      if (t < 0.5) {
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.strokeStyle = rgba(f.color, (1 - t / 0.5) * 0.7);
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.ellipse(W / 2, cy, 40 + t * 900, 12 + t * 120, 0, 0, TAU);
+        ctx.stroke();
+      }
     },
     crescent(ctx, f, k) {
       const fade = k > 0.85 ? (1 - k) / 0.15 : 1;

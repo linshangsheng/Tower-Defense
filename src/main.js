@@ -165,7 +165,7 @@
       if (battle.level.final && battle.result.win && reward.firstClear) {
         game.battle = null;
         game.renderer.battle = null;
-        TD.ui.showEnding(() => {
+        (battle.levelNo === 200 ? TD.ui.showTrueEnding : TD.ui.showEnding)(() => {
           TD.ui.showMap(TD.data.chapterOf(battle.levelNo).id);
           TD.ui.showResult(battle, reward);
         });

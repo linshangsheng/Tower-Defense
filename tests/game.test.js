@@ -861,7 +861,7 @@ test('守城日记：每个段落都有台词，说话人都存在', () => {
   // 每章的小 Boss 和大 Boss 都有战前、战后
   for (const n of Object.keys(D.levels).map(Number)) {
     const t = D.levels[n].type;
-    if ((t === 'boss' || t === 'miniboss') && !D.levels[n].abyss) assert.ok(D.story['pre' + n] && D.story['post' + n], `第 ${n} 关缺对话`);
+    if (t === 'boss' || t === 'miniboss') assert.ok(D.story['pre' + n] && D.story['post' + n], `第 ${n} 关缺对话`);
   }
 });
 
@@ -4954,4 +4954,56 @@ test('门户 SDK：普通版什么都不做；门户版按 init → loadingStart
   }
   const itch = fs.readFileSync(path.join(__dirname, '..', 'tools', 'crazygames.js'), 'utf8');
   assert.ok(itch.includes("'    portal: null,', \"    portal: 'crazygames',\""));
+});
+
+test('深渊篇剧情：第 12–20 章开场、105–195 每个 Boss 的战前战后、第 200 关战前（设计书 130）', () => {
+  for (let ch = 12; ch <= 20; ch++) assert.ok(D.story['ch' + ch] && D.storyOrder.includes('ch' + ch), 'ch' + ch);
+  for (let n = 105; n <= 195; n += 5) for (const k of ['pre' + n, 'post' + n]) assert.ok(D.story[k] && D.storyOrder.includes(k), k);
+  assert.ok(D.story.pre200 && D.storyOrder.includes('pre200') && D.storyOrder.includes('post200'));
+  // 日记顺序里没有重复，也没有漏掉的（战斗里播的 dragonFall 除外）
+  assert.strictEqual(new Set(D.storyOrder).size, D.storyOrder.length);
+  for (const k of Object.keys(D.story)) assert.ok(k === 'dragonFall' || D.storyOrder.includes(k), k);
+  // 每章的开场放在这一章的 Boss 对话前面
+  const i = (k) => D.storyOrder.indexOf(k);
+  for (let ch = 12; ch <= 20; ch++) assert.ok(i('ch' + ch) < i('pre' + (105 + (ch - 11) * 10)), 'ch' + ch);
+  // 战前对话在战后之前，两个说话人之间有来有回
+  for (let n = 105; n <= 195; n += 5) {
+    assert.ok(i('pre' + n) < i('post' + n));
+    assert.ok(new Set(D.story['post' + n].lines.map((l) => l[0])).size >= 1);
+  }
+});
+
+test('第 200 关首胜走真结局，不再错放墨墨的结局（设计书 130.3）', () => {
+  const main = require('fs').readFileSync(require('path').join(__dirname, '..', 'src/main.js'), 'utf8');
+  assert.ok(main.includes('battle.levelNo === 200 ? TD.ui.showTrueEnding : TD.ui.showEnding'));
+  const ui = require('fs').readFileSync(require('path').join(__dirname, '..', 'src/ui/ui-story.js'), 'utf8');
+  assert.ok(ui.includes('UI.showTrueEnding = function'));
+  assert.ok(D.levels[200].final && D.levels[50].final && !D.levels[100].final);
+});
+
+test('飘字不叠在一起：撞上的往上摞，暴击摞满了散开，普通伤害摞满了就不显示（设计书 130.4）', () => {
+  require('../src/render/renderer.js');
+  const T = TD.Renderer.prototype.text;
+  const fx = [];
+  const o = { fx };
+  for (let i = 0; i < 4; i++) T.call(o, 500, 400, '暴击 12', '#fff', 26, 0.9, true);
+  const ys = fx.map((f) => f.y);
+  assert.strictEqual(new Set(ys).size, 4, '四个暴击飘字各占一层');
+  assert.ok(ys[1] < ys[0] && ys[2] < ys[1]);
+  T.call(o, 500, 400, '5', '#fff', 20, 0.6, false);
+  assert.strictEqual(fx.length, 4, '摞不下的普通伤害不显示');
+  T.call(o, 500, 400, '暴击 99', '#fff', 26, 0.9, true);
+  assert.strictEqual(fx.length, 5, '暴击一定显示');
+  // 不撞的飘字原位出现
+  T.call(o, 200, 400, '7', '#fff', 20, 0.6, false);
+  assert.strictEqual(fx[fx.length - 1].y, 400);
+});
+
+test('Boss 登场名牌、油罐油膜、烟雾弹烟幕（设计书 130.4）', () => {
+  const src = (f) => require('fs').readFileSync(require('path').join(__dirname, '..', f), 'utf8');
+  const r = src('src/render/renderer.js');
+  assert.ok(r.includes("on('spawn'") && r.includes('V.bossCard('));
+  assert.ok(r.includes('V.oilPuddle(') && r.includes('V.smokeVeil('));
+  const v = src('src/render/vfx3.js');
+  for (const k of ['oilPuddle', 'smokeVeil', 'bossCard']) assert.ok(v.includes(`V.${k} = function`) && v.includes(`    ${k}(ctx, f, k) {`), k);
 });
