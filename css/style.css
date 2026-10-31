@@ -1634,6 +1634,7 @@ body {
   inset: 0;
   z-index: 0;
   pointer-events: none;
+  background: #0c0818;
 }
 .story-bg canvas {
   position: absolute;
@@ -1642,15 +1643,16 @@ body {
   height: 100%;
 }
 .story-bg-scene {
-  filter: blur(3px) brightness(0.62) saturate(1.1);
+  image-rendering: auto;
+  opacity: 0.72;
   transform: scale(1.06);
   animation: storyDrift 18s ease-in-out infinite alternate;
 }
 .story-overlay.abyss .story-bg-scene {
-  filter: blur(3px) brightness(0.55) saturate(1.25) hue-rotate(18deg);
+  opacity: 0.5;
 }
 .story-overlay.dragon .story-bg-scene {
-  filter: blur(3px) brightness(0.5) saturate(1.4) sepia(0.45) hue-rotate(-18deg);
+  opacity: 0.45;
 }
 .story-overlay.dragon::after {
   content: '';

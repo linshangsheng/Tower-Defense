@@ -529,6 +529,9 @@
         if (e.chapter) this.setChapter(TD.data.chapters.find((c) => c.id === e.chapter));
         const last = !battle.level.endless && e.index === battle.totalWaves - 1;
         this.banner(battle.level.endless ? `第 ${e.index + 1} 波` : last ? '最后一波！' : `第 ${e.index + 1} 波`);
+        // 深渊篇：第一波和打到一半时，飘过一句回声低语
+        const wh = battle.level.abyss && !battle.mode && TD.data.whispers && TD.data.whispers[TD.data.chapterOf(battle.levelNo).id];
+        if (wh && V && (e.index === 0 || e.index === Math.floor(battle.totalWaves / 2))) V.whisper(wh[e.index === 0 ? 0 : 1], 2.2);
         // 一道光带从右向左扫过战场（最后一波是红色的，并震一下）
         this.fx.push({ kind: 'waveSweep', last, life: 0.9, age: 0 });
         if (last) this.shake = Math.max(this.shake, 6);
@@ -4292,12 +4295,37 @@
             bandG.addColorStop(1, 'rgba(8,12,24,0)');
             ctx.fillStyle = bandG;
             ctx.fillRect(C.width / 2 - 300, 188, 600, 68);
+            // 上下两条金线从中间向两边展开，两端各一个小菱形（设计书 131）
+            const open = Math.min(1, f.age * 4);
+            const lineG = ctx.createLinearGradient(C.width / 2 - 300, 0, C.width / 2 + 300, 0);
+            lineG.addColorStop(0, 'rgba(255,214,120,0)');
+            lineG.addColorStop(0.5, 'rgba(255,214,120,0.85)');
+            lineG.addColorStop(1, 'rgba(255,214,120,0)');
+            ctx.fillStyle = lineG;
+            for (const ly of [188, 254]) ctx.fillRect(C.width / 2 - 300 * open, ly, 600 * open, 2);
+            ctx.fillStyle = 'rgba(255,226,150,0.9)';
+            for (const sx of [-1, 1]) {
+              const dx = C.width / 2 + sx * 300 * open * 0.82;
+              ctx.beginPath();
+              ctx.moveTo(dx, 222 - 7);
+              ctx.lineTo(dx + 7, 222);
+              ctx.lineTo(dx, 222 + 7);
+              ctx.lineTo(dx - 7, 222);
+              ctx.closePath();
+              ctx.fill();
+            }
             ctx.font = 'bold 36px "Trebuchet MS", sans-serif';
             ctx.textAlign = 'center';
             ctx.shadowColor = 'rgba(255,200,110,0.9)';
             ctx.shadowBlur = 16;
             ctx.fillStyle = '#fff3d0';
-            ctx.fillText(f.str, C.width / 2, 235);
+            // 字从略大缩到正常，带一点回弹
+            const pop = 1 + Math.max(0, 0.22 - f.age * 0.9);
+            ctx.save();
+            ctx.translate(C.width / 2, 235);
+            ctx.scale(pop, pop);
+            ctx.fillText(f.str, 0, 0);
+            ctx.restore();
             ctx.shadowBlur = 0;
             break;
           }

@@ -60,7 +60,7 @@
     { id: 'tower1', name: '初探妖塔', desc: '通过九层妖塔的第 1 层', reward: { silver: 3 }, check: (s) => ((s.tower || {}).best || 0) >= 1 },
     { id: 'tower5', name: '妖塔勇士', desc: '通过九层妖塔的第 5 层', reward: { gold: 1 }, check: (s) => ((s.tower || {}).best || 0) >= 5 },
     { id: 'tower9', name: '镇塔者', desc: '通关九层妖塔的全部 9 层', reward: { gold: 3 }, check: (s) => ((s.tower || {}).best || 0) >= 9 },
-    { id: 'diary', name: '日记写满了', desc: '读完全部守城日记（跳过的段落可以在日记本里重看）', reward: { silver: 3 }, check: (s) => (TD.data.storyOrder || []).every((k) => (s.story || {})[k] === 'read') },
+    { id: 'diary', name: '日记写满了', desc: '读完全部守城日记（番外除外；跳过的段落可以在日记本里重看）', reward: { silver: 3 }, check: (s) => (TD.data.storyOrder || []).filter((k) => !k.startsWith('side_')).every((k) => (s.story || {})[k] === 'read') },
     { id: 'kill1k', name: '百怪斩', desc: '累计击败 1000 只怪物', reward: { silver: 2 }, check: (s) => s.stats.kills >= 1000 },
     { id: 'kill10k', name: '万怪敌', desc: '累计击败 10000 只怪物', reward: { gold: 1 }, check: (s) => s.stats.kills >= 10000 },
     { id: 'bosses', name: 'Boss 克星', desc: '击败全部 10 个 Boss（含小 Boss）', reward: { gold: 1 }, check: (s) => bossTypes().every((k) => (s.stats.killsByType || {})[k] > 0) },

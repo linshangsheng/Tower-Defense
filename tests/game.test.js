@@ -878,6 +878,7 @@ test('守城日记：解锁、自动播放一次、读完全部得成就', () =>
   P.markStory(s, 'ch1', false);
   assert.strictEqual(s.story.ch1, 'read', '读过的不会被跳过覆盖');
   clearUpTo(s, Math.max(...Object.keys(D.levels).map(Number)));
+  s.stats.heroWins = { ding: 99, yan: 99, ying: 99, mu: 99 };
   for (const k of D.storyOrder) assert.ok(P.storyUnlocked(s, k), k);
   let got = [];
   for (const k of D.storyOrder) got = got.concat(P.markStory(s, k, true));
@@ -5006,4 +5007,40 @@ test('Boss 登场名牌、油罐油膜、烟雾弹烟幕（设计书 130.4）', 
   assert.ok(r.includes('V.oilPuddle(') && r.includes('V.smokeVeil('));
   const v = src('src/render/vfx3.js');
   for (const k of ['oilPuddle', 'smokeVeil', 'bossCard']) assert.ok(v.includes(`V.${k} = function`) && v.includes(`    ${k}(ctx, f, k) {`), k);
+});
+
+test('番外：用同伴通关满 12 场解锁，自动播放一次，不计入日记成就（设计书 131）', () => {
+  const s = P.newSave();
+  for (const k of Object.keys(P.SIDE_STORIES)) {
+    assert.ok(D.story[k] && D.storyOrder.includes(k), k);
+    assert.ok(!P.storyUnlocked(s, k) && !P.storyDue(s, k));
+  }
+  assert.strictEqual(P.sideStoryDue(s), null);
+  // 用 Lyra 打赢 12 场（recordStats 按当前出战英雄记）
+  s.hero = 'ding';
+  s.levels[34] = { stars: 1, clears: 1 }; // 解锁 Lyra 的条件
+  for (let i = 0; i < 11; i++) P.recordStats(s, { kills: 1 }, true);
+  if (P.heroId(s) === 'ding') {
+    assert.strictEqual(P.sideStoryDue(s), null, '11 场还不够');
+    P.recordStats(s, { kills: 1 }, true);
+    assert.strictEqual(P.sideStoryDue(s), 'side_ding');
+    P.markStory(s, 'side_ding', true);
+    assert.strictEqual(P.sideStoryDue(s), null, '读过就不再播');
+  } else {
+    // 没有解锁 Lyra 就回到 Kael 的记录
+    assert.strictEqual(s.stats.heroWins.dang, 11);
+  }
+  // 老存档迁移不会把番外记成"已跳过"
+  assert.strictEqual(P.storyPassed(s, 'side_mu'), false);
+  // 日记成就只看主线
+  const t = P.newSave();
+  clearUpTo(t, 200);
+  for (const k of D.storyOrder) if (!k.startsWith('side_')) P.markStory(t, k, true);
+  assert.ok(D.achievements.find((a) => a.id === 'diary').check(t));
+});
+
+test('深渊回响低语：每章两句，战斗里第一波和打到一半时飘过（设计书 131）', () => {
+  for (let ch = 11; ch <= 20; ch++) assert.ok(D.whispers[ch] && D.whispers[ch].length === 2, 'ch' + ch);
+  const r = require('fs').readFileSync(require('path').join(__dirname, '..', 'src/render/renderer.js'), 'utf8');
+  assert.ok(r.includes('V.whisper('));
 });
