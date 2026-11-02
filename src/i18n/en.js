@@ -2450,4 +2450,10 @@ TD.i18n.register("en", {
   "击败怪物的铜币翻倍，怪物血量 +30%": "Copper from kills doubled, monster HP +30%",
   "背水一战": "Last Stand",
   "城墙血量 −30%，攻击力 +30%": "Wall HP −30%, attack +30%",
+  "万箭齐发": "Rain of a Thousand Arrows",
+  "使用一次终极技能「万箭天降」": "Use the ultimate skill \"Skyfall of Arrows\" once",
+  "精打细算": "Penny Pincher",
+  "一场战斗里刷新补给 3 次": "Refresh the supply cards 3 times in one battle",
+  "常来常往": "Regular Visitor",
+  "累计完成 7 次每日挑战": "Complete 7 daily challenges in total",
 });

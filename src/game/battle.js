@@ -2633,6 +2633,8 @@
         combos: Object.assign({}, this.combos),
         minWallRatio: this.minWallRatio,
         skillsCarried: this.skills.length,
+        ultUsed: !!(this.ult && this.ult.state !== 'ready'),
+        supplyRefreshes: this.supplyRefreshes || 0,
         itemsUsed: this.itemsUsed.slice(),
         wave: this.waveIndex + 1,
         // 无尽模式：清完的波数（最后一波没打完不算）

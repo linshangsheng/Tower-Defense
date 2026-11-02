@@ -730,6 +730,23 @@ test('每日挑战新规则：属性修正（rules.mods）真的叠加到英雄�
   }
 });
 
+test('新成就：终极技能 / 刷新补给 3 次 / 累计 7 次每日挑战', () => {
+  const s = P.newSave();
+  const got = (ctx) => P.checkAchievements(s, ctx).map((x) => x.id || x);
+  assert.ok(!got({ win: true, level: 3 }).includes('ultimate'));
+  assert.ok(got({ win: true, level: 3, ultUsed: true }).includes('ultimate'));
+  assert.ok(got({ win: true, level: 3, supplyRefreshes: 2 }).includes('refresh3') === false);
+  assert.ok(got({ win: true, level: 3, supplyRefreshes: 3 }).includes('refresh3'));
+  for (let i = 1; i <= 6; i++) s.daily = Object.assign(s.daily || {}, { ['2027-01-0' + i]: true });
+  assert.ok(!got({}).includes('daily7'));
+  s.daily['2027-01-07'] = true;
+  assert.ok(got({}).includes('daily7'));
+  // 战斗结果里确实带这两个字段
+  const b = new TD.Battle({ level: 3, stats: P.heroStats(P.newSave()), loadout: P.battleLoadout(P.newSave()), seed: 1 });
+  b.finish(false);
+  assert.ok('ultUsed' in b.result && 'supplyRefreshes' in b.result);
+});
+
 test('墨墨：还没走到停靠位置就被打到分身，现形后要继续往前走（否则战斗卡死）', () => {
   const b = newBattle(50);
   b.hero.cooldown = 1e9;

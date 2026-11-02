@@ -23,6 +23,10 @@
     { id: 'ch10', name: '混沌终结者', desc: '通关第 100 关，合上混沌裂缝', reward: { gold: 3 }, check: (s) => cleared(s, 100) },
     { id: 'abyss15', name: '深渊行者', desc: '通关第 150 关，在深渊里走了一半', reward: { gold: 2 }, check: (s) => cleared(s, 150) },
     { id: 'abyss20', name: '深渊终结者', desc: '通关第 200 关，击败深渊尽头的焚天巨龙', reward: { gold: 5 }, check: (s) => cleared(s, 200) },
+    // 新功能对应的成就（设计书 153）
+    { id: 'ultimate', name: '万箭齐发', desc: '使用一次终极技能「万箭天降」', reward: { silver: 3 }, check: (s, c) => !!(c && c.ultUsed) },
+    { id: 'refresh3', name: '精打细算', desc: '一场战斗里刷新补给 3 次', reward: { silver: 2 }, check: (s, c) => !!(c && c.supplyRefreshes >= 3) },
+    { id: 'daily7', name: '常来常往', desc: '累计完成 7 次每日挑战', reward: { silver: 3 }, check: (s) => Object.keys(s.daily || {}).length >= 7 },
     { id: 'bubbles', name: '啵啵啵', desc: '累计戳破 100 个泡泡', reward: { silver: 3 }, check: (s) => (s.stats.bubbles || 0) >= 100 },
     { id: 'perfect', name: '毫发无损', desc: '第 3 关以后，城墙满血通关任意一关', reward: { silver: 2 }, check: (s, c) => !!(c && c.win && c.level >= 3 && c.wallRatio >= 0.9999) },
     { id: 'close', name: '惊险过关', desc: '城墙剩余不到 5% 时通关', reward: { silver: 2 }, check: (s, c) => !!(c && c.win && c.wallRatio < 0.05) },
