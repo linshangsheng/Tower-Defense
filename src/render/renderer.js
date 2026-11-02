@@ -560,6 +560,9 @@
         // 战场见闻（第 1–10 章）：开场和战到一半各一句，按关卡号轮换，同一章里每关听到的不一样
         const fn = !battle.level.abyss && !battle.mode && TD.data.fieldNotes && TD.data.fieldNotes[TD.data.chapterOf(battle.levelNo).id];
         if (fn && V && (e.index === 0 || e.index === Math.floor(battle.totalWaves / 2))) V.whisper(fn[(battle.levelNo + (e.index === 0 ? 0 : 2)) % fn.length], 2.2);
+        // 无尽模式：打到几个整数波的时候飘过一句话
+        const ew = battle.level.endless && TD.data.endlessWhispers && TD.data.endlessWhispers[e.index + 1];
+        if (ew && V) V.whisper(ew, 1.6);
         // 九层妖塔：每一层开场一句
         const tw = battle.mode && battle.mode.kind === 'tower' && TD.data.towerWhispers && TD.data.towerWhispers[(battle.level.floor || 1) - 1];
         if (tw && V && e.index === 0) V.whisper(tw, 2.2);

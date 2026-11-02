@@ -747,6 +747,11 @@ test('新成就：终极技能 / 刷新补给 3 次 / 累计 7 次每日挑战',
   assert.ok('ultUsed' in b.result && 'supplyRefreshes' in b.result);
 });
 
+test('无尽模式里程碑：每个里程碑波数都有一句话，且不空', () => {
+  const ks = Object.keys(D.endlessWhispers).map(Number);
+  assert.ok(ks.length >= 8 && ks.every((k) => k > 0 && D.endlessWhispers[k].length > 8));
+});
+
 test('墨墨：还没走到停靠位置就被打到分身，现形后要继续往前走（否则战斗卡死）', () => {
   const b = newBattle(50);
   b.hero.cooldown = 1e9;
