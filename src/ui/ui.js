@@ -1962,7 +1962,7 @@
         h('div', { class: 'wall-bar' }, h('span', { class: 'wall-label' }, '城墙'), h('div', { class: 'wall-track' }, hud.wallFill), hud.wallText),
         h('div', { class: 'wave-box' }, hud.wave, hud.callBtn),
         h('div', { class: 'hud-copper' }, coinIcon('copper'), hud.copper),
-        h('button', { class: 'btn small', onclick: () => game.togglePause() }, '❚❚')
+        h('button', { class: 'btn small pause-btn', onclick: () => game.togglePause() }, '❚❚')
       ),
       hud.ultBar,
       hud.laneHint,

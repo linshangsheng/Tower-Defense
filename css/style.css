@@ -2263,6 +2263,14 @@ body {
 #ui.large-text .hud-bottom {
   zoom: 1.15;
 }
+/* 手机（大字模式）：战斗里的小按钮放大到手指好点（舞台已缩小到约 0.55，所以要多放大一些） */
+#ui.large-text .ctrl-bar .btn.small,
+#ui.large-text .pause-btn,
+#ui.large-text .topbar .btn.small {
+  min-height: 76px;
+  padding: 10px 20px;
+  font-size: 22px;
+}
 #ui.large-text .topbar .chapter-title {
   font-size: 22px;
 }
