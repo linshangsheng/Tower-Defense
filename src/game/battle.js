@@ -1281,7 +1281,8 @@
           if (!again.length) break;
           this.fire(again);
           this.rollProcs(again);
-          this.emit('combo', {});
+          // 连珠被动的追加一击用自己的事件名：'combo' 是技能协同（带名字和位置）的事件，渲染层的监听会拿 undefined 去画字而抛异常（设计书 159）
+          this.emit('comboShot', {});
         }
       }
       this.hero.cooldown += 1 / this.currentAspd();

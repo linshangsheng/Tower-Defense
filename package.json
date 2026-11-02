@@ -8,6 +8,7 @@
     "sim": "node tools/sim.js --seeds 6",
     "sweep": "node tools/boss-sweep.js",
     "sweep:levels": "node tools/level-sweep.js 1 200",
+    "monkey": "NODE_PATH=${NODE_PATH:-/opt/node22/lib/node_modules} node tools/monkey.js",
     "smoke": "NODE_PATH=${NODE_PATH:-/opt/node22/lib/node_modules} node tools/smoke.js screenshots",
     "perf": "NODE_PATH=${NODE_PATH:-/opt/node22/lib/node_modules} node tools/perf.js",
     "pwa": "NODE_PATH=${NODE_PATH:-/opt/node22/lib/node_modules} node tools/pwa.js",

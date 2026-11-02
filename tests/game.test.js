@@ -752,6 +752,20 @@ test('无尽模式里程碑：每个里程碑波数都有一句话，且不空',
   assert.ok(ks.length >= 8 && ks.every((k) => k > 0 && D.endlessWhispers[k].length > 8));
 });
 
+test('连珠被动的追加一击：发 comboShot，不会误发没带名字的 combo（渲染层的技能协同监听会因此抛异常）', () => {
+  const sv = P.newSave();
+  const st = P.heroStats(sv);
+  st.passives = Object.assign({}, st.passives, { combo: true });
+  st.passiveVals = Object.assign({}, st.passiveVals, { combo: 1 });
+  const b = new TD.Battle({ level: 3, stats: st, loadout: P.battleLoadout(sv), seed: 1 });
+  const seen = { combo: [], comboShot: 0 };
+  b.on('combo', (e) => seen.combo.push(e));
+  b.on('comboShot', () => seen.comboShot++);
+  for (let i = 0; i < 60 * 25; i++) b.step(1 / 60);
+  assert.ok(seen.comboShot > 0, '连珠应该触发过');
+  assert.ok(seen.combo.every((e) => typeof e.name === 'string' && e.name.length), "'combo' 事件必须带名字");
+});
+
 test('墨墨：还没走到停靠位置就被打到分身，现形后要继续往前走（否则战斗卡死）', () => {
   const b = newBattle(50);
   b.hero.cooldown = 1e9;
@@ -3761,7 +3775,7 @@ test('连珠按几率累计追加攻击；灼烧伤害跟着等级；穿甲无�
     b.stats.passiveVals.combo = rate;
     b.spawnMonster('slime', 1, 400);
     let combos = 0;
-    b.on('combo', () => combos++);
+    b.on('comboShot', () => combos++);
     b.monsters.forEach((m) => (m.hp = m.maxHp = 1e12));
     for (let i = 0; i < 60 * 20; i++) b.step(1 / 60);
     return { combos, attacks: b.hero.attacks };

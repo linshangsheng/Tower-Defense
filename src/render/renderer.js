@@ -575,7 +575,7 @@
       on('earlyCall', (e) => {
         if (e.bonus > 0) this.text(C.width - 160, 90, `提前召唤 +${e.bonus} 铜`, '#ffb347', 24, 1.4);
       });
-      on('combo', () => this.text(C.heroX + 30, battle.heroY - 100, '连珠!', '#ffd23f', 18, 0.6));
+      on('comboShot', () => this.text(C.heroX + 30, battle.heroY - 100, '连珠!', '#ffd23f', 18, 0.6));
       // 第二章
       on('splash', (e) => {
         this.fx.push({ kind: 'splash', x: e.x, y: e.y, r: e.radius, magic: e.magic, color: e.color, life: 0.35, age: 0 });
@@ -790,6 +790,7 @@
       this.fx.push({ kind: 'text', x: C.heroX + 70, y: (b.heroY || 320) - 120, str, color: '#cfe8ff', size: 22, life: 2.4, age: -(delay || 0), vy: -10 });
     }
     text(x, y, str, color, size, life, crit) {
+      if (typeof str !== 'string' || !str) return; // 事件没带文字（比如事件名被两个功能共用）时别抛异常，直接不画
       if (this.fx.length > 300 && !crit) return;
       size = size || 20;
       // 飘字不叠在一起：新的飘字和刚出现的飘字撞了，就往上摞一层（最多 4 层，普通伤害摞不下就不显示）
