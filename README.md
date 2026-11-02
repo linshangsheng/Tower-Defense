@@ -43,6 +43,7 @@ npm run sim     # 强机器人模拟，检验各章的验收目标（--campaign 
 node tools/casual.js --seeds 6        # 休闲玩家模拟，估计真人难度（--easy / --no-rally）
 node tools/tune.js 51 60 --only 55,60 # 自动平衡：按关卡类型的目标难度调整怪物数量倍率
 npm run smoke   # 浏览器冒烟测试（需要 Playwright），截图输出到 screenshots/
+npm run sweep   # Boss 卡死扫描：每个 Boss 关在 90% / 60% / 35% 血出场下能否通关（约 5 分钟；node tools/boss-sweep.js 20,60 0.6 只扫指定关）
 npm run screens # 全界面检查：逐一打开 53 个界面（node tools/screens.js 目录 可截图；--lang en 用该语言检查并列出没翻译的中文）
 node tools/i18n-extract.js            # 改了界面里的中文后重新提取词条（i18n/keys.json）；翻译见 i18n/TRANSLATING.md
 node tools/i18n-merge.js de && node tools/i18n-build.js de   # 合并某语言的翻译 → src/i18n/de.js
