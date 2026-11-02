@@ -799,7 +799,109 @@
   };
 
   // ---------- 漂浮光点 ----------
-  A.makeMotes = function (n) {
+  // 每章一种环境动态（设计书 150）：在通用的漂浮光点之外，再加十来个有章节特色的小东西
+  A.MOTE_KIND = { meadow: 'leaf', desert: 'sand', swamp: 'wisp', snow: 'snow', lava: 'ember', cloud: 'cloud', sea: 'bubble', moon: 'moth', forge: 'spark', void: 'star' };
+  const rnd = (a, b) => a + Math.random() * (b - a);
+  function spawnMover(kind, fresh) {
+    const m = { kind, ph: Math.random() * 6.28, life: Math.random() };
+    const top = C.fieldTop;
+    m.x = fresh ? rnd(0, W) : W + rnd(10, 80);
+    m.y = rnd(top, H);
+    switch (kind) {
+      case 'leaf': m.y = fresh ? rnd(top, H) : top - 10; m.vx = rnd(-46, -16); m.vy = rnd(22, 44); m.r = rnd(3.5, 6); m.rot = rnd(0, 6); m.spin = rnd(-3, 3); m.r = rnd(6, 10); m.c = ['#8fd05a', '#e0b84a', '#5fb060', '#d98a3a'][(Math.random() * 4) | 0]; break;
+      case 'sand': m.vx = rnd(-420, -260); m.vy = rnd(-6, 6); m.len = rnd(30, 80); m.y = rnd(top + 120, H); break;
+      case 'wisp': m.vx = rnd(-10, -3); m.vy = rnd(-6, 6); m.r = rnd(5, 9); break;
+      case 'snow': m.y = fresh ? rnd(top, H) : top - 8; m.vx = rnd(-18, -4); m.vy = rnd(26, 58); m.r = rnd(1.4, 3.2); break;
+      case 'ember': m.y = fresh ? rnd(top, H) : H + 8; m.vx = rnd(-14, 6); m.vy = rnd(-95, -42); m.r = rnd(1.6, 3.6); break;
+      case 'cloud': m.vx = rnd(-26, -10); m.vy = 0; m.w = rnd(90, 190); m.h = rnd(14, 28); m.y = rnd(top - 10, H * 0.7); break;
+      case 'bubble': m.y = fresh ? rnd(top, H) : H + 8; m.vx = rnd(-10, 4); m.vy = rnd(-50, -22); m.r = rnd(3.5, 9); break;
+      case 'moth': m.vx = rnd(-26, -8); m.vy = rnd(-10, 10); m.r = rnd(3, 5); break;
+      case 'spark': m.y = fresh ? rnd(top, H) : H + 8; m.vx = rnd(30, 90); m.vy = rnd(-230, -120); m.r = rnd(1.2, 2.4); break;
+      case 'star': m.vx = rnd(-8, -2); m.vy = rnd(-2, 2); m.r = rnd(5, 11); break;
+      default: m.vx = -10; m.vy = 0; m.r = 3;
+    }
+    return m;
+  }
+  function drawMover(ctx, m, t, dt) {
+    m.x += m.vx * dt + Math.sin(t * 1.3 + m.ph) * (m.kind === 'snow' || m.kind === 'bubble' || m.kind === 'wisp' || m.kind === 'moth' ? 14 : 0) * dt;
+    m.y += m.vy * dt + (m.kind === 'moth' ? Math.cos(t * 2.1 + m.ph) * 26 * dt : 0);
+    const out = m.x < -m.len - 40 || m.x > W + 100 || m.y > H + 20 || m.y < C.fieldTop - 40;
+    const k = m.kind;
+    ctx.save();
+    switch (k) {
+      case 'leaf':
+        m.rot += m.spin * dt;
+        ctx.translate(m.x, m.y); ctx.rotate(m.rot);
+        ctx.globalAlpha = 0.88; ctx.fillStyle = m.c;
+        ctx.beginPath(); ctx.ellipse(0, 0, m.r, m.r * 0.5, 0, 0, 6.283); ctx.fill();
+        ctx.globalAlpha = 0.35; ctx.strokeStyle = '#0c2010'; ctx.lineWidth = 0.8;
+        ctx.beginPath(); ctx.moveTo(-m.r, 0); ctx.lineTo(m.r, 0); ctx.stroke();
+        break;
+      case 'sand':
+        ctx.globalAlpha = 0.16; ctx.strokeStyle = '#ffe2b8'; ctx.lineWidth = 1.5; ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.moveTo(m.x, m.y); ctx.lineTo(m.x + m.len, m.y + m.vy * 0.05); ctx.stroke();
+        break;
+      case 'wisp': {
+        const a = 0.25 + 0.5 * Math.max(0, Math.sin(t * 1.6 + m.ph));
+        A.drawGlow(ctx, m.x, m.y, m.r * 1.6, '#9fffd0', a * 0.55, true);
+        A.drawGlow(ctx, m.x - m.vx * 0.9, m.y, m.r * 0.9, '#d8ffe8', a * 0.5, true);
+        break;
+      }
+      case 'snow':
+        ctx.globalAlpha = 0.75; ctx.fillStyle = '#ffffff';
+        ctx.beginPath(); ctx.arc(m.x, m.y, m.r, 0, 6.283); ctx.fill();
+        break;
+      case 'ember': {
+        const a = Math.max(0, Math.min(1, (m.y - C.fieldTop) / (H - C.fieldTop))) * (0.55 + 0.4 * Math.sin(t * 9 + m.ph));
+        A.drawGlow(ctx, m.x, m.y, m.r * 2.6, '#ff9a3c', Math.max(0.12, a * 0.9), true);
+        break;
+      }
+      case 'cloud': {
+        const gr = ctx.createRadialGradient(m.x, m.y, 0, m.x, m.y, m.w * 0.5);
+        gr.addColorStop(0, 'rgba(255,255,255,0.10)'); gr.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.fillStyle = gr; ctx.translate(0, m.y); ctx.scale(1, m.h / (m.w * 0.5)); ctx.translate(0, -m.y);
+        ctx.beginPath(); ctx.arc(m.x, m.y, m.w * 0.5, 0, 6.283); ctx.fill();
+        break;
+      }
+      case 'bubble':
+        ctx.globalAlpha = 0.62; ctx.strokeStyle = '#d0f4ff'; ctx.lineWidth = 1.3;
+        ctx.beginPath(); ctx.arc(m.x, m.y, m.r, 0, 6.283); ctx.stroke();
+        ctx.globalAlpha = 0.6; ctx.fillStyle = '#ffffff';
+        ctx.beginPath(); ctx.arc(m.x - m.r * 0.35, m.y - m.r * 0.35, Math.max(0.8, m.r * 0.22), 0, 6.283); ctx.fill();
+        break;
+      case 'moth': {
+        const f = 0.35 + 0.65 * Math.abs(Math.sin(t * 16 + m.ph));
+        ctx.globalAlpha = 0.7; ctx.fillStyle = '#d8e0ff'; ctx.translate(m.x, m.y);
+        ctx.beginPath(); ctx.ellipse(-m.r * 0.5, 0, m.r * 0.6, m.r * f, -0.4, 0, 6.283); ctx.fill();
+        ctx.beginPath(); ctx.ellipse(m.r * 0.5, 0, m.r * 0.6, m.r * f, 0.4, 0, 6.283); ctx.fill();
+        break;
+      }
+      case 'spark':
+        ctx.globalAlpha = 0.85; ctx.strokeStyle = '#ffd890'; ctx.lineWidth = m.r; ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.moveTo(m.x, m.y); ctx.lineTo(m.x - m.vx * 0.07, m.y - m.vy * 0.07); ctx.stroke();
+        break;
+      case 'star': {
+        const a = 0.2 + 0.7 * Math.max(0, Math.sin(t * 2.2 + m.ph * 2));
+        ctx.globalAlpha = Math.min(1, a + 0.15); ctx.strokeStyle = '#f0d0ff'; ctx.lineWidth = 1.6; ctx.translate(m.x, m.y);
+        const r = m.r * (0.5 + 0.5 * a);
+        ctx.beginPath(); ctx.moveTo(-r, 0); ctx.lineTo(r, 0); ctx.moveTo(0, -r); ctx.lineTo(0, r); ctx.stroke();
+        break;
+      }
+      default:
+    }
+    ctx.restore();
+    if (out) Object.assign(m, spawnMover(k, false));
+  }
+
+  A.makeMotes = function (n, artName) {
+    const kind = A.MOTE_KIND[artName];
+    const motes = A.makeDust(n);
+    motes.kind = kind || null;
+    motes.movers = [];
+    if (kind) for (let i = 0; i < (kind === 'cloud' ? 5 : kind === 'sand' ? 9 : 14); i++) motes.movers.push(spawnMover(kind, true));
+    return motes;
+  };
+  A.makeDust = function (n) {
     const motes = [];
     for (let i = 0; i < n; i++) {
       motes.push({
@@ -815,6 +917,8 @@
   };
 
   A.drawMotes = function (ctx, motes, color, dt, t) {
+    if (motes.movers && motes.movers.length) for (const m of motes.movers) drawMover(ctx, m, t, dt);
+    const dim = motes.kind ? 0.55 : 1; // 有章节特色的小东西时，通用光点淡一些，别抢戏
     for (const m of motes) {
       m.x += (m.vx + Math.sin(t * 0.7 + m.ph) * 8) * dt;
       m.y += (m.vy + Math.cos(t * 0.9 + m.ph) * 6) * dt;
@@ -824,7 +928,7 @@
         m.x = Math.random() * W;
       }
       const tw = 0.15 + 0.6 * Math.max(0, Math.sin(t * 1.3 + m.ph * 3));
-      A.drawGlow(ctx, m.x, m.y, m.r, color, tw, true);
+      A.drawGlow(ctx, m.x, m.y, m.r, color, tw * dim, true);
     }
   };
 })((globalThis.TD = globalThis.TD || {}));

@@ -1275,7 +1275,7 @@
       if (!this.scene || this.scene.key !== key) {
         const sc = this.paintScene(this.theme, lanes, key);
         this.scene = sc || { key, none: true };
-        if (sc) this.motes = TD.art.makeMotes(28);
+        if (sc) this.motes = TD.art.makeMotes(28, this.theme.art);
       }
       return this.scene.none ? null : this.scene;
     }
