@@ -1126,13 +1126,13 @@
     const arm = (i) => {
       const back = i % 2 === 1;
       const dir = (i - 2.5) / 2.5;
-      const x0 = s * (-0.85 + i * 0.34) * 0.92;
-      const w = Math.sin(t * 3 + i) * s * 0.22;
-      const p2 = [x0 + w + dir * s * 0.06, -s * 0.12];
-      const p3 = [x0 + w * 1.3 + dir * s * 0.12, -s * 0.07];
-      const curl = p3[0] > p2[0] ? -0.6 : 0.6;
-      const pts = curvePts([x0 * 0.85, -s * 0.95], [x0 + w * 0.5, -s * 0.45], p2, p3, 10, curl, 6, s * 0.08);
-      const tb = tube(ctx, pts, s * 0.34, s * 0.03, 1.5);
+      const x0 = s * (-1.2 + i * 0.48) * 0.92;
+      const w = Math.sin(t * 3 + i) * s * 0.26;
+      const p2 = [x0 + w + dir * s * 0.16, -s * 0.1];
+      const p3 = [x0 + w * 1.4 + dir * s * 0.32, -s * 0.05];
+      const curl = p3[0] > p2[0] ? -0.8 : 0.8;
+      const pts = curvePts([x0 * 0.6, -s * 0.95], [x0 * 0.95 + w * 0.5, -s * 0.5], p2, p3, 12, curl, 6, s * 0.1);
+      const tb = tube(ctx, pts, s * 0.4, s * 0.03, 1.5);
       tb.path();
       ctx.fillStyle = linear(ctx, x0 + s * 0.15, -s * 0.6, x0 - s * 0.15, 0, [[0, deep(base, back ? 0.45 : 0.1)], [1, deep(base, back ? 0.78 : 0.58)]]);
       ctx.fill();

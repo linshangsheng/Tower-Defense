@@ -983,7 +983,35 @@
     shadow(ctx, 0, 2, s * big);
     if (warn) ctx.translate(Math.sin(t * 50) * 2, 0);
     glow(ctx, 0, -s * 0.8 * big, s * 1.4 * big, '#7a4ab8', 0.35 + (ai.phase >= 4 ? 0.25 : 0));
+    // 脚下一摊墨：暗紫色的水洼，边上泛一圈亮边，缓缓起伏
+    const pr = 1 + Math.sin(t * 1.6) * 0.04;
+    ctx.fillStyle = rgba('#120a24', 0.75);
+    ctx.beginPath();
+    ctx.ellipse(0, -s * 0.02, s * 1.25 * big * pr, s * 0.2 * big, 0, 0, TAU);
+    ctx.fill();
+    ctx.strokeStyle = rgba('#b08aff', 0.35);
+    ctx.lineWidth = Math.max(1, s * 0.025);
+    ctx.beginPath();
+    ctx.ellipse(0, -s * 0.02, s * 1.25 * big * pr, s * 0.2 * big, 0, 0.2, 2.9);
+    ctx.stroke();
+    // 向两侧甩出的墨须：慢慢摆动，尖端一点亮
+    ctx.lineCap = 'round';
+    for (const side of [-1, 1]) {
+      const sw = Math.sin(t * 2 + side) * s * 0.12;
+      ctx.strokeStyle = rgba('#20103c', 0.9);
+      ctx.lineWidth = Math.max(2, s * 0.09 * big);
+      ctx.beginPath();
+      ctx.moveTo(side * s * 0.9 * big, -s * 0.55 * big);
+      ctx.quadraticCurveTo(side * s * 1.35 * big, -s * (0.9 + 0.1) * big + sw, side * s * 1.5 * big, -s * 0.5 * big + sw);
+      ctx.stroke();
+      glow(ctx, side * s * 1.5 * big, -s * 0.5 * big + sw, s * 0.16 * big, '#a070ff', 0.7);
+    }
     inkSpirit(ctx, s, t, o, 1.15 * big, warn || ai.phase >= 4, true);
+    // 身体往下滴墨
+    for (let i = 0; i < 4; i++) {
+      const k = (t * 0.6 + i * 0.27) % 1;
+      dot(ctx, s * (-0.7 + i * 0.45) * big, -s * 0.5 * big + k * s * 0.5 * big, Math.max(1, s * 0.04 * big), '#6a3ab8', 1 - k);
+    }
     // 蓄力重击：一圈圈光往身体里收
     if (warn) {
       const r = s * 1.15 * big;
