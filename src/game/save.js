@@ -6,12 +6,20 @@
 
   TD.saveStore = {
     load() {
+      let raw = null;
       try {
-        const raw = globalThis.localStorage && localStorage.getItem(KEY);
+        raw = globalThis.localStorage && localStorage.getItem(KEY);
         if (!raw) return null;
         return TD.progression.migrate(JSON.parse(raw));
       } catch (e) {
         console.warn('读取存档失败', e);
+        // 读不出来时游戏会建一个新存档，下一次自动保存就把坏存档覆盖了——先把原文备份到另一个键，
+        // 以后可以手动找回或导出给开发者看（设计书 146）
+        try {
+          if (raw && globalThis.localStorage) localStorage.setItem(KEY + '.corrupt', raw);
+        } catch (e2) {
+          /* 备份失败就算了 */
+        }
         return null;
       }
     },

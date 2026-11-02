@@ -695,6 +695,23 @@ test('夜战射程 −30% 只对没有 Boss 的关卡生效（否则停靠位置
   assert.ok(D.witch.holdX - TD.config.wallX <= bossDark.range, '女巫停靠位置在射程内');
 });
 
+test('读档失败：坏存档的原文被备份到另一个键，不会被新存档悄悄覆盖', () => {
+  const store = {};
+  globalThis.localStorage = { getItem: (k) => (k in store ? store[k] : null), setItem: (k, v) => (store[k] = String(v)), removeItem: (k) => delete store[k] };
+  try {
+    store['shouchengyingxiong.save.v1'] = '{"levels": {"1": {"stars": 3, "clears": 1}'; // 被截断的 JSON
+    assert.strictEqual(TD.saveStore.load(), null);
+    assert.strictEqual(store['shouchengyingxiong.save.v1.corrupt'], '{"levels": {"1": {"stars": 3, "clears": 1}');
+    // 好存档：正常读出来，不产生备份
+    delete store['shouchengyingxiong.save.v1.corrupt'];
+    store['shouchengyingxiong.save.v1'] = JSON.stringify(P.newSave());
+    assert.ok(TD.saveStore.load());
+    assert.ok(!('shouchengyingxiong.save.v1.corrupt' in store));
+  } finally {
+    delete globalThis.localStorage;
+  }
+});
+
 test('墨墨：还没走到停靠位置就被打到分身，现形后要继续往前走（否则战斗卡死）', () => {
   const b = newBattle(50);
   b.hero.cooldown = 1e9;
