@@ -343,7 +343,7 @@
       size: 18,
       color: '#9fe3ff',
       flying: true,
-      chill: { aspd: 0.2, holdX: 640, maxStacks: 3 },
+      chill: { aspd: 0.2, holdX: 620, maxStacks: 3 },
       desc: '光环：只要它还活着，英雄攻速就会降低。优先打掉！',
     },
     wolf: {
@@ -657,7 +657,7 @@
       copper: 3,
       size: 23,
       color: '#ffc83f',
-      bubbler: { holdX: 640, every: 3, radius: 180 },
+      bubbler: { holdX: 620, every: 3, radius: 180 },
       desc: '停在远处给怪物套泡泡，泡泡能挡住一次攻击。连发弩、雷电法球能很快戳破泡泡。',
     },
     tentacle: {

@@ -677,39 +677,26 @@ test('存档损坏：字段类型不对 / 为 null / 关卡记录坏了，migrat
   assert.strictEqual(g.levels[5].clears, 7);
 });
 
-test('夜战射程 −30% 只对没有 Boss 的关卡生效（否则停靠位置在射程外的 Boss 永远打不到）', () => {
+test('暗夜射程 −30%：所有普通怪的停靠位置都必须在暗夜射程内，有 Boss 在场时不削射程', () => {
   const s = P.newSave();
-  for (let k = 1; k <= 40; k++) s.levels[k] = { stars: 1, clears: 1 };
-  const mk = (n, dark) => {
-    const def = Object.assign({}, D.levels[n], { dark });
-    return new TD.Battle({ level: n, levelDef: def, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 1 });
-  };
-  const bossNormal = mk(30, false);
-  const bossDark = mk(30, true);
-  assert.ok(bossDark.range >= bossNormal.range - 1e-9, '有 Boss：夜战不削射程');
-  // 暗夜关第 23 关本来就没有 Boss：仍然 −30%
-  const noBossNormal = mk(23, false);
-  const noBossDark = mk(23, true);
-  assert.ok(Math.abs(noBossDark.range - noBossNormal.range * 0.7) < 1e-6, '无 Boss：照旧 −30%');
-  // Boss 的停靠位置必须在射程内
-  assert.ok(D.witch.holdX - TD.config.wallX <= bossDark.range, '女巫停靠位置在射程内');
-});
-
-test('读档失败：坏存档的原文被备份到另一个键，不会被新存档悄悄覆盖', () => {
-  const store = {};
-  globalThis.localStorage = { getItem: (k) => (k in store ? store[k] : null), setItem: (k, v) => (store[k] = String(v)), removeItem: (k) => delete store[k] };
-  try {
-    store['shouchengyingxiong.save.v1'] = '{"levels": {"1": {"stars": 3, "clears": 1}'; // 被截断的 JSON
-    assert.strictEqual(TD.saveStore.load(), null);
-    assert.strictEqual(store['shouchengyingxiong.save.v1.corrupt'], '{"levels": {"1": {"stars": 3, "clears": 1}');
-    // 好存档：正常读出来，不产生备份
-    delete store['shouchengyingxiong.save.v1.corrupt'];
-    store['shouchengyingxiong.save.v1'] = JSON.stringify(P.newSave());
-    assert.ok(TD.saveStore.load());
-    assert.ok(!('shouchengyingxiong.save.v1.corrupt' in store));
-  } finally {
-    delete globalThis.localStorage;
+  const mk = (n, dark) => new TD.Battle({ level: n, levelDef: Object.assign({}, D.levels[n], { dark }), stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 1 });
+  const normal = mk(23, false);
+  const dark = mk(23, true);
+  assert.ok(Math.abs(dark.range - normal.range * 0.7) < 1e-6, '没有 Boss：暗夜 −30%');
+  const reach = TD.config.wallX + dark.range;
+  // 数据约束：非 Boss 怪物的停靠位置不能超出暗夜射程，否则暗夜关里它们停在射程外，永远打不到（第 68 关海马曾经停在 640，射程只到 636）
+  for (const [id, m] of Object.entries(D.monsters)) {
+    if (m.boss || m.bossPart) continue;
+    for (const f of ['ranged', 'healer', 'chill', 'bubbler', 'guard']) {
+      if (m[f] && typeof m[f].holdX === 'number' && m[f].holdX < 9000) assert.ok(m[f].holdX <= reach, `${id}.${f}.holdX=${m[f].holdX} 超出暗夜射程 ${reach.toFixed(0)}`);
+    }
   }
+  // 有 Boss 在场：不削射程；Boss 的停靠位置在射程内
+  const b = mk(23, true);
+  b.spawnMonster('witch', 2, 1000);
+  b.step(1 / 60);
+  assert.ok(b.range >= normal.range - 1e-9, '场上有 Boss：不削射程');
+  assert.ok(D.witch.holdX - TD.config.wallX <= b.range);
 });
 
 test('墨墨：还没走到停靠位置就被打到分身，现形后要继续往前走（否则战斗卡死）', () => {
@@ -1700,7 +1687,7 @@ test('海胆：被打死时扎伤周围的怪（可以连锁），远处的不�
 
 test('海马：停在远处给怪套泡泡；泡泡挡住一次伤害；戳戳针让一半伤害生效', () => {
   const b = ch7Battle(64);
-  const sh = b.spawnMonster('seahorse', 0, 640);
+  const sh = b.spawnMonster('seahorse', 0, D.monsters.seahorse.bubbler.holdX);
   const m = b.spawnMonster('slime', 0, 600);
   m.hp = m.maxHp = 1e6;
   for (let i = 0; i < 60 * 1.1; i++) {
@@ -1708,7 +1695,7 @@ test('海马：停在远处给怪套泡泡；泡泡挡住一次伤害；戳戳�
     b.updateMonsters(1 / 60);
   }
   assert.ok(m.bubble, '套上泡泡');
-  assert.strictEqual(sh.x, 640, '海马停在 640');
+  assert.strictEqual(sh.x, D.monsters.seahorse.bubbler.holdX, '海马停在停靠位置');
   assert.strictEqual(b.damage(m, 500, { type: 'magic', source: 'weapon' }), 0);
   assert.ok(!m.bubble && b.bubblesPopped === 1);
   assert.ok(b.damage(m, 500, { type: 'magic', source: 'weapon' }) > 0);

@@ -281,9 +281,13 @@
 
     get range() {
       // 暗夜射程 −30%；夜枭盔把惩罚减半
-      // 有 Boss 的关卡不削射程：Boss 的停靠位置是按基础射程设计的（x≈760–820），削掉 30% 就够不着它，它停在原地永远打不死（设计书 145）
-      if (this._bossLevel === undefined) this._bossLevel = !!(this.level.waves && this.level.waves.some((w) => w.groups.some(([t]) => D.monsters[t] && D.monsters[t].boss)));
-      const dark = this.level.dark && !this._bossLevel ? 1 - 0.3 * (1 - Math.min(1, this.mods.darkSight || 0)) : 1;
+      // 场上有 Boss 的时候不削射程：Boss 的停靠位置是按基础射程设计的（x≈760–820），削掉 30% 就够不着它，它停在原地永远打不死（设计书 145）。
+      // 小 Boss 有的写在波次里、有的是引擎中途插进去的，所以看"此刻场上有没有活着的 Boss"，而不是看关卡数据
+      if (this._bossT !== this.time) {
+        this._bossT = this.time;
+        this._bossAlive = this.monsters.some((m) => !m.dead && m.def.boss);
+      }
+      const dark = this.level.dark && !this._bossAlive ? 1 - 0.3 * (1 - Math.min(1, this.mods.darkSight || 0)) : 1;
       return this.stats.range * (1 + this.mods.range) * dark;
     }
 
