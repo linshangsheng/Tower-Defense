@@ -299,7 +299,7 @@
     );
   };
 
-  UI.showSettings = function () {
+  UI.showSettings = function (onClose) {
     const s = game.save.settings;
     const body = h(
       'div',
@@ -437,8 +437,8 @@
           },
           [
             ['auto', '自动（手机上开启）'],
-            ['on', '开启'],
-            ['off', '关闭'],
+            ['on', '开'],
+            ['off', '关'],
           ].map(([v, t]) => h('option', { value: v, selected: (s.largeText || 'auto') === v ? true : null }, t))
         )
       ),
@@ -455,8 +455,8 @@
             },
           },
           [
-            ['off', '关闭'],
-            ['on', '开启'],
+            ['off', '关'],
+            ['on', '开'],
           ].map(([v, t]) => h('option', { value: v, selected: (s.reduceMotion ? 'on' : 'off') === v ? true : null }, t))
         )
       ),
@@ -472,7 +472,7 @@
               game.persist();
             },
           },
-          [0, 20, 30, 45].map((m) => h('option', { value: m, selected: (s.restMinutes === undefined ? 30 : s.restMinutes) === m ? true : null }, m ? `每玩 ${m} 分钟提醒休息` : '关闭'))
+          [0, 20, 30, 45].map((m) => h('option', { value: m, selected: (s.restMinutes === undefined ? 30 : s.restMinutes) === m ? true : null }, m ? `每玩 ${m} 分钟提醒休息` : '不提醒'))
         )
       ),
       h('div', { class: 'hint credits' }, '音乐采样：FluidR3_GM 音色库（Frank Wen），CC BY 3.0，经 gleitz/midi-js-soundfonts 取得'),
@@ -501,7 +501,7 @@
           '清空存档'
         )
       ),
-      h('div', { class: 'modal-buttons' }, h('button', { class: 'btn', onclick: UI.closeModal }, '关闭'))
+      h('div', { class: 'modal-buttons' }, h('button', { class: 'btn', onclick: () => (UI.closeModal(), typeof onClose === 'function' && onClose()) }, '关闭'))
     );
     modal(body, { closeOnBack: true });
   };
@@ -2171,6 +2171,8 @@
           h('button', { class: 'btn primary', onclick: () => game.togglePause() }, '继续战斗'),
           b.level.tower ? null : h('button', { class: 'btn', onclick: () => (UI.closeModal(), game.restartBattle()) }, '重新开始'),
           h('button', { class: 'btn', onclick: () => UI.showHelp() }, '玩法说明'),
+          // 战斗中想调音量、开"减少动效"：设置关掉以后回到暂停菜单，不用先退出战斗（设计书 157）
+          h('button', { class: 'btn', onclick: () => UI.showSettings(() => game.paused && UI.showPause()) }, '设置'),
           h('button', { class: 'btn danger', onclick: () => (b.level.tower ? UI.confirm('放弃这趟挑战吗？门票不退，什么都得不到。', () => game.quitBattle()) : game.quitBattle()) }, b.level.tower ? '放弃挑战' : '放弃本关')
         )
       )

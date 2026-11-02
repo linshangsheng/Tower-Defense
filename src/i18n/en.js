@@ -2467,4 +2467,7 @@ TD.i18n.register("en", {
   "第 200 波。如果有人问起，就说：城头上有个射手，一直站到了天亮。": "Wave 200. If anyone asks, tell them: there was an archer on the wall, who stood there until dawn.",
   "关闭屏幕震动和环境里飘动的小东西（落叶、飘雪、气泡……），画面更安静": "Turns off screen shake and the little things drifting in the scenery (leaves, snow, bubbles...) for a calmer picture",
   "减少动效": "Reduce motion",
+  "开": "On",
+  "关": "Off",
+  "不提醒": "Never",
 });
