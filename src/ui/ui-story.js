@@ -1231,8 +1231,10 @@
             return;
           }
           sfx('click');
-          said[i] = ((said[i] === undefined ? -1 : said[i]) + 1) % f.lines.length;
-          bubbles[i] = { text: f.lines[said[i]], until: (performance.now() - t0) / 1000 + 4 };
+          // 通关第 200 关以后（天上有了那盏灯），每位邻居多说 2 句
+          const all = lamp && D.townLater && D.townLater[f.boss] ? f.lines.concat(D.townLater[f.boss]) : f.lines;
+          said[i] = ((said[i] === undefined ? -1 : said[i]) + 1) % all.length;
+          bubbles[i] = { text: all[said[i]], until: (performance.now() - t0) / 1000 + 4 };
         }
       });
     });

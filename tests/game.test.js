@@ -699,6 +699,14 @@ test('暗夜射程 −30%：所有普通怪的停靠位置都必须在暗夜射�
   assert.ok(D.witch.holdX - TD.config.wallX <= b.range);
 });
 
+test('小镇：通关第 200 关后，每位邻居都有 2 句关于灯的新台词；战场见闻第 1–10 章各 4 条', () => {
+  for (const f of D.town) {
+    const l = D.townLater[f.boss];
+    assert.ok(Array.isArray(l) && l.length === 2 && l.every((x) => typeof x === 'string' && x.length > 5), `${f.boss} 缺后日谈`);
+  }
+  for (let c = 1; c <= 10; c++) assert.strictEqual(D.fieldNotes[c].length, 4, `第 ${c} 章见闻应该有 4 条`);
+});
+
 test('墨墨：还没走到停靠位置就被打到分身，现形后要继续往前走（否则战斗卡死）', () => {
   const b = newBattle(50);
   b.hero.cooldown = 1e9;
