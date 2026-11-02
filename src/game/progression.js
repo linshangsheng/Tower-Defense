@@ -55,6 +55,23 @@
   // 旧版本存档迁移：补齐缺失字段
   P.migrate = function (save) {
     const fresh = P.newSave();
+    // 存档损坏 / 被手改：顶层字段的类型和默认值对不上（比如 weapons 变成 null、loadout 变成字符串），换回默认值，
+    // 不然后面一访问就崩，整个存档读不出来、进度全丢（设计书 144）。默认值为 null 的字段（如 towerRun）允许任意类型
+    const shape = (v) => (Array.isArray(v) ? 'array' : v === null ? 'null' : typeof v);
+    for (const k of Object.keys(fresh)) {
+      if (!(k in save) || fresh[k] === null || fresh[k] === undefined) continue;
+      const bad = shape(save[k]) !== shape(fresh[k]) || (typeof fresh[k] === 'number' && !Number.isFinite(save[k]));
+      if (bad) save[k] = JSON.parse(JSON.stringify(fresh[k]));
+      else if (shape(fresh[k]) === 'object') {
+        // 再往里一层：默认值里有的子字段（loadout.active、weapons.bow……）类型对不上也换回默认值
+        for (const k2 of Object.keys(fresh[k])) {
+          if (fresh[k][k2] === null || fresh[k][k2] === undefined || !(k2 in save[k])) continue;
+          if (shape(save[k][k2]) !== shape(fresh[k][k2])) save[k][k2] = JSON.parse(JSON.stringify(fresh[k][k2]));
+        }
+      }
+    }
+    // 关卡记录：每一项必须是对象，坏掉的丢掉（当作没打过），否则读 clears / stars 会崩
+    if (save.levels) for (const n of Object.keys(save.levels)) if (!save.levels[n] || typeof save.levels[n] !== 'object') delete save.levels[n];
     // v0.17 之前的老存档：已经解锁的商店页签视为看过，不显示"新"角标
     if (!save.seenTabs) {
       save.seenTabs = { loadout: true, attrs: true };

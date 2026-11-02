@@ -645,6 +645,38 @@ test('墨墨：分身阶段本体无敌，打掉 3 个分身后现身并受到�
   assert.ok(Math.abs(hp0 - m.hp - 150) < 1e-6, '受到 150% 伤害');
 });
 
+test('存档损坏：字段类型不对 / 为 null / 关卡记录坏了，migrate 之后仍能正常开一场战斗', () => {
+  const base = P.newSave();
+  for (let k = 1; k <= 30; k++) base.levels[k] = { stars: 2, clears: 1 };
+  const cases = [
+    (s) => (s.weapons = null),
+    (s) => (s.loadout = 'x'),
+    (s) => (s.attrs = null),
+    (s) => (s.settings = null),
+    (s) => (s.levels = null),
+    (s) => (s.loadout.active = null),
+    (s) => (s.loadout.equip = null),
+    (s) => (s.weapons.bow = null),
+    (s) => (s.levels[3] = null),
+    (s) => (s.copper = NaN),
+  ];
+  for (const [i, f] of cases.entries()) {
+    const s = JSON.parse(JSON.stringify(base));
+    f(s);
+    const m = P.migrate(s);
+    const b = new TD.Battle({ level: 5, stats: P.heroStats(m), loadout: P.battleLoadout(m), seed: 1, autoSupply: true });
+    for (let t = 0; t < 120; t++) b.step(1 / 60);
+    assert.ok(Number.isFinite(m.copper), `用例 ${i}：铜币必须是有限数`);
+  }
+  // 好的存档不能被误伤
+  const good = JSON.parse(JSON.stringify(base));
+  good.copper = 1234;
+  good.levels[5] = { stars: 3, clears: 7 };
+  const g = P.migrate(good);
+  assert.strictEqual(g.copper, 1234);
+  assert.strictEqual(g.levels[5].clears, 7);
+});
+
 test('墨墨：还没走到停靠位置就被打到分身，现形后要继续往前走（否则战斗卡死）', () => {
   const b = newBattle(50);
   b.hero.cooldown = 1e9;
