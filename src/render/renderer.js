@@ -1105,6 +1105,9 @@
       const qp = TD.quality ? TD.quality.params() : { fx: 1, lit: 1 };
       if (this.fireworks) this.updateFireworks(dt);
       ctx.save();
+      const reduceMotion = !!(TD.game && TD.game.save && TD.game.save.settings && TD.game.save.settings.reduceMotion);
+      if (TD.art) TD.art.opts.reduceMotion = reduceMotion; // 减少动效（设计书 155）：不震屏，也不画环境里飘动的小东西
+      if (reduceMotion) this.shake = 0;
       if (this.shake > 0.2) {
         ctx.translate((Math.random() - 0.5) * this.shake, (Math.random() - 0.5) * this.shake);
         this.shake *= Math.pow(0.001, dt);

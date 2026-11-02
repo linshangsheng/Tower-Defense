@@ -444,6 +444,24 @@
       ),
       h(
         'label',
+        { class: 'row', title: '关闭屏幕震动和环境里飘动的小东西（落叶、飘雪、气泡……），画面更安静' },
+        '减少动效 ',
+        h(
+          'select',
+          {
+            onchange: (e) => {
+              s.reduceMotion = e.target.value === 'on';
+              game.persist();
+            },
+          },
+          [
+            ['off', '关闭'],
+            ['on', '开启'],
+          ].map(([v, t]) => h('option', { value: v, selected: (s.reduceMotion ? 'on' : 'off') === v ? true : null }, t))
+        )
+      ),
+      h(
+        'label',
         { class: 'row' },
         '休息提醒 ',
         h(

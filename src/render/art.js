@@ -917,7 +917,7 @@
   };
 
   A.drawMotes = function (ctx, motes, color, dt, t) {
-    if (motes.movers && motes.movers.length) for (const m of motes.movers) drawMover(ctx, m, t, dt);
+    if (motes.movers && motes.movers.length && !A.opts.reduceMotion) for (const m of motes.movers) drawMover(ctx, m, t, dt);
     const dim = motes.kind ? 0.55 : 1; // 有章节特色的小东西时，通用光点淡一些，别抢戏
     for (const m of motes) {
       m.x += (m.vx + Math.sin(t * 0.7 + m.ph) * 8) * dt;
