@@ -281,7 +281,9 @@
 
     get range() {
       // 暗夜射程 −30%；夜枭盔把惩罚减半
-      const dark = this.level.dark ? 1 - 0.3 * (1 - Math.min(1, this.mods.darkSight || 0)) : 1;
+      // 有 Boss 的关卡不削射程：Boss 的停靠位置是按基础射程设计的（x≈760–820），削掉 30% 就够不着它，它停在原地永远打不死（设计书 145）
+      if (this._bossLevel === undefined) this._bossLevel = !!(this.level.waves && this.level.waves.some((w) => w.groups.some(([t]) => D.monsters[t] && D.monsters[t].boss)));
+      const dark = this.level.dark && !this._bossLevel ? 1 - 0.3 * (1 - Math.min(1, this.mods.darkSight || 0)) : 1;
       return this.stats.range * (1 + this.mods.range) * dark;
     }
 

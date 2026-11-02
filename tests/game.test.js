@@ -677,6 +677,24 @@ test('存档损坏：字段类型不对 / 为 null / 关卡记录坏了，migrat
   assert.strictEqual(g.levels[5].clears, 7);
 });
 
+test('夜战射程 −30% 只对没有 Boss 的关卡生效（否则停靠位置在射程外的 Boss 永远打不到）', () => {
+  const s = P.newSave();
+  for (let k = 1; k <= 40; k++) s.levels[k] = { stars: 1, clears: 1 };
+  const mk = (n, dark) => {
+    const def = Object.assign({}, D.levels[n], { dark });
+    return new TD.Battle({ level: n, levelDef: def, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 1 });
+  };
+  const bossNormal = mk(30, false);
+  const bossDark = mk(30, true);
+  assert.ok(bossDark.range >= bossNormal.range - 1e-9, '有 Boss：夜战不削射程');
+  // 暗夜关第 23 关本来就没有 Boss：仍然 −30%
+  const noBossNormal = mk(23, false);
+  const noBossDark = mk(23, true);
+  assert.ok(Math.abs(noBossDark.range - noBossNormal.range * 0.7) < 1e-6, '无 Boss：照旧 −30%');
+  // Boss 的停靠位置必须在射程内
+  assert.ok(D.witch.holdX - TD.config.wallX <= bossDark.range, '女巫停靠位置在射程内');
+});
+
 test('墨墨：还没走到停靠位置就被打到分身，现形后要继续往前走（否则战斗卡死）', () => {
   const b = newBattle(50);
   b.hero.cooldown = 1e9;
