@@ -531,6 +531,9 @@
         if (ai.mode === 'hold') ai.mode = 'walk';
         this.emit('bossPhase', { m, phase: 3, text: '暴风雨来了！所有怪物都变快了！' });
       }
+      // 「停住」只该出现在停靠位置上：蓄力打完 / 打断后会被设成 hold，如果这时它还没走到位（输出高、刚出场就被打到第二阶段），
+      // 要让它继续走，不然它永远停在出生点，战斗卡死（设计书 143）
+      if (ai.mode === 'hold' && ai.phase < 3 && m.x > T.holdX) ai.mode = 'walk';
       if (ai.mode === 'walk' && ai.phase < 3 && m.x <= T.holdX) {
         m.x = T.holdX;
         ai.mode = 'hold';

@@ -666,6 +666,47 @@ test('墨墨：还没走到停靠位置就被打到分身，现形后要继续�
   assert.strictEqual(m.ai.mode, 'walk');
 });
 
+test('弹道在飞的时候目标开了护盾：落地后 pending 必须归零（否则英雄再也瞄不准它）', () => {
+  const b = newBattle(20);
+  const m = b.spawnMonster('pharaoh', 2, 700);
+  m.hp = m.maxHp * 0.15;
+  b.hero.cooldown = 0;
+  b.fire([m]);
+  assert.ok(m.pending > 0, '发射时记了 pending');
+  m.shield = m.maxHp; // 飞行途中开了护盾，护甲系数变了
+  m.ai.shieldTimer = 99;
+  for (let i = 0; i < 60 * 3 && b.projectiles.some((p) => !p.done); i++) b.step(1 / 60);
+  assert.ok(!b.projectiles.some((p) => !p.done), '弹道落地');
+  assert.ok(m.pending < 1e-6, `pending 应该归零，现在是 ${m.pending}`);
+});
+
+test('pending 泄漏的保险：没有弹道在飞时，怪不会因为 pending 过大而永远瞄不到', () => {
+  const b = newBattle(20);
+  const m = b.spawnMonster('pharaoh', 2, 600);
+  m.pending = m.hp * 10; // 假装泄漏
+  b.projectiles.length = 0;
+  assert.ok(b.rankTargets().includes(m));
+  assert.strictEqual(m.pending, 0);
+});
+
+test('雷雷：还没走到停靠位置时蓄力结束，要继续往前走而不是定在原地', () => {
+  const b = newBattle(60);
+  b.hero.cooldown = 1e9;
+  b.wall.hp = b.wall.max = 1e12;
+  const m = b.spawnMonster('thunderKing', 2, 1200);
+  m.hp = m.maxHp * 0.6;
+  m.ai.phase = 2;
+  m.ai.mode = 'warn';
+  m.ai.warnTimer = 0.01;
+  b.step(1 / 60);
+  b.step(1 / 60);
+  assert.ok(m.x > D.thunderKing.holdX);
+  assert.strictEqual(m.ai.mode, 'walk', '蓄力结束后在半路，应该继续走');
+  const x0 = m.x;
+  for (let i = 0; i < 60 * 3; i++) b.step(1 / 60);
+  assert.ok(m.x < x0 - 10, `应该在往前走（${x0} → ${m.x}）`);
+});
+
 test('墨墨：魔王形态的重击可以被打断；裂隙狂暴会倒计时', () => {
   const b = newBattle(50);
   b.hero.cooldown = 1e9;

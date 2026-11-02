@@ -1203,7 +1203,11 @@
       const list = [];
       for (const m of this.monsters) {
         if (!this.isTargetable(m) || !this.inRange(m)) continue;
-        if (m.hp - m.pending <= 0) continue; // 已经有足够的弹道在路上
+        if (m.hp - m.pending <= 0) {
+          // 已经有足够的弹道在路上；保险：如果其实没有弹道在飞，说明 pending 记错了（泄漏），清零，别让它永远打不到
+          if (this.projectiles.some((p) => !p.done && p.target === m)) continue;
+          m.pending = 0;
+        }
         list.push(m);
       }
       const mode = this.target;
@@ -1351,7 +1355,10 @@
         let mult = s.mult;
         if (w.flyingMult && s.m.def.flying) mult *= w.flyingMult;
         const roll = this.rollHit(mult);
-        if (!w.splash) s.m.pending += roll.dmg * this.armorFactor(s.m, true, w.dmgType, w.armorIgnore);
+        // 记下这一发加进 pending 的数额，落地时原数归还：中途护盾 / 护甲变了，按落地时的系数算会对不上，
+        // 多出来的部分永远留在 pending 里，怪会被当成"已经有足够的弹道在路上"而不再被瞄准（设计书 143）
+        const pend = w.splash ? 0 : roll.dmg * this.armorFactor(s.m, true, w.dmgType, w.armorIgnore);
+        s.m.pending += pend;
         const kind = { crossbow: 'bolt', staff: 'orb', cannon: 'shell', orb: 'zap' }[(w.look && w.look.base) || this.stats.weapon] || 'arrow';
         this.projectiles.push({
           kind,
@@ -1364,6 +1371,7 @@
           ty: s.m.y + s.m.yOffset,
           speed: w.projSpeed,
           dmg: roll.dmg,
+          pend,
           crit: roll.crit,
           angle: 0,
           dmgType: w.dmgType || 'phys',
@@ -1524,7 +1532,7 @@
         p.travel += step;
         if (dist <= step + 4) {
           p.done = true;
-          if (!p.splash) m.pending = Math.max(0, m.pending - p.dmg * this.armorFactor(m, true, p.dmgType, p.armorIgnore));
+          if (!p.splash) m.pending = Math.max(0, m.pending - (p.pend !== undefined ? p.pend : p.dmg * this.armorFactor(m, true, p.dmgType, p.armorIgnore)));
           if (this.isTargetable(m)) this.applyWeaponHit(m, p.dmg, p.crit, true, p);
           else if (!m.dead) this.emit('miss', { x: p.tx, y: p.ty });
           if (p.pierce && !m.dead) this.pierceFrom(m, p);
