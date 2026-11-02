@@ -289,6 +289,11 @@
     giants: { name: '巨人', desc: '怪物数量 −40%，但血量 +80%', rules: { countBonus: -0.4, monsterHp: 0.8 } },
     rush: { name: '急袭', desc: '不等清场，每 14 秒来一波', rush: 14 },
     gold: { name: '抢时间', desc: '提前召唤的铜币 ×3', rules: { earlyMult: 2 } },
+    // 设计书 152：四条带属性修正的新规则（rules.mods 直接叠加到英雄的词条上）
+    critfeast: { name: '暴击盛宴', desc: '暴击率 +30%，攻击力 −15%', rules: { mods: { crit: 0.3, atkMult: -0.15 } } },
+    sniper: { name: '狙击手', desc: '射程 +40%，攻击速度 −20%', rules: { mods: { range: 0.4, aspdMult: -0.2 } } },
+    copperrain: { name: '铜币雨', desc: '击败怪物的铜币翻倍，怪物血量 +30%', rules: { monsterHp: 0.3, mods: { copperBonus: 1 } } },
+    lastStand: { name: '背水一战', desc: '城墙血量 −30%，攻击力 +30%', rules: { wallHp: -0.3, mods: { atkMult: 0.3 } } },
   };
 
   M.dailyUnlocked = (save) => P.isCleared(save, 5);

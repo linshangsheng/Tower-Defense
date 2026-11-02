@@ -707,6 +707,29 @@ test('小镇：通关第 200 关后，每位邻居都有 2 句关于灯的新台
   for (let c = 1; c <= 10; c++) assert.strictEqual(D.fieldNotes[c].length, 4, `第 ${c} 章见闻应该有 4 条`);
 });
 
+test('每日挑战新规则：属性修正（rules.mods）真的叠加到英雄身上，且每条规则都能生成战斗', () => {
+  const s = P.newSave();
+  for (let k = 1; k <= 40; k++) s.levels[k] = { stars: 1, clears: 1 };
+  const mk = (rule) => {
+    const info = { key: 't', level: 12, rule, seed: 1 };
+    const def = TD.modes.buildDaily(info);
+    return new TD.Battle({ level: 12, levelDef: def, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 1 });
+  };
+  const base = mk('plain');
+  assert.ok(Math.abs(mk('critfeast').mods.crit - (base.mods.crit + 0.3)) < 1e-9);
+  assert.ok(mk('critfeast').atk < base.atk, '暴击盛宴：攻击力 −15%');
+  assert.ok(mk('sniper').range > base.range * 1.3, '狙击手：射程 +40%');
+  assert.ok(mk('sniper').currentAspd() < base.currentAspd(), '狙击手：攻速 −20%');
+  assert.ok(mk('copperrain').mods.copperBonus >= 1, '铜币雨：铜币翻倍');
+  assert.ok(mk('lastStand').wall.max < base.wall.max * 0.75, '背水一战：城墙血量 −30%');
+  assert.ok(mk('lastStand').atk > base.atk * 1.25, '背水一战：攻击力 +30%');
+  for (const id of Object.keys(TD.modes.dailyRules)) {
+    const b = mk(id);
+    for (let i = 0; i < 120; i++) b.step(1 / 60);
+    assert.ok(Number.isFinite(b.atk) && b.atk > 0, `${id}：攻击力应为正有限数`);
+  }
+});
+
 test('墨墨：还没走到停靠位置就被打到分身，现形后要继续往前走（否则战斗卡死）', () => {
   const b = newBattle(50);
   b.hero.cooldown = 1e9;

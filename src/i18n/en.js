@@ -2442,4 +2442,12 @@ TD.i18n.register("en", {
   "啪嗒……不好意思，又打了个嗝。": "Clack... sorry, I hiccuped again.",
   "八条腿一起给灯擦了灯罩：八只手，八种擦法。": "All eight legs polished the lampshade together: eight hands, eight ways.",
   "咕嘟……我梦见海里的那扇门，关上了。": "Glub... I dreamed that the door under the sea closed.",
+  "暴击盛宴": "Crit Feast",
+  "暴击率 +30%，攻击力 −15%": "Crit chance +30%, attack −15%",
+  "狙击手": "Sniper",
+  "射程 +40%，攻击速度 −20%": "Range +40%, attack speed −20%",
+  "铜币雨": "Copper Rain",
+  "击败怪物的铜币翻倍，怪物血量 +30%": "Copper from kills doubled, monster HP +30%",
+  "背水一战": "Last Stand",
+  "城墙血量 −30%，攻击力 +30%": "Wall HP −30%, attack +30%",
 });

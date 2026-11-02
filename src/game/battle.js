@@ -112,6 +112,9 @@
       // 英雄的专属能力（设计书 59）
       const hm = this.stats.heroMods || {};
       for (const k of Object.keys(hm)) this.mods[k] = (this.mods[k] || 0) + hm[k];
+      // 每日挑战规则自带的属性修正（设计书 152）：rules.mods 和装备、英雄的词条同样叠加到 mods 上
+      const rmods = this.rules.mods || {};
+      for (const k of Object.keys(rmods)) this.mods[k] = (this.mods[k] || 0) + rmods[k];
       this.zapCount = 0;
       this.fireflyCount = 0;
       this.itemShield = 0;
