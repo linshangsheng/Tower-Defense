@@ -47,7 +47,7 @@ server.listen(0, '127.0.0.1', async () => {
     console.log('断网刷新：' + (offline ? '正常进入游戏' : '失败'));
     if (!offline) ok = false;
     // 断网也能切换语言（词典文件由 sw.js 单独缓存，设计书 83）
-    const lang = await page.evaluate(() => new Promise((res) => TD.i18n.setLang('de', (okLoad) => res(okLoad && TD.i18n.t('开始游戏') === 'Spiel starten'))));
+    const lang = await page.evaluate(() => new Promise((res) => TD.i18n.setLang('zh', () => TD.i18n.setLang('en', (okLoad) => res(okLoad && TD.i18n.t('开始游戏') === 'Start Game')))));
     console.log('断网切换语言：' + (lang ? '正常' : '失败'));
     if (!lang) ok = false;
   } catch (e) {

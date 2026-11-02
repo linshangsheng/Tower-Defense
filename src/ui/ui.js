@@ -182,7 +182,7 @@
     root.appendChild(screenEl);
   };
 
-  // 语言设置（设计书 83）：17 种语言，默认英语。点一个就切换，马上重画当前页面
+  // 语言设置（设计书 83）：中英两种语言，默认英语。点一个就切换，马上重画当前页面
   UI.showLanguage = function (onChanged) {
     const I = TD.i18n;
     const cur = I.lang;
@@ -656,7 +656,7 @@
       h('h3', null, '制作'),
       h('p', null, '游戏设计、程序、美术、音效和乐曲编排都是在 Claude（Anthropic）的协助下完成的。画面和音效由代码在运行时绘制 / 合成，没有使用图像生成模型。'),
       h('h3', null, '译文'),
-      h('p', null, '17 种语言的译文由 AI 生成，没有经过母语者审校，欢迎指出错误。'),
+      h('p', null, '英文译文由 AI 生成，没有经过母语者审校，欢迎指出错误。'),
       h('h3', null, '音乐采样'),
       h('p', null, '音乐采样：FluidR3_GM 音色库（Frank Wen），CC BY 3.0，经 gleitz/midi-js-soundfonts 取得'),
       // 门户版不放外链（设计书 128）

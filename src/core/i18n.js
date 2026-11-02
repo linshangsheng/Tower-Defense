@@ -10,29 +10,14 @@
   const STORE_KEY = 'shouchengyingxiong.lang';
   const HAS_CJK = /[㐀-鿿]/;
 
-  // 17 种语言：[代码, 本语言里的名字, 英文名]。顺序就是选择界面里的顺序
+  // 2 种语言：[代码, 本语言里的名字, 英文名]。顺序就是选择界面里的顺序
   const LANGUAGES = [
     ['en', 'English', 'English'],
     ['zh', '简体中文', 'Simplified Chinese'],
-    ['es', 'Español', 'Spanish'],
-    ['pt-BR', 'Português (Brasil)', 'Brazilian Portuguese'],
-    ['pt-PT', 'Português (Portugal)', 'European Portuguese'],
-    ['ru', 'Русский', 'Russian'],
-    ['ja', '日本語', 'Japanese'],
-    ['ko', '한국어', 'Korean'],
-    ['de', 'Deutsch', 'German'],
-    ['fr', 'Français', 'French'],
-    ['zh-Hant', '繁體中文', 'Traditional Chinese'],
-    ['tr', 'Türkçe', 'Turkish'],
-    ['pl', 'Polski', 'Polish'],
-    ['it', 'Italiano', 'Italian'],
-    ['id', 'Bahasa Indonesia', 'Indonesian'],
-    ['vi', 'Tiếng Việt', 'Vietnamese'],
-    ['th', 'ไทย', 'Thai'],
   ].map(([code, native, english]) => ({ code, native, english }));
   const CODES = LANGUAGES.map((l) => l.code);
   // 这几种语言本身用全角标点，其余语言把残留的全角标点换成半角
-  const FULLWIDTH_OK = { zh: 1, 'zh-Hant': 1, ja: 1 };
+  const FULLWIDTH_OK = { zh: 1 };
 
   const SINGLE = ['铜', '银', '金', '钻', '红', '蓝', '绿', '紫'];
   const NUMERALS = '一二三四五六七八九十'; // 第"三"章：不用词典，直接换成阿拉伯数字（日语 / 中文保持汉字）

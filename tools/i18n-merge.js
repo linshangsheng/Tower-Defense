@@ -15,7 +15,7 @@ if (!lang) {
   process.exit(1);
 }
 const ph = (s) => (s.match(/\{\d+\}/g) || []).sort().join(',');
-const FULLWIDTH_OK = ['zh', 'zh-Hant', 'ja'];
+const FULLWIDTH_OK = ['zh'];
 const result = {};
 const errors = [];
 for (let n = 1; n <= PARTS; n++) {

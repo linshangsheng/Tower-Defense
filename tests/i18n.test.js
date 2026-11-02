@@ -13,9 +13,9 @@ const keys = JSON.parse(fs.readFileSync(path.join(ROOT, 'i18n/keys.json'), 'utf8
 const FOREIGN = I.codes.filter((c) => c !== 'zh');
 const ph = (s) => (s.match(/\{\d+\}/g) || []).sort().join(',');
 
-test('语言清单：17 种，默认英语，代码不重复', () => {
-  assert.strictEqual(I.languages.length, 17);
-  assert.strictEqual(new Set(I.codes).size, 17);
+test('语言清单：2 种（英语、简体中文），默认英语，代码不重复', () => {
+  assert.strictEqual(I.languages.length, 2);
+  assert.strictEqual(new Set(I.codes).size, 2);
   assert.strictEqual(I.codes[0], 'en');
   for (const l of I.languages) assert.ok(l.native && l.english);
 });
@@ -36,7 +36,7 @@ for (const code of FOREIGN) {
     assert.deepStrictEqual(missing.slice(0, 5), [], `缺 ${missing.length} 条`);
     for (const k of keys) {
       assert.strictEqual(ph(table[k]), ph(k), `占位符不一致：${k}`);
-      if (code !== 'ja' && code !== 'zh-Hant') assert.ok(!/[㐀-鿿]/.test(table[k]), `还有汉字：${k} → ${table[k]}`);
+      assert.ok(!/[㐀-鿿]/.test(table[k]), `还有汉字：${k} → ${table[k]}`);
     }
   });
 }
@@ -87,11 +87,9 @@ test('拼在一起的句子：前缀符号、按标点拆开、带标点的词�
   I._use('en', I.dicts.en || {});
 });
 
-test('全角标点：拉丁语系换半角，日语 / 繁中保留', () => {
+test('全角标点：英语换半角', () => {
   I._use('xx', { 好: 'ok' });
   assert.strictEqual(I.t('好，好！'), 'ok, ok!');
-  I._use('ja', { 好: 'よし' });
-  assert.strictEqual(I.t('好，好！'), 'よし，よし！');
   I._use('en', I.dicts.en || {});
 });
 

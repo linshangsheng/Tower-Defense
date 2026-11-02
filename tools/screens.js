@@ -137,7 +137,7 @@ const STEPS = [
     s.gold = 5;
   });
   // 记录画布上画出来的字里还有中文的（日语 / 繁中本来就有汉字，不检查）
-  const cjkLang = LANG === 'zh' || LANG === 'ja' || LANG === 'zh-Hant';
+  const cjkLang = LANG === 'zh';
   await page.evaluate(() => {
     window.__canvasLeft = new Set();
     for (const name of ['fillText', 'strokeText']) {
