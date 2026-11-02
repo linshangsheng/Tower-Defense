@@ -645,6 +645,27 @@ test('墨墨：分身阶段本体无敌，打掉 3 个分身后现身并受到�
   assert.ok(Math.abs(hp0 - m.hp - 150) < 1e-6, '受到 150% 伤害');
 });
 
+test('墨墨：还没走到停靠位置就被打到分身，现形后要继续往前走（否则战斗卡死）', () => {
+  const b = newBattle(50);
+  b.hero.cooldown = 1e9;
+  const m = b.spawnMonster('inkBoss', 2, 1150);
+  assert.ok(m.x > D.inkBoss.holdX);
+  b.damage(m, m.maxHp * 0.5, { type: 'magic' });
+  b.step(1 / 60);
+  assert.ok(m.hidden, '进入分身阶段');
+  for (const c of b.monsters.filter((o) => o.cloneOf === m && !o.dead)) b.damage(c, 1e9, { type: 'magic' });
+  assert.ok(!m.hidden);
+  const x0 = m.x;
+  for (let i = 0; i < 60 * 8; i++) b.step(1 / 60); // 现形后先僵直一会儿
+  assert.ok(m.x < x0 - 5, `现形后应该往前走（${x0} → ${m.x}）`);
+  // 魔王形态的重击结束后也不能把还没到位的它定住
+  m.ai.phase = 3;
+  m.x = 1150;
+  m.ai.mode = 'hold';
+  b.step(1 / 60);
+  assert.strictEqual(m.ai.mode, 'walk');
+});
+
 test('墨墨：魔王形态的重击可以被打断；裂隙狂暴会倒计时', () => {
   const b = newBattle(50);
   b.hero.cooldown = 1e9;

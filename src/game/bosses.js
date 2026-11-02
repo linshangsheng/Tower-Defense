@@ -461,6 +461,9 @@
           this.emit('riftStrike', { m });
         }
       }
+      // 「停住」只该出现在停靠位置上：分身、重击打断之类的流程会把状态设成 hold，
+      // 如果这时它还没走到位（输出高、半路就被打到下一阶段），要让它继续往前走，不然会永远停在出生点，战斗卡死（设计书 142）
+      if (ai.mode === 'hold' && m.x > K.holdX) ai.mode = 'walk';
       if (ai.mode === 'walk' && m.x <= K.holdX) {
         m.x = K.holdX;
         ai.mode = 'hold';
@@ -859,6 +862,9 @@
     clonesDown(m) {
       const K = D.inkBoss;
       m.hidden = false;
+      // 分身时被强制停住了：如果它还没走到停靠位置（输出高、半路就被打到分身），现形后要继续往前走，
+      // 否则它永远停在出生点，英雄够不着、它也不过来，战斗卡死（设计书 142）
+      if (m.ai.mode === 'hold' && m.x > K.holdX) m.ai.mode = 'walk';
       m.stunUntil = this.time + K.stunAfterClones;
       m.vulnUntil = this.time + K.vulnDuration;
       this.emit('inkReform', { m });
