@@ -899,6 +899,54 @@
     ctx.strokeStyle = OUT;
     ctx.lineWidth = lwL(0.0035);
     ctx.stroke();
+    // 压得很低的怒眉骨：鼻吻一侧往下斜，把眼睛压成凶狠的三角形
+    if (!blink) {
+      ctx.fillStyle = 'rgba(0,0,0,0.5)';
+      ctx.beginPath();
+      ctx.moveTo(ex - 0.07, ey - 0.002);
+      ctx.lineTo(ex + 0.07, ey - 0.047);
+      ctx.lineTo(ex + 0.07, ey - 0.02);
+      ctx.lineTo(ex - 0.045, ey + 0.012);
+      ctx.closePath();
+      ctx.fill();
+    }
+    ctx.beginPath();
+    ctx.moveTo(ex - 0.085, ey + 0.004);
+    ctx.quadraticCurveTo(ex - 0.01, ey - 0.052, ex + 0.085, ey - 0.062);
+    ctx.lineTo(ex + 0.085, ey - 0.04);
+    ctx.quadraticCurveTo(ex - 0.01, ey - 0.032, ex - 0.07, ey + 0.016);
+    ctx.closePath();
+    ctx.fillStyle = linear(ctx, ex - 0.08, ey, ex + 0.08, ey - 0.05, [[0, SKIN], [0.6, SKIN2], [1, SKIN_HI]]);
+    ctx.fill();
+    ctx.strokeStyle = OUT;
+    ctx.lineWidth = lwL(0.0035);
+    ctx.stroke();
+    ctx.strokeStyle = rgba(RIM, 0.65);
+    ctx.lineWidth = lwL(0.004);
+    ctx.beginPath();
+    ctx.moveTo(ex - 0.07, ey - 0.004);
+    ctx.quadraticCurveTo(ex - 0.01, ey - 0.05, ex + 0.08, ey - 0.06);
+    ctx.stroke();
+    // 脸颊上向后翘的骨刺
+    ctx.fillStyle = linear(ctx, -0.02, 0.0, 0.14, 0.04, [[0, BONE], [1, BONE_DK]]);
+    ctx.beginPath();
+    ctx.moveTo(-0.07, 0.012);
+    ctx.quadraticCurveTo(0.03, 0.0, 0.12, 0.05);
+    ctx.quadraticCurveTo(0.03, 0.03, -0.04, 0.05);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = OUT;
+    ctx.lineWidth = lwL(0.003);
+    ctx.stroke();
+    // 鼻孔：翻开的一道缝，里面透出岩浆的光
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    glow(-0.5, -0.04, 0.05, '#ff7a30', (0.35 + 0.35 * heat) * (fallen ? 0.3 : 1));
+    ctx.restore();
+    ctx.fillStyle = '#0a0306';
+    ctx.beginPath();
+    ctx.ellipse(-0.5, -0.04, 0.016, 0.0075, 0.55, 0, TAU);
+    ctx.fill();
     // 鼻吻的高光点
     ctx.fillStyle = 'rgba(255,255,255,0.12)';
     ctx.beginPath();
