@@ -90,6 +90,7 @@
         if (!res.win && battle.wall.hp <= 0) this.collapse = { t0: this.t };
         // 胜利：夜空 / 战场上空绽放一串彩色烟花（设计书 96）
         if (res.win) this.fireworks = { until: this.t + 4, next: 0 };
+        if (res.win) this.bark('win', 0.8);
       });
       // 回归的小 Boss 登场：入场处炸开一圈红光，屏幕轻轻一震（它是排在波末尾从最右边走进来的）
       on('bossReturn', (e) => {
@@ -430,6 +431,7 @@
         // 名牌下面带一句这个 Boss 在战前对话里的第一句台词（有的话）
         const sc = TD.data.story && TD.data.story['pre' + battle.levelNo];
         const quote = sc && (sc.lines.find((l) => l[0] === m.type) || [])[1];
+        this.bark('boss', 1.2);
         V.bossCard(m.def.name, m.def.boss === 'major', m.type === 'abyssDragon' ? '#ff4a2a' : m.def.boss === 'major' ? '#ff6a4a' : '#ffb04a', quote && TD.i18n ? TD.i18n.t(quote) : quote);
         this.shake = Math.max(this.shake, m.def.boss === 'major' ? 9 : 4);
       });
@@ -774,6 +776,19 @@
     }
 
     // ---------- 特效工具 ----------
+    // 主角喊一句话（设计书 158）：浮在他头上，淡蓝色，比伤害数字停得久；同一场战斗里同一类只喊一次
+    bark(kind, delay) {
+      const b = this.battle;
+      const pool = TD.data.heroBarks && TD.data.heroBarks[kind];
+      if (!b || !pool || b.mode && b.mode.kind === 'tower') return;
+      this._barked = this._barked || {};
+      if (this._barked[kind] === b) return;
+      this._barked[kind] = b;
+      // 头盔的梗是 Kael（默认英雄）的口头禅，换了别的英雄就不说这几句
+      const mine = TD.game && TD.game.save && TD.game.save.hero && TD.game.save.hero !== 'dang' ? pool.filter((x) => !x.includes('头盔')) : pool;
+      const str = mine[Math.floor(Math.random() * mine.length)];
+      this.fx.push({ kind: 'text', x: C.heroX + 70, y: (b.heroY || 320) - 120, str, color: '#cfe8ff', size: 22, life: 2.4, age: -(delay || 0), vy: -10 });
+    }
     text(x, y, str, color, size, life, crit) {
       if (this.fx.length > 300 && !crit) return;
       size = size || 20;
@@ -1022,6 +1037,7 @@
         }
         return;
       }
+      if (this.battle && this.battle.wall.hp > 0 && this.battle.wall.hp / this.battle.wall.max < 0.3) this.bark('low', 0);
       const y = e.m ? e.m.y + e.m.yOffset - 10 : (C.fieldTop + C.fieldBottom) / 2;
       // 妖塔里几百只怪同时啃城墙：碎石特效超过上限就不再加（设计书 74.5）
       for (let i = 0; i < (this.fx.length > 160 ? 0 : e.big ? 16 : 3); i++) {

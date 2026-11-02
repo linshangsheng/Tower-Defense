@@ -2470,4 +2470,13 @@ TD.i18n.register("en", {
   "开": "On",
   "关": "Off",
   "不提醒": "Never",
+  "撑住……！": "Hold on...!",
+  "别让城墙倒下！": "Don't let the wall fall!",
+  "还没完！": "It's not over yet!",
+  "来了，大家伙！": "Here comes the big one!",
+  "盯紧它的蓄力！": "Watch its charge-up!",
+  "头盔扶正……上！": "Helmet straight... let's go!",
+  "守住了！": "We held!",
+  "头盔……又滑下来了。": "My helmet... slipped again.",
+  "回去喝汤！": "Let's go home for soup!",
 });
