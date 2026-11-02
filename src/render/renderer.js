@@ -813,7 +813,38 @@
       const big = e.crit;
       const color = e.source === 'burn' ? '#ff8a3d' : e.source === 'thunder' ? '#c58cff' : big ? '#ffd23f' : '#ffffff';
       const size = e.source === 'burn' ? 15 : big ? 30 : e.dmg >= 100 ? 24 : 19;
-      this.text(e.x + (Math.random() - 0.5) * 16, e.y - e.m.def.size * (e.m.def.hitH === undefined ? 1.4 : e.m.def.hitH + 0.5), (big ? '暴击 ' : '') + Math.round(e.dmg), color, size, big ? 0.9 : 0.6, big);
+      // 合并飘字：同一只怪 0.25 秒内连续挨打（连射、多重箭、技能和灼烧叠在一起），伤害累加到同一个数字上并重新弹一下，
+      // 不再每一下都冒一个新数字（密集战斗里会叠成一长串，设计书 148）
+      const prev = e.m._hitText;
+      if (prev && prev.kind === 'text' && prev.age < 0.25 && prev.age >= 0 && !!prev.crit === !!big && prev.src === e.source && this.fx.includes(prev)) {
+        prev.sum += e.dmg;
+        prev.str = (big ? '暴击 ' : '') + Math.round(prev.sum);
+        prev.age = Math.min(prev.age, 0.08);
+        prev.size = Math.min(prev.size * 1.06, size * 1.5);
+        prev.life = Math.max(prev.life, big ? 0.9 : 0.6);
+      } else {
+        // 暴击飘字太多时降级：超过 6 个就去掉"暴击"二字、字号缩小；超过 12 个不再新增（范围技能一次打中一大片时）
+        let wordy = big;
+        let sz = size;
+        let skipText = false;
+        if (big) {
+          let alive = 0;
+          for (const f of this.fx) if (f.kind === 'text' && f.crit && f.age < 0.9) alive++;
+          if (alive > 12) skipText = true;
+          if (alive > 6) {
+            wordy = false;
+            sz = size * 0.78;
+          }
+        }
+        const before = this.fx.length;
+        if (!skipText) this.text(e.x + (Math.random() - 0.5) * 16, e.y - e.m.def.size * (e.m.def.hitH === undefined ? 1.4 : e.m.def.hitH + 0.5), (wordy ? '暴击 ' : '') + Math.round(e.dmg), color, sz, big ? 0.9 : 0.6, big);
+        const made = this.fx.length > before ? this.fx[this.fx.length - 1] : null;
+        if (made && made.kind === 'text') {
+          made.sum = e.dmg;
+          made.src = e.source;
+          e.m._hitText = made;
+        }
+      }
       // 武器打出的命中光和火花用武器品质的颜色（技能、灼烧等仍用原来的颜色）
       const wsrc = e.source === 'weapon' || e.source === 'splash' || e.source === 'chain';
       const wcol = wsrc ? this.wcolor() : null;
