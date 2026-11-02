@@ -310,7 +310,7 @@
       }
     } else if (q.fallen) {
       const rb = q.rebirth * q.rebirth;
-      apply({ bodyY: 0.09 * (1 - rb), droop: 1 - rb, hold: 1 - rb, hang: -0.5 * (1 - rb), jaw: 0.02 + 0.3 * rb, legs: -0.6 * (1 - rb), pitch: 0.06 * (1 - rb) });
+      apply({ bodyY: 0.09 * (1 - rb), droop: 1 - rb, hang: -0.62 * (1 - rb), hdy: 0.05 * (1 - rb), jaw: 0.04 + 0.3 * rb, legs: -0.9 * (1 - rb), pitch: 0.1 * (1 - rb), tail: -0.3 * (1 - rb) });
     }
     // 翅膀的拍动：技能里翅膀被"举着 / 收着"（hold），拍动幅度跟着变小；狂暴时拍得更快
     const rate = (q.rage ? 3.2 : 2.2) * q.flapRate;
@@ -323,10 +323,10 @@
     q.lag = Math.sin(q.ph - 0.7) * (1 - 0.85 * q.hold); // 指骨比臂骨慢半拍，翼尖才有"甩"的感觉
     q.lag2 = Math.sin(q.ph + 0.1) * (1 - 0.85 * q.hold);
     if (q.droop > 0) {
-      q.flap = lerp(q.flap, 0.9, q.droop);
-      q.flap2 = lerp(q.flap2, 0.8, q.droop);
-      q.lag = lerp(q.lag, 1, q.droop);
-      q.lag2 = lerp(q.lag2, 1, q.droop);
+      q.flap = lerp(q.flap, -1, q.droop);
+      q.flap2 = lerp(q.flap2, -0.95, q.droop);
+      q.lag = lerp(q.lag, -1, q.droop);
+      q.lag2 = lerp(q.lag2, -1, q.droop);
     }
     // 悬停：翅膀往下拍时身体往上抬一点；呼吸
     q.bob = q.fallen ? 0 : -Math.cos(q.ph) * 0.016 * (1 + 0.8 * (q.flapRate - 1));
