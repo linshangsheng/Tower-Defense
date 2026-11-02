@@ -32,6 +32,7 @@
 
   // mode：{ kind: 'endless' | 'daily', levelDef, stage, info }（普通关卡不传）
   game.startBattle = function (n, mode) {
+    game.slowUntil = 0; // 上一场的慢镜头不带到这一场
     const s = game.save;
     game.mode = mode || null;
     const lo = P.battleLoadout(s);
@@ -426,7 +427,8 @@
     if (b && !game.paused && !game.introPaused) {
       if (!b.over) game.playSeconds = (game.playSeconds || 0) + dt; // 休息提醒（设计书 40）
       const step = 1 / C.tickRate;
-      game.acc += dt * game.speed;
+      const slow = performance.now() < (game.slowUntil || 0) ? 0.3 : 1; // 击杀 Boss 的慢镜头
+      game.acc += dt * game.speed * slow;
       let n = 0;
       const t0 = typeof performance !== 'undefined' ? performance.now() : 0;
       while (game.acc >= step && n < 12) {
@@ -438,7 +440,7 @@
           break;
         }
       }
-      renderDt = dt * game.speed;
+      renderDt = dt * game.speed * slow;
     } else if (game.paused || game.introPaused) renderDt = 0;
     // 暂停、切后台时的间隔不算
     if (TD.quality && !document.hidden && !game.paused && !game.introPaused) TD.quality.record(raw);

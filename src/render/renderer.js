@@ -977,6 +977,9 @@
         for (let i = 0; i < (m.def.boss ? 3 : 1); i++) this.vfx.fx.push({ kind: 'ring', x: m.x, y: dy, r0: 4, r1: m.def.size * (m.def.boss ? 3 + i : 1.8), color: i % 2 ? '#ffffff' : '#ffe28a', w: 2.4, life: 0.35 + i * 0.18, age: 0 });
         if (m.def.boss) {
           this.shake = Math.max(this.shake, 18);
+          // 击杀 Boss 的慢镜头（设计书 156）：约 0.9 秒、0.3 倍速；妖塔里 Boss 很多不触发，开了"减少动效"也不触发
+          const bm = this.battle && this.battle.mode;
+          if (TD.game && !(bm && bm.kind === 'tower') && !(TD.game.save && TD.game.save.settings && TD.game.save.settings.reduceMotion) && !m.def.bossPart) TD.game.slowUntil = (typeof performance !== 'undefined' ? performance.now() : 0) + 900;
           // Boss 倒下：全屏一闪、四散的彩色火花、一团大光（设计书 96）
           this.fx.push({ kind: 'flash', color: '#fff2d0', life: 0.35, age: 0 });
           this.vfx.fx.push({ kind: 'flare', x: m.x, y: dy, r: Math.min(900, m.def.size * 6), color: '#ffe28a', life: 0.5, age: 0 });
