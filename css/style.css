@@ -4577,3 +4577,13 @@ html[lang='ko'] .title-main {
 .quick-up .qu-cost {
   color: #ffe9b0;
 }
+
+/* 每日登录奖励（设计书 162） */
+.login-gift h2 { text-align: center; }
+.login-row { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin: 14px 0 6px; }
+.login-tile { position: relative; padding: 10px 4px; border-radius: 12px; text-align: center; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.14); min-height: 92px; }
+.login-tile .lg-day { font-size: 13px; opacity: 0.8; margin-bottom: 8px; }
+.login-tile .lg-amt { font-weight: 700; font-size: 15px; margin: 2px 0; }
+.login-tile.today { border-color: #ffd070; background: linear-gradient(180deg, rgba(255, 210, 120, 0.3), rgba(255, 210, 120, 0.08)); box-shadow: 0 0 16px rgba(255, 200, 100, 0.45); transform: translateY(-4px); }
+.login-tile.past { opacity: 0.5; }
+.login-tile .lg-check { position: absolute; right: 6px; top: 4px; color: #8affc8; font-weight: 700; }

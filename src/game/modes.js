@@ -298,6 +298,42 @@
 
   M.dailyUnlocked = (save) => P.isCleared(save, 5);
 
+  // ---------- 每日登录奖励（设计书 162） ----------
+  // 7 天一个周期，奖励一天比一天好；错过一天不清零（隔了 2 天以上才从第 1 天重新开始）。铜币按当前进度缩放
+  const dayNum = (key) => {
+    const [y, m, d] = String(key).split('-').map(Number);
+    return Math.round(Date.UTC(y, m - 1, d) / 86400000);
+  };
+  M.loginReward = function (save, day) {
+    const base = C.rewards.baseCopper(Math.max(1, P.highestCleared(save)));
+    return [null, { copper: base * 2 }, { copper: base * 3 }, { silver: 2 }, { copper: base * 5 }, { silver: 4 }, { gold: 1 }, { diamond: 3, silver: 5 }][day];
+  };
+  // 今天该领第几天的奖励；claimed：今天已经领过
+  M.loginInfo = function (save, date) {
+    const key = M.todayKey(date);
+    const l = save.login || { last: '', day: 0 };
+    if (l.last === key) return { key, day: l.day || 1, claimed: true, reward: M.loginReward(save, l.day || 1) };
+    let day = 1;
+    if (l.last) {
+      const gap = dayNum(key) - dayNum(l.last);
+      day = gap >= 1 && gap <= 2 ? ((l.day || 0) % 7) + 1 : 1;
+    }
+    return { key, day, claimed: false, reward: M.loginReward(save, day) };
+  };
+  // 通关第 3 关以后才弹（别打断最开始的教学）
+  M.loginPending = (save, date) => P.isCleared(save, 3) && !M.loginInfo(save, date).claimed;
+  M.claimLogin = function (save, date) {
+    const info = M.loginInfo(save, date);
+    if (info.claimed) return null;
+    const r = info.reward;
+    save.copper += r.copper || 0;
+    save.silver += r.silver || 0;
+    save.gold += r.gold || 0;
+    save.diamond = (save.diamond || 0) + (r.diamond || 0);
+    save.login = { last: info.key, day: info.day };
+    return info;
+  };
+
   M.todayKey = function (date) {
     const d = date || new Date();
     const pad = (x) => String(x).padStart(2, '0');

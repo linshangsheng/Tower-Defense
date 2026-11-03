@@ -44,6 +44,7 @@
       seenTabs: { loadout: true, attrs: true },
       achievements: {},
       settings: { sound: true, speed: 1, difficulty: 'normal', restMinutes: 30 },
+      login: { last: '', day: 0 }, // 每日登录奖励（设计书 162）
       hero: 'dang', // 当前英雄（设计书 42）
       buddy: null, // 助战伙伴（设计书 51）
       outfit: 'classic', // 当前穿的角色（设计书 72）

@@ -727,6 +727,38 @@
     [1120, 175],
   ];
 
+  // ================= 每日登录奖励（设计书 162） =================
+  UI.showLoginGift = function () {
+    const M = TD.modes;
+    const info = M.loginInfo(game.save);
+    if (info.claimed) return;
+    const tiles = [1, 2, 3, 4, 5, 6, 7].map((d) => {
+      const r = M.loginReward(game.save, d);
+      const cls = 'login-tile' + (d < info.day ? ' past' : d === info.day ? ' today' : '');
+      const amts = [];
+      for (const k of ['copper', 'silver', 'gold', 'diamond']) if (r[k]) amts.push(h('div', { class: 'lg-amt' }, r[k], ' ', coinIcon(k)));
+      return h('div', { class: cls }, h('div', { class: 'lg-day' }, `第 ${d} 天`), h('div', { class: 'lg-rew' }, amts), d < info.day ? h('div', { class: 'lg-check' }, '✔') : null);
+    });
+    modal(
+      h(
+        'div',
+        { class: 'login-gift' },
+        h('h2', null, '🎁 每日补给箱'),
+        h('p', { class: 'hint' }, '每天回来领一份，一天比一天丰厚；第 7 天有钻石。隔一天没来也不要紧，连续记录不会清零。'),
+        h('div', { class: 'login-row' }, tiles),
+        h('div', { class: 'modal-buttons' }, h('button', { class: 'btn primary big', onclick: () => {
+          const got = M.claimLogin(game.save);
+          sfx('coin');
+          game.persist();
+          UI.closeModal();
+          if (got) UI.toast(`已领取第 ${got.day} 天的补给`);
+          UI.showMap(UI.mapChapter); // 重画一遍，顶部的货币数字就更新了
+        } }, '领取'))
+      ),
+      { closeOnBack: true }
+    );
+  };
+
   UI.showMap = function (chapterId) {
     clear();
     game.renderer.mood = 'idle';
@@ -739,6 +771,10 @@
     }
     const ch = D.chapters.find((c) => c.id === chapterId) || D.chapters[0];
     UI.mapChapter = ch.id;
+    if (!UI._loginShown && TD.modes.loginPending(s)) {
+      UI._loginShown = true;
+      setTimeout(() => UI.showLoginGift(), 450);
+    }
     TD.music.play(ch.music || ch.id, 'calm');
     game.renderer.setChapter(ch);
     // 章节切换：上一章 / 第 N 章（点开列表）/ 下一章；十章的页签太占横向位置（v0.68）

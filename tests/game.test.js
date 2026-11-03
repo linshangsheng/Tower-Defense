@@ -789,6 +789,32 @@ test('一键升级：永远推荐买得起的最划算一项；买完钱真的�
   assert.ok(!P.applyQuickUpgrade(s, 'nonsense:x'));
 });
 
+test('每日登录奖励：按天递增、错过一天不清零、隔两天以上重来、同一天只能领一次、第 7 天有钻石', () => {
+  const M = TD.modes;
+  const s = P.newSave();
+  const day = (d) => new Date(2027, 0, d);
+  assert.ok(!M.loginPending(s, day(1)), '没通关第 3 关不弹');
+  clearUpTo(s, 5);
+  assert.ok(M.loginPending(s, day(1)));
+  let got = M.claimLogin(s, day(1));
+  assert.strictEqual(got.day, 1);
+  assert.strictEqual(M.claimLogin(s, day(1)), null, '同一天不能领两次');
+  assert.ok(!M.loginPending(s, day(1)));
+  assert.strictEqual(M.claimLogin(s, day(2)).day, 2, '连着来：第 2 天');
+  assert.strictEqual(M.claimLogin(s, day(4)).day, 3, '隔了一天没来：连续记录不清零，接着第 3 天');
+  assert.strictEqual(M.claimLogin(s, day(8)).day, 1, '隔了 4 天：从第 1 天重来');
+  for (let d = 9; d <= 14; d++) got = M.claimLogin(s, day(d));
+  assert.strictEqual(got.day, 7, '连续 7 天来到第 7 天');
+  assert.ok(M.loginReward(s, 7).diamond >= 1, '第 7 天有钻石');
+  const dia = s.diamond;
+  assert.strictEqual(M.claimLogin(s, day(15)).day, 1, '第 7 天之后下一个周期从第 1 天开始');
+  assert.strictEqual(s.diamond, dia);
+  // 奖励随进度缩放
+  const a = P.newSave(); clearUpTo(a, 5);
+  const b = P.newSave(); clearUpTo(b, 60);
+  assert.ok(M.loginReward(b, 1).copper > M.loginReward(a, 1).copper);
+});
+
 test('墨墨：还没走到停靠位置就被打到分身，现形后要继续往前走（否则战斗卡死）', () => {
   const b = newBattle(50);
   b.hero.cooldown = 1e9;
