@@ -5,6 +5,7 @@
   'use strict';
 
   const D = TD.data;
+  const C0 = TD.config;
 
   Object.assign(TD.Battle.prototype, {
     initTrait(m) {
@@ -58,6 +59,22 @@
             this.traitEmit(m, 'roar', { radius: t.radius });
           }
           break;
+        case 'cleanse': // 提灯鬼：灯光驱散身边怪物的冰冻 / 眩晕 / 减速
+          if (this.time >= tr.next) {
+            tr.next = this.time + t.every;
+            let n = 0;
+            for (const o of this.monsters) {
+              if (o.dead || o === m || Math.abs(o.x - m.x) > t.radius || Math.abs(o.y - m.y) > t.radius) continue;
+              if (o.frozenUntil > this.time || o.stunUntil > this.time || o.slowUntil > this.time) {
+                o.frozenUntil = Math.min(o.frozenUntil, this.time);
+                o.stunUntil = Math.min(o.stunUntil, this.time);
+                o.slowUntil = Math.min(o.slowUntil, this.time);
+                n++;
+              }
+            }
+            if (n) this.traitEmit(m, 'cleanse', { radius: t.radius });
+          }
+          break;
         case 'rewrap': // 绷带球：受伤后重新缠紧，护甲暂时增厚
           if (tr.wrapUntil && this.time >= tr.wrapUntil) {
             m.armorMult /= 1 + t.armor;
@@ -96,6 +113,51 @@
         m.armorMult *= 1 + t.armor;
         this.traitEmit(m, 'rewrap');
       }
+    },
+
+    // 远程怪射击：弓手每第三箭齐射（伤害翻倍）
+    traitShotMult(m) {
+      const t = m.def.trait;
+      if (t.id === 'volley') {
+        m.tr.shots = (m.tr.shots || 0) + 1;
+        if (m.tr.shots % t.every === 0) {
+          this.traitEmit(m, 'volley');
+          return 2;
+        }
+      }
+      return 1;
+    },
+
+    // 远程怪射中城墙以后：裂缝、寒气、电麻、火苗
+    traitOnShot(m) {
+      const t = m.def.trait;
+      if (t.id === 'crack') {
+        this.wallVulnUntil = this.time + t.dur;
+        this.wallVulnAmt = t.amp;
+        this.traitEmit(m, 'crack', { x: C0.wallX, y: m.y + m.yOffset });
+      } else if (t.id === 'chillShot') {
+        this.buffs = this.buffs.filter((b) => b.src !== 'icemage');
+        this.buffs.push({ aspd: -t.slow, until: this.time + t.dur, src: 'icemage' });
+        this.traitEmit(m, 'chillShot');
+      } else if (t.id === 'stormStun') {
+        if (this.rng() < t.chance) {
+          this.stunHero(t.dur);
+          this.traitEmit(m, 'stormStun');
+        }
+      } else if (t.id === 'blaze') {
+        const r = m.def.ranged;
+        this.addWallDot(r.damage * t.mult * this.D, t.dur, 'burn', true, m.type);
+        this.traitEmit(m, 'blaze');
+      }
+    },
+
+    // 战车撞墙：震得英雄晃一下（太频繁不触发，免得一群战车把英雄锁死）
+    traitOnSlam(m) {
+      const t = m.def.trait;
+      if (t.id !== 'ram') return;
+      if (this.heroStunUntil > 0 && this.time < this.heroStunUntil + t.gap) return;
+      this.stunHero(t.stun);
+      this.traitEmit(m, 'ram');
     },
 
     // 啃城墙时每秒的伤害（绿团团越粘越疼）

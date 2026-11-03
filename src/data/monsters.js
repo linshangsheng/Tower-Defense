@@ -479,7 +479,8 @@
       size: 24,
       color: '#8a6a4a',
       slam: 25,
-      desc: '骷髅驾驶的小推车，高速冲撞，撞墙伤害很高。',
+      trait: { id: 'ram', stun: 0.5, gap: 2.5 },
+      desc: '骷髅驾驶的小推车，高速冲撞，撞墙伤害很高；撞上来的震动还会让英雄晃一下（0.5 秒）。',
     },
     inkClone: {
       name: '墨墨分身',
@@ -966,11 +967,11 @@
   // ---------- 远程怪（设计书 95）：停在远处，各用不同的弹道向城墙开火 ----------
   // ranged.shot 决定弹道的样子：arrow 快箭 · rock 抛物线石块 · ice 冰锥（冻伤城墙）· lightning 瞬发闪电 · bomb 会爆炸的炸弹
   Object.assign(TD.data.monsters, {
-    goblinArcher: { name: '哥布林弓手', hp: 36, speed: 55, dps: 0, armor: 0, copper: 4, size: 20, color: '#d8a040', art: 'goblin', tint: '#d8a040', ranged: { holdX: 520, every: 1.4, damage: 8, shot: 'arrow' }, desc: '躲在远处的哥布林，一支接一支地朝城墙射箭，箭又快又准。' },
-    rockThrower: { name: '投石怪', hp: 110, speed: 30, dps: 0, armor: 25, copper: 5, size: 26, color: '#8a6a4a', art: 'stump', ranged: { holdX: 460, every: 2.6, damage: 20, shot: 'rock' }, desc: '力气很大的怪，停在远处抛出大石头，一块砸下去很疼，但出手慢。' },
-    iceMage: { name: '冰晶法师', hp: 55, speed: 40, dps: 0, armor: 0, copper: 5, size: 22, color: '#8fe0ff', art: 'snowman', tint: '#8fe0ff', ranged: { holdX: 500, every: 2.2, damage: 8, shot: 'ice', poison: { dps: 3, duration: 4 } }, desc: '从远处射出冰锥，被冰锥打中的城墙会冻伤，持续受到伤害。' },
-    stormCaster: { name: '雷电法师', hp: 70, speed: 38, dps: 0, armor: 0, copper: 6, size: 22, color: '#b090ff', art: 'priest', tint: '#b090ff', ranged: { holdX: 620, every: 2.8, damage: 17, shot: 'lightning' }, desc: '站在最远处召来闪电劈向城墙，闪电没有弹道、躲不开，但出手慢。' },
-    bomber: { name: '投弹手', hp: 90, speed: 36, dps: 0, armor: 0, copper: 6, size: 24, color: '#ff9a3c', art: 'pumpkin', tint: '#ff9a3c', ranged: { holdX: 440, every: 3.4, damage: 30, shot: 'bomb' }, desc: '丢出会爆炸的炸弹，一颗炸弹伤城墙很重，但很久才丢一颗。' },
+    goblinArcher: { name: '哥布林弓手', hp: 36, speed: 55, dps: 0, armor: 0, copper: 4, size: 20, color: '#d8a040', art: 'goblin', tint: '#d8a040', ranged: { holdX: 520, every: 1.4, damage: 8, shot: 'arrow' }, trait: { id: 'volley', every: 3 }, desc: '躲在远处的哥布林，一支接一支地朝城墙射箭，每第三箭是一轮齐射，伤害翻倍。' },
+    rockThrower: { name: '投石怪', hp: 110, speed: 30, dps: 0, armor: 25, copper: 5, size: 26, color: '#8a6a4a', art: 'stump', ranged: { holdX: 460, every: 2.6, damage: 20, shot: 'rock' }, trait: { id: 'crack', amp: 0.15, dur: 4 }, desc: '力气很大的怪，停在远处抛出大石头，一块砸下去很疼，而且会把城墙砸出裂缝：4 秒内城墙多受 15% 的伤害。' },
+    iceMage: { name: '冰晶法师', hp: 55, speed: 40, dps: 0, armor: 0, copper: 5, size: 22, color: '#8fe0ff', art: 'snowman', tint: '#8fe0ff', ranged: { holdX: 500, every: 2.2, damage: 8, shot: 'ice', poison: { dps: 3, duration: 4 } }, trait: { id: 'chillShot', slow: 0.12, dur: 3 }, desc: '从远处射出冰锥，被冰锥打中的城墙会冻伤，持续受到伤害；寒气还会顺着城墙爬上去，让英雄的攻速下降 12%。' },
+    stormCaster: { name: '雷电法师', hp: 70, speed: 38, dps: 0, armor: 0, copper: 6, size: 22, color: '#b090ff', art: 'priest', tint: '#b090ff', ranged: { holdX: 620, every: 2.8, damage: 17, shot: 'lightning' }, trait: { id: 'stormStun', chance: 0.15, dur: 0.6 }, desc: '站在最远处召来闪电劈向城墙，闪电没有弹道、躲不开，但出手慢；每道闪电有 15% 几率把英雄电麻 0.6 秒。' },
+    bomber: { name: '投弹手', hp: 90, speed: 36, dps: 0, armor: 0, copper: 6, size: 24, color: '#ff9a3c', art: 'pumpkin', tint: '#ff9a3c', ranged: { holdX: 440, every: 3.4, damage: 30, shot: 'bomb' }, trait: { id: 'blaze', mult: 0.35, dur: 3 }, desc: '丢出会爆炸的炸弹，一颗炸弹伤城墙很重，但很久才丢一颗；炸完还会留下火苗，城墙再烧 3 秒。' },
   });
 
   const echo = (id, base, name, tint, over, desc) => {
@@ -987,7 +988,7 @@
   echo('wraith', 'ghost', '怨灵', TINT_MOON, { hp: 90, speed: 56, dps: 14, physResist: 0.85, copper: 4 }, '几乎不怕物理攻击的灵体：只有 15% 的物理伤害有效，用魔法打它。');
   echo('skelGuard', 'goblin', '骷髅卫兵', TINT_MOON, { hp: 200, speed: 38, dps: 18, frontArmor: 160, copper: 5 }, '举着厚重的骨盾，正面几乎打不动：回旋镖从背后打。');
   echo('gargoyle', 'vulture', '石像鬼', TINT_MOON, { hp: 110, speed: 105, dps: 10, armor: 100, copper: 4, trait: { id: 'petrify', every: 4.5, dur: 1.2 } }, '披着石甲的飞行怪：物理攻击大半被挡住，还会隔几秒把自己石化——石化的 1.2 秒里，几乎打不动它。');
-  echo('lanternGhost', 'priest', '提灯鬼', TINT_MOON, { hp: 120, dps: 8, copper: 5, healer: Object.assign({}, M.priest.healer, { radius: 150, pct: 0.06 }) }, '提着灯的治疗者：范围更大、治疗更多，先打它。');
+  echo('lanternGhost', 'priest', '提灯鬼', TINT_MOON, { hp: 120, dps: 8, copper: 5, healer: Object.assign({}, M.priest.healer, { radius: 150, pct: 0.06 }), trait: { id: 'cleanse', every: 4, radius: 170 } }, '提着灯的治疗者：范围更大、治疗更多，而且灯光能驱散身边怪物身上的冰冻和眩晕，先打它。');
   echo('bloodBat', 'bat', '吸血蝠', TINT_MOON, { hp: 70, dps: 9, copper: 3, laneHop: { every: 1.8 } }, '频繁换车道的蝙蝠，很难集火。');
   // 第九章 · 赤铁熔炉（第四、五章怪物的回声）
   echo('ironSnowman', 'snowman', '铁雪人', TINT_FORGE, { hp: 110, dps: 16, armor: 60, copper: 4, deathSpawn: Object.assign({}, M.snowman.deathSpawn, { count: 3 }) }, '披着铁甲的雪人，死后裂成三个小雪团。');
@@ -996,7 +997,7 @@
   echo('steelYeti', 'yeti', '钢雪怪', TINT_FORGE, { hp: 280, dps: 24, armor: 140, copper: 7 }, '浑身钢板的雪怪：物理几乎打不动，魔法才有效；走到半场会咆哮，让周围的怪加速。');
   echo('moltenGolem', 'lavaGolem', '熔铁傀儡', TINT_FORGE, { hp: 300, dps: 24, mres: 300, copper: 8 }, '熔化的铁做的傀儡：魔法几乎打不动，用物理武器。');
   echo('slagMagma', 'magma', '炉渣团', TINT_FORGE, { hp: 70, dps: 12, copper: 4, fireZone: Object.assign({}, M.magma.fireZone, { radius: 90, duration: 6 }) }, '死后留下更大、更久的火焰地带。');
-  echo('ironChariot', 'chariot', '铁战车', TINT_FORGE, { hp: 100, speed: 130, dps: 12, armor: 50, copper: 5, slam: 22 }, '披着铁板的战车，冲得很快。');
+  echo('ironChariot', 'chariot', '铁战车', TINT_FORGE, { hp: 100, speed: 130, dps: 12, armor: 50, copper: 5, slam: 22, trait: { id: 'ram', stun: 0.8, gap: 2.5 } }, '披着铁板的战车，冲得很快；撞墙的震动会让英雄晃一下（0.8 秒）。');
   echo('frostWyrm', 'iceDragon', '霜龙', TINT_FORGE, { hp: 85, speed: 62, dps: 12, copper: 4 }, '会飞的小龙，被混沌染成了红色：飞近以后会朝城头喷冰息，让英雄攻速下降。');
   // 第十章 · 虚空天域（第六、七章怪物的回声）
   echo('voidSheep', 'cloudSheep', '虚空羊', TINT_VOID, { hp: 110, dps: 14, copper: 5, wool: Object.assign({}, M.cloudSheep.wool, { ratio: 0.7 }) }, '羊毛更厚：先扣掉 70% 血量的羊毛才开始掉血。');

@@ -720,6 +720,13 @@
           case 'pilfer': say('偷！', '#ffd23f'); if (calm) this.text(e.x, e.y - 14, '-' + e.amount, '#ffd23f', 14, 0.8); break;
           case 'sting': this.burst(e.x, e.y, '#8aff6a', 5, 110); say('毒刺', '#8aff6a'); break;
           case 'scavenge': this.burst(e.x, e.y, '#ff8a6a', 4, 100); break;
+          case 'volley': say('齐射！', '#ffd870', 18); break;
+          case 'crack': this.burst(C.wallX + 8, e.y, '#b8a890', 8, 150); say('裂缝！', '#d8c8a8'); break;
+          case 'chillShot': this.text(C.heroX + 50, battle.heroY - 110, '寒气！', '#9fdcff', 18, 0.8); break;
+          case 'stormStun': this.fx.push({ kind: 'chain', x0: e.x, y0: e.y - 10, x: C.heroX, y: battle.heroY - 60, life: 0.3, age: 0 }); this.text(C.heroX + 50, battle.heroY - 110, '雷击！', '#c58cff', 22, 0.9); break;
+          case 'blaze': this.burst(C.wallX + 8, e.y, '#ff8a3d', 6, 130); break;
+          case 'ram': this.shake = Math.max(this.shake, 4); this.text(C.heroX + 50, battle.heroY - 110, '震动！', '#e8d8b0', 20, 0.8); break;
+          case 'cleanse': this.fx.push({ kind: 'ring', x: e.x, y: e.y, r0: 8, r1: e.radius || 170, color: '#fff2b0', w: 3, life: 0.5, age: 0, flat: 0.5 }); say('驱散', '#fff2b0'); break;
           case 'seedBurst':
             this.fx.push({ kind: 'ring', x: e.x, y: e.y, r0: 6, r1: e.radius || 130, color: '#ffc060', w: 3, life: 0.45, age: 0, flat: 0.5 });
             say('籽爆！', '#ffc060');

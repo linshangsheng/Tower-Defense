@@ -916,6 +916,36 @@ test('怪物独特技能（设计书 165）：13 种技能各自生效，变体�
   assert.ok(b.traitSpeedMult(m) > 1.5); m.x = 500; assert.strictEqual(b.traitSpeedMult(m), 1);
 });
 
+test('怪物机制差异（设计书 167）：弓手齐射、投石裂缝、冰法师寒气、雷法师电麻、投弹手火苗、战车震晃、提灯鬼驱散', () => {
+  const mk = () => { const b = newBattle(20); b.hero.cooldown = 1e9; b.wall.hp = b.wall.max = 1e12; return b; };
+  // 弓手：每第三箭 ×2
+  let b = mk(); let m = b.spawnMonster('goblinArcher', 1, 500);
+  assert.deepStrictEqual([1, 2, 3, 4, 5, 6].map(() => b.traitShotMult(m)), [1, 1, 2, 1, 1, 2]);
+  // 投石怪：之后城墙受伤更多，过期恢复
+  b = mk(); m = b.spawnMonster('rockThrower', 1, 450); b.traitOnShot(m);
+  const hp0 = b.wall.hp; b.hitWall(1000, null); const hit1 = hp0 - b.wall.hp;
+  b.time += 10; const hp1 = b.wall.hp; b.hitWall(1000, null); const hit2 = hp1 - b.wall.hp;
+  assert.ok(hit1 > hit2 * 1.1, '裂缝期间多受伤');
+  // 冰法师：英雄攻速下降
+  b = mk(); m = b.spawnMonster('iceMage', 1, 500); const a0 = b.currentAspd(); b.traitOnShot(m);
+  assert.ok(b.currentAspd() < a0 * 0.95);
+  // 雷法师：必然触发时英雄被电麻
+  b = mk(); m = b.spawnMonster('stormCaster', 1, 600); b.rng = () => 0; b.traitOnShot(m);
+  assert.ok(b.time < b.heroStunUntil, '英雄被电麻');
+  // 投弹手：城墙起火（持续伤害）
+  b = mk(); m = b.spawnMonster('bomber', 1, 440); const n0 = b.wallDots.length; b.traitOnShot(m);
+  assert.ok(b.wallDots.length > n0, '城墙在烧');
+  // 战车：撞墙晃一下英雄；铁战车更久；频繁时不连锁
+  b = mk(); m = b.spawnMonster('chariot', 1, 300); b.traitOnSlam(m);
+  assert.ok(b.heroStunUntil > b.time, '英雄晃了一下');
+  assert.ok(D.monsters.ironChariot.trait.stun > D.monsters.chariot.trait.stun);
+  const until = b.heroStunUntil; b.traitOnSlam(m);
+  assert.strictEqual(b.heroStunUntil, until, '刚被晃过，不连续锁');
+  // 提灯鬼：驱散身边怪物的冰冻
+  b = mk(); m = b.spawnMonster('lanternGhost', 1, 600); const o = b.spawnMonster('slime', 1, 620); o.frozenUntil = b.time + 5; m.tr.next = 0; b.updateTraits(m, 0.016);
+  assert.ok(o.frozenUntil <= b.time, '冰冻被驱散');
+});
+
 test('墨墨：还没走到停靠位置就被打到分身，现形后要继续往前走（否则战斗卡死）', () => {
   const b = newBattle(50);
   b.hero.cooldown = 1e9;

@@ -805,7 +805,8 @@
             if (m.rangedTimer <= 0) {
               m.rangedTimer = ranged.every;
               this.emit(m.def.bossPart ? 'slap' : 'spit', { m, x: m.x, y: m.y });
-              this.hitWall(ranged.damage * this.D, m);
+              this.hitWall(ranged.damage * this.D * (m.def.trait ? this.traitShotMult(m) : 1), m);
+              if (m.def.trait) this.traitOnShot(m);
               if (ranged.poison) this.addWallDot(ranged.poison.dps * this.D, ranged.poison.duration, 'poison', true, m.type);
             }
           }
@@ -820,6 +821,7 @@
             m.slammed = true;
             this.hitWall(m.def.slam * this.D, m, true);
             this.emit('slam', { m });
+            if (m.def.trait) this.traitOnSlam(m);
           }
           if (this.time >= m.frozenUntil && this.time >= m.stunUntil) {
             m.attackTimer -= dt;
@@ -896,6 +898,7 @@
 
     hitWall(amount, m, big, kind, who) {
       amount *= this.diffDmg;
+      if (this.time < (this.wallVulnUntil || 0)) amount *= 1 + this.wallVulnAmt; // 投石怪砸出的裂缝
       const temp = this.time < this.tempDr.until ? this.tempDr.amt : 0;
       let dmg = amount * (1 - Math.min(temp > 0.5 ? 0.95 : 0.8, this.stats.wallDr + this.mods.wallDr + temp));
       // 守护符文（设计书 62.3）：整场有效的护盾，先于泡泡护盾被打
