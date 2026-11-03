@@ -117,13 +117,13 @@
   M.towerBossList = (save) => D.town.filter((f) => !save || P.isCleared(save, f.level)).map((f) => f.boss);
 
   M.towerReward = (floor) => Math.pow(2, floor - 1); // 第 N 层：2^(N−1) 钻石
-  // 第 N 层一共 (bossPerFloor + minionPerFloor) × N 只怪；妖王的比例从第 1 层的 10% 一路涨到最后一层的 50%（设计书 80）
+  // 第 N 层一共 (bossPerFloor + minionPerFloor) × (1 + 0.6×(N−1)) 只怪（v1.60；原来 × N）；妖王的比例从第 1 层的 10% 一路涨到最后一层的 50%（设计书 80）
   M.towerBossShare = (floor) => {
     const first = T().bossPerFloor / (T().bossPerFloor + T().minionPerFloor);
     return first + ((T().bossShareLast - first) * (floor - 1)) / (T().floors - 1);
   };
   M.towerCounts = (floor) => {
-    const total = (T().bossPerFloor + T().minionPerFloor) * floor;
+    const total = Math.round((T().bossPerFloor + T().minionPerFloor) * (1 + T().countGrow * (floor - 1)));
     const boss = Math.round(total * M.towerBossShare(floor));
     return { boss, minion: total - boss, total, share: boss / total };
   };
@@ -131,9 +131,9 @@
   M.towerStage = (save) => Math.max(1, Math.min(Math.max(...Object.keys(D.levels).map(Number)), P.highestCleared(save)));
   // 难度系数按第 70 关封顶：第 71 关以后的回声小妖本身就比旧怪物强（设计书 75.4）
   // 妖王的血量：和同等进度的关卡 Boss 一样厚（不乘小妖用的 base），逐层 ×grow（v1.13）
-  // 第 N 层所有怪物的属性（生命、攻城伤害、护甲 / 魔抗）是第 1 层的 N 倍：第 9 层 = 第 1 层的 9 倍（v1.15；原来是每层 ×1.2）
-  M.towerMult = (floor) => floor;
-  M.towerBossHpD = (save, floor) => C.difficulty(Math.min(70, M.towerStage(save))) * M.towerMult(floor);
+  // 第 N 层所有怪物的属性（生命、攻城伤害、护甲 / 魔抗）是第 1 层的 1 + 0.8×(N−1) 倍：第 9 层 = 第 1 层的 7.4 倍（v1.60；v1.15 是 N 倍）
+  M.towerMult = (floor) => 1 + T().multGrow * (floor - 1);
+  M.towerBossHpD = (save, floor) => C.difficulty(Math.min(70, M.towerStage(save))) * M.towerMult(floor) * T().bossHp;
   M.towerD = (save, floor) => C.difficulty(Math.min(70, M.towerStage(save))) * T().base * M.towerMult(floor);
 
   // 把 n 只平均分给一组类型（余数依次补给前面的），返回 [[类型, 数量], ...]

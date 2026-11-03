@@ -1041,6 +1041,7 @@
       save.copper += a.reward.copper || 0;
       save.silver += a.reward.silver || 0;
       save.gold += a.reward.gold || 0;
+      save.diamond = (save.diamond || 0) + (a.reward.diamond || 0); // 里程碑成就发少量钻石（设计书 160）
       got.push(a);
     }
     return got;

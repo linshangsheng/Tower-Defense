@@ -1485,7 +1485,7 @@ test('技能协同：碎冰（冰冻领域里雷霆加伤）、鼓点箭雨（�
   assert.strictEqual(d.combos.drumRain, 1);
 });
 
-test('九层妖塔：通关第 50 关后开放（v1.25）；第 N 层共 200N 只怪（妖王占比 10% → 50%），分 3 波；钻石 2^(N−1)', () => {
+test('九层妖塔：通关第 50 关后开放（v1.25）；第 N 层共 200×(1+0.6×(N−1)) 只怪（妖王占比 10% → 50%），分 3 波；钻石 2^(N−1)', () => {
   const s = P.newSave();
   assert.ok(!TD.modes.towerUnlocked(s), '新存档进不去');
   assert.ok(!TD.modes.towerCanStart(Object.assign(P.newSave(), { gold: 5 })), '没通关第 50 关，有金币也开不了');
@@ -1501,7 +1501,8 @@ test('九层妖塔：通关第 50 关后开放（v1.25）；第 N 层共 200N �
   // 还没有小镇朋友时没有妖王可用：名额换成小妖，总数不变
   const first = TD.modes.buildTower(s, 3);
   assert.ok(!first.waves.some((w) => w.groups.some(([t]) => D.monsters[t].boss)));
-  assert.strictEqual(first.waves.reduce((a, w) => a + w.groups.reduce((x, [, n]) => x + n, 0), 0), 600);
+  const sum3 = first.waves.reduce((a, w) => a + w.groups.reduce((x, [, n]) => x + n, 0), 0);
+  assert.ok(Math.abs(sum3 - TD.modes.towerCounts(3).total) <= 3, `第 3 层总数 ${sum3}（分 3 波各自取整，允许差几只）`);
   clearUpTo(s, 60);
   assert.ok(TD.modes.towerUnlocked(s));
   assert.strictEqual(TD.modes.towerStage(s), 60);
@@ -1519,7 +1520,7 @@ test('九层妖塔：通关第 50 关后开放（v1.25）；第 N 层共 200N �
       }
     const want = TD.modes.towerCounts(k);
     assert.ok(Math.abs(boss - want.boss) <= 3 && Math.abs(minion - want.minion) <= 3, `第 ${k} 层：${boss} + ${minion}`);
-    assert.strictEqual(want.boss + want.minion, 200 * k);
+    assert.strictEqual(want.boss + want.minion, Math.round(200 * (1 + D.tower.countGrow * (k - 1))));
     assert.ok(def.tower && def.floor === k && def.supplyEvery === 1);
   }
   // 妖王用妖塔版（没有特殊行动），种类循环；到第七章通关后 14 种
@@ -1528,14 +1529,15 @@ test('九层妖塔：通关第 50 关后开放（v1.25）；第 N 层共 200N �
   for (const t of types) assert.ok(t.startsWith('tw_') && !D.monsters[t].ai && D.monsters[t].art);
   clearUpTo(s, 70);
   assert.strictEqual(TD.modes.towerBossList(s).length, 14);
-  // 难度系数按关卡折算、再乘妖塔系数；每上一层，怪物的属性 ×grow，数量也随层数增加（设计书 77）
-  assert.ok(Math.abs(TD.modes.towerD(s, 9) - TD.modes.towerD(s, 1) * 9) < 1e-9);
+  // 难度系数按关卡折算、再乘妖塔系数；每上一层，怪物的属性 ×(1 + 0.8×(N−1))，数量也随层数增加（设计书 77、160）
+  assert.ok(Math.abs(TD.modes.towerD(s, 9) - TD.modes.towerD(s, 1) * (1 + D.tower.multGrow * 8)) < 1e-9);
   assert.ok(TD.modes.towerD(s, 1) < TD.config.difficulty(70) * 0.5, '妖塔系数把单只怪物的强度压到普通关卡的一小部分');
 });
 
 test('九层妖塔：门票 1 金；过一层可以领钻石或继续（翻倍）；失败什么都没有；打怪没有收益', () => {
   const s = P.newSave();
   clearUpTo(s, 60);
+  for (const a of D.achievements) s.achievements[a.id] = true; // 成就里程碑会发钻石，这里只测妖塔自己的钻石
   assert.ok(!TD.modes.towerCanStart(s), '没有金币');
   assert.ok(!TD.modes.towerStart(s));
   s.gold = 3;
@@ -1586,6 +1588,7 @@ test('九层妖塔：门票 1 金；过一层可以领钻石或继续（翻倍�
 test('九层妖塔：战斗中途刷新页面算失败；待选择的状态刷新后还在', () => {
   const s = P.newSave();
   clearUpTo(s, 60);
+  for (const a of D.achievements) s.achievements[a.id] = true; // 成就里程碑会发钻石，这里只测妖塔自己的钻石
   s.gold = 2;
   TD.modes.towerStart(s);
   assert.ok(TD.modes.towerRunState(s, true), '战斗进行中');
@@ -3431,13 +3434,14 @@ test('技能 Lv3 以后继续变强，战斗里也用升级后的数值；机器
 });
 
 // ---------- v0.69：九层妖塔——每波恢复城墙、数量 ×2、每层属性成长（设计书 77） ----------
-test('九层妖塔：每上一层怪物属性都变强（×grow）；每层的城墙血量接着上一层，不会恢复', () => {
+test('九层妖塔：每上一层怪物属性都变强（1 + 0.8×(N−1) 倍）；每层的城墙血量接着上一层，不会恢复', () => {
   const s = P.newSave();
   clearUpTo(s, 100);
   assert.ok(D.tower.bossPerFloor === 20 && D.tower.minionPerFloor === 180);
   for (let k = 2; k <= 9; k++) {
     const r = TD.modes.towerD(s, k) / TD.modes.towerD(s, k - 1);
-    assert.ok(Math.abs(r - k / (k - 1)) < 1e-9, `第 ${k} 层是第 1 层的 ${k} 倍`);
+    const want = (1 + D.tower.multGrow * (k - 1)) / (1 + D.tower.multGrow * (k - 2));
+    assert.ok(Math.abs(r - want) < 1e-9, `第 ${k} 层是第 ${k - 1} 层的 ${want.toFixed(3)} 倍`);
     // 战斗里每一波都用本层的系数
     for (const w of TD.modes.buildTower(s, k).waves) assert.ok(Math.abs(w.D - TD.modes.towerD(s, k)) < 1e-9);
   }
@@ -3515,13 +3519,14 @@ test('武器的特效颜色跟武器品质走：每把武器发出的弹道都�
   assert.strictEqual(colors.size, 5, '五档品质五种颜色');
 });
 
-test('九层妖塔：越往上妖王的比例越高，第 1 层 10%、第 9 层 50%，每层总数仍是 200N', () => {
+test('九层妖塔：越往上妖王的比例越高，第 1 层 10%、第 9 层 50%', () => {
   const share = (k) => TD.modes.towerCounts(k).share;
   assert.ok(Math.abs(share(1) - 0.1) < 1e-9);
   assert.ok(Math.abs(share(9) - 0.5) < 1e-9);
   for (let k = 2; k <= 9; k++) assert.ok(share(k) > share(k - 1), `第 ${k} 层比第 ${k - 1} 层妖王更多`);
-  assert.deepStrictEqual([1, 9].map((k) => TD.modes.towerCounts(k).boss), [20, 900]);
-  assert.strictEqual(TD.modes.towerCounts(9).minion, 900);
+  const tot9 = Math.round(200 * (1 + D.tower.countGrow * 8));
+  assert.deepStrictEqual([1, 9].map((k) => TD.modes.towerCounts(k).boss), [20, Math.round(tot9 * 0.5)]);
+  assert.strictEqual(TD.modes.towerCounts(9).minion, tot9 - Math.round(tot9 * 0.5));
   // 真的按这个比例出怪（3 波加起来）
   const s = P.newSave();
   clearUpTo(s, 70);
@@ -4200,7 +4205,7 @@ test('通关奖励：随关卡越来越丰厚，第 100 关远多于以前', () 
   assert.ok(r.baseCopper >= Math.round(f(40) * 1.5) - 1);
 });
 
-test('Boss 血量：主线 Boss ×3，九层妖塔的妖王和关卡 Boss 一样厚，普通小怪不变', () => {
+test('Boss 血量：主线 Boss ×3，九层妖塔的妖王按 bossHp 系数（关卡 Boss 的 2%），普通小怪不变', () => {
   const s = P.newSave();
   const mk = (level) => new TD.Battle({ level, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 1 });
   const b = mk(10);
@@ -4217,8 +4222,8 @@ test('Boss 血量：主线 Boss ×3，九层妖塔的妖王和关卡 Boss 一样
     const tb = new TD.Battle({ level: 'tower', levelDef: def, stage: def.stage, stats: P.heroStats(cs), loadout: P.battleLoadout(cs), seed: 2 });
     for (let i = 0; i < 60 * 30 && !tb.bossHpD; i++) tb.step(1 / 60); // 第一波开始后才用妖塔的难度
     const t = tb.spawnMonster('tw_boarKing', 0, 600);
-    assert.ok(t.dps <= D.monsters.tw_boarKing.dps * TD.config.difficulty(70) * 0.02 * floor * 1.01, '攻城伤害仍按妖塔的小难度 ' + t.dps + ' D=' + tb.D + ' hpD=' + tb.bossHpD);
-    const want = Math.round(D.monsters.tw_boarKing.hp * TD.config.difficulty(70) * floor * tb.diffHp * 3);
+    assert.ok(t.dps <= D.monsters.tw_boarKing.dps * TD.config.difficulty(70) * 0.02 * (1 + D.tower.multGrow * (floor - 1)) * 1.01, '攻城伤害仍按妖塔的小难度 ' + t.dps + ' D=' + tb.D + ' hpD=' + tb.bossHpD);
+    const want = Math.round(D.monsters.tw_boarKing.hp * TD.config.difficulty(70) * (1 + D.tower.multGrow * (floor - 1)) * D.tower.bossHp * tb.diffHp * 3);
     assert.ok(Math.abs(t.maxHp - want) <= 1, `第 ${floor} 层妖王血量 ${t.maxHp} ≠ ${want}`);
   }
 });
@@ -4822,7 +4827,7 @@ test('测试模式：密码不对不开；密码对了资源拉满、第 200 关
 });
 
 // ---------- v1.14：怪物所有属性随关卡增强；妖塔第 N 层 = 第 1 层的 N 倍 ----------
-test('怪物属性随关卡增强：护甲 / 魔抗 / 速度单调增长，护甲有上限；妖塔第 9 层所有属性是第 1 层的 9 倍', () => {
+test('怪物属性随关卡增强：护甲 / 魔抗 / 速度单调增长，护甲有上限；妖塔第 9 层所有属性是第 1 层的 7.4 倍', () => {
   const C = TD.config;
   let pa = 0, ps = 0;
   for (const n of [1, 10, 30, 50, 100, 150, 200]) {
@@ -4843,7 +4848,7 @@ test('怪物属性随关卡增强：护甲 / 魔抗 / 速度单调增长，护�
   const m100 = b100.spawnMonster(armored, 0, 900);
   assert.ok(b100.armorFactor(m100, false, 'phys', 0) < b1.armorFactor(m1, false, 'phys', 0));
   assert.ok(b100.monsterSpeed(m100) > b1.monsterSpeed(m1));
-  // 妖塔：第 N 层是第 1 层的 N 倍（生命、攻城伤害、护甲 / 魔抗的倍数）
+  // 妖塔：第 N 层是第 1 层的 1 + 0.8×(N−1) 倍（生命、攻城伤害、护甲 / 魔抗的倍数）；第 9 层 = 7.4 倍
   const s = P.newSave();
   clearUpTo(s, 70);
   const mk = (floor) => {
@@ -4857,9 +4862,9 @@ test('怪物属性随关卡增强：护甲 / 魔抗 / 速度单调增长，护�
   const f1 = mk(1);
   const f9 = mk(9);
   for (const key of ['m', 'k']) {
-    assert.ok(Math.abs(f9[key].maxHp / f1[key].maxHp - 9) < (key === 'k' ? 1 : 0.01), key + ' 生命 ×9（小怪血量小，取整误差放宽）');
-    assert.ok(Math.abs(f9[key].dps / f1[key].dps - 9) < 0.01, key + ' 攻城伤害 ×9');
-    assert.ok(Math.abs(f9[key].armorMult / f1[key].armorMult - 9) < 1e-9, key + ' 护甲倍数 ×9');
+    assert.ok(Math.abs(f9[key].maxHp / f1[key].maxHp - 7.4) < (key === 'k' ? 1 : 0.01), key + ' 生命 ×7.4（小怪血量小，取整误差放宽）');
+    assert.ok(Math.abs(f9[key].dps / f1[key].dps - 7.4) < 0.01, key + ' 攻城伤害 ×7.4');
+    assert.ok(Math.abs(f9[key].armorMult / f1[key].armorMult - 7.4) < 1e-9, key + ' 护甲倍数 ×7.4');
   }
 });
 

@@ -1024,5 +1024,6 @@
     TD.data.towerBossIds.push(id);
   }
   // 妖塔的数值：第 k 层怪物血量与攻城伤害 = D(关卡) × base × grow^(k−1)；每层 ×grow（v0.69 起每上一层怪物属性都会增加），base 由 tools/tower.js 标定
-  TD.data.tower = { floors: 9, bossPerFloor: 20, minionPerFloor: 180, bossShareLast: 0.5, base: 0.02, waves: 3, fee: { gold: 1 } };
+  // v1.60 重新标定（设计书 160）：bossHp = 妖王血量相对"同等进度的关卡 Boss"的系数；countGrow / multGrow = 数量、强度随层数的增长（第 N 层 = 1 + grow × (N−1) 倍）
+  TD.data.tower = { floors: 9, bossPerFloor: 20, minionPerFloor: 180, bossShareLast: 0.5, base: 0.02, bossHp: 0.02, countGrow: 0.6, multGrow: 0.8, waves: 3, fee: { gold: 1 } };
 })((globalThis.TD = globalThis.TD || {}));
