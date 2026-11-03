@@ -1010,16 +1010,17 @@
   echo('voidBalloon', 'balloon', '虚空气球', TINT_VOID, { hp: 140, dps: 12, armor: 25, copper: 6, deathSpawn: Object.assign({}, M.balloon.deathSpawn, { count: 4 }) }, '落地时放出四个哥布林小兵。');
   echo('voidBird', 'rainbowBird', '虚空鸟', TINT_VOID, { hp: 80, dps: 6, copper: 5, healer: Object.assign({}, M.rainbowBird.healer, { pct: 0.06 }) }, '治疗更多的飞鸟。');
   // 旧 Boss 的回声：行动方式不变（ai 沿用），血量更高
-  const echoBoss = (id, base, name, tint, hp, desc) => {
+  // v1.68：每个回声 Boss 带一个独有变招（echoTwist，由 traits.js 的 updateEchoTwist 驱动）
+  const echoBoss = (id, base, name, tint, hp, desc, twist) => {
     const b = M[base];
-    M[id] = Object.assign({}, b, { name, hp, art: base, tint, desc, echo: true, size: Math.round(b.size * 1.1) });
+    M[id] = Object.assign({}, b, { name, hp, art: base, tint, desc, echo: true, size: Math.round(b.size * 1.1), echoTwist: twist });
   };
-  echoBoss('chaosBoneMage', 'boneMage', '骨头先生的回声', TINT_MOON, 2300, '小 Boss。行动和骨头先生一样：召唤骷髅、拿魔法护盾，但是更硬。');
-  echoBoss('chaosPharaoh', 'pharaoh', '胖法老的回声', TINT_MOON, 4300, '大 Boss。沙暴、召唤、治疗、护盾，三个阶段，比原来难缠得多。');
-  echoBoss('chaosGolem', 'rockGolem', '岩岩的回声', TINT_FORGE, 1500, '小 Boss。行动和岩岩一样，血量高了一倍。');
-  echoBoss('chaosQueen', 'frostQueen', '霜霜女王的回声', TINT_FORGE, 4200, '大 Boss。冰冻、暴风雪、冰墙，比原来更冷。');
-  echoBoss('chaosGiant', 'windGiant', '呼呼的回声', TINT_VOID, 2500, '小 Boss。龙卷风和推挤，比原来更猛。');
-  echoBoss('chaosInk', 'inkBoss', '墨墨的回声', TINT_VOID, 5200, '最终 Boss。墨水、分身、遮蔽视线——这是混沌裂隙的源头。');
+  echoBoss('chaosBoneMage', 'boneMage', '骨头先生的回声', TINT_MOON, 2300, '小 Boss。行动和骨头先生一样：召唤骷髅、拿魔法护盾，但是更硬。每隔几秒朝英雄投下亡灵诅咒，攻速下降。', { id: 'curse', every: 9, dur: 4, slow: 0.3, first: 5 });
+  echoBoss('chaosPharaoh', 'pharaoh', '胖法老的回声', TINT_MOON, 4300, '大 Boss。沙暴、召唤、治疗、护盾，三个阶段，比原来难缠得多。每隔几秒卷起沙暴，让全场的怪加速。', { id: 'sandrush', every: 11, dur: 3, haste: 0.35, radius: 9999, first: 8 });
+  echoBoss('chaosGolem', 'rockGolem', '岩岩的回声', TINT_FORGE, 1500, '小 Boss。行动和岩岩一样，血量高了一倍。每隔几秒震裂城墙，城墙短时间内受伤加重。', { id: 'quake', every: 9, dur: 4, amt: 0.5, first: 6 });
+  echoBoss('chaosQueen', 'frostQueen', '霜霜女王的回声', TINT_FORGE, 4200, '大 Boss。冰冻、暴风雪、冰墙，比原来更冷。每隔几秒用寒气冻住英雄，让他动弹不得。', { id: 'frostbite', every: 10, stun: 1.2, first: 7 });
+  echoBoss('chaosGiant', 'windGiant', '呼呼的回声', TINT_VOID, 2500, '小 Boss。龙卷风和推挤，比原来更猛。更频繁地刮起逆风压制射速。', { id: 'gale', every: 6, dur: 2.5, slow: 0.4, first: 4 });
+  echoBoss('chaosInk', 'inkBoss', '墨墨的回声', TINT_VOID, 5200, '最终 Boss。墨水、分身、遮蔽视线——这是混沌裂隙的源头。每隔几秒朝城墙泼出墨汁，城墙持续被腐蚀。', { id: 'inkblot', every: 8, dur: 4, mult: 0.5, first: 5 });
 
   // ---------- 九层妖塔（设计书 74）----------
   // 妖塔里的 Boss 是小镇朋友们的"妖塔版"：去掉各自的指挥 / 召唤 / 冲锋 / 分裂（几十个同时行动会乱套），

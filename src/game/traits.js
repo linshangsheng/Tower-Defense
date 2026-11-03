@@ -18,6 +18,40 @@
       this.emit('trait', Object.assign({ m, id, x: m.x, y: m.y + m.yOffset }, extra || {}));
     },
 
+    // 回声 Boss 的独有变招（设计书 168）：Boss 行动方式沿用原 Boss，再叠加一招
+    updateEchoTwist(m) {
+      const t = m.def.echoTwist;
+      if (!t || m.x > 1150) return;
+      if (m.etNext === undefined) m.etNext = this.time + (t.first || t.every);
+      if (this.time < m.etNext) return;
+      m.etNext = this.time + t.every;
+      switch (t.id) {
+        case 'curse':
+        case 'gale':
+          this.buffs = this.buffs.filter((b) => b.src !== 'echo' + t.id);
+          this.buffs.push({ aspd: -t.slow, until: this.time + t.dur, src: 'echo' + t.id });
+          break;
+        case 'sandrush':
+          for (const o of this.monsters) {
+            if (o.dead || o === m || o.def.boss) continue;
+            o.hasteUntil = Math.max(o.hasteUntil || 0, this.time + t.dur);
+            o.hasteAmt = Math.max(o.hasteAmt || 0, t.haste);
+          }
+          break;
+        case 'quake':
+          this.wallVulnUntil = Math.max(this.wallVulnUntil || 0, this.time + t.dur);
+          this.wallVulnAmt = Math.max(this.wallVulnAmt || 0, t.amt);
+          break;
+        case 'frostbite':
+          this.stunHero(t.stun);
+          break;
+        case 'inkblot':
+          this.addWallDot((m.dps || 10) * t.mult, t.dur, 'poison', true, m.type);
+          break;
+      }
+      this.traitEmit(m, 'echo_' + t.id);
+    },
+
     // 每帧：定时类技能
     updateTraits(m, dt) {
       const t = m.def.trait;

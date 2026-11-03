@@ -710,6 +710,23 @@
             this.fx.push({ kind: 'spit', x0: e.x - 10, y0: e.y - 8, x1: C.heroX + 10, y1: battle.heroY - 50, life: 0.4, age: 0, ice: true });
             this.text(C.heroX + 50, battle.heroY - 110, '冰息！', '#9fdcff', 22, 1.0);
             break;
+          case 'echo_curse': case 'echo_gale': case 'echo_frostbite':
+            this.fx.push({ kind: 'spit', x0: e.x - 10, y0: e.y - 20, x1: C.heroX + 10, y1: battle.heroY - 50, life: 0.5, age: 0, ice: e.id !== 'echo_curse' });
+            say(e.id === 'echo_curse' ? '诅咒！' : e.id === 'echo_gale' ? '逆风！' : '冰封！', e.id === 'echo_curse' ? '#c9a0ff' : '#9fdcff', 24);
+            break;
+          case 'echo_sandrush':
+            this.fx.push({ kind: 'ring', x: e.x, y: e.y, r0: 10, r1: 420, color: '#f0d890', w: 5, life: 0.8, age: 0, flat: 0.5 });
+            say('沙暴加速！', '#f0d890', 24);
+            break;
+          case 'echo_quake':
+            this.shake = Math.max(this.shake, 6);
+            this.burst(C.wallX, battle.heroY, '#b8a890', 12, 160);
+            say('墙裂了！', '#e0c8a0', 24);
+            break;
+          case 'echo_inkblot':
+            this.fx.push({ kind: 'spit', x0: e.x - 10, y0: e.y - 20, x1: C.wallX + 20, y1: battle.heroY, life: 0.5, age: 0 });
+            say('墨汁！', '#8a6fd0', 24);
+            break;
           case 'roar':
             this.fx.push({ kind: 'ring', x: e.x, y: e.y, r0: 10, r1: e.radius || 240, color: '#ffe0b0', w: 4, life: 0.6, age: 0, flat: 0.5 });
             say('咆哮！', '#ffe0b0', 22);

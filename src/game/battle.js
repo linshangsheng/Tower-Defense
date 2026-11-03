@@ -691,6 +691,7 @@
             if (m.dead) continue;
           }
         }
+        if (m.def.echoTwist) this.updateEchoTwist(m);
         if (m.ai) {
           const upd = BOSS_UPDATE[m.def.ai];
           if (upd) this[upd](m, dt);

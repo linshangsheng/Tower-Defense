@@ -5616,3 +5616,29 @@ test('补给刷新：价格按关卡定，每刷新一次翻倍，一直到这�
   assert.strictEqual(b.supplyRefreshCost(), base * 16);
   assert.ok(!b.refreshSupply(), '没有补给在等待时不能刷新');
 });
+
+test('回声 Boss 变招（设计书 168）：6 个回声 Boss 各带独有变招且能生效', () => {
+  const ids = ['chaosBoneMage', 'chaosPharaoh', 'chaosGolem', 'chaosQueen', 'chaosGiant', 'chaosInk'];
+  for (const id of ids) {
+    const def = TD.data.monsters[id];
+    assert.ok(def.echoTwist && def.echoTwist.id, id + ' 有变招');
+    const b = newBattle(20);
+    b.hero.cooldown = 1e9; b.wall.hp = b.wall.max = 1e12;
+    const m = b.spawnMonster(id, 1, 800);
+    b.time = 100;
+    b.updateEchoTwist(m);
+    assert.ok(m.etNext > 100, id + ' 已排好第一次变招');
+    b.time = m.etNext + 0.1;
+    const next0 = m.etNext;
+    b.updateEchoTwist(m);
+    assert.ok(m.etNext > next0, id + ' 变招已触发并重新计时');
+  }
+  // 效果：诅咒降攻速、地裂让城墙多受伤、冰封眩晕英雄
+  let b = newBattle(20); b.hero.cooldown = 1e9; b.wall.hp = b.wall.max = 1e12;
+  let m = b.spawnMonster('chaosBoneMage', 1, 800); const a0 = b.currentAspd();
+  b.time = 50; m.etNext = 0; b.updateEchoTwist(m);
+  assert.ok(b.currentAspd() < a0 * 0.9, '诅咒降攻速');
+  b = newBattle(20); b.hero.cooldown = 1e9; b.wall.hp = b.wall.max = 1e12;
+  m = b.spawnMonster('chaosQueen', 1, 800); b.time = 50; m.etNext = 0; b.updateEchoTwist(m);
+  assert.ok(b.heroStunUntil > b.time, '冰封眩晕英雄');
+});
