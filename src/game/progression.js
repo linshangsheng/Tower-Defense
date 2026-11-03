@@ -663,6 +663,27 @@
     return false;
   };
 
+  // ---------- 下一个目标（设计书 164）：地图上给玩家一个明确的"接下来追什么" ----------
+  // 候选：下一个功能解锁、下一场 Boss 战、当前章节的全三星奖励；挑"离得最近"的那个
+  P.nextGoal = function (save, ch) {
+    const h = P.highestCleared(save);
+    const cands = [];
+    for (const [lvl, what] of [[3, '解锁每日登录奖励'], [5, '解锁每日挑战'], [10, '解锁 3 倍速'], [20, '解锁无尽模式'], [50, '解锁九层妖塔'], [100, '解锁终极技能']]) {
+      if (h < lvl) cands.push({ d: lvl - h, kind: 'unlock', n: lvl - h, what });
+    }
+    const nextBoss = Object.keys(D.levels).map(Number).sort((a, b) => a - b).find((n) => n > h && (D.levels[n].type === 'boss' || D.levels[n].type === 'miniboss'));
+    if (nextBoss) cands.push({ d: nextBoss - h, kind: 'boss', n: nextBoss - h, what: D.levels[nextBoss].name });
+    if (ch) {
+      const stars = ch.levels.reduce((a, n) => a + P.levelRecord(save, n).stars, 0);
+      const need = ch.levels.length * 3 - stars;
+      const cleared = ch.levels.filter((n) => P.isCleared(save, n)).length;
+      if (need > 0 && cleared >= Math.ceil(ch.levels.length * 0.7) && !save.chapterStarGold[ch.id]) cands.push({ d: Math.ceil(need / 2), kind: 'stars', n: need, what: '领取全三星奖励' });
+    }
+    if (!cands.length) return null;
+    cands.sort((a, b) => a.d - b.d);
+    return cands[0];
+  };
+
   // ---------- 终极技能（设计书 133） ----------
   // 试玩版没有；通关第 100 关后在商店「技能」页用钻石买断；测试模式直接拥有
   P.ultimateUnlocked = (save) => !C.demo && (P.testMode(save) || P.isCleared(save, D.ultimate.unlock));

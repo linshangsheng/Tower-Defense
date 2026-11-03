@@ -839,6 +839,29 @@ test('战意：连击到 10 / 20 / 30 / 50 时触发对应的加成，同一时�
   assert.ok(b.fervorCount >= 3);
 });
 
+test('下一个目标：挑最近的功能解锁 / Boss / 本章全三星；都完成就不显示', () => {
+  const s = P.newSave();
+  let g = P.nextGoal(s, D.chapters[0]);
+  assert.ok(g && g.kind === 'unlock' && g.n === 3, '新存档：先看每日登录奖励（3 关）');
+  clearUpTo(s, 3);
+  g = P.nextGoal(s, D.chapters[0]);
+  assert.ok(g.kind === 'unlock' && g.n === 2, '再 2 关解锁每日挑战');
+  clearUpTo(s, 20);
+  g = P.nextGoal(s, D.chapters[1]);
+  assert.ok(g && g.n >= 1);
+  // 本章打到 70% 以上、星不满：给"全三星奖励"的目标（离得最近时才选它）
+  const ch = D.chapters[0];
+  const t = P.newSave();
+  clearUpTo(t, 9);
+  const gs = P.nextGoal(t, ch);
+  assert.ok(gs, '有目标');
+  const all = P.newSave();
+  clearUpTo(all, 200);
+  for (const n of Object.keys(all.levels)) all.levels[n].stars = 3;
+  for (const c of D.chapters) all.chapterStarGold[c.id] = true;
+  assert.strictEqual(P.nextGoal(all, D.chapters[0]), null, '全部完成：不显示');
+});
+
 test('墨墨：还没走到停靠位置就被打到分身，现形后要继续往前走（否则战斗卡死）', () => {
   const b = newBattle(50);
   b.hero.cooldown = 1e9;

@@ -861,6 +861,12 @@
         h('button', { class: 'btn small primary', onclick: () => (sfx('click'), UI.showShop(null, 'loadout')) }, '商店 / 配装')
       ),
       nodes,
+      (() => {
+        const g = P.nextGoal(s, ch);
+        if (!g) return null;
+        const lead = g.kind === 'stars' ? h('span', null, `本章再拿 ${g.n} 颗星`) : g.kind === 'boss' ? h('span', null, g.n === 1 ? '再通关 1 关就是' : `再通关 ${g.n} 关就是`) : h('span', null, `再通关 ${g.n} 关`);
+        return h('div', { class: 'map-goal', title: '下一个目标' }, '🎯 ', lead, h('span', { class: 'goal-sep' }, ' ▸ '), h('b', null, g.what));
+      })(),
       note,
       h(
         'div',

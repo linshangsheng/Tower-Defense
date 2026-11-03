@@ -4587,3 +4587,23 @@ html[lang='ko'] .title-main {
 .login-tile.today { border-color: #ffd070; background: linear-gradient(180deg, rgba(255, 210, 120, 0.3), rgba(255, 210, 120, 0.08)); box-shadow: 0 0 16px rgba(255, 200, 100, 0.45); transform: translateY(-4px); }
 .login-tile.past { opacity: 0.5; }
 .login-tile .lg-check { position: absolute; right: 6px; top: 4px; color: #8affc8; font-weight: 700; }
+
+/* 地图上的"下一个目标"（设计书 164） */
+.map-goal {
+  position: absolute;
+  left: 50%;
+  top: 74px;
+  transform: translateX(-50%);
+  padding: 6px 16px;
+  border-radius: 18px;
+  background: rgba(10, 16, 28, 0.72);
+  border: 1px solid rgba(255, 220, 160, 0.5);
+  color: #fff3dc;
+  font-size: 15px;
+  white-space: nowrap;
+  z-index: 3;
+  pointer-events: none;
+}
+.map-goal b {
+  color: #ffd98e;
+}
