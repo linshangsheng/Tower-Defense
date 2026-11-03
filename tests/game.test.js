@@ -5673,3 +5673,16 @@ test('战利品光球（设计书 169）：掉落、点击拾取、过期、上�
   b.kill(b.spawnMonster('goblin', 1, 600), true);
   assert.strictEqual(b.drops.length, 0); void n;
 });
+
+test('战利品统计：拾取数计入结果、累计进存档、拾荒成就', () => {
+  const b = newBattle(5); b.hero.cooldown = 1e9;
+  b.drops.push({ id: 1, kind: 'purse', x: 500, y: 300, until: b.time + 8, copper: 1 });
+  b.collectDropAt(500, 300);
+  for (let i = 0; i < 60 * 600 && !b.over; i++) b.step(1 / 60);
+  assert.strictEqual(b.result.drops, 1);
+  const s = TD.progression.newSave();
+  TD.progression.recordStats(s, b.result);
+  assert.strictEqual(s.stats.drops, 1);
+  s.stats.drops = 50;
+  assert.ok(TD.data.achievements.find((a) => a.id === 'scavenger').check(s));
+});

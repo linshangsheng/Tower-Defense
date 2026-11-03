@@ -2654,6 +2654,7 @@
         skillsCast: this.skillsCast,
         bestStreak: this.bestStreak,
         fervor: this.fervorCount || 0,
+        drops: this.dropsTaken || 0,
         bubbles: this.bubblesPopped,
         combos: Object.assign({}, this.combos),
         minWallRatio: this.minWallRatio,
