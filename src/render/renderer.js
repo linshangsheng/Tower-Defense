@@ -698,6 +698,36 @@
         this.text(C.heroX + 60, battle.heroY - 130, e.text, e.count >= 30 ? '#ff5a4f' : '#ffd23f', 22 + Math.min(14, e.count / 4), 1.1);
         this.burst(C.heroX + 40, battle.heroY - 100, '#ffd23f', 10 + Math.min(20, e.count / 2), 240);
       });
+      // 怪物的独特技能（设计书 165）：每种技能一个小特效，文字限量，别在大波怪里刷屏
+      on('trait', (e) => {
+        const V = this.vfx;
+        const calm = this.fx.length < 200;
+        const say = (str, color, size) => { if (calm) this.text(e.x, e.y - 34, str, color, size || 17, 0.8); };
+        switch (e.id) {
+          case 'sprint': this.burst(e.x + 14, e.y + 8, '#e8d9b0', 5, 120); break;
+          case 'petrify': this.burst(e.x, e.y, '#b8b8c0', 8, 130); say('石化', '#c8c8d0'); break;
+          case 'frostBreath':
+            this.fx.push({ kind: 'spit', x0: e.x - 10, y0: e.y - 8, x1: C.heroX + 10, y1: battle.heroY - 50, life: 0.4, age: 0, ice: true });
+            this.text(C.heroX + 50, battle.heroY - 110, '冰息！', '#9fdcff', 22, 1.0);
+            break;
+          case 'roar':
+            this.fx.push({ kind: 'ring', x: e.x, y: e.y, r0: 10, r1: e.radius || 240, color: '#ffe0b0', w: 4, life: 0.6, age: 0, flat: 0.5 });
+            say('咆哮！', '#ffe0b0', 22);
+            this.shake = Math.max(this.shake, 3);
+            break;
+          case 'bounce': this.burst(e.x, e.y, '#9fe8ff', 5, 140); break;
+          case 'rewrap': say('缠紧！', '#efe4c8'); this.burst(e.x, e.y, '#efe4c8', 6, 100); break;
+          case 'pilfer': say('偷！', '#ffd23f'); if (calm) this.text(e.x, e.y - 14, '-' + e.amount, '#ffd23f', 14, 0.8); break;
+          case 'sting': this.burst(e.x, e.y, '#8aff6a', 5, 110); say('毒刺', '#8aff6a'); break;
+          case 'scavenge': this.burst(e.x, e.y, '#ff8a6a', 4, 100); break;
+          case 'seedBurst':
+            this.fx.push({ kind: 'ring', x: e.x, y: e.y, r0: 6, r1: e.radius || 130, color: '#ffc060', w: 3, life: 0.45, age: 0, flat: 0.5 });
+            say('籽爆！', '#ffc060');
+            break;
+          default:
+        }
+        void V;
+      });
       // 战意（设计书 163）：连击档位触发，英雄身上一圈金光、头顶飘出档位名和加成
       on('fervor', (e) => {
         const x = C.heroX + 20;

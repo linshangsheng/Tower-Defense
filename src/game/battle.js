@@ -602,6 +602,7 @@
       if (def.wool) m.wool = m.woolMax = hp * def.wool.ratio * (1 - Math.min(1, this.mods.woolCut));
       if (def.ranged) m.rangedTimer = 0.8;
       if (def.laneHop) m.hopTimer = def.laneHop.every * (0.6 + this.rng() * 0.6);
+      if (def.trait) this.initTrait(m); // 独特技能（设计书 165）
       if (def.regen) m.lastHit = -99;
       // 第七章（设计书 52.2）
       if (def.shell) {
@@ -646,6 +647,7 @@
         }
       }
       if (this.time < m.hasteUntil) s *= 1 + m.hasteAmt;
+      if (m.def.trait) s *= this.traitSpeedMult(m);
       let slow = this.time < m.slowUntil ? m.slowAmt : 0;
       for (const e of this.laneEffects) {
         if (e.lane === m.lane && this.time < e.until) {
@@ -695,6 +697,7 @@
           if (m.dead) continue;
           if (m.ai.mode !== 'walk') continue;
         }
+        if (m.def.trait) this.updateTraits(m, dt);
         // 隐身（暗影刺客）：远处隐身并换道，靠近后现身
         const st = m.def.stealth;
         if (st) {
@@ -822,7 +825,8 @@
             m.attackTimer -= dt;
             if (m.attackTimer <= 0) {
               m.attackTimer += 1;
-              this.hitWall(m.dps, m);
+              this.hitWall(m.def.trait ? this.traitWallDps(m) : m.dps, m);
+              if (m.def.trait && !m.dead) this.traitOnWallHit(m);
               const thorns = this.stats.thorns + (this.time < this.tempThornsUntil ? this.tempThorns : 0);
               if (thorns > 0 && !m.dead) {
                 this.damage(m, this.atk * thorns, { type: 'magic', fromFront: false, source: 'thorns' });
@@ -970,6 +974,7 @@
         if (!this.mods.pinPop) return 0;
         amount *= 1 - Math.min(1, this.mods.pinPop);
       }
+      if (m.tr && this.time < (m.tr.stoneUntil || 0)) amount *= 0.1; // 石像鬼石化中
       if (opts.type === 'magic' && opts.source !== 'thorns') amount *= 1 + this.mods.magicMult;
       if (m.vulnUntil && this.time < m.vulnUntil) amount *= D.inkBoss.vulnMult;
       if (m.markUntil && this.time < m.markUntil) amount *= 1 + (m.markBonus || 0); // 猎杀标记
@@ -1021,6 +1026,7 @@
       m.hp -= dmg;
       m.hitFlash = 0.12;
       m.lastHit = this.time;
+      if (m.def.trait && m.hp > 0) this.traitOnHit(m);
       this.damageDealt += dmg;
       this.emit('hit', {
         m,
@@ -1124,6 +1130,7 @@
         this.kills++;
         this.killsByType[m.type] = (this.killsByType[m.type] || 0) + 1;
       }
+      if (m.def.trait || this.hasScavenger) this.traitOnKill(m);
       this.killCopper += copper;
       if (m.returning && !noReward) {
         this.killSilver += C.returnBossSilver;

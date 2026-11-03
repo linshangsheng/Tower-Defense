@@ -15,7 +15,8 @@
       copper: 1,
       size: 22,
       color: '#6fd36a',
-      desc: '最基础的小怪，慢吞吞的。',
+      trait: { id: 'cling', grow: 0.06, max: 1.6 },
+      desc: '最基础的小怪，慢吞吞的。贴上城墙以后越粘越紧：啃得越久，每一口越疼（最多 1.6 倍），别让它安稳地趴着。',
     },
     bunny: {
       name: '兔冲冲',
@@ -26,7 +27,8 @@
       copper: 1,
       size: 18,
       color: '#f4b6c9',
-      desc: '跑得飞快，血很少。',
+      trait: { id: 'sprint', every: 4.5, dur: 0.6, mult: 2 },
+      desc: '血很少、跑得飞快，每隔几秒还会猛冲一小段（速度翻倍），箭很难提前瞄准。',
     },
     mushroom: {
       name: '蘑菇兵',
@@ -50,7 +52,8 @@
       size: 16,
       color: '#ffd23f',
       flying: true,
-      desc: '成群飞行，越过其他怪直扑城墙。',
+      trait: { id: 'sting', mult: 0.6, dur: 3 },
+      desc: '成群飞行，越过其他怪直扑城墙。蜇到城墙会留下毒刺，城墙持续中毒 3 秒。',
     },
     goblin: {
       name: '木盾哥布林',
@@ -73,7 +76,8 @@
       copper: 1,
       size: 18,
       color: '#8cc06b',
-      desc: '咕噜大王的跟班。',
+      trait: { id: 'pilfer', pct: 0.015 },
+      desc: '咕噜大王的跟班，手脚不干净：每啃一口城墙，顺手偷走你一点铜币。别让它们在墙边久留。',
     },
     minijelly: {
       name: '小果冻',
@@ -84,7 +88,8 @@
       copper: 0,
       size: 14,
       color: '#7fd0ff',
-      desc: '果冻王子分裂出来的小果冻。',
+      trait: { id: 'bounce', chance: 0.2 },
+      desc: '果冻王子的小弟，Q 弹得很：被打中时有五分之一的几率弹到隔壁车道，打完一只要重新瞄准。',
     },
     jellyPrince: {
       name: '果冻王子',
@@ -134,7 +139,8 @@
       copper: 3,
       size: 24,
       color: '#efe4c8',
-      desc: '缠满绷带，物理伤害减免 55%。用魔法打它！',
+      trait: { id: 'rewrap', below: 0.5, armor: 0.5, dur: 4 },
+      desc: '缠满绷带，物理伤害减免 55%。血量掉到一半时会把绷带重新缠紧，4 秒内护甲增厚一半。用魔法打它！',
     },
     cactus: {
       name: '仙人掌球',
@@ -158,7 +164,8 @@
       size: 20,
       color: '#8a6a50',
       flying: true,
-      desc: '低空飞行，速度很快。',
+      trait: { id: 'scavenge', radius: 220, pct: 0.08 },
+      desc: '盘旋在战场上空的食腐鸟：附近有怪物倒下，它就俯冲啄食，回复 8% 的血量。',
     },
     priest: {
       name: '小祭司',
@@ -269,7 +276,8 @@
       copper: 0,
       size: 13,
       color: '#f5a04a',
-      desc: '南瓜头裂开后的小南瓜。',
+      trait: { id: 'seedBurst', radius: 130, pct: 0.06 },
+      desc: '南瓜怪裂开的小南瓜：被打碎时会崩出南瓜籽，给周围受伤的怪物回一点血。',
     },
     boneMage: {
       name: '骨头先生',
@@ -319,7 +327,8 @@
       copper: 0,
       size: 14,
       color: '#f4f8ff',
-      desc: '雪团团碎开后的小雪球。',
+      trait: { id: 'roll', grow: 0.1, max: 2.2 },
+      desc: '小雪人碎成的雪团，越滚越快（每秒加速 10%，最多 2.2 倍），得在它滚起来之前打掉。',
     },
     penguin: {
       name: '企鹅滑冲',
@@ -331,7 +340,8 @@
       size: 20,
       color: '#3b4a6b',
       slam: 25,
-      desc: '肚皮着地高速滑行，撞上城墙时造成大量伤害。',
+      trait: { id: 'slide', fromX: 820, mult: 1.8 },
+      desc: '在远处肚皮着地高速滑行，到了近处才站起来蹒跚；撞上城墙时造成大量伤害。',
     },
     iceSprite: {
       name: '冰晶精灵',
@@ -367,7 +377,8 @@
       copper: 5,
       size: 28,
       color: '#f2f6fb',
-      desc: '大个子白毛怪，物理护甲很高。',
+      trait: { id: 'roar', at: 650, radius: 280, haste: 0.25, dur: 4 },
+      desc: '皮糙肉厚的大个子。走到半场时会仰天咆哮，周围的怪物 4 秒内跑得更快。',
     },
     iceDragon: {
       name: '小冰龙',
@@ -379,7 +390,8 @@
       size: 22,
       color: '#7fc8f8',
       flying: true,
-      desc: '霜霜女王召唤的小冰龙。',
+      trait: { id: 'frostBreath', every: 7, range: 720, slow: 0.3, dur: 2.5 },
+      desc: '会飞的小冰龙。飞到近处，每隔几秒朝城头喷一口冰息，英雄的攻击速度下降 30%，持续 2.5 秒。',
     },
     iceGiant: {
       name: '冰棍大叔',
@@ -969,23 +981,23 @@
   };
   const M = TD.data.monsters;
   // 第八章 · 月影古堡（第一至三章怪物的回声）
-  echo('moonSlime', 'slime', '月影团团', TINT_MOON, { hp: 70, speed: 46, dps: 12, copper: 3, regen: { delay: 2, pct: 0.05 } }, '被月光侵蚀的绿团团：血量高，不被打的时候会自己回血。');
-  echo('moonBunny', 'bunny', '月影兔', TINT_MOON, { hp: 40, speed: 135, dps: 8, copper: 3, dodge: 0.25, laneHop: { every: 2 } }, '快得看不清的兔子，会换车道，物理攻击有四分之一的几率打空。');
+  echo('moonSlime', 'slime', '月影团团', TINT_MOON, { hp: 70, speed: 46, dps: 12, copper: 3, regen: { delay: 2, pct: 0.05 } }, '被月光侵蚀的绿团团：血量高，不被打的时候会自己回血；贴上城墙以后也越粘越疼。');
+  echo('moonBunny', 'bunny', '月影兔', TINT_MOON, { hp: 40, speed: 135, dps: 8, copper: 3, dodge: 0.25, laneHop: { every: 2 } }, '快得看不清的兔子，会换车道，还会隔几秒猛冲一段；物理攻击有四分之一的几率打空。');
   echo('digger', 'scorpion', '掘墓蝎', TINT_MOON, { hp: 90, dps: 14, armor: 60, copper: 4 }, '会钻进地里的蝎子，披着一层骨甲。');
   echo('wraith', 'ghost', '怨灵', TINT_MOON, { hp: 90, speed: 56, dps: 14, physResist: 0.85, copper: 4 }, '几乎不怕物理攻击的灵体：只有 15% 的物理伤害有效，用魔法打它。');
   echo('skelGuard', 'goblin', '骷髅卫兵', TINT_MOON, { hp: 200, speed: 38, dps: 18, frontArmor: 160, copper: 5 }, '举着厚重的骨盾，正面几乎打不动：回旋镖从背后打。');
-  echo('gargoyle', 'vulture', '石像鬼', TINT_MOON, { hp: 110, speed: 105, dps: 10, armor: 100, copper: 4 }, '披着石甲的飞行怪：物理攻击大半被挡住。');
+  echo('gargoyle', 'vulture', '石像鬼', TINT_MOON, { hp: 110, speed: 105, dps: 10, armor: 100, copper: 4, trait: { id: 'petrify', every: 4.5, dur: 1.2 } }, '披着石甲的飞行怪：物理攻击大半被挡住，还会隔几秒把自己石化——石化的 1.2 秒里，几乎打不动它。');
   echo('lanternGhost', 'priest', '提灯鬼', TINT_MOON, { hp: 120, dps: 8, copper: 5, healer: Object.assign({}, M.priest.healer, { radius: 150, pct: 0.06 }) }, '提着灯的治疗者：范围更大、治疗更多，先打它。');
   echo('bloodBat', 'bat', '吸血蝠', TINT_MOON, { hp: 70, dps: 9, copper: 3, laneHop: { every: 1.8 } }, '频繁换车道的蝙蝠，很难集火。');
   // 第九章 · 赤铁熔炉（第四、五章怪物的回声）
   echo('ironSnowman', 'snowman', '铁雪人', TINT_FORGE, { hp: 110, dps: 16, armor: 60, copper: 4, deathSpawn: Object.assign({}, M.snowman.deathSpawn, { count: 3 }) }, '披着铁甲的雪人，死后裂成三个小雪团。');
   echo('ironWolf', 'wolf', '铁狼', TINT_FORGE, { hp: 65, speed: 100, dps: 11, armor: 20, copper: 4, pack: 4 }, '四只一组冲过来的铁甲狼。');
   echo('forgeImp', 'imp', '炉火小鬼', TINT_FORGE, { hp: 60, copper: 5, ranged: Object.assign({}, M.imp.ranged, { damage: Math.round(M.imp.ranged.damage * 1.4) }) }, '会飞的火球手，一发火球比原来疼得多。');
-  echo('steelYeti', 'yeti', '钢雪怪', TINT_FORGE, { hp: 280, dps: 24, armor: 140, copper: 7 }, '浑身钢板的雪怪：物理几乎打不动，魔法才有效。');
+  echo('steelYeti', 'yeti', '钢雪怪', TINT_FORGE, { hp: 280, dps: 24, armor: 140, copper: 7 }, '浑身钢板的雪怪：物理几乎打不动，魔法才有效；走到半场会咆哮，让周围的怪加速。');
   echo('moltenGolem', 'lavaGolem', '熔铁傀儡', TINT_FORGE, { hp: 300, dps: 24, mres: 300, copper: 8 }, '熔化的铁做的傀儡：魔法几乎打不动，用物理武器。');
   echo('slagMagma', 'magma', '炉渣团', TINT_FORGE, { hp: 70, dps: 12, copper: 4, fireZone: Object.assign({}, M.magma.fireZone, { radius: 90, duration: 6 }) }, '死后留下更大、更久的火焰地带。');
   echo('ironChariot', 'chariot', '铁战车', TINT_FORGE, { hp: 100, speed: 130, dps: 12, armor: 50, copper: 5, slam: 22 }, '披着铁板的战车，冲得很快。');
-  echo('frostWyrm', 'iceDragon', '霜龙', TINT_FORGE, { hp: 85, speed: 62, dps: 12, copper: 4 }, '会飞的小龙，被混沌染成了红色。');
+  echo('frostWyrm', 'iceDragon', '霜龙', TINT_FORGE, { hp: 85, speed: 62, dps: 12, copper: 4 }, '会飞的小龙，被混沌染成了红色：飞近以后会朝城头喷冰息，让英雄攻速下降。');
   // 第十章 · 虚空天域（第六、七章怪物的回声）
   echo('voidSheep', 'cloudSheep', '虚空羊', TINT_VOID, { hp: 110, dps: 14, copper: 5, wool: Object.assign({}, M.cloudSheep.wool, { ratio: 0.7 }) }, '羊毛更厚：先扣掉 70% 血量的羊毛才开始掉血。');
   echo('voidKite', 'kite', '虚空风筝', TINT_VOID, { hp: 56, dps: 9, copper: 4, dodge: 0.5 }, '一半的物理攻击都会被它飘走躲开。');

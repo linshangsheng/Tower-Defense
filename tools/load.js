@@ -16,6 +16,7 @@ const FILES = [
   'src/game/progression.js',
   'src/game/battle.js',
   'src/game/bosses.js',
+  'src/game/traits.js',
   'src/game/bot.js',
   'src/game/save.js',
   'src/game/modes.js',

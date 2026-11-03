@@ -862,6 +862,60 @@ test('下一个目标：挑最近的功能解锁 / Boss / 本章全三星；都�
   assert.strictEqual(P.nextGoal(all, D.chapters[0]), null, '全部完成：不显示');
 });
 
+test('怪物独特技能（设计书 165）：13 种技能各自生效，变体怪继承', () => {
+  const mk = () => { const b = newBattle(20); b.hero.cooldown = 1e9; b.wall.hp = b.wall.max = 1e12; return b; };
+  const step = (b, sec) => { for (let i = 0; i < sec * 60; i++) { b.time += 1 / 60; b.updateMonsters(1 / 60); } };
+  // 每种有独特技能的怪都带 trait；至少 13 种基础怪
+  const ids = new Set(Object.values(D.monsters).filter((m) => m.trait && !m.echo).map((m) => m.trait.id));
+  for (const id of ['cling', 'sprint', 'pilfer', 'bounce', 'rewrap', 'roll', 'roar', 'seedBurst', 'sting', 'scavenge', 'frostBreath', 'petrify', 'slide']) assert.ok(ids.has(id) || [...Object.values(D.monsters)].some((m) => m.trait && m.trait.id === id), `缺技能 ${id}`);
+  // 变体继承
+  assert.strictEqual(D.monsters.steelYeti.trait.id, 'roar');
+  assert.strictEqual(D.monsters.frostWyrm.trait.id, 'frostBreath');
+  assert.strictEqual(D.monsters.moonSlime.trait.id, 'cling');
+  // 绿团团：啃得越久越疼
+  let b = mk(); let m = b.spawnMonster('slime', 1, 300);
+  const d0 = b.traitWallDps(m); m.tr.wallHits = 20;
+  assert.ok(b.traitWallDps(m) > d0 * 1.5 && b.traitWallDps(m) <= d0 * 1.6001, '最多 1.6 倍');
+  // 兔冲冲：冲刺时速度更快
+  b = mk(); m = b.spawnMonster('bunny', 1, 900); m.tr.next = 0; step(b, 0.1);
+  assert.ok(b.traitSpeedMult(m) >= 2, '冲刺中');
+  step(b, 1.2); assert.strictEqual(b.traitSpeedMult(m), 1, '冲刺结束');
+  // 小哥布林：偷铜币
+  b = mk(); m = b.spawnMonster('gobling', 1, 300); b.killCopper = 1000; b.traitOnWallHit(m);
+  assert.ok(b.killCopper < 1000 && b.stolen > 0, '偷走一点');
+  // 小果冻：被打中弹到隔壁车道
+  b = mk(); m = b.spawnMonster('minijelly', 1, 600); b.rng = () => 0; const lane0 = m.lane; b.traitOnHit(m);
+  assert.notStrictEqual(m.lane, lane0, '弹到隔壁车道');
+  // 绷带球：半血重新缠紧，到时间恢复
+  b = mk(); m = b.spawnMonster('mummy', 1, 600); const am0 = m.armorMult; m.hp = m.maxHp * 0.4; b.traitOnHit(m);
+  assert.ok(m.armorMult > am0 * 1.4); step(b, 4.3); assert.ok(Math.abs(m.armorMult - am0) < 1e-9, '恢复');
+  // 小雪团：越滚越快
+  b = mk(); m = b.spawnMonster('snowball', 1, 900); const v0 = b.traitSpeedMult(m); b.time += 8;
+  assert.ok(b.traitSpeedMult(m) > v0 * 1.5 && b.traitSpeedMult(m) <= 2.2 + 1e-9);
+  // 雪怪：咆哮让周围的怪加速
+  b = mk(); m = b.spawnMonster('yeti', 1, 640); const o = b.spawnMonster('slime', 1, 700); step(b, 0.1);
+  assert.ok(o.hasteUntil > b.time && o.hasteAmt >= 0.25, '周围的怪加速');
+  // 小南瓜：被打碎时给周围受伤的怪回血
+  b = mk(); m = b.spawnMonster('minipumpkin', 1, 600); const w = b.spawnMonster('slime', 1, 620); w.hp = w.maxHp * 0.5;
+  b.kill(m, true); assert.ok(w.hp > w.maxHp * 0.5, '回了血');
+  // 蜜蜂：蜇城墙留下中毒
+  b = mk(); m = b.spawnMonster('bee', 1, 300); b.traitOnWallHit(m);
+  assert.ok(b.wallDots.length > 0, '城墙中毒');
+  // 秃鹫：附近有怪倒下就啄食回血
+  b = mk(); m = b.spawnMonster('vulture', 1, 600); m.hp = m.maxHp * 0.5; const prey = b.spawnMonster('slime', 1, 640);
+  b.kill(prey, true); assert.ok(m.hp > m.maxHp * 0.5, '啄食回血');
+  // 小冰龙：冰息让英雄攻速下降
+  b = mk(); m = b.spawnMonster('iceDragon', 1, 600); m.tr.next = 0; const a0 = b.currentAspd(); step(b, 0.1);
+  assert.ok(b.currentAspd() < a0 * 0.8, '攻速下降');
+  // 石像鬼：石化时几乎不受伤
+  b = mk(); m = b.spawnMonster('gargoyle', 1, 600); const hp0 = m.hp; b.damage(m, 50, { type: 'magic', source: 'weapon' }); const normal = hp0 - m.hp;
+  m.hp = hp0; m.tr.stoneUntil = b.time + 1; b.damage(m, 50, { type: 'magic', source: 'weapon' });
+  assert.ok(hp0 - m.hp < normal * 0.3, '石化时伤害大减');
+  // 企鹅：远处滑行更快
+  b = mk(); m = b.spawnMonster('penguin', 1, 1000);
+  assert.ok(b.traitSpeedMult(m) > 1.5); m.x = 500; assert.strictEqual(b.traitSpeedMult(m), 1);
+});
+
 test('墨墨：还没走到停靠位置就被打到分身，现形后要继续往前走（否则战斗卡死）', () => {
   const b = newBattle(50);
   b.hero.cooldown = 1e9;
