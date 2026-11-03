@@ -1113,6 +1113,14 @@
         this.lastKillAt = this.time;
         if (this.streak > this.bestStreak) this.bestStreak = this.streak;
         if (STREAK_CALLS[this.streak]) this.emit('streak', { count: this.streak, text: STREAK_CALLS[this.streak] });
+        // 战意：连击达到档位，短暂加成（同一时间只有一档）
+        const F = C.fervor && C.fervor[this.streak];
+        if (F) {
+          this.buffs = this.buffs.filter((b) => b.src !== 'fervor');
+          this.buffs.push({ aspd: F.aspd || 0, atk: F.atk || 0, crit: F.crit || 0, until: this.time + F.dur, src: 'fervor' });
+          this.fervorCount = (this.fervorCount || 0) + 1;
+          this.emit('fervor', { count: this.streak, name: F.name, dur: F.dur, aspd: F.aspd || 0, atk: F.atk || 0, crit: F.crit || 0 });
+        }
         this.kills++;
         this.killsByType[m.type] = (this.killsByType[m.type] || 0) + 1;
       }
@@ -2630,6 +2638,7 @@
         earlyCalls: this.earlyCalls,
         skillsCast: this.skillsCast,
         bestStreak: this.bestStreak,
+        fervor: this.fervorCount || 0,
         bubbles: this.bubblesPopped,
         combos: Object.assign({}, this.combos),
         minWallRatio: this.minWallRatio,

@@ -698,6 +698,21 @@
         this.text(C.heroX + 60, battle.heroY - 130, e.text, e.count >= 30 ? '#ff5a4f' : '#ffd23f', 22 + Math.min(14, e.count / 4), 1.1);
         this.burst(C.heroX + 40, battle.heroY - 100, '#ffd23f', 10 + Math.min(20, e.count / 2), 240);
       });
+      // 战意（设计书 163）：连击档位触发，英雄身上一圈金光、头顶飘出档位名和加成
+      on('fervor', (e) => {
+        const x = C.heroX + 20;
+        const y = battle.heroY - 60;
+        const col = e.count >= 50 ? '#ff5a4f' : e.count >= 30 ? '#ff9a3c' : '#ffd23f';
+        this.fx.push({ kind: 'ring', x, y, r0: 10, r1: 150 + e.count, color: col, w: 5, life: 0.6, age: 0, flat: 0.5 });
+        this.fx.push({ kind: 'glow', x, y, r: 62, color: col, life: 0.55, age: 0 });
+        const bits = [];
+        if (e.aspd) bits.push(`攻速 +${Math.round(e.aspd * 100)}%`);
+        if (e.atk) bits.push(`攻击 +${Math.round(e.atk * 100)}%`);
+        if (e.crit) bits.push(`暴击 +${Math.round(e.crit * 100)}%`);
+        this.text(x + 40, y - 80, e.name, col, 26, 1.4);
+        bits.forEach((t, i) => this.text(x + 40, y - 54 + i * 18, t, '#ffffff', 15, 1.4)); // 一行一条，各自能被翻译
+        if (this.vfx) this.vfx.spawn(18, () => ({ kind: 'spark', x, y, vx: (Math.random() - 0.5) * 240, vy: -60 - Math.random() * 160, g: 220, life: 0.7, r: 2.4, color: col }));
+      });
       // 第六章（设计书 33）
       on('dodge', (e) => this.text(e.x, e.y - 30, '闪避', '#9fb6cc', 16, 0.5));
       on('woolHit', (e) => {

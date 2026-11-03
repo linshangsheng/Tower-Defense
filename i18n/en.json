@@ -2487,5 +2487,12 @@
   "每天回来领一份，一天比一天丰厚；第 7 天有钻石。隔一天没来也不要紧，连续记录不会清零。": "Come back every day to claim one — each day is better than the last, and day 7 has diamonds. Missing a day is fine: your streak won't reset.",
   "领取": "Claim",
   "第 {0} 天": "Day {0}",
-  "已领取第 {0} 天的补给": "Claimed the day {0} supplies"
+  "已领取第 {0} 天的补给": "Claimed the day {0} supplies",
+  "战意": "Fervor",
+  "战意高涨": "Fervor Rising",
+  "战意沸腾": "Fervor Boiling",
+  "战神附体": "God of War",
+  "攻速 +{0}%": "Atk spd +{0}%",
+  "攻击 +{0}%": "ATK +{0}%",
+  "暴击 +{0}%": "Crit +{0}%"
 }

@@ -2489,4 +2489,11 @@ TD.i18n.register("en", {
   "领取": "Claim",
   "第 {0} 天": "Day {0}",
   "已领取第 {0} 天的补给": "Claimed the day {0} supplies",
+  "战意": "Fervor",
+  "战意高涨": "Fervor Rising",
+  "战意沸腾": "Fervor Boiling",
+  "战神附体": "God of War",
+  "攻速 +{0}%": "Atk spd +{0}%",
+  "攻击 +{0}%": "ATK +{0}%",
+  "暴击 +{0}%": "Crit +{0}%",
 });

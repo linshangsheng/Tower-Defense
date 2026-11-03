@@ -815,6 +815,30 @@ test('每日登录奖励：按天递增、错过一天不清零、隔两天以�
   assert.ok(M.loginReward(b, 1).copper > M.loginReward(a, 1).copper);
 });
 
+test('战意：连击到 10 / 20 / 30 / 50 时触发对应的加成，同一时间只有一档，过期消失', () => {
+  const sv = P.newSave();
+  const b = new TD.Battle({ level: 3, stats: P.heroStats(sv), loadout: P.battleLoadout(sv), seed: 1 });
+  b.hero.cooldown = 1e9;
+  const seen = [];
+  b.on('fervor', (e) => seen.push(e.count));
+  const killOne = () => { const m = b.spawnMonster('slime', 0, 600); b.kill(m); b.lastKillAt = b.time; };
+  const aspd0 = b.currentAspd();
+  for (let i = 0; i < 9; i++) killOne();
+  assert.deepStrictEqual(seen, [], '9 连击还没有');
+  killOne();
+  assert.deepStrictEqual(seen, [10]);
+  assert.ok(b.currentAspd() > aspd0 * 1.05, '10 连击：攻速上去了');
+  for (let i = 0; i < 10; i++) killOne();
+  assert.deepStrictEqual(seen, [10, 20]);
+  assert.strictEqual(b.buffs.filter((x) => x.src === 'fervor').length, 1, '同一时间只有一档战意');
+  const atk20 = b.atk;
+  for (let i = 0; i < 10; i++) killOne();
+  assert.ok(b.atk > atk20, '30 连击的攻击加成更高');
+  b.time += 20;
+  assert.ok(Math.abs(b.currentAspd() - aspd0) < 1e-9, '过期以后恢复');
+  assert.ok(b.fervorCount >= 3);
+});
+
 test('墨墨：还没走到停靠位置就被打到分身，现形后要继续往前走（否则战斗卡死）', () => {
   const b = newBattle(50);
   b.hero.cooldown = 1e9;
