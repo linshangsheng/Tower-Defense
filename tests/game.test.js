@@ -5644,6 +5644,7 @@ test('回声 Boss 变招（设计书 168）：6 个回声 Boss 各带独有变�
 });
 
 test('战利品光球（设计书 169）：掉落、点击拾取、过期、上限', () => {
+  TD.config.eliteRate = 0;
   const b = newBattle(20); b.hero.cooldown = 1e9; b.wall.hp = b.wall.max = 1000;
   const m = b.spawnMonster('goblin', 1, 600);
   b.rng = () => 0; // 必掉，类型取第一种（铜钱袋）
@@ -5672,6 +5673,7 @@ test('战利品光球（设计书 169）：掉落、点击拾取、过期、上�
   const n = b.drops.length; b.drops = [];
   b.kill(b.spawnMonster('goblin', 1, 600), true);
   assert.strictEqual(b.drops.length, 0); void n;
+  TD.config.eliteRate = 0.015;
 });
 
 test('战利品统计：拾取数计入结果、累计进存档、拾荒成就', () => {
@@ -5685,4 +5687,22 @@ test('战利品统计：拾取数计入结果、累计进存档、拾荒成就',
   assert.strictEqual(s.stats.drops, 1);
   s.stats.drops = 50;
   assert.ok(TD.data.achievements.find((a) => a.id === 'scavenger').check(s));
+});
+
+test('精英怪（设计书 171）：主线才有、三倍血量、必掉光球、妖塔/无尽没有', () => {
+  const C = TD.config;
+  C.eliteRate = 1;
+  let b = newBattle(20); b.hero.cooldown = 1e9;
+  const m = b.spawnMonster('goblin', 1, 600);
+  const base = Math.round(TD.data.monsters.goblin.hp * b.D * (1 + (b.rules.monsterHp || 0)) * b.diffHp);
+  assert.ok(m.elite && m.hp >= base * 2.9, '精英三倍血');
+  assert.ok(!b.spawnMonster('boarKing', 1, 600).elite, 'Boss 不是精英');
+  b.rng = () => 0.99; // 普通掉落一定不触发
+  b.kill(m);
+  assert.strictEqual(b.drops.length, 1, '精英必掉');
+  const early = newBattle(2); assert.ok(!early.spawnMonster('slime', 1, 600).elite, '前 4 关没有精英');
+  C.eliteRate = 0.015;
+  b = newBattle(20); let n = 0;
+  for (let i = 0; i < 2000; i++) if (b.spawnMonster('slime', 1, 600).elite) n++;
+  assert.ok(n > 5 && n < 80, '概率大约 1.5%：' + n);
 });

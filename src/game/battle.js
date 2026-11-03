@@ -48,6 +48,7 @@
       // opts.levelDef：自定义关卡（无尽模式、每日挑战）；stage：用于补给卡池、场景的"等效关卡号"
       this.levelNo = opts.level;
       this.level = opts.levelDef || D.levels[opts.level];
+      this.eliteOK = !opts.levelDef && opts.level >= 5 && opts.level < 200; // 精英怪只出现在主线（设计书 171）
       this.stage = opts.stage || (typeof opts.level === 'number' ? opts.level : 1);
       this.D = C.difficulty(this.stage);
       this.rules = this.level.rules || {};
@@ -620,6 +621,12 @@
         m.stealthed = true;
         m.hopTimer = def.stealth.hopEvery;
       }
+      // 精英怪（设计书 171）：偶尔出现的金光怪，三倍血量、体型大一圈，击败必掉战利品光球
+      if (this.eliteOK && !def.boss && !def.bossPart && !m.splitFrom && this.rng() < C.eliteRate) {
+        m.elite = true;
+        m.hp = m.maxHp = Math.round(m.hp * C.eliteHp);
+        m.dps *= 1.3;
+      }
       this.monsters.push(m);
       this.emit('spawn', m);
       return m;
@@ -1118,7 +1125,7 @@
       m.dead = true;
       m.hp = 0;
       m.diedAt = this.time;
-      const copper = noReward ? 0 : m.def.copper * (this.time < this.copperMultUntil ? this.copperMult : 1);
+      const copper = noReward ? 0 : m.def.copper * (m.elite ? C.eliteCopper : 1) * (this.time < this.copperMultUntil ? this.copperMult : 1);
       if (!noReward) {
         // 连击：1.2 秒内连续击败
         this.streak = this.time - this.lastKillAt <= 1.2 ? this.streak + 1 : 1;

@@ -51,7 +51,7 @@
     },
 
     // 游戏版本：与设计书版本号、sw.js 的缓存名保持一致（测试会检查）
-    version: 'v1.70',
+    version: 'v1.71',
 
     // 试玩版（设计书 127）：打试玩版压缩包时 tools/itch.js 把 demo 改成 true；正式版永远是 false
     demo: false,
@@ -111,6 +111,9 @@
     },
 
     // 战意（设计书 163）：连续击杀达到这些连击数时，英雄短暂进入战意状态（同一时间只有一档，新的会替换旧的）
+    eliteRate: 0.015, // 精英怪出现概率（设计书 171）
+    eliteHp: 3,
+    eliteCopper: 4,
     fervor: {
       10: { name: '战意', aspd: 0.08, dur: 4 },
       20: { name: '战意高涨', aspd: 0.12, atk: 0.06, dur: 5 },

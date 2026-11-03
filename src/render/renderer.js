@@ -3056,11 +3056,26 @@
       const y = m.y + m.yOffset + (def.flying ? 0 : 6);
       const frozen = b.time < m.frozenUntil;
       const t = frozen ? 0 : this.t + m.id * 0.37;
+      if (m.elite) {
+        // 精英怪：脚下一圈跳动的金光
+        ctx.save();
+        ctx.globalAlpha = 0.5 + Math.sin(this.t * 5 + m.id) * 0.15;
+        ctx.strokeStyle = '#ffd23f';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.ellipse(x, y + def.size * 0.5, def.size * 0.95, def.size * 0.34, 0, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.globalAlpha = 0.18;
+        ctx.fillStyle = '#ffd23f';
+        ctx.fill();
+        ctx.restore();
+      }
       ctx.save();
       // 刚分裂出来的小果冻有个弹出动画
       let scale = 1;
       const age = b.time - m.bornAt;
       if (m.splitFrom && age < 0.3) scale = 0.4 + age * 2;
+      if (m.elite) scale *= 1.22;
       if (m.burrowed) {
         // 地下移动：只露出一个移动的沙包
         const bump = Math.sin(this.t * 20 + m.id) * 2;
