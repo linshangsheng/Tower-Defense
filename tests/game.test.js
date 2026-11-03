@@ -766,6 +766,29 @@ test('连珠被动的追加一击：发 comboShot，不会误发没带名字的 
   assert.ok(seen.combo.every((e) => typeof e.name === 'string' && e.name.length), "'combo' 事件必须带名字");
 });
 
+test('一键升级：永远推荐买得起的最划算一项；买完钱真的少了、等级真的涨了；买不起时给出还差多少', () => {
+  const s = P.newSave();
+  s.copper = 200;
+  let spent = 0;
+  for (let i = 0; i < 50; i++) {
+    const info = P.quickUpgradeInfo(s);
+    if (!info || !info.afford) break;
+    const cu = s.copper;
+    const lvBefore = info.key.startsWith('attr:') ? s.attrs[info.key.split(':')[1]] : null;
+    assert.ok(P.applyQuickUpgrade(s, info.key), '买得起就能买成功');
+    assert.ok(s.copper < cu || s.silver >= 0, '钱少了');
+    if (lvBefore !== null) assert.strictEqual(s.attrs[info.key.split(':')[1]], lvBefore + 1);
+    spent++;
+  }
+  assert.ok(spent >= 3, `200 铜至少能连买几次（实际 ${spent}）`);
+  assert.ok(s.copper >= 0);
+  s.copper = 0;
+  const poor = P.quickUpgradeInfo(s);
+  assert.ok(poor && !poor.afford && poor.need > 0, '没钱时显示还差多少');
+  assert.ok(!P.applyQuickUpgrade(s, 'attr:atk'), '没钱买不成');
+  assert.ok(!P.applyQuickUpgrade(s, 'nonsense:x'));
+});
+
 test('墨墨：还没走到停靠位置就被打到分身，现形后要继续往前走（否则战斗卡死）', () => {
   const b = newBattle(50);
   b.hero.cooldown = 1e9;

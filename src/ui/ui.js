@@ -2179,6 +2179,41 @@
     );
   };
 
+  // ================= 一键升级卡（设计书 161） =================
+  // 结算界面里的"现在最划算的升级"：点一下就买，买完立刻换成下一条，直到钱花完。把"赚钱 → 变强 → 再打一关"之间的路缩到一次点击
+  UI.quickUpgradeEl = function (onBought) {
+    const wrap = h('div', { class: 'quick-up' });
+    const render = () => {
+      const info = P.quickUpgradeInfo(game.save);
+      wrap.innerHTML = '';
+      if (!info) {
+        wrap.appendChild(h('div', { class: 'hint' }, '基础强化已经全部升满，去商店看看更高级的东西吧。'));
+        return;
+      }
+      const costEls = [];
+      for (const k of ['copper', 'silver', 'gold']) if (info.cost[k]) costEls.push(h('b', { class: 'qu-cost' }, info.cost[k], ' ', coinIcon(k)));
+      const lv = info.from === null ? null : h('span', { class: 'qu-lv' }, `Lv ${info.from} → Lv ${info.to}`);
+      const pct = Math.max(0.1, Math.round(info.gain * 1000) / 10);
+      wrap.appendChild(h('div', { class: 'qu-title' }, '🛠 最划算的升级'));
+      wrap.appendChild(
+        h(
+          'div',
+          { class: 'qu-row' },
+          h('div', { class: 'qu-what' }, h('span', { class: 'qu-name' }, info.name), lv, h('span', { class: 'qu-gain' }, `综合提升约 ${pct}%`)),
+          h('div', { class: 'qu-buy' }, costEls, info.afford ? h('button', { class: 'btn primary small', onclick: () => {
+            if (!P.applyQuickUpgrade(game.save, info.key)) return sfx('error');
+            sfx('buy');
+            game.persist();
+            if (onBought) onBought();
+            render();
+          } }, '一键升级') : h('span', { class: 'hint' }, `再攒 ${Math.ceil(info.need)} 铜币就能升级`))
+        )
+      );
+    };
+    render();
+    return wrap;
+  };
+
   // ================= 结算 =================
   UI.showResult = function (battle, reward) {
     const res = battle.result;
@@ -2208,8 +2243,8 @@
       win ? h('div', { class: 'hint' }, `城墙剩余 ${Math.round(res.wallRatio * 100)}%`) : null,
       // 失败时左右两栏：左边奖励和推荐强化，右边战斗报告（设计书 32.2）
       win
-        ? [h('div', { class: 'reward-box' }, rows), notes, unlocks, UI.reportEl(res, false)]
-        : h('div', { class: 'result-cols' }, h('div', null, h('div', { class: 'reward-box' }, rows), notes, unlocks, tips), h('div', null, UI.reportEl(res, true))),
+        ? [h('div', { class: 'reward-box' }, rows), UI.quickUpgradeEl(), notes, unlocks, UI.reportEl(res, false)]
+        : h('div', { class: 'result-cols' }, h('div', null, h('div', { class: 'reward-box' }, rows), UI.quickUpgradeEl(), notes, unlocks, tips), h('div', null, UI.reportEl(res, true))),
       h(
         'div',
         { class: 'modal-buttons' },

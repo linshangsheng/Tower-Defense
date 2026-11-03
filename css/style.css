@@ -4530,3 +4530,50 @@ html[lang='ko'] .title-main {
 .supply-refresh .btn[disabled] {
   opacity: 0.5;
 }
+
+/* 一键升级卡（设计书 161） */
+.quick-up {
+  margin: 10px 0;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(255, 210, 120, 0.14), rgba(255, 210, 120, 0.05));
+  border: 1px solid rgba(255, 210, 120, 0.45);
+}
+.quick-up .qu-title {
+  font-weight: 700;
+  color: #ffd98e;
+  margin-bottom: 6px;
+  font-size: 15px;
+}
+.quick-up .qu-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.quick-up .qu-what {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+}
+.quick-up .qu-name {
+  font-weight: 700;
+  font-size: 17px;
+}
+.quick-up .qu-lv {
+  opacity: 0.85;
+}
+.quick-up .qu-gain {
+  color: #8affc8;
+  font-size: 13px;
+}
+.quick-up .qu-buy {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+}
+.quick-up .qu-cost {
+  color: #ffe9b0;
+}

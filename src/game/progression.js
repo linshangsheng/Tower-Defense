@@ -632,6 +632,36 @@
     return true;
   };
 
+  // ---------- 一键升级（设计书 161）：结算界面直接给出"现在最划算的一次升级"，玩家一点就买 ----------
+  // 复用战役机器人的性价比排序（只在各项的基础上限以内推荐，保证推荐永远是"稳赚不赔"的）
+  P.quickUpgradeInfo = function (save) {
+    const list = TD.bot.copperOptions(save);
+    if (!list.length) return null;
+    const label = (key) => {
+      const [kind, id] = key.split(':');
+      if (kind === 'attr') return { name: D.attributes[id].name, from: save.attrs[id], to: save.attrs[id] + 1 };
+      if (kind === 'weapon') return { name: D.weapons[id].name, from: save.weapons[id].lv, to: save.weapons[id].lv + 1 };
+      if (kind === 'wall') return { name: D.wallUpgrades[id].name, from: save.wall[id], to: save.wall[id] + 1 };
+      if (kind === 'passive') return { name: D.passiveSkills[id].name, from: P.passiveLevel(save, id), to: P.passiveLevel(save, id) + 1 };
+      return { name: (D.equipment[id] || {}).name || id, from: null, to: null };
+    };
+    const best = list.find((o) => P.canAfford(save, o.cost));
+    const top = list[0];
+    const show = best || top;
+    const out = Object.assign({ key: show.label, cost: show.cost, costText: P.costText(show.cost), afford: !!best, gain: show.value * P.costValue(show.cost) }, label(show.label));
+    if (!best) out.need = Math.max(1, P.costValue(show.cost) - P.costValue({ copper: save.copper, silver: save.silver, gold: save.gold }));
+    return out;
+  };
+  P.applyQuickUpgrade = function (save, key) {
+    const [kind, id] = String(key).split(':');
+    if (kind === 'attr') return !!P.buyAttr(save, id);
+    if (kind === 'weapon') return !!P.upgradeWeapon(save, id);
+    if (kind === 'wall') return !!P.buyWall(save, id);
+    if (kind === 'passive') return !!P.upgradePassive(save, id);
+    if (kind === 'equip') return !!P.buyEquip(save, id);
+    return false;
+  };
+
   // ---------- 终极技能（设计书 133） ----------
   // 试玩版没有；通关第 100 关后在商店「技能」页用钻石买断；测试模式直接拥有
   P.ultimateUnlocked = (save) => !C.demo && (P.testMode(save) || P.isCleared(save, D.ultimate.unlock));
