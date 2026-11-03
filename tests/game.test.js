@@ -5642,3 +5642,34 @@ test('回声 Boss 变招（设计书 168）：6 个回声 Boss 各带独有变�
   m = b.spawnMonster('chaosQueen', 1, 800); b.time = 50; m.etNext = 0; b.updateEchoTwist(m);
   assert.ok(b.heroStunUntil > b.time, '冰封眩晕英雄');
 });
+
+test('战利品光球（设计书 169）：掉落、点击拾取、过期、上限', () => {
+  const b = newBattle(20); b.hero.cooldown = 1e9; b.wall.hp = b.wall.max = 1000;
+  const m = b.spawnMonster('goblin', 1, 600);
+  b.rng = () => 0; // 必掉，类型取第一种（铜钱袋）
+  b.kill(m);
+  assert.strictEqual(b.drops.length, 1);
+  assert.strictEqual(b.drops[0].kind, 'purse');
+  const c0 = b.killCopper;
+  assert.strictEqual(b.collectDropAt(5, 5), false, '点远了拾不到');
+  assert.strictEqual(b.collectDropAt(b.drops[0].x + 10, b.drops[0].y), true);
+  assert.ok(b.killCopper > c0 && b.drops.length === 0 && b.dropsTaken === 1);
+  // 狂怒 / 疾风加成，修墙回血
+  for (const kind of ['fury', 'gale', 'mend']) {
+    b.drops.push({ id: 90, kind, x: 500, y: 300, until: b.time + 8, copper: 1 });
+    b.wall.hp = 500;
+    b.collectDropAt(500, 300);
+    if (kind === 'mend') assert.ok(b.wall.hp > 500);
+    else assert.ok(b.buffs.some((x) => x.src === 'drop' + kind));
+  }
+  // 过期消失，同屏最多 4 个
+  b.drops.push({ id: 91, kind: 'purse', x: 400, y: 300, until: b.time + 1, copper: 1 });
+  b.time += 2; b.updateDrops();
+  assert.strictEqual(b.drops.length, 0);
+  for (let i = 0; i < 8; i++) b.kill(b.spawnMonster('goblin', 1, 600));
+  assert.ok(b.drops.length <= 4);
+  // 不给奖励的击杀（妖塔）不掉
+  const n = b.drops.length; b.drops = [];
+  b.kill(b.spawnMonster('goblin', 1, 600), true);
+  assert.strictEqual(b.drops.length, 0); void n;
+});

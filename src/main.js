@@ -516,6 +516,11 @@
       game.renderer.hoverLane = game.renderer.laneAt(canvasPoint(e).y);
     });
     canvas.addEventListener('click', (e) => {
+      const b = game.battle;
+      if (b && !b.over && !game.paused && !game.pendingLane && b.drops && b.drops.length) {
+        const p = canvasPoint(e);
+        if (b.collectDropAt(p.x, p.y)) return;
+      }
       if (game.pendingLane) laneClick(game.renderer.laneAt(canvasPoint(e).y));
     });
     canvas.addEventListener('contextmenu', (e) => {

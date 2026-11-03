@@ -7,7 +7,73 @@
   const D = TD.data;
   const C0 = TD.config;
 
+  // 战利品（设计书 169）：击败怪物偶尔掉出光球，点一下拾取；不点就消失，不拿也不会输
+  const DROPS = {
+    purse: { name: '铜钱袋', icon: '💰', color: '#ffd23f', w: 40 },
+    mend: { name: '修墙', icon: '🧱', color: '#7fe08a', w: 25 },
+    fury: { name: '狂怒', icon: '🔥', color: '#ff7a4f', w: 20 },
+    gale: { name: '疾风', icon: '💨', color: '#8fd8ff', w: 15 },
+  };
+  TD.data.drops = DROPS;
+  const DROP_RATE = 0.035;
+  const DROP_LIFE = 8;
+
   Object.assign(TD.Battle.prototype, {
+    maybeDrop(m) {
+      if (!this.drops) this.drops = [];
+      if (this.drops.length >= 4) return;
+      if (!m.def.boss && this.rng() >= DROP_RATE) return;
+      let r = this.rng() * 100;
+      let kind = 'purse';
+      for (const k of Object.keys(DROPS)) {
+        r -= DROPS[k].w;
+        if (r < 0) { kind = k; break; }
+      }
+      const y = Math.max(C0.fieldTop + 20, Math.min(C0.fieldBottom - 20, m.y + m.yOffset));
+      const x = Math.max(C0.wallX + 60, Math.min(1150, m.x));
+      const d = { id: (this.dropNo = (this.dropNo || 0) + 1), kind, x, y, born: this.time, until: this.time + DROP_LIFE, copper: m.def.copper };
+      this.drops.push(d);
+      this.emit('drop', { d });
+    },
+
+    updateDrops() {
+      if (!this.drops || !this.drops.length) return;
+      this.drops = this.drops.filter((d) => d.until >= this.time);
+    },
+
+    // 点击坐标 (px, py)：拾取最近的光球（半径 55 以内），返回是否拾到
+    collectDropAt(px, py) {
+      if (!this.drops || !this.drops.length || this.over) return false;
+      let best = null;
+      let bd = 55 * 55;
+      for (const d of this.drops) {
+        const dd = (d.x - px) * (d.x - px) + (d.y - py) * (d.y - py);
+        if (dd <= bd) { bd = dd; best = d; }
+      }
+      if (!best) return false;
+      this.collectDrop(best);
+      return true;
+    },
+
+    collectDrop(d) {
+      this.drops = this.drops.filter((o) => o !== d);
+      this.dropsTaken = (this.dropsTaken || 0) + 1;
+      let amount = 0;
+      if (d.kind === 'purse') {
+        amount = Math.max(8, Math.round(d.copper * 6));
+        this.killCopper += amount;
+      } else if (d.kind === 'mend') {
+        this.wall.hp = Math.min(this.wall.max, this.wall.hp + this.wall.max * 0.04);
+      } else if (d.kind === 'fury') {
+        this.buffs = this.buffs.filter((b) => b.src !== 'dropfury');
+        this.buffs.push({ atk: 0.25, until: this.time + 6, src: 'dropfury' });
+      } else if (d.kind === 'gale') {
+        this.buffs = this.buffs.filter((b) => b.src !== 'dropgale');
+        this.buffs.push({ aspd: 0.3, until: this.time + 6, src: 'dropgale' });
+      }
+      this.emit('dropGet', { d, kind: d.kind, amount });
+    },
+
     initTrait(m) {
       const t = m.def.trait;
       m.tr = { next: this.time + (t.every || 0) * (0.5 + this.rng() * 0.7), wallHits: 0 };

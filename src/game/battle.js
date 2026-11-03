@@ -119,6 +119,8 @@
       this.fireflyCount = 0;
       this.itemShield = 0;
       this.meteors = [];
+      this.drops = []; // 战利品光球（设计书 169）
+      this.dropsTaken = 0;
       this.copperMult = 1; // 幸运铜币：这段时间内击败的怪掉落倍数
       this.copperMultUntil = 0;
       this.tempThorns = 0; // 反射盾
@@ -1143,6 +1145,7 @@
       // 回春箭：击杀回复城墙（静默回复，不弹字，免得刷屏）
       if (this.mods.killHeal && !noReward) this.wall.hp = Math.min(this.wall.max, this.wall.hp + this.wall.max * this.mods.killHeal);
       this.emit('death', { m, copper, noReward: !!noReward });
+      if (!noReward) this.maybeDrop(m);
       const od = m.def.onDeath;
       if (od && od.type === 'spore') {
         for (const o of this.monsters) {
@@ -2607,6 +2610,7 @@
         this.laneEffects = keep;
       }
       if (this.delayed.length) this.updateDelayed();
+      if (this.drops.length) this.updateDrops();
       this.updateWaves(dt);
       if (this.over) return;
       if (this.buddyTimer !== undefined) this.updateBuddy(dt);

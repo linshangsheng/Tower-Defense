@@ -752,6 +752,21 @@
         }
         void V;
       });
+      // 战利品（设计书 169）：掉出光球 / 被拾取
+      on('drop', (e) => {
+        const df = TD.data.drops[e.d.kind];
+        this.fx.push({ kind: 'ring', x: e.d.x, y: e.d.y, r0: 8, r1: 46, color: df.color, w: 3, life: 0.45, age: 0, flat: 0.6 });
+      });
+      on('dropGet', (e) => {
+        const df = TD.data.drops[e.kind];
+        const x = e.d.x;
+        const y = e.d.y;
+        this.fx.push({ kind: 'ring', x, y, r0: 10, r1: 90, color: df.color, w: 4, life: 0.5, age: 0, flat: 0.6 });
+        this.fx.push({ kind: 'glow', x, y, r: 50, color: df.color, life: 0.4, age: 0 });
+        this.text(x, y - 26, df.name, df.color, 22, 1.0);
+        if (e.amount) this.text(x, y - 4, '+' + e.amount, '#ffffff', 16, 1.0);
+        if (this.vfx) this.vfx.spawn(10, () => ({ kind: 'spark', x, y, vx: (Math.random() - 0.5) * 200, vy: -50 - Math.random() * 120, g: 200, life: 0.6, r: 2.2, color: df.color }));
+      });
       // 战意（设计书 163）：连击档位触发，英雄身上一圈金光、头顶飘出档位名和加成
       on('fervor', (e) => {
         const x = C.heroX + 20;
@@ -1226,6 +1241,7 @@
         for (const m of alive) this.drawMonster(m, b);
         this.drawProjectiles(b);
       }
+      if (b && b.drops && b.drops.length) this.drawDrops(b);
       if (b) this.drawHeroAura(b, dt);
       this.drawHero(b);
       if (b && b.buddy) this.drawBuddy(b);
@@ -3230,6 +3246,38 @@
         ctx.fillRect(x - w / 2, by, (w * m.hp) / m.maxHp, 4);
       }
       ctx.restore();
+    }
+
+    // 战利品光球：上下漂浮、外圈是剩余时间，快消失时闪烁
+    drawDrops(b) {
+      const ctx = this.ctx;
+      for (const d of b.drops) {
+        const df = TD.data.drops[d.kind];
+        const left = d.until - b.time;
+        if (left < 2 && Math.floor(left * 8) % 2 === 0) continue;
+        const y = d.y + Math.sin(this.t * 4 + d.id) * 5;
+        ctx.save();
+        ctx.globalAlpha = 0.35 + Math.sin(this.t * 6 + d.id) * 0.08;
+        ctx.fillStyle = df.color;
+        ctx.beginPath();
+        ctx.arc(d.x, y, 30, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = 'rgba(20,20,30,0.7)';
+        ctx.beginPath();
+        ctx.arc(d.x, y, 20, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = df.color;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(d.x, y, 22, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * Math.max(0, left / 8));
+        ctx.stroke();
+        ctx.font = '22px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(df.icon, d.x, y + 1);
+        ctx.restore();
+      }
     }
 
     drawProjectiles(b) {
