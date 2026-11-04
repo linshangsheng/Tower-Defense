@@ -1,0 +1,44 @@
+/* 兵营卡片上的"背景"折叠区（设计书 195）：沿用设计系统的字阶 / 间距 / 圆角，只用中性色，不抢主操作 */
+.merc-lore {
+  margin-top: var(--s2);
+  font-size: var(--fs-footnote);
+  color: var(--label-2);
+}
+.merc-lore summary {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 var(--s2);
+  margin-left: calc(var(--s2) * -1);
+  cursor: pointer;
+  color: var(--label-2);
+  list-style: none;
+  border-radius: var(--r-sm);
+}
+.merc-lore summary::-webkit-details-marker {
+  display: none;
+}
+.merc-lore summary::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  margin-right: var(--s2);
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform var(--dur) var(--ease);
+}
+.merc-lore[open] summary::before {
+  transform: rotate(45deg);
+}
+.merc-lore summary:hover {
+  background: var(--fill-1);
+}
+.merc-lore p {
+  margin: 0 0 var(--s1);
+  padding: var(--s2) var(--s3);
+  background: var(--fill-1);
+  border-radius: var(--r-sm);
+  line-height: 1.45;
+  text-wrap: pretty;
+}

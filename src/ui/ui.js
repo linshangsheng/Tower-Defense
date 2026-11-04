@@ -1565,10 +1565,18 @@
           icon: mercIcon(id, 52, def),
           color: def.color,
           cls: unlocked ? '' : 'locked',
-          foot: unlocked ? h('span', { class: 'hint' }, `费用 ${def.cost} 军饷 · 冷却 ${def.cd} 秒`) : null,
+          foot: unlocked ? h('div', null, h('span', { class: 'hint' }, `费用 ${def.cost} 军饷 · 冷却 ${def.cd} 秒`), mercLore(id)) : null,
         })
       );
     }
+  }
+
+  // 兵种背景（设计书 195）：卡片上的折叠区，展开状态在重绘商店后保留
+  const loreOpen = {};
+  function mercLore(id) {
+    const lore = D.mercLore && D.mercLore[id];
+    if (!lore) return null;
+    return h('details', { class: 'merc-lore', open: loreOpen[id] ? true : null, ontoggle: (e) => (loreOpen[id] = e.target.open) }, h('summary', null, '背景'), h('p', null, lore.bio));
   }
 
   // 道具商店（设计书 82）：买下来先进背包；要带进战斗得"装备"：最多 7 种，每种最多 3 个

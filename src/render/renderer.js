@@ -763,6 +763,7 @@
         this.fx.push({ kind: 'ring', x: e.u.x, y: e.u.y, r0: 8, r1: 64, color: e.u.def.color, w: 4, life: 0.5, age: 0, flat: 0.5 });
         this.fx.push({ kind: 'glow', x: e.u.x, y: e.u.y - 14, r: 40, color: e.u.def.color, life: 0.4, age: 0 });
         this.text(e.u.x + 10, e.u.y - 54, e.u.def.name, e.u.def.color, 18, 0.9);
+        this.mercSay('deploy', e.u, 80);
       });
       on('mercSwing', (e) => {
         this.fx.push({ kind: 'ring', x: e.x - 6, y: e.y, r0: 6, r1: 34, color: '#ffffff', w: 3, life: 0.2, age: 0, flat: 0.6 });
@@ -795,10 +796,12 @@
         this.fx.push({ kind: 'ring', x: e.u.x, y: e.u.y - 10, r0: 8, r1: 70, color: '#ffc54d', w: 4, life: 0.55, age: 0, flat: 0.5 });
         this.fx.push({ kind: 'glow', x: e.u.x, y: e.u.y - 16, r: 44, color: '#ffc54d', life: 0.45, age: 0 });
         this.text(e.u.x, e.u.y - 66, '晋升！', '#ffc54d', 22, 0.9);
+        this.mercSay('rank', e.u, 92);
       });
       on('mercDie', (e) => {
         this.burst(e.u.x, e.u.y - 10, e.u.def.color, 10, 150);
         this.text(e.u.x, e.u.y - 40, '阵亡……', '#d0d0d0', 18, 0.9);
+        this.mercSay('die', e.u, 66);
       });
       // 战地修补（设计书 176）
       on('repair', (e) => {
@@ -929,6 +932,17 @@
       const mine = TD.game && TD.game.save && TD.game.save.hero && TD.game.save.hero !== 'dang' ? pool.filter((x) => !x.includes('头盔')) : pool;
       const str = mine[Math.floor(Math.random() * mine.length)];
       this.fx.push({ kind: 'text', x: C.heroX + 70, y: (b.heroY || 320) - 120, str, color: '#cfe8ff', size: 22, life: 2.4, age: -(delay || 0), vy: -10 });
+    }
+    // 雇佣兵的台词（设计书 195）：到场 / 阵亡 / 晋升时冒一句，每个兵种每类一场只说一次
+    mercSay(kind, u, dy) {
+      const b = this.battle;
+      const pool = TD.data.mercLore && TD.data.mercLore[u.type] && TD.data.mercLore[u.type][kind];
+      if (!b || !pool || !pool.length) return;
+      if (!this._mercSaid || this._mercSaid.b !== b) this._mercSaid = { b };
+      const k = kind + ':' + u.type;
+      if (this._mercSaid[k]) return;
+      this._mercSaid[k] = 1;
+      this.text(u.x + 10, u.y - dy, pool[Math.floor(Math.random() * pool.length)], kind === 'die' ? '#e4e4e4' : u.def.color, 17, 1.6);
     }
     text(x, y, str, color, size, life, crit) {
       if (typeof str !== 'string' || !str) return; // 事件没带文字（比如事件名被两个功能共用）时别抛异常，直接不画
