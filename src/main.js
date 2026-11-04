@@ -113,6 +113,7 @@
     battle.on('mercSwing', () => TD.audio.play('hit'));
     battle.on('mercShot', () => TD.audio.play('shoot'));
     battle.on('mercDie', () => TD.audio.play('pop'));
+    battle.on('mercRank', () => TD.audio.play('streak'));
     battle.on('drop', () => TD.audio.play('dropAppear'));
     battle.on('treasure', () => TD.audio.play('eliteAppear'));
     battle.on('dropGet', () => TD.audio.play('dropGet'));

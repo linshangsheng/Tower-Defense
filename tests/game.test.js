@@ -5993,3 +5993,27 @@ test('雇佣兵走场景光（设计书 189）：渲染路径使用 litSprite �
   assert.ok(/drawMercs[\s\S]*litSprite\(u,/.test(src), '雇佣兵通过 TD.art.litSprite 绘制（轮廓光 + 明暗）');
   assert.ok(/b\.mercs\.length <= 8/.test(src), '兵多时降级为直接绘制');
 });
+
+test('雇佣兵战术（设计书 190）：老兵晋升、盾墙减伤', () => {
+  const P = TD.progression; const s = P.newSave();
+  for (const id of TD.data.mercOrder) s.levels[TD.data.mercs[id].unlock - 1] = { stars: 3, clears: 1 };
+  P.setMercLoadout(s, ['swordsman', 'guard', 'archer']);
+  const mk = () => { const b = new TD.Battle({ level: 20, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 3 }); b.hero.cooldown = 1e9; b.wall.hp = b.wall.max = 1e12; b.waveState = 'waiting'; b.eliteOK = false; b.funds = 9999; return b; };
+  const C = TD.config.merc;
+  // 老兵晋升
+  let b = mk(); b.deployMerc(0, 1); const u = b.mercs[0]; const hp0 = u.maxHp, d0 = u.dmg;
+  for (let i = 0; i < C.vetEvery; i++) b.mercDamage(u, b.spawnMonster('slime', 1, 900), 1e9, { type: 'phys', source: 'merc' });
+  assert.strictEqual(u.rank, 1);
+  assert.ok(u.maxHp > hp0 * 1.14 && u.dmg > d0 * 1.14, '晋升后更强');
+  for (let i = 0; i < C.vetEvery * 5; i++) b.mercDamage(u, b.spawnMonster('slime', 1, 900), 1e9, { type: 'phys', source: 'merc' });
+  assert.strictEqual(u.rank, C.vetMax, '最高 ' + C.vetMax + ' 级');
+  // 盾墙：盾卫在弓手前面 → 弓手受伤更少；盾卫不在前面就没有
+  b = mk(); b.deployMerc(1, 1); b.deployMerc(2, 1);
+  const g = b.mercs[0], a = b.mercs[1];
+  g.x = 400; a.x = 300;
+  const dmg = (unit) => { const h = unit.hp; b.mercHurt(unit, 10, null); return h - unit.hp; };
+  const covered = dmg(a);
+  g.x = 200; a.x = 300; a.hp = a.maxHp;
+  const open = dmg(a);
+  assert.ok(covered < open * 0.75 && covered > 0, `盾墙减伤：${covered.toFixed(2)} < ${open.toFixed(2)}`);
+});

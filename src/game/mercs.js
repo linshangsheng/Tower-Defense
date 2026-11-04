@@ -122,6 +122,8 @@
     mercHurt(u, amount, by) {
       if (u.dead) return;
       if (u.def.reduce) amount *= 1 - u.def.reduce;
+      u.covered = this.mercCovered(u);
+      if (u.covered) amount *= 1 - C.merc.shieldWall;
       u.hp -= amount;
       u.hitFlash = 0.1;
       if (u.hp <= 0) {
@@ -160,7 +162,32 @@
     mercDamage(u, m, dmg, opts) {
       const was = m.dead;
       this.damage(m, dmg, opts);
-      if (!was && m.dead) this.mercKills++;
+      if (!was && m.dead) {
+        this.mercKills++;
+        u.kills = (u.kills || 0) + 1;
+        // 老兵晋升：每击败 vetEvery 只怪升一级，血量和伤害更高，并回一口血
+        const rank = Math.min(C.merc.vetMax, Math.floor(u.kills / C.merc.vetEvery));
+        if (rank > (u.rank || 0) && !u.dead) {
+          const k = (1 + C.merc.vetBoost * rank) / (1 + C.merc.vetBoost * (u.rank || 0));
+          u.rank = rank;
+          u.maxHp *= k;
+          u.hp = Math.min(u.maxHp, u.hp * k + u.maxHp * 0.3);
+          u.dmg *= k;
+          this.mercPromotions = (this.mercPromotions || 0) + 1;
+          this.emit('mercRank', { u, rank });
+        }
+      }
+    },
+
+    // 盾墙：后排兵（远程 / 治疗）前面 200 以内、同车道有活着的盾卫，就受到更少的伤害
+    mercCovered(u) {
+      if (!u.def.ranged && !u.def.support) return false;
+      for (const g of this.mercs) {
+        if (g.dead || !g.def.taunt || g.lane !== u.lane) continue;
+        const d = g.x - u.x;
+        if (d > 0 && d <= C.merc.shieldWallRange) return true;
+      }
+      return false;
     },
 
     // 机器人 / 自动战斗：有钱有冷却就雇，派到最靠近城墙的怪所在的车道；先雇前排（盾卫 / 剑士 / 骑士），再雇后排

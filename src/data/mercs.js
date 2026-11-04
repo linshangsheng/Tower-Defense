@@ -21,6 +21,11 @@
     monsterDps: 0.3, // 怪物攻击 +30%
     bossCleave: 0.8, // Boss 对身边的兵每秒造成 自身攻击 × 这个值 的伤害
     rangedAtMercs: 420, // 远程怪优先打射程内的兵
+    vetEvery: 3, // 每击败这么多只怪晋升一级（老兵）
+    vetMax: 3,
+    vetBoost: 0.15, // 每级老兵：血量和伤害 +15%，晋升时回复 30% 血
+    shieldWall: 0.3, // 盾墙：盾卫在前面时，后排兵受到的伤害 −30%
+    shieldWallRange: 200, // 盾卫在后排兵前方多远以内算"挡在前面"
     upgradeBase: 120, // 升级铜币：base × 1.7^(level-1)
     upgradeGrow: 1.7,
   };
@@ -35,7 +40,7 @@
     guard: {
       name: '盾卫', icon: '🛡️', color: '#8fb4e8', unlock: 12, cost: 45, cd: 10,
       hp: 170, dmg: 6, every: 1.2, range: 26, speed: 48, type: 'phys', taunt: true, reduce: 0.35,
-      desc: '举着大盾的肉盾：受到的伤害减少 35%，怪物最先打它。让别的兵站在它身后输出。',
+      desc: '举着大盾的肉盾：受到的伤害减少 35%，怪物最先打它。站在它身后的弓手、法师、牧师受到的伤害 −30%（盾墙）。',
     },
     archer: {
       name: '弓手', icon: '🏹', color: '#9be08a', unlock: 18, cost: 40, cd: 8,

@@ -787,6 +787,11 @@
         this.fx.push({ kind: 'ring', x: t.x, y: t.y - 10, r0: 6, r1: 44, color: '#8cf0a0', w: 3, life: 0.45, age: 0, flat: 0.5 });
         this.text(t.x, t.y - 36, '+', '#8cf0a0', 20, 0.7);
       });
+      on('mercRank', (e) => {
+        this.fx.push({ kind: 'ring', x: e.u.x, y: e.u.y - 10, r0: 8, r1: 70, color: '#ffc54d', w: 4, life: 0.55, age: 0, flat: 0.5 });
+        this.fx.push({ kind: 'glow', x: e.u.x, y: e.u.y - 16, r: 44, color: '#ffc54d', life: 0.45, age: 0 });
+        this.text(e.u.x, e.u.y - 66, '晋升！', '#ffc54d', 22, 0.9);
+      });
       on('mercDie', (e) => {
         this.burst(e.u.x, e.u.y - 10, e.u.def.color, 10, 150);
         this.text(e.u.x, e.u.y - 40, '阵亡……', '#d0d0d0', 18, 0.9);
@@ -3364,8 +3369,10 @@
           ctx.fillStyle = 'rgba(0,0,0,0.55)';
           ctx.fillRect(x - w / 2 - 1, ry - 1, w + 2, 6);
           const r = Math.max(0, u.hp / u.maxHp);
-          ctx.fillStyle = r > 0.5 ? '#7fe08a' : r > 0.25 ? '#ffd23f' : '#ff6a5a';
+          ctx.fillStyle = u.covered ? '#7fb8ff' : r > 0.5 ? '#7fe08a' : r > 0.25 ? '#ffd23f' : '#ff6a5a';
           ctx.fillRect(x - w / 2, ry, w * r, 4);
+          // 老兵星：每级一颗小星星
+          for (let i = 0; i < (u.rank || 0); i++) TD.icons.draw(ctx, 'star', x - ((u.rank - 1) * 11) / 2 + i * 11, ry - 8, 11, '#ffc54d', 2.2);
           if (u.level > 1) {
             ctx.font = 'bold 10px sans-serif';
             ctx.textAlign = 'center';
