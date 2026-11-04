@@ -10,6 +10,7 @@ const FILES = [
   'src/data/equipment.js',
   'src/data/levels.js',
   'src/data/story.js',
+  'src/data/mercstory.js',
   'src/data/outfits.js',
   'src/data/missions.js',
   'src/data/town.js',

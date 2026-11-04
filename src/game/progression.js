@@ -180,7 +180,7 @@
   P.sideWins = (save, key) => ((save.stats || {}).heroWins || {})[(P.SIDE_STORIES[key] || {}).hero] || 0;
   P.storyUnlocked = function (save, key) {
     if (P.SIDE_STORIES[key]) return P.sideWins(save, key) >= P.SIDE_STORIES[key].need;
-    const m = /^(ch|pre|post)(\d+)$/.exec(key);
+    const m = /^(ch|pre|post|merc)(\d+)$/.exec(key);
     if (!m) return false;
     const k = +m[2];
     if (m[1] === 'ch') {
@@ -192,7 +192,7 @@
   // 段落的时机是否已经过去（老存档迁移用）：章节开场 = 该章第一关已通关；战前 / 战后 = 该关已通关
   P.storyPassed = function (save, key) {
     if (P.SIDE_STORIES[key]) return false;
-    const m = /^(ch|pre|post)(\d+)$/.exec(key);
+    const m = /^(ch|pre|post|merc)(\d+)$/.exec(key);
     if (!m) return false;
     const k = +m[2];
     if (m[1] === 'ch') {

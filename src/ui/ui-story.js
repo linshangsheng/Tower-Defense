@@ -15,21 +15,36 @@
   // ================= 守城日记（设计书 28） =================
   function speakerInfo(id, dark) {
     const sp = D.speakers[id];
-    if (sp) return { name: sp.name, img: () => (sp.emoji ? h('div', { class: 'story-emoji' }, sp.emoji) : TD.sprites.heroPortrait(96, undefined, undefined, sp.hero || 'dang')) };
+    if (sp) return { name: sp.name, img: () => (sp.merc ? mercFace(sp.merc, 96) : sp.emoji ? h('div', { class: 'story-emoji' }, sp.emoji) : TD.sprites.heroPortrait(96, undefined, undefined, sp.hero || 'dang')) };
     const def = D.monsters[id];
     return { name: def ? def.name : id, img: () => TD.sprites.portrait(id, 96, { head: true, dark }) };
+  }
+
+  // 佣兵团长的头像：用战场上同一套兵的造型画一个站姿
+  function mercFace(type, px) {
+    const cv = document.createElement('canvas');
+    cv.width = cv.height = px * 2;
+    cv.style.width = cv.style.height = px + 'px';
+    if (TD.mercArt && TD.mercArt.has(type)) {
+      const c = cv.getContext('2d');
+      const sc = (px * 2 * 0.92) / (type === 'knight' ? 78 : 62);
+      c.translate(px * (type === 'knight' ? 0.72 : 0.88), px * 1.96);
+      c.scale(sc, sc);
+      TD.mercArt.draw(c, type, 0, 0, { t: 1.1, state: 'idle', age: 9, wind: 0, level: 1 }, 1);
+    }
+    return cv;
   }
 
   // 对话场景属于哪一章（背景用这一章的场景画）
   function storyChapter(key) {
     const SIDE_BG = { side_ding: 4, side_yan: 5, side_ying: 3, side_mu: 1 }; // 番外的背景：各自的家乡
     if (SIDE_BG[key]) return D.chapters.find((c) => c.id === SIDE_BG[key]);
-    const m = /^(ch|pre|post)(\d+)$/.exec(key);
+    const m = /^(ch|pre|post|merc)(\d+)$/.exec(key);
     if (!m) return key === 'dragonFall' ? D.chapters[D.chapters.length - 1] : null;
     return m[1] === 'ch' ? D.chapters.find((c) => c.id === +m[2]) : D.chapterOf(+m[2]);
   }
   // 站在左边的是主角和国王，其余（怪物）站右边
-  const LEFT_CAST = ['dang', 'ding', 'yan', 'ying', 'mu', 'king'];
+  const LEFT_CAST = ['dang', 'ding', 'yan', 'ying', 'mu', 'king', 'captain'];
 
   // 对话背景：章节场景（虚化压暗）+ 缓缓上升的萤火 / 深渊紫焰。返回 { el, stop }
   function storyBackdrop(chapter, mood) {
@@ -130,7 +145,7 @@
       if (a.who !== who) {
         a.who = who;
         a.el.innerHTML = '';
-        const big = (D.speakers[who] && D.speakers[who].emoji) ? h('div', { class: 'story-emoji big' }, D.speakers[who].emoji) : (D.speakers[who] && D.speakers[who].hero) || who === 'dang' ? TD.sprites.heroPortrait(240, undefined, undefined, (D.speakers[who] && D.speakers[who].hero) || 'dang') : TD.sprites.portrait(who, who === 'abyssDragon' ? 380 : 300, { dark: key === 'dragonFall' });
+        const big = (D.speakers[who] && D.speakers[who].merc) ? mercFace(D.speakers[who].merc, 240) : (D.speakers[who] && D.speakers[who].emoji) ? h('div', { class: 'story-emoji big' }, D.speakers[who].emoji) : (D.speakers[who] && D.speakers[who].hero) || who === 'dang' ? TD.sprites.heroPortrait(240, undefined, undefined, (D.speakers[who] && D.speakers[who].hero) || 'dang') : TD.sprites.portrait(who, who === 'abyssDragon' ? 380 : 300, { dark: key === 'dragonFall' });
         a.el.appendChild(big);
         a.el.classList.toggle('big-boss', who === 'abyssDragon');
         a.el.classList.remove('enter');
@@ -155,7 +170,7 @@
       avatar.appendChild(sp.img());
       avatar.className = 'story-avatar' + (isHero ? ' hero' : '');
       nameEl.textContent = sp.name;
-      nameEl.className = 'story-name' + (isHero ? ' hero' : who === 'king' ? ' king' : ' foe');
+      nameEl.className = 'story-name' + (isHero ? ' hero' : who === 'king' || who === 'captain' ? ' king' : ' foe');
       castOn(who, !LEFT_CAST.includes(who) && /[！!]/.test(text.slice(-2)));
       el.classList.toggle('rumble', who === 'abyssDragon');
       el.dataset.line = `${i + 1}/${sc.lines.length}`;
@@ -222,7 +237,7 @@
       const sc = D.story[key];
       const open = P.storyUnlocked(s, key);
       const side = P.SIDE_STORIES[key];
-      const kind = side ? '番外' : key.startsWith('ch') ? '章节' : key.startsWith('pre') ? '战前' : '战后';
+      const kind = side ? '番外' : key.startsWith('ch') ? '章节' : key.startsWith('pre') ? '战前' : key.startsWith('merc') ? '佣兵团' : '战后';
       const state = (s.story || {})[key];
       return h(
         'div',
