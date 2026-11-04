@@ -110,6 +110,7 @@
     battle.on('streak', () => TD.audio.play('streak'));
     battle.on('bell', () => TD.audio.play('bell'));
     battle.on('drop', () => TD.audio.play('dropAppear'));
+    battle.on('treasure', () => TD.audio.play('eliteAppear'));
     battle.on('dropGet', () => TD.audio.play('dropGet'));
     battle.on('focus', () => TD.audio.play('focusTap'));
     battle.on('repair', () => TD.audio.play('repair'));

@@ -23,7 +23,7 @@
     maybeDrop(m) {
       if (!this.drops) this.drops = [];
       if (this.drops.length >= (m.elite || m.forceDrop ? 6 : 4)) return;
-      if (!m.def.boss && !m.elite && !m.forceDrop && this.rng() >= DROP_RATE * ((this.rules && this.rules.dropMult) || 1)) return;
+      if (!m.def.boss && !m.elite && !m.forceDrop && !m.treasure && this.rng() >= DROP_RATE * ((this.rules && this.rules.dropMult) || 1)) return;
       let r = this.rng() * 100;
       let kind = 'purse';
       for (const k of Object.keys(DROPS)) {
@@ -32,9 +32,32 @@
       }
       const y = Math.max(C0.fieldTop + 20, Math.min(C0.fieldBottom - 20, m.y + m.yOffset));
       const x = Math.max(C0.wallX + 60, Math.min(1150, m.x));
-      const d = { id: (this.dropNo = (this.dropNo || 0) + 1), kind, x, y, born: this.time, until: this.time + DROP_LIFE, copper: m.def.copper };
+      if (m.treasure) kind = 'purse';
+      const d = { id: (this.dropNo = (this.dropNo || 0) + 1), amount: m.treasure ? C0.treasure.copper : 0, kind, x, y, born: this.time, until: this.time + DROP_LIFE, copper: m.def.copper };
       this.drops.push(d);
       this.emit('drop', { d });
+    },
+
+    // 宝箱哥布林（设计书 182）：主线战斗里隔一阵跑出一只背着钱袋的哥布林，跑得快、血厚，打死必掉大钱袋
+    updateTreasure() {
+      // 宝箱哥布林跑到城墙边就溜走（不啃墙、不偷钱，纯粹是奖励，不增加难度）
+      for (const o of this.monsters) {
+        if (o.treasure && !o.dead && o.x <= C0.wallX + 50) {
+          o.dead = true;
+          o.hp = 0;
+          this.emit('treasureEscape', { x: o.x, y: o.y + o.yOffset });
+        }
+      }
+      if (!this.eliteOK || (this.waveState !== 'spawning' && this.waveState !== 'waiting')) return;
+      const T = C0.treasure;
+      if (this.treasureAt === undefined) this.treasureAt = this.time + T.first;
+      if (this.time < this.treasureAt) return;
+      this.treasureAt = this.time + T.gapMin + this.rng() * T.gapRand;
+      const m = this.spawnMonster('gobling', Math.floor(this.rng() * this.lanes) % this.lanes);
+      m.treasure = true;
+      m.hp = m.maxHp = Math.round(m.hp * T.hpMult);
+      m.speedMult = (m.speedMult || 1) * T.speed;
+      this.emit('treasure', { m });
     },
 
     updateDrops() {
@@ -61,7 +84,7 @@
       this.dropsTaken = (this.dropsTaken || 0) + 1;
       let amount = 0;
       if (d.kind === 'purse') {
-        amount = Math.max(8, Math.round(d.copper * 6));
+        amount = d.amount || Math.max(8, Math.round(d.copper * 6));
         this.killCopper += amount;
       } else if (d.kind === 'mend') {
         this.wall.hp = Math.min(this.wall.max, this.wall.hp + this.wall.max * 0.04);

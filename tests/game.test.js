@@ -5805,3 +5805,27 @@ test('光球风暴（设计书 180）：每日规则把光球掉率提高到 6 �
   assert.ok(storm > base * 3, `${base} → ${storm}`);
   TD.config.eliteRate = 0.015;
 });
+
+test('宝箱哥布林（设计书 182）：定时出现、血厚跑得快、打死掉大钱袋', () => {
+  TD.config.eliteRate = 0;
+  const b = newBattle(20); b.hero.cooldown = 1e9; b.wall.hp = b.wall.max = 1e12;
+  b.waveState = 'waiting';
+  b.time = 10; b.updateTreasure();
+  assert.ok(!b.monsters.some((m) => m.treasure), '45 秒前不出');
+  b.time = 60; b.updateTreasure();
+  const m = b.monsters.find((x) => x.treasure);
+  const plainG = b.spawnMonster('gobling', 1, 900);
+  assert.ok(m && m.maxHp >= plainG.maxHp * 2.9 && m.speedMult > plainG.speedMult * 1.5, '血厚跑得快');
+  b.updateTreasure(); assert.strictEqual(b.monsters.filter((x) => x.treasure).length, 1, '一次只出一只');
+  const esc = b.spawnMonster('gobling', 1, 200); esc.treasure = true; b.updateTreasure();
+  assert.ok(esc.dead, '跑到城墙边溜走');
+  b.rng = () => 0.99;
+  const c0 = b.killCopper; b.kill(m);
+  assert.strictEqual(b.drops.length, 1);
+  assert.strictEqual(b.drops[0].kind, 'purse');
+  b.collectDropAt(b.drops[0].x, b.drops[0].y);
+  assert.ok(b.killCopper - c0 >= TD.config.treasure.copper, '大钱袋');
+  const early = newBattle(2); early.waveState = 'waiting'; early.time = 99; early.updateTreasure();
+  assert.ok(!early.monsters.some((x) => x.treasure), '前 4 关不出');
+  TD.config.eliteRate = 0.015;
+});

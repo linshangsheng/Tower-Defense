@@ -2672,6 +2672,7 @@
       if (this.drops.length) this.updateDrops();
       this.updateWaves(dt);
       if (this.over) return;
+      this.updateTreasure();
       if (this.buddyTimer !== undefined) this.updateBuddy(dt);
       this.updateMonsters(dt);
       if (this.over) return;

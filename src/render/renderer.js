@@ -753,6 +753,11 @@
         }
         void V;
       });
+      on('treasureEscape', (e) => this.text(e.x + 20, e.y - 30, '跑掉了……', '#cfcfcf', 20, 1.0));
+      on('treasure', () => {
+        this.text(C.width - 220, C.fieldTop + 40, '宝箱哥布林！', '#ffd23f', 26, 1.6);
+        this.bark('treasure', 0.3);
+      });
       // 战地修补（设计书 176）
       on('repair', (e) => {
         this.fx.push({ kind: 'ring', x: C.wallX - 20, y: battle.heroY, r0: 10, r1: 120, color: '#7fe08a', w: 5, life: 0.6, age: 0, flat: 0.5 });
@@ -3068,6 +3073,15 @@
       const y = m.y + m.yOffset + (def.flying ? 0 : 6);
       const frozen = b.time < m.frozenUntil;
       const t = frozen ? 0 : this.t + m.id * 0.37;
+      if (m.treasure) {
+        // 宝箱哥布林：背上一个会晃的金钱袋 + 金色光点
+        ctx.save();
+        ctx.font = '24px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('💰', x + 6, y - def.size * 1.5 + Math.sin(this.t * 10 + m.id) * 3);
+        ctx.restore();
+      }
       if (m.elite) {
         // 精英怪：脚下一圈跳动的金光
         ctx.save();
@@ -3100,6 +3114,7 @@
       const age = b.time - m.bornAt;
       if (m.splitFrom && age < 0.3) scale = 0.4 + age * 2;
       if (m.elite) scale *= 1.22;
+      if (m.treasure) scale *= 1.15;
       if (m.burrowed) {
         // 地下移动：只露出一个移动的沙包
         const bump = Math.sin(this.t * 20 + m.id) * 2;
