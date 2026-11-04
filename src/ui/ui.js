@@ -1010,15 +1010,8 @@
   // 商店页签随进度解锁（设计书 6.5）：通关第 N 关后出现
   // 左边页签的小图标（设计书 102）
   function tabIcon(id) {
-    const S = TD.sprites;
-    if (id === 'loadout') return S.gearIconCanvas('armor', '#9ab8f0', 26);
-    if (id === 'attrs') return S.iconCanvas('attr_atk', 26);
-    if (id === 'skills') return S.iconCanvas('thunder', 26);
-    if (id === 'equip') return S.gearIconCanvas('helm', '#b46cff', 26);
-    if (id === 'wall') return S.iconCanvas('wall_level', 26);
-    if (id === 'items') return S.iconCanvas('bomb', 26);
-    if (id === 'barracks') return h('span', { class: 'tab-emoji' }, '⚔️');
-    return h('span', { class: 'coin-big gold mini' });
+    const name = { loadout: 'sliders', attrs: 'chart', skills: 'bolt', equip: 'helm', wall: 'wall', items: 'box', barracks: 'swords', exchange: 'coin' }[id];
+    return (TD.icons && TD.icons.svg(name || 'dot')) || h('span', null);
   }
   const TAB_UNLOCK = { loadout: 0, attrs: 0, wall: 1, items: 2, skills: 2, equip: 0, weapons: 0, barracks: 5, exchange: 5 };
   UI.tabUnlocked = (save, id) => P.highestCleared(save) >= (TAB_UNLOCK[id] || 0);

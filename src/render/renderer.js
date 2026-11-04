@@ -3339,11 +3339,8 @@
       for (const u of list) {
         const x = u.x;
         const y = u.y + 8;
-        // 影子
-        ctx.fillStyle = 'rgba(0,0,0,0.28)';
-        ctx.beginPath();
-        ctx.ellipse(x, y + 1, u.type === 'knight' ? 30 : 17, u.type === 'knight' ? 7 : 5.5, 0, 0, Math.PI * 2);
-        ctx.fill();
+        // 接触阴影：和怪物同一套（TD.sprites.shadow），脚下一小块柔和的暗区
+        if (!u.dead) TD.sprites.shadow(ctx, x, y + 1, u.type === 'knight' ? 30 : 18);
         const st = {
           t: this.t + u.id * 0.7,
           state: u.state,

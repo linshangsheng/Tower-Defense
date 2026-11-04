@@ -518,12 +518,67 @@ button,
   padding: 1px 8px;
 }
 
-/* 弹窗底部操作栏：和内容之间只留一条发丝线 */
+/* 弹窗底部操作栏：粘在底部的毛玻璃条，内容从它后面滚过时被模糊盖住，不会和按钮叠在一起 */
 .modal .modal-buttons {
-  background: transparent;
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  background: rgba(22, 25, 37, 0.94);
+  -webkit-backdrop-filter: blur(24px) saturate(1.5);
+  backdrop-filter: blur(24px) saturate(1.5);
   border: none;
   border-top: 0.5px solid var(--sep);
   box-shadow: none;
+}
+/* 标题回到主文字色：强调色只留给主操作和选中态 */
+.modal h2,
+.preview-head h2,
+.settings h2,
+.diary h2,
+.town h2,
+.result h2 {
+  color: var(--label);
+}
+.modal h2 {
+  border-bottom: none;
+}
+
+/* 侧栏页签图标：统一线性图标，选中时跟着变色 */
+.tab .tab-ico {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-right: var(--s2);
+}
+.tab .tab-ico .ico {
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  color: var(--label-2);
+}
+.tab.on .tab-ico .ico {
+  color: var(--accent-hi);
+}
+
+/* 排版细节：避免孤字（单独一行只剩一个字或单位）、标题均衡换行 */
+.card-desc,
+.hint,
+.modal p,
+.note,
+.tip {
+  text-wrap: pretty;
+}
+h1,
+h2,
+h3,
+.card-title,
+.chapter-title {
+  text-wrap: balance;
+}
+.card-main .hint,
+.card-foot,
+.card-main .card-foot .hint {
+  white-space: normal;
 }
