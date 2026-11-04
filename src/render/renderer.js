@@ -772,6 +772,7 @@
         this.fx.push({ kind: 'ring', x, y, r0: 10, r1: 90, color: df.color, w: 4, life: 0.5, age: 0, flat: 0.6 });
         this.fx.push({ kind: 'glow', x, y, r: 50, color: df.color, life: 0.4, age: 0 });
         this.bark('loot', 0.2);
+        if (e.kind === 'frost') this.fx.push({ kind: 'ring', x: C.width / 2, y: (C.fieldTop + C.fieldBottom) / 2, r0: 40, r1: 900, color: '#b8f0ff', w: 6, life: 0.7, age: 0, flat: 0.5 });
         this.text(x, y - 26, df.name, df.color, 22, 1.0);
         if (e.amount) this.text(x, y - 4, '+' + e.amount, '#ffffff', 16, 1.0);
         if (this.vfx) this.vfx.spawn(10, () => ({ kind: 'spark', x, y, vx: (Math.random() - 0.5) * 200, vy: -50 - Math.random() * 120, g: 200, life: 0.6, r: 2.2, color: df.color }));

@@ -5778,3 +5778,13 @@ test('战意档位必掉光球（设计书 177）：连击到 10 的那一击掉
   assert.strictEqual(b.drops.length, 1, '第 10 连击必掉');
   TD.config.eliteRate = 0.015;
 });
+
+test('冰封光球（设计书 178）：拾取冻住全场小怪，Boss 不受影响', () => {
+  const b = newBattle(20); b.hero.cooldown = 1e9; b.wall.hp = b.wall.max = 1e12;
+  const a = b.spawnMonster('slime', 1, 700); const boss = b.spawnMonster('boarKing', 1, 800);
+  b.drops.push({ id: 7, kind: 'frost', x: 500, y: 300, until: b.time + 8, copper: 1 });
+  b.collectDropAt(500, 300);
+  assert.ok(a.frozenUntil > b.time + 2);
+  assert.ok(!(boss.frozenUntil > b.time), 'Boss 不冻');
+  assert.ok(TD.data.drops.frost);
+});

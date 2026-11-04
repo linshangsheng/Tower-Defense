@@ -13,6 +13,7 @@
     mend: { name: '修墙', icon: '🧱', color: '#7fe08a', w: 25 },
     fury: { name: '狂怒', icon: '🔥', color: '#ff7a4f', w: 20 },
     gale: { name: '疾风', icon: '💨', color: '#8fd8ff', w: 15 },
+    frost: { name: '冰封', icon: '❄️', color: '#b8f0ff', w: 10 },
   };
   TD.data.drops = DROPS;
   const DROP_RATE = 0.035;
@@ -70,6 +71,12 @@
       } else if (d.kind === 'gale') {
         this.buffs = this.buffs.filter((b) => b.src !== 'dropgale');
         this.buffs.push({ aspd: 0.3, until: this.time + 6, src: 'dropgale' });
+      }
+      if (d.kind === 'frost') {
+        for (const o of this.monsters) {
+          if (o.dead || o.def.boss || o.x > 1300) continue;
+          o.frozenUntil = Math.max(o.frozenUntil || 0, this.time + 2.5);
+        }
       }
       this.emit('dropGet', { d, kind: d.kind, amount });
     },
