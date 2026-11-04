@@ -6050,3 +6050,19 @@ test('集结令（设计书 192）：兵转移车道、冷却、没兵 / 单车�
   b.time += TD.config.merc.rallyCd + 1;
   assert.strictEqual(b.rallyMercs(1), 0, '已经都在这条车道，不算、也不进冷却');
 });
+
+test('怪物绕后（设计书 193）：狼绕过前排，只缠上后排兵', () => {
+  const P = TD.progression; const s = P.newSave();
+  for (const id of TD.data.mercOrder) s.levels[TD.data.mercs[id].unlock - 1] = { stars: 3, clears: 1 };
+  P.setMercLoadout(s, ['guard', 'archer']);
+  const b = new TD.Battle({ level: 40, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 3 });
+  b.hero.cooldown = 1e9; b.wall.hp = b.wall.max = 1e12; b.waveState = 'waiting'; b.funds = 999; b.eliteOK = false;
+  b.deployMerc(0, 1); b.deployMerc(1, 1);
+  const g = b.mercs[0], a = b.mercs[1]; g.x = 500; a.x = 300;
+  const wolf = b.spawnMonster('wolf', 1, 520); const gob = b.spawnMonster('goblin', 1, 520);
+  assert.strictEqual(b.mercBlockerFor(gob), g, '普通怪被前排盾卫拦住');
+  assert.notStrictEqual(b.mercBlockerFor(wolf), g, '狼不会被盾卫拦住');
+  wolf.x = a.x + 12;
+  assert.strictEqual(b.mercBlockerFor(wolf), a, '狼缠上了后排弓手');
+  assert.ok(TD.data.monsters.ironWolf.trait && TD.data.monsters.ironWolf.trait.id === 'flank', '铁狼继承绕后');
+});

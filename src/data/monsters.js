@@ -366,7 +366,8 @@
       size: 20,
       color: '#dfe9f5',
       pack: 3,
-      desc: '三只一群，从同一条车道高速冲来。',
+      trait: { id: 'flank' },
+      desc: '三只一群，从同一条车道高速冲来。会绕过前排的兵，直扑后排的弓手、法师和牧师。',
     },
     yeti: {
       name: '雪怪',
@@ -992,7 +993,7 @@
   echo('bloodBat', 'bat', '吸血蝠', TINT_MOON, { hp: 70, dps: 9, copper: 3, laneHop: { every: 1.8 } }, '频繁换车道的蝙蝠，很难集火。');
   // 第九章 · 赤铁熔炉（第四、五章怪物的回声）
   echo('ironSnowman', 'snowman', '铁雪人', TINT_FORGE, { hp: 110, dps: 16, armor: 60, copper: 4, deathSpawn: Object.assign({}, M.snowman.deathSpawn, { count: 3 }) }, '披着铁甲的雪人，死后裂成三个小雪团。');
-  echo('ironWolf', 'wolf', '铁狼', TINT_FORGE, { hp: 65, speed: 100, dps: 11, armor: 20, copper: 4, pack: 4 }, '四只一组冲过来的铁甲狼。');
+  echo('ironWolf', 'wolf', '铁狼', TINT_FORGE, { hp: 65, speed: 100, dps: 11, armor: 20, copper: 4, pack: 4 }, '四只一组冲过来的铁甲狼，同样会绕过前排的兵，直扑后排。');
   echo('forgeImp', 'imp', '炉火小鬼', TINT_FORGE, { hp: 60, copper: 5, ranged: Object.assign({}, M.imp.ranged, { damage: Math.round(M.imp.ranged.damage * 1.4) }) }, '会飞的火球手，一发火球比原来疼得多。');
   echo('steelYeti', 'yeti', '钢雪怪', TINT_FORGE, { hp: 280, dps: 24, armor: 140, copper: 7 }, '浑身钢板的雪怪：物理几乎打不动，魔法才有效；走到半场会咆哮，让周围的怪加速。');
   echo('moltenGolem', 'lavaGolem', '熔铁傀儡', TINT_FORGE, { hp: 300, dps: 24, mres: 300, copper: 8 }, '熔化的铁做的傀儡：魔法几乎打不动，用物理武器。');

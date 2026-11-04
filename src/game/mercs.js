@@ -126,8 +126,10 @@
     mercBlockerFor(m) {
       if (!this.mercs.length || m.def.flying || m.def.boss || m.def.bossPart || m.def.stealth) return null;
       let best = null;
+      const flank = m.def.trait && m.def.trait.id === 'flank'; // 狼：绕过前排，只缠上后排（远程 / 治疗）
       for (const u of this.mercs) {
         if (u.dead || u.lane !== m.lane) continue;
+        if (flank && !(u.def.ranged || u.def.support)) continue;
         const gap = m.x - u.x;
         if (gap < -4 || gap > C.merc.contactPad + m.def.size * 0.5) continue;
         if (!best || (u.def.taunt && !best.def.taunt) || (u.def.taunt === best.def.taunt && u.x > best.x)) best = u;
