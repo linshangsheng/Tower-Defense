@@ -51,7 +51,7 @@
     },
 
     // 游戏版本：与设计书版本号、sw.js 的缓存名保持一致（测试会检查）
-    version: 'v1.71',
+    version: 'v1.72',
 
     // 试玩版（设计书 127）：打试玩版压缩包时 tools/itch.js 把 demo 改成 true；正式版永远是 false
     demo: false,
@@ -114,6 +114,12 @@
     eliteRate: 0.015, // 精英怪出现概率（设计书 171）
     eliteHp: 3,
     eliteCopper: 4,
+    // 精英词缀（设计书 172）：每只精英随机一个
+    eliteAffixes: {
+      swift: { name: '迅捷', color: '#7fe0ff', speed: 1.35 },
+      regen: { name: '再生', color: '#7dff9a', pct: 0.03 },
+      vengeful: { name: '复仇', color: '#ff7a7a', radius: 150, haste: 0.5, dur: 3 },
+    },
     fervor: {
       10: { name: '战意', aspd: 0.08, dur: 4 },
       20: { name: '战意高涨', aspd: 0.12, atk: 0.06, dur: 5 },

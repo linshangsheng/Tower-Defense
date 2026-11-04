@@ -626,6 +626,8 @@
         m.elite = true;
         m.hp = m.maxHp = Math.round(m.hp * C.eliteHp);
         m.dps *= 1.3;
+        const ks = Object.keys(C.eliteAffixes);
+        m.affix = ks[Math.floor(this.rng() * ks.length) % ks.length];
       }
       this.monsters.push(m);
       this.emit('spawn', m);
@@ -639,6 +641,7 @@
     monsterSpeed(m) {
       if (this.time < m.frozenUntil || this.time < m.stunUntil || this.time < m.shellUntil) return 0;
       let s = m.def.speed * (m.speedMult || 1) * (1 + (this.rules.monsterSpeed || 0));
+      if (m.affix === 'swift') s *= C.eliteAffixes.swift.speed;
       if (m.def.ai === 'boarKing' && m.ai.phase === 3) s *= D.boarKing.enrageSpeedMult;
       if (m.burrowed && m.def.burrow) s *= m.def.burrow.speedMult;
       if (m.def.ai === 'pharaoh' && m.ai.phase === 3) s *= D.pharaoh.phase3SpeedMult;
@@ -701,6 +704,7 @@
           }
         }
         if (m.def.echoTwist) this.updateEchoTwist(m);
+        if (m.elite) this.updateElite(m, dt);
         if (m.ai) {
           const upd = BOSS_UPDATE[m.def.ai];
           if (upd) this[upd](m, dt);
@@ -1153,6 +1157,7 @@
       if (this.mods.killHeal && !noReward) this.wall.hp = Math.min(this.wall.max, this.wall.hp + this.wall.max * this.mods.killHeal);
       this.emit('death', { m, copper, noReward: !!noReward });
       if (!noReward) this.maybeDrop(m);
+      if (m.elite) this.eliteOnDeath(m);
       const od = m.def.onDeath;
       if (od && od.type === 'spore') {
         for (const o of this.monsters) {

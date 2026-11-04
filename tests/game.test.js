@@ -5706,3 +5706,21 @@ test('精英怪（设计书 171）：主线才有、三倍血量、必掉光球�
   for (let i = 0; i < 2000; i++) if (b.spawnMonster('slime', 1, 600).elite) n++;
   assert.ok(n > 5 && n < 80, '概率大约 1.5%：' + n);
 });
+
+test('精英词缀（设计书 172）：迅捷更快、再生回血、复仇让周围的怪加速', () => {
+  const C = TD.config;
+  C.eliteRate = 1;
+  const b = newBattle(20); b.hero.cooldown = 1e9; b.wall.hp = b.wall.max = 1e12;
+  const seen = new Set();
+  for (let i = 0; i < 60; i++) { const m = b.spawnMonster('slime', 1, 900); seen.add(m.affix); m.dead = true; }
+  assert.deepStrictEqual([...seen].sort(), ['regen', 'swift', 'vengeful']);
+  C.eliteRate = 0.015;
+  const mk = (affix) => { const m = b.spawnMonster('slime', 1, 900); m.elite = true; m.affix = affix; return m; };
+  const plain = b.spawnMonster('slime', 1, 900); const sw = mk('swift');
+  assert.ok(b.monsterSpeed(sw) > b.monsterSpeed(plain) * 1.4);
+  const rg = mk('regen'); rg.hp = rg.maxHp * 0.5; b.updateElite(rg, 1);
+  assert.ok(rg.hp > rg.maxHp * 0.5);
+  const vg = mk('vengeful'); const near = b.spawnMonster('bunny', 1, vg.x + 20); near.hasteUntil = 0;
+  b.kill(vg);
+  assert.ok(near.hasteUntil > b.time, '身边的怪被激怒加速');
+});

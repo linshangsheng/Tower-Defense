@@ -3060,14 +3060,26 @@
         // 精英怪：脚下一圈跳动的金光
         ctx.save();
         ctx.globalAlpha = 0.5 + Math.sin(this.t * 5 + m.id) * 0.15;
-        ctx.strokeStyle = '#ffd23f';
+        const af = C.eliteAffixes[m.affix];
+        ctx.strokeStyle = af ? af.color : '#ffd23f';
         ctx.lineWidth = 3;
         ctx.beginPath();
         ctx.ellipse(x, y + def.size * 0.5, def.size * 0.95, def.size * 0.34, 0, 0, Math.PI * 2);
         ctx.stroke();
         ctx.globalAlpha = 0.18;
-        ctx.fillStyle = '#ffd23f';
+        ctx.fillStyle = af ? af.color : '#ffd23f';
         ctx.fill();
+        if (af && this.crowd < 1) {
+          ctx.globalAlpha = 0.95;
+          ctx.font = 'bold 12px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.lineWidth = 3;
+          ctx.strokeStyle = 'rgba(0,0,0,0.7)';
+          const lab = TD.i18n ? TD.i18n.t(af.name) : af.name;
+          ctx.strokeText(lab, x, y - def.size * 1.25);
+          ctx.fillStyle = af.color;
+          ctx.fillText(lab, x, y - def.size * 1.25);
+        }
         ctx.restore();
       }
       ctx.save();

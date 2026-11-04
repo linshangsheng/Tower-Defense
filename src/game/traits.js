@@ -118,6 +118,26 @@
       this.traitEmit(m, 'echo_' + t.id);
     },
 
+    // 精英词缀（设计书 172）：再生每帧回血；迅捷在 monsterSpeed；复仇在 traitOnKill 之后的 eliteOnDeath
+    updateElite(m, dt) {
+      if (m.affix === 'regen' && m.hp < m.maxHp && !m.dead) m.hp = Math.min(m.maxHp, m.hp + m.maxHp * C0.eliteAffixes.regen.pct * dt);
+    },
+
+    eliteOnDeath(m) {
+      if (m.affix !== 'vengeful') return;
+      const a = C0.eliteAffixes.vengeful;
+      for (const o of this.monsters) {
+        if (o.dead || o === m) continue;
+        const dx = o.x - m.x;
+        const dy = o.y + o.yOffset - (m.y + m.yOffset);
+        if (dx * dx + dy * dy <= a.radius * a.radius) {
+          o.hasteUntil = Math.max(o.hasteUntil || 0, this.time + a.dur);
+          o.hasteAmt = Math.max(o.hasteAmt || 0, a.haste);
+        }
+      }
+      this.emit('spore', { x: m.x, y: m.y + m.yOffset, radius: a.radius });
+    },
+
     // 每帧：定时类技能
     updateTraits(m, dt) {
       const t = m.def.trait;
