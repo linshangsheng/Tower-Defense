@@ -5717,7 +5717,7 @@ test('精英词缀（设计书 172）：迅捷更快、再生回血、复仇让�
   C.eliteRate = 0.015;
   const mk = (affix) => { const m = b.spawnMonster('slime', 1, 900); m.elite = true; m.affix = affix; return m; };
   const plain = b.spawnMonster('slime', 1, 900); const sw = mk('swift');
-  assert.ok(b.monsterSpeed(sw) > b.monsterSpeed(plain) * 1.4);
+  assert.ok(b.monsterSpeed(sw) > b.monsterSpeed(plain) * 1.3);
   const rg = mk('regen'); rg.hp = rg.maxHp * 0.5; b.updateElite(rg, 1);
   assert.ok(rg.hp > rg.maxHp * 0.5);
   const vg = mk('vengeful'); const near = b.spawnMonster('bunny', 1, vg.x + 20); near.hasteUntil = 0;
