@@ -87,6 +87,27 @@
       return out;
     },
 
+    // 集结令（设计书 192）：让场上所有的兵转移到指定车道，冷却 15 秒；返回转移了几个兵
+    rallyReady() {
+      return this.mercsOn && !this.over && this.waveState !== 'prepare' && this.time >= (this.rallyAt || 0) && this.mercs.some((u) => !u.dead);
+    },
+
+    rallyMercs(lane) {
+      if (!this.rallyReady()) return 0;
+      lane = TD.util.clamp(lane, 0, this.lanes - 1);
+      let n = 0;
+      for (const u of this.mercs) {
+        if (u.dead) continue;
+        if (u.lane !== lane) n++;
+        u.lane = lane;
+      }
+      if (!n) return 0;
+      this.rallyAt = this.time + C.merc.rallyCd;
+      this.rallies = (this.rallies || 0) + 1;
+      this.emit('mercRally', { lane, y: this.laneY(lane), n });
+      return n;
+    },
+
     // 找离兵最近的目标：优先同车道；远程兵和大范围兵可以跨车道
     mercPickTarget(u) {
       let best = null;
@@ -234,6 +255,9 @@
       for (const u of this.mercs) {
         if (u.dead) continue;
         if (u.hitFlash > 0) u.hitFlash -= dt;
+        // 换车道时平滑地走过去（集结令）
+        const ty = this.laneY(u.lane);
+        if (u.y !== ty) u.y += Math.sign(ty - u.y) * Math.min(Math.abs(ty - u.y), 220 * dt);
         const def = u.def;
         // 牧师：给最伤的友军（或城墙）回血
         if (def.support) {

@@ -2081,7 +2081,8 @@
         h('span', { class: 'cd' })
       )
     );
-    hud.mercBar = battle.mercsOn ? h('div', { class: 'merc-bar' }, h('div', { class: 'merc-funds' }, h('span', null, '军饷'), hud.mercFunds), h('div', { class: 'merc-row' }, hud.mercBtns)) : null;
+    hud.rallyBtn = h('button', { class: 'merc-btn rally-btn', title: '让所有的兵转移到一条车道', onclick: () => game.tryRally() }, h('span', { class: 'key' }, 'G'), h('span', { class: 'merc-icon' }, '🚩'), h('span', { class: 'skill-name' }, '集结'), h('span', { class: 'cd' }));
+    hud.mercBar = battle.mercsOn && battle.lanes > 1 ? h('div', { class: 'merc-bar' }, h('div', { class: 'merc-funds' }, h('span', null, '军饷'), hud.mercFunds), h('div', { class: 'merc-row' }, hud.mercBtns, hud.rallyBtn)) : battle.mercsOn ? h('div', { class: 'merc-bar' }, h('div', { class: 'merc-funds' }, h('span', null, '军饷'), hud.mercFunds), h('div', { class: 'merc-row' }, hud.mercBtns)) : null;
     hud.nudge = h('div', { class: 'nudge-bubble hidden' }, '点我释放技能！');
     hud.skillBtns = skillBtns;
     hud.itemBtns = itemBtns;
@@ -2205,6 +2206,19 @@
     });
     if (hud.mercBar) {
       setText(hud.mercFunds, Math.floor(b.funds));
+      if (b.lanes > 1) {
+        const cdLeft = Math.max(0, (b.rallyAt || 0) - b.time);
+        hud.rallyBtn.classList.toggle('ready', b.rallyReady());
+        hud.rallyBtn.classList.toggle('armed', !!(game.pendingLane && game.pendingLane.kind === 'rally'));
+        const rcd = hud.rallyBtn.querySelector('.cd');
+        if (cdLeft > 0) {
+          rcd.style.background = `conic-gradient(rgba(30,20,10,0.65) ${(cdLeft / TD.config.merc.rallyCd) * 360}deg, transparent 0)`;
+          setText(rcd, Math.ceil(cdLeft));
+        } else {
+          rcd.style.background = 'none';
+          setText(rcd, '');
+        }
+      }
       b.mercSlots.forEach((sl, i) => {
         const btn = hud.mercBtns[i];
         const ready = b.mercReady(i);

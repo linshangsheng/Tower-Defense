@@ -787,6 +787,10 @@
         this.fx.push({ kind: 'ring', x: t.x, y: t.y - 10, r0: 6, r1: 44, color: '#8cf0a0', w: 3, life: 0.45, age: 0, flat: 0.5 });
         this.text(t.x, t.y - 36, '+', '#8cf0a0', 20, 0.7);
       });
+      on('mercRally', (e) => {
+        this.fx.push({ kind: 'ring', x: 330, y: e.y, r0: 20, r1: 260, color: '#ffc54d', w: 5, life: 0.6, age: 0, flat: 0.35 });
+        this.text(330, e.y - 40, '集结！', '#ffc54d', 26, 1.0);
+      });
       on('mercRank', (e) => {
         this.fx.push({ kind: 'ring', x: e.u.x, y: e.u.y - 10, r0: 8, r1: 70, color: '#ffc54d', w: 4, life: 0.55, age: 0, flat: 0.5 });
         this.fx.push({ kind: 'glow', x: e.u.x, y: e.u.y - 16, r: 44, color: '#ffc54d', life: 0.45, age: 0 });

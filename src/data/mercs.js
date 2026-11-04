@@ -21,6 +21,7 @@
     monsterDps: 0.3, // 怪物攻击 +30%
     bossCleave: 0.8, // Boss 对身边的兵每秒造成 自身攻击 × 这个值 的伤害
     rangedAtMercs: 420, // 远程怪优先打射程内的兵
+    rallyCd: 15, // 集结令冷却（秒）
     vetEvery: 3, // 每击败这么多只怪晋升一级（老兵）
     vetMax: 3,
     vetBoost: 0.15, // 每级老兵：血量和伤害 +15%，晋升时回复 30% 血

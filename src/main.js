@@ -114,6 +114,7 @@
     battle.on('mercShot', () => TD.audio.play('shoot'));
     battle.on('mercDie', () => TD.audio.play('pop'));
     battle.on('mercRank', () => TD.audio.play('streak'));
+    battle.on('mercRally', () => TD.audio.play('drum'));
     battle.on('drop', () => TD.audio.play('dropAppear'));
     battle.on('treasure', () => TD.audio.play('eliteAppear'));
     battle.on('dropGet', () => TD.audio.play('dropGet'));
@@ -380,6 +381,20 @@
     b.deployMerc(i, 0);
   };
 
+  // 集结令（设计书 192）：点按钮（或按 G）→ 选一条车道 → 所有的兵转移过去
+  game.tryRally = function () {
+    const b = game.battle;
+    if (!b || game.paused || b.over || !b.mercsOn || b.lanes < 2) return;
+    if (!b.rallyReady()) {
+      TD.audio.play('error');
+      if (b.time < (b.rallyAt || 0)) TD.ui.toast(`集结令冷却中，还要 ${Math.ceil(b.rallyAt - b.time)} 秒`);
+      else TD.ui.toast('场上还没有兵');
+      return;
+    }
+    if (game.pendingLane && game.pendingLane.kind === 'rally') setPending(null);
+    else setPending({ kind: 'rally' });
+  };
+
   game.tryItem = function (i) {
     const b = game.battle;
     if (!b || game.paused || b.over) return;
@@ -406,6 +421,7 @@
     if (!p || !b || lane < 0) return;
     if (p.kind === 'skill') b.castSkill(p.index, lane);
     else if (p.kind === 'merc') b.deployMerc(p.index, lane);
+    else if (p.kind === 'rally') b.rallyMercs(lane);
     else b.useItem(p.index, lane);
     setPending(null);
   }
@@ -593,6 +609,7 @@
       if (game.paused) return;
       if (k >= '1' && k <= '3') game.trySkill(+k - 1);
       else if (k >= '4' && k <= '6') game.tryMerc(+k - 4);
+      else if (k === 'g') game.tryRally();
       else if (k.length === 1 && 'qwerzxc'.includes(k)) game.tryItem('qwerzxc'.indexOf(k));
       else if (k === 'v') game.tryUltimate();
       else if (k === 'f') game.toggleSpeed();

@@ -6031,3 +6031,22 @@ test('佣兵集市（设计书 191）：每日规则让雇佣兵费用 −40%', 
   assert.strictEqual(f0 - b.funds, b.mercCost(0), '按折后价扣军饷');
   assert.ok(TD.modes.dailyRules.mercfair);
 });
+
+test('集结令（设计书 192）：兵转移车道、冷却、没兵 / 单车道不可用', () => {
+  const P = TD.progression; const s = P.newSave();
+  for (const id of TD.data.mercOrder) s.levels[TD.data.mercs[id].unlock - 1] = { stars: 3, clears: 1 };
+  P.setMercLoadout(s, ['swordsman', 'guard']);
+  const b = new TD.Battle({ level: 20, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 3 });
+  b.hero.cooldown = 1e9; b.wall.hp = b.wall.max = 1e12; b.waveState = 'waiting'; b.funds = 999;
+  assert.strictEqual(b.rallyReady(), false, '没兵不能集结');
+  b.deployMerc(0, 0); b.deployMerc(1, 2);
+  assert.strictEqual(b.rallyReady(), true);
+  assert.strictEqual(b.rallyMercs(1), 2, '两个兵都转移到第 1 道');
+  assert.ok(b.mercs.every((u) => u.lane === 1));
+  assert.strictEqual(b.rallyReady(), false, '冷却中');
+  assert.strictEqual(b.rallyMercs(0), 0);
+  const y0 = b.mercs[0].y; for (let i = 0; i < 60; i++) b.step(1 / 60);
+  assert.ok(Math.abs(b.mercs[0].y - b.laneY(1)) < Math.abs(y0 - b.laneY(1)) || y0 === b.laneY(1), '平滑走向新车道');
+  b.time += TD.config.merc.rallyCd + 1;
+  assert.strictEqual(b.rallyMercs(1), 0, '已经都在这条车道，不算、也不进冷却');
+});
