@@ -294,6 +294,7 @@
     sniper: { name: '狙击手', desc: '射程 +40%，攻击速度 −20%', rules: { mods: { range: 0.4, aspdMult: -0.2 } } },
     copperrain: { name: '铜币雨', desc: '击败怪物的铜币翻倍，怪物血量 +30%', rules: { monsterHp: 0.3, mods: { copperBonus: 1 } } },
     orbstorm: { name: '光球风暴', desc: '战利品光球掉率 ×6，怪物血量 +20%', rules: { monsterHp: 0.2, dropMult: 6 } },
+    mercfair: { name: '佣兵集市', desc: '雇佣兵费用 −40%，怪物血量 +20%', rules: { monsterHp: 0.2, mercCost: -0.4 } },
     lastStand: { name: '背水一战', desc: '城墙血量 −30%，攻击力 +30%', rules: { wallHp: -0.3, mods: { atkMult: 0.3 } } },
   };
 

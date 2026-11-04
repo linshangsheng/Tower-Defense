@@ -2068,6 +2068,7 @@
     hud.ultBar = h('div', { class: 'ult-bar hidden' }, h('span', { class: 'ult-label' }, '万箭天降'), h('div', { class: 'ult-track' }, hud.ultFill), hud.ultText);
     // 雇佣兵栏（设计书 184）：右下角，三个兵种按钮 + 军饷
     hud.mercFunds = h('span', { class: 'merc-funds-num' }, '0');
+    hud.mercCosts = [];
     hud.mercBtns = (battle.mercSlots || []).map((sl, i) =>
       h(
         'button',
@@ -2076,7 +2077,7 @@
         sl.level > 1 ? h('span', { class: 'lv-badge' }, 'Lv' + sl.level) : null,
         mercIcon(sl.id, 38, sl.def),
         h('span', { class: 'skill-name' }, sl.def.name),
-        h('span', { class: 'merc-cost' }, '💰' + sl.def.cost),
+        hud.mercCosts[i] = h('span', { class: 'merc-cost' }, '💰' + battle.mercCost(i)),
         h('span', { class: 'cd' })
       )
     );
@@ -2208,7 +2209,8 @@
         const btn = hud.mercBtns[i];
         const ready = b.mercReady(i);
         btn.classList.toggle('ready', ready);
-        btn.classList.toggle('poor', b.funds < sl.def.cost);
+        btn.classList.toggle('poor', b.funds < b.mercCost(i));
+        setText(hud.mercCosts[i], '💰' + b.mercCost(i));
         btn.classList.toggle('armed', !!(game.pendingLane && game.pendingLane.kind === 'merc' && game.pendingLane.index === i));
         const cd = btn.querySelector('.cd');
         if (sl.cd > 0) {

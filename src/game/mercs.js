@@ -33,9 +33,15 @@
       return { hp: def.hp * k, dmg: (def.dmg || 0) * k };
     },
 
+    // 实际雇佣费用（每日规则可以打折）
+    mercCost(i) {
+      const s = this.mercSlots[i];
+      return s ? Math.max(1, Math.ceil(s.def.cost * (1 + ((this.rules && this.rules.mercCost) || 0)))) : 0;
+    },
+
     mercReady(i) {
       const s = this.mercSlots[i];
-      return !!s && this.mercsOn && !this.over && this.waveState !== 'prepare' && s.cd <= 0 && this.funds >= s.def.cost && this.mercs.filter((u) => !u.dead).length < C.merc.cap;
+      return !!s && this.mercsOn && !this.over && this.waveState !== 'prepare' && s.cd <= 0 && this.funds >= this.mercCost(i) && this.mercs.filter((u) => !u.dead).length < C.merc.cap;
     },
 
     // 雇佣：lane 为出场车道。返回 true / false
@@ -63,7 +69,7 @@
         hitFlash: 0,
         face: 1,
       };
-      this.funds -= s.def.cost;
+      this.funds -= this.mercCost(i);
       s.cd = s.def.cd;
       this.mercs.push(u);
       this.mercDeployed++;

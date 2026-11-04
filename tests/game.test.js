@@ -6017,3 +6017,17 @@ test('雇佣兵战术（设计书 190）：老兵晋升、盾墙减伤', () => {
   const open = dmg(a);
   assert.ok(covered < open * 0.75 && covered > 0, `盾墙减伤：${covered.toFixed(2)} < ${open.toFixed(2)}`);
 });
+
+test('佣兵集市（设计书 191）：每日规则让雇佣兵费用 −40%', () => {
+  const P = TD.progression; const s = P.newSave();
+  for (const id of TD.data.mercOrder) s.levels[TD.data.mercs[id].unlock - 1] = { stars: 3, clears: 1 };
+  P.setMercLoadout(s, ['swordsman']);
+  const b = new TD.Battle({ level: 20, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 3 });
+  b.hero.cooldown = 1e9; b.waveState = 'waiting';
+  assert.strictEqual(b.mercCost(0), TD.data.mercs.swordsman.cost);
+  b.rules = Object.assign({}, b.rules, { mercCost: -0.4 });
+  assert.strictEqual(b.mercCost(0), Math.ceil(TD.data.mercs.swordsman.cost * 0.6));
+  const f0 = b.funds; b.deployMerc(0, 0);
+  assert.strictEqual(f0 - b.funds, b.mercCost(0), '按折后价扣军饷');
+  assert.ok(TD.modes.dailyRules.mercfair);
+});

@@ -368,7 +368,7 @@
       TD.audio.play('error');
       if (b.waveState === 'prepare') TD.ui.toast('第一波怪物出来后才能雇佣兵');
       else if (sl.cd > 0) TD.ui.toast(`冷却中，还要 ${Math.ceil(sl.cd)} 秒`);
-      else if (b.funds < sl.def.cost) TD.ui.toast(`军饷不够：还差 ${Math.ceil(sl.def.cost - b.funds)}（打怪就能攒）`);
+      else if (b.funds < b.mercCost(i)) TD.ui.toast(`军饷不够：还差 ${Math.ceil(b.mercCost(i) - b.funds)}（打怪就能攒）`);
       else TD.ui.toast('场上的兵已经满了');
       return;
     }
