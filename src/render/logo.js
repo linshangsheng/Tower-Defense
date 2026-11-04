@@ -541,7 +541,15 @@
       return { vx: Math.cos(an) * sp, vy: Math.sin(an) * sp, r: 1 + rnd() * 2.5 };
     });
     const trail = [];
+    // 老玩家不必每次看完整的开场：从光点绕徽章那一段开始（约省 1.3 秒）；开了「减少动效」则只留最后的亮相
     let t = 0;
+    try {
+      const sv = TD.game && TD.game.save;
+      if (sv && sv.settings && sv.settings.reduceMotion) t = 3.4;
+      else if (sv && TD.titleinfo && !TD.titleinfo.isFirstRun(sv)) t = 1.3;
+    } catch (e) {
+      t = 0;
+    }
     let last = 0;
     let done = false;
     const skip = () => {
