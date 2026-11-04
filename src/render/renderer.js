@@ -1253,6 +1253,7 @@
       }
       if (b && b.drops && b.drops.length) this.drawDrops(b);
       if (b && b.focus && !b.focus.dead && b.time < b.focusUntil) this.drawFocus(b);
+      if (b && !b.over && b.wall.hp < b.wall.max * 0.8) this.drawRepairHint(b);
       if (b) this.drawHeroAura(b, dt);
       this.drawHero(b);
       if (b && b.buddy) this.drawBuddy(b);
@@ -3283,6 +3284,31 @@
         ctx.fillStyle = m.hp / m.maxHp > 0.5 ? '#6be06b' : m.hp / m.maxHp > 0.25 ? '#ffd23f' : '#ff5a4f';
         ctx.fillRect(x - w / 2, by, (w * m.hp) / m.maxHp, 4);
       }
+      ctx.restore();
+    }
+
+    // 战地修补提示：城墙受损时，墙边一个会呼吸的扳手；冷却中显示进度圈
+    drawRepairHint(b) {
+      const ctx = this.ctx;
+      const x = C.wallX + 8;
+      const y = (C.fieldTop + C.fieldBottom) / 2 + 120;
+      const ready = b.time >= (b.repairReadyAt || 0);
+      const frac = ready ? 1 : 1 - (b.repairReadyAt - b.time) / TD.config.repair.cd;
+      ctx.save();
+      ctx.globalAlpha = ready ? 0.75 + Math.sin(this.t * 4) * 0.2 : 0.5;
+      ctx.fillStyle = 'rgba(20,30,20,0.65)';
+      ctx.beginPath();
+      ctx.arc(x, y, 19, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = ready ? '#7fe08a' : '#8a9a8a';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(x, y, 20, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * frac);
+      ctx.stroke();
+      ctx.font = '19px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('🔧', x, y + 1);
       ctx.restore();
     }
 
