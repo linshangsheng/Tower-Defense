@@ -194,7 +194,7 @@
   };
 
   // ================= 战斗报告（设计书 32） =================
-  const SOURCE_NAMES = { buddy: '助战伙伴', weapon: '武器', splash: '溅射', chain: '闪电跳跃', arrowRain: '箭雨', ultimate: '万箭天降', thunder: '雷霆一击', pierce: '贯穿光矢', vortex: '引力漩涡', firewall: '烈焰之墙', procLightning: '雷鸣', procFrost: '霜爆', procFireball: '火球', procSpirit: '灵箭', procWave: '剑气', spikeTrap: '尖刺陷阱', firecracker: '鞭炮', chainScroll: '连锁闪电符', poison: '中毒', earthSpike: '地刺符', thunderStorm: '雷暴符', stormCall: '风暴召唤', dragonBreath: '龙息', godWrath: '天罚', burn: '灼烧', thorns: '荆棘', bomb: '小炸弹', zap: '雷鸣箭袋', firefly: '萤火虫' };
+  const SOURCE_NAMES = { merc: '雇佣兵', buddy: '助战伙伴', weapon: '武器', splash: '溅射', chain: '闪电跳跃', arrowRain: '箭雨', ultimate: '万箭天降', thunder: '雷霆一击', pierce: '贯穿光矢', vortex: '引力漩涡', firewall: '烈焰之墙', procLightning: '雷鸣', procFrost: '霜爆', procFireball: '火球', procSpirit: '灵箭', procWave: '剑气', spikeTrap: '尖刺陷阱', firecracker: '鞭炮', chainScroll: '连锁闪电符', poison: '中毒', earthSpike: '地刺符', thunderStorm: '雷暴符', stormCall: '风暴召唤', dragonBreath: '龙息', godWrath: '天罚', burn: '灼烧', thorns: '荆棘', bomb: '小炸弹', zap: '雷鸣箭袋', firefly: '萤火虫' };
   UI.reportEl = function (res, open) {
     const rp = res && res.report;
     if (!rp) return null;
@@ -228,7 +228,7 @@
       if (topK !== 'boss' && D.monsters[topK] && topV / wt >= 0.3 && D.monsterTags(D.monsters[topK]).length) tips.push(`城墙伤害最多来自「${name(topK)}」：${D.monsters[topK].desc}`);
     }
     if (!parts.length) return null;
-    return h('details', { class: 'report', open: open ? true : null }, h('summary', null, '📊 战斗报告', res.bestStreak >= 5 ? h('span', { class: 'rep-streak' }, `  最高连击 ${res.bestStreak}`) : null), res.drops > 0 ? h('span', { class: 'rep-streak' }, `  拾取光球 ${res.drops}`) : null, res.elites > 0 ? h('span', { class: 'rep-streak' }, `  击败精英 ${res.elites}`) : null, res.treasures > 0 ? h('span', { class: 'rep-streak' }, `  抓住宝箱怪 ${res.treasures}`) : null, parts, tips.map((t) => h('div', { class: 'note rep-tip' }, '💡 ' + t)));
+    return h('details', { class: 'report', open: open ? true : null }, h('summary', null, '📊 战斗报告', res.bestStreak >= 5 ? h('span', { class: 'rep-streak' }, `  最高连击 ${res.bestStreak}`) : null), res.drops > 0 ? h('span', { class: 'rep-streak' }, `  拾取光球 ${res.drops}`) : null, res.elites > 0 ? h('span', { class: 'rep-streak' }, `  击败精英 ${res.elites}`) : null, res.treasures > 0 ? h('span', { class: 'rep-streak' }, `  抓住宝箱怪 ${res.treasures}`) : null, res.mercDeployed > 0 ? h('span', { class: 'rep-streak' }, `  雇佣兵 ${res.mercDeployed}（阵亡 ${res.mercDeaths}）`) : null, parts, tips.map((t) => h('div', { class: 'note rep-tip' }, '💡 ' + t)));
   };
 
   UI.showModeResult = function (battle, reward) {

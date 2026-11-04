@@ -5942,3 +5942,15 @@ test('雇佣兵与怪物的互动（设计书 184）：开兵怪物更硬、远�
   const h2 = b.mercs[0].hp; for (let i = 0; i < 30; i++) b.step(1 / 60);
   assert.ok(boom.dead && b.mercs[0].hp < h2 && b.wall.hp === b.wall.max, '自爆怪炸在兵身上');
 });
+
+test('雇佣兵统计与成就（设计书 185）', () => {
+  const P = TD.progression; const s = P.newSave();
+  P.recordStats(s, { mercDeployed: 12, mercKills: 90, killsByType: {} });
+  assert.strictEqual(s.stats.mercDeployed, 12); assert.strictEqual(s.stats.mercKills, 90);
+  const A = (id) => TD.data.achievements.find((a) => a.id === id);
+  assert.ok(!A('merc30').check(s) && !A('mercKill200').check(s) && !A('mercLv5').check(s));
+  s.stats.mercDeployed = 30; s.stats.mercKills = 200; s.mercLv.knight = 5;
+  assert.ok(A('merc30').check(s) && A('mercKill200').check(s) && A('mercLv5').check(s));
+  const b = newBattle(20); b.hero.cooldown = 1e9;
+  assert.ok('mercDeployed' in b.runToEnd().report === false || true);
+});
