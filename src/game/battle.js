@@ -1157,7 +1157,10 @@
       if (this.mods.killHeal && !noReward) this.wall.hp = Math.min(this.wall.max, this.wall.hp + this.wall.max * this.mods.killHeal);
       this.emit('death', { m, copper, noReward: !!noReward });
       if (!noReward) this.maybeDrop(m);
-      if (m.elite) this.eliteOnDeath(m);
+      if (m.elite) {
+        this.eliteOnDeath(m);
+        if (!noReward) this.elitesKilled = (this.elitesKilled || 0) + 1;
+      }
       const od = m.def.onDeath;
       if (od && od.type === 'spore') {
         for (const o of this.monsters) {
@@ -2667,6 +2670,7 @@
         bestStreak: this.bestStreak,
         fervor: this.fervorCount || 0,
         drops: this.dropsTaken || 0,
+        elites: this.elitesKilled || 0,
         bubbles: this.bubblesPopped,
         combos: Object.assign({}, this.combos),
         minWallRatio: this.minWallRatio,

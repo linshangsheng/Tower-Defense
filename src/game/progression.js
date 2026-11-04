@@ -1074,6 +1074,7 @@
     st.supplies += (result.supplies || []).length;
     st.bubbles = (st.bubbles || 0) + (result.bubbles || 0);
     st.drops = (st.drops || 0) + (result.drops || 0);
+    st.elites = (st.elites || 0) + (result.elites || 0);
     for (const k of Object.keys(result.killsByType || {})) st.killsByType[k] = (st.killsByType[k] || 0) + result.killsByType[k];
   };
 

@@ -5724,3 +5724,16 @@ test('精英词缀（设计书 172）：迅捷更快、再生回血、复仇让�
   b.kill(vg);
   assert.ok(near.hasteUntil > b.time, '身边的怪被激怒加速');
 });
+
+test('精英统计：击败精英计入结果与累计、精英猎手成就', () => {
+  TD.config.eliteRate = 1;
+  const b = newBattle(20); b.hero.cooldown = 1e9; b.wall.hp = b.wall.max = 1e12;
+  b.kill(b.spawnMonster('slime', 1, 800)); b.kill(b.spawnMonster('slime', 1, 800), true);
+  TD.config.eliteRate = 0.015;
+  assert.strictEqual(b.elitesKilled, 1, '不给奖励的击杀不计');
+  const s = TD.progression.newSave();
+  TD.progression.recordStats(s, { elites: 3, killsByType: {} });
+  assert.strictEqual(s.stats.elites, 3);
+  s.stats.elites = 30;
+  assert.ok(TD.data.achievements.find((a) => a.id === 'elite30').check(s));
+});
