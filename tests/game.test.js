@@ -5986,3 +5986,10 @@ test('统一图标库（设计书 187）：图标齐全、emoji 映射都指向�
   assert.strictEqual(I.draw({ save() {}, restore() {} }, 'check', 0, 0, 10), false);
   assert.strictEqual(I.draw({}, 'nope', 0, 0, 10), false);
 });
+
+test('雇佣兵走场景光（设计书 189）：渲染路径使用 litSprite 且不抛异常', () => {
+  const fs = require('fs');
+  const src = fs.readFileSync(require('path').join(__dirname, '..', 'src/render/renderer.js'), 'utf8');
+  assert.ok(/drawMercs[\s\S]*litSprite\(u,/.test(src), '雇佣兵通过 TD.art.litSprite 绘制（轮廓光 + 明暗）');
+  assert.ok(/b\.mercs\.length <= 8/.test(src), '兵多时降级为直接绘制');
+});

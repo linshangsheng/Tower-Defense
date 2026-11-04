@@ -582,3 +582,17 @@ h3,
 .card-main .card-foot .hint {
   white-space: normal;
 }
+
+/* 冷却：扇形遮罩 + 小号等宽数字（不再是盖住名字的大字） */
+.cd {
+  font-size: var(--fs-headline);
+  font-weight: var(--fw-semibold);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+  align-items: flex-start;
+  padding-top: 8px;
+}
+.item-btn .cd {
+  font-size: var(--fs-body);
+}

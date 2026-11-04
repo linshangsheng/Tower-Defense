@@ -3352,7 +3352,12 @@
           level: u.level,
           healAge: u.healAt === undefined ? 9 : b.time - u.healAt,
         };
-        if (!TD.mercArt || !TD.mercArt.draw(ctx, u.type, x, y, st, u.face || 1)) continue;
+        if (!TD.mercArt || !TD.mercArt.has(u.type)) continue;
+        // 和英雄、怪物同一套场景光：右上受光、左下背光、受光侧一道轮廓光（TD.art.litSprite，设计书 189）
+        if (this.scene && !this.scene.none && TD.art.opts.lit && b.mercs.length <= 8) {
+          const c = TD.art.litSprite(u, Math.random(), 40, this.scene.palette.rim, 0, (g) => ((S.volume = true), TD.mercArt.draw(g, u.type, 0, 0, st, u.face || 1), (S.volume = false)));
+          ctx.drawImage(c.canvas, Math.round(x - c.ox), Math.round(y - c.oy));
+        } else TD.mercArt.draw(ctx, u.type, x, y, st, u.face || 1);
         if (!u.dead) {
           const w = 32;
           const ry = y - (barY[u.type] || 58);
