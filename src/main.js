@@ -521,6 +521,10 @@
         const p = canvasPoint(e);
         if (b.collectDropAt(p.x, p.y)) return;
       }
+      if (b && !b.over && !game.paused && !game.pendingLane && !game.introPaused) {
+        const p = canvasPoint(e);
+        if (b.focusAt(p.x, p.y)) return;
+      }
       if (game.pendingLane) laneClick(game.renderer.laneAt(canvasPoint(e).y));
     });
     canvas.addEventListener('contextmenu', (e) => {

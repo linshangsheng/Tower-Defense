@@ -1244,6 +1244,7 @@
         this.drawProjectiles(b);
       }
       if (b && b.drops && b.drops.length) this.drawDrops(b);
+      if (b && b.focus && !b.focus.dead && b.time < b.focusUntil) this.drawFocus(b);
       if (b) this.drawHeroAura(b, dt);
       this.drawHero(b);
       if (b && b.buddy) this.drawBuddy(b);
@@ -3273,6 +3274,33 @@
         ctx.fillRect(x - w / 2 - 1, by - 1, w + 2, 6);
         ctx.fillStyle = m.hp / m.maxHp > 0.5 ? '#6be06b' : m.hp / m.maxHp > 0.25 ? '#ffd23f' : '#ff5a4f';
         ctx.fillRect(x - w / 2, by, (w * m.hp) / m.maxHp, 4);
+      }
+      ctx.restore();
+    }
+
+    // 手动集火标记：目标身上一个旋转的准星
+    drawFocus(b) {
+      const m = b.focus;
+      const ctx = this.ctx;
+      const x = m.x;
+      const y = m.y + m.yOffset - (m.def.flying ? 0 : 4);
+      const r = Math.max(24, m.def.size * 0.95);
+      const left = b.focusUntil - b.time;
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(this.t * 1.6);
+      ctx.globalAlpha = left < 1 ? 0.4 + Math.sin(this.t * 20) * 0.3 : 0.9;
+      ctx.strokeStyle = '#ff5a4f';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(0, 0, r, 0, Math.PI * 2);
+      ctx.stroke();
+      for (let i = 0; i < 4; i++) {
+        ctx.rotate(Math.PI / 2);
+        ctx.beginPath();
+        ctx.moveTo(r + 4, 0);
+        ctx.lineTo(r + 14, 0);
+        ctx.stroke();
       }
       ctx.restore();
     }

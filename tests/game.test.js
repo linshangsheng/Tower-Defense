@@ -5737,3 +5737,18 @@ test('精英统计：击败精英计入结果与累计、精英猎手成就', ()
   s.stats.elites = 30;
   assert.ok(TD.data.achievements.find((a) => a.id === 'elite30').check(s));
 });
+
+test('手动集火（设计书 175）：点中怪排到最前，再点取消，过期失效，点空不算', () => {
+  const b = newBattle(20); b.hero.cooldown = 1e9; b.wall.hp = b.wall.max = 1e12;
+  const a = b.spawnMonster('goblin', 1, 300);
+  const c = b.spawnMonster('goblin', 1, 420);
+  assert.strictEqual(b.rankTargets()[0], a, '默认最近的在前');
+  assert.strictEqual(b.focusAt(5, 5), false);
+  assert.strictEqual(b.focusAt(c.x, c.y + c.yOffset), true);
+  assert.strictEqual(b.rankTargets()[0], c, '集火目标在前');
+  b.time += 7;
+  assert.strictEqual(b.rankTargets()[0], a, '6 秒后失效');
+  b.focusAt(c.x, c.y + c.yOffset);
+  assert.strictEqual(b.focusAt(c.x, c.y + c.yOffset), true);
+  assert.strictEqual(b.rankTargets()[0], a, '再点一次取消');
+});

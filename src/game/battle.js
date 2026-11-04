@@ -1278,7 +1278,34 @@
         const idx = new Map(list.map((m, i) => [m, i]));
         list.sort((a, b) => mk(b) - mk(a) || idx.get(a) - idx.get(b));
       }
+      // 手动集火（设计书 175）：玩家点过的怪排在最前面
+      if (this.focus && !this.focus.dead && this.time < this.focusUntil) {
+        const i = list.indexOf(this.focus);
+        if (i > 0) { list.splice(i, 1); list.unshift(this.focus); }
+      } else this.focus = null;
       return list;
+    }
+
+    // 点击战场选目标：点中怪就集火 6 秒，再点一次取消；返回是否点中
+    focusAt(px, py) {
+      if (this.over) return false;
+      let best = null;
+      let bd = Infinity;
+      for (const m of this.monsters) {
+        if (!this.isTargetable(m)) continue;
+        const r = Math.max(34, m.def.size * 1.3);
+        const dx = m.x - px;
+        const dy = m.y + m.yOffset - py;
+        const d = dx * dx + dy * dy;
+        if (d <= r * r && d < bd) { bd = d; best = m; }
+      }
+      if (!best) return false;
+      if (this.focus === best) { this.focus = null; return true; }
+      this.focus = best;
+      this.focusUntil = this.time + 6;
+      this.focusCount = (this.focusCount || 0) + 1;
+      this.emit('focus', { m: best });
+      return true;
     }
 
     rollHit(mult) {
