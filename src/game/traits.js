@@ -23,7 +23,7 @@
     maybeDrop(m) {
       if (!this.drops) this.drops = [];
       if (this.drops.length >= (m.elite || m.forceDrop ? 6 : 4)) return;
-      if (!m.def.boss && !m.elite && !m.forceDrop && this.rng() >= DROP_RATE) return;
+      if (!m.def.boss && !m.elite && !m.forceDrop && this.rng() >= DROP_RATE * ((this.rules && this.rules.dropMult) || 1)) return;
       let r = this.rng() * 100;
       let kind = 'purse';
       for (const k of Object.keys(DROPS)) {

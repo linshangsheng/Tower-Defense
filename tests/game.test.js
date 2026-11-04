@@ -5796,3 +5796,12 @@ test('新机制音效已注册（设计书 179）', () => {
   const main = fs.readFileSync(require('path').join(__dirname, '..', 'src/main.js'), 'utf8');
   for (const e of ['drop', 'dropGet', 'focus', 'repair']) assert.ok(main.includes(`battle.on('${e}'`), e);
 });
+
+test('光球风暴（设计书 180）：每日规则把光球掉率提高到 6 倍', () => {
+  const b = newBattle(20); b.hero.cooldown = 1e9; b.wall.hp = b.wall.max = 1e12; TD.config.eliteRate = 0;
+  const run = (mult) => { b.rules = Object.assign({}, b.rules, { dropMult: mult }); let n = 0; b.rng = ((i) => () => { i = (i * 9301 + 49297) % 233280; return i / 233280; })(7);
+    for (let i = 0; i < 1000; i++) { b.drops = []; b.kill(b.spawnMonster('slime', 1, 800)); n += b.drops.length; } return n; };
+  const base = run(1); const storm = run(6);
+  assert.ok(storm > base * 3, `${base} → ${storm}`);
+  TD.config.eliteRate = 0.015;
+});
