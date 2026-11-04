@@ -1141,6 +1141,7 @@
         if (F) {
           this.buffs = this.buffs.filter((b) => b.src !== 'fervor');
           this.buffs.push({ aspd: F.aspd || 0, atk: F.atk || 0, crit: F.crit || 0, until: this.time + F.dur, src: 'fervor' });
+          m.forceDrop = true; // 战意档位：这一击必掉光球（设计书 177）
           this.fervorCount = (this.fervorCount || 0) + 1;
           this.emit('fervor', { count: this.streak, name: F.name, dur: F.dur, aspd: F.aspd || 0, atk: F.atk || 0, crit: F.crit || 0 });
         }

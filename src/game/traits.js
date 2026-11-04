@@ -21,8 +21,8 @@
   Object.assign(TD.Battle.prototype, {
     maybeDrop(m) {
       if (!this.drops) this.drops = [];
-      if (this.drops.length >= (m.elite ? 6 : 4)) return;
-      if (!m.def.boss && !m.elite && this.rng() >= DROP_RATE) return;
+      if (this.drops.length >= (m.elite || m.forceDrop ? 6 : 4)) return;
+      if (!m.def.boss && !m.elite && !m.forceDrop && this.rng() >= DROP_RATE) return;
       let r = this.rng() * 100;
       let kind = 'purse';
       for (const k of Object.keys(DROPS)) {

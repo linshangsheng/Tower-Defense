@@ -5766,3 +5766,15 @@ test('战地修补（设计书 176）：点城墙回血、冷却、满血不触�
   b.time += 100; b.wall.hp = 1000;
   assert.strictEqual(b.repairAt(C.wallX - 30, 300), null, '满血不触发（也不消耗冷却）');
 });
+
+test('战意档位必掉光球（设计书 177）：连击到 10 的那一击掉出光球', () => {
+  TD.config.eliteRate = 0;
+  const b = newBattle(20); b.hero.cooldown = 1e9; b.wall.hp = b.wall.max = 1e12;
+  b.rng = () => 0.99; // 普通掉率一定不触发
+  for (let i = 0; i < 9; i++) { b.time += 0.2; b.kill(b.spawnMonster('slime', 1, 800)); }
+  assert.strictEqual(b.drops.length, 0, '没到档位不掉');
+  b.time += 0.2; b.kill(b.spawnMonster('slime', 1, 800));
+  assert.strictEqual(b.streak, 10);
+  assert.strictEqual(b.drops.length, 1, '第 10 连击必掉');
+  TD.config.eliteRate = 0.015;
+});
