@@ -4692,3 +4692,29 @@ html[lang='ko'] .title-main {
   opacity: 0.8;
   z-index: 2;
 }
+
+.merc-btn .merc-portrait {
+  position: absolute;
+  left: 50%;
+  top: 2px;
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 1;
+}
+.merc-btn .skill-name {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 14px;
+  text-align: center;
+  z-index: 2;
+  text-shadow: 0 1px 3px #000, 0 0 4px #000;
+}
+.merc-btn .merc-cost {
+  position: absolute;
+  bottom: 1px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  z-index: 2;
+}

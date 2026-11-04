@@ -5954,3 +5954,24 @@ test('雇佣兵统计与成就（设计书 185）', () => {
   const b = newBattle(20); b.hero.cooldown = 1e9;
   assert.ok('mercDeployed' in b.runToEnd().report === false || true);
 });
+
+test('雇佣兵造型（设计书 186）：六个兵种在每种状态下都能画出来，不抛异常', () => {
+  require('../src/render/sprites.js');
+  require('../src/render/mercart.js');
+  const calls = { n: 0 };
+  const ctx = new Proxy({}, {
+    get: (t, k) => (k in t ? t[k] : (...a) => { calls.n++; return /^create/.test(String(k)) ? { addColorStop() {} } : undefined; }),
+    set: (t, k, v) => { t[k] = v; return true; },
+  });
+  for (const type of TD.data.mercOrder) {
+    assert.ok(TD.mercArt.has(type), type + ' 有造型');
+    for (const state of ['idle', 'move', 'attack']) {
+      for (const extra of [{}, { flash: true }, { dead: 0.6 }, { charging: true, age: 0.1, wind: 0.8, healAge: 0.2 }]) {
+        calls.n = 0;
+        const ok = TD.mercArt.draw(ctx, type, 100, 100, Object.assign({ t: 1.2, state, age: 0.05, wind: 0, level: 1 }, extra), -1);
+        assert.ok(ok && calls.n > 20, `${type}/${state} 画出来了`);
+      }
+    }
+  }
+  assert.strictEqual(TD.mercArt.draw(ctx, 'nope', 0, 0, { t: 0 }, 1), false);
+});

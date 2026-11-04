@@ -3336,112 +3336,45 @@
       ctx.restore();
     }
 
-    // 雇佣兵：小人 + 血条（设计书 184）
+    // 雇佣兵：每个兵种一套造型（mercart.js）+ 血条（设计书 184 / 186）
     drawMercs(b) {
       const ctx = this.ctx;
       const list = b.mercs.filter((u) => !u.dead || b.time - u.diedAt < 0.5).sort((p, q) => p.y - q.y);
+      const barY = { mage: 78, knight: 72, guard: 70, swordsman: 66, archer: 66, cleric: 72 };
       for (const u of list) {
-        const def = u.def;
-        const t = this.t * (u.state === 'move' ? 11 : 4) + u.id;
-        const bob = u.state === 'move' ? Math.abs(Math.sin(t)) * 3 : Math.sin(t) * 1;
         const x = u.x;
         const y = u.y + 8;
-        const swing = u.state === 'attack' ? Math.sin(this.t * 14 + u.id) : 0;
-        ctx.save();
-        if (u.dead) ctx.globalAlpha = Math.max(0, 1 - (b.time - u.diedAt) / 0.5);
         // 影子
-        ctx.fillStyle = 'rgba(0,0,0,0.3)';
+        ctx.fillStyle = 'rgba(0,0,0,0.28)';
         ctx.beginPath();
-        ctx.ellipse(x, y + 2, 15, 5, 0, 0, Math.PI * 2);
+        ctx.ellipse(x, y + 1, u.type === 'knight' ? 30 : 17, u.type === 'knight' ? 7 : 5.5, 0, 0, Math.PI * 2);
         ctx.fill();
-        ctx.translate(x, y - bob);
-        // 身体（职业色）
-        ctx.fillStyle = u.hitFlash > 0 ? '#ffffff' : def.color;
-        ctx.strokeStyle = 'rgba(20,20,30,0.85)';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(-9, 0);
-        ctx.lineTo(-7, -22);
-        ctx.lineTo(7, -22);
-        ctx.lineTo(9, 0);
-        ctx.closePath();
-        ctx.fill();
-        ctx.stroke();
-        // 头
-        ctx.fillStyle = '#f2cfa5';
-        ctx.beginPath();
-        ctx.arc(0, -29, 8, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
-        // 头盔 / 帽子
-        ctx.fillStyle = u.hitFlash > 0 ? '#ffffff' : 'rgba(40,44,60,0.9)';
-        ctx.beginPath();
-        ctx.arc(0, -31, 8.5, Math.PI, 0);
-        ctx.fill();
-        // 武器 / 装备（朝右）
-        ctx.lineWidth = 3;
-        ctx.strokeStyle = '#d8d8e8';
-        if (def.taunt) {
-          ctx.fillStyle = '#8fb4e8';
-          ctx.beginPath();
-          ctx.moveTo(8, -24);
-          ctx.lineTo(20, -22);
-          ctx.lineTo(18, -6);
-          ctx.lineTo(8, -2);
-          ctx.closePath();
-          ctx.fill();
-          ctx.strokeStyle = 'rgba(20,20,30,0.85)';
-          ctx.lineWidth = 2;
-          ctx.stroke();
-        } else if (def.ranged && def.type !== 'magic') {
-          ctx.strokeStyle = '#a9743d';
-          ctx.beginPath();
-          ctx.arc(14, -16, 12, -1.2, 1.2);
-          ctx.stroke();
-          ctx.lineWidth = 1;
-          ctx.strokeStyle = '#eee';
-          ctx.beginPath();
-          ctx.moveTo(14 + Math.cos(-1.2) * 12, -16 + Math.sin(-1.2) * 12);
-          ctx.lineTo(14 + Math.cos(1.2) * 12, -16 + Math.sin(1.2) * 12);
-          ctx.stroke();
-        } else if (def.type === 'magic' || def.support) {
-          ctx.strokeStyle = '#8a5a2a';
-          ctx.beginPath();
-          ctx.moveTo(12, 0);
-          ctx.lineTo(12, -34);
-          ctx.stroke();
-          ctx.fillStyle = def.support ? '#fff2a8' : '#d0a8ff';
-          ctx.beginPath();
-          ctx.arc(12, -37, 5 + Math.sin(this.t * 6) * 0.8, 0, Math.PI * 2);
-          ctx.fill();
-        } else {
-          // 剑 / 骑士的长枪：攻击时挥动
-          ctx.save();
-          ctx.translate(9, -14);
-          ctx.rotate(-0.5 + (u.state === 'attack' ? swing * 0.9 : 0));
-          ctx.beginPath();
-          ctx.moveTo(0, 0);
-          ctx.lineTo(def.charge ? 30 : 22, 0);
-          ctx.stroke();
-          ctx.restore();
-          if (def.charge) {
-            // 马：身体下面一个椭圆
-            ctx.fillStyle = '#8b5a2b';
-            ctx.beginPath();
-            ctx.ellipse(0, -2, 17, 8, 0, 0, Math.PI * 2);
-            ctx.fill();
-          }
-        }
-        ctx.restore();
-        // 血条
+        const st = {
+          t: this.t + u.id * 0.7,
+          state: u.state,
+          age: b.time - (u.atkAt === undefined ? -9 : u.atkAt),
+          wind: u.def.every ? Math.max(0, Math.min(1, 1 - u.cool / 0.35)) : 0,
+          flash: u.hitFlash > 0,
+          dead: u.dead ? Math.min(1, (b.time - u.diedAt) / 0.5) : 0,
+          charging: !!u.charging,
+          level: u.level,
+          healAge: u.healAt === undefined ? 9 : b.time - u.healAt,
+        };
+        if (!TD.mercArt || !TD.mercArt.draw(ctx, u.type, x, y, st, u.face || 1)) continue;
         if (!u.dead) {
-          const w = 30;
-          const ry = y - 48;
+          const w = 32;
+          const ry = y - (barY[u.type] || 58);
           ctx.fillStyle = 'rgba(0,0,0,0.55)';
           ctx.fillRect(x - w / 2 - 1, ry - 1, w + 2, 6);
           const r = Math.max(0, u.hp / u.maxHp);
           ctx.fillStyle = r > 0.5 ? '#7fe08a' : r > 0.25 ? '#ffd23f' : '#ff6a5a';
           ctx.fillRect(x - w / 2, ry, w * r, 4);
+          if (u.level > 1) {
+            ctx.font = 'bold 10px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillStyle = '#ffe08a';
+            ctx.fillText('Lv' + u.level, x, ry - 3);
+          }
         }
       }
     }

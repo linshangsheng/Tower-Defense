@@ -135,6 +135,7 @@
 
     mercAttack(u, m) {
       const def = u.def;
+      u.atkAt = this.time;
       let dmg = u.dmg;
       if (u.charging) {
         // 骑士冲锋：撞上第一个怪的冲击
@@ -213,6 +214,7 @@
             u.cool = def.every;
             if (hurt) hurt.hp = Math.min(hurt.maxHp, hurt.hp + hurt.maxHp * def.heal);
             else this.wall.hp = Math.min(this.wall.max, this.wall.hp + this.wall.max * def.wallHeal);
+            u.healAt = this.time;
             this.emit('mercHeal', { u, to: hurt });
           }
           // 跟在队伍后面：站在最靠前的友军身后

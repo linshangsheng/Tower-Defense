@@ -1568,7 +1568,7 @@
       }
       grid.append(
         card(def.name, unlocked ? lvText(lv) : null, def.desc, right, {
-          icon: h('span', { class: 'merc-card-ico' }, def.icon),
+          icon: mercIcon(id, 52, def),
           color: def.color,
           cls: unlocked ? '' : 'locked',
           foot: unlocked ? h('span', { class: 'hint' }, `费用 ${def.cost} 军饷 · 冷却 ${def.cd} 秒`) : null,
@@ -2022,6 +2022,21 @@
     modal(h('div', null, h('h2', null, '选择装备'), list, h('div', { class: 'modal-buttons' }, h('button', { class: 'btn', onclick: UI.closeModal }, '取消'))), { closeOnBack: true });
   }
 
+  // 兵种头像：用战场上同一套造型画一个站姿，按钮和兵营卡片共用（设计书 186）
+  function mercIcon(id, px, def) {
+    if (!TD.mercArt || !TD.mercArt.has(id)) return h('span', { class: 'merc-icon' }, def.icon);
+    const cv = document.createElement('canvas');
+    cv.width = cv.height = px * 2;
+    cv.style.width = cv.style.height = px + 'px';
+    const c = cv.getContext('2d');
+    const sc = (px * 2 * 0.92) / (id === 'knight' ? 78 : id === 'mage' ? 70 : 62);
+    c.translate(px * (id === 'knight' ? 0.72 : 0.88), px * 1.96);
+    c.scale(sc, sc);
+    TD.mercArt.draw(c, id, 0, 0, { t: 1.1, state: 'idle', age: 9, wind: 0, level: 1 }, 1);
+    cv.className = 'merc-portrait';
+    return cv;
+  }
+
   // ================= 战斗 HUD =================
   const hud = {};
   UI.showBattle = function (battle) {
@@ -2065,7 +2080,7 @@
         { class: 'merc-btn', title: sl.def.desc, onclick: () => game.tryMerc(i) },
         h('span', { class: 'key' }, i + 4),
         sl.level > 1 ? h('span', { class: 'lv-badge' }, 'Lv' + sl.level) : null,
-        h('span', { class: 'merc-icon' }, sl.def.icon),
+        mercIcon(sl.id, 38, sl.def),
         h('span', { class: 'skill-name' }, sl.def.name),
         h('span', { class: 'merc-cost' }, '💰' + sl.def.cost),
         h('span', { class: 'cd' })
