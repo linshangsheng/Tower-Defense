@@ -426,6 +426,7 @@
       on('barrierBreak', () => V && V.barrierBreak(C.wallX - 20, C.fieldTop, C.fieldBottom));
       // Boss 登场：屏幕上亮出名牌（巨龙的名牌更红更久）
       on('spawn', (m) => {
+        if (m.elite) this.bark('elite', 0.4);
         if (!V || !m.def || (m.def.boss !== 'major' && m.def.boss !== 'mini')) return;
         if (m.summoned || m.fromBoss) return;
         // 名牌下面带一句这个 Boss 在战前对话里的第一句台词（有的话）
@@ -763,6 +764,7 @@
         const y = e.d.y;
         this.fx.push({ kind: 'ring', x, y, r0: 10, r1: 90, color: df.color, w: 4, life: 0.5, age: 0, flat: 0.6 });
         this.fx.push({ kind: 'glow', x, y, r: 50, color: df.color, life: 0.4, age: 0 });
+        this.bark('loot', 0.2);
         this.text(x, y - 26, df.name, df.color, 22, 1.0);
         if (e.amount) this.text(x, y - 4, '+' + e.amount, '#ffffff', 16, 1.0);
         if (this.vfx) this.vfx.spawn(10, () => ({ kind: 'spark', x, y, vx: (Math.random() - 0.5) * 200, vy: -50 - Math.random() * 120, g: 200, life: 0.6, r: 2.2, color: df.color }));
