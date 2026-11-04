@@ -109,6 +109,12 @@
     battle.on('bossInterrupt', () => TD.audio.play('interrupt'));
     battle.on('streak', () => TD.audio.play('streak'));
     battle.on('bell', () => TD.audio.play('bell'));
+    battle.on('drop', () => TD.audio.play('dropAppear'));
+    battle.on('dropGet', () => TD.audio.play('dropGet'));
+    battle.on('focus', () => TD.audio.play('focusTap'));
+    battle.on('repair', () => TD.audio.play('repair'));
+    battle.on('repairCd', () => TD.audio.play('ding'));
+    battle.on('spawn', (m) => { if (m.elite) TD.audio.play('eliteAppear'); });
     battle.on('combo', () => TD.audio.play('streak'));
     // 第六章（设计书 34.1）
     battle.on('dodge', () => TD.audio.play('dodge'));

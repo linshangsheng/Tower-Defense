@@ -195,6 +195,22 @@
       tone(3136, 0.25, 'sine', 0.06, 1, 0.01);
     },
     streak: () => [784, 988, 1175, 1568].forEach((f, i) => tone(f, 0.12, 'triangle', 0.14, 1, i * 0.06)),
+    // 战利品 / 精英 / 点击操作（设计书 179）
+    dropAppear: () => tone(1568, 0.08, 'sine', 0.07, 1.3),
+    dropGet: () => {
+      tone(988, 0.08, 'triangle', 0.16);
+      tone(1319, 0.1, 'triangle', 0.16, 1, 0.06);
+      tone(1760, 0.16, 'triangle', 0.14, 1, 0.12);
+    },
+    eliteAppear: () => {
+      tone(392, 0.3, 'sawtooth', 0.1, 0.9);
+      tone(587, 0.3, 'triangle', 0.08, 1, 0.12);
+    },
+    focusTap: () => tone(1200, 0.05, 'square', 0.07, 0.8),
+    repair: () => {
+      noise(0.1, 0.1, 900);
+      tone(440, 0.16, 'triangle', 0.15, 1.3);
+    },
     // 第七章（设计书 52.6）
     bubblePop: () => tone(900, 0.06, 'sine', 0.1, 2.2),
     shell: () => tone(320, 0.07, 'square', 0.06, 0.7),
@@ -464,7 +480,7 @@
   };
 
   // 同一种音效有最小间隔，避免成群怪物时刺耳
-  const MIN_GAP = { hit: 0.05, pop: 0.04, wall: 0.12, shoot: 0.07, coin: 0.06, crit: 0.08, dodge: 0.1, shear: 0.15, zap: 0.3, bubblePop: 0.06, shell: 0.12, spikes: 0.1, splash: 0.2, meteorHit: 0.15, scrollBolt: 0.1, barrierBreak: 0.3, wallBreak: 0.3 };
+  const MIN_GAP = { hit: 0.05, pop: 0.04, wall: 0.12, shoot: 0.07, coin: 0.06, crit: 0.08, dodge: 0.1, shear: 0.15, zap: 0.3, bubblePop: 0.06, dropAppear: 0.15, dropGet: 0.08, focusTap: 0.08, repair: 0.3, shell: 0.12, spikes: 0.1, splash: 0.2, meteorHit: 0.15, scrollBolt: 0.1, barrierBreak: 0.3, wallBreak: 0.3 };
 
   const LOUD = /^(item_|meteorHit|wallBreak|wallCollapse|scrollBolt|barrierBreak)/;
 

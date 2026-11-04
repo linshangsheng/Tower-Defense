@@ -5788,3 +5788,11 @@ test('冰封光球（设计书 178）：拾取冻住全场小怪，Boss 不受�
   assert.ok(!(boss.frozenUntil > b.time), 'Boss 不冻');
   assert.ok(TD.data.drops.frost);
 });
+
+test('新机制音效已注册（设计书 179）', () => {
+  const fs = require('fs');
+  const src = fs.readFileSync(require('path').join(__dirname, '..', 'src/render/audio.js'), 'utf8');
+  for (const n of ['dropAppear', 'dropGet', 'eliteAppear', 'focusTap', 'repair']) assert.ok(new RegExp('\\b' + n + ':').test(src), n);
+  const main = fs.readFileSync(require('path').join(__dirname, '..', 'src/main.js'), 'utf8');
+  for (const e of ['drop', 'dropGet', 'focus', 'repair']) assert.ok(main.includes(`battle.on('${e}'`), e);
+});
