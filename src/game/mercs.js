@@ -156,6 +156,11 @@
       if (u.covered) amount *= 1 - C.merc.shieldWall;
       u.hp -= amount;
       u.hitFlash = 0.1;
+      // 受击音效事件：每个兵至少隔 0.25 秒才发一次（Boss 横扫是每帧调用）
+      if (u.hp > 0 && (u.hurtSfxAt === undefined || this.time - u.hurtSfxAt >= 0.25)) {
+        u.hurtSfxAt = this.time;
+        this.emit('mercHurt', { u });
+      }
       if (u.hp <= 0) {
         u.dead = true;
         u.hp = 0;

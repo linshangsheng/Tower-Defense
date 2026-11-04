@@ -479,8 +479,141 @@
     },
   };
 
+  // 雇佣兵专属音效（设计书 184）：整体偏低（增益 0.06–0.14），不压过英雄的主声音；同屏多兵靠 MIN_GAP 限流
+  // 命名：merc_<兵种>_<atk|hurt|die|deploy>，另有 merc_rank / merc_rally / merc_charge / merc_heal
+  const MERC_TYPES = ['swordsman', 'guard', 'archer', 'mage', 'cleric', 'knight'];
+  Object.assign(SOUNDS, {
+    // 出手
+    merc_swordsman_atk: () => {
+      // 金属挥砍：短促的高频噪声 + 一声清脆的金属泛音
+      noise(0.07, 0.1, 5200);
+      tone(1500, 0.09, 'triangle', 0.07, 0.55);
+    },
+    merc_guard_atk: () => {
+      // 盾击：闷沉的低频撞击
+      tone(120, 0.14, 'sine', 0.14, 0.5);
+      noise(0.08, 0.1, 380);
+    },
+    merc_archer_atk: () => {
+      // 弓弦 + 箭羽
+      tone(300, 0.05, 'triangle', 0.09, 2.2);
+      noise(0.09, 0.07, 6500);
+    },
+    merc_mage_atk: () => {
+      // 咒音：升调的正弦 + 高音泛光
+      tone(660, 0.16, 'sine', 0.1, 1.7);
+      tone(1320, 0.14, 'triangle', 0.05, 1.3, 0.04);
+    },
+    merc_knight_atk: () => {
+      // 骑枪刺击：低沉有力
+      noise(0.06, 0.09, 2200);
+      tone(180, 0.12, 'sawtooth', 0.07, 0.6);
+    },
+    merc_cleric_atk: () => tone(880, 0.08, 'sine', 0.06),
+    merc_charge: () => {
+      // 骑士冲锋撞击：一串马蹄 + 重击
+      [0, 0.05, 0.1].forEach((d) => {
+        tone(95, 0.06, 'sine', 0.12, 0.7, d);
+        noise(0.04, 0.06, 700);
+      });
+      tone(70, 0.28, 'sine', 0.14, 0.4, 0.14);
+      noise(0.2, 0.12, 900);
+    },
+    merc_heal: () => {
+      // 牧师治疗：柔和的大三和弦琶音
+      [523, 659, 784].forEach((f, i) => tone(f, 0.28, 'sine', 0.08, 1, i * 0.07));
+    },
+    // 受击（按材质：布衣 / 铁甲 / 木盾）
+    merc_swordsman_hurt: () => {
+      tone(700, 0.06, 'square', 0.06, 0.5);
+      noise(0.05, 0.07, 3000);
+    },
+    merc_guard_hurt: () => {
+      tone(210, 0.1, 'triangle', 0.1, 0.6);
+      noise(0.06, 0.07, 500);
+    },
+    merc_archer_hurt: () => tone(420, 0.08, 'triangle', 0.07, 0.6),
+    merc_mage_hurt: () => tone(520, 0.1, 'sine', 0.07, 0.6),
+    merc_cleric_hurt: () => tone(600, 0.09, 'sine', 0.07, 0.65),
+    merc_knight_hurt: () => {
+      tone(260, 0.09, 'square', 0.06, 0.5);
+      noise(0.06, 0.08, 1500);
+    },
+    // 阵亡：音调下坠，重甲多一声闷响
+    merc_swordsman_die: () => {
+      tone(440, 0.28, 'triangle', 0.1, 0.4);
+      noise(0.1, 0.07, 2000);
+    },
+    merc_guard_die: () => {
+      tone(150, 0.4, 'sine', 0.14, 0.4);
+      noise(0.2, 0.1, 400);
+    },
+    merc_archer_die: () => tone(520, 0.3, 'triangle', 0.09, 0.4),
+    merc_mage_die: () => {
+      tone(880, 0.4, 'sine', 0.09, 0.3);
+      tone(440, 0.4, 'triangle', 0.05, 0.4, 0.05);
+    },
+    merc_cleric_die: () => [659, 523, 392].forEach((f, i) => tone(f, 0.25, 'sine', 0.08, 0.95, i * 0.1)),
+    merc_knight_die: () => {
+      tone(110, 0.45, 'sine', 0.14, 0.4);
+      noise(0.25, 0.1, 700);
+      tone(300, 0.2, 'square', 0.04, 0.5, 0.05);
+    },
+    // 雇佣到场：每个兵种一小段号角 / 鼓点
+    merc_swordsman_deploy: () => {
+      tone(392, 0.1, 'sawtooth', 0.07);
+      tone(523, 0.16, 'sawtooth', 0.07, 1, 0.1);
+    },
+    merc_guard_deploy: () => {
+      tone(90, 0.14, 'sine', 0.14, 0.7);
+      tone(90, 0.14, 'sine', 0.14, 0.7, 0.16);
+    },
+    merc_archer_deploy: () => {
+      tone(587, 0.08, 'triangle', 0.09);
+      tone(784, 0.12, 'triangle', 0.09, 1, 0.08);
+    },
+    merc_mage_deploy: () => [523, 784, 1047].forEach((f, i) => tone(f, 0.18, 'sine', 0.08, 1, i * 0.07)),
+    merc_cleric_deploy: () => {
+      tone(523, 0.2, 'sine', 0.08);
+      tone(659, 0.2, 'sine', 0.08, 1, 0.06);
+      tone(784, 0.3, 'sine', 0.08, 1, 0.12);
+    },
+    merc_knight_deploy: () => {
+      tone(294, 0.12, 'sawtooth', 0.08);
+      tone(294, 0.12, 'sawtooth', 0.08, 1, 0.14);
+      tone(392, 0.3, 'sawtooth', 0.09, 1, 0.28);
+      tone(80, 0.2, 'sine', 0.14, 0.6);
+    },
+    // 老兵晋升：升调琶音
+    merc_rank: () => [523, 659, 784, 1047].forEach((f, i) => tone(f, 0.14, 'triangle', 0.09, 1, i * 0.055)),
+    // 集结令：号角（五度双音）+ 低鼓
+    merc_rally: () => {
+      tone(196, 0.45, 'sawtooth', 0.09);
+      tone(294, 0.45, 'sawtooth', 0.07, 1, 0.02);
+      tone(392, 0.6, 'sawtooth', 0.08, 1, 0.3);
+      tone(100, 0.2, 'sine', 0.14, 0.6);
+      tone(100, 0.2, 'sine', 0.14, 0.6, 0.3);
+    },
+  });
+  A.mercTypes = MERC_TYPES;
+  // 按事件 + 兵种取音效名；兵种未知则回退到剑士
+  A.mercSound = function (kind, type) {
+    const t = MERC_TYPES.indexOf(type) >= 0 ? type : 'swordsman';
+    return 'merc_' + t + '_' + kind;
+  };
+
   // 同一种音效有最小间隔，避免成群怪物时刺耳
   const MIN_GAP = { hit: 0.05, pop: 0.04, wall: 0.12, shoot: 0.07, coin: 0.06, crit: 0.08, dodge: 0.1, shear: 0.15, zap: 0.3, bubblePop: 0.06, dropAppear: 0.15, dropGet: 0.08, focusTap: 0.08, repair: 0.3, shell: 0.12, spikes: 0.1, splash: 0.2, meteorHit: 0.15, scrollBolt: 0.1, barrierBreak: 0.3, wallBreak: 0.3 };
+  // 雇佣兵音效：同屏最多 6 个兵，按种类限流（出手 / 受击最密，间隔较大）
+  MERC_TYPES.forEach((t) => {
+    MIN_GAP['merc_' + t + '_atk'] = 0.12;
+    MIN_GAP['merc_' + t + '_hurt'] = 0.18;
+    MIN_GAP['merc_' + t + '_die'] = 0.15;
+    MIN_GAP['merc_' + t + '_deploy'] = 0.2;
+  });
+  Object.assign(MIN_GAP, { merc_charge: 0.3, merc_heal: 0.4, merc_rank: 0.3, merc_rally: 1 });
+  A.SOUNDS = SOUNDS;
+  A.MIN_GAP = MIN_GAP;
 
   const LOUD = /^(item_|meteorHit|wallBreak|wallCollapse|scrollBolt|barrierBreak)/;
 
