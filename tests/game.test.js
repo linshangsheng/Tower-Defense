@@ -5752,3 +5752,17 @@ test('手动集火（设计书 175）：点中怪排到最前，再点取消，�
   assert.strictEqual(b.focusAt(c.x, c.y + c.yOffset), true);
   assert.strictEqual(b.rankTargets()[0], a, '再点一次取消');
 });
+
+test('战地修补（设计书 176）：点城墙回血、冷却、满血不触发、点别处不算', () => {
+  const b = newBattle(20); b.hero.cooldown = 1e9; b.wall.max = 1000; b.wall.hp = 500;
+  const C = TD.config;
+  assert.strictEqual(b.repairAt(600, 300), null, '点远处不算');
+  assert.strictEqual(b.repairAt(C.wallX - 30, 300), 'ok');
+  assert.strictEqual(b.wall.hp, 520);
+  assert.strictEqual(b.repairAt(C.wallX - 30, 300), 'cd');
+  assert.strictEqual(b.wall.hp, 520, '冷却中不回血');
+  b.time += C.repair.cd + 1;
+  assert.strictEqual(b.repairAt(C.wallX - 30, 300), 'ok');
+  b.time += 100; b.wall.hp = 1000;
+  assert.strictEqual(b.repairAt(C.wallX - 30, 300), null, '满血不触发（也不消耗冷却）');
+});

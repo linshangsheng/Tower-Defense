@@ -523,6 +523,7 @@
       }
       if (b && !b.over && !game.paused && !game.pendingLane && !game.introPaused) {
         const p = canvasPoint(e);
+        if (b.repairAt(p.x, p.y)) return;
         if (b.focusAt(p.x, p.y)) return;
       }
       if (game.pendingLane) laneClick(game.renderer.laneAt(canvasPoint(e).y));

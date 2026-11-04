@@ -753,6 +753,13 @@
         }
         void V;
       });
+      // 战地修补（设计书 176）
+      on('repair', (e) => {
+        this.fx.push({ kind: 'ring', x: C.wallX - 20, y: battle.heroY, r0: 10, r1: 120, color: '#7fe08a', w: 5, life: 0.6, age: 0, flat: 0.5 });
+        this.text(C.wallX + 30, battle.heroY - 40, '修补！', '#7fe08a', 24, 1.0);
+        this.text(C.wallX + 30, battle.heroY - 16, '+' + e.amount, '#ffffff', 16, 1.0);
+      });
+      on('repairCd', (e) => this.text(C.wallX + 30, battle.heroY - 40, Math.ceil(e.left) + ' s', '#aab', 18, 0.7));
       // 战利品（设计书 169）：掉出光球 / 被拾取
       on('drop', (e) => {
         const df = TD.data.drops[e.d.kind];

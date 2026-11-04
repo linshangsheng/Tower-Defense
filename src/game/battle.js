@@ -1286,6 +1286,22 @@
       return list;
     }
 
+    // 战地修补（设计书 176）：点城墙，回复 2% 最大血量，冷却 25 秒；返回 'ok' / 'cd' / null（没点中城墙）
+    repairAt(px, py) {
+      if (this.over || px > C.wallX + 40 || py < C.fieldTop - 10 || py > C.fieldBottom + 10) return null;
+      if (this.time < (this.repairReadyAt || 0)) {
+        this.emit('repairCd', { left: this.repairReadyAt - this.time });
+        return 'cd';
+      }
+      if (this.wall.hp >= this.wall.max) return null;
+      const amt = this.wall.max * C.repair.pct;
+      this.wall.hp = Math.min(this.wall.max, this.wall.hp + amt);
+      this.repairReadyAt = this.time + C.repair.cd;
+      this.repairCount = (this.repairCount || 0) + 1;
+      this.emit('repair', { amount: Math.round(amt) });
+      return 'ok';
+    }
+
     // 点击战场选目标：点中怪就集火 6 秒，再点一次取消；返回是否点中
     focusAt(px, py) {
       if (this.over) return false;
