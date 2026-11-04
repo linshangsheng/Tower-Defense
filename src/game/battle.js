@@ -120,6 +120,8 @@
       this.fireflyCount = 0;
       this.itemShield = 0;
       this.meteors = [];
+      this.initMercs(opts.loadout && opts.loadout.mercs); // 雇佣兵（设计书 184）
+      this.autoMerc = !!opts.autoMercs; // 机器人 / 自动战斗：自动雇兵
       this.drops = []; // 战利品光球（设计书 169）
       this.dropsTaken = 0;
       this.copperMult = 1; // 幸运铜币：这段时间内击败的怪掉落倍数
@@ -598,6 +600,11 @@
         dead: false,
         bornAt: this.time,
       };
+      // 雇佣兵参战：怪物变多变硬（设计书 184）
+      if (this.mercsOn && !def.boss && !def.bossPart) {
+        m.hp = m.maxHp = Math.round(m.hp * (1 + C.merc.monsterHp));
+        m.dps *= 1 + C.merc.monsterDps;
+      }
       if (def.split) m.nextSplit = 1 - def.split.every;
       if (def.ai) this.initBossAI(m);
       if (def.healer) m.healTimer = 1;
@@ -806,6 +813,32 @@
         const ranged = m.def.ranged;
         const chillDef = m.def.chill;
         const stopX = heal ? heal.holdX : ranged ? ranged.holdX : chillDef ? chillDef.holdX : bub ? bub.holdX : this.wallStopX(m);
+        // 雇佣兵拦截（设计书 184）：地面近战怪撞上兵就停下来打兵，而不是直奔城墙
+        if (this.mercs.length && !heal && !ranged && !chillDef && !bub && !m.burrowed && m.x > stopX) {
+          const blk = this.mercBlockerFor(m);
+          if (blk) {
+            m.state = 'attack';
+            if (m.def.explode) {
+              this.mercHurt(blk, m.def.explode.damage * this.D, m);
+              this.emit('explode', { m });
+              this.kill(m, true);
+              continue;
+            }
+            if (m.def.slam && !m.slammed) {
+              m.slammed = true;
+              this.mercHurt(blk, m.def.slam * this.D, m);
+              this.emit('slam', { m });
+            }
+            if (this.time >= m.frozenUntil && this.time >= m.stunUntil) {
+              m.attackTimer -= dt;
+              if (m.attackTimer <= 0) {
+                m.attackTimer += 1;
+                this.mercHurt(blk, m.def.trait ? this.traitWallDps(m) : m.dps, m);
+              }
+            }
+            continue;
+          }
+        }
         if (m.x > stopX) {
           m.state = 'walk';
           m.x = Math.max(stopX, m.x - this.monsterSpeed(m) * dt);
@@ -819,7 +852,9 @@
             if (m.rangedTimer <= 0) {
               m.rangedTimer = ranged.every;
               this.emit(m.def.bossPart ? 'slap' : 'spit', { m, x: m.x, y: m.y });
-              this.hitWall(ranged.damage * this.D * (m.def.trait ? this.traitShotMult(m) : 1), m);
+              const tgtU = this.mercs.length ? this.mercInRange(m, C.merc.rangedAtMercs) : null;
+              if (tgtU) this.mercHurt(tgtU, ranged.damage * this.D * (m.def.trait ? this.traitShotMult(m) : 1), m);
+              else this.hitWall(ranged.damage * this.D * (m.def.trait ? this.traitShotMult(m) : 1), m);
               if (m.def.trait) this.traitOnShot(m);
               if (ranged.poison) this.addWallDot(ranged.poison.dps * this.D, ranged.poison.duration, 'poison', true, m.type);
             }
@@ -1150,6 +1185,7 @@
       }
       if (m.def.trait || this.hasScavenger) this.traitOnKill(m);
       this.killCopper += copper;
+      if (this.mercsOn && !noReward) this.funds += copper * C.merc.fundsRate;
       if (m.returning && !noReward) {
         this.killSilver += C.returnBossSilver;
         this.emit('silver', { x: m.x, y: m.y + m.yOffset, amount: C.returnBossSilver });
@@ -2677,6 +2713,7 @@
       if (this.buddyTimer !== undefined) this.updateBuddy(dt);
       this.updateMonsters(dt);
       if (this.over) return;
+      if (this.mercsOn) this.updateMercs(dt);
       this.updateWallDots(dt);
       if (this.over) return;
       if (this.zones.length && this.zones[0].until < this.time) this.zones = this.zones.filter((z) => z.until >= this.time);

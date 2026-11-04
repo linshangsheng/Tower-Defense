@@ -204,6 +204,7 @@
       loadout: lo,
       seed: opts.seed || 1,
       autoItems: !opts.noItems,
+      autoMercs: !opts.noMercs,
       autoSupply: true,
       rally: opts.noRally ? 0 : P.rally(save, n),
       difficulty: (save.settings && save.settings.difficulty) || 'normal',

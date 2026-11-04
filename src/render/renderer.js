@@ -758,6 +758,39 @@
         this.text(C.width - 220, C.fieldTop + 40, '宝箱哥布林！', '#ffd23f', 26, 1.6);
         this.bark('treasure', 0.3);
       });
+      // 雇佣兵（设计书 184）
+      on('mercDeploy', (e) => {
+        this.fx.push({ kind: 'ring', x: e.u.x, y: e.u.y, r0: 8, r1: 64, color: e.u.def.color, w: 4, life: 0.5, age: 0, flat: 0.5 });
+        this.fx.push({ kind: 'glow', x: e.u.x, y: e.u.y - 14, r: 40, color: e.u.def.color, life: 0.4, age: 0 });
+        this.text(e.u.x + 10, e.u.y - 54, e.u.def.name, e.u.def.color, 18, 0.9);
+      });
+      on('mercSwing', (e) => {
+        this.fx.push({ kind: 'ring', x: e.x - 6, y: e.y, r0: 6, r1: 34, color: '#ffffff', w: 3, life: 0.2, age: 0, flat: 0.6 });
+        if (this.vfx) this.vfx.spawn(3, () => ({ kind: 'spark', x: e.x - 6, y: e.y, vx: (Math.random() - 0.2) * 160, vy: -30 - Math.random() * 80, g: 240, life: 0.3, r: 2, color: '#ffe9a8' }));
+      });
+      on('mercShot', (e) => {
+        const u = e.u;
+        this.fx.push({ kind: 'spit', x0: u.x + 12, y0: u.y - 16, x1: e.x, y1: e.y, life: 0.22, age: 0, ice: !!e.magic && false });
+        if (e.magic) this.fx.push({ kind: 'glow', x: u.x + 14, y: u.y - 20, r: 22, color: '#c49bff', life: 0.25, age: 0 });
+      });
+      on('mercBlast', (e) => {
+        this.fx.push({ kind: 'ring', x: e.x, y: e.y, r0: 10, r1: e.r, color: '#c49bff', w: 4, life: 0.35, age: 0, flat: 0.6 });
+        this.fx.push({ kind: 'glow', x: e.x, y: e.y, r: e.r * 0.8, color: '#c49bff', life: 0.3, age: 0 });
+      });
+      on('mercCharge', (e) => {
+        this.fx.push({ kind: 'ring', x: e.x, y: e.y, r0: 12, r1: 90, color: '#ffb36b', w: 6, life: 0.4, age: 0, flat: 0.5 });
+        this.text(e.x, e.y - 40, '冲锋！', '#ffb36b', 24, 0.9);
+        this.shake = Math.max(this.shake, 4);
+      });
+      on('mercHeal', (e) => {
+        const t = e.to || { x: C.wallX - 10, y: battle.heroY };
+        this.fx.push({ kind: 'ring', x: t.x, y: t.y - 10, r0: 6, r1: 44, color: '#8cf0a0', w: 3, life: 0.45, age: 0, flat: 0.5 });
+        this.text(t.x, t.y - 36, '+', '#8cf0a0', 20, 0.7);
+      });
+      on('mercDie', (e) => {
+        this.burst(e.u.x, e.u.y - 10, e.u.def.color, 10, 150);
+        this.text(e.u.x, e.u.y - 40, '阵亡……', '#d0d0d0', 18, 0.9);
+      });
       // 战地修补（设计书 176）
       on('repair', (e) => {
         this.fx.push({ kind: 'ring', x: C.wallX - 20, y: battle.heroY, r0: 10, r1: 120, color: '#7fe08a', w: 5, life: 0.6, age: 0, flat: 0.5 });
@@ -1256,6 +1289,7 @@
         for (const m of alive) this.drawMonster(m, b);
         this.drawProjectiles(b);
       }
+      if (b && b.mercs && b.mercs.length) this.drawMercs(b);
       if (b && b.drops && b.drops.length) this.drawDrops(b);
       if (b && b.focus && !b.focus.dead && b.time < b.focusUntil) this.drawFocus(b);
       if (b && !b.over && b.wall.hp < b.wall.max * 0.8) this.drawRepairHint(b);
@@ -3300,6 +3334,116 @@
         ctx.fillRect(x - w / 2, by, (w * m.hp) / m.maxHp, 4);
       }
       ctx.restore();
+    }
+
+    // 雇佣兵：小人 + 血条（设计书 184）
+    drawMercs(b) {
+      const ctx = this.ctx;
+      const list = b.mercs.filter((u) => !u.dead || b.time - u.diedAt < 0.5).sort((p, q) => p.y - q.y);
+      for (const u of list) {
+        const def = u.def;
+        const t = this.t * (u.state === 'move' ? 11 : 4) + u.id;
+        const bob = u.state === 'move' ? Math.abs(Math.sin(t)) * 3 : Math.sin(t) * 1;
+        const x = u.x;
+        const y = u.y + 8;
+        const swing = u.state === 'attack' ? Math.sin(this.t * 14 + u.id) : 0;
+        ctx.save();
+        if (u.dead) ctx.globalAlpha = Math.max(0, 1 - (b.time - u.diedAt) / 0.5);
+        // 影子
+        ctx.fillStyle = 'rgba(0,0,0,0.3)';
+        ctx.beginPath();
+        ctx.ellipse(x, y + 2, 15, 5, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.translate(x, y - bob);
+        // 身体（职业色）
+        ctx.fillStyle = u.hitFlash > 0 ? '#ffffff' : def.color;
+        ctx.strokeStyle = 'rgba(20,20,30,0.85)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(-9, 0);
+        ctx.lineTo(-7, -22);
+        ctx.lineTo(7, -22);
+        ctx.lineTo(9, 0);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        // 头
+        ctx.fillStyle = '#f2cfa5';
+        ctx.beginPath();
+        ctx.arc(0, -29, 8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        // 头盔 / 帽子
+        ctx.fillStyle = u.hitFlash > 0 ? '#ffffff' : 'rgba(40,44,60,0.9)';
+        ctx.beginPath();
+        ctx.arc(0, -31, 8.5, Math.PI, 0);
+        ctx.fill();
+        // 武器 / 装备（朝右）
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = '#d8d8e8';
+        if (def.taunt) {
+          ctx.fillStyle = '#8fb4e8';
+          ctx.beginPath();
+          ctx.moveTo(8, -24);
+          ctx.lineTo(20, -22);
+          ctx.lineTo(18, -6);
+          ctx.lineTo(8, -2);
+          ctx.closePath();
+          ctx.fill();
+          ctx.strokeStyle = 'rgba(20,20,30,0.85)';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        } else if (def.ranged && def.type !== 'magic') {
+          ctx.strokeStyle = '#a9743d';
+          ctx.beginPath();
+          ctx.arc(14, -16, 12, -1.2, 1.2);
+          ctx.stroke();
+          ctx.lineWidth = 1;
+          ctx.strokeStyle = '#eee';
+          ctx.beginPath();
+          ctx.moveTo(14 + Math.cos(-1.2) * 12, -16 + Math.sin(-1.2) * 12);
+          ctx.lineTo(14 + Math.cos(1.2) * 12, -16 + Math.sin(1.2) * 12);
+          ctx.stroke();
+        } else if (def.type === 'magic' || def.support) {
+          ctx.strokeStyle = '#8a5a2a';
+          ctx.beginPath();
+          ctx.moveTo(12, 0);
+          ctx.lineTo(12, -34);
+          ctx.stroke();
+          ctx.fillStyle = def.support ? '#fff2a8' : '#d0a8ff';
+          ctx.beginPath();
+          ctx.arc(12, -37, 5 + Math.sin(this.t * 6) * 0.8, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          // 剑 / 骑士的长枪：攻击时挥动
+          ctx.save();
+          ctx.translate(9, -14);
+          ctx.rotate(-0.5 + (u.state === 'attack' ? swing * 0.9 : 0));
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          ctx.lineTo(def.charge ? 30 : 22, 0);
+          ctx.stroke();
+          ctx.restore();
+          if (def.charge) {
+            // 马：身体下面一个椭圆
+            ctx.fillStyle = '#8b5a2b';
+            ctx.beginPath();
+            ctx.ellipse(0, -2, 17, 8, 0, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+        ctx.restore();
+        // 血条
+        if (!u.dead) {
+          const w = 30;
+          const ry = y - 48;
+          ctx.fillStyle = 'rgba(0,0,0,0.55)';
+          ctx.fillRect(x - w / 2 - 1, ry - 1, w + 2, 6);
+          const r = Math.max(0, u.hp / u.maxHp);
+          ctx.fillStyle = r > 0.5 ? '#7fe08a' : r > 0.25 ? '#ffd23f' : '#ff6a5a';
+          ctx.fillRect(x - w / 2, ry, w * r, 4);
+        }
+      }
     }
 
     // 战地修补提示：城墙受损时，墙边一个会呼吸的扳手；冷却中显示进度圈

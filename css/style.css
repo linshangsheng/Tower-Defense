@@ -4607,3 +4607,88 @@ html[lang='ko'] .title-main {
 .map-goal b {
   color: #ffd98e;
 }
+
+/* ---------- 雇佣兵栏（设计书 184）---------- */
+.merc-bar {
+  position: absolute;
+  right: 12px;
+  bottom: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  pointer-events: none;
+}
+.merc-bar > * {
+  pointer-events: auto;
+}
+.merc-funds {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  padding: 3px 12px;
+  border-radius: 12px;
+  font-weight: 900;
+  color: #ffe08a;
+  background: linear-gradient(rgba(30, 40, 56, 0.72), rgba(12, 18, 28, 0.78));
+  border: 1.5px solid rgba(255, 214, 150, 0.38);
+}
+.merc-funds-num {
+  font-size: 20px;
+  color: #fff;
+}
+.merc-row {
+  display: flex;
+  gap: 8px;
+}
+.merc-btn {
+  position: relative;
+  font: inherit;
+  width: 84px;
+  height: 72px;
+  border-radius: 14px;
+  cursor: pointer;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #f6ecd8;
+  background: linear-gradient(rgba(30, 40, 56, 0.72), rgba(12, 18, 28, 0.78));
+  border: 1.5px solid rgba(255, 214, 150, 0.38);
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.45);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+.merc-btn .merc-icon {
+  font-size: 26px;
+  line-height: 1;
+  z-index: 1;
+}
+.merc-btn .skill-name {
+  font-size: 13px;
+}
+.merc-btn .merc-cost {
+  font-size: 12px;
+  font-weight: 800;
+  color: #ffe08a;
+  z-index: 1;
+}
+.merc-btn.ready {
+  background: linear-gradient(rgba(120, 90, 30, 0.85), rgba(70, 48, 12, 0.88));
+  border-color: #ffd23f;
+}
+.merc-btn.poor .merc-cost {
+  color: #ff8a7a;
+}
+.merc-btn.armed {
+  outline: 4px solid #fff;
+  transform: translateY(-4px);
+}
+.merc-btn .key {
+  position: absolute;
+  top: 2px;
+  right: 5px;
+  font-size: 11px;
+  opacity: 0.8;
+  z-index: 2;
+}

@@ -1002,6 +1002,7 @@
     ['equip', '装备'],
     ['wall', '城墙'],
     ['items', '道具'],
+    ['barracks', '兵营'],
     ['exchange', '汇兑所'],
   ];
 
@@ -1015,9 +1016,10 @@
     if (id === 'equip') return S.gearIconCanvas('helm', '#b46cff', 26);
     if (id === 'wall') return S.iconCanvas('wall_level', 26);
     if (id === 'items') return S.iconCanvas('bomb', 26);
+    if (id === 'barracks') return h('span', { class: 'tab-emoji' }, '⚔️');
     return h('span', { class: 'coin-big gold mini' });
   }
-  const TAB_UNLOCK = { loadout: 0, attrs: 0, wall: 1, items: 2, skills: 2, equip: 0, weapons: 0, exchange: 5 };
+  const TAB_UNLOCK = { loadout: 0, attrs: 0, wall: 1, items: 2, skills: 2, equip: 0, weapons: 0, barracks: 5, exchange: 5 };
   UI.tabUnlocked = (save, id) => P.highestCleared(save) >= (TAB_UNLOCK[id] || 0);
 
   UI.showShop = function (levelNo, tab) {
@@ -1065,6 +1067,7 @@
       equip: shopEquip,
       wall: shopWall,
       items: shopItems,
+      barracks: shopBarracks,
       exchange: shopExchange,
     })[st.tab](content);
 
@@ -1517,6 +1520,60 @@
       if (key === 'level') detail = h('span', null, `${u.desc} 血量 ${st.wallMax} → `, h('b', { class: 'up' }, Math.round(P.wallHpAt(lv + 1) * (1 + P.equipStats(s).wallHpPct))), lv >= u.soft ? h('span', { class: 'hint' }, ` （30 级以后每级 +${Math.round(u.beyond * 100)}% 的 30 级血量）`) : null);
       const capped = (key === 'fortify' && st.wallDr >= 0.75) || (key === 'mend' && st.mend >= 0.5);
       wallGrid.append(card(u.name, lvText(lv), capped ? h('span', null, detail, '（已到上限）') : detail, capped ? h('span', { class: 'equipped' }, '已到上限') : h('div', { class: 'btn-col' }, buyBtn(P.wallCost(s, key), () => P.buyWall(s, key), '升级'), bulkRow('wall', key)), { cls: 'v', icon: TD.sprites.iconCanvas('wall_' + key, 56), bar: lv / u.max, barText: `${lv} / ${u.max}`, over: lv >= u.max }));
+    }
+  }
+
+  // 兵营（设计书 184）：选带上战场的兵种（最多 3 个）、升级兵种
+  function shopBarracks(el) {
+    const s = game.save;
+    const MC = TD.config.merc;
+    const carry = P.mercLoadoutIds(s);
+    el.append(h('div', { class: 'section-title long' }, `雇佣兵（战斗里用军饷雇；最多带 3 个兵种，场上最多 ${MC.cap} 个兵）`));
+    el.append(h('div', { class: 'hint' }, `军饷：开场有 ${MC.startFunds}，击败怪物会增加。雇来的兵会主动冲上去和怪物打；怪物也会变得更多更硬。快捷键 4 / 5 / 6。`));
+    el.append(h('div', { class: 'hint' }, `每个兵种每升一级，血量和伤害 +${Math.round(MC.perLevel * 100)}%，最高 ${MC.maxLevel} 级。`));
+    const grid = h('div', { class: 'card-grid' });
+    el.append(grid);
+    for (const id of D.mercOrder) {
+      const def = D.mercs[id];
+      const unlocked = P.mercUnlocked(s, id);
+      const lv = P.mercLevel(s, id);
+      const on = carry.includes(id);
+      let right;
+      if (!unlocked) right = h('span', { class: 'equipped' }, `通关第 ${def.unlock - 1} 关解锁`);
+      else {
+        const cost = P.mercUpgradeCost(s, id);
+        right = h(
+          'div',
+          { class: 'btn-col' },
+          h(
+            'button',
+            {
+              class: 'btn small' + (on ? ' primary' : ''),
+              onclick: () => {
+                sfx('click');
+                const next = on ? carry.filter((x) => x !== id) : carry.concat(id);
+                if (!on && carry.length >= 3) {
+                  UI.toast('最多带 3 个兵种，先下场一个');
+                  return;
+                }
+                P.setMercLoadout(s, next);
+                game.persist();
+                renderShop();
+              },
+            },
+            on ? '携带中' : '携带'
+          ),
+          cost === null ? h('span', { class: 'equipped' }, '已满级') : buyBtn({ copper: cost }, () => P.mercUpgrade(s, id), '升级')
+        );
+      }
+      grid.append(
+        card(def.name, unlocked ? lvText(lv) : null, def.desc, right, {
+          icon: h('span', { class: 'merc-card-ico' }, def.icon),
+          color: def.color,
+          cls: unlocked ? '' : 'locked',
+          foot: unlocked ? h('span', { class: 'hint' }, `费用 ${def.cost} 军饷 · 冷却 ${def.cd} 秒`) : null,
+        })
+      );
     }
   }
 
@@ -2000,6 +2057,21 @@
     hud.ultFill = h('div', { class: 'ult-fill' });
     hud.ultText = h('span', { class: 'ult-text' });
     hud.ultBar = h('div', { class: 'ult-bar hidden' }, h('span', { class: 'ult-label' }, '万箭天降'), h('div', { class: 'ult-track' }, hud.ultFill), hud.ultText);
+    // 雇佣兵栏（设计书 184）：右下角，三个兵种按钮 + 军饷
+    hud.mercFunds = h('span', { class: 'merc-funds-num' }, '0');
+    hud.mercBtns = (battle.mercSlots || []).map((sl, i) =>
+      h(
+        'button',
+        { class: 'merc-btn', title: sl.def.desc, onclick: () => game.tryMerc(i) },
+        h('span', { class: 'key' }, i + 4),
+        sl.level > 1 ? h('span', { class: 'lv-badge' }, 'Lv' + sl.level) : null,
+        h('span', { class: 'merc-icon' }, sl.def.icon),
+        h('span', { class: 'skill-name' }, sl.def.name),
+        h('span', { class: 'merc-cost' }, '💰' + sl.def.cost),
+        h('span', { class: 'cd' })
+      )
+    );
+    hud.mercBar = battle.mercsOn ? h('div', { class: 'merc-bar' }, h('div', { class: 'merc-funds' }, h('span', null, '军饷'), hud.mercFunds), h('div', { class: 'merc-row' }, hud.mercBtns)) : null;
     hud.nudge = h('div', { class: 'nudge-bubble hidden' }, '点我释放技能！');
     hud.skillBtns = skillBtns;
     hud.itemBtns = itemBtns;
@@ -2025,6 +2097,7 @@
         h('button', { class: 'btn small pause-btn', onclick: () => game.togglePause() }, '❚❚')
       ),
       hud.ultBar,
+      hud.mercBar,
       hud.laneHint,
       hud.nudge,
       h('div', { class: 'hud-bottom' }, h('div', { class: 'skill-bar' }, skillBtns, hud.ultBtn, battle.skills.length || battle.ult ? null : h('span', { class: 'hint' }, '没有携带主动技能')), h('div', { class: 'item-bar' }, itemBtns), h('div', { class: 'ctrl-bar' }, hud.targetBtn, hud.autoBtn, hud.speedBtn))
@@ -2120,6 +2193,24 @@
       }
       btn.classList.toggle('armed', game.pendingLane && game.pendingLane.kind === 'item' && game.pendingLane.index === i);
     });
+    if (hud.mercBar) {
+      setText(hud.mercFunds, Math.floor(b.funds));
+      b.mercSlots.forEach((sl, i) => {
+        const btn = hud.mercBtns[i];
+        const ready = b.mercReady(i);
+        btn.classList.toggle('ready', ready);
+        btn.classList.toggle('poor', b.funds < sl.def.cost);
+        btn.classList.toggle('armed', !!(game.pendingLane && game.pendingLane.kind === 'merc' && game.pendingLane.index === i));
+        const cd = btn.querySelector('.cd');
+        if (sl.cd > 0) {
+          cd.style.background = `conic-gradient(rgba(30,20,10,0.65) ${(sl.cd / sl.def.cd) * 360}deg, transparent 0)`;
+          setText(cd, Math.ceil(sl.cd));
+        } else {
+          cd.style.background = 'none';
+          setText(cd, '');
+        }
+      });
+    }
     setText(hud.targetBtn, '🎯 ' + D.targetModes[b.target]);
     setText(hud.speedBtn, game.speed === 3 ? '⏭ 3倍速' : game.speed === 2 ? '⏩ 2倍速' : '▶ 1倍速');
     setText(hud.autoBtn, b.autoCast ? '自动释放：开' : '自动释放：关');

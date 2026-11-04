@@ -109,6 +109,10 @@
     battle.on('bossInterrupt', () => TD.audio.play('interrupt'));
     battle.on('streak', () => TD.audio.play('streak'));
     battle.on('bell', () => TD.audio.play('bell'));
+    battle.on('mercDeploy', () => TD.audio.play('skill'));
+    battle.on('mercSwing', () => TD.audio.play('hit'));
+    battle.on('mercShot', () => TD.audio.play('shoot'));
+    battle.on('mercDie', () => TD.audio.play('pop'));
     battle.on('drop', () => TD.audio.play('dropAppear'));
     battle.on('treasure', () => TD.audio.play('eliteAppear'));
     battle.on('dropGet', () => TD.audio.play('dropGet'));
@@ -353,6 +357,28 @@
     });
   };
 
+  // 雇佣兵（设计书 184）：点按钮 → 选车道（多车道时）→ 雇佣；单车道直接雇佣
+  game.tryMerc = function (i) {
+    const b = game.battle;
+    if (!b || game.paused || b.over || !b.mercsOn) return;
+    const sl = b.mercSlots[i];
+    if (!sl) return;
+    if (!b.mercReady(i)) {
+      TD.audio.play('error');
+      if (b.waveState === 'prepare') TD.ui.toast('第一波怪物出来后才能雇佣兵');
+      else if (sl.cd > 0) TD.ui.toast(`冷却中，还要 ${Math.ceil(sl.cd)} 秒`);
+      else if (b.funds < sl.def.cost) TD.ui.toast(`军饷不够：还差 ${Math.ceil(sl.def.cost - b.funds)}（打怪就能攒）`);
+      else TD.ui.toast('场上的兵已经满了');
+      return;
+    }
+    if (b.lanes > 1) {
+      if (game.pendingLane && game.pendingLane.kind === 'merc' && game.pendingLane.index === i) setPending(null);
+      else setPending({ kind: 'merc', index: i });
+      return;
+    }
+    b.deployMerc(i, 0);
+  };
+
   game.tryItem = function (i) {
     const b = game.battle;
     if (!b || game.paused || b.over) return;
@@ -378,6 +404,7 @@
     const b = game.battle;
     if (!p || !b || lane < 0) return;
     if (p.kind === 'skill') b.castSkill(p.index, lane);
+    else if (p.kind === 'merc') b.deployMerc(p.index, lane);
     else b.useItem(p.index, lane);
     setPending(null);
   }
@@ -564,6 +591,7 @@
       }
       if (game.paused) return;
       if (k >= '1' && k <= '3') game.trySkill(+k - 1);
+      else if (k >= '4' && k <= '6') game.tryMerc(+k - 4);
       else if (k.length === 1 && 'qwerzxc'.includes(k)) game.tryItem('qwerzxc'.indexOf(k));
       else if (k === 'v') game.tryUltimate();
       else if (k === 'f') game.toggleSpeed();

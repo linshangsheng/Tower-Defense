@@ -5843,3 +5843,102 @@ test('宝箱怪统计：抓住数计入结果与累计、宝箱猎人成就', ()
   s.stats.treasures = 10;
   assert.ok(TD.data.achievements.find((a) => a.id === 'treasure10').check(s));
 });
+
+test('雇佣兵（设计书 184）：解锁、携带、升级、存档字段', () => {
+  const P = TD.progression;
+  const s = P.newSave();
+  assert.deepStrictEqual(P.mercUnlockedList(s), [], '没通关前没有兵');
+  s.levels[5] = { stars: 3, clears: 1 };
+  assert.deepStrictEqual(P.mercUnlockedList(s), ['swordsman']);
+  for (const id of TD.data.mercOrder) s.levels[TD.data.mercs[id].unlock - 1] = { stars: 3, clears: 1 };
+  assert.strictEqual(P.mercUnlockedList(s).length, 6);
+  assert.deepStrictEqual(P.mercLoadoutIds(s), ['swordsman', 'guard', 'archer'], '默认前 3 个');
+  P.setMercLoadout(s, ['knight', 'knight', 'mage', 'nope']);
+  assert.deepStrictEqual(P.mercLoadoutIds(s), ['knight', 'mage']);
+  P.setMercLoadout(s, []); assert.deepStrictEqual(P.mercLoadoutIds(s), [], '可以一个都不带');
+  P.setMercLoadout(s, ['knight', 'mage']);
+  assert.strictEqual(P.mercLevel(s, 'mage'), 1);
+  const c0 = P.mercUpgradeCost(s, 'mage');
+  s.copper = c0 - 1; assert.strictEqual(P.mercUpgrade(s, 'mage'), false);
+  s.copper = c0 + 5; assert.strictEqual(P.mercUpgrade(s, 'mage'), true);
+  assert.strictEqual(P.mercLevel(s, 'mage'), 2); assert.strictEqual(s.copper, 5);
+  s.mercLv.mage = 10; assert.strictEqual(P.mercUpgradeCost(s, 'mage'), null);
+  assert.ok(P.battleLoadout(s).mercs.length === 2);
+  const bad = P.migrate(Object.assign(P.newSave(), { mercLv: 'x', mercLoadout: 7 }));
+  assert.ok(typeof bad.mercLv === 'object' && Array.isArray(bad.mercLoadout), '坏存档回默认值');
+});
+
+test('雇佣兵战斗（设计书 184）：雇佣扣军饷、近战拦怪、远程输出、牧师治疗、阵亡', () => {
+  const mk = (ids) => {
+    const P = TD.progression; const s = P.newSave();
+    for (const id of TD.data.mercOrder) s.levels[TD.data.mercs[id].unlock - 1] = { stars: 3, clears: 1 };
+    P.setMercLoadout(s, ids);
+    const b = new TD.Battle({ level: 20, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 3 });
+    b.hero.cooldown = 1e9; b.wall.hp = b.wall.max = 1e12; b.waveState = 'waiting'; b.eliteOK = false;
+    return b;
+  };
+  let b = mk(['swordsman', 'guard', 'archer']);
+  assert.ok(b.mercsOn && b.mercSlots.length === 3 && b.funds === TD.config.merc.startFunds);
+  assert.ok(b.mercReady(0));
+  assert.strictEqual(b.deployMerc(0, 1), true);
+  assert.strictEqual(b.funds, TD.config.merc.startFunds - TD.data.mercs.swordsman.cost);
+  assert.strictEqual(b.mercReady(0), false, '冷却中');
+  // 怪物撞上兵会停下来打兵（不去啃城墙）
+  const m = b.spawnMonster('goblin', 1, 600);
+  const u = b.mercs[0];
+  for (let i = 0; i < 60 * 12; i++) b.step(1 / 60);
+  assert.ok(m.dead || u.dead || m.hp < m.maxHp, '兵和怪交手了');
+  assert.ok(b.wall.hp === b.wall.max, '怪物在兵这里被拦住，没碰到城墙');
+  // 阵亡
+  b = mk(['guard']); b.deployMerc(0, 1); const g = b.mercs[0];
+  const slime = b.spawnMonster('slime', 1, g.x + 20);
+  b.mercHurt(g, g.maxHp * 10, slime); assert.ok(g.dead && b.mercDeaths === 1);
+  // 远程兵能打飞行怪，近战兵不能
+  b = mk(['archer']); b.deployMerc(0, 1);
+  const bee = b.spawnMonster('bee', 1, 500);
+  for (let i = 0; i < 60 * 10; i++) b.step(1 / 60);
+  assert.ok(bee.dead || bee.hp < bee.maxHp, '弓手打到了飞行怪');
+  // 牧师给受伤友军回血
+  b = mk(['guard', 'swordsman', 'archer', 'mage', 'cleric']); b.mercSlots = b.mercSlots.slice(); // 前 3 个
+  b = mk(['guard', 'cleric']); b.funds = 999; b.deployMerc(0, 1); b.deployMerc(1, 1);
+  const tank = b.mercs[0]; tank.hp = tank.maxHp * 0.3; b.time += 0.1;
+  for (let i = 0; i < 60 * 5; i++) b.step(1 / 60);
+  assert.ok(tank.hp > tank.maxHp * 0.3, '牧师治疗');
+  // 击败怪物增加军饷
+  b = mk(['swordsman']); const f0 = b.funds; b.kill(b.spawnMonster('goblin', 1, 800)); assert.ok(b.funds > f0);
+  // 妖塔里没有兵
+  const t = new TD.Battle({ level: 20, levelDef: Object.assign({}, TD.data.levels[20], { tower: true }), stats: TD.progression.heroStats(TD.progression.newSave()), loadout: { active: [], items: [], mercs: [{ id: 'swordsman', level: 1 }] }, seed: 1 });
+  assert.strictEqual(t.mercsOn, false);
+});
+
+test('雇佣兵与怪物的互动（设计书 184）：开兵怪物更硬、远程怪打兵、Boss 横扫、自动雇兵、自爆怪炸兵', () => {
+  const P = TD.progression;
+  const mkSave = (ids) => { const s = P.newSave(); for (const id of TD.data.mercOrder) s.levels[TD.data.mercs[id].unlock - 1] = { stars: 3, clears: 1 }; P.setMercLoadout(s, ids); return s; };
+  const mk = (ids, extra) => { const s = mkSave(ids); const b = new TD.Battle(Object.assign({ level: 20, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 3 }, extra || {})); b.hero.cooldown = 1e9; b.wall.hp = b.wall.max = 1e12; b.waveState = 'waiting'; b.eliteOK = false; return b; };
+  // 带兵的战斗里怪物更硬；不带兵就没有加成
+  const withM = mk(['swordsman']); const without = mk([]);
+  const a = withM.spawnMonster('goblin', 1, 900); const c = without.spawnMonster('goblin', 1, 900);
+  assert.ok(a.maxHp > c.maxHp * (1 + TD.config.merc.monsterHp) * 0.98 && a.dps > c.dps, '带兵：怪物 +血 +攻');
+  assert.strictEqual(without.mercsOn, false);
+  // 远程怪优先打射程内的兵，而不是城墙
+  let b = mk(['guard']); b.funds = 999; b.deployMerc(0, 1);
+  const spitter = b.spawnMonster('imp', 1, TD.data.monsters.imp.ranged.holdX);
+  b.step(0.016); spitter.rangedTimer = 0; const w0 = b.wall.hp; const u0 = b.mercs[0]; const h0 = u0.hp; spitter.x = u0.x + 200; b.step(0.016);
+  assert.ok(u0.hp < h0 && b.wall.hp === w0, '远程怪打兵不打墙');
+  // Boss 横扫：贴在 Boss 身边的兵掉血
+  b = mk(['guard']); b.funds = 999; b.deployMerc(0, 1);
+  const boss = b.spawnMonster('boarKing', 1, b.mercs[0].x + 10);
+  const g = b.mercs[0]; const hp1 = g.hp; boss.ai.mode = 'walk'; b.updateMercs(1);
+  assert.ok(g.hp < hp1, 'Boss 横扫');
+  // 自动雇兵：有钱有冷却就雇，前排先于后排
+  b = mk(['archer', 'swordsman', 'guard'], { autoMercs: true }); b.funds = 999;
+  b.spawnMonster('goblin', 1, 700); b.time = 1;
+  for (let i = 0; i < 60 * 4; i++) b.step(1 / 60);
+  assert.ok(b.mercDeployed >= 2, '自动雇了兵：' + b.mercDeployed);
+  assert.ok(b.mercs[0].def.taunt || !b.mercs[0].def.ranged, '第一个雇的是前排');
+  // 自爆怪撞上兵：炸兵，不炸墙
+  b = mk(['guard']); b.funds = 999; b.deployMerc(0, 1);
+  const boom = b.spawnMonster('cactus', 1, b.mercs[0].x + 20);
+  const h2 = b.mercs[0].hp; for (let i = 0; i < 30; i++) b.step(1 / 60);
+  assert.ok(boom.dead && b.mercs[0].hp < h2 && b.wall.hp === b.wall.max, '自爆怪炸在兵身上');
+});

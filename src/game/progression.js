@@ -45,6 +45,9 @@
       achievements: {},
       settings: { sound: true, speed: 1, difficulty: 'normal', restMinutes: 30 },
       login: { last: '', day: 0 }, // 每日登录奖励（设计书 162）
+      mercLv: {}, // 雇佣兵等级（设计书 184）：兵种 id → 等级（默认 1）
+      mercLoadout: [], // 带上战场的兵种（最多 3 个）
+      mercChosen: false, // 玩家自己选过带谁了（没选过就自动取前 3 个已解锁的）
       hero: 'dang', // 当前英雄（设计书 42）
       buddy: null, // 助战伙伴（设计书 51）
       outfit: 'classic', // 当前穿的角色（设计书 72）
@@ -902,6 +905,34 @@
   };
 
   // 出战配置：只保留已解锁槽位、已拥有的物品
+  // ---------- 雇佣兵（设计书 184）----------
+  P.mercUnlocked = (save, id) => !!D.mercs[id] && P.isCleared(save, D.mercs[id].unlock - 1);
+  P.mercUnlockedList = (save) => D.mercOrder.filter((id) => P.mercUnlocked(save, id));
+  P.mercLevel = (save, id) => Math.min(C.merc.maxLevel, Math.max(1, Math.floor(Number(save.mercLv && save.mercLv[id])) || 1));
+  P.mercUpgradeCost = (save, id) => {
+    const lv = P.mercLevel(save, id);
+    return lv >= C.merc.maxLevel ? null : Math.round(C.merc.upgradeBase * Math.pow(C.merc.upgradeGrow, lv - 1));
+  };
+  P.mercUpgrade = function (save, id) {
+    const cost = P.mercUpgradeCost(save, id);
+    if (cost === null || !P.mercUnlocked(save, id) || save.copper < cost) return false;
+    save.copper -= cost;
+    save.mercLv[id] = P.mercLevel(save, id) + 1;
+    return true;
+  };
+  P.mercLoadoutIds = function (save) {
+    const ok = (id) => P.mercUnlocked(save, id);
+    const picked = [];
+    for (const id of save.mercLoadout || []) if (id && ok(id) && !picked.includes(id)) picked.push(id);
+    if (save.mercChosen) return picked.slice(0, 3);
+    return P.mercUnlockedList(save).slice(0, 3);
+  };
+  P.setMercLoadout = function (save, ids) {
+    save.mercLoadout = ids.filter((id, i) => id && P.mercUnlocked(save, id) && ids.indexOf(id) === i).slice(0, 3);
+    save.mercChosen = true;
+  };
+  P.mercList = (save) => P.mercLoadoutIds(save).map((id) => ({ id, level: P.mercLevel(save, id) }));
+
   P.battleLoadout = function (save) {
     const lo = save.loadout;
     const nA = P.slotCount(save, 'active');
@@ -918,7 +949,7 @@
         itemQty[id] = Math.min(D.itemRules.perKind, q);
       }
     });
-    return { active, activeLv, items, itemQty, target: lo.target, autoCast: lo.autoCast, buddy: P.buddyId(save), ultimate: P.ultimateOwned(save) };
+    return { active, activeLv, items, itemQty, target: lo.target, autoCast: lo.autoCast, buddy: P.buddyId(save), ultimate: P.ultimateOwned(save), mercs: P.mercList(save) };
   };
 
   // 战斗里用掉一个道具：已装备的个数减 1；用完了栏位清空（背包里还有的话，要重新装备才会带进下一场）
