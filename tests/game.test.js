@@ -6066,3 +6066,21 @@ test('怪物绕后（设计书 193）：狼绕过前排，只缠上后排兵', (
   assert.strictEqual(b.mercBlockerFor(wolf), a, '狼缠上了后排弓手');
   assert.ok(TD.data.monsters.ironWolf.trait && TD.data.monsters.ironWolf.trait.id === 'flank', '铁狼继承绕后');
 });
+
+test('蝙蝠俯冲（设计书 194）：飞行怪只缠上后排兵，前排拦不住也够不着', () => {
+  const P = TD.progression; const s = P.newSave();
+  for (const id of TD.data.mercOrder) s.levels[TD.data.mercs[id].unlock - 1] = { stars: 3, clears: 1 };
+  P.setMercLoadout(s, ['guard', 'archer']);
+  const b = new TD.Battle({ level: 40, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 3 });
+  b.hero.cooldown = 1e9; b.wall.hp = b.wall.max = 1e12; b.waveState = 'waiting'; b.funds = 999; b.eliteOK = false;
+  b.deployMerc(0, 1); b.deployMerc(1, 1);
+  const g = b.mercs[0], a = b.mercs[1]; g.x = 500; a.x = 300;
+  const bat = b.spawnMonster('bat', 1, 505); const bee = b.spawnMonster('bee', 1, 505);
+  assert.strictEqual(b.mercBlockerFor(bee), null, '普通飞行怪无视兵');
+  assert.notStrictEqual(b.mercBlockerFor(bat), g, '蝙蝠不被盾卫拦');
+  bat.x = a.x + 10;
+  assert.strictEqual(b.mercBlockerFor(bat), a, '蝙蝠俯冲缠上弓手');
+  assert.ok(TD.data.monsters.bloodBat.trait.id === 'dive', '吸血蝠继承');
+  // 弓手能打到它，剑士打不到
+  assert.ok(b.mercTargets(a).includes(bat) && !b.mercTargets(g).includes(bat));
+});
