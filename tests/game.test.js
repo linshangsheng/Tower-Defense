@@ -5829,3 +5829,17 @@ test('宝箱哥布林（设计书 182）：定时出现、血厚跑得快、打�
   assert.ok(!early.monsters.some((x) => x.treasure), '前 4 关不出');
   TD.config.eliteRate = 0.015;
 });
+
+test('宝箱怪统计：抓住数计入结果与累计、宝箱猎人成就', () => {
+  TD.config.eliteRate = 0;
+  const b = newBattle(20); b.hero.cooldown = 1e9; b.wall.hp = b.wall.max = 1e12;
+  const m = b.spawnMonster('gobling', 1, 800); m.treasure = true; b.kill(m);
+  const m2 = b.spawnMonster('gobling', 1, 800); m2.treasure = true; b.kill(m2, true);
+  TD.config.eliteRate = 0.015;
+  assert.strictEqual(b.treasuresKilled, 1);
+  const s = TD.progression.newSave();
+  TD.progression.recordStats(s, { treasures: 4, killsByType: {} });
+  assert.strictEqual(s.stats.treasures, 4);
+  s.stats.treasures = 10;
+  assert.ok(TD.data.achievements.find((a) => a.id === 'treasure10').check(s));
+});

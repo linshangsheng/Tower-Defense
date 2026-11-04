@@ -28,6 +28,7 @@
     { id: 'refresh3', name: '精打细算', desc: '一场战斗里刷新补给 3 次', reward: { silver: 2 }, check: (s, c) => !!(c && c.supplyRefreshes >= 3) },
     { id: 'daily7', name: '常来常往', desc: '累计完成 7 次每日挑战', reward: { silver: 3, diamond: 3 }, check: (s) => Object.keys(s.daily || {}).length >= 7 },
     { id: 'elite30', name: '精英猎手', desc: '累计击败 30 只精英怪', reward: { silver: 3 }, check: (s) => (s.stats.elites || 0) >= 30 },
+    { id: 'treasure10', name: '宝箱猎人', desc: '累计抓住 10 只宝箱哥布林', reward: { silver: 4 }, check: (s) => (s.stats.treasures || 0) >= 10 },
     { id: 'scavenger', name: '拾荒小能手', desc: '累计拾取 50 个战利品光球', reward: { silver: 3 }, check: (s) => (s.stats.drops || 0) >= 50 },
     { id: 'bubbles', name: '啵啵啵', desc: '累计戳破 100 个泡泡', reward: { silver: 3 }, check: (s) => (s.stats.bubbles || 0) >= 100 },
     { id: 'perfect', name: '毫发无损', desc: '第 3 关以后，城墙满血通关任意一关', reward: { silver: 2 }, check: (s, c) => !!(c && c.win && c.level >= 3 && c.wallRatio >= 0.9999) },

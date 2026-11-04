@@ -1158,6 +1158,7 @@
       if (this.mods.killHeal && !noReward) this.wall.hp = Math.min(this.wall.max, this.wall.hp + this.wall.max * this.mods.killHeal);
       this.emit('death', { m, copper, noReward: !!noReward });
       if (!noReward) this.maybeDrop(m);
+      if (m.treasure && !noReward) this.treasuresKilled = (this.treasuresKilled || 0) + 1;
       if (m.elite) {
         this.eliteOnDeath(m);
         if (!noReward) this.elitesKilled = (this.elitesKilled || 0) + 1;
@@ -2716,6 +2717,7 @@
         fervor: this.fervorCount || 0,
         drops: this.dropsTaken || 0,
         elites: this.elitesKilled || 0,
+        treasures: this.treasuresKilled || 0,
         bubbles: this.bubblesPopped,
         combos: Object.assign({}, this.combos),
         minWallRatio: this.minWallRatio,

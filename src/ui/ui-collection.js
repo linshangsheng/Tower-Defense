@@ -228,7 +228,7 @@
       if (topK !== 'boss' && D.monsters[topK] && topV / wt >= 0.3 && D.monsterTags(D.monsters[topK]).length) tips.push(`城墙伤害最多来自「${name(topK)}」：${D.monsters[topK].desc}`);
     }
     if (!parts.length) return null;
-    return h('details', { class: 'report', open: open ? true : null }, h('summary', null, '📊 战斗报告', res.bestStreak >= 5 ? h('span', { class: 'rep-streak' }, `  最高连击 ${res.bestStreak}`) : null), res.drops > 0 ? h('span', { class: 'rep-streak' }, `  拾取光球 ${res.drops}`) : null, res.elites > 0 ? h('span', { class: 'rep-streak' }, `  击败精英 ${res.elites}`) : null, parts, tips.map((t) => h('div', { class: 'note rep-tip' }, '💡 ' + t)));
+    return h('details', { class: 'report', open: open ? true : null }, h('summary', null, '📊 战斗报告', res.bestStreak >= 5 ? h('span', { class: 'rep-streak' }, `  最高连击 ${res.bestStreak}`) : null), res.drops > 0 ? h('span', { class: 'rep-streak' }, `  拾取光球 ${res.drops}`) : null, res.elites > 0 ? h('span', { class: 'rep-streak' }, `  击败精英 ${res.elites}`) : null, res.treasures > 0 ? h('span', { class: 'rep-streak' }, `  抓住宝箱怪 ${res.treasures}`) : null, parts, tips.map((t) => h('div', { class: 'note rep-tip' }, '💡 ' + t)));
   };
 
   UI.showModeResult = function (battle, reward) {
