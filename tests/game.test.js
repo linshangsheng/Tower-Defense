@@ -5975,3 +5975,14 @@ test('雇佣兵造型（设计书 186）：六个兵种在每种状态下都能�
   }
   assert.strictEqual(TD.mercArt.draw(ctx, 'nope', 0, 0, { t: 0 }, 1), false);
 });
+
+test('统一图标库（设计书 187）：图标齐全、emoji 映射都指向存在的图标', () => {
+  require('../src/ui/icons.js');
+  const I = TD.icons;
+  assert.ok(I.names.length >= 40, '图标数量：' + I.names.length);
+  for (const [emo, name] of Object.entries(I.MAP)) assert.ok(I.names.includes(name), `${emo} → ${name} 存在`);
+  for (const id of Object.values(TD.data.drops)) assert.ok(I.names.includes(id.ico), '光球图标 ' + id.ico);
+  // 画布绘制：没有 Path2D 的环境（Node）下安全返回 false，不抛异常
+  assert.strictEqual(I.draw({ save() {}, restore() {} }, 'check', 0, 0, 10), false);
+  assert.strictEqual(I.draw({}, 'nope', 0, 0, 10), false);
+});

@@ -9,11 +9,11 @@
 
   // 战利品（设计书 169）：击败怪物偶尔掉出光球，点一下拾取；不点就消失，不拿也不会输
   const DROPS = {
-    purse: { name: '铜钱袋', icon: '💰', color: '#ffd23f', w: 40 },
-    mend: { name: '修墙', icon: '🧱', color: '#7fe08a', w: 25 },
-    fury: { name: '狂怒', icon: '🔥', color: '#ff7a4f', w: 20 },
-    gale: { name: '疾风', icon: '💨', color: '#8fd8ff', w: 15 },
-    frost: { name: '冰封', icon: '❄️', color: '#b8f0ff', w: 10 },
+    purse: { name: '铜钱袋', icon: '💰', ico: 'coinbag', color: '#ffd23f', w: 40 },
+    mend: { name: '修墙', icon: '🧱', ico: 'wall', color: '#7fe08a', w: 25 },
+    fury: { name: '狂怒', icon: '🔥', ico: 'flame', color: '#ff7a4f', w: 20 },
+    gale: { name: '疾风', icon: '💨', ico: 'wind', color: '#8fd8ff', w: 15 },
+    frost: { name: '冰封', icon: '❄️', ico: 'snowflake', color: '#b8f0ff', w: 10 },
   };
   TD.data.drops = DROPS;
   const DROP_RATE = 0.035;

@@ -37,6 +37,7 @@
   UI.init = function (g) {
     game = g;
     root = document.getElementById('ui');
+    if (TD.icons) TD.icons.watch(root); // 文字里的 emoji → 统一的线性图标（设计书 187）
   };
 
   // 给拆出去的界面文件（ui-story.js、ui-collection.js）共用的内部工具

@@ -1,0 +1,529 @@
+/* =====================================================================
+   设计系统 v2（设计书 187）：以苹果人机界面规范为标准重做的一层
+   原则：清晰（信息有层级，少即是多）、克制（一个强调色，不到处发光）、层次（材质 + 阴影表达前后，不靠粗描边）、
+        一致（同一套字阶 / 间距 / 圆角 / 图标）、可达（44pt 触控、对比度、焦点环、减少动态效果）。
+   这一层排在 style.css 之后，只改"皮肤"，不动结构。
+   ===================================================================== */
+:root {
+  /* 字体：苹果系统字体优先，中文走苹方 */
+  --font: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'PingFang SC', 'Hiragino Sans GB', 'Inter', 'Segoe UI', 'Noto Sans CJK SC', system-ui, 'Noto Sans', 'Noto Sans Thai', 'Leelawadee UI', sans-serif;
+  /* 字阶（Dynamic Type 的几档）：行高 ≈ 1.3 */
+  --fs-caption: 12px;
+  --fs-footnote: 13px;
+  --fs-body: 15px;
+  --fs-headline: 17px;
+  --fs-title3: 20px;
+  --fs-title2: 24px;
+  --fs-title1: 30px;
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+  /* 4pt 栅格 */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 20px;
+  --s6: 24px;
+  /* 圆角：同心圆角（外 = 内 + 间距） */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 22px;
+  /* 材质与分隔线 */
+  --mat-regular: rgba(34, 38, 52, 0.62);
+  --mat-thick: rgba(24, 27, 39, 0.82);
+  --sep: rgba(255, 255, 255, 0.09);
+  --fill-1: rgba(255, 255, 255, 0.06);
+  --fill-2: rgba(255, 255, 255, 0.11);
+  --fill-3: rgba(255, 255, 255, 0.17);
+  /* 唯一的强调色：暖金（只用在主操作和"当前选中"） */
+  --accent: #ffb340;
+  --accent-hi: #ffd07a;
+  --accent-text: #2a1a08;
+  --accent-fill: rgba(255, 179, 64, 0.16);
+  /* 文字层级 */
+  --label: rgba(255, 255, 255, 0.94);
+  --label-2: rgba(235, 235, 245, 0.64);
+  --label-3: rgba(235, 235, 245, 0.38);
+  /* 层级阴影 */
+  --elev-1: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --elev-2: 0 8px 24px rgba(0, 0, 0, 0.36);
+  --elev-3: 0 24px 64px rgba(0, 0, 0, 0.5);
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur: 180ms;
+  font-family: var(--font);
+}
+
+html,
+body,
+button,
+input,
+select {
+  font-family: var(--font);
+}
+body {
+  font-size: var(--fs-body);
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ---------- 图标 ---------- */
+.ico {
+  display: inline-block;
+  width: 1.18em;
+  height: 1.18em;
+  vertical-align: -0.2em;
+  margin-right: 0.3em;
+  line-height: 1;
+  flex: none;
+}
+.ico svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.ico:last-child {
+  margin-right: 0;
+}
+.tone-gold { color: #ffc54d; }
+.tone-green { color: #7fe08a; }
+.tone-red { color: #ff7a6e; }
+.tone-orange { color: #ff9a4a; }
+.tone-ice { color: #9fdcff; }
+
+/* ---------- 焦点环 / 点按反馈 ---------- */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+button,
+.card,
+.tab,
+.lo-chip,
+.pick {
+  transition: transform var(--dur) var(--ease), background-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease), opacity var(--dur) var(--ease);
+}
+
+/* ---------- 按钮 ---------- */
+.btn {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.01em;
+  min-height: 44px;
+  padding: 0 var(--s5);
+  border: none;
+  border-radius: var(--r-md);
+  color: var(--label);
+  background: var(--fill-2);
+  box-shadow: none;
+  text-shadow: none;
+  white-space: nowrap;
+}
+.btn:hover:not([disabled]) {
+  background: var(--fill-3);
+  transform: none;
+}
+.btn:active:not([disabled]) {
+  transform: scale(0.97);
+  background: var(--fill-3);
+  box-shadow: none;
+}
+.btn.primary {
+  color: var(--accent-text);
+  background: linear-gradient(var(--accent-hi), var(--accent));
+  border: none;
+  text-shadow: none;
+  box-shadow: 0 4px 16px rgba(255, 179, 64, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+.btn.primary:hover:not([disabled]) {
+  background: linear-gradient(#ffdc94, #ffbd57);
+}
+.btn.danger {
+  background: rgba(255, 90, 80, 0.2);
+  color: #ffb4ad;
+  border: none;
+}
+.btn[disabled] {
+  opacity: 0.4;
+}
+.btn.small {
+  min-height: 36px;
+  padding: 0 var(--s4);
+  font-size: var(--fs-footnote);
+  border-radius: 10px;
+  position: relative;
+}
+.btn.small::after {
+  /* 视觉 36pt，点击热区 44pt */
+  content: '';
+  position: absolute;
+  inset: -4px -2px;
+}
+.btn.big {
+  min-height: 52px;
+  font-size: var(--fs-headline);
+  border-radius: var(--r-lg);
+}
+.btn.icon-btn {
+  min-width: 44px;
+  padding: 0 var(--s2);
+}
+
+/* ---------- 顶栏 / 弹窗：材质 ---------- */
+.topbar {
+  -webkit-backdrop-filter: blur(24px) saturate(1.5);
+  backdrop-filter: blur(24px) saturate(1.5);
+  background: rgba(16, 19, 30, 0.58);
+  border: none;
+  border-bottom: 0.5px solid var(--sep);
+  box-shadow: none;
+}
+.modal {
+  border-radius: var(--r-xl);
+  background: var(--mat-thick);
+  -webkit-backdrop-filter: blur(32px) saturate(1.5);
+  backdrop-filter: blur(32px) saturate(1.5);
+  border: 0.5px solid rgba(255, 255, 255, 0.14);
+  box-shadow: var(--elev-3);
+}
+.modal h2 {
+  font-size: var(--fs-title3);
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.02em;
+}
+.modal-back {
+  background: rgba(0, 0, 0, 0.42);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+/* ---------- 侧栏页签：选中 = 淡强调色底 + 强调色字（不再是整块亮黄） ---------- */
+.tab {
+  min-height: 44px;
+  border-radius: var(--r-md);
+  border: none;
+  background: transparent;
+  color: var(--label);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-medium);
+  box-shadow: none;
+}
+.tab:hover {
+  background: var(--fill-1);
+}
+.tab.on {
+  background: var(--accent-fill);
+  color: var(--accent-hi);
+  box-shadow: inset 0 0 0 1px rgba(255, 179, 64, 0.4);
+}
+/* "新"角标：只留一个小红点，不再是一排红色药丸 */
+.new-badge {
+  font-size: 0 !important;
+  width: 8px;
+  height: 8px;
+  min-width: 0;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 50%;
+  background: #ff5a4f !important;
+  box-shadow: 0 0 0 2px rgba(20, 24, 36, 0.9);
+  top: 8px !important;
+  right: 8px !important;
+  left: auto !important;
+  transform: none !important;
+  animation: none !important;
+}
+
+/* ---------- 卡片 ---------- */
+.card {
+  border-radius: var(--r-lg);
+  background: var(--fill-1);
+  border: 0.5px solid var(--sep);
+  box-shadow: none;
+}
+.card:hover {
+  background: var(--fill-2);
+}
+.card-title {
+  font-size: var(--fs-headline);
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.015em;
+  color: var(--label);
+}
+.card-sub {
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-semibold);
+  color: var(--label-2);
+  background: var(--fill-2);
+  border-radius: 999px;
+  padding: 1px 8px;
+}
+.card-desc,
+.hint {
+  font-size: var(--fs-footnote);
+  line-height: 1.4;
+  color: var(--label-2);
+}
+.section-title {
+  font-size: var(--fs-footnote);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.01em;
+  color: var(--label-2);
+  text-shadow: none;
+}
+.tag {
+  border-radius: 999px;
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-semibold);
+}
+
+/* ---------- 战斗 HUD：统一的玻璃 dock ---------- */
+.battle-hud .wall-bar,
+.battle-hud .wave-info,
+.battle-hud .hud-copper,
+.battle-hud .btn,
+.battle-hud .skill-btn,
+.battle-hud .item-btn,
+.battle-hud .merc-btn,
+.merc-funds {
+  color: var(--label);
+  background: var(--mat-regular);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  backdrop-filter: blur(18px) saturate(1.4);
+  border: 0.5px solid rgba(255, 255, 255, 0.16);
+  box-shadow: var(--elev-2);
+  text-shadow: none;
+}
+.battle-hud .skill-btn,
+.battle-hud .item-btn,
+.battle-hud .merc-btn {
+  border-radius: var(--r-lg);
+}
+.battle-hud .skill-btn.ready,
+.battle-hud .merc-btn.ready {
+  background: var(--accent-fill);
+  border-color: rgba(255, 179, 64, 0.85);
+  box-shadow: 0 0 0 1px rgba(255, 179, 64, 0.55), 0 8px 24px rgba(255, 179, 64, 0.22);
+}
+.battle-hud .skill-btn.armed,
+.battle-hud .item-btn.armed,
+.battle-hud .merc-btn.armed {
+  outline: none;
+  border-color: #fff;
+  box-shadow: 0 0 0 2px #fff, var(--elev-2);
+}
+.battle-hud .skill-name,
+.battle-hud .merc-btn .skill-name {
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.005em;
+}
+.battle-hud .btn {
+  min-height: 40px;
+  border-radius: var(--r-md);
+  font-size: var(--fs-footnote);
+}
+.merc-funds {
+  border-radius: 999px;
+  color: var(--label-2);
+  font-size: var(--fs-footnote);
+  font-weight: var(--fw-semibold);
+}
+.merc-funds-num {
+  color: var(--label);
+  font-size: var(--fs-headline);
+  font-variant-numeric: tabular-nums;
+}
+.merc-btn .merc-cost {
+  color: var(--accent-hi);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-semibold);
+}
+.merc-btn .merc-cost .ico {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+  margin-right: 0.2em;
+}
+.battle-hud .key {
+  font-size: 10px;
+  font-weight: var(--fw-semibold);
+  color: var(--label-3);
+}
+.battle-hud .wall-label,
+.battle-hud .wall-text,
+.battle-hud .wave-info,
+.battle-hud .hud-copper {
+  font-size: var(--fs-footnote);
+  font-weight: var(--fw-semibold);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- 减少动态效果 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------- 设置页：iOS 风格的开关、选择器、滑块 ---------- */
+.settings h2 {
+  border: none;
+  font-size: var(--fs-title2);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.025em;
+  color: var(--label);
+  margin: 0 0 var(--s4);
+}
+.settings .row,
+.settings .volume-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s3);
+  min-height: 48px;
+  margin: 0 0 var(--s2);
+  padding: 6px var(--s4);
+  border-radius: var(--r-md);
+  background: var(--fill-1);
+  color: var(--label);
+  font-size: var(--fs-body);
+}
+.settings .row:has(input[type='checkbox']) {
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  cursor: pointer;
+}
+.settings input[type='checkbox'] {
+  -webkit-appearance: none;
+  appearance: none;
+  flex: none;
+  position: relative;
+  width: 51px;
+  height: 31px;
+  margin: 0;
+  border-radius: 999px;
+  background: rgba(120, 120, 128, 0.42);
+  transition: background-color var(--dur) var(--ease);
+  cursor: pointer;
+}
+.settings input[type='checkbox']::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 27px;
+  height: 27px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+  transition: transform var(--dur) var(--ease);
+}
+.settings input[type='checkbox']:checked {
+  background: #34c759;
+}
+.settings input[type='checkbox']:checked::after {
+  transform: translateX(20px);
+}
+.settings select,
+.modal select {
+  -webkit-appearance: none;
+  appearance: none;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-medium);
+  color: var(--label);
+  background: var(--fill-2) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path d='M3 4.5l3 3 3-3' fill='none' stroke='%23ffffff' stroke-opacity='.6' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/></svg>") no-repeat right 10px center;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 32px 8px var(--s3);
+  min-height: 36px;
+  max-width: 62%;
+}
+.settings input[type='range'] {
+  accent-color: var(--accent);
+  flex: 1;
+  max-width: 55%;
+}
+.vol-val {
+  font-variant-numeric: tabular-nums;
+  color: var(--label-2);
+  min-width: 3ch;
+  text-align: right;
+}
+
+/* ---------- 弹窗标题 / 结算标题：不再是描边发光大字 ---------- */
+.result h2,
+.result .result-title {
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 24px rgba(255, 179, 64, 0.35);
+}
+
+/* ---------- 地图关卡节点：玻璃圆盘 ---------- */
+.map-node {
+  border: 0.5px solid rgba(255, 255, 255, 0.28);
+  background: var(--mat-regular);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  backdrop-filter: blur(14px) saturate(1.4);
+  box-shadow: var(--elev-2);
+  color: var(--label);
+  font-size: 24px;
+  font-weight: var(--fw-semibold);
+  text-shadow: none;
+}
+.map-node.cleared {
+  background: radial-gradient(circle at 50% 22%, rgba(150, 230, 150, 0.35), rgba(34, 70, 48, 0.78));
+  border-color: rgba(150, 230, 150, 0.6);
+  box-shadow: var(--elev-2), 0 0 0 3px rgba(150, 230, 150, 0.14);
+}
+.map-node.current {
+  background: linear-gradient(var(--accent-hi), var(--accent));
+  color: var(--accent-text);
+  border-color: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 0 0 4px rgba(255, 179, 64, 0.28), 0 10px 30px rgba(255, 179, 64, 0.4);
+}
+.map-node.locked {
+  background: rgba(40, 44, 58, 0.55);
+  color: var(--label-3);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: none;
+}
+.map-node.miniboss,
+.map-node.boss {
+  border-color: rgba(255, 140, 120, 0.85);
+  box-shadow: var(--elev-2), 0 0 0 3px rgba(255, 120, 100, 0.16);
+}
+.map-node .ico {
+  width: 1em;
+  height: 1em;
+  margin: 0;
+}
+.map-screen .node-name {
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-semibold);
+  color: var(--label);
+  background: var(--mat-regular);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border: 0.5px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  padding: 1px 8px;
+}
+
+/* 弹窗底部操作栏：和内容之间只留一条发丝线 */
+.modal .modal-buttons {
+  background: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  border: none;
+  border-top: 0.5px solid var(--sep);
+  box-shadow: none;
+}

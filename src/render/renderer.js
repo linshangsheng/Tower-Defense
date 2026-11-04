@@ -3109,12 +3109,7 @@
       const t = frozen ? 0 : this.t + m.id * 0.37;
       if (m.treasure) {
         // 宝箱哥布林：背上一个会晃的金钱袋 + 金色光点
-        ctx.save();
-        ctx.font = '24px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('💰', x + 6, y - def.size * 1.5 + Math.sin(this.t * 10 + m.id) * 3);
-        ctx.restore();
+        TD.icons.draw(ctx, 'coinbag', x + 6, y - def.size * 1.5 + Math.sin(this.t * 10 + m.id) * 3, 26, '#ffd23f', 1.7);
       }
       if (m.elite) {
         // 精英怪：脚下一圈跳动的金光
@@ -3397,11 +3392,8 @@
       ctx.beginPath();
       ctx.arc(x, y, 20, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * frac);
       ctx.stroke();
-      ctx.font = '19px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('🔧', x, y + 1);
       ctx.restore();
+      TD.icons.draw(ctx, 'wrench', x, y + 0.5, 20, ready ? '#b8f5c0' : '#9aa89a', 1.9);
     }
 
     // 手动集火标记：目标身上一个旋转的准星
@@ -3455,11 +3447,8 @@
         ctx.beginPath();
         ctx.arc(d.x, y, 22, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * Math.max(0, left / 8));
         ctx.stroke();
-        ctx.font = '22px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(df.icon, d.x, y + 1);
         ctx.restore();
+        TD.icons.draw(ctx, df.ico, d.x, y + 0.5, 24, '#ffffff', 1.9);
       }
     }
 
@@ -3944,7 +3933,7 @@
       ctx.fillStyle = '#fff';
       ctx.font = 'bold 15px sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText(`${boss.def.name}  ${Math.ceil(boss.hp)} / ${boss.maxHp}${boss.shield > 0 ? '  🛡 ' + Math.ceil(boss.shield) : ''}`, cx, y + 12);
+      ctx.fillText(`${boss.def.name}  ${Math.ceil(boss.hp)} / ${boss.maxHp}${boss.shield > 0 ? '  · ' + Math.ceil(boss.shield) : ''}`, cx, y + 12);
       if (boss.def.ai === 'octoKing') {
         ctx.fillStyle = '#fff';
         for (const r of [TD.data.octoKing.phase2Below, TD.data.octoKing.phase3Below]) ctx.fillRect(x + w * r - 1, y - 2, 2, 18);
