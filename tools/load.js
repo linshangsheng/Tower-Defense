@@ -22,6 +22,7 @@ const FILES = [
   'src/game/bot.js',
   'src/game/save.js',
   'src/game/modes.js',
+  'src/game/codex.js',
 ];
 
 for (const f of FILES) require(path.join(__dirname, '..', f));

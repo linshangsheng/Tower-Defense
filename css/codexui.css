@@ -1,0 +1,554 @@
+/* =====================================================================
+   图鉴 / 成就页（设计系统 v2 的延伸）：搜索栏、分段控件、横滚 chips、统一卡片、可折叠成就分组、环形总进度
+   只用 ds.css 的令牌；强调色只给"选中态"和进度；数字一律 tabular。
+   ===================================================================== */
+.cx {
+  font-variant-numeric: normal;
+}
+.cx-num {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
+}
+.modal.cx-modal {
+  padding-bottom: var(--s4);
+}
+
+/* ---------- 搜索栏（iOS 风格） ---------- */
+.cx-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 44px;
+  margin: var(--s2) 0 var(--s3);
+  border-radius: var(--r-md);
+  background: var(--fill-2);
+  transition: background var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+.cx-search:focus-within {
+  background: var(--fill-3);
+  box-shadow: 0 0 0 2px var(--accent-fill), 0 0 0 1px var(--accent);
+}
+.cx-search-ico {
+  position: absolute;
+  left: var(--s3);
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: var(--label-2);
+  stroke-width: 2;
+  stroke-linecap: round;
+  pointer-events: none;
+}
+.modal .cx-search-input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 0 44px 0 40px;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--label);
+  font: inherit;
+  font-size: var(--fs-body);
+  box-shadow: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.cx-search-input::placeholder {
+  color: var(--label-3);
+}
+.cx-search-input::-webkit-search-cancel-button {
+  display: none;
+}
+.cx-search-clear {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+}
+.cx-search.has-text .cx-search-clear {
+  display: flex;
+}
+.cx-search-clear svg {
+  width: 20px;
+  height: 20px;
+  padding: 3px;
+  box-sizing: border-box;
+  border-radius: 50%;
+  background: var(--fill-3);
+  fill: none;
+  stroke: var(--label-2);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+}
+
+/* ---------- 分段控件 ---------- */
+.cx-seg {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  border-radius: var(--r-sm);
+  background: var(--fill-1);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.cx-seg::-webkit-scrollbar,
+.cx-chips::-webkit-scrollbar {
+  display: none;
+}
+.cx-seg-btn {
+  flex: 1 0 auto;
+  min-height: 36px;
+  padding: 0 var(--s3);
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--label-2);
+  font: inherit;
+  font-size: var(--fs-footnote);
+  font-weight: var(--fw-medium);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.cx-seg-btn.on {
+  background: var(--fill-3);
+  color: var(--label);
+  font-weight: var(--fw-semibold);
+  box-shadow: var(--elev-1);
+}
+.cx-seg-btn:focus-visible,
+.cx-chip:focus-visible,
+.cx-group-head:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ---------- 章节 chips：横向滚动 ---------- */
+.cx-chips {
+  display: flex;
+  gap: var(--s2);
+  margin: var(--s3) calc(var(--s2) * -1) var(--s3);
+  padding: 0 var(--s2);
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 12px, #000 calc(100% - 20px), transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 12px, #000 calc(100% - 20px), transparent 100%);
+}
+.cx-chip {
+  flex: 0 0 auto;
+  scroll-snap-align: center;
+  min-height: 36px;
+  padding: 0 var(--s4);
+  border: none;
+  border-radius: 999px;
+  background: var(--fill-2);
+  color: var(--label-2);
+  font: inherit;
+  font-size: var(--fs-footnote);
+  font-weight: var(--fw-medium);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.cx-chip.on {
+  background: var(--accent);
+  color: var(--accent-text);
+  font-weight: var(--fw-semibold);
+}
+.cx-chips.muted .cx-chip {
+  opacity: 0.45;
+}
+
+/* ---------- 怪物卡片：统一高度，图标区固定 ---------- */
+.cx-mon-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s3);
+  align-items: stretch;
+}
+.cx-result-count {
+  grid-column: 1 / -1;
+  font-size: var(--fs-footnote);
+  color: var(--label-2);
+  font-variant-numeric: tabular-nums;
+}
+.mon-card.cx-mon {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr) auto;
+  grid-template-rows: none;
+  column-gap: var(--s3);
+  align-items: start;
+  box-sizing: border-box;
+  height: 148px;
+  padding: var(--s3);
+  border-radius: var(--r-lg);
+  border: 0.5px solid var(--sep);
+  overflow: hidden;
+}
+.cx-mon-art {
+  width: 72px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-md);
+  background: var(--fill-1);
+  flex: none;
+}
+.cx-mon-art .portrait {
+  width: 64px;
+  height: 64px;
+  grid-row: auto;
+}
+.cx-mon.boss .cx-mon-art {
+  background: rgba(255, 110, 100, 0.14);
+}
+.cx-mon.unknown .cx-mon-art {
+  background: var(--fill-1);
+}
+.cx-mon.unknown .portrait {
+  opacity: 0.85;
+}
+.cx-mon-body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+  height: 100%;
+}
+.cx-mon .mon-name {
+  font-size: var(--fs-headline);
+  font-weight: var(--fw-semibold);
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cx-mon.unknown .mon-name {
+  color: var(--label-3);
+  letter-spacing: 0.1em;
+}
+.cx-mon .mon-desc {
+  font-size: var(--fs-caption);
+  line-height: 1.35;
+  color: var(--label-2);
+  text-wrap: pretty;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.cx-mon-tags {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--s1);
+  overflow: hidden;
+  height: 20px;
+  flex: none;
+}
+.cx-pill {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 var(--s2);
+  border-radius: 999px;
+  background: var(--fill-2);
+  color: var(--label-2);
+  font-size: 11px;
+  font-weight: var(--fw-medium);
+  white-space: nowrap;
+}
+.cx-pill.boss {
+  background: rgba(255, 110, 100, 0.2);
+  color: #ffb4ac;
+}
+.cx-mon-kills {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  min-width: 36px;
+  text-align: right;
+}
+.cx-mon-kills b {
+  font-size: var(--fs-headline);
+  font-weight: var(--fw-semibold);
+  line-height: 1.2;
+}
+.cx-mon-kills span {
+  font-size: 11px;
+  color: var(--label-3);
+  white-space: nowrap;
+}
+
+/* ---------- 空状态 ---------- */
+.cx-empty {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s2);
+  padding: var(--s6) var(--s4);
+  text-align: center;
+  color: var(--label-2);
+}
+.cx-empty svg {
+  width: 56px;
+  height: 56px;
+  fill: none;
+  stroke: var(--label-3);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  margin-bottom: var(--s1);
+}
+.cx-empty b {
+  font-size: var(--fs-headline);
+  font-weight: var(--fw-semibold);
+  color: var(--label);
+}
+.cx-empty span {
+  font-size: var(--fs-footnote);
+  max-width: 320px;
+  text-wrap: pretty;
+}
+.cx-empty .btn {
+  margin-top: var(--s2);
+  min-height: 44px;
+}
+
+/* ---------- 成就页：总完成度 ---------- */
+.cx-summary {
+  display: flex;
+  align-items: center;
+  gap: var(--s4);
+  margin: var(--s3) 0 var(--s4);
+  padding: var(--s4);
+  border-radius: var(--r-lg);
+  background: var(--fill-1);
+  border: 0.5px solid var(--sep);
+}
+.cx-ring-wrap {
+  position: relative;
+  flex: none;
+  width: 80px;
+  height: 80px;
+}
+.cx-ring {
+  width: 80px;
+  height: 80px;
+  display: block;
+}
+.cx-ring circle {
+  fill: none;
+  stroke-width: 7;
+}
+.cx-ring-bg {
+  stroke: var(--fill-2);
+}
+.cx-ring-fg {
+  stroke: var(--accent);
+  stroke-linecap: round;
+  transition: stroke-dashoffset 600ms var(--ease);
+}
+.cx-ring-pct {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fs-headline);
+  font-weight: var(--fw-semibold);
+  font-variant-numeric: tabular-nums;
+}
+.cx-summary-text {
+  min-width: 0;
+}
+.cx-summary-text h2 {
+  margin: 0 0 var(--s1);
+  padding: 0;
+  border: none;
+  font-variant-numeric: tabular-nums;
+}
+.cx-summary .ach-stats {
+  margin: 0;
+  font-size: var(--fs-footnote);
+  color: var(--label-2);
+  font-variant-numeric: tabular-nums;
+  text-wrap: pretty;
+}
+
+/* ---------- 成就页：分组与卡片 ---------- */
+.cx-group {
+  margin-bottom: var(--s3);
+}
+.cx-group-head {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  width: 100%;
+  min-height: 44px;
+  padding: 0 var(--s2);
+  border: none;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--label);
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+.cx-group-head:hover {
+  background: var(--fill-1);
+}
+.cx-chev {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: var(--label-2);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transform: rotate(90deg);
+  transition: transform var(--dur) var(--ease);
+}
+.cx-group.collapsed .cx-chev {
+  transform: rotate(0deg);
+}
+.cx-group-name {
+  flex: 1;
+  font-size: var(--fs-headline);
+  font-weight: var(--fw-semibold);
+}
+.cx-group-count {
+  font-size: var(--fs-footnote);
+  color: var(--label-2);
+  font-variant-numeric: tabular-nums;
+}
+.cx-group.collapsed .cx-grid {
+  display: none;
+}
+.cx-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s2);
+  margin-top: var(--s1);
+}
+.ach.cx-ach {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s3);
+  min-height: 84px;
+  padding: var(--s3);
+  border-radius: var(--r-md);
+  box-sizing: border-box;
+  border: 0.5px solid var(--sep);
+  background: var(--fill-1);
+  box-shadow: none;
+}
+.ach.cx-ach.done {
+  background: var(--accent-fill);
+  border-color: rgba(255, 179, 64, 0.45);
+  box-shadow: none;
+}
+.cx-ach-icon {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--fill-2);
+  color: var(--label-3);
+  font-size: 18px;
+}
+.ach.done .cx-ach-icon {
+  background: var(--accent);
+  color: var(--accent-text);
+}
+.ach.done .cx-ach-icon .ico {
+  color: var(--accent-text);
+}
+.cx-ach .ach-main {
+  min-width: 0;
+  gap: 2px;
+}
+.cx-ach .ach-main b {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  line-height: 1.3;
+}
+.cx-ach .ach-main span {
+  font-size: var(--fs-caption);
+  color: var(--label-2);
+  line-height: 1.35;
+  text-wrap: pretty;
+}
+.ach.cx-ach:not(.done) .ach-main b {
+  color: var(--label);
+}
+.cx-bar-row {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  margin-top: var(--s2);
+}
+.cx-bar {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--fill-2);
+  overflow: hidden;
+}
+.cx-bar i {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: var(--label-2);
+}
+.ach.done .cx-bar i {
+  background: var(--accent);
+}
+.cx-bar-row .cx-num {
+  font-size: 11px;
+  color: var(--label-2);
+  white-space: nowrap;
+}
+.cx-state {
+  margin-top: var(--s2);
+  font-size: 11px;
+  color: var(--label-3);
+}
+.ach.done .cx-state {
+  color: var(--accent);
+}
+.cx-ach .ach-reward {
+  flex: none;
+  align-self: flex-start;
+  font-size: 11px;
+  padding: 2px var(--s2);
+  background: var(--fill-2);
+  color: var(--label);
+}
+
+@media (max-width: 640px) {
+  .cx-mon-list,
+  .cx-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cx-ring-fg,
+  .cx-chev {
+    transition: none;
+  }
+}

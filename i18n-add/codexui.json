@@ -1,0 +1,17 @@
+{
+  "搜索怪物名字或说明": "Search monster names or descriptions",
+  "全部": "All",
+  "清除": "Clear",
+  "已击败": "Defeated",
+  "没有找到匹配的怪物": "No matching monsters",
+  "换个关键词，或者换一个类型试试。未遇见的怪物不会出现在搜索结果里。": "Try another keyword or type. Monsters you haven't met won't show up in search results.",
+  "清除筛选": "Clear filters",
+  "{0} 只": "{0} found",
+  "已完成": "Completed",
+  "未完成": "Not yet completed",
+  "进度类": "Progress",
+  "战斗类": "Combat",
+  "收集类": "Collection",
+  "雇佣兵类": "Mercenaries",
+  "其他类": "Other"
+}
