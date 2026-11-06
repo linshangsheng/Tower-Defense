@@ -450,7 +450,17 @@
     // 大字模式（设计书 47）：自动 = 缩放小于 0.75（手机）时开启
     const lt = (game.save && game.save.settings.largeText) || 'auto';
     const large = lt === 'on' || (lt === 'auto' && s < 0.75);
-    document.getElementById('ui').classList.toggle('large-text', large);
+    const ui = document.getElementById('ui');
+    ui.classList.toggle('large-text', large);
+    // 触屏热区（css/mobileui.css）：舞台缩得越小，按钮在舞台里要越大才够手指点；--hit = 屏幕上 44px 对应的舞台像素
+    const coarse = !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+    ui.classList.toggle('compact', TD.touch.isCompact(s, coarse));
+    ui.style.setProperty('--hit', TD.touch.stageMin(s).toFixed(1) + 'px');
+    ui.style.setProperty('--fmin', TD.touch.fontFloor(s).toFixed(1) + 'px');
+    if (TD.mobileUI) {
+      TD.mobileUI.start();
+      TD.mobileUI.refresh();
+    }
   }
 
   function canvasPoint(e) {

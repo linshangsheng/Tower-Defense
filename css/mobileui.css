@@ -1,0 +1,86 @@
+/* =====================================================================
+   手机 / 触屏适配（紧凑模式）。舞台固定 1280×720，手机上被缩到 0.4~0.6 倍，舞台里 44px 的按钮到屏幕上只剩 20 多 px。
+   main.js 的 fit() 在舞台缩放 < 0.7（触屏设备 < 0.9）时给 #ui 加 class "compact"，并设置
+     --hit  = 屏幕上 44px 对应的舞台像素（= 44 / 缩放）
+     --fmin = 屏幕上 11px 对应的舞台像素
+   这里只用这两个变量放大热区；字号由 src/ui/mobileui.js 逐元素抬到 11 屏幕像素。桌面端没有 compact，外观完全不变。
+   ===================================================================== */
+
+/* ---------- 通用热区：所有按钮、页签、开关 ---------- */
+#ui.compact:not(#_) .btn,
+#ui.compact:not(#_) .tab,
+#ui.compact:not(#_) .lo-chip,
+#ui.compact:not(#_) .lo-tile,
+#ui.compact:not(#_) .map-node,
+#ui.compact:not(#_) select,
+#ui.compact:not(#_) .pause-btn,
+#ui.compact:not(#_) .merc-btn,
+#ui.compact:not(#_) .item-btn,
+#ui.compact:not(#_) .skill-btn {
+  min-width: var(--hit, 44px);
+  min-height: var(--hit, 44px);
+}
+#ui.compact:not(#_) .btn,
+#ui.compact:not(#_) .btn.small,
+#ui.compact:not(#_) .btn.cat {
+  padding-left: 14px;
+  padding-right: 14px;
+}
+/* 设置里的勾选框 / 滑条：整行都是点击区，行高和复选框一起放大 */
+#ui.compact:not(#_) label.row {
+  min-height: var(--hit, 44px);
+  align-items: center;
+}
+#ui.compact:not(#_) input[type='checkbox'],
+#ui.compact:not(#_) input[type='radio'] {
+  width: var(--hit, 44px);
+  height: var(--hit, 44px);
+  min-width: 0;
+  min-height: 0;
+}
+#ui.compact:not(#_) input[type='range'] {
+  min-height: var(--hit, 44px);
+}
+
+/* 商店左侧页签：纵向排列，每个至少一个热区高（太多时列表自己滚动） */
+#ui.compact:not(#_) .tabs {
+  overflow-y: auto;
+  gap: 6px;
+}
+#ui.compact:not(#_) .tab {
+  flex: 0 0 auto;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+#ui.compact:not(#_) .tab .tab-name {
+  white-space: nowrap;
+}
+#ui.compact:not(#_) .shop-body {
+  grid-template-columns: 156px 1fr 200px;
+}
+/* 配装页的小格子 */
+#ui.compact:not(#_) .lo-chip {
+  padding: 0;
+}
+
+/* ---------- 战斗 HUD：小屏上给雇佣兵栏让位，不遮挡技能栏 ---------- */
+/* 技能栏 / 道具栏 / 控制栏贴底；雇佣兵栏放在它们的上方（底栏高度随热区变高，位置跟着抬） */
+#ui.compact:not(#_) .hud-bottom {
+  height: calc(var(--hit, 44px) * 1.7);
+}
+#ui.compact:not(#_) .merc-bar {
+  bottom: calc(var(--hit, 44px) * 1.7 + 24px);
+  right: 8px;
+}
+#ui.compact:not(#_) .merc-btn {
+  width: auto;
+  min-width: calc(var(--hit, 44px) * 1.2);
+  height: auto;
+  min-height: calc(var(--hit, 44px) * 1.15);
+}
+#ui.compact:not(#_) .skill-btn,
+#ui.compact:not(#_) .item-btn {
+  width: auto;
+  min-width: calc(var(--hit, 44px) * 1.2);
+  height: calc(var(--hit, 44px) * 1.5);
+}
