@@ -32,6 +32,17 @@
     shieldWallRange: 200, // 盾卫在后排兵前方多远以内算"挡在前面"
     upgradeBase: 120, // 升级铜币：base × 1.7^(level-1)
     upgradeGrow: 1.7,
+    // 英雄与兵的联动（羁绊）：on=false 时全部关闭（A/B 对比用）
+    link: {
+      on: true,
+      aspdPer: 0.03, // 场上每有 1 个活着的兵，英雄攻速 +3%
+      aspdCap: 0.15, // 上限 +15%
+      drumShare: 0.5, // 战鼓：兵获得英雄战鼓加成的这个比例（攻击间隔缩短）
+      repairShare: 0.5, // 城墙修复：兵回复 城墙回复比例 × 这个值 的最大血量
+      coverMult: 1.15, // 掩护射击：箭雨命中兵身边的怪，伤害 ×1.15
+      coverRange: 110, // 兵身边多远算"掩护"（同车道，横向距离）
+      ultInvuln: 2, // 万箭天降：兵无敌秒数
+    },
   };
 
   // type：'phys' / 'magic'；ranged 远程；aoe 溅射半径；taunt 嘲讽（怪物优先打它）；reduce 减伤

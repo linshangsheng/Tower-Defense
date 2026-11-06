@@ -1,0 +1,16 @@
+{
+  "兵团联动：场上的兵也跟着打得更快（鼓点加成的一半）。": "Squad link: mercenaries on the field attack faster too (half of the drum bonus).",
+  "兵团联动：场上的兵同时回复城墙回复比例一半的血量。": "Squad link: mercenaries on the field also recover half the wall's healing ratio.",
+  "兵团联动：命中兵身边的怪，伤害 +15%（掩护射击）。": "Squad link: arrows that hit monsters beside a mercenary deal +15% damage (Covering Fire).",
+  "兵团联动：放箭后 2 秒内，场上的兵不会受伤。": "Squad link: mercenaries take no damage for 2 seconds after the shot.",
+  "兵团羁绊：场上每有 1 个活着的兵，英雄攻速 +3%，最多 +15%；战鼓、城墙修复、箭雨和万箭天降也会照顾到兵。": "Squad Bond: each living mercenary on the field gives the hero +3% attack speed, up to +15%. War Drum, Wall Repair, Arrow Rain and Skyfall also look after your mercenaries.",
+  "掩护射击": "Covering Fire",
+  "箭雨护阵：兵无敌": "Arrow Ward: squad invulnerable",
+  "战鼓：兵团同振": "Drum: squad rallied",
+  "修缮：兵同回血": "Repair: squad healed",
+  "兵团 +3%": "Squad +3%",
+  "兵团 +6%": "Squad +6%",
+  "兵团 +9%": "Squad +9%",
+  "兵团 +12%": "Squad +12%",
+  "兵团 +15%": "Squad +15%"
+}

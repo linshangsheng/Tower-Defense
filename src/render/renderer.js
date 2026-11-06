@@ -820,6 +820,21 @@
         this.fx.push({ kind: 'ring', x: t.x, y: t.y - 10, r0: 6, r1: 44, color: '#8cf0a0', w: 3, life: 0.45, age: 0, flat: 0.5 });
         this.text(t.x, t.y - 36, '+', '#8cf0a0', 20, 0.7);
       });
+      // 英雄与兵的联动提示（设计书 195）：飘字短而克制
+      on('mercLink', (e) => {
+        const alive = (battle.mercs || []).filter((u) => !u.dead);
+        if (e.kind === 'cover') this.text(e.x, e.y - 60, '掩护射击', '#ffd07a', 18, 0.7);
+        else if (e.kind === 'ult') {
+          for (const u of alive) this.fx.push({ kind: 'ring', x: u.x, y: u.y - 10, r0: 8, r1: 46, color: '#fff2b0', w: 3, life: 0.6, age: 0, flat: 0.5 });
+          this.text(C.heroX + 70, battle.heroY - 90, '箭雨护阵：兵无敌', '#fff2b0', 20, 1.2);
+        } else if (e.kind === 'drum') {
+          for (const u of alive) this.fx.push({ kind: 'ring', x: u.x, y: u.y - 10, r0: 6, r1: 40, color: '#ffb347', w: 3, life: 0.5, age: 0, flat: 0.5 });
+          this.text(C.heroX + 70, battle.heroY - 80, '战鼓：兵团同振', '#ffb347', 18, 1);
+        } else if (e.kind === 'repair') {
+          for (const u of alive) this.fx.push({ kind: 'ring', x: u.x, y: u.y - 10, r0: 6, r1: 40, color: '#8cf0a0', w: 3, life: 0.5, age: 0, flat: 0.5 });
+          this.text(C.heroX + 70, battle.heroY - 80, '修缮：兵同回血', '#8cf0a0', 18, 1);
+        }
+      });
       on('mercRally', (e) => {
         this.fx.push({ kind: 'ring', x: 330, y: e.y, r0: 20, r1: 260, color: '#ffc54d', w: 5, life: 0.6, age: 0, flat: 0.35 });
         this.floatText(330, e.y - 40, '集结！', '#ffc54d', 'lg', 1.0);

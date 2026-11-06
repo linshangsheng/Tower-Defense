@@ -1709,9 +1709,11 @@
       switch (s.id) {
         case 'drum':
           this.buffs.push({ aspd: def.aspdBonus, crit: def.critBonus || 0, until: this.time + def.duration, src: 'drum' });
+          if (this.linkOn() && this.mercAlive()) this.emit('mercLink', { kind: 'drum' });
           break;
         case 'repair':
           this.healWall(this.wall.max * def.healRatio, 'repair');
+          this.healMercs(def.healRatio);
           if (def.drBonus) this.tempDr = { amt: def.drBonus, until: this.time + def.drDuration };
           break;
         case 'arrowRain': {
@@ -1808,6 +1810,10 @@
       u.start = this.time;
       u.until = this.time + u.def.duration;
       u.timer = 0.3; // 那一箭飞上天需要一小会儿
+      if (this.linkOn() && this.mercAlive()) {
+        this.mercInvulUntil = this.time + C.merc.link.ultInvuln;
+        this.emit('mercLink', { kind: 'ult' });
+      }
       this.hero.castId = 'arrowRain';
       this.hero.castAt = this.time;
       this.hero.castLane = undefined;
@@ -2251,7 +2257,14 @@
         if (!pool.length) continue;
         const m = this.rng.pick(pool);
         this.emit('rainArrow', { x: m.x, y: m.y + m.yOffset });
-        this.damage(m, r.dmg, { type: 'phys', fromFront: false, source: 'arrowRain' });
+        // 掩护射击：命中兵身边的怪，伤害 +15%（飘字限流，免得一轮箭雨刷满屏）
+        const cover = this.mercCovers(m);
+        if (cover && this.time >= (this.coverTextAt || 0)) {
+          this.coverTextAt = this.time + 0.6;
+          this.emit('mercLink', { kind: 'cover', x: m.x, y: m.y + m.yOffset });
+        }
+        if (cover) this.coverHits = (this.coverHits || 0) + 1;
+        this.damage(m, cover ? r.dmg * C.merc.link.coverMult : r.dmg, { type: 'phys', fromFront: false, source: 'arrowRain' });
         if (r.ignite && !m.dead) this.ignite(m);
       }
       if (r.left <= 0) this.rain = null;

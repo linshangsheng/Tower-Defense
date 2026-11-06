@@ -163,8 +163,64 @@
       return best;
     },
 
+    // ---------- 英雄与兵的联动（设计书 195）----------
+    linkOn() {
+      return this.mercsOn && C.merc.link.on;
+    },
+
+    // 羁绊：活着的兵每个 +aspdPer 攻速，封顶 aspdCap；用一条持续刷新的 buff（src 'bond'）接进攻速计算
+    mercAlive() {
+      let n = 0;
+      for (const u of this.mercs) if (!u.dead) n++;
+      return n;
+    },
+
+    bondBonus() {
+      const L = C.merc.link;
+      return this.linkOn() ? Math.min(L.aspdCap, this.mercAlive() * L.aspdPer) : 0;
+    },
+
+    updateBond() {
+      const bonus = this.bondBonus();
+      const cur = this.buffs.find((b) => b.src === 'bond');
+      if (cur && cur.aspd === bonus && cur.until > this.time + 0.2) return;
+      if (cur) this.buffs = this.buffs.filter((b) => b !== cur);
+      if (bonus > 0) this.buffs.push({ aspd: bonus, until: this.time + 0.5, src: 'bond' });
+      this.bond = bonus;
+    },
+
+    // 战鼓：兵的攻击间隔按"1 + 战鼓攻速加成 × drumShare"缩短
+    mercHaste() {
+      if (!this.linkOn()) return 1;
+      let h = 0;
+      for (const b of this.buffs) if (b.src === 'drum' && this.time < b.until) h += b.aspd * C.merc.link.drumShare;
+      return 1 + h;
+    },
+
+    // 城墙修复：顺带给场上的兵回血
+    healMercs(ratio) {
+      if (!this.linkOn() || !this.mercs.length) return;
+      const amt = ratio * C.merc.link.repairShare;
+      let n = 0;
+      for (const u of this.mercs) {
+        if (u.dead) continue;
+        u.hp = Math.min(u.maxHp, u.hp + u.maxHp * amt);
+        n++;
+      }
+      if (n) this.emit('mercLink', { kind: 'repair' });
+    },
+
+    // 掩护射击：同车道、横向距离在 coverRange 以内有活着的兵
+    mercCovers(m) {
+      if (!this.linkOn()) return false;
+      const R = C.merc.link.coverRange;
+      for (const u of this.mercs) if (!u.dead && u.lane === m.lane && Math.abs(u.x - m.x) <= R) return true;
+      return false;
+    },
+
     mercHurt(u, amount, by) {
       if (u.dead) return;
+      if (this.time < (this.mercInvulUntil || 0)) return; // 万箭天降：兵短暂无敌
       if (u.def.reduce) amount *= 1 - u.def.reduce;
       u.covered = this.mercCovered(u);
       if (u.covered) amount *= 1 - C.merc.shieldWall;
@@ -266,6 +322,10 @@
 
     updateMercs(dt) {
       if (!this.mercsOn) return;
+      if (this.time >= (this.bondAt || 0)) {
+        this.bondAt = this.time + 0.2;
+        this.updateBond();
+      }
       if (this.autoMerc && this.time >= (this.autoMercAt || 0)) {
         this.autoMercAt = this.time + 0.5;
         this.autoMercs();
@@ -274,6 +334,7 @@
       this.updateTraps(dt);
       if (!this.mercs.length) return;
       const wallFloor = C.wallX + 40;
+      const haste = this.mercHaste();
       // Boss 横扫：贴在 Boss 身边的兵持续掉血（Boss 不会被兵拦住）
       for (const m of this.monsters) {
         if (m.dead || !(m.def.boss || m.def.bossPart) || m.x > C.width) continue;
@@ -296,7 +357,7 @@
         }
         // 牧师：给最伤的友军（或城墙）回血
         if (def.support) {
-          u.cool -= dt;
+          u.cool -= dt * haste;
           let hurt = null;
           for (const o of this.mercs) {
             if (o.dead || o === u || o.hp >= o.maxHp || Math.abs(o.x - u.x) > def.range) continue;
@@ -336,7 +397,7 @@
           else if (dist > def.range) this.mercMove(u, u.x + 60, dt);
           if (dist <= def.range) {
             u.state = 'attack';
-            u.cool -= dt;
+            u.cool -= dt * haste;
             if (u.cool <= 0) {
               u.cool = def.every;
               this.mercAttack(u, tgt);
@@ -352,7 +413,7 @@
             if (u.x >= C.merc.leashX) u.x = C.merc.leashX;
           } else {
             u.state = 'attack';
-            u.cool -= dt;
+            u.cool -= dt * haste;
             if (u.cool <= 0) {
               u.cool = def.every;
               this.mercAttack(u, tgt);

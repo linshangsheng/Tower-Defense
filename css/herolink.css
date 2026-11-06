@@ -1,0 +1,27 @@
+/* 英雄与兵的羁绊徽标（设计书 195）：小而克制，只在有加成时出现在英雄旁 */
+.bond-badge {
+  position: absolute;
+  left: 3.2%;
+  top: 60%;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s1);
+  padding: var(--s1) var(--s2);
+  border-radius: var(--r-sm);
+  background: var(--mat-regular);
+  color: var(--label);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-semibold);
+  line-height: 1.2;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: var(--elev-1);
+}
+.bond-badge svg {
+  width: 12px;
+  height: 12px;
+  color: var(--accent);
+}
+.bond-badge.hidden {
+  display: none;
+}
