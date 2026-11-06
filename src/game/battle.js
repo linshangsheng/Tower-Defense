@@ -629,12 +629,16 @@
         m.hopTimer = def.stealth.hopEvery;
       }
       // 精英怪（设计书 171）：偶尔出现的金光怪，三倍血量、体型大一圈，击败必掉战利品光球
-      if (this.eliteOK && !def.boss && !def.bossPart && !m.splitFrom && this.rng() < C.eliteRate) {
+      if (this.eliteOK && !this.noEliteRoll && !def.boss && !def.bossPart && !m.splitFrom && this.rng() < C.eliteRate) {
         m.elite = true;
         m.hp = m.maxHp = Math.round(m.hp * C.eliteHp);
         m.dps *= 1.3;
-        const ks = Object.keys(C.eliteAffixes);
+        const ks = Object.keys(C.eliteAffixes).filter((k) => !C.eliteAffixes[k].minLevel || this.levelNo >= C.eliteAffixes[k].minLevel); // 新词缀第 30 关起才会出现
         m.affix = ks[Math.floor(this.rng() * ks.length) % ks.length];
+        if (m.affix === 'shield') {
+          m.eliteShield = true;
+          m.shield = m.shieldMax = Math.round(m.maxHp * C.eliteAffixes.shield.ratio);
+        }
       }
       this.monsters.push(m);
       this.emit('spawn', m);
@@ -1033,15 +1037,15 @@
       amount *= this.damageMult(m, opts);
       // 护盾：先吸收伤害，魔法效果更好（设计书 19.3）
       if (m.shield > 0) {
-        const P2 = D.pharaoh;
+        const P2 = m.eliteShield ? { shieldMagicMult: C.eliteAffixes.shield.magic, shieldPhysMult: C.eliteAffixes.shield.phys } : D.pharaoh;
         const eff = amount * (opts.type === 'magic' ? P2.shieldMagicMult : P2.shieldPhysMult);
         m.shield -= eff;
         m.hitFlash = 0.08;
         this.emit('shieldHit', { m, x: m.x, y: m.y + m.yOffset, dmg: eff, magic: opts.type === 'magic' });
         if (m.shield <= 0) {
           m.shield = 0;
-          m.ai.shieldTimer = P2.shieldRegen;
-          this.emit('shieldBreak', { m });
+          if (m.ai) m.ai.shieldTimer = P2.shieldRegen; // 精英护盾没有 ai，破了就不再生
+          this.emit(m.eliteShield ? 'eliteShieldBreak' : 'shieldBreak', { m });
         }
         return 0;
       }
@@ -1161,6 +1165,7 @@
     }
 
     kill(m, noReward) {
+      if (m.noReward) noReward = true; // 精英召唤出来的小怪：不给奖励
       m.dead = true;
       m.hp = 0;
       m.diedAt = this.time;

@@ -121,6 +121,9 @@
       swift: { name: '迅捷', color: '#7fe0ff', speed: 1.35 },
       regen: { name: '再生', color: '#7dff9a', pct: 0.03 },
       vengeful: { name: '复仇', color: '#ff7a7a', radius: 150, haste: 0.5, dur: 3 },
+      // 护盾：出生自带相当于最大血量 ratio 的护盾，破了不再生；召唤：每 every 秒叫来一只同种小怪（不是精英、不掉奖励），最多 max 只在场
+      shield: { name: '护盾', color: '#ffd27a', ratio: 0.4, phys: 1, magic: 1.5, minLevel: 30 },
+      summon: { name: '召唤', color: '#c79bff', every: 6, max: 3, first: 3, minLevel: 30 },
     },
     fervor: {
       10: { name: '战意', aspd: 0.08, dur: 4 },

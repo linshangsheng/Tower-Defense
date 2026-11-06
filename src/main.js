@@ -122,6 +122,7 @@
     battle.on('repair', () => TD.audio.play('repair'));
     battle.on('repairCd', () => TD.audio.play('ding'));
     battle.on('spawn', (m) => { if (m.elite) TD.audio.play('eliteAppear'); });
+    battle.on('spawn', (m) => { if (m.elite && TD.ui.eliteTip) TD.ui.eliteTip(m); });
     battle.on('combo', () => TD.audio.play('streak'));
     // 第六章（设计书 34.1）
     battle.on('dodge', () => TD.audio.play('dodge'));

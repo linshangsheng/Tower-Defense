@@ -100,6 +100,17 @@
     setTimeout(() => el.remove(), ms + 500);
   };
 
+  // 精英登场提示（顶部居中的小胶囊：词缀色圆点 + "精英：迅捷"），同时只留一个
+  UI.eliteTip = function (m) {
+    const af = TD.config.eliteAffixes[m.affix];
+    if (!af) return;
+    for (const t of root.querySelectorAll('.elite-tip')) t.remove();
+    const el = h('div', { class: 'elite-tip', style: '--af:' + af.color }, h('span', { class: 'elite-dot' }), '精英：' + af.name);
+    root.appendChild(el);
+    setTimeout(() => el.classList.add('out'), 2200);
+    setTimeout(() => el.remove(), 2700);
+  };
+
   function coinIcon(kind) {
     return h('span', { class: 'coin ' + kind });
   }

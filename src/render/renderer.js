@@ -614,8 +614,13 @@
         this.banner('沙暴来袭！攻速降低');
       });
       on('shieldHit', (e) => {
-        if (Math.random() < 0.5) this.text(e.x + (Math.random() - 0.5) * 30, e.y - 120, Math.round(e.dmg), e.magic ? '#c58cff' : '#bbb08a', e.magic ? 22 : 15, 0.6);
+        if (Math.random() < 0.5) this.text(e.x + (Math.random() - 0.5) * 30, e.y - (e.m && e.m.eliteShield ? 50 : 120), Math.round(e.dmg), e.magic ? '#c58cff' : '#bbb08a', e.magic ? 22 : 15, 0.6);
       });
+      on('eliteShieldBreak', (e) => {
+        this.burst(e.m.x, e.m.y + e.m.yOffset - 30, '#ffd27a', 24, 260);
+        this.text(e.m.x, e.m.y + e.m.yOffset - 70, '护盾破碎！', '#ffd27a', 20, 0.8);
+      });
+      on('eliteSummon', (e) => this.fx.push({ kind: 'ring', x: e.c.x, y: e.c.y + e.c.yOffset, r0: 6, r1: 50, color: '#c79bff', w: 3, life: 0.45, age: 0, flat: 0.6 }));
       on('shieldUp', (e) => this.burst(e.m.x, e.m.y - 60, '#ffe58a', 30, 260));
       on('shieldBreak', (e) => {
         this.burst(e.m.x, e.m.y - 60, '#ffe58a', 50, 380);
@@ -3327,6 +3332,25 @@
         ctx.globalCompositeOperation = 'lighter';
         TD.art.drawGlow(ctx, x - def.size * 0.7, y - def.size * 1.1 + (def.flying ? 0 : 0), 10 + k * 26, sc, 0.3 + k * 0.6, true);
         ctx.restore();
+      }
+      // 精英护盾：一圈金色光罩 + 血条上方一条金色护盾条
+      if (m.eliteShield && m.shield > 0) {
+        ctx.save();
+        ctx.globalAlpha = 0.5 + Math.sin(this.t * 6 + m.id) * 0.12;
+        ctx.strokeStyle = '#ffd27a';
+        ctx.fillStyle = 'rgba(255, 210, 122, 0.12)';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.ellipse(x, y - def.size * 0.7, def.size * 1.15, def.size * 1.35, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+        const sw = Math.max(26, def.size * 1.8);
+        const sby = y - def.size * DRAW_SCALE * (def.flying ? 1.7 : 2.0) - 14;
+        ctx.fillStyle = 'rgba(0,0,0,0.45)';
+        ctx.fillRect(x - sw / 2 - 1, sby - 1, sw + 2, 5);
+        ctx.fillStyle = '#ffd27a';
+        ctx.fillRect(x - sw / 2, sby, (sw * m.shield) / m.shieldMax, 3);
       }
       // 血条（满血不显示，Boss 用顶部大血条）
       if ((!def.boss || def.towerOf) && m.hp < m.maxHp && (def.boss || this.crowdBars !== false)) {

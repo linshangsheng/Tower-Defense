@@ -48,6 +48,18 @@
     deployMerc(i, lane) {
       const s = this.mercSlots[i];
       if (!s || !this.mercReady(i)) return false;
+      this.funds -= this.mercCost(i);
+      s.cd = s.def.cd;
+      return this.spawnMerc(i, lane);
+    },
+
+    mercAlive() {
+      return this.mercs.filter((u) => !u.dead).length;
+    },
+
+    // 把第 i 个携带兵种放上场（不检查也不扣军饷 / 冷却；deployMerc 和"援军"光球共用）
+    spawnMerc(i, lane) {
+      const s = this.mercSlots[i];
       lane = TD.util.clamp(lane === undefined ? 0 : lane, 0, this.lanes - 1);
       const st = this.mercStats(s.def, s.level);
       const u = {
@@ -69,8 +81,6 @@
         hitFlash: 0,
         face: 1,
       };
-      this.funds -= this.mercCost(i);
-      s.cd = s.def.cd;
       this.mercs.push(u);
       this.mercDeployed++;
       this.emit('mercDeploy', { u });
