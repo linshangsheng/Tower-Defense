@@ -1,0 +1,39 @@
+/* 精英登场提示（任务 eliteplus）：顶部居中的小胶囊，服从 ds.css 的材质 / 字阶 / 圆角 */
+.elite-tip {
+  position: absolute;
+  left: 50%;
+  top: 72px;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  padding: var(--s2) var(--s4);
+  border-radius: var(--r-lg);
+  background: var(--mat-thick);
+  border: 1px solid var(--sep);
+  box-shadow: var(--elev-2);
+  color: var(--label);
+  font-size: var(--fs-footnote);
+  font-weight: var(--fw-semibold);
+  z-index: 30;
+  pointer-events: none;
+  white-space: nowrap;
+  animation: elite-tip-in 260ms var(--ease);
+  transition: opacity 400ms var(--ease);
+}
+.elite-tip.out {
+  opacity: 0;
+}
+.elite-tip .elite-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--af, var(--accent));
+  box-shadow: 0 0 8px var(--af, var(--accent));
+}
+@keyframes elite-tip-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -8px);
+  }
+}

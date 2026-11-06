@@ -14,6 +14,7 @@
     fury: { name: '狂怒', icon: '🔥', ico: 'flame', color: '#ff7a4f', w: 20 },
     gale: { name: '疾风', icon: '💨', ico: 'wind', color: '#8fd8ff', w: 15 },
     frost: { name: '冰封', icon: '❄️', ico: 'snowflake', color: '#b8f0ff', w: 10 },
+    reinforce: { name: '援军', icon: '🚩', ico: 'flag', color: '#9ad0ff', w: 8 },
   };
   TD.data.drops = DROPS;
   const DROP_RATE = 0.035;
@@ -94,6 +95,17 @@
       } else if (d.kind === 'gale') {
         this.buffs = this.buffs.filter((b) => b.src !== 'dropgale');
         this.buffs.push({ aspd: 0.3, until: this.time + 6, src: 'dropgale' });
+      }
+      if (d.kind === 'reinforce') {
+        // 援军：免费来一个随机兵种的兵（不扣军饷、不进冷却）；没带兵 / 场上已满就折成 50 军饷
+        const idx = this.mercsOn && this.mercSlots.length ? this.rng.int(this.mercSlots.length) : -1;
+        if (idx >= 0 && this.mercAlive() < C0.merc.cap) {
+          this.spawnMerc(idx, this.rng.int(this.lanes));
+          d.reinforced = true;
+        } else {
+          this.funds += 50;
+          amount = 50;
+        }
       }
       if (d.kind === 'frost') {
         for (const o of this.monsters) {
@@ -184,6 +196,20 @@
     // 精英词缀（设计书 172）：再生每帧回血；迅捷在 monsterSpeed；复仇在 traitOnKill 之后的 eliteOnDeath
     updateElite(m, dt) {
       if (m.affix === 'regen' && m.hp < m.maxHp && !m.dead) m.hp = Math.min(m.maxHp, m.hp + m.maxHp * C0.eliteAffixes.regen.pct * dt);
+      if (m.affix === 'summon' && !m.dead && m.x < 1150 && m.x > C0.wallX + 60) {
+        const S = C0.eliteAffixes.summon;
+        if (m.sumNext === undefined) m.sumNext = this.time + S.first;
+        if (this.time < m.sumNext) return;
+        m.sumNext = this.time + S.every;
+        const n = this.monsters.reduce((c, o) => c + (!o.dead && o.summonedBy === m.id ? 1 : 0), 0);
+        if (n >= S.max) return;
+        this.noEliteRoll = true;
+        const c = this.spawnMonster(m.type, m.lane, Math.min(C0.spawnX, m.x + 30));
+        this.noEliteRoll = false;
+        c.summonedBy = m.id;
+        c.noReward = true;
+        this.emit('eliteSummon', { m, c, x: m.x, y: m.y + m.yOffset });
+      }
     },
 
     eliteOnDeath(m) {
