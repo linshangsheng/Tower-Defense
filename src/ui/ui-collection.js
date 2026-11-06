@@ -228,7 +228,15 @@
       if (topK !== 'boss' && D.monsters[topK] && topV / wt >= 0.3 && D.monsterTags(D.monsters[topK]).length) tips.push(`城墙伤害最多来自「${name(topK)}」：${D.monsters[topK].desc}`);
     }
     if (!parts.length) return null;
-    return h('details', { class: 'report', open: open ? true : null }, h('summary', null, '📊 战斗报告', res.bestStreak >= 5 ? h('span', { class: 'rep-streak' }, `  最高连击 ${res.bestStreak}`) : null), res.drops > 0 ? h('span', { class: 'rep-streak' }, `  拾取光球 ${res.drops}`) : null, res.elites > 0 ? h('span', { class: 'rep-streak' }, `  击败精英 ${res.elites}`) : null, res.treasures > 0 ? h('span', { class: 'rep-streak' }, `  抓住宝箱怪 ${res.treasures}`) : null, res.mercDeployed > 0 ? h('span', { class: 'rep-streak' }, `  雇佣兵 ${res.mercDeployed}（阵亡 ${res.mercDeaths}）`) : null, parts, tips.map((t) => h('div', { class: 'note rep-tip' }, '💡 ' + t)));
+    const ico = (name) => (TD.icons && TD.icons.svg(name)) || '';
+    const chip = (name, text) => h('span', { class: 'rep-chip' }, ico(name), text);
+    const chips = [];
+    if (res.bestStreak >= 5) chips.push(chip('flame', `最高连击 ${res.bestStreak}`));
+    if (res.drops > 0) chips.push(chip('sparkles', `拾取光球 ${res.drops}`));
+    if (res.elites > 0) chips.push(chip('crown', `击败精英 ${res.elites}`));
+    if (res.treasures > 0) chips.push(chip('gift', `抓住宝箱怪 ${res.treasures}`));
+    if (res.mercDeployed > 0) chips.push(chip('swords', `雇佣兵 ${res.mercDeployed}（阵亡 ${res.mercDeaths}）`));
+    return h('details', { class: 'report', open: open ? true : null }, h('summary', null, ico('chart'), '战斗报告'), chips.length ? h('div', { class: 'rep-chips' }, chips) : null, parts, tips.map((t) => h('div', { class: 'note rep-tip' }, ico('bulb'), t)));
   };
 
   UI.showModeResult = function (battle, reward) {

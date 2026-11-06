@@ -2352,7 +2352,7 @@
       for (const k of ['copper', 'silver', 'gold']) if (info.cost[k]) costEls.push(h('b', { class: 'qu-cost' }, info.cost[k], ' ', coinIcon(k)));
       const lv = info.from === null ? null : h('span', { class: 'qu-lv' }, `Lv ${info.from} → Lv ${info.to}`);
       const pct = Math.max(0.1, Math.round(info.gain * 1000) / 10);
-      wrap.appendChild(h('div', { class: 'qu-title' }, '🛠 最划算的升级'));
+      wrap.appendChild(h('div', { class: 'qu-title' }, icoEl('wrench'), '最划算的升级'));
       wrap.appendChild(
         h(
           'div',
@@ -2372,46 +2372,104 @@
     return wrap;
   };
 
-  // ================= 结算 =================
+  // ================= 结算（设计书 200：苹果 HIG 取向的重做） =================
+  // 层级：大结果（星星）→ 本场数据四张卡 → 奖励（滚动计数）→ 最划算的升级 → 通知（最多 3 条，其余折叠）；底部一个主按钮
+  const icoEl = (name, size) => (TD.icons && TD.icons.svg(name, size)) || h('span', null);
+  const reduceMotionOn = () => !!(game && game.save && game.save.settings && game.save.settings.reduceMotion);
+
+  // 数字滚动计数：减少动效时直接给最终值
+  function countUp(el, target, delayMs) {
+    el.textContent = String(target);
+    if (reduceMotionOn() || !target || typeof requestAnimationFrame === 'undefined') return;
+    el.textContent = '0';
+    const dur = Math.min(1100, 500 + target * 0.6);
+    let t0 = null;
+    const tick = (now) => {
+      if (t0 === null) t0 = now + (delayMs || 0);
+      else if (!el.isConnected) return;
+      const p = Math.max(0, (now - t0) / dur);
+      el.textContent = String(TD.resultView.countValue(target, p));
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+
+  function noteEl(x) {
+    return h('div', { class: 'note ' + x.kind }, icoEl(x.icon), h('span', { class: 'note-text' }, (x.parts || [x.text]).map((p) => h('span', null, p))));
+  }
+
   UI.showResult = function (battle, reward) {
     const res = battle.result;
     const n = battle.levelNo;
     const win = res.win;
-    const rows = [];
-    rows.push(h('div', { class: 'reward-row' }, h('span', null, win ? '通关奖励' : '安慰奖励'), h('b', null, reward.baseCopper, ' ', coinIcon('copper'))));
-    rows.push(h('div', { class: 'reward-row' }, h('span', null, `击杀掉落（${res.kills} 只）`), h('b', null, reward.killCopper, ' ', coinIcon('copper'))));
-    if (reward.earlyCopper) rows.push(h('div', { class: 'reward-row' }, h('span', null, '提前召唤'), h('b', null, reward.earlyCopper, ' ', coinIcon('copper'))));
-    if (reward.copperMult > 1) rows.push(h('div', { class: 'reward-row' }, h('span', null, '幸运加成'), h('b', null, `×${reward.copperMult.toFixed(2)}`)));
-    rows.push(h('div', { class: 'reward-row total' }, h('span', null, '合计'), h('b', null, reward.copper, ' ', coinIcon('copper'), reward.silver ? [' ', reward.silver, ' ', coinIcon('silver')] : null, reward.gold ? [' ', reward.gold, ' ', coinIcon('gold')] : null)));
-    const notes = reward.notes.filter((x) => !x.includes('失败')).map((x) => h('div', { class: 'note' + (x.startsWith('援军') ? ' rally' : '') }, (x.startsWith('援军') ? '🎺 ' : '✦ ') + x));
-    if (res.supplies && res.supplies.length) notes.push(h('div', { class: 'note' }, '📦 本关补给：', ...res.supplies.flatMap((x, i) => (i ? [h('span', null, '、'), h('span', null, D.supplies[x].name)] : [h('span', null, D.supplies[x].name)]))));
-    const unlocks = reward.unlocks.map((x) => h('div', { class: 'note unlock' }, '🔓 ' + x));
-    for (const a of reward.achievements || []) unlocks.push(h('div', { class: 'note achieve' }, `🏆 达成成就「${a.name}」：${a.desc}（+${P.costText(a.reward)}）`));
+    const RV = TD.resultView;
+
+    // 1. 大结果
+    const hero = h(
+      'div',
+      { class: 'rs-hero' },
+      win ? h('div', { class: 'rs-stars' }, RV.starFlags(res.stars).map((on, i) => h('span', { class: 'rs-star' + (on ? ' on' : ''), style: { '--i': i } }, icoEl('star')))) : h('div', { class: 'rs-badge' }, icoEl('shield')),
+      h('h2', { class: 'result-title' }, win ? '守城成功！' : '这关还需要准备'),
+      h('div', { class: 'rs-sub' }, win ? `第 ${n} 关 · ${battle.level.name}` : '先强化一下，下一次会更稳')
+    );
+
+    // 2. 本场数据
+    const stats = h('div', { class: 'rs-stats' }, RV.statCards(res, battle.totalWaves).map((c) => h('div', { class: 'rs-stat ' + c.id }, h('b', null, c.value), h('span', null, c.label))));
+
+    // 3. 奖励
+    const totalNum = h('span', { class: 'rs-total-num' });
+    countUp(totalNum, reward.copper, 350);
+    const rewardBox = h(
+      'div',
+      { class: 'rs-reward' },
+      h(
+        'div',
+        { class: 'rs-reward-head' },
+        h('span', { class: 'rs-reward-label' }, '本关奖励'),
+        h('b', { class: 'rs-total' }, totalNum, ' ', coinIcon('copper'), reward.silver ? h('span', { class: 'rs-total-more' }, reward.silver, ' ', coinIcon('silver')) : null, reward.gold ? h('span', { class: 'rs-total-more' }, reward.gold, ' ', coinIcon('gold')) : null)
+      ),
+      h('div', { class: 'rs-reward-rows' }, RV.rewardRows(reward, res, win).map((r) => h('div', { class: 'reward-row' }, h('span', null, r.label), h('b', null, r.value, r.coin ? [' ', coinIcon(r.coin)] : null))))
+    );
+
+    // 4. 通知：成就 / 解锁 / 援军 / 其他 / 补给，最多展开 3 条，其余折叠成"还有 N 条"
+    const list = [];
+    for (const a of reward.achievements || []) list.push({ kind: 'achieve', icon: 'trophy', text: `达成成就「${a.name}」：${a.desc}（+${P.costText(a.reward)}）` });
+    for (const x of reward.unlocks) list.push({ kind: 'unlock', icon: 'unlock', text: x });
+    for (const x of reward.notes.filter((s) => !s.includes('失败'))) list.push(x.startsWith('援军') ? { kind: 'rally', icon: 'horn', text: x } : { kind: 'note', icon: 'spark', text: x });
+    if (res.supplies && res.supplies.length) list.push({ kind: 'supply', icon: 'box', parts: ['本关补给：', ...res.supplies.flatMap((x, i) => (i ? ['、', D.supplies[x].name] : [D.supplies[x].name]))] });
+    const fold = RV.foldNotes(list);
+    let notes = null;
+    if (list.length) {
+      notes = h('div', { class: 'rs-notes' }, fold.shown.map(noteEl));
+      if (fold.hidden.length) {
+        const more = h('div', { class: 'rs-more-list', hidden: true }, fold.hidden.map(noteEl));
+        const label = `还有 ${fold.hidden.length} 条`;
+        const btn = h('button', { class: 'rs-more', type: 'button', 'aria-expanded': 'false' }, label);
+        btn.addEventListener('click', () => {
+          const open = more.hidden;
+          more.hidden = !open;
+          btn.setAttribute('aria-expanded', String(open));
+          btn.textContent = open ? '收起' : label;
+        });
+        notes.append(more, btn);
+      }
+    }
+
+    // 失败：推荐强化放在最前面，做成醒目的卡片
     let tips = null;
     if (!win) {
       const sug = P.suggestions(game.save, n);
-      tips = h('div', { class: 'suggest' }, h('h3', null, '推荐强化'), sug.map((x) => h('div', { class: 'note' + (x.afford ? ' afford' : '') }, (x.afford ? '✔ ' : '· ') + x.text)), h('div', { class: 'hint' }, `城墙守到了第 ${res.wave} / ${battle.totalWaves} 波。`));
+      tips = h('div', { class: 'suggest rs-suggest' }, h('h3', null, icoEl('bulb'), '推荐强化'), sug.map((x) => h('div', { class: 'note' + (x.afford ? ' afford' : '') }, icoEl(x.afford ? 'check' : 'dot'), h('span', { class: 'note-text' }, x.text))));
     }
+
+    // 底部操作栏：只有一个主按钮（有下一关就是"下一关"，否则是"再来一次"）
     const hasNext = win && D.levels[n + 1];
-    const body = h(
-      'div',
-      { class: 'result ' + (win ? 'win' : 'lose') },
-      h('h2', { class: 'result-title' }, win ? '守城成功！' : '城墙被攻破了…'),
-      win ? h('div', { class: 'result-stars' }, [1, 2, 3].map((i) => h('span', { class: 'big-star' + (i <= res.stars ? ' on' : ''), style: { animationDelay: i * 0.25 + 's' } }, '★'))) : null,
-      win ? h('div', { class: 'hint' }, `城墙剩余 ${Math.round(res.wallRatio * 100)}%`) : null,
-      // 失败时左右两栏：左边奖励和推荐强化，右边战斗报告（设计书 32.2）
-      win
-        ? [h('div', { class: 'reward-box' }, rows), UI.quickUpgradeEl(), notes, unlocks, UI.reportEl(res, false)]
-        : h('div', { class: 'result-cols' }, h('div', null, h('div', { class: 'reward-box' }, rows), UI.quickUpgradeEl(), notes, unlocks, tips), h('div', null, UI.reportEl(res, true))),
-      h(
-        'div',
-        { class: 'modal-buttons' },
-        h('button', { class: 'btn', onclick: () => (UI.closeModal(), UI.showMap(D.chapterOf(n).id)) }, '地图'),
-        h('button', { class: 'btn' + (!win && game.save.stats.wins < 3 ? ' primary pulse' : ''), onclick: () => (UI.closeModal(), UI.showShop(win && hasNext ? n + 1 : n, win && game.save.stats.wins >= 3 ? 'loadout' : 'attrs')) }, '去商店'),
-        !win || !hasNext ? h('button', { class: 'btn' + (win ? '' : ' primary'), onclick: () => (UI.closeModal(), game.startBattle(n)) }, '再来一次') : null,
-        hasNext ? h('button', { class: 'btn primary', onclick: () => (UI.closeModal(), UI.showMap(D.chapterOf(n + 1).id), UI.showPreview(n + 1)) }, '下一关 ›') : null
-      )
-    );
-    modal(body, { cls: 'result-modal' + (win ? '' : ' lose-wide') });
+    const btnMap = h('button', { class: 'btn', onclick: () => (UI.closeModal(), UI.showMap(D.chapterOf(n).id)) }, '地图');
+    const btnShop = h('button', { class: 'btn' + (!win && game.save.stats.wins < 3 ? ' pulse' : ''), onclick: () => (UI.closeModal(), UI.showShop(hasNext ? n + 1 : n, win && game.save.stats.wins >= 3 ? 'loadout' : 'attrs')) }, '去商店');
+    const btnRetry = h('button', { class: 'btn' + (hasNext ? '' : ' primary'), onclick: () => (UI.closeModal(), game.startBattle(n)) }, '再来一次');
+    const btnNext = hasNext ? h('button', { class: 'btn primary', onclick: () => (UI.closeModal(), UI.showMap(D.chapterOf(n + 1).id), UI.showPreview(n + 1)) }, '下一关 ›') : null;
+
+    const body = h('div', { class: 'result ' + (win ? 'win' : 'lose') + (reduceMotionOn() ? ' still' : '') }, hero, stats, tips, rewardBox, UI.quickUpgradeEl(), notes, UI.reportEl(res, !win), h('div', { class: 'modal-buttons' }, btnMap, btnShop, btnRetry, btnNext));
+    modal(body, { cls: 'result-modal rs-modal' });
   };
 })((globalThis.TD = globalThis.TD || {}));
