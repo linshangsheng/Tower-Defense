@@ -818,6 +818,7 @@
           const blk = this.mercBlockerFor(m);
           if (blk) {
             m.state = 'attack';
+            if (m.def.trample && this.trampleMercs(m, blk)) continue; // 冲阵（设计书 trample）：撞飞前排的兵
             if (m.def.explode) {
               this.mercHurt(blk, m.def.explode.damage * this.D, m);
               this.emit('explode', { m });

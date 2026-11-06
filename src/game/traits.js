@@ -110,6 +110,39 @@
       if (t.id === 'scavenge') this.hasScavenger = true;
     },
 
+    // 冲阵：大块头撞上兵时，把贴身的前排兵击退一段并眩晕（每只怪每 every 秒一次）。
+    // def.trample = { every 冷却, kick 击退距离, stun 眩晕秒数 }；盾卫（嘲讽 + 减伤）眩晕时间 ×trampleGuard；
+    // 眩晕结束后有 trampleGrace 秒免疫，几只大怪不会把同一个兵锁死。返回是否真的撞到了兵。
+    trampleMercs(m, blk) {
+      const T = m.def.trample;
+      const MC = C0.merc;
+      if (!T || this.time < (m.trampleAt || 0) || this.time < m.frozenUntil || this.time < m.stunUntil) return false;
+      const reach = MC.contactPad + m.def.size * 0.5 + MC.trampleReach;
+      const floor = C0.wallX + 40;
+      const hits = [];
+      for (const u of this.mercs) {
+        if (u.dead || u.lane !== m.lane || this.time < (u.trampleImmune || 0)) continue;
+        const gap = m.x - u.x;
+        if (gap < -4 || gap > reach) continue;
+        const dist = Math.max(0, Math.min(T.kick, u.x - floor));
+        const stun = T.stun * (u.def.taunt && u.def.reduce ? MC.trampleGuard : 1);
+        u.x -= dist;
+        u.knockAt = this.time;
+        u.knockDist = dist;
+        u.stunUntil = Math.max(u.stunUntil || 0, this.time + stun);
+        u.stunDur = stun;
+        u.trampleImmune = u.stunUntil + MC.trampleGrace;
+        u.charging = false;
+        hits.push({ u, dist, stun });
+      }
+      if (!hits.length) return false;
+      m.trampleAt = this.time + T.every;
+      this.trampleCount = (this.trampleCount || 0) + 1;
+      this.emit('trample', { m, x: m.x, y: m.y + m.yOffset, hits });
+      void blk;
+      return true;
+    },
+
     traitEmit(m, id, extra) {
       this.emit('trait', Object.assign({ m, id, x: m.x, y: m.y + m.yOffset }, extra || {}));
     },
