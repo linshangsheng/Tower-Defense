@@ -425,6 +425,8 @@
       if (this.mods.waveStrike) this.delayed.push({ kind: 'airstrike', def: { after: 6, atkMult: 4 }, at: this.time + 6 });
       const wave = this.level.waves[i];
       if (wave.D) this.D = wave.D; // 无尽模式：每波有自己的难度
+      // 无尽模式：每清完一波送一笔军饷（第 i 波开始 = 已清 i 波）
+      if (this.level.endless && this.mercsOn && i > 0) this.funds += TD.modes.endlessWaveFunds(i);
       this.floorMult = wave.floorMult || 1; // 九层妖塔：第 N 层所有怪物的护甲 / 魔抗再 ×N
       this.bossHpD = wave.bossHpD || 0; // 九层妖塔：妖王的血量按这个难度算（和关卡 Boss 一样厚），其余属性仍按 D
       // countMult：自动平衡工具（tools/tune.js）写入的每关数量倍率，Boss 不受影响
@@ -602,8 +604,9 @@
       };
       // 雇佣兵参战：怪物变多变硬（设计书 184）
       if (this.mercsOn && !def.boss && !def.bossPart) {
-        m.hp = m.maxHp = Math.round(m.hp * (1 + C.merc.monsterHp));
-        m.dps *= 1 + C.merc.monsterDps;
+        const em = this.level.endless ? C.merc.endlessMerc : 1; // 无尽模式单独缩放（modes.js）
+        m.hp = m.maxHp = Math.round(m.hp * (1 + C.merc.monsterHp * em));
+        m.dps *= 1 + C.merc.monsterDps * em;
       }
       if (def.split) m.nextSplit = 1 - def.split.every;
       if (def.ai) this.initBossAI(m);

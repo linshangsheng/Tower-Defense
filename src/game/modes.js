@@ -87,6 +87,12 @@
     };
   };
 
+  // 无尽模式带兵时每清一波额外送的军饷：base + step × 已清波数，封顶 cap（估计值）
+  M.endlessWaveFunds = function (cleared) {
+    const [base, step, cap] = C.merc.endlessWaveFunds;
+    return Math.min(cap, Math.round(base + step * cleared));
+  };
+
   M.applyEndlessResult = function (save, result) {
     const st = P.heroStats(save);
     const e = (save.endless = save.endless || { best: 0, runs: 0 });
