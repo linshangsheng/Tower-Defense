@@ -684,6 +684,20 @@
     }
 
     updateMonsters(dt) {
+      // 兵按车道分桶（updateMonsters 期间兵的车道不变；死亡的兵仍留在桶里，由 mercBlockerFor 自己判 dead）
+      let lb = null;
+      if (this.mercs.length) {
+        lb = this.mercLaneBuckets = [];
+        for (const u of this.mercs) (lb[u.lane] || (lb[u.lane] = [])).push(u);
+      }
+      try {
+        this.updateMonstersInner(dt);
+      } finally {
+        this.mercLaneBuckets = null;
+      }
+    }
+
+    updateMonstersInner(dt) {
       let chill = 0;
       for (const m of this.monsters) if (!m.dead && m.def.chill && m.x <= C.width) chill++;
       this.chillStacks = chill;
