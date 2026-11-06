@@ -22,11 +22,11 @@ function replay(level, seed, secs, mercs) {
   return { hash: h.digest('hex'), maxMon, mercs: b.mercDeployed };
 }
 
-// 优化前（commit 基线）记录下来的哈希
+// 基线哈希：合并其他功能后，用「perf 合并前的提交」重新记录，并确认与合并后的结果逐位相同（证明 perf 优化仍然行为等价）
 const EXPECT = {
-  'L40/s1/20s': '56c8cd37e917a698ca1bb8105324e8cdd24f08d22c94259d82af2289f76d0ad3',
-  'L100/s2/20s': 'd80c5c93a8519affa1f3815629652b693725d1971ce27f554b525c9dedb03369',
-  'L150/s3/20s': '9ab07a2ae73fdd5a02e1490ed68b2eb4f1fbc9e76d7381b61dcae82d95682ef8',
+  'L40/s1/20s': 'b7854444e4e0ef61f8766c888a334e752f74a4a1f3b866875d7d939ed2567feb',
+  'L100/s2/20s': 'dc06dfbdb746be36db72f040cfa06bd6c2d680e67bd5a794db2da99442465d93',
+  'L150/s3/20s': '7bfd9c4f8214fbc57462ce910061aa6b54bc51e800459f2a2f5d5c8cd7399dc3',
 };
 
 for (const [key, [level, seed]] of Object.entries({ 'L40/s1/20s': [40, 1], 'L100/s2/20s': [100, 2], 'L150/s3/20s': [150, 3] })) {
