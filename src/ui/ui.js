@@ -158,29 +158,75 @@
     // 背景用玩家当前所在章节的战场（设计书 57.4）
     const nextLv = Math.min(P.highestCleared(game.save) + 1, Object.keys(D.levels).length);
     game.renderer.setChapter(D.chapterOf(nextLv));
+    const TI = TD.titleinfo;
+    const first = TI.isFirstRun(game.save);
+    const prog = TI.progress(game.save);
+    const gift = TD.modes && TD.modes.loginPending(game.save);
+    const rm = !!(game.save.settings && game.save.settings.reduceMotion);
+    let idx = 0;
+    const enter = () => ({ '--i': String(idx++) });
+    const chev = () => {
+      const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      s.setAttribute('viewBox', '0 0 24 24');
+      s.setAttribute('class', 'tl-chev');
+      s.setAttribute('aria-hidden', 'true');
+      const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      p.setAttribute('d', 'M9 5.5l6.5 6.5L9 18.5');
+      s.appendChild(p);
+      return s;
+    };
+    const row = (icon, label, fn, extra) =>
+      h('button', { class: 'tl-row', style: enter(), onclick: () => (sfx('click'), fn()) }, h('span', { class: 'tl-ico' }, TD.icons ? TD.icons.svg(icon) : null), h('span', { class: 'tl-label' }, label), extra || null, chev());
+    const langName = TD.i18n.languages.find((l) => l.code === TD.i18n.lang).native;
+    const secondary = [];
+    if (!first) secondary.push(h('div', { class: 'tl-group' }, row('trophy', '成就', () => UI.showAchievements()), row('book', '图鉴', () => UI.showBestiary())));
+    secondary.push(
+      h(
+        'div',
+        { class: 'tl-group' },
+        row('sliders', '设置', () => UI.showSettings()),
+        row('bulb', '玩法说明', () => UI.showHelp()),
+        row('scroll', '关于', () => UI.showAbout()),
+        row('globe', 'Language', () => UI.showLanguage(), h('span', { class: 'tl-val' }, langName))
+      )
+    );
+    const primary = h('button', { class: 'btn big primary title-go', style: enter(), onclick: () => (sfx('click'), has || game.save.settings.diffChosen ? UI.showMap() : UI.chooseDifficulty(() => UI.showMap())) }, first ? '开始冒险' : '继续游戏');
     screenEl = h(
       'div',
-      { class: 'screen title-screen' },
+      { class: 'screen title-screen' + (rm ? ' tl-still' : '') },
       h(
         'div',
         { class: 'title-logo' },
         TD.logo ? TD.logo.liveEmblem(220) : null,
-        h('div', { class: 'title-main' }, '城头射手')
+        h('div', { class: 'title-main' }, '城头射手'),
+        prog
+          ? h(
+              'div',
+              { class: 'title-progress' },
+              h('span', null, '第 {0} 关'.replace('{0}', prog.level)),
+              h('i', null, '·'),
+              h('span', null, prog.chapter),
+              h('i', null, '·'),
+              h('span', { class: 'tp-stars' }, TD.icons ? TD.icons.svg('star') : null, String(prog.stars))
+            )
+          : null,
+        gift ? h('div', { class: 'title-gift' }, h('b', { class: 'tg-dot' }), h('span', null, '每日礼物可领取')) : null
       ),
       h(
         'div',
         { class: 'title-buttons' },
-        h('button', { class: 'btn big primary', onclick: () => (sfx('click'), has || game.save.settings.diffChosen ? UI.showMap() : UI.chooseDifficulty(() => UI.showMap())) }, has ? '继续游戏' : '开始游戏'),
-        h('div', { class: 'btn-row' }, h('button', { class: 'btn', style: { flex: 1 }, onclick: () => (sfx('click'), UI.showBestiary()) }, '图鉴'), h('button', { class: 'btn', style: { flex: 1 }, onclick: () => (sfx('click'), UI.showAchievements()) }, '成就')),
-        h('button', { class: 'btn', onclick: () => (sfx('click'), UI.showSettings()) }, '设置'),
-        h('div', { class: 'btn-row' }, h('button', { class: 'btn', style: { flex: 1 }, onclick: () => (sfx('click'), UI.showHelp()) }, '玩法说明'), h('button', { class: 'btn', style: { flex: 1 }, onclick: () => (sfx('click'), UI.showAbout()) }, '关于')),
-        h('button', { class: 'btn', onclick: () => (sfx('click'), UI.showLanguage()) }, `🌐 Language · ${TD.i18n.languages.find((l) => l.code === TD.i18n.lang).native}`),
+        primary,
+        secondary,
         // 嵌在别的网页里（itch.io 等）时网页没权限关窗口，按钮没有意义，不显示
-        UI.embedded() ? null : h('button', { class: 'btn quit', onclick: () => (sfx('click'), UI.quitGame()) }, '退出游戏')
+        UI.embedded() ? null : h('button', { class: 'btn quit', style: enter(), onclick: () => (sfx('click'), UI.quitGame()) }, '退出游戏')
       ),
       h('div', { class: 'title-foot' }, C.demo ? `试玩版 ${C.version} · 前 ${Math.ceil(C.demoMaxLevel / 10)} 章 ${C.demoMaxLevel} 关` : `网页原型 ${C.version} · ${D.chapters.length} 章 ${Object.keys(D.levels).length} 关`, bgm && TD.music.enabled ? h('div', { class: 'title-bgm' }, '♪ ', h('span', null, bgm.name)) : null)
     );
     root.appendChild(screenEl);
+    // Enter 直接触发主按钮；Tab 顺序 = 主按钮 → 分组列表 → 退出
+    try {
+      primary.focus({ preventScroll: true });
+    } catch (e) {}
   };
 
   // 语言设置（设计书 83）：中英两种语言，默认英语。点一个就切换，马上重画当前页面
