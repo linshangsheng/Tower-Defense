@@ -3,6 +3,7 @@ const path = require('path');
 
 const FILES = [
   'src/core/ns.js',
+  'src/core/touch.js',
   'src/data/config.js',
   'src/data/monsters.js',
   'src/data/mercs.js',
