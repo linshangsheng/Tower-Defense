@@ -1647,6 +1647,49 @@
     }
   }
 
+  // 兵种天赋区：3 / 6 / 9 级各一档二选一；选中态用强调色淡底；改选要花铜币
+  function mercTalentBlock(id) {
+    const s = game.save;
+    const MC = TD.config.merc;
+    const picks = P.mercTalentPicks(s, id);
+    const open = P.mercTalentTiers(s, id);
+    const box = h('div', { class: 'tal-box' }, h('div', { class: 'tal-title' }, '天赋'));
+    D.mercTalents[id].forEach((opts, tier) => {
+      const row = h('div', { class: 'tal-row' });
+      const locked = tier >= open;
+      opts.forEach((t, c) => {
+        const sel = picks[tier] === c;
+        const cost = !locked && picks[tier] !== null && !sel ? P.mercTalentRespecCost(s, id, tier) : 0;
+        row.append(
+          h(
+            'button',
+            {
+              class: 'tal-opt' + (sel ? ' sel' : '') + (locked ? ' locked' : ''),
+              disabled: locked ? true : null,
+              title: locked ? `${MC.talentLevels[tier]} 级解锁` : t.desc,
+              onclick: () => {
+                const r = P.mercTalentChoose(s, id, tier, c);
+                if (r.ok) {
+                  sfx('buy');
+                  game.persist();
+                  renderShop();
+                } else {
+                  sfx('error');
+                  if (r.cost) UI.toast(`铜币不够，改选天赋需要 ${r.cost} 铜币`);
+                }
+              },
+            },
+            h('span', { class: 'tal-ico' }, TD.icons.svg(locked ? 'lock' : t.icon)),
+            h('span', { class: 'tal-txt' }, h('b', null, t.name), h('span', null, locked ? `${MC.talentLevels[tier]} 级解锁` : t.desc), cost ? h('em', null, `改选 ${cost} 铜币`) : null)
+          )
+        );
+      });
+      box.append(row);
+    });
+    if (open > 0 && picks.slice(0, open).includes(null)) box.append(h('div', { class: 'hint' }, '选一条天赋，战斗里才会生效。'));
+    return box;
+  }
+
   // 兵营（设计书 184）：选带上战场的兵种（最多 3 个）、升级兵种
   function shopBarracks(el) {
     const s = game.save;
@@ -1698,14 +1741,14 @@
           cost === null ? h('span', { class: 'equipped' }, '已满级') : buyBtn({ copper: cost }, () => P.mercUpgrade(s, id), '升级')
         );
       }
-      grid.append(
-        card(def.name, unlocked ? lvText(lv) : null, def.desc, right, {
-          icon: mercIcon(id, 52, def),
-          color: def.color,
-          cls: unlocked ? '' : 'locked',
-          foot: unlocked ? h('div', null, h('span', { class: 'hint' }, `费用 ${def.cost} 军饷 · 冷却 ${def.cd} 秒`), mercLore(id)) : null,
-        })
-      );
+      const mc = card(def.name, unlocked ? lvText(lv) : null, def.desc, right, {
+        icon: mercIcon(id, 52, def),
+        color: def.color,
+        cls: (unlocked ? '' : 'locked') + ' merc-card',
+        foot: unlocked ? h('div', null, h('span', { class: 'hint' }, `费用 ${def.cost} 军饷 · 冷却 ${def.cd} 秒`), mercLore(id)) : null,
+      });
+      if (unlocked) mc.append(mercTalentBlock(id));
+      grid.append(mc);
     }
   }
 
