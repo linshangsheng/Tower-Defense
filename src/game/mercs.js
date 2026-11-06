@@ -267,6 +267,11 @@
         const ty = this.laneY(u.lane);
         if (u.y !== ty) u.y += Math.sign(ty - u.y) * Math.min(Math.abs(ty - u.y), 220 * dt);
         const def = u.def;
+        // 被大怪撞飞后眩晕：不能走、不能打、牧师也不能治疗（冲阵）
+        if (this.time < (u.stunUntil || 0)) {
+          u.state = 'stun';
+          continue;
+        }
         // 牧师：给最伤的友军（或城墙）回血
         if (def.support) {
           u.cool -= dt;

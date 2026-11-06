@@ -1,0 +1,10 @@
+{
+  "冲阵！": "Trample!",
+  "又厚又硬，2 秒没挨打就会慢慢回血。集中火力一口气打掉。撞上雇佣兵时会把身前的兵撞飞并震晕 0.9 秒（每 6 秒一次）。": "Thick and tough. It slowly regenerates after 2 seconds without being hit, so focus fire to take it down at once. When it hits mercenaries, it knocks the ones in front flying and stuns them for 0.9 seconds (every 6 seconds).",
+  "皮糙肉厚的大个子。走到半场时会仰天咆哮，周围的怪物 4 秒内跑得更快。撞上雇佣兵时会把身前的兵撞飞并震晕 0.9 秒（每 5.5 秒一次）。": "A tough big guy. When it reaches mid-field it roars, and the monsters around it run faster for 4 seconds. When it hits mercenaries, it knocks the ones in front flying and stuns them for 0.9 seconds (every 5.5 seconds).",
+  "石头拼成的小巨人，魔法伤害减免 75%。用物理武器打它！撞上雇佣兵时会把身前的兵撞飞并震晕 1.1 秒（每 6 秒一次）。": "A little giant of stacked stones; takes 75% less magic damage. Hit it with physical weapons! When it hits mercenaries, it knocks the ones in front flying and stuns them for 1.1 seconds (every 6 seconds).",
+  "浑身钢板的雪怪：物理几乎打不动，魔法才有效；走到半场会咆哮，让周围的怪加速。撞上雇佣兵时会把身前的兵撞飞并震晕 1 秒（每 5.5 秒一次）。": "A yeti covered in steel plates: physical attacks barely work, magic does; at mid-field it roars and speeds up the monsters around it. When it hits mercenaries, it knocks the ones in front flying and stuns them for 1 second (every 5.5 seconds).",
+  "熔化的铁做的傀儡：魔法几乎打不动，用物理武器。撞上雇佣兵时会把身前的兵撞飞并震晕 1.2 秒（每 6 秒一次）。": "A golem made of molten iron: magic barely hurts it, so use physical weapons. When it hits mercenaries, it knocks the ones in front flying and stuns them for 1.2 seconds (every 6 seconds).",
+  "披着铁板的战车，冲得很快；撞墙的震动会让英雄晃一下（0.8 秒）。撞上雇佣兵时会把兵撞飞并震晕 0.8 秒（每 4 秒一次）。": "An armor-plated chariot that charges fast; the impact staggers the hero (0.8 seconds). When it hits mercenaries, it knocks them flying and stuns them for 0.8 seconds (every 4 seconds).",
+  "举着大盾的肉盾：受到的伤害减少 35%，怪物最先打它。站在它身后的弓手、法师、牧师受到的伤害 −30%（盾墙）。被大块头怪物撞晕时，眩晕时间减半。": "A big-shield tank: takes 35% less damage and monsters attack it first. Archers, mages and clerics standing behind it take 30% less damage (shield wall). When a big monster stuns it, the stun lasts half as long."
+}

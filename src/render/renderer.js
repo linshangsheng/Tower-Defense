@@ -753,6 +753,16 @@
         }
         void V;
       });
+      // 冲阵：大块头把前排的兵撞飞——冲击环 + 尘土 + 轻微震屏，被撞的兵头上转几颗星星（drawMercs）
+      on('trample', (e) => {
+        const hx = e.x - e.m.def.size * 0.5;
+        this.fx.push({ kind: 'ring', x: hx, y: e.y, r0: 10, r1: 86, color: '#ffe0b0', w: 5, life: 0.35, age: 0, flat: 0.5 });
+        this.fx.push({ kind: 'ring', x: hx, y: e.y, r0: 4, r1: 54, color: '#ffffff', w: 3, life: 0.22, age: 0, flat: 0.5 });
+        this.burst(hx, e.y + 6, '#cdb892', 9, 170);
+        this.shake = Math.max(this.shake, 3);
+        if (this.fx.length < 200) this.text(hx, e.y - 46, '冲阵！', '#ffe0b0', 20, 0.7);
+        if (this.vfx) for (const h of e.hits) this.vfx.spawn(4, () => ({ kind: 'spark', x: h.u.x + h.dist, y: h.u.y - 12, vx: -60 - Math.random() * 120, vy: -40 - Math.random() * 60, g: 260, life: 0.3, r: 2, color: '#fff2c8' }));
+      });
       on('treasureEscape', (e) => this.text(e.x + 20, e.y - 30, '跑掉了……', '#cfcfcf', 20, 1.0));
       on('treasure', () => {
         this.text(C.width - 220, C.fieldTop + 40, '宝箱哥布林！', '#ffd23f', 26, 1.6);
@@ -3360,8 +3370,11 @@
       const list = b.mercs.filter((u) => !u.dead || b.time - u.diedAt < 0.5).sort((p, q) => p.y - q.y);
       const barY = { mage: 78, knight: 72, guard: 70, swordsman: 66, archer: 66, cleric: 72 };
       for (const u of list) {
-        const x = u.x;
-        const y = u.y + 8;
+        // 被撞飞：逻辑位置已经退到位，画面上从原位置滑过去，中途腾空一小段（冲阵）
+        const kp = u.knockAt === undefined ? 1 : Math.min(1, (b.time - u.knockAt) / 0.28);
+        const x = u.x + (kp < 1 ? (u.knockDist || 0) * (1 - kp) * (1 - kp) : 0);
+        const hop = kp < 1 ? Math.sin(Math.PI * kp) * 16 : 0;
+        const y = u.y + 8 - hop;
         // 接触阴影：和怪物同一套（TD.sprites.shadow），脚下一小块柔和的暗区
         if (!u.dead) TD.sprites.shadow(ctx, x, y + 1, u.type === 'knight' ? 30 : 18);
         const st = {
@@ -3381,6 +3394,14 @@
           const c = TD.art.litSprite(u, Math.random(), 40, this.scene.palette.rim, 0, (g) => ((S.volume = true), TD.mercArt.draw(g, u.type, 0, 0, st, u.face || 1), (S.volume = false)));
           ctx.drawImage(c.canvas, Math.round(x - c.ox), Math.round(y - c.oy));
         } else TD.mercArt.draw(ctx, u.type, x, y, st, u.face || 1);
+        // 眩晕星星：血条上方绕圈转的三颗小星（TD.icons）
+        if (!u.dead && b.time < (u.stunUntil || 0)) {
+          const hy = y - (barY[u.type] || 58) - 20;
+          for (let i = 0; i < 3; i++) {
+            const ang = this.t * 7 + (i * Math.PI * 2) / 3;
+            TD.icons.draw(ctx, 'star', x + Math.cos(ang) * 14, hy + Math.sin(ang) * 4, 12, '#ffd23f', 2.2);
+          }
+        }
         if (!u.dead) {
           const w = 32;
           const ry = y - (barY[u.type] || 58);
