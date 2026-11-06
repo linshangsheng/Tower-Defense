@@ -302,9 +302,15 @@
       return false;
     },
 
-    // 机器人 / 自动战斗：有钱有冷却就雇，派到最靠近城墙的怪所在的车道；先雇前排（盾卫 / 剑士 / 骑士），再雇后排
+    // 机器人 / 自动战斗：mercPolicy 'simple'（旧策略）或 'smart'（默认，更像真人）
     autoMercs() {
       if (this.waveState === 'prepare') return;
+      if (this.mercPolicy === 'simple') this.autoMercsSimple();
+      else this.autoMercsSmart();
+    },
+
+    // 旧策略：有钱有冷却就雇，派到最靠近城墙的怪所在的车道；先雇前排（盾卫 / 剑士 / 骑士），再雇后排
+    autoMercsSimple() {
       const frontline = (id) => (D.mercs[id].taunt ? 0 : D.mercs[id].ranged || D.mercs[id].support || D.mercs[id].trap ? 2 : 1);
       const order = this.mercSlots.map((s, i) => i).sort((a, b) => frontline(this.mercSlots[a].id) - frontline(this.mercSlots[b].id));
       for (const i of order) {
@@ -318,6 +324,80 @@
         this.deployMerc(i, lane);
         break;
       }
+    },
+
+    // 每条车道的压力：场上的怪越靠近城墙、越多，分越高；Boss 额外加分。flank / dive 记录哪些车道有绕后 / 俯冲怪
+    mercLaneThreat() {
+      const threat = new Array(this.lanes).fill(0);
+      const flank = new Array(this.lanes).fill(0);
+      const dive = new Array(this.lanes).fill(0);
+      const span = C.width - C.wallX;
+      for (const m of this.monsters) {
+        if (m.dead || m.x >= C.width || m.lane < 0 || m.lane >= this.lanes) continue;
+        threat[m.lane] += 1 + 2 * Math.max(0, 1 - (m.x - C.wallX) / span) + (m.def.boss ? 3 : 0);
+        const id = m.def.trait && m.def.trait.id;
+        if (id === 'flank') flank[m.lane]++;
+        else if (id === 'dive') dive[m.lane]++;
+      }
+      return { threat, flank, dive };
+    },
+
+    // 智能策略（设计书 194 补充）：配队站位 + 补位 + 集结令 + 预留盾卫资金
+    autoMercsSmart() {
+      const alive = this.mercs.filter((u) => !u.dead);
+      const { threat, flank, dive } = this.mercLaneThreat();
+      const total = threat.reduce((a, b) => a + b, 0);
+      if (total <= 0) return;
+      let hot = 0;
+      for (let l = 1; l < this.lanes; l++) if (threat[l] > threat[hot]) hot = l;
+      // (3) 集结令：压力集中在别的车道、而兵大多不在那里时，整队转移
+      if (alive.length >= 2 && this.rallyReady()) {
+        const inHot = alive.filter((u) => u.lane === hot).length;
+        const here = alive.reduce((a, u) => a + threat[u.lane], 0) / alive.length;
+        if (inHot * 2 < alive.length && threat[hot] >= 2.5 && threat[hot] > here * 2) {
+          this.rallyMercs(hot);
+          return;
+        }
+      }
+      const slots = this.mercSlots.map((s, i) => ({ i, id: s.id, d: s.def }));
+      const isFront = (d) => !d.ranged && !d.support;
+      const guardSlot = slots.find((x) => x.d.taunt);
+      const guards = alive.filter((u) => u.def.taunt);
+      const guardIn = (l) => guards.some((u) => u.lane === l);
+      // (4) 资金：盾卫快要能雇、场上又没有盾卫时，给它留一笔钱
+      const reserve = guardSlot && !guards.length && this.mercSlots[guardSlot.i].cd <= 8 ? this.mercCost(guardSlot.i) : 0;
+      const ok = (x) => this.mercReady(x.i) && (x === guardSlot || this.funds - this.mercCost(x.i) >= reserve);
+      const go = (x, lane) => ok(x) && this.deployMerc(x.i, lane);
+      const dps = (l, f) => alive.filter((u) => u.lane === l && !u.def.taunt && !u.def.support && f(u.def)).length;
+      // 盾卫优先：压力最大的车道没有盾卫就补
+      if (guardSlot && !guardIn(hot) && go(guardSlot, hot)) return;
+      // (2) 绕后 / 俯冲：后排旁边补一个近战兵（狼）或远程兵（蝙蝠）
+      for (let l = 0; l < this.lanes; l++) {
+        if (!(flank[l] || dive[l])) continue;
+        if (!alive.some((u) => u.lane === l && (u.def.ranged || u.def.support))) continue;
+        const wantRanged = dive[l] > 0 && dps(l, (d) => d.ranged) === 0;
+        const wantMelee = flank[l] > 0 && dps(l, isFront) === 0;
+        const cand = slots.filter((x) => (wantRanged && x.d.ranged) || (wantMelee && isFront(x.d) && !x.d.taunt));
+        if (wantMelee && !cand.length) cand.push(...slots.filter((x) => x.d.ranged));
+        for (const x of cand) if (go(x, l)) return;
+      }
+      // 常规：前排（剑士 / 骑士）去压力最大的车道；后排去有盾卫的车道；牧师最后、队里有人才雇
+      const guardLane = (() => {
+        let best = -1;
+        for (const u of guards) if (best < 0 || threat[u.lane] > threat[best]) best = u.lane;
+        return best;
+      })();
+      const frontLane = guardLane >= 0 && threat[guardLane] >= threat[hot] * 0.5 ? guardLane : hot;
+      for (const x of slots) if (isFront(x.d) && !x.d.taunt && go(x, frontLane)) return;
+      const backLane = guardLane >= 0 ? guardLane : hot;
+      const backOk = guardLane >= 0 || (!guardSlot && alive.some((u) => u.lane === hot && isFront(u.def)));
+      if (!backOk) return;
+      for (const x of slots) if (x.d.ranged && go(x, backLane)) return;
+      const team = alive.filter((u) => u.lane === backLane && !u.def.support).length;
+      const vets = alive.some((u) => (u.rank || 0) >= 1);
+      for (const x of slots) if (x.d.support && (team >= 2 || vets) && go(x, backLane)) return;
+      // 盾卫：已经有了也可以再补一个（压力大、钱多、有空位）
+      if (guardSlot && guards.length < 2 && threat[hot] >= 6 && this.funds >= this.mercCost(guardSlot.i) * 2) go(guardSlot, hot);
     },
 
     updateMercs(dt) {
