@@ -735,6 +735,10 @@
           }
           const ty = this.laneY(m.lane);
           if (m.y !== ty) m.y += Math.sign(ty - m.y) * Math.min(Math.abs(ty - m.y), 140 * dt);
+          if (this.mercsOn) {
+            this.updateAssassin(m, dt); // 现身后斩首后排兵（设计书 195）
+            if (m.dead) continue;
+          }
         }
         // 跳跃（飞鱼）：空中无法被攻击，落地前不做别的事
         const lp = m.def.leap;
@@ -829,6 +833,14 @@
               this.mercHurt(blk, m.def.slam * this.D, m);
               this.emit('slam', { m });
             }
+            if (m.def.stealth) {
+              // 刺客缠上目标：蓄力 assassinWind 秒后一击毙命；被冻住 / 眩晕会打断
+              if (this.time >= m.frozenUntil && this.time >= m.stunUntil) {
+                m.strikeT = (m.strikeT || 0) + dt;
+                if (m.strikeT >= C.merc.assassinWind) { m.strikeT = 0; this.mercAssassinate(m, blk); }
+              }
+              continue;
+            }
             if (this.time >= m.frozenUntil && this.time >= m.stunUntil) {
               m.attackTimer -= dt;
               if (m.attackTimer <= 0) {
@@ -841,7 +853,7 @@
         }
         if (m.x > stopX) {
           m.state = 'walk';
-          m.x = Math.max(stopX, m.x - this.monsterSpeed(m) * dt);
+          m.x = Math.max(stopX, m.x - this.monsterSpeed(m) * (m.lockId ? C.merc.assassinDash : 1) * dt);
         } else if (heal || chillDef || bub) {
           m.state = 'hold';
         } else if (ranged) {

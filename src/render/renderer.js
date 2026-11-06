@@ -3375,6 +3375,17 @@
           const r = Math.max(0, u.hp / u.maxHp);
           ctx.fillStyle = u.covered ? '#7fb8ff' : r > 0.5 ? '#7fe08a' : r > 0.25 ? '#ffd23f' : '#ff6a5a';
           ctx.fillRect(x - w / 2, ry, w * r, 4);
+          // 刺客锁定（设计书 195）：头顶一个会脉动的红色准星
+          if (b.time - (u.markT === undefined ? -9 : u.markT) < 0.2) {
+            const pr = 1 + Math.sin(this.t * 10) * 0.12;
+            ctx.save();
+            ctx.fillStyle = 'rgba(40,0,0,0.55)';
+            ctx.beginPath();
+            ctx.arc(x, ry - 24, 13 * pr, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+            TD.icons.draw(ctx, 'target', x, ry - 24, 22 * pr, '#ff4d4d', 2);
+          }
           // 老兵星：每级一颗小星星
           for (let i = 0; i < (u.rank || 0); i++) TD.icons.draw(ctx, 'star', x - ((u.rank - 1) * 11) / 2 + i * 11, ry - 8, 11, '#ffc54d', 2.2);
           if (u.level > 1) {

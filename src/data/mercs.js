@@ -27,6 +27,9 @@
     vetBoost: 0.15, // 每级老兵：血量和伤害 +15%，晋升时回复 30% 血
     shieldWall: 0.3, // 盾墙：盾卫在前面时，后排兵受到的伤害 −30%
     shieldWallRange: 200, // 盾卫在后排兵前方多远以内算"挡在前面"
+    assassinHunt: true, // 刺客现身后斩首后排（设计书 195）
+    assassinWind: 0.6, // 缠上目标后蓄力多久出手（秒）
+    assassinDash: 1.7, // 锁定目标后的冲刺速度倍率
     upgradeBase: 120, // 升级铜币：base × 1.7^(level-1)
     upgradeGrow: 1.7,
   };

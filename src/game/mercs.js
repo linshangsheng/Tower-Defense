@@ -125,7 +125,15 @@
     // 怪物被兵拦住：同车道、在兵右边、贴得足够近。盾卫（嘲讽）优先。
     mercBlockerFor(m) {
       const dive = m.def.trait && m.def.trait.id === 'dive'; // 蝙蝠：飞行，但会俯冲撕咬后排
-      if (!this.mercs.length || (m.def.flying && !dive) || m.def.boss || m.def.bossPart || m.def.stealth) return null;
+      if (!this.mercs.length || (m.def.flying && !dive) || m.def.boss || m.def.bossPart) return null;
+      if (m.def.stealth) {
+        // 刺客（设计书 195）：隐身时无视兵；现身后只缠上自己锁定的后排目标
+        if (m.stealthed || !C.merc.assassinHunt) return null;
+        const t = this.assassinTarget(m);
+        if (!t || t.lane !== m.lane) return null;
+        const g = m.x - t.x;
+        return g < -4 || g > C.merc.contactPad + m.def.size * 0.5 ? null : t;
+      }
       let best = null;
       const flank = m.def.trait && m.def.trait.id === 'flank'; // 狼：绕过前排，只缠上后排（远程 / 治疗）
       for (const u of this.mercs) {
@@ -136,6 +144,54 @@
         if (!best || (u.def.taunt && !best.def.taunt) || (u.def.taunt === best.def.taunt && u.x > best.x)) best = u;
       }
       return best;
+    },
+
+    // 刺客的斩首目标（设计书 195）：牧师 / 法师 > 弓手 > 没有（直奔城墙）；同一档里取最近的
+    assassinTarget(m) {
+      let best = null;
+      let bk = 9;
+      let bd = Infinity;
+      for (const u of this.mercs) {
+        if (u.dead || u.x > m.x + 4) continue;
+        const k = u.def.support || u.def.aoe ? 0 : u.def.ranged ? 1 : 9;
+        if (k > 1) continue;
+        const d = m.x - u.x + Math.abs(u.lane - m.lane) * 140;
+        if (k < bk || (k === bk && d < bd)) { best = u; bk = k; bd = d; }
+      }
+      return best;
+    },
+
+    // 刺客每帧：现身后锁定目标、换到目标的车道；被近战兵碰到就当场毙命
+    updateAssassin(m, dt) {
+      m.lockId = 0;
+      if (m.stealthed || !C.merc.assassinHunt || !this.mercs.length) return;
+      const reach = C.merc.contactPad + m.def.size * 0.5 + 12;
+      for (const u of this.mercs) {
+        if (u.dead || u.lane !== m.lane || u.def.ranged || u.def.support) continue;
+        if (Math.abs(m.x - u.x) <= reach) {
+          this.mercKills++;
+          u.kills = (u.kills || 0) + 1;
+          this.emit('assassinSlain', { m, u });
+          this.kill(m);
+          return;
+        }
+      }
+      const t = this.assassinTarget(m);
+      if (!t) return;
+      if (m.lockId !== t.id && m.lockedOn !== t.id) { m.lockedOn = t.id; this.emit('assassinLock', { m, u: t }); }
+      m.lockId = t.id;
+      t.markT = this.time;
+      if (t.lane !== m.lane) {
+        m.laneTimer = (m.laneTimer === undefined ? 0.3 : m.laneTimer) - dt;
+        if (m.laneTimer <= 0) { m.laneTimer = 0.3; m.lane += Math.sign(t.lane - m.lane); }
+      }
+    },
+
+    // 斩首：一击带走目标（2 倍最大血量，盾墙的 30% 减伤也挡不住）
+    mercAssassinate(m, u) {
+      this.assassinKills = (this.assassinKills || 0) + 1;
+      this.emit('assassinStrike', { m, u });
+      this.mercHurt(u, u.maxHp * 2, m);
     },
 
     // 射程内最近的兵（远程怪打兵用）：兵在怪左边、同车道或相邻车道
