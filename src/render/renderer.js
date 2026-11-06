@@ -3456,7 +3456,9 @@
         if (!TD.mercArt || !TD.mercArt.has(u.type)) continue;
         // 和英雄、怪物同一套场景光：右上受光、左下背光、受光侧一道轮廓光（TD.art.litSprite，设计书 189）
         if (this.scene && !this.scene.none && TD.art.opts.lit && b.mercs.length <= 8) {
-          const c = TD.art.litSprite(u, Math.random(), 40, this.scene.palette.rim, 0, (g) => ((S.volume = true), TD.mercArt.draw(g, u.type, 0, 0, st, u.face || 1), (S.volume = false)));
+          // 缓存键：动画按 LIT_FPS 取整帧 + 会改变造型的状态量化；以前每帧用 Math.random() 当键、每帧重画（软件渲染下 drawMercs 是大头）
+          const lkey = Math.floor(st.t * TD.art.LIT_FPS) + '|' + u.state + (st.flash ? 'f' : '') + (st.charging ? 'c' : '') + Math.round(st.wind * 4) + (u.dead ? 'd' + Math.round(st.dead * 8) : '');
+          const c = TD.art.litSprite(u, lkey, 40, this.scene.palette.rim, 0, (g) => ((S.volume = true), TD.mercArt.draw(g, u.type, 0, 0, st, u.face || 1), (S.volume = false)));
           ctx.drawImage(c.canvas, Math.round(x - c.ox), Math.round(y - c.oy));
         } else TD.mercArt.draw(ctx, u.type, x, y, st, u.face || 1);
         // 眩晕星星：血条上方绕圈转的三颗小星（TD.icons）

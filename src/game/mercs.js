@@ -6,6 +6,7 @@
   const C = TD.config;
   const D = TD.data;
 
+  const EMPTY = [];
   const lvMult = (lv) => 1 + C.merc.perLevel * (Math.max(1, lv) - 1);
 
   Object.assign(TD.Battle.prototype, {
@@ -134,10 +135,15 @@
     mercPickTarget(u) {
       let best = null;
       let bd = Infinity;
-      for (const m of this.mercTargets(u)) {
+      const ranged = !!u.def.ranged;
+      const lim = C.merc.leashX + (ranged ? 160 : 0);
+      // 和 mercTargets 同样的筛选条件，直接内联遍历，不再每次分配数组（性能，行为不变）
+      for (const m of this.monsters) {
+        if (m.dead || !this.isTargetable(m)) continue;
+        if (m.def.flying && !ranged) continue;
         if (m.x < u.x - 12) continue;
-        if (!u.def.ranged && Math.abs(m.lane - u.lane) > 0) continue;
-        if (m.x > C.merc.leashX + (u.def.ranged ? 160 : 0)) continue;
+        if (!ranged && m.lane !== u.lane) continue;
+        if (m.x > lim) continue;
         const d = Math.abs(m.x - u.x) + Math.abs(m.lane - u.lane) * 140;
         if (d < bd) { bd = d; best = m; }
       }
@@ -158,7 +164,10 @@
       }
       let best = null;
       const flank = m.def.trait && m.def.trait.id === 'flank'; // 狼：绕过前排，只缠上后排（远程 / 治疗）
-      for (const u of this.mercs) {
+      // updateMonsters 期间用按车道分好的桶（顺序与 this.mercs 一致），只扫本车道的兵
+      const lb = this.mercLaneBuckets;
+      const list = lb ? lb[m.lane] || EMPTY : this.mercs;
+      for (const u of list) {
         if (u.dead || u.lane !== m.lane) continue;
         if ((flank || dive) && !(u.def.ranged || u.def.support || u.def.trap)) continue;
         const gap = m.x - u.x;
