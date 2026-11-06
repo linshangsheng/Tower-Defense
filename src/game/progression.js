@@ -48,6 +48,7 @@
       mercLv: {}, // 雇佣兵等级（设计书 184）：兵种 id → 等级（默认 1）
       mercLoadout: [], // 带上战场的兵种（最多 3 个）
       mercChosen: false, // 玩家自己选过带谁了（没选过就自动取前 3 个已解锁的）
+      mercTalent: {}, // 兵种天赋：兵种 id → [第 3 / 6 / 9 级的选择]，每项 0 / 1 / null
       hero: 'dang', // 当前英雄（设计书 42）
       buddy: null, // 助战伙伴（设计书 51）
       outfit: 'classic', // 当前穿的角色（设计书 72）
@@ -96,6 +97,12 @@
       }
     };
     merge(save, fresh);
+    // 兵种天赋：坏数据容错（未知兵种丢掉；每项只能是 0 / 1 / null，长度补齐 3）
+    for (const id of Object.keys(save.mercTalent)) {
+      const a = save.mercTalent[id];
+      if (!D.mercs[id] || !Array.isArray(a)) delete save.mercTalent[id];
+      else save.mercTalent[id] = [0, 1, 2].map((i) => (a[i] === 0 || a[i] === 1 ? a[i] : null));
+    }
     // 旧版的 10 套颜色外观取消，穿着旧外观的存档改回默认的 Kael（设计书 72.3）
     if (!D.outfits.some((o) => o.id === save.outfit) || !P.outfitOwned(save, save.outfit)) save.outfit = 'classic';
     // 旧存档里同一种道具可能占了好几个栏位：只保留第一个（设计书 71.2）
@@ -920,6 +927,25 @@
     save.mercLv[id] = P.mercLevel(save, id) + 1;
     return true;
   };
+  // 兵种天赋：3 / 6 / 9 级各解锁一档二选一；已选的存 save.mercTalent[id][档位]（0 / 1）
+  P.mercTalentTiers = (save, id) => C.merc.talentLevels.filter((lv) => P.mercLevel(save, id) >= lv).length;
+  P.mercTalentPicks = (save, id) => {
+    const a = (save.mercTalent && save.mercTalent[id]) || [];
+    return [0, 1, 2].map((i) => (a[i] === 0 || a[i] === 1 ? a[i] : null));
+  };
+  P.mercTalentRespecCost = (save, id, tier) => (P.mercTalentPicks(save, id)[tier] === null ? 0 : C.merc.respecBase * (tier + 1));
+  // 选 / 改选第 tier 档（0–2）的天赋 choice（0 / 1）。第一次选免费，改选要花铜币。返回 { ok, cost }
+  P.mercTalentChoose = function (save, id, tier, choice) {
+    if (!P.mercUnlocked(save, id) || !(tier >= 0 && tier < P.mercTalentTiers(save, id)) || (choice !== 0 && choice !== 1)) return { ok: false, cost: 0 };
+    const picks = P.mercTalentPicks(save, id);
+    if (picks[tier] === choice) return { ok: false, cost: 0 };
+    const cost = picks[tier] === null ? 0 : C.merc.respecBase * (tier + 1);
+    if (save.copper < cost) return { ok: false, cost };
+    save.copper -= cost;
+    picks[tier] = choice;
+    save.mercTalent[id] = picks;
+    return { ok: true, cost };
+  };
   P.mercLoadoutIds = function (save) {
     const ok = (id) => P.mercUnlocked(save, id);
     const picked = [];
@@ -931,7 +957,7 @@
     save.mercLoadout = ids.filter((id, i) => id && P.mercUnlocked(save, id) && ids.indexOf(id) === i).slice(0, 3);
     save.mercChosen = true;
   };
-  P.mercList = (save) => P.mercLoadoutIds(save).map((id) => ({ id, level: P.mercLevel(save, id) }));
+  P.mercList = (save) => P.mercLoadoutIds(save).map((id) => ({ id, level: P.mercLevel(save, id), talents: P.mercTalentPicks(save, id) }));
 
   P.battleLoadout = function (save) {
     const lo = save.loadout;

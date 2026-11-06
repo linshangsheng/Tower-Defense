@@ -1,0 +1,90 @@
+/* 兵种天赋区（兵营卡片里）：遵循设计系统，选中态用强调色淡底，按钮热区 >= 44pt */
+.tal-box {
+  margin-top: var(--s3);
+  padding-top: var(--s3);
+  border-top: 1px solid var(--sep);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+}
+.tal-title {
+  font-size: var(--fs-footnote);
+  font-weight: var(--fw-semibold);
+  color: var(--label-2);
+}
+.tal-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s2);
+}
+.tal-opt {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s2);
+  min-height: 44px;
+  padding: var(--s2) var(--s3);
+  text-align: left;
+  font: inherit;
+  color: var(--label);
+  background: var(--fill-1);
+  border: 1px solid var(--sep);
+  border-radius: var(--r-md);
+  cursor: pointer;
+  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+.tal-opt:hover:not(:disabled) {
+  background: var(--fill-2);
+}
+.tal-opt.sel {
+  background: var(--accent-fill);
+  border-color: var(--accent);
+}
+.tal-opt.locked {
+  opacity: 0.5;
+  cursor: default;
+}
+.tal-ico {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  color: var(--label-2);
+}
+.tal-opt.sel .tal-ico {
+  color: var(--accent);
+}
+.tal-ico svg {
+  width: 20px;
+  height: 20px;
+}
+.tal-txt {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  text-wrap: pretty;
+}
+.tal-txt b {
+  font-size: var(--fs-footnote);
+  font-weight: var(--fw-semibold);
+}
+.tal-txt span {
+  font-size: var(--fs-caption);
+  color: var(--label-2);
+}
+.tal-txt em {
+  font-style: normal;
+  font-size: var(--fs-caption);
+  color: var(--accent);
+}
+@media (max-width: 520px) {
+  .tal-row {
+    grid-template-columns: 1fr;
+  }
+}
+.card.merc-card {
+  flex-wrap: wrap;
+}
+.merc-card .tal-box {
+  flex: 0 0 100%;
+}
