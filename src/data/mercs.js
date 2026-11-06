@@ -63,6 +63,16 @@
       hp: 120, dmg: 20, every: 1.0, range: 30, speed: 78, type: 'phys', chargeSpeed: 240, charge: 3.5,
       desc: '重骑兵：出场先冲锋，撞上第一个怪时造成 3.5 倍的冲击伤害，然后留下来近战。',
     },
+    // 工程兵（第 7 个兵种）：自己几乎不打架，职责是布置陷阱。
+    // trap：every 布置间隔（秒）、max 同车道最多几个、dmg 陷阱伤害（× 兵的强度系数）、aoe 溅射半径、slow / slowDur 踩中后的减速、wallHeal 每次布置给城墙回的血量比例、life 陷阱存在秒数
+    engineer: {
+      name: '工程兵', icon: '🔧', color: '#ffc857', unlock: 75, cost: 50, cd: 12,
+      hp: 32, dmg: 4, every: 1.4, range: 26, speed: 52, type: 'phys', keep: 90,
+      trap: { every: 4.5, max: 3, dmg: 40, aoe: 34, slow: 0.45, slowDur: 2.5, wallHeal: 0.002, life: 30 },
+      desc: '自己几乎不打架：每隔几秒在身前的地面布置一个尖刺陷阱（同车道最多 3 个），怪物踩上去受伤并短暂减速，触发后消失。每次布置还会给城墙修补 0.2% 的血。',
+    },
   };
   TD.data.mercOrder = ['swordsman', 'guard', 'archer', 'mage', 'cleric', 'knight'];
+  // 完整兵种表（兵营和解锁用）：mercOrder 保持原来的六个，新兵种从这里接入
+  TD.data.mercOrderExt = TD.data.mercOrder.concat(['engineer']);
 })((globalThis.TD = globalThis.TD || {}));

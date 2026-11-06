@@ -1527,7 +1527,7 @@
     el.append(h('div', { class: 'hint' }, `每个兵种每升一级，血量和伤害 +${Math.round(MC.perLevel * 100)}%，最高 ${MC.maxLevel} 级。`));
     const grid = h('div', { class: 'card-grid' });
     el.append(grid);
-    for (const id of D.mercOrder) {
+    for (const id of D.mercOrderExt || D.mercOrder) {
       const def = D.mercs[id];
       const unlocked = P.mercUnlocked(s, id);
       const lv = P.mercLevel(s, id);

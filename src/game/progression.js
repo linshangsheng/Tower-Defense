@@ -907,7 +907,7 @@
   // 出战配置：只保留已解锁槽位、已拥有的物品
   // ---------- 雇佣兵（设计书 184）----------
   P.mercUnlocked = (save, id) => !!D.mercs[id] && P.isCleared(save, D.mercs[id].unlock - 1);
-  P.mercUnlockedList = (save) => D.mercOrder.filter((id) => P.mercUnlocked(save, id));
+  P.mercUnlockedList = (save) => (D.mercOrderExt || D.mercOrder).filter((id) => P.mercUnlocked(save, id));
   P.mercLevel = (save, id) => Math.min(C.merc.maxLevel, Math.max(1, Math.floor(Number(save.mercLv && save.mercLv[id])) || 1));
   P.mercUpgradeCost = (save, id) => {
     const lv = P.mercLevel(save, id);

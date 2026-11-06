@@ -111,6 +111,7 @@
     battle.on('bell', () => TD.audio.play('bell'));
     battle.on('mercDeploy', () => TD.audio.play('skill'));
     battle.on('mercSwing', () => TD.audio.play('hit'));
+    battle.on('trapTrigger', () => TD.audio.play('hit'));
     battle.on('mercShot', () => TD.audio.play('shoot'));
     battle.on('mercDie', () => TD.audio.play('pop'));
     battle.on('mercRank', () => TD.audio.play('streak'));
