@@ -270,6 +270,17 @@
     (list || []).forEach((a, i) => setTimeout(() => UI.toast(`🏆 达成成就「${a.name}」+${P.costText(a.reward)}`, 'achieve', 2600), i * 900));
   };
 
+  // 图鉴 / 成就页的小工具：SVG 构造、折叠状态、搜索状态（只在本次游戏会话里记着）
+  const SVGNS = 'http://www.w3.org/2000/svg';
+  function svgEl(tag, attrs, ...kids) {
+    const el = document.createElementNS(SVGNS, tag);
+    for (const k of Object.keys(attrs || {})) el.setAttribute(k, attrs[k]);
+    for (const k of kids) k && el.appendChild(k);
+    return el;
+  }
+  const cxCollapsed = {};
+  let cxBest = null; // 图鉴当前的搜索词 / 类型 / 章节（每次打开图鉴重置）
+
   // 守城档案（设计书 46）
   function recordsEl(s) {
     const st = s.stats;
@@ -319,19 +330,59 @@
       modal(h('div', null, tabs, h('h2', null, '守城档案'), recordsEl(s), h('div', { class: 'modal-buttons' }, h('button', { class: 'btn', onclick: UI.closeModal }, '关闭'))), { cls: 'wide', closeOnBack: true });
       return;
     }
-    const done = all.filter((a) => (s.achievements || {})[a.id]).length;
-    const cards = all.map((a) => {
-      const ok = (s.achievements || {})[a.id];
-      return h('div', { class: 'ach' + (ok ? ' done' : '') }, h('div', { class: 'ach-icon' }, ok ? '🏆' : '🔒'), h('div', { class: 'ach-main' }, h('b', null, a.name), h('span', null, a.desc)), h('div', { class: 'ach-reward' }, P.costText(a.reward)));
-    });
+    const doneMap = s.achievements || {};
+    const X = TD.codex;
+    const ov = X.overall(all, doneMap);
+    const groups = X.groupAchievements(all, doneMap);
+    const R0 = 34;
+    const C0 = 2 * Math.PI * R0;
+    const ring = svgEl('svg', { class: 'cx-ring', viewBox: '0 0 80 80', role: 'img', 'aria-label': `${ov.pct}%` }, svgEl('circle', { class: 'cx-ring-bg', cx: 40, cy: 40, r: R0 }), svgEl('circle', { class: 'cx-ring-fg', cx: 40, cy: 40, r: R0, 'stroke-dasharray': C0.toFixed(2), 'stroke-dashoffset': X.ringOffset(C0, ov.ratio).toFixed(2), transform: 'rotate(-90 40 40)' }));
+    const card = (a) => {
+      const pr = X.achProgress(a, s, doneMap);
+      const ok = pr.done;
+      return h(
+        'div',
+        { class: 'ach cx-ach' + (ok ? ' done' : '') },
+        h('div', { class: 'cx-ach-icon' }, TD.icons.svg(ok ? 'trophy' : 'lock')),
+        h(
+          'div',
+          { class: 'ach-main' },
+          h('b', null, a.name),
+          h('span', null, a.desc),
+          pr.tracked ? h('div', { class: 'cx-bar-row' }, h('div', { class: 'cx-bar' }, h('i', { style: { width: Math.round(pr.ratio * 100) + '%' } })), h('span', { class: 'cx-num' }, `${pr.cur.toLocaleString('en-US')} / ${pr.target.toLocaleString('en-US')}`)) : h('div', { class: 'cx-state' }, ok ? '已完成' : '未完成')
+        ),
+        h('div', { class: 'ach-reward' }, P.costText(a.reward))
+      );
+    };
+    const section = (g) => {
+      const body = h('div', { class: 'ach-grid cx-grid' }, g.items.map(card));
+      const sec = h('section', { class: 'cx-group' + (cxCollapsed[g.key] ? ' collapsed' : '') });
+      const head = h(
+        'button',
+        {
+          class: 'cx-group-head',
+          'aria-expanded': cxCollapsed[g.key] ? 'false' : 'true',
+          onclick: () => {
+            cxCollapsed[g.key] = !cxCollapsed[g.key];
+            sec.classList.toggle('collapsed', !!cxCollapsed[g.key]);
+            head.setAttribute('aria-expanded', cxCollapsed[g.key] ? 'false' : 'true');
+            sfx('click');
+          },
+        },
+        svgEl('svg', { class: 'cx-chev', viewBox: '0 0 24 24', 'aria-hidden': 'true' }, svgEl('path', { d: 'M9 6l6 6-6 6' })),
+        h('span', { class: 'cx-group-name' }, g.name),
+        h('span', { class: 'cx-group-count' }, `${g.done} / ${g.total}`)
+      );
+      sec.append(head, body);
+      return sec;
+    };
     modal(
       h(
         'div',
-        null,
+        { class: 'cx' },
         tabs,
-        h('h2', null, `成就 ${done} / ${all.length}`),
-        h('div', { class: 'ach-stats' }, `战斗 ${s.stats.battles} 次 · 胜利 ${s.stats.wins} 次 · 击败 ${s.stats.kills} 只 · 打断 ${s.stats.interrupts || 0} 次 · 提前召唤 ${s.stats.earlyCalls || 0} 次`),
-        h('div', { class: 'ach-grid' }, cards),
+        h('div', { class: 'cx-summary' }, h('div', { class: 'cx-ring-wrap' }, ring, h('div', { class: 'cx-ring-pct' }, ov.pct + '%')), h('div', { class: 'cx-summary-text' }, h('h2', null, `成就 ${ov.done} / ${ov.total}`), h('div', { class: 'ach-stats' }, `战斗 ${s.stats.battles} 次 · 胜利 ${s.stats.wins} 次 · 击败 ${s.stats.kills} 只 · 打断 ${s.stats.interrupts || 0} 次 · 提前召唤 ${s.stats.earlyCalls || 0} 次`))),
+        groups.map(section),
         h('div', { class: 'modal-buttons' }, h('button', { class: 'btn', onclick: UI.closeModal }, '关闭'))
       ),
       { cls: 'wide', closeOnBack: true }
@@ -349,21 +400,33 @@
 
   UI.showBestiary = function (chapterId) {
     const s = G().save;
-    chapterId = chapterId || 1;
+    const X = TD.codex;
+    const st = (cxBest = { q: '', type: 'all', chapter: chapterId || 1 });
     const seen = s.seenMonsters || {};
     const kills = s.stats.killsByType || {};
     // 妖塔版 Boss（tw_ 开头）只是另一种出场方式，不单独列入图鉴
     const all = Object.keys(D.monsters).filter((t) => !D.monsters[t].towerOf);
-    const types = all.filter((t) => monsterChapter(t) === chapterId);
     const total = all.length;
     const testMode = P.testMode(s); // 测试模式：图鉴里所有怪物和妖王都算遇见过
-    const seenCount = all.filter((t) => testMode || seen[t] || kills[t]).length;
-    const tabs = D.chapters.filter((c) => !c.abyss).map((c) => h('button', { class: 'btn small' + (c.id === chapterId ? ' primary' : ''), onclick: () => (sfx('click'), UI.showBestiary(c.id)) }, c.name));
-    const cards = types.map((t) => {
+    const items = all.map((t) => {
       const def = D.monsters[t];
-      const known = testMode || seen[t] || kills[t];
+      return { type: t, def, name: def.name, desc: def.desc, tags: D.monsterTags(def), known: !!(testMode || seen[t] || kills[t]), chapter: monsterChapter(t) };
+    });
+    const seenCount = items.filter((i) => i.known).length;
+    const segs = X.typeSegments(items.filter((i) => i.known).map((i) => i.tags), 6);
+    if (!segs.some((x) => x.key === st.type)) st.type = 'all';
+
+    const search = h('input', { class: 'cx-search-input', type: 'search', placeholder: '搜索怪物名字或说明', 'aria-label': '搜索怪物名字或说明', autocomplete: 'off', spellcheck: 'false', value: st.q });
+    const clearBtn = h('button', { class: 'cx-search-clear', type: 'button', 'aria-label': '清除', onclick: () => ((search.value = ''), (st.q = ''), search.focus(), refresh()) }, svgEl('svg', { viewBox: '0 0 24 24', 'aria-hidden': 'true' }, svgEl('path', { d: 'M7 7l10 10M17 7L7 17' })));
+    const searchBar = h('div', { class: 'cx-search' }, svgEl('svg', { class: 'cx-search-ico', viewBox: '0 0 24 24', 'aria-hidden': 'true' }, svgEl('circle', { cx: 11, cy: 11, r: 6.5 }), svgEl('path', { d: 'M16 16l4.5 4.5' })), search, clearBtn);
+    const seg = h('div', { class: 'cx-seg', role: 'tablist' }, segs.map((x) => h('button', { class: 'cx-seg-btn', type: 'button', role: 'tab', 'data-key': x.key, onclick: () => ((st.type = x.key), (sfx('click')), refresh()) }, x.key === 'all' ? '全部' : x.key)));
+    const chips = h('div', { class: 'cx-chips', role: 'tablist' }, D.chapters.filter((c) => !c.abyss).map((c) => h('button', { class: 'cx-chip', type: 'button', role: 'tab', 'data-id': c.id, onclick: () => ((st.chapter = c.id), sfx('click'), refresh()) }, c.name)));
+    const list = h('div', { class: 'mon-list bestiary cx-mon-list' });
+
+    const cardOf = (it) => {
+      const { def, type: t } = it;
       let img;
-      if (known) img = TD.sprites.portrait(t, 64);
+      if (it.known) img = TD.sprites.portrait(t, 64);
       else {
         img = document.createElement('canvas');
         img.width = img.height = 64;
@@ -374,23 +437,55 @@
       img.className = 'portrait';
       return h(
         'div',
-        { class: 'mon-card' + (def.boss ? ' boss' : '') + (known ? '' : ' unknown') },
-        img,
-        h('div', { class: 'mon-name' }, known ? def.name : '？？？', known ? h('span', { class: 'mon-kills' }, ` 击败 ${kills[t] || 0}`) : null),
-        h('div', { class: 'mon-desc' }, known ? [h('div', { class: 'intro-tags' }, D.monsterTags(def).map((x) => h('span', { class: 'tag small' }, x))), def.desc] : '还没有遇见过。')
+        { class: 'mon-card cx-mon' + (def.boss ? ' boss' : '') + (it.known ? '' : ' unknown') },
+        h('div', { class: 'cx-mon-art' }, img),
+        h('div', { class: 'cx-mon-body' }, h('div', { class: 'mon-name' }, it.known ? def.name : '？？？'), it.known ? h('div', { class: 'cx-mon-tags' }, it.tags.map((x) => h('span', { class: 'cx-pill' + (x.indexOf('Boss') >= 0 ? ' boss' : '') }, x))) : null, h('div', { class: 'mon-desc' }, it.known ? def.desc : '还没有遇见过。')),
+        it.known ? h('div', { class: 'cx-mon-kills' }, h('b', { class: 'cx-num' }, (kills[t] || 0).toLocaleString('en-US')), h('span', null, '已击败')) : null
       );
-    });
+    };
+
+    function refresh() {
+      st.q = search.value;
+      searchBar.classList.toggle('has-text', !!search.value);
+      const res = X.filterBestiary(items, { query: st.q, typeKey: st.type, chapter: st.chapter, tr: (x) => TD.i18n.t(x) });
+      seg.querySelectorAll('.cx-seg-btn').forEach((b) => {
+        const on = b.dataset.key === st.type;
+        b.classList.toggle('on', on);
+        b.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+      const global = !!st.q.trim() || st.type !== 'all';
+      chips.classList.toggle('muted', global);
+      chips.querySelectorAll('.cx-chip').forEach((b) => {
+        const on = +b.dataset.id === st.chapter;
+        b.classList.toggle('on', on && !global);
+        b.setAttribute('aria-selected', on ? 'true' : 'false');
+        if (on && !global) b.scrollIntoView({ block: 'nearest', inline: 'center' });
+      });
+      list.replaceChildren();
+      if (!res.length) {
+        list.append(h('div', { class: 'cx-empty' }, svgEl('svg', { viewBox: '0 0 48 48', 'aria-hidden': 'true' }, svgEl('circle', { cx: 21, cy: 21, r: 12 }), svgEl('path', { d: 'M30 30l10 10' })), h('b', null, '没有找到匹配的怪物'), h('span', null, '换个关键词，或者换一个类型试试。未遇见的怪物不会出现在搜索结果里。'), h('button', { class: 'btn small', type: 'button', onclick: () => ((search.value = ''), (st.q = ''), (st.type = 'all'), refresh()) }, '清除筛选')));
+        return;
+      }
+      if (global) list.append(h('div', { class: 'cx-result-count' }, `${res.length} 只`));
+      for (const it of res) list.append(cardOf(it));
+    }
+    search.addEventListener('input', refresh);
+    search.addEventListener('keydown', (e) => e.key === 'Escape' && search.value && (e.stopPropagation(), (search.value = ''), refresh()));
+
     modal(
       h(
         'div',
-        null,
-        h('h2', null, `怪物图鉴 ${seenCount} / ${total}`),
-        h('div', { class: 'btn-row bestiary-tabs' }, tabs),
-        h('div', { class: 'mon-list bestiary' }, cards),
+        { class: 'cx' },
+        h('div', { class: 'cx-head' }, h('h2', null, `怪物图鉴 ${seenCount} / ${total}`)),
+        searchBar,
+        seg,
+        chips,
+        list,
         h('div', { class: 'modal-buttons' }, h('button', { class: 'btn', onclick: UI.closeModal }, '关闭'))
       ),
-      { cls: 'wide', closeOnBack: true }
+      { cls: 'wide cx-modal', closeOnBack: true }
     );
+    refresh();
   };
 
 })((globalThis.TD = globalThis.TD || {}));
