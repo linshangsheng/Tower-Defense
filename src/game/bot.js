@@ -196,6 +196,7 @@
     if (!opts.keepLoadout) P.recommend(save, n, { itemQty: 1, itemSlots: 3 });
     if (opts.forceWeapon) save.loadout.weapon = opts.forceWeapon;
     const lo = P.battleLoadout(save);
+    if (opts.carryMercs === false) lo.mercs = []; // 不带兵出战（A/B 对比用）
     if (opts.noSkills) lo.active = [];
     lo.autoCast = !opts.noSkills;
     const battle = new TD.Battle({
@@ -209,6 +210,8 @@
       rally: opts.noRally ? 0 : P.rally(save, n),
       difficulty: (save.settings && save.settings.difficulty) || 'normal',
     });
+    battle.mercPolicy = opts.mercPolicy === 'simple' ? 'simple' : 'smart';
+    if (opts.noMercs) battle.autoMerc = false;
     const res = battle.runToEnd();
     for (const id of res.itemsUsed) P.consumeItem(save, id);
     return { res, battle };
