@@ -481,7 +481,7 @@
 
   // 雇佣兵专属音效（设计书 184）：整体偏低（增益 0.06–0.14），不压过英雄的主声音；同屏多兵靠 MIN_GAP 限流
   // 命名：merc_<兵种>_<atk|hurt|die|deploy>，另有 merc_rank / merc_rally / merc_charge / merc_heal
-  const MERC_TYPES = ['swordsman', 'guard', 'archer', 'mage', 'cleric', 'knight'];
+  const MERC_TYPES = ['swordsman', 'guard', 'archer', 'mage', 'cleric', 'knight', 'engineer'];
   Object.assign(SOUNDS, {
     // 出手
     merc_swordsman_atk: () => {
@@ -510,6 +510,24 @@
       tone(180, 0.12, 'sawtooth', 0.07, 0.6);
     },
     merc_cleric_atk: () => tone(880, 0.08, 'sine', 0.06),
+    // 工程兵（设计书 196）：扳手敲击、布置陷阱的咔哒声
+    merc_engineer_atk: () => {
+      tone(980, 0.05, 'square', 0.06, 0.7);
+      noise(0.05, 0.07, 4200);
+    },
+    merc_engineer_hurt: () => {
+      tone(480, 0.07, 'square', 0.06, 0.55);
+      noise(0.05, 0.06, 2400);
+    },
+    merc_engineer_die: () => {
+      tone(380, 0.3, 'triangle', 0.09, 0.4);
+      noise(0.14, 0.08, 1800);
+    },
+    merc_engineer_deploy: () => {
+      tone(1040, 0.05, 'square', 0.06);
+      tone(1320, 0.05, 'square', 0.06, 1, 0.07);
+      noise(0.06, 0.05, 3000);
+    },
     merc_charge: () => {
       // 骑士冲锋撞击：一串马蹄 + 重击
       [0, 0.05, 0.1].forEach((d) => {
