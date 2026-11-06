@@ -86,6 +86,7 @@
       };
       this.mercs.push(u);
       this.mercDeployed++;
+      this.mercPeak = Math.max(this.mercPeak || 0, this.mercs.filter((o) => !o.dead).length);
       this.emit('mercDeploy', { u });
       return true;
     },
@@ -174,6 +175,7 @@
         u.hurtSfxAt = this.time;
         this.emit('mercHurt', { u });
       }
+      if (u.def.taunt && by && !by.def.boss && !by.def.bossPart && amount > 0) this.mercBlocks = (this.mercBlocks || 0) + 1; // 盾卫挡下一次攻击
       if (u.hp <= 0) {
         u.dead = true;
         u.hp = 0;
@@ -222,9 +224,15 @@
           u.hp = Math.min(u.maxHp, u.hp * k + u.maxHp * 0.3);
           u.dmg *= k;
           this.mercPromotions = (this.mercPromotions || 0) + 1;
+          if (rank >= C.merc.vetMax) this.mercMaxRanks = (this.mercMaxRanks || 0) + 1;
           this.emit('mercRank', { u, rank });
         }
       }
+    },
+
+    // 雇佣兵任务用的统计（并入战斗结果）
+    mercSummary() {
+      return { mercBlocks: this.mercBlocks || 0, mercPeak: this.mercPeak || 0, mercMaxRanks: this.mercMaxRanks || 0, mercRallies: this.rallies || 0, mercCarried: this.mercSlots ? this.mercSlots.length : 0 };
     },
 
     // 盾墙：后排兵（远程 / 治疗）前面 200 以内、同车道有活着的盾卫，就受到更少的伤害

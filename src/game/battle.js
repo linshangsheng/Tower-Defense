@@ -2764,6 +2764,7 @@
         mercDeployed: this.mercDeployed || 0,
         mercDeaths: this.mercDeaths || 0,
         mercKills: this.mercKills || 0,
+        ...(this.mercSummary ? this.mercSummary() : {}), // 雇佣兵任务统计（mercs.js）
         bubbles: this.bubblesPopped,
         combos: Object.assign({}, this.combos),
         minWallRatio: this.minWallRatio,
