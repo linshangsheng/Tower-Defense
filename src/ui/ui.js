@@ -1311,7 +1311,7 @@
         h(
           'div',
           { class: 'card-grid' },
-          card(U.name, owned ? '已拥有 · 战斗里按 V 键或点按钮' : `通关第 ${U.unlock} 关解锁`, U.desc, right, { cls: 'v' + (owned ? '' : ' unowned') + (C.demo ? ' demo-locked' : ''), color: '#7fd0ff', icon: TD.sprites.iconCanvas('skyfall', 56) })
+          card(U.name, owned ? '已拥有 · 战斗里按 V 键或点按钮' : `通关第 ${U.unlock} 关解锁`, h('span', null, U.desc, h('br'), h('span', { class: 'hint' }, U.link)), right, { cls: 'v' + (owned ? '' : ' unowned') + (C.demo ? ' demo-locked' : ''), color: '#7fd0ff', icon: TD.sprites.iconCanvas('skyfall', 56) })
         )
       );
     }
@@ -1331,6 +1331,7 @@
         desc = h('span', null, k.beyondDesc ? `${k.tierDesc[D.skillMaxLv - 1]}；${k.beyondDesc}` : `${k.tierDesc[D.skillMaxLv - 1]}；Lv3 以后每升一级，伤害 / 箭数 / 回复 / 持续时间再强一点，冷却再短一点`);
         right = h('div', { class: 'btn-col' }, buyBtn(P.skillUpgradeCost(s, id), () => P.upgradeSkill(s, id), '升级'), bulkRow('skill', id));
       }
+      if (k.link) desc = h('span', null, desc, h('br'), h('span', { class: 'hint' }, k.link));
       skillGrid.append(card(k.name, lv ? `Lv${lv} · 冷却 ${Math.round(P.skillDef(id, lv).cd * 10) / 10} 秒` : `冷却 ${k.cd} 秒`, desc, right, { cls: 'v' + (lv ? '' : ' unowned'), icon: TD.sprites.iconCanvas(id, 56), foot: pips(Math.min(lv, D.skillMaxLv), D.skillMaxLv) }));
     }
     el.append(h('div', { class: 'hint' }, '技能 Lv2 用银币升阶，Lv3 用金币升阶并带来质变效果。'));
@@ -1524,6 +1525,7 @@
     const carry = P.mercLoadoutIds(s);
     el.append(h('div', { class: 'section-title long' }, `雇佣兵（战斗里用军饷雇；最多带 3 个兵种，场上最多 ${MC.cap} 个兵）`));
     el.append(h('div', { class: 'hint' }, `军饷：开场有 ${MC.startFunds}，击败怪物会增加。雇来的兵会主动冲上去和怪物打；怪物也会变得更多更硬。快捷键 4 / 5 / 6。`));
+    el.append(h('div', { class: 'hint' }, '兵团羁绊：场上每有 1 个活着的兵，英雄攻速 +3%，最多 +15%；战鼓、城墙修复、箭雨和万箭天降也会照顾到兵。'));
     el.append(h('div', { class: 'hint' }, `每个兵种每升一级，血量和伤害 +${Math.round(MC.perLevel * 100)}%，最高 ${MC.maxLevel} 级。`));
     const grid = h('div', { class: 'card-grid' });
     el.append(grid);
@@ -2094,6 +2096,7 @@
     hud.targetBtn = h('button', { class: 'btn small', onclick: () => game.cycleTarget(), title: '切换目标优先级 (T)' });
     hud.speedBtn = h('button', { class: 'btn small', onclick: () => game.toggleSpeed(), title: '切换速度 (F)' });
     hud.autoBtn = h('button', { class: 'btn small', onclick: () => game.toggleAuto(), title: '技能自动释放' });
+    hud.bond = h('div', { class: 'bond-badge hidden' }, (TD.icons && TD.icons.svg('swords')) || null, (hud.bondText = h('span', null, '')));
     hud.laneHint = h('div', { class: 'lane-hint hidden' }, '点击一条车道释放（右键或 Esc 取消）');
 
     screenEl = h(
@@ -2109,6 +2112,7 @@
       ),
       hud.ultBar,
       hud.mercBar,
+      hud.bond,
       hud.laneHint,
       hud.nudge,
       h('div', { class: 'hud-bottom' }, h('div', { class: 'skill-bar' }, skillBtns, hud.ultBtn, battle.skills.length || battle.ult ? null : h('span', { class: 'hint' }, '没有携带主动技能')), h('div', { class: 'item-bar' }, itemBtns), h('div', { class: 'ctrl-bar' }, hud.targetBtn, hud.autoBtn, hud.speedBtn))
@@ -2204,6 +2208,11 @@
       }
       btn.classList.toggle('armed', game.pendingLane && game.pendingLane.kind === 'item' && game.pendingLane.index === i);
     });
+    if (hud.bond) {
+      const bb = b.bond || 0;
+      hud.bond.classList.toggle('hidden', !(bb > 0));
+      if (bb > 0) setText(hud.bondText, `兵团 +${Math.round(bb * 100)}%`);
+    }
     if (hud.mercBar) {
       setText(hud.mercFunds, Math.floor(b.funds));
       if (b.lanes > 1) {
