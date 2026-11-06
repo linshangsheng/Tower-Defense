@@ -1,0 +1,126 @@
+/* 战斗中的提示层（苹果 HIG 取向）：关卡提示 = 顶部居中的毛玻璃通知胶囊；新手引导气泡同一套材质。
+   减少动效：设置里打开（#ui.rm）或系统偏好 prefers-reduced-motion 时，只淡入淡出，不位移。 */
+
+.toast.tip {
+  top: 56px;
+  bottom: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  box-sizing: border-box;
+  width: max-content;
+  max-width: min(680px, calc(100% - 32px));
+  min-height: 44px;
+  padding: var(--s2) var(--s4);
+  border-radius: var(--r-xl);
+  border: 0.5px solid rgba(255, 255, 255, 0.16);
+  background: rgba(30, 34, 48, 0.66);
+  -webkit-backdrop-filter: blur(24px) saturate(1.5);
+  backdrop-filter: blur(24px) saturate(1.5);
+  box-shadow: var(--elev-2, 0 8px 24px rgba(0, 0, 0, 0.28));
+  color: var(--label);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-medium);
+  line-height: 1.35;
+  text-align: left;
+  text-wrap: pretty;
+  pointer-events: auto;
+  cursor: pointer;
+  z-index: 45;
+  animation: hudToastIn 0.32s var(--ease) both;
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+.toast.tip .ico {
+  flex: none;
+  font-size: 20px;
+  color: var(--accent);
+}
+.toast.tip .toast-text {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  min-width: 0;
+}
+.toast.tip.out {
+  opacity: 0;
+  transform: translate(-50%, -12px);
+}
+@keyframes hudToastIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -16px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+/* 战斗里的操作反馈（冷却中、军饷不够……）排在提示胶囊下面，不互相盖住 */
+.battle-hud ~ .toast:not(.tip):not(.achieve) {
+  top: 132px;
+}
+
+/* 新手引导气泡：同一套毛玻璃材质，只淡入，不再上下晃 */
+.nudge-bubble {
+  box-sizing: border-box;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  padding: var(--s2) var(--s3);
+  border-radius: var(--r-md);
+  border: 0.5px solid rgba(255, 255, 255, 0.16);
+  background: rgba(30, 34, 48, 0.78);
+  -webkit-backdrop-filter: blur(24px) saturate(1.5);
+  backdrop-filter: blur(24px) saturate(1.5);
+  box-shadow: var(--elev-2, 0 8px 24px rgba(0, 0, 0, 0.28));
+  color: var(--label);
+  font-size: var(--fs-footnote);
+  font-weight: var(--fw-semibold);
+  animation: hudNudgeIn 0.25s ease-out both;
+  text-wrap: pretty;
+}
+.nudge-bubble::after {
+  left: 28px;
+  bottom: -8px;
+  border-width: 8px 7px 0;
+  border-color: rgba(30, 34, 48, 0.78) transparent transparent;
+}
+@keyframes hudNudgeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* 减少动效：只淡入淡出 */
+#ui.rm .toast.tip {
+  animation: hudToastFade 0.25s ease-out both;
+}
+#ui.rm .toast.tip.out {
+  transform: translateX(-50%);
+}
+@keyframes hudToastFade {
+  from {
+    opacity: 0;
+    transform: translateX(-50%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .toast.tip {
+    animation-name: hudToastFade;
+  }
+  .toast.tip.out {
+    transform: translateX(-50%);
+  }
+}
+#ui.large-text .toast.tip {
+  font-size: var(--fs-headline);
+}

@@ -5,6 +5,17 @@
   const C = TD.config;
   const S = TD.sprites;
   const DRAW_SCALE = 1.25; // 怪物绘制放大倍数（不影响判定）
+  // 战场提示文字的统一样式（苹果 HIG 字阶 17 / 20 / 24，半粗，1px 暗描边，上浮 + ease-out 淡出）。
+  // 连击、晋升、集结、战意等飘字、横幅都从这里取字号，别在别处硬编码。
+  const FLOAT = {
+    size: { sm: 17, md: 20, lg: 24 },
+    weight: 600,
+    font: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Segoe UI", "Noto Sans CJK SC", system-ui, sans-serif',
+    stroke: 'rgba(12,14,22,0.7)', // 1px 暗描边（线宽 2，画在字外侧的那 1px 可见）
+    rise: 36, // 上浮的距离（减少动效时为 0，只淡入淡出）
+    accent: '#ffb340', // 强调色，只给 Boss 波次的细线
+  };
+  const easeOut = (t) => 1 - Math.pow(1 - t, 3);
   const CHEAP_FX = { spark: 1, rock: 1, glow: 1, poof: 1, spirit: 1, scorch: 1 };
   const OUTLINE_C = '#3b2a1e';
 
@@ -556,7 +567,9 @@
       on('waveStart', (e) => {
         if (e.chapter) this.setChapter(TD.data.chapters.find((c) => c.id === e.chapter));
         const last = !battle.level.endless && e.index === battle.totalWaves - 1;
-        this.banner(battle.level.endless ? `第 ${e.index + 1} 波` : last ? '最后一波！' : `第 ${e.index + 1} 波`);
+        const wv = battle.level.waves && battle.level.waves[e.index];
+        const bossWave = !!(wv && wv.groups.some(([type]) => TD.data.monsters[type] && TD.data.monsters[type].boss));
+        this.banner(battle.level.endless ? `第 ${e.index + 1} 波` : last ? '最后一波！' : `第 ${e.index + 1} 波`, { boss: bossWave });
         // 深渊篇：第一波和打到一半时，飘过一句回声低语
         const wh = battle.level.abyss && !battle.mode && TD.data.whispers && TD.data.whispers[TD.data.chapterOf(battle.levelNo).id];
         if (wh && V && (e.index === 0 || e.index === Math.floor(battle.totalWaves / 2))) V.whisper(wh[e.index === 0 ? 0 : 1], 2.2);
@@ -696,7 +709,7 @@
       });
       // 连击（设计书 38.2）
       on('streak', (e) => {
-        this.text(C.heroX + 60, battle.heroY - 130, e.text, e.count >= 30 ? '#ff5a4f' : '#ffd23f', 22 + Math.min(14, e.count / 4), 1.1);
+        this.floatText(C.heroX + 60, battle.heroY - 130, e.text, e.count >= 30 ? '#ff5a4f' : '#ffd23f', e.count >= 30 ? 'lg' : 'md', 1.1);
         this.burst(C.heroX + 40, battle.heroY - 100, '#ffd23f', 10 + Math.min(20, e.count / 2), 240);
       });
       // 怪物的独特技能（设计书 165）：每种技能一个小特效，文字限量，别在大波怪里刷屏
@@ -789,12 +802,12 @@
       });
       on('mercRally', (e) => {
         this.fx.push({ kind: 'ring', x: 330, y: e.y, r0: 20, r1: 260, color: '#ffc54d', w: 5, life: 0.6, age: 0, flat: 0.35 });
-        this.text(330, e.y - 40, '集结！', '#ffc54d', 26, 1.0);
+        this.floatText(330, e.y - 40, '集结！', '#ffc54d', 'lg', 1.0);
       });
       on('mercRank', (e) => {
         this.fx.push({ kind: 'ring', x: e.u.x, y: e.u.y - 10, r0: 8, r1: 70, color: '#ffc54d', w: 4, life: 0.55, age: 0, flat: 0.5 });
         this.fx.push({ kind: 'glow', x: e.u.x, y: e.u.y - 16, r: 44, color: '#ffc54d', life: 0.45, age: 0 });
-        this.text(e.u.x, e.u.y - 66, '晋升！', '#ffc54d', 22, 0.9);
+        this.floatText(e.u.x, e.u.y - 66, '晋升！', '#ffc54d', 'md', 0.9);
       });
       on('mercDie', (e) => {
         this.burst(e.u.x, e.u.y - 10, e.u.def.color, 10, 150);
@@ -835,8 +848,8 @@
         if (e.aspd) bits.push(`攻速 +${Math.round(e.aspd * 100)}%`);
         if (e.atk) bits.push(`攻击 +${Math.round(e.atk * 100)}%`);
         if (e.crit) bits.push(`暴击 +${Math.round(e.crit * 100)}%`);
-        this.text(x + 40, y - 80, e.name, col, 26, 1.4);
-        bits.forEach((t, i) => this.text(x + 40, y - 54 + i * 18, t, '#ffffff', 15, 1.4)); // 一行一条，各自能被翻译
+        this.floatText(x + 40, y - 80, e.name, col, 'lg', 1.4);
+        bits.forEach((t, i) => this.floatText(x + 40, y - 52 + i * 22, t, '#ffffff', 'sm', 1.4)); // 一行一条，各自能被翻译
         if (this.vfx) this.vfx.spawn(18, () => ({ kind: 'spark', x, y, vx: (Math.random() - 0.5) * 240, vy: -60 - Math.random() * 160, g: 220, life: 0.7, r: 2.4, color: col }));
       });
       // 第六章（设计书 33）
@@ -930,7 +943,14 @@
       const str = mine[Math.floor(Math.random() * mine.length)];
       this.fx.push({ kind: 'text', x: C.heroX + 70, y: (b.heroY || 320) - 120, str, color: '#cfe8ff', size: 22, life: 2.4, age: -(delay || 0), vy: -10 });
     }
-    text(x, y, str, color, size, life, crit) {
+    // 统一风格的提示飘字：字阶取 FLOAT.size（sm / md / lg），不走伤害数字那套回弹
+    floatText(x, y, str, color, tier, life) {
+      this.text(x, y, str, color, FLOAT.size[tier] || FLOAT.size.md, life || 1, false, true);
+    }
+    reduceMotion() {
+      return !!(TD.game && TD.game.save && TD.game.save.settings && TD.game.save.settings.reduceMotion);
+    }
+    text(x, y, str, color, size, life, crit, ui) {
       if (typeof str !== 'string' || !str) return; // 事件没带文字（比如事件名被两个功能共用）时别抛异常，直接不画
       if (this.fx.length > 300 && !crit) return;
       size = size || 20;
@@ -945,7 +965,7 @@
       }
       if ((stacked >= 4 && !crit) || y < 70) return;
       if (stacked >= 4) x += (Math.random() - 0.5) * w * 1.2; // 暴击摞满了：在旁边散开一点
-      this.fx.push({ kind: 'text', x, y, str, color, size, life: life || 0.8, age: 0, vy: -50, crit });
+      this.fx.push({ kind: 'text', x, y, str, color, size, life: life || 0.8, age: 0, vy: -50, crit, ui: !!ui });
     }
     burst(x, y, color, n, speed) {
       for (let i = 0; i < n; i++) {
@@ -955,12 +975,12 @@
       }
     }
     // 横幅排队显示，避免互相重叠
-    banner(text) {
+    banner(text, opts) {
       // 只保留正在显示的一条，排队中的旧横幅直接丢弃
       this.fx = this.fx.filter((f) => !(f.kind === 'banner' && f.age < 0));
       const showing = this.fx.find((f) => f.kind === 'banner' && f.age < f.life);
       const delay = showing ? Math.min(0.8, showing.life - showing.age) : 0;
-      this.fx.push({ kind: 'banner', str: text, life: 1.6, age: -delay });
+      this.fx.push({ kind: 'banner', str: text, life: 1.8, age: -delay, boss: !!(opts && opts.boss) });
     }
 
     // 当前武器的特效颜色 = 武器品质色
@@ -4499,6 +4519,21 @@
         ctx.save();
         switch (f.kind) {
           case 'text': {
+            if (f.ui) {
+              // 提示飘字：淡入 → 上浮（ease-out）→ 淡出；减少动效时只淡入淡出
+              const rise = this.reduceMotion() ? 0 : FLOAT.rise;
+              ctx.globalAlpha = Math.min(1, k / 0.12) * (1 - easeOut(Math.max(0, (k - 0.6) / 0.4)));
+              ctx.font = `${FLOAT.weight} ${f.size}px ${FLOAT.font}`;
+              ctx.textAlign = 'center';
+              ctx.lineJoin = 'round';
+              ctx.lineWidth = 2;
+              ctx.strokeStyle = FLOAT.stroke;
+              const ty = f.y - rise * easeOut(k);
+              ctx.strokeText(f.str, f.x, ty);
+              ctx.fillStyle = f.color;
+              ctx.fillText(f.str, f.x, ty);
+              break;
+            }
             f.y += f.vy * dt;
             f.vy *= Math.pow(0.1, dt);
             const pop = f.crit ? 1 + Math.max(0, 0.4 - f.age * 2) : 1;
@@ -4720,48 +4755,26 @@
             }
             break;
           case 'banner': {
-            const inK = Math.min(1, f.age * 5);
-            const outK = 1 - Math.max(0, (f.age - f.life + 0.4) / 0.4);
+            // 波次横幅：细字，淡入淡出，不再有暗带；Boss 波次下面一条强调色细线
+            const inK = easeOut(Math.min(1, f.age / 0.3));
+            const outK = 1 - easeOut(Math.max(0, (f.age - f.life + 0.45) / 0.45));
             ctx.globalAlpha = Math.min(inK, outK);
-            // 横幅：中间一条渐隐的暗带 + 发光的字（设计书 54.5）
-            const bandG = ctx.createLinearGradient(C.width / 2 - 300, 0, C.width / 2 + 300, 0);
-            bandG.addColorStop(0, 'rgba(8,12,24,0)');
-            bandG.addColorStop(0.5, 'rgba(8,12,24,0.6)');
-            bandG.addColorStop(1, 'rgba(8,12,24,0)');
-            ctx.fillStyle = bandG;
-            ctx.fillRect(C.width / 2 - 300, 188, 600, 68);
-            // 上下两条金线从中间向两边展开，两端各一个小菱形（设计书 131）
-            const open = Math.min(1, f.age * 4);
-            const lineG = ctx.createLinearGradient(C.width / 2 - 300, 0, C.width / 2 + 300, 0);
-            lineG.addColorStop(0, 'rgba(255,214,120,0)');
-            lineG.addColorStop(0.5, 'rgba(255,214,120,0.85)');
-            lineG.addColorStop(1, 'rgba(255,214,120,0)');
-            ctx.fillStyle = lineG;
-            for (const ly of [188, 254]) ctx.fillRect(C.width / 2 - 300 * open, ly, 600 * open, 2);
-            ctx.fillStyle = 'rgba(255,226,150,0.9)';
-            for (const sx of [-1, 1]) {
-              const dx = C.width / 2 + sx * 300 * open * 0.82;
-              ctx.beginPath();
-              ctx.moveTo(dx, 222 - 7);
-              ctx.lineTo(dx + 7, 222);
-              ctx.lineTo(dx, 222 + 7);
-              ctx.lineTo(dx - 7, 222);
-              ctx.closePath();
-              ctx.fill();
-            }
-            ctx.font = 'bold 36px "Trebuchet MS", sans-serif';
+            const rm = this.reduceMotion();
+            const dy = rm ? 0 : (1 - inK) * 10;
+            ctx.font = `300 34px ${FLOAT.font}`;
+            if ('letterSpacing' in ctx) ctx.letterSpacing = '2px';
             ctx.textAlign = 'center';
-            ctx.shadowColor = 'rgba(255,200,110,0.9)';
-            ctx.shadowBlur = 16;
-            ctx.fillStyle = '#fff3d0';
-            // 字从略大缩到正常，带一点回弹
-            const pop = 1 + Math.max(0, 0.22 - f.age * 0.9);
-            ctx.save();
-            ctx.translate(C.width / 2, 235);
-            ctx.scale(pop, pop);
-            ctx.fillText(f.str, 0, 0);
-            ctx.restore();
+            ctx.shadowColor = 'rgba(8,12,24,0.7)';
+            ctx.shadowBlur = 10;
+            ctx.fillStyle = 'rgba(255,255,255,0.96)';
+            ctx.fillText(f.str, C.width / 2, 235 + dy);
             ctx.shadowBlur = 0;
+            if ('letterSpacing' in ctx) ctx.letterSpacing = '0px';
+            if (f.boss) {
+              const w = Math.min(220, ctx.measureText(f.str).width + 40) * (rm ? 1 : easeOut(Math.min(1, f.age / 0.5)));
+              ctx.fillStyle = FLOAT.accent;
+              ctx.fillRect(C.width / 2 - w / 2, 250, w, 2);
+            }
             break;
           }
         }
