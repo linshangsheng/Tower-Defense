@@ -1,4 +1,4 @@
-// 雇佣兵造型（设计书 186）：六个兵种各有剪影、装备和动作。风格和英雄 / 怪物一致：大头 Q 版、渐变体积感、深紫描边。
+// 雇佣兵造型（设计书 186）：六个兵种（外加第 7 个：工程兵）各有剪影、装备和动作。风格和英雄 / 怪物一致：大头 Q 版、渐变体积感、深紫描边。
 // 脚底在 (0,0)，向上是负方向，朝右（朝怪物）；face = -1 时整体镜像。
 // st: { t 时间, state 'idle'|'move'|'attack', age 距上一次出手的秒数, wind 0..1 蓄力, flash 受击闪白, dead 阵亡进度 0..1, charging, level, healAge }
 (function (TD) {
@@ -487,9 +487,142 @@
     }
   }
 
-  const DRAW = { swordsman, guard, archer, mage, cleric, knight };
+
+  // ---------- 工程兵 ----------
+  // 黄色安全帽 + 护目镜 + 橙色背带裤 + 工具腰带 + 大扳手；布置陷阱时蹲下，把一枚尖刺陷阱按进身前的地面
+  function engineer(c, st) {
+    const t = st.t;
+    const ta = st.trapAge !== undefined ? st.trapAge : 9;
+    const placing = ta < 0.55 ? Math.sin(clamp(ta / 0.55, 0, 1) * Math.PI) : 0; // 0..1..0 下蹲的深度
+    const swing = st.state === 'attack' && ta >= 0.55 ? clamp(st.age / 0.3, 0, 1) : 1;
+    const bob = st.state === 'move' ? Math.abs(Math.sin(t * 12)) * 1.2 : Math.sin(t * 2.4) * 0.5;
+    legs(c, st, '#3f5a8c', '#5b3c2a');
+    c.save();
+    c.translate(0, placing * 7 - bob * 0.4);
+    c.rotate(placing * 0.22);
+    // 背后的工具包
+    S.roundRect(c, -15, -30, 9, 13, 3);
+    c.fillStyle = st.tint('#7a5a3a');
+    c.fill();
+    c.lineWidth = 1.8;
+    c.strokeStyle = OUT;
+    c.stroke();
+    limb(c, -12, -31, -12, -36, 2.4, st.tint('#c9ced8')); // 露出来的锤柄
+    ell(c, -12, -37, 3.4, 2.2, st.tint('#8f9aab'), OUT, 1.4);
+    // 橙色工装
+    torso(c, 0, -27, 17, 19, st.tint('#f08a2e'), 6);
+    // 蓝色背带裤 + 背带
+    c.fillStyle = st.tint('#3f5a8c');
+    c.fillRect(-8, -16, 16, 6);
+    limb(c, -4, -27, -4, -16, 2.6, st.tint('#3f5a8c'));
+    limb(c, 4, -27, 4, -16, 2.6, st.tint('#3f5a8c'));
+    ell(c, -4, -24, 1.3, 1.3, st.tint('#f4d27a'));
+    ell(c, 4, -24, 1.3, 1.3, st.tint('#f4d27a'));
+    // 工具腰带：皮带 + 两个小口袋 + 金属扣
+    c.fillStyle = st.tint('#6a4a2a');
+    c.fillRect(-8.5, -14, 17, 3.2);
+    S.roundRect(c, -8, -12, 5, 5, 1.6);
+    c.fillStyle = st.tint('#8a5a3c');
+    c.fill();
+    c.stroke();
+    S.roundRect(c, 3, -12, 5, 5, 1.6);
+    c.fill();
+    c.stroke();
+    ell(c, 0, -12.4, 2.2, 1.8, st.tint('#f4d27a'), OUT, 1);
+    // 头：脸 + 护目镜（额头上推 + 一边的镜片）+ 安全帽
+    face(c, 1, -37, 9.5, st);
+    // 戴在眼睛上的护目镜：一条带子 + 两个镜片
+    c.fillStyle = st.tint('#4a3d5c');
+    c.fillRect(-8.4, -39.8, 19, 3.4);
+    for (const dx of [-1.6, 5.2]) {
+      ell(c, 1 + dx, -38.2, 3.9, 3.9, st.tint('#7fd8e8'), OUT, 1.6);
+      ell(c, 1 + dx - 1, -39.4, 1.2, 1.2, 'rgba(255,255,255,0.85)');
+    }
+    // 安全帽：黄色半球 + 帽檐 + 中央一道棱 + 前面的灯
+    c.beginPath();
+    c.arc(1, -39, 10.6, Math.PI * 1.0, Math.PI * 2.0);
+    c.lineTo(11.6, -39);
+    c.lineTo(-9.6, -39);
+    c.closePath();
+    const hg = c.createLinearGradient(0, -50, 0, -38);
+    hg.addColorStop(0, st.tint('#ffe27a'));
+    hg.addColorStop(0.6, st.tint('#ffc72e'));
+    hg.addColorStop(1, st.tint('#d9971a'));
+    c.fillStyle = hg;
+    c.fill();
+    c.lineWidth = 2;
+    c.strokeStyle = OUT;
+    c.stroke();
+    S.roundRect(c, -3, -50.4, 8, 3, 1.4);
+    c.fillStyle = st.tint('#ffb21f');
+    c.fill();
+    S.roundRect(c, -2, -39.6, 15, 3, 1.5); // 帽檐
+    c.fillStyle = st.tint('#e0a321');
+    c.fill();
+    c.stroke();
+    ell(c, 9.2, -44.5, 2.2, 2.2, st.tint('#fff4c8'), OUT, 1.2);
+    if (Math.sin(t * 3) > 0.6) {
+      c.globalAlpha *= 0.45;
+      ell(c, 9.2, -44.5, 4.6, 4.6, '#fff4c8');
+      c.globalAlpha /= 0.45;
+    }
+    // 持扳手的手臂：待机扛在肩上，出手时抡下来，布置陷阱时往地上按
+    c.save();
+    c.translate(6, -23);
+    const ang = placing > 0 ? 0.5 + placing * 0.25 : st.state === 'attack' ? -2.0 + ease(swing * 1.3) * 2.8 : -0.9 + Math.sin(t * 3) * 0.06;
+    c.rotate(ang);
+    limb(c, 0, 0, 8, 0, 4.5, st.tint('#f08a2e'));
+    hand(c, 9, 0, st);
+    // 大扳手：长柄 + 开口的 C 形头
+    limb(c, 9, 0, 22, 0, 3.6, st.tint('#b8c0cf'));
+    ell(c, 25, 0, 5.4, 5.4, st.tint('#cfd6e2'), OUT, 1.8);
+    ell(c, 28, 0, 2.7, 2.1, st.tint('#8f9aab'), OUT, 1);
+    c.restore();
+    c.restore();
+    // 布置陷阱的动作：身前地面上冒出一枚尖刺陷阱（先是从手里放下，再弹出来）
+    if (ta < 0.7) {
+      const k = clamp(ta / 0.45, 0, 1);
+      c.save();
+      c.globalAlpha *= 1 - clamp((ta - 0.5) / 0.2, 0, 1);
+      M.drawTrap(c, 24, -2, ease(k), 1, st.tint);
+      c.restore();
+    }
+  }
+
+  // 地面上的尖刺陷阱（兵身前的动作和战场上共用）：金属底盘 + 一圈尖刺 + 红色警示灯。
+  // k 0..1 刺伸出来的程度；pulse 0..1 警示灯的亮度；脚底在 (x, y)
+  M.drawTrap = function (c, x, y, k, pulse, tint) {
+    tint = tint || ((h) => h);
+    c.save();
+    c.translate(x, y);
+    ell(c, 0, 1, 12, 4.4, 'rgba(0,0,0,0.28)');
+    ell(c, 0, -1, 10.5, 4, tint('#6b7280'), OUT, 1.6);
+    ell(c, 0, -2, 7.8, 2.8, tint('#9aa3b2'), OUT, 1);
+    const n = 5;
+    for (let i = 0; i < n; i++) {
+      const fx = (i - (n - 1) / 2) * 3.8;
+      const h = (6 + (i % 2) * 3) * k;
+      c.beginPath();
+      c.moveTo(fx - 1.9, -2);
+      c.lineTo(fx, -2 - h);
+      c.lineTo(fx + 1.9, -2);
+      c.closePath();
+      const g = c.createLinearGradient(fx - 2, 0, fx + 2, 0);
+      g.addColorStop(0, tint('#f2f5fa'));
+      g.addColorStop(1, tint('#8791a3'));
+      c.fillStyle = g;
+      c.fill();
+      c.lineWidth = 1.2;
+      c.strokeStyle = OUT;
+      c.stroke();
+    }
+    ell(c, 0, -2.2, 1.8, 1.2, pulse > 0.5 ? '#ff6a5a' : '#a23a3a', OUT, 0.8);
+    c.restore();
+  };
+
+  const DRAW = { swordsman, guard, archer, mage, cleric, knight, engineer };
   M.has = (type) => !!DRAW[type];
-  M.scale = { swordsman: 1.15, guard: 1.2, archer: 1.15, mage: 1.15, cleric: 1.15, knight: 1.1 };
+  M.scale = { swordsman: 1.15, guard: 1.2, archer: 1.15, mage: 1.15, cleric: 1.15, knight: 1.1, engineer: 1.15 };
 
   // 画一个兵。x, y = 脚底位置；face = 1 朝右，-1 朝左
   M.draw = function (ctx, type, x, y, st, face) {

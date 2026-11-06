@@ -16,6 +16,9 @@
       this.mercDeaths = 0;
       this.mercKills = 0;
       this.mercDeployed = 0;
+      this.traps = []; // 工程兵布置的陷阱：{ id, lane, x, y, dmg, aoe, slow, slowDur, until, owner, born }
+      this.trapNo = 0;
+      this.trapHits = 0;
       this.funds = 0;
       this.mercsOn = !this.level.tower && !!(list && list.length);
       if (!this.mercsOn) return;
@@ -130,7 +133,7 @@
       const flank = m.def.trait && m.def.trait.id === 'flank'; // 狼：绕过前排，只缠上后排（远程 / 治疗）
       for (const u of this.mercs) {
         if (u.dead || u.lane !== m.lane) continue;
-        if ((flank || dive) && !(u.def.ranged || u.def.support)) continue;
+        if ((flank || dive) && !(u.def.ranged || u.def.support || u.def.trap)) continue;
         const gap = m.x - u.x;
         if (gap < -4 || gap > C.merc.contactPad + m.def.size * 0.5) continue;
         if (!best || (u.def.taunt && !best.def.taunt) || (u.def.taunt === best.def.taunt && u.x > best.x)) best = u;
@@ -228,7 +231,7 @@
     // 机器人 / 自动战斗：有钱有冷却就雇，派到最靠近城墙的怪所在的车道；先雇前排（盾卫 / 剑士 / 骑士），再雇后排
     autoMercs() {
       if (this.waveState === 'prepare') return;
-      const frontline = (id) => (D.mercs[id].taunt ? 0 : D.mercs[id].ranged || D.mercs[id].support ? 2 : 1);
+      const frontline = (id) => (D.mercs[id].taunt ? 0 : D.mercs[id].ranged || D.mercs[id].support || D.mercs[id].trap ? 2 : 1);
       const order = this.mercSlots.map((s, i) => i).sort((a, b) => frontline(this.mercSlots[a].id) - frontline(this.mercSlots[b].id));
       for (const i of order) {
         if (!this.mercReady(i)) continue;
@@ -237,7 +240,7 @@
         for (const m of this.monsters) if (!m.dead && m.x < bx && m.x < C.width) { bx = m.x; lane = m.lane; }
         if (bx === Infinity) continue;
         // 后排兵：前排没有人就先不雇（站出去送死）
-        if (frontline(this.mercSlots[i].id) === 2 && !this.mercs.some((u) => !u.dead && !u.def.ranged && !u.def.support)) continue;
+        if (frontline(this.mercSlots[i].id) === 2 && !this.mercs.some((u) => !u.dead && !u.def.ranged && !u.def.support && !u.def.trap)) continue;
         this.deployMerc(i, lane);
         break;
       }
@@ -250,6 +253,7 @@
         this.autoMercs();
       }
       for (const s of this.mercSlots) if (s.cd > 0) s.cd = Math.max(0, s.cd - dt);
+      this.updateTraps(dt);
       if (!this.mercs.length) return;
       const wallFloor = C.wallX + 40;
       // Boss 横扫：贴在 Boss 身边的兵持续掉血（Boss 不会被兵拦住）
@@ -294,6 +298,11 @@
           this.mercMove(u, want, dt);
           continue;
         }
+        // 工程兵：站在最靠前的友军身后，周期性在身前布置陷阱；怪物贴脸时才用扳手敲两下
+        if (def.trap) {
+          this.engineerAct(u, dt);
+          continue;
+        }
         const tgt = this.mercPickTarget(u);
         if (!tgt) {
           u.state = 'idle';
@@ -336,6 +345,92 @@
       if (this.mercs.length > 12 && this.mercs.some((u) => u.dead && this.time - u.diedAt > 1)) {
         this.mercs = this.mercs.filter((u) => !u.dead || this.time - u.diedAt <= 1);
       }
+    },
+
+    // ---------- 工程兵与陷阱 ----------
+    trapCount(lane) {
+      let n = 0;
+      for (const t of this.traps) if (t.lane === lane) n++;
+      return n;
+    },
+
+    // 在 lane 车道 x 处放一个陷阱（太近的已有陷阱、车道已满则不放）。返回陷阱或 null
+    placeTrap(u, x) {
+      const tr = u.def.trap;
+      if (this.trapCount(u.lane) >= tr.max) return null;
+      x = TD.util.clamp(x, C.wallX + 60, C.merc.leashX + 60);
+      for (const t of this.traps) if (t.lane === u.lane && Math.abs(t.x - x) < 36) x = t.x + (x >= t.x ? 36 : -36);
+      x = TD.util.clamp(x, C.wallX + 60, C.merc.leashX + 120);
+      const k = this.D * C.merc.power * lvMult(u.level);
+      const t = { id: ++this.trapNo, lane: u.lane, x, y: this.laneY(u.lane), dmg: tr.dmg * k, aoe: tr.aoe, slow: tr.slow, slowDur: tr.slowDur, born: this.time, until: this.time + tr.life, owner: u };
+      this.traps.push(t);
+      if (tr.wallHeal && this.wall.hp < this.wall.max) this.wall.hp = Math.min(this.wall.max, this.wall.hp + this.wall.max * tr.wallHeal);
+      this.emit('trapPlace', { u, trap: t });
+      return t;
+    },
+
+    engineerAct(u, dt) {
+      const def = u.def;
+      const tr = def.trap;
+      const wallFloor = C.wallX + 40;
+      // 位置：站在最靠前的非工程友军身后 keep 处（没人就在待命位置）
+      let front = C.merc.postX;
+      for (const o of this.mercs) if (!o.dead && o !== u && !o.def.trap && o.x > front) front = o.x;
+      this.mercMove(u, Math.max(wallFloor, front - def.keep), dt);
+      // 贴脸的怪：敲一下
+      u.cool -= dt;
+      let adj = null;
+      for (const m of this.mercTargets(u)) if (m.lane === u.lane && Math.abs(m.x - u.x) <= def.range + m.def.size * 0.5 && (!adj || m.x < adj.x)) adj = m;
+      if (adj) u.state = 'attack';
+      if (adj && u.cool <= 0) {
+        u.cool = def.every;
+        this.mercAttack(u, adj);
+      }
+      // 布置陷阱：本车道有怪、陷阱没满、冷却到了
+      u.trapCd = (u.trapCd === undefined ? tr.every * 0.5 : u.trapCd) - dt;
+      if (u.trapCd > 0) return;
+      let near = null;
+      for (const m of this.monsters) if (!m.dead && m.lane === u.lane && m.x < C.width && m.x > u.x && !m.def.flying && (!near || m.x < near.x)) near = m;
+      if (!near || this.trapCount(u.lane) >= tr.max) return;
+      // 放在自己身前、怪物前进路线上：离自己 70，但不会放到怪物身后
+      const x = Math.min(u.x + 70, near.x - 30);
+      if (x <= u.x + 20) return;
+      if (this.placeTrap(u, x)) {
+        u.trapCd = tr.every;
+        u.trapAt = this.time;
+        u.atkAt = this.time;
+      }
+    },
+
+    updateTraps(dt) {
+      if (!this.traps || !this.traps.length) return;
+      for (let i = this.traps.length - 1; i >= 0; i--) {
+        const t = this.traps[i];
+        let hit = null;
+        for (const m of this.monsters) {
+          if (m.dead || m.lane !== t.lane || m.def.flying || m.burrowed || !this.isTargetable(m)) continue;
+          if (Math.abs(m.x - t.x) <= 16 + m.def.size * 0.3) { hit = m; break; }
+        }
+        if (hit) {
+          this.triggerTrap(t, hit);
+          this.traps.splice(i, 1);
+        } else if (this.time >= t.until) this.traps.splice(i, 1);
+      }
+    },
+
+    triggerTrap(t, m) {
+      const opts = { type: 'phys', fromFront: true, source: 'merc' };
+      for (const o of this.monsters) {
+        if (o.dead || o.lane !== t.lane || o.def.flying || !this.isTargetable(o)) continue;
+        if (o !== m && Math.abs(o.x - t.x) > t.aoe) continue;
+        this.mercDamage(t.owner, o, t.dmg, opts);
+        if (!o.dead && !o.def.boss) {
+          o.slowAmt = Math.max(this.time < o.slowUntil ? o.slowAmt : 0, t.slow);
+          o.slowUntil = Math.max(o.slowUntil, this.time + t.slowDur);
+        }
+      }
+      this.trapHits++;
+      this.emit('trapTrigger', { trap: t, x: t.x, y: t.y, r: t.aoe });
     },
 
     mercMove(u, x, dt) {

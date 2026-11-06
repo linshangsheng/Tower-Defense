@@ -779,6 +779,10 @@
         this.fx.push({ kind: 'ring', x: e.x - 6, y: e.y, r0: 6, r1: 34, color: '#ffffff', w: 3, life: 0.2, age: 0, flat: 0.6 });
         if (this.vfx) this.vfx.spawn(3, () => ({ kind: 'spark', x: e.x - 6, y: e.y, vx: (Math.random() - 0.2) * 160, vy: -30 - Math.random() * 80, g: 240, life: 0.3, r: 2, color: '#ffe9a8' }));
       });
+      on('trapTrigger', (e) => {
+        this.fx.push({ kind: 'ring', x: e.x, y: e.y + 6, r0: 8, r1: e.r + 10, color: '#ffc857', w: 4, life: 0.3, age: 0, flat: 0.5 });
+        if (this.vfx) this.vfx.spawn(6, () => ({ kind: 'spark', x: e.x, y: e.y + 4, vx: (Math.random() - 0.5) * 200, vy: -60 - Math.random() * 120, g: 360, life: 0.35, r: 2, color: '#dfe6f2' }));
+      });
       on('mercShot', (e) => {
         const u = e.u;
         this.fx.push({ kind: 'spit', x0: u.x + 12, y0: u.y - 16, x1: e.x, y1: e.y, life: 0.22, age: 0, ice: !!e.magic && false });
@@ -1304,6 +1308,7 @@
       if (this.theme.abyss) this.drawAbyssTint();
       if (b && b.ult && b.ult.state === 'active') this.drawUltTint(b);
       if (b) this.drawLaneEffects(b);
+      if (b && b.traps && b.traps.length) this.drawTraps(b);
       this.drawWall(b ? b.wall.hp / b.wall.max : 1);
       if (b) {
         this.drawRangeMarker(b);
@@ -3368,7 +3373,7 @@
     drawMercs(b) {
       const ctx = this.ctx;
       const list = b.mercs.filter((u) => !u.dead || b.time - u.diedAt < 0.5).sort((p, q) => p.y - q.y);
-      const barY = { mage: 78, knight: 72, guard: 70, swordsman: 66, archer: 66, cleric: 72 };
+      const barY = { mage: 78, knight: 72, guard: 70, swordsman: 66, archer: 66, cleric: 72, engineer: 74 };
       for (const u of list) {
         // 被撞飞：逻辑位置已经退到位，画面上从原位置滑过去，中途腾空一小段（冲阵）
         const kp = u.knockAt === undefined ? 1 : Math.min(1, (b.time - u.knockAt) / 0.28);
@@ -3387,6 +3392,7 @@
           charging: !!u.charging,
           level: u.level,
           healAge: u.healAt === undefined ? 9 : b.time - u.healAt,
+          trapAge: u.trapAt === undefined ? 9 : b.time - u.trapAt,
         };
         if (!TD.mercArt || !TD.mercArt.has(u.type)) continue;
         // 和英雄、怪物同一套场景光：右上受光、左下背光、受光侧一道轮廓光（TD.art.litSprite，设计书 189）
@@ -3419,6 +3425,17 @@
             ctx.fillText('Lv' + u.level, x, ry - 3);
           }
         }
+      }
+    }
+
+    // 工程兵的陷阱（地面层，画在怪物下面）：刚放下时刺弹出来，快到期时警示灯闪烁
+    drawTraps(b) {
+      const ctx = this.ctx;
+      for (const t of b.traps) {
+        const born = Math.min(1, (b.time - t.born) / 0.25);
+        const left = t.until - b.time;
+        const pulse = left < 4 ? (Math.sin(this.t * 18) > 0 ? 1 : 0) : Math.sin(this.t * 3 + t.id) > 0.3 ? 1 : 0;
+        TD.mercArt.drawTrap(ctx, t.x, t.y + 10, born, pulse);
       }
     }
 

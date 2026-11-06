@@ -119,6 +119,7 @@
     battle.on('mercHeal', () => TD.audio.play('merc_heal'));
     battle.on('mercRank', () => TD.audio.play('merc_rank'));
     battle.on('mercRally', () => TD.audio.play('merc_rally'));
+    battle.on('trapTrigger', () => TD.audio.play('hit'));
     battle.on('drop', () => TD.audio.play('dropAppear'));
     battle.on('treasure', () => TD.audio.play('eliteAppear'));
     battle.on('dropGet', () => TD.audio.play('dropGet'));
