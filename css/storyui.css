@@ -1,0 +1,322 @@
+/* 剧情 / 对话界面（苹果 HIG 取向）：底部毛玻璃字幕卡 + 右上角胶囊"跳过" + 底部进度点
+   覆盖 style.css / ds.css 里旧的纸张风格；背景、舞台、人物站位仍沿用 style.css */
+
+.story-overlay {
+  padding-bottom: 0;
+  justify-content: flex-end;
+}
+
+/* ---- 字幕卡 ---- */
+.story-overlay .story-box {
+  position: relative;
+  z-index: 4;
+  box-sizing: border-box;
+  width: min(720px, calc(100% - 32px));
+  min-height: 0;
+  margin-bottom: 40px;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s4);
+  padding: var(--s4) var(--s5);
+  padding-right: 44px;
+  border-radius: var(--r-xl);
+  border: 0.5px solid var(--sep);
+  color: var(--label);
+  background: var(--mat-regular);
+  -webkit-backdrop-filter: blur(28px) saturate(1.6);
+  backdrop-filter: blur(28px) saturate(1.6);
+  box-shadow: var(--elev-3), inset 0 0.5px 0 rgba(255, 255, 255, 0.14);
+}
+.story-overlay .story-avatar {
+  flex: none;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 0.5px solid var(--sep);
+  background: radial-gradient(circle at 40% 35%, rgba(255, 230, 180, 0.3), rgba(30, 40, 60, 0.85));
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.story-overlay .story-avatar canvas {
+  width: 56px;
+  height: 56px;
+  display: block;
+}
+.story-overlay .story-avatar.hero {
+  box-shadow: 0 0 0 2px var(--accent-fill);
+}
+.story-overlay .story-emoji {
+  font-size: 32px;
+}
+.story-overlay .story-main {
+  flex: 1;
+  min-width: 0;
+}
+/* 名牌：13 / 600 次级色，不再是彩色胶囊 */
+.story-overlay .story-name,
+.story-overlay .story-name.hero,
+.story-overlay .story-name.king,
+.story-overlay .story-name.foe {
+  display: block;
+  padding: 0;
+  margin: 0 0 var(--s1);
+  border-radius: 0;
+  background: none;
+  text-shadow: none;
+  font-size: var(--fs-footnote);
+  font-weight: var(--fw-semibold);
+  line-height: 18px;
+  letter-spacing: 0.01em;
+  color: var(--label-2);
+}
+.story-overlay .story-name:empty {
+  display: none;
+}
+.story-overlay .story-text {
+  min-height: 44px; /* 至少两行，短句也不会让卡片忽高忽低 */
+  font-size: var(--fs-headline);
+  font-weight: var(--fw-regular);
+  line-height: 22px;
+  color: var(--label);
+  text-wrap: pretty;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+.story-ghost {
+  visibility: hidden;
+}
+
+/* 切换说话人：头像淡入 + 微弹 */
+.story-box.swap .story-avatar {
+  animation: storyAvatarIn 0.36s var(--ease) both;
+}
+@keyframes storyAvatarIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.82);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 旁白：没有头像，居中大字，行距更宽 */
+.story-box.narration {
+  width: min(760px, calc(100% - 32px));
+  padding: var(--s6) 44px;
+  justify-content: center;
+  align-items: center;
+}
+.story-box.narration .story-avatar {
+  display: none;
+}
+.story-box.narration .story-main {
+  text-align: center;
+}
+.story-box.narration .story-text {
+  min-height: 64px;
+  font-size: var(--fs-title3);
+  line-height: 32px;
+  letter-spacing: 0.01em;
+}
+
+/* 继续：右下角很小的三角，呼吸 */
+.story-overlay .story-next {
+  position: absolute;
+  right: var(--s4);
+  bottom: var(--s3);
+  width: 12px;
+  height: 12px;
+  color: var(--label-2);
+  animation: storyBreathe 1.6s ease-in-out infinite;
+}
+.story-overlay .story-next i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: currentColor;
+  clip-path: polygon(0 18%, 100% 18%, 50% 86%);
+  border-radius: 2px;
+}
+.story-overlay .story-next.hidden {
+  visibility: hidden;
+  animation: none;
+}
+@keyframes storyBreathe {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: translateY(-1px);
+  }
+  50% {
+    opacity: 0.95;
+    transform: translateY(2px);
+  }
+}
+
+/* ---- 进度：细圆点，居中在屏幕底部 ---- */
+.story-overlay .story-dots {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: var(--s4);
+  z-index: 4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  pointer-events: none;
+}
+.story-overlay .story-dots i {
+  width: 6px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--fill-3);
+  transform: none;
+  transition: width var(--dur) var(--ease), background-color var(--dur) var(--ease);
+}
+.story-overlay .story-dots i.done {
+  background: var(--label-3);
+}
+.story-overlay .story-dots i.now {
+  width: 18px;
+  background: var(--label);
+  transform: none;
+}
+
+/* ---- 跳过：右上角的小毛玻璃胶囊，热区 ≥ 44pt ---- */
+.story-overlay .story-skip {
+  position: absolute;
+  top: var(--s3);
+  right: var(--s3);
+  left: auto;
+  z-index: 6;
+  min-height: 32px;
+  padding: 0 var(--s3);
+  border-radius: 999px;
+  border: 0.5px solid var(--sep);
+  font-size: var(--fs-footnote);
+  font-weight: var(--fw-semibold);
+  color: var(--label);
+  background: var(--mat-regular);
+  -webkit-backdrop-filter: blur(20px) saturate(1.5);
+  backdrop-filter: blur(20px) saturate(1.5);
+  box-shadow: none;
+}
+.story-overlay .story-skip::after {
+  inset: -6px -6px; /* 32pt 的胶囊，点击热区 44 x 44 以上 */
+  min-width: 44px;
+}
+.story-overlay .story-skip:hover {
+  background: var(--mat-thick);
+}
+
+/* ---- 标题：小毛玻璃胶囊，放在顶部中央（章节开场仍先在中间亮相） ---- */
+.story-overlay .story-title {
+  top: var(--s4);
+  z-index: 5;
+  padding: var(--s1) var(--s4);
+  border-radius: 999px;
+  border: 0.5px solid var(--sep);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  color: var(--label);
+  background: var(--mat-regular);
+  -webkit-backdrop-filter: blur(20px) saturate(1.5);
+  backdrop-filter: blur(20px) saturate(1.5);
+  box-shadow: var(--elev-1);
+  max-width: calc(100% - 140px);
+  text-align: center;
+  text-wrap: balance;
+}
+.story-overlay .story-title.big {
+  font-size: var(--fs-body);
+}
+@keyframes storyTitleBig {
+  0% {
+    top: 38%;
+    opacity: 0;
+    transform: translateX(-50%) scale(1.5);
+  }
+  25%,
+  70% {
+    top: 38%;
+    opacity: 1;
+    transform: translateX(-50%) scale(1.7);
+  }
+  100% {
+    top: var(--s4);
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+}
+
+/* 人物站在字幕卡上方 */
+.story-overlay .story-actor {
+  bottom: 150px;
+}
+
+/* ---- 窄屏 ---- */
+@media (max-width: 760px) {
+  .story-overlay .story-box {
+    padding: var(--s3) var(--s4);
+    padding-right: 36px;
+    gap: var(--s3);
+    margin-bottom: 36px;
+  }
+  .story-overlay .story-avatar,
+  .story-overlay .story-avatar canvas {
+    width: 44px;
+    height: 44px;
+  }
+  .story-overlay .story-text {
+    font-size: var(--fs-headline);
+  }
+  .story-box.narration {
+    padding: var(--s5) 36px;
+  }
+  .story-box.narration .story-text {
+    font-size: var(--fs-headline);
+    line-height: 28px;
+  }
+  .story-overlay .story-actor {
+    bottom: 140px;
+  }
+}
+
+/* "大字"设置：字阶整体上一档 */
+#ui.large-text .story-overlay .story-text {
+  font-size: var(--fs-title3);
+  line-height: 28px;
+}
+#ui.large-text .story-overlay .story-name {
+  font-size: var(--fs-body);
+}
+
+/* 减少动态效果（设置里的开关，和系统偏好一样处理） */
+.story-overlay.calm .story-box.swap .story-avatar,
+.story-overlay.calm .story-next,
+.story-overlay.calm .story-title.big {
+  animation: none;
+}
+.story-overlay.calm .story-next {
+  opacity: 0.7;
+}
+@media (prefers-reduced-motion: reduce) {
+  .story-box.swap .story-avatar,
+  .story-overlay .story-next,
+  .story-overlay .story-title.big {
+    animation: none;
+  }
+  .story-overlay .story-next {
+    opacity: 0.7;
+  }
+}
