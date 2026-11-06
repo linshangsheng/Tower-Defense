@@ -24,9 +24,9 @@ function replay(level, seed, secs, mercs) {
 
 // 基线哈希：合并其他功能后，用「perf 合并前的提交」重新记录，并确认与合并后的结果逐位相同（证明 perf 优化仍然行为等价）
 const EXPECT = {
-  'L40/s1/20s': 'b7854444e4e0ef61f8766c888a334e752f74a4a1f3b866875d7d939ed2567feb',
-  'L100/s2/20s': 'dc06dfbdb746be36db72f040cfa06bd6c2d680e67bd5a794db2da99442465d93',
-  'L150/s3/20s': '7bfd9c4f8214fbc57462ce910061aa6b54bc51e800459f2a2f5d5c8cd7399dc3',
+  'L40/s1/20s': 'ed718b6e0ffbd3299a10fb8ad2f44e2a9471b2f2488d9f76d53ee0925f6875a2',
+  'L100/s2/20s': 'fa3a64b37ed0c6683bef5bd99cc0490bf591713fee46bfd1e222ea5f2f9618d9',
+  'L150/s3/20s': 'f7ff04f8b69d69baca14ccdd1cdd5f102545f9056b46ede56d9fdfbfd7dfac81',
 };
 
 for (const [key, [level, seed]] of Object.entries({ 'L40/s1/20s': [40, 1], 'L100/s2/20s': [100, 2], 'L150/s3/20s': [150, 3] })) {
