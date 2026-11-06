@@ -81,6 +81,7 @@
   function modal(content, opts) {
     UI.closeModal();
     // 战斗开场的关卡提示不要盖在弹窗上（设计书 50）
+    if (tipQ) tipQ.clear();
     for (const t of root.querySelectorAll('.toast.tip')) t.remove();
     opts = opts || {};
     modalEl = h('div', { class: 'modal-back' + (opts.dim === false ? ' clear' : '') }, h('div', { class: 'modal ' + (opts.cls || '') }, content));
@@ -92,7 +93,29 @@
     return modalEl;
   }
 
+  // 关卡提示：顶部居中的通知胶囊，同时只显示 1 条，后来的排队（TD.ToastQueue）
+  let tipQ = null;
+  function tipToast(msg) {
+    if (!tipQ)
+      tipQ = new TD.ToastQueue({
+        show(item) {
+          item.el = h('div', { class: 'toast tip', role: 'status', onclick: () => tipQ.dismiss() }, (TD.icons && TD.icons.svg('bulb')) || null, h('span', { class: 'toast-text' }, item.msg));
+          root.appendChild(item.el);
+        },
+        hide(item) {
+          if (item.el) item.el.classList.add('out');
+        },
+        remove(item) {
+          if (item.el) item.el.remove();
+        },
+        setTimer: (fn, ms) => setTimeout(fn, ms),
+        clearTimer: (id) => clearTimeout(id),
+      });
+    tipQ.push(msg);
+  }
+
   UI.toast = function (msg, kind, ms) {
+    if (kind === 'tip' && !ms && TD.ToastQueue) return tipToast(msg);
     ms = ms || (kind === 'tip' ? 5000 : 1800);
     const el = h('div', { class: 'toast ' + (kind || '') }, msg);
     root.appendChild(el);
@@ -2180,7 +2203,8 @@
     );
     root.appendChild(screenEl);
     UI.updateHud();
-    if (battle.level.tip) UI.toast('💡 ' + battle.level.tip, 'tip');
+    root.classList.toggle('rm', !!(game.save && game.save.settings && game.save.settings.reduceMotion)); // 减少动效：提示只淡入淡出（css/hudtoast.css）
+    if (battle.level.tip) UI.toast(battle.level.tip, 'tip');
   };
 
   // 战斗界面每帧都要刷新的文字：内容没变就别碰 DOM。每次 textContent = … 都会换一个文字节点，
