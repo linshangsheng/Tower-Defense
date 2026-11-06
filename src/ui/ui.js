@@ -1196,13 +1196,60 @@
     );
   }
 
+  // ---- 商店页统一页头 / 折叠提示 / 锁定提示（css/shopui.css；纯函数在 src/ui/shopui-core.js） ----
+  // 返回要依次 append 的节点：[粘性页头, （有 tip 时）折叠的说明正文]
+  //   action = 右侧主操作（可选）；tip = { id, lines: [文字…] }，默认折叠成一行「怎么用？」
+  UI.shopTips = UI.shopTips || {};
+  function pageHead(title, sub, action, tip) {
+    const SU = TD.shopui;
+    const body = tip
+      ? h(
+          'div',
+          { class: 'pg-tip-body', id: 'tip-' + tip.id, hidden: SU.tipOpen(UI.shopTips, tip.id) ? null : true },
+          tip.lines.map((t) => h('p', null, t))
+        )
+      : null;
+    const toggle = tip
+      ? h(
+          'button',
+          {
+            class: 'pg-tip-btn',
+            'aria-expanded': SU.tipOpen(UI.shopTips, tip.id) ? 'true' : 'false',
+            'aria-controls': 'tip-' + tip.id,
+            onclick: (e) => {
+              sfx('click');
+              const open = SU.tipToggle(UI.shopTips, tip.id);
+              e.currentTarget.setAttribute('aria-expanded', open ? 'true' : 'false');
+              body.hidden = !open;
+            },
+          },
+          TD.icons.svg('bulb'),
+          h('span', null, '怎么用？'),
+          h('i', { class: 'pg-chev' }, '›')
+        )
+      : null;
+    const head = h(
+      'div',
+      { class: 'pg-head' },
+      h('div', { class: 'pg-row' }, h('div', { class: 'pg-titles' }, h('h2', { class: 'pg-title' }, title), sub ? h('div', { class: 'pg-sub' }, sub) : null), action ? h('div', { class: 'pg-action' }, action) : null),
+      toggle
+    );
+    return body ? [head, body] : [head];
+  }
+  // 锁定状态：锁图标 + 一行解锁条件
+  function lockNote(text) {
+    return h('span', { class: 'lock-note' }, TD.icons.svg('lock'), h('span', null, text));
+  }
+
   function buyBtn(cost, onBuy, label, demoLocked) {
     const s = game.save;
     if (!cost) return h('button', { class: 'btn small', disabled: true }, label || '已满级');
     // 试玩版里锁住的东西：按钮灰着但能点，点了提示下载正式版（设计书 127）
     if (demoLocked) return h('button', { class: 'btn small buy demo-lock', onclick: () => UI.showDemoNotice() }, label || '购买', ' ', costEl(cost));
     const can = P.canAfford(s, cost);
-    return h(
+    // 钱不够：按钮灰着，下面一行写还差多少
+    const gap = can ? null : TD.shopui.shortage(cost, s);
+    const btn = h(
       'button',
       {
         class: 'btn small buy' + (can ? ' primary' : ''),
@@ -1220,6 +1267,7 @@
       ' ',
       costEl(cost)
     );
+    return gap ? h('span', { class: 'buy-wrap' }, btn, h('span', { class: 'need' }, '还差 ', costEl(gap))) : btn;
   }
 
   // 通用卡片（设计书 102）：左边图标徽章（extra.icon，颜色 extra.color），中间标题 / 说明 / 进度条 / 小标签，右边按钮
@@ -1281,8 +1329,8 @@
     const s = game.save;
     const st = P.heroStats(s);
     const firstVisit = !s.stats.shopGuided;
+    el.append(...pageHead('属性', '永久提升，用铜币升级'));
     if (firstVisit) el.append(h('div', { class: 'guide' }, '👉 升级「攻击力」，Kael就能更快消灭怪物！'));
-    el.append(h('div', { class: 'section-title' }, '属性升级（永久）'));
     const grid = h('div', { class: 'card-grid' });
     el.append(grid);
     for (const key of Object.keys(D.attributes)) {
@@ -1315,7 +1363,6 @@
 
   function shopWeapons(el) {
     const s = game.save;
-    el.append(h('div', { class: 'section-title long' }, '武器（永久解锁，每级伤害 +8%，10 级以后每级 +4%；品质越高越强、越贵，升级也越贵）'));
     // 按品质分组：绿 → 蓝 → 紫 → 红 → 金（设计书 63.4）
     const order = Object.keys(D.weapons).sort((a, b) => (D.weapons[a].rarity || 1) - (D.weapons[b].rarity || 1));
     let lastR = 0;
@@ -1376,6 +1423,7 @@
 
   function shopSkills(el) {
     const s = game.save;
+    el.append(...pageHead('技能', '主动技能点击释放，被动技能自动生效', null, { id: 'skills', lines: ['技能 Lv2 用银币升阶，Lv3 用金币升阶并带来质变效果。', '被动技能买下来是 1 级，效果很弱，升级以后才会变强；10 级以后每级的提升变小、费用涨得更快。', '买到的技能要在「配装」页放进技能槽才会带进战斗。'] }));
     // 终极技能（设计书 133）：通关第 100 关开放，钻石买断，每场战斗一次；试玩版里是灰的
     {
       const U = D.ultimate;
@@ -1384,7 +1432,7 @@
       let right;
       if (C.demo) right = buyBtn(U.cost, null, '购买', true);
       else if (owned) right = h('button', { class: 'btn small', disabled: true }, '已拥有');
-      else if (!open) right = h('button', { class: 'btn small', disabled: true }, `通关第 ${U.unlock} 关解锁`);
+      else if (!open) right = lockNote(`通关第 ${U.unlock} 关解锁`);
       else right = buyBtn(U.cost, () => P.buyUltimate(s), '购买');
       el.append(h('div', { class: 'section-title' }, '终极技能（每场战斗一次）'));
       el.append(
@@ -1414,7 +1462,6 @@
       if (k.link) desc = h('span', null, desc, h('br'), h('span', { class: 'hint' }, k.link));
       skillGrid.append(card(k.name, lv ? `Lv${lv} · 冷却 ${Math.round(P.skillDef(id, lv).cd * 10) / 10} 秒` : `冷却 ${k.cd} 秒`, desc, right, { cls: 'v' + (lv ? '' : ' unowned'), icon: TD.sprites.iconCanvas(id, 56), foot: pips(Math.min(lv, D.skillMaxLv), D.skillMaxLv) }));
     }
-    el.append(h('div', { class: 'hint' }, '技能 Lv2 用银币升阶，Lv3 用金币升阶并带来质变效果。'));
     el.append(h('div', { class: 'section-title' }, '被动技能（自动生效）'));
     const passiveGrid = h('div', { class: 'card-grid' });
     el.append(passiveGrid);
@@ -1448,8 +1495,6 @@
       const desc = k.proc ? h('span', null, passiveText(id, lv), h('b', { class: 'up delta-line' }, `Lv${lv} ${nxt(lv)} → Lv${lv + 1} ${nxt(lv + 1)}`)) : h('span', null, `当前：${passiveText(id, lv)} → `, h('b', { class: 'up' }, `Lv${lv + 1}：${passiveText(id, lv + 1)}`));
       passiveGrid.append(card(k.name, lvText(lv), desc, h('div', { class: 'btn-col' }, buyBtn(P.passiveCost(s, id), () => P.upgradePassive(s, id), '升级'), bulkRow('passive', id)), { cls: 'v', icon: TD.sprites.iconCanvas(id, 56), bar: lv / 10, barText: `${lv} / 10`, over: lv >= 10 }));
     }
-    el.append(h('div', { class: 'hint' }, '被动技能买下来是 1 级，效果很弱，升级以后才会变强；10 级以后每级的提升变小、费用涨得更快。'));
-    el.append(h('div', { class: 'hint' }, '买到的技能要在「配装」页放进技能槽才会带进战斗。'));
   }
 
   // 套装说明（设计书 58.6）
@@ -1469,9 +1514,15 @@
       return [ids.filter((id) => s.equipOwned[id]).length, ids.length];
     };
     el.append(
+      ...pageHead('装备', '先选分类，再按品质挑选', null, {
+        id: 'equip',
+        lines: st.equipCat === 'weapon' ? ['武器（永久解锁，每级伤害 +8%，10 级以后每级 +4%；品质越高越强、越贵，升级也越贵）'] : ['装备买下来永久拥有，穿上才生效；卖出价是买入价的一半。'].concat(st.equipCat === 'trinket' ? ['饰品可以同时戴 3 件'] : []),
+      })
+    );
+    el.append(
       h(
         'div',
-        { class: 'equip-cats' },
+        { class: 'equip-cats seg', role: 'tablist' },
         D.equipCats.map((c) => {
           const [have, total] = c.id === 'weapon' ? [Object.keys(D.weapons).filter((id) => s.weapons[id].owned).length, Object.keys(D.weapons).length] : countOf(c.id);
           return h(
@@ -1495,13 +1546,11 @@
     if (st.equipCat === 'weapon') return shopWeapons(el);
 
     const slot = st.equipCat;
-    const [have, total] = countOf(slot);
-    el.append(h('div', { class: 'section-title' }, `${D.equipSlots[slot]}（已拥有 ${have} / ${total}${slot === 'trinket' ? '，可同时戴 3 件' : ''}）`));
     // 品质筛选
     el.append(
       h(
         'div',
-        { class: 'tier-filter' },
+        { class: 'tier-filter seg' },
         [0, 1, 2, 3, 4, 5].map((t) => {
           const R = t ? D.weaponRarity[t] : null;
           const n = Object.keys(D.equipment).filter((id) => D.equipment[id].slot === slot && (!t || D.equipment[id].rarity === t)).length;
@@ -1575,6 +1624,7 @@
   function shopWall(el) {
     const s = game.save;
     const st = P.heroStats(s);
+    el.append(...pageHead('城墙', '血量、减伤、修缮与荆棘'));
     // 顶部横幅：城墙现在的样子（大图标 + 血量 + 减伤 / 修缮 / 荆棘）
     const chip = (name, val) => h('span', { class: 'wall-chip' }, name, h('b', null, val));
     el.append(
@@ -1585,7 +1635,6 @@
         h('div', { class: 'wall-info' }, h('div', { class: 'wall-hp-label' }, '城墙血量'), h('div', { class: 'wall-hp' }, st.wallMax), h('div', { class: 'wall-chips' }, chip(D.wallUpgrades.fortify.name, Math.round(st.wallDr * 100) + '%'), chip(D.wallUpgrades.mend.name, Math.round(st.mend * 1000) / 10 + '%'), chip(D.wallUpgrades.thorns.name, Math.round(st.thorns * 100) + '%')))
       )
     );
-    el.append(h('div', { class: 'section-title' }, `城墙升级（当前最大血量 ${st.wallMax}）`));
     const wallGrid = h('div', { class: 'card-grid' });
     el.append(wallGrid);
     for (const key of Object.keys(D.wallUpgrades)) {
@@ -1594,7 +1643,7 @@
       let detail = u.desc;
       if (key === 'level') detail = h('span', null, `${u.desc} 血量 ${st.wallMax} → `, h('b', { class: 'up' }, Math.round(P.wallHpAt(lv + 1) * (1 + P.equipStats(s).wallHpPct))), lv >= u.soft ? h('span', { class: 'hint' }, ` （30 级以后每级 +${Math.round(u.beyond * 100)}% 的 30 级血量）`) : null);
       const capped = (key === 'fortify' && st.wallDr >= 0.75) || (key === 'mend' && st.mend >= 0.5);
-      wallGrid.append(card(u.name, lvText(lv), capped ? h('span', null, detail, '（已到上限）') : detail, capped ? h('span', { class: 'equipped' }, '已到上限') : h('div', { class: 'btn-col' }, buyBtn(P.wallCost(s, key), () => P.buyWall(s, key), '升级'), bulkRow('wall', key)), { cls: 'v', icon: TD.sprites.iconCanvas('wall_' + key, 56), bar: lv / u.max, barText: `${lv} / ${u.max}`, over: lv >= u.max }));
+      wallGrid.append(card(u.name, lvText(lv), capped ? h('span', null, detail, '（已到上限）') : detail, capped ? h('span', { class: 'pill-done' }, '已到上限') : h('div', { class: 'btn-col' }, buyBtn(P.wallCost(s, key), () => P.buyWall(s, key), '升级'), bulkRow('wall', key)), { cls: 'v', icon: TD.sprites.iconCanvas('wall_' + key, 56), bar: lv / u.max, barText: `${lv} / ${u.max}`, over: lv >= u.max }));
     }
   }
 
@@ -1603,10 +1652,17 @@
     const s = game.save;
     const MC = TD.config.merc;
     const carry = P.mercLoadoutIds(s);
-    el.append(h('div', { class: 'section-title long' }, `雇佣兵（战斗里用军饷雇；最多带 3 个兵种，场上最多 ${MC.cap} 个兵）`));
-    el.append(h('div', { class: 'hint' }, `军饷：开场有 ${MC.startFunds}，击败怪物会增加。雇来的兵会主动冲上去和怪物打；怪物也会变得更多更硬。快捷键 4 / 5 / 6。`));
-    el.append(h('div', { class: 'hint' }, '兵团羁绊：场上每有 1 个活着的兵，英雄攻速 +3%，最多 +15%；战鼓、城墙修复、箭雨和万箭天降也会照顾到兵。'));
-    el.append(h('div', { class: 'hint' }, `每个兵种每升一级，血量和伤害 +${Math.round(MC.perLevel * 100)}%，最高 ${MC.maxLevel} 级。`));
+    el.append(
+      ...pageHead('兵营', '选好带上战场的兵种，战斗里用军饷雇', null, {
+        id: 'barracks',
+        lines: [
+          `雇佣兵（战斗里用军饷雇；最多带 3 个兵种，场上最多 ${MC.cap} 个兵）`,
+          `军饷：开场有 ${MC.startFunds}，击败怪物会增加。雇来的兵会主动冲上去和怪物打；怪物也会变得更多更硬。快捷键 4 / 5 / 6。`,
+          '兵团羁绊：场上每有 1 个活着的兵，英雄攻速 +3%，最多 +15%；战鼓、城墙修复、箭雨和万箭天降也会照顾到兵。',
+          `每个兵种每升一级，血量和伤害 +${Math.round(MC.perLevel * 100)}%，最高 ${MC.maxLevel} 级。`,
+        ],
+      })
+    );
     const grid = h('div', { class: 'card-grid' });
     el.append(grid);
     for (const id of D.mercOrderExt || D.mercOrder) {
@@ -1615,7 +1671,7 @@
       const lv = P.mercLevel(s, id);
       const on = carry.includes(id);
       let right;
-      if (!unlocked) right = h('span', { class: 'equipped' }, `通关第 ${def.unlock - 1} 关解锁`);
+      if (!unlocked) right = lockNote(`通关第 ${def.unlock - 1} 关解锁`);
       else {
         const cost = P.mercUpgradeCost(s, id);
         right = h(
@@ -1667,9 +1723,13 @@
     const nI = P.slotCount(s, 'item');
     const R = D.itemRules;
     const used = s.loadout.items.slice(0, nI).filter(Boolean).length;
-    el.append(h('div', { class: 'section-title long' }, `消耗品（战斗中使用，用一个少一个；最多带 ${R.kinds} 种，每种最多 ${R.perKind} 个，每种用完要等冷却）`));
-    el.append(h('div', { class: 'hint' }, `流程：买下来 → 放进背包 → 点「装备 +1」装备到战斗里（也可以在「配装」页选）。现在栏位 ${used} / ${nI}${nI < R.kinds ? `（通关第 ${D.slotUnlocks.item[nI]} 关再开一格）` : '（栏位已全部解锁）'}。`));
-    if (nI === 0) el.append(h('div', { class: 'hint warn' }, `通关第 ${D.slotUnlocks.item[0]} 关后解锁消耗品栏位。现在可以先买好。`));
+    el.append(
+      ...pageHead('道具', '买下来放进背包，装备后带进战斗', h('span', { class: 'pill' }, '栏位 ', h('b', null, `${used} / ${nI}`)), {
+        id: 'items',
+        lines: [`消耗品（战斗中使用，用一个少一个；最多带 ${R.kinds} 种，每种最多 ${R.perKind} 个，每种用完要等冷却）`, `流程：买下来 → 放进背包 → 点「装备 +1」装备到战斗里（也可以在「配装」页选）。现在栏位 ${used} / ${nI}${nI < R.kinds ? `（通关第 ${D.slotUnlocks.item[nI]} 关再开一格）` : '（栏位已全部解锁）'}。`],
+      })
+    );
+    if (nI === 0) el.append(h('div', { class: 'lock-banner' }, lockNote(`通关第 ${D.slotUnlocks.item[0]} 关后解锁消耗品栏位。现在可以先买好。`)));
     // 按价格分三档：铜币 → 银币 → 金币，越强越贵（设计书 62.2）
     const tierOf = (it) => (it.cost.gold || it.cost.diamond ? 'gold' : it.cost.silver ? 'silver' : 'copper');
     const tiers = [['copper', '铜币档 · 常用'], ['silver', '银币档 · 针对性强'], ['gold', '金币档 · 扭转战局的底牌']];
@@ -1714,7 +1774,7 @@
   function shopExchange(el) {
     const s = game.save;
     const E = C.exchange;
-    el.append(h('div', { class: 'section-title' }, '汇兑所（单向兑换，不能换回来）'));
+    el.append(...pageHead('汇兑所', '单向兑换，不能换回来'));
     const have = (k) => s[k] || 0;
     const mk = (from, to, rate, times) =>
       h(
@@ -1782,28 +1842,28 @@
     const card = (title, sub, ...kids) => h('div', { class: 'lo-card' }, h('div', { class: 'lo-head' }, h('b', null, title), sub ? h('span', { class: 'lo-hint' }, sub) : null), ...kids);
     const lockSub = (n) => `通关第 ${n} 关解锁`;
 
-    if (st.levelNo)
-      el.append(
-        h(
-          'div',
-          { class: 'recommend' },
-          h(
-            'button',
-            {
-              class: 'btn small primary',
-              onclick: () => {
-                const notes = P.recommend(s, st.levelNo);
-                sfx('buy');
-                game.persist();
-                renderShop();
-                UI.toast('已按本关推荐配装：' + notes.join('，'));
+    el.append(
+      ...pageHead(
+        '配装',
+        st.levelNo ? '根据本关的怪物自动选择武器、技能和道具。' : '选好要带上战场的武器、技能和道具',
+        st.levelNo
+          ? h(
+              'button',
+              {
+                class: 'btn small primary',
+                onclick: () => {
+                  const notes = P.recommend(s, st.levelNo);
+                  sfx('buy');
+                  game.persist();
+                  renderShop();
+                  UI.toast('已按本关推荐配装：' + notes.join('，'));
+                },
               },
-            },
-            '一键推荐配装'
-          ),
-          h('span', { class: 'hint' }, '根据本关的怪物自动选择武器、技能和道具。')
-        )
-      );
+              '一键推荐配装'
+            )
+          : null
+      )
+    );
 
     // ---- 角色：大头像 + 英雄小头像 + 助战伙伴小头像 ----
     {
