@@ -123,7 +123,17 @@
     const avatar = h('div', { class: 'story-avatar' });
     const nameEl = h('div', { class: 'story-name' });
     const textEl = h('div', { class: 'story-text' });
-    const nextEl = h('div', { class: 'story-next' }, '▼');
+    const nextEl = h('div', { class: 'story-next hidden', 'aria-hidden': 'true' }, h('i'));
+    const ST = TD.storyText;
+    const reduceMotion = !!(G().save && G().save.settings && G().save.settings.reduceMotion);
+    // 已显示的字 + 看不见的剩余字：整句的换行位置一开始就定好，卡片高度不会边打边跳
+    const paint = (n) => {
+      textEl.textContent = '';
+      textEl.append(h('span', null, ST.slice(chars, n)), h('span', { class: 'story-ghost' }, chars.slice(n).join('')));
+    };
+    const box = h('div', { class: 'story-box' });
+    let lastWho;
+    let chars = [];
     const backdrop = storyBackdrop(chapter, dragon ? 'dragon' : '');
     // 舞台上的人物：左边主角 / 国王，右边怪物；说话的亮起来，没说话的暗下去
     const slotL = h('div', { class: 'story-actor left' });
@@ -140,6 +150,10 @@
       onDone && onDone();
     };
     const castOn = (who, shout) => {
+      if (ST.isNarration(who)) {
+        for (const k of ['left', 'right']) actors[k].el.classList.remove('active', 'shout'); // 旁白：台上的人都暗下去
+        return;
+      }
       const side = LEFT_CAST.includes(who) ? 'left' : 'right';
       const a = actors[side];
       if (a.who !== who) {
@@ -160,44 +174,55 @@
         a.el.classList.add('shout');
       }
     };
-    const PAUSE = { '，': 4, ',': 4, '、': 3, '。': 8, '！': 8, '？': 8, '…': 6, '—': 4, '.': 6, '!': 6, '?': 6 };
     const show = () => {
       const who = sc.lines[i][0];
+      const narr = ST.isNarration(who);
       const text = TD.i18n.t(sc.lines[i][1]); // 逐字显示的要先译整句，不然显示到一半的半句话译不了
-      const sp = speakerInfo(who, key === 'dragonFall');
-      const isHero = who === 'dang' || (D.speakers[who] && D.speakers[who].hero);
+      chars = ST.chars(text);
+      box.classList.toggle('narration', narr);
       avatar.innerHTML = '';
-      avatar.appendChild(sp.img());
-      avatar.className = 'story-avatar' + (isHero ? ' hero' : '');
-      nameEl.textContent = sp.name;
-      nameEl.className = 'story-name' + (isHero ? ' hero' : who === 'king' || who === 'captain' ? ' king' : ' foe');
-      castOn(who, !LEFT_CAST.includes(who) && /[！!]/.test(text.slice(-2)));
+      nameEl.textContent = '';
+      if (!narr) {
+        const sp = speakerInfo(who, key === 'dragonFall');
+        const isHero = who === 'dang' || (D.speakers[who] && D.speakers[who].hero);
+        avatar.appendChild(sp.img());
+        avatar.className = 'story-avatar' + (isHero ? ' hero' : '');
+        nameEl.textContent = sp.name;
+        nameEl.className = 'story-name' + (isHero ? ' hero' : who === 'king' || who === 'captain' ? ' king' : ' foe');
+        if (who !== lastWho) {
+          // 换人说话：头像淡入 + 微弹
+          box.classList.remove('swap');
+          void box.offsetWidth;
+          box.classList.add('swap');
+        }
+      }
+      lastWho = who || 'narrator';
+      castOn(who, !narr && !LEFT_CAST.includes(who) && /[！!]/.test(text.slice(-2)));
       el.classList.toggle('rumble', who === 'abyssDragon');
       el.dataset.line = `${i + 1}/${sc.lines.length}`;
       dots.innerHTML = '';
       for (let d = 0; d < sc.lines.length; d++) dots.appendChild(h('i', { class: d < i ? 'done' : d === i ? 'now' : '' }));
       shown = 0;
-      textEl.textContent = '';
+      paint(0);
       nextEl.classList.add('hidden');
       clearTimeout(timer);
       const step = () => {
         shown++;
-        textEl.textContent = text.slice(0, shown);
-        if (shown >= text.length) {
+        paint(shown);
+        if (shown >= chars.length) {
           nextEl.classList.remove('hidden');
           return;
         }
-        timer = setTimeout(step, 34 + (PAUSE[text[shown - 1]] || 0) * 9);
+        timer = setTimeout(step, ST.delay(chars[shown - 1]));
       };
       timer = setTimeout(step, 38);
       sfx('click');
     };
     const advance = () => {
-      const text = TD.i18n.t(sc.lines[i][1]);
-      if (shown < text.length) {
-        shown = text.length;
+      if (shown < chars.length) {
+        shown = chars.length;
         clearTimeout(timer);
-        textEl.textContent = text;
+        paint(shown);
         nextEl.classList.remove('hidden');
         return;
       }
@@ -208,15 +233,17 @@
     const dots = h('div', { class: 'story-dots' });
     const el = h(
       'div',
-      { class: 'story-overlay' + (chapter && chapter.abyss ? ' abyss' : '') + (dragon ? ' dragon' : '') },
+      { class: 'story-overlay' + (reduceMotion ? ' calm' : '') + (chapter && chapter.abyss ? ' abyss' : '') + (dragon ? ' dragon' : '') },
       backdrop.el,
       h('div', { class: 'story-bar top' }),
       h('div', { class: 'story-bar bottom' }),
       h('div', { class: 'story-stage' }, slotL, slotR),
       h('div', { class: 'story-title' + (bigTitle ? ' big' : '') }, key.startsWith('ch') ? `第${TD.data.chapterNo(+key.slice(2))}章 · ${sc.title}` : sc.title),
-      h('div', { class: 'story-box' }, avatar, h('div', { class: 'story-main' }, nameEl, textEl), dots, nextEl),
+      box,
+      dots,
       h('button', { class: 'btn small story-skip', onclick: (e) => (e.stopPropagation(), sfx('click'), end(false)) }, '跳过 ›')
     );
+    box.append(avatar, h('div', { class: 'story-main' }, nameEl, textEl), nextEl);
     el.addEventListener('click', advance);
     R().appendChild(el);
     show();
