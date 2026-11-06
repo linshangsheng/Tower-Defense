@@ -2357,6 +2357,7 @@
   "进阶": "Advance",
   "进阶后": "After advancing ",
   "远处时隐身无法被攻击，还会偷偷换道，靠近城墙才现身。": "Stealthy and untargetable at range. It also sneaks between lanes and only appears near the wall.",
+  "远处时隐身无法被攻击，还会偷偷换道，靠近才现身。带了雇佣兵时，它现身后会锁定牧师 / 法师（其次弓手）冲过去一击毙命；没有后排就直扑城墙。被近战兵碰到就会死。": "Stealthy and untargetable at range, it sneaks between lanes and only appears up close. With mercenaries out, it locks onto a Cleric or Mage (then an Archer) and dashes in for a one-hit kill; with no backline it heads straight for the wall. Any melee mercenary that touches it kills it.",
   "远望": "Gaze Afar",
   "远望药水": "Farsight Potion",
   "远程": "Ranged",

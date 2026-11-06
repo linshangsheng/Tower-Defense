@@ -21,7 +21,7 @@ try {
   await page.goto('file://' + path.resolve(__dirname, '..', 'index.html'));
   await page.waitForTimeout(500);
   await page.screenshot({ path: `${out}/1-title.png` });
-  await page.click('text=开始游戏');
+  await page.locator('button.primary').first().click(); // 标题页的主按钮：新存档「开始冒险」/ 老存档「继续游戏」
   // 新存档先选难度（设计书 27.3）
   await page.waitForSelector('.diff-card.rec', { timeout: 3000 });
   await page.waitForTimeout(500);
