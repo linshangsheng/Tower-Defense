@@ -250,6 +250,7 @@
         { class: 'result ' + (endless || res.win ? 'win' : 'lose') },
         h('h2', { class: 'result-title' }, title),
         endless ? h('div', { class: 'hint' }, `个人纪录：${(G().save.endless || {}).best} 波 · 击败 ${res.kills} 只`) : h('div', { class: 'hint' }, `击败 ${res.kills} 只`),
+        res.mercDeployed > 0 ? h('div', { class: 'hint' }, `雇佣兵：雇佣 ${res.mercDeployed} · 阵亡 ${res.mercDeaths} · 击杀 ${res.mercKills}`) : null,
         h('div', { class: 'reward-box' }, rows),
         notes,
         UI.reportEl(res, false),

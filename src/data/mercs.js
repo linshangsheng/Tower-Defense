@@ -22,6 +22,8 @@
     deployX: 215, // 刚雇来的兵出现的位置
     monsterHp: 0.55, // 开了雇佣兵的战斗里，怪物血量 +55%（兵来帮忙，怪就更多更硬）
     monsterDps: 0.3, // 怪物攻击 +30%
+    endlessMerc: 0.6, // 无尽模式里上面两项加成的缩放系数（估计值，见 docs-parts/mercmodes.md）
+    endlessWaveFunds: [10, 2.5, 80], // 无尽模式每清一波送军饷：10 + 2.5×已清波数，最多 80（估计值）
     bossCleave: 0.8, // Boss 对身边的兵每秒造成 自身攻击 × 这个值 的伤害
     rangedAtMercs: 420, // 远程怪优先打射程内的兵
     rallyCd: 15, // 集结令冷却（秒）
