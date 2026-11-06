@@ -1649,6 +1649,7 @@
 
   // 兵种天赋区：3 / 6 / 9 级各一档二选一；选中态用强调色淡底；改选要花铜币
   function mercTalentBlock(id) {
+    if (!D.mercTalents || !D.mercTalents[id]) return null; // 没有天赋数据的兵种（如工程兵）不显示天赋区
     const s = game.save;
     const MC = TD.config.merc;
     const picks = P.mercTalentPicks(s, id);
@@ -1747,7 +1748,8 @@
         cls: (unlocked ? '' : 'locked') + ' merc-card',
         foot: unlocked ? h('div', null, h('span', { class: 'hint' }, `费用 ${def.cost} 军饷 · 冷却 ${def.cd} 秒`), mercLore(id)) : null,
       });
-      if (unlocked) mc.append(mercTalentBlock(id));
+      const tb = unlocked ? mercTalentBlock(id) : null;
+      if (tb) mc.append(tb);
       grid.append(mc);
     }
   }
