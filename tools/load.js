@@ -27,6 +27,7 @@ const FILES = [
   'src/game/codex.js',
   'src/ui/toastq.js',
   'src/ui/shopui-core.js',
+  'src/ui/result-helpers.js',
 ];
 
 for (const f of FILES) require(path.join(__dirname, '..', f));

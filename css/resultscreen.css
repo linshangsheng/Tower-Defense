@@ -1,0 +1,446 @@
+/* =====================================================================
+   关卡结算页（设计书 200）：苹果 HIG 取向
+   层级：大结果 → 本场数据 → 奖励 → 最划算的升级 → 通知；底部粘底毛玻璃操作栏，只有一个主按钮
+   排在 ds.css 之后，只用设计系统令牌（4pt 栅格、字阶 12/13/15/17/20/24/30、圆角 8/12/16/22）
+   ===================================================================== */
+.modal.rs-modal {
+  width: min(600px, calc(100vw - 24px));
+  min-width: 0;
+  max-width: 600px;
+  max-height: min(660px, calc(100vh - 24px));
+  padding: var(--s6) var(--s6) 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.rs-modal .result {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  text-align: left;
+}
+.rs-modal .result::before {
+  display: none;
+}
+
+/* ---------- 1. 大结果 ---------- */
+.rs-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s1);
+  text-align: center;
+}
+.rs-modal .result .result-title {
+  margin: 0;
+  padding: 0;
+  font-size: var(--fs-title1) !important;
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--label);
+  background: none;
+  -webkit-text-fill-color: currentColor;
+  filter: none;
+  text-shadow: none;
+  text-align: center;
+}
+.rs-sub {
+  font-size: var(--fs-body);
+  color: var(--label-2);
+  text-wrap: pretty;
+}
+.rs-stars {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: var(--s2);
+  height: 56px;
+  margin-bottom: var(--s1);
+}
+.rs-star {
+  display: inline-flex;
+  font-size: 40px;
+  color: var(--fill-3);
+}
+.rs-star:nth-child(2) {
+  font-size: 52px;
+}
+.rs-star .ico {
+  width: 1em;
+  height: 1em;
+  margin: 0;
+}
+.rs-star.on {
+  color: #ffc54d;
+  filter: drop-shadow(0 2px 8px rgba(255, 179, 64, 0.35));
+  animation: rsStarPop 0.5s var(--ease) backwards;
+  animation-delay: calc(0.15s + var(--i) * 0.22s);
+}
+@keyframes rsStarPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) rotate(-24deg);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.18) rotate(4deg);
+  }
+  100% {
+    transform: none;
+  }
+}
+.rs-star .ico svg path {
+  stroke-width: 1.2;
+}
+.rs-star.on .ico svg path {
+  fill: currentColor;
+}
+.rs-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  margin-bottom: var(--s1);
+  border-radius: var(--r-lg);
+  background: var(--accent-fill);
+  color: var(--accent-hi);
+  font-size: 26px;
+}
+.rs-badge .ico {
+  width: 1em;
+  height: 1em;
+  margin: 0;
+}
+
+/* ---------- 2. 本场数据：四张等宽卡 ---------- */
+.rs-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--s2);
+}
+.rs-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: var(--s3) var(--s1);
+  border-radius: var(--r-md);
+  background: var(--fill-1);
+  border: 0.5px solid var(--sep);
+  min-width: 0;
+}
+.rs-stat b {
+  font-size: var(--fs-title2);
+  font-weight: var(--fw-semibold);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--label);
+}
+.rs-stat span {
+  font-size: var(--fs-caption);
+  color: var(--label-2);
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* ---------- 3. 奖励 ---------- */
+.rs-reward {
+  padding: var(--s3) var(--s4);
+  border-radius: var(--r-lg);
+  background: var(--fill-1);
+  border: 0.5px solid var(--sep);
+}
+.rs-reward-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s3);
+}
+.rs-reward-label {
+  font-size: var(--fs-body);
+  color: var(--label-2);
+}
+.rs-total {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--s1) var(--s3);
+  font-size: var(--fs-title1);
+  font-weight: var(--fw-semibold);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  color: var(--accent-hi);
+  text-shadow: none;
+}
+.rs-total-more {
+  font-size: var(--fs-title3);
+  color: var(--label);
+}
+.rs-reward-rows {
+  margin-top: var(--s2);
+  padding-top: var(--s2);
+  border-top: 0.5px solid var(--sep);
+}
+.rs-reward .reward-row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--s3);
+  padding: 2px 0;
+  font-size: var(--fs-footnote);
+  color: var(--label-2);
+  border: 0;
+}
+.rs-reward .reward-row b {
+  font-weight: var(--fw-medium);
+  font-variant-numeric: tabular-nums;
+  color: var(--label);
+  text-shadow: none;
+}
+
+/* ---------- 4. 最划算的升级 ---------- */
+.rs-modal .quick-up {
+  margin: 0;
+  padding: var(--s3) var(--s4);
+  border-radius: var(--r-lg);
+  background: var(--fill-1);
+  border: 0.5px solid var(--sep);
+}
+.rs-modal .quick-up .qu-title {
+  display: flex;
+  align-items: center;
+  font-size: var(--fs-footnote);
+  font-weight: var(--fw-semibold);
+  color: var(--label-2);
+  margin-bottom: var(--s2);
+}
+.rs-modal .quick-up .qu-title .ico {
+  margin-right: var(--s2);
+}
+
+/* ---------- 5. 通知：最多 3 条，其余折叠 ---------- */
+.rs-notes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+}
+.rs-more-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+}
+.rs-more-list[hidden] {
+  display: none;
+}
+.rs-modal .result .note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s2);
+  margin: 0;
+  padding: var(--s2) var(--s3);
+  border-radius: var(--r-md);
+  border: 0.5px solid var(--sep);
+  border-left-width: 0.5px;
+  background: var(--fill-1);
+  color: var(--label);
+  font-size: var(--fs-footnote);
+  font-weight: var(--fw-regular);
+  line-height: 1.35;
+  text-wrap: pretty;
+}
+.rs-modal .result .note.achieve {
+  font-weight: var(--fw-medium);
+}
+.rs-modal .result .note .ico {
+  margin: 1px 0 0;
+  font-size: var(--fs-body);
+}
+.rs-modal .result .note-text {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.rs-modal .result .note.achieve {
+  background: var(--accent-fill);
+  border-color: rgba(255, 179, 64, 0.32);
+  color: var(--label);
+}
+.rs-modal .result .note.unlock {
+  color: var(--label);
+  background: rgba(100, 220, 130, 0.1);
+  border-color: rgba(100, 220, 130, 0.28);
+}
+.rs-more {
+  align-self: center;
+  min-height: 44px;
+  padding: 0 var(--s4);
+  border: 0;
+  border-radius: var(--r-md);
+  background: transparent;
+  color: var(--accent-hi);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+}
+.rs-more:hover {
+  background: var(--fill-1);
+}
+
+/* ---------- 失败：建设性的"推荐强化" ---------- */
+.rs-suggest {
+  margin: 0;
+  padding: var(--s4);
+  border-radius: var(--r-lg);
+  background: var(--accent-fill);
+  border: 0.5px solid rgba(255, 179, 64, 0.42);
+  box-shadow: 0 0 0 3px rgba(255, 179, 64, 0.08);
+}
+.rs-suggest h3 {
+  display: flex;
+  align-items: center;
+  margin: 0 0 var(--s2);
+  font-size: var(--fs-headline);
+  font-weight: var(--fw-semibold);
+  color: var(--accent-hi);
+  text-align: left;
+}
+.rs-suggest h3 .ico {
+  margin-right: var(--s2);
+}
+.rs-modal .rs-suggest .note {
+  background: rgba(0, 0, 0, 0.18);
+  border-color: transparent;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-regular);
+}
+.rs-modal .rs-suggest .note + .note {
+  margin-top: var(--s2);
+}
+.rs-modal .rs-suggest .note.afford .ico {
+  color: #7fe08a;
+}
+
+/* ---------- 战斗报告（折叠） ---------- */
+.rs-modal .report {
+  margin: 0;
+  padding: var(--s1) var(--s4);
+  border-radius: var(--r-lg);
+  background: var(--fill-1);
+  border: 0.5px solid var(--sep);
+}
+.report summary {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-medium);
+  color: var(--label);
+  cursor: pointer;
+}
+.report summary .ico {
+  margin-right: var(--s2);
+}
+.rep-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+  margin: var(--s1) 0 var(--s2);
+}
+.rep-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--s1) var(--s3);
+  border-radius: 999px;
+  background: var(--fill-2);
+  font-size: var(--fs-footnote);
+  color: var(--label);
+}
+.rep-chip .ico {
+  margin-right: var(--s1);
+}
+.report .rep-tip {
+  display: flex;
+  gap: var(--s2);
+}
+
+/* ---------- 底部操作栏：粘底毛玻璃，边到边；主按钮只有一个，次要按钮安静 ---------- */
+.rs-modal .modal-buttons {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: var(--s2);
+  margin: var(--s2) calc(var(--s6) * -1) 0;
+  padding: var(--s3) var(--s6) calc(var(--s3) + env(safe-area-inset-bottom, 0px));
+  border-radius: 0 0 var(--r-xl) var(--r-xl);
+}
+.rs-modal .modal-buttons .btn {
+  min-height: 44px;
+}
+.rs-modal .modal-buttons .btn.primary {
+  min-width: 132px;
+}
+.rs-modal .modal-buttons .btn:not(.primary) {
+  background: var(--fill-2);
+  border-color: transparent;
+  box-shadow: none;
+  color: var(--label);
+}
+
+/* ---------- 动效：尊重"减少动效"设置和系统偏好 ---------- */
+.result.still .rs-star.on {
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rs-star.on {
+    animation: none;
+  }
+}
+
+/* ---------- 窄屏 / 手机竖屏 ---------- */
+@media (max-width: 560px) {
+  .modal.rs-modal {
+    padding: var(--s4) var(--s4) 0;
+  }
+  .rs-modal .modal-buttons {
+    margin-left: calc(var(--s4) * -1);
+    margin-right: calc(var(--s4) * -1);
+    padding-left: var(--s4);
+    padding-right: var(--s4);
+  }
+  .rs-modal .modal-buttons .btn {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+  .rs-modal .modal-buttons .btn.primary {
+    flex: 2 1 0;
+  }
+  .rs-stat b {
+    font-size: var(--fs-title3);
+  }
+  .rs-modal .result .result-title {
+    font-size: var(--fs-title2) !important;
+  }
+}
+/* 矮屏（手机横屏）：压缩垂直间距 */
+@media (max-height: 480px) {
+  .modal.rs-modal {
+    padding-top: var(--s3);
+  }
+  .rs-stars {
+    height: 44px;
+  }
+  .rs-star {
+    font-size: 32px;
+  }
+  .rs-star:nth-child(2) {
+    font-size: 42px;
+  }
+  .rs-modal .result {
+    gap: var(--s2);
+  }
+}
