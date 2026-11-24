@@ -798,6 +798,7 @@
       // 契约（设计书 208）
       on('pact', (e) => {
         const cu = TD.data.pactCurses[e.curse];
+        this.bark('pact', 0.8);
         this.text(C.width / 2, C.fieldTop + 110, cu.name, '#d08cff', 30, 2.0);
         this.text(C.width / 2, C.fieldTop + 146, cu.desc, '#f0d8ff', 18, 2.0);
         this.shake = Math.max(this.shake, 8);
@@ -806,11 +807,13 @@
       // 补给羁绊（设计书 206）
       on('supplySet', (e) => {
         this.text(C.width / 2, C.fieldTop + 150, `羁绊「${e.set.name}」`, '#ffd23f', 30, 2.0);
+        this.bark('synergy', 0.8);
         this.text(C.width / 2, C.fieldTop + 186, e.set.desc, '#fff1c9', 18, 2.0);
         this.fx.push({ kind: 'ring', x: C.heroX + 40, y: battle.heroY, r0: 20, r1: 260, color: '#ffd23f', w: 6, life: 0.8, age: 0, flat: 0.5 });
       });
       // 完美防守（设计书 199）
       on('perfectWave', (e) => {
+        if (e.streak === 3) this.bark('perfect3', 0.6);
         const y = C.fieldTop + 70;
         const label = e.streak > 1 ? `完美防守 ×${e.streak}` : '完美防守';
         this.text(C.width / 2, y, label, e.streak >= 3 ? '#ffd23f' : '#9fe7ff', e.streak >= 3 ? 30 : 26, 1.6);
@@ -826,11 +829,13 @@
         const m = e.m;
         this.text(m.x, m.y + m.yOffset - m.def.size - 30, '蓄力！点弱点打断', '#ff6b5e', 24, 1.6);
         this.shake = Math.max(this.shake, 4);
+        this.bark('rage', 0.2);
       });
       on('rageBroken', (e) => {
         this.fx.push({ kind: 'ring', x: e.x, y: e.y, r0: 16, r1: 170, color: '#ffffff', w: 8, life: 0.5, age: 0, flat: 0.7 });
         this.fx.push({ kind: 'glow', x: e.x, y: e.y, r: 110, color: '#ffd07a', life: 0.4, age: 0 });
         this.text(e.x, e.y - 50, '打断！', '#ffffff', 34, 1.2);
+        this.bark('rageBroken', 0.4);
         this.shake = Math.max(this.shake, 10);
         if (this.vfx) this.vfx.spawn(22, () => ({ kind: 'spark', x: e.x, y: e.y, vx: (Math.random() - 0.5) * 420, vy: -80 - Math.random() * 260, g: 260, life: 0.7, r: 2.6, color: '#ffd07a' }));
       });
