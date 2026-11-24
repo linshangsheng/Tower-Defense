@@ -640,6 +640,10 @@
     // 第七章（设计书 52.4）
     crowbar: { name: '小撬棍', desc: '寄居蟹缩壳的时间 −60%', mods: { shellCut: 0.6 }, icon: 'cannon', minLevel: 61 },
     pin: { name: '戳戳针', desc: '泡泡被戳破的那一下，仍有 50% 伤害生效', mods: { pinPop: 0.5 }, icon: 'arrowUp', minLevel: 61 },
+    // ---- 新玩法的补给卡（设计书 211）：只给真人（机器人不抽） ----
+    perfectionist: { name: '完美主义者', desc: '每次完美防守：攻击力 +4%（本关叠加，最多 5 层）；完美防守铜币 ×2', mods: { perfectAtk: 0.04, perfectCopper: 1 }, rarity: 'purple', icon: 'woodShield', humanOnly: true },
+    weakExpert: { name: '弱点专家', desc: 'Boss 弱点出现得更勤（间隔 −35%），点中伤害 ×2', mods: { weakGap: 0.35, weakDmg: 1 }, rarity: 'purple', icon: 'steelArrows', humanOnly: true, needBoss: true },
+    scavengerBag: { name: '拾荒袋', desc: '战利品光球掉落几率 +60%', mods: { dropMult: 0.6 }, icon: 'luckyCoin', humanOnly: true },
     net: { name: '渔网', desc: '飞鱼的跳跃距离 −50%', mods: { leapCut: 0.5 }, icon: 'freeze', minLevel: 61 },
   };
   // 机器人选卡顺序：先挑立刻见效的强卡，再挑通用强化，最后是克制卡

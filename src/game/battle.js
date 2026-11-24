@@ -109,7 +109,7 @@
       this.waveStartTime = 0;
 
       // 战场补给（设计书 2.7）
-      this.mods = { atkMult: 0, aspdMult: 0, crit: 0, critDmg: 0, cdMult: 0, copperBonus: 0, wallDr: 0, range: 0, slowOnHit: 0, magicMult: 0, armorIgnore: 0, dotReduce: 0, spiritPierce: 0, chillResist: 0, igniteOnHit: 0, fireproof: 0, reveal: 0, woolCut: 0, stunImmune: 0, dodgeCut: 0, slowAll: 0, shellCut: 0, pinPop: 0, leapCut: 0, bossDmg: 0, flyDmg: 0, slowedDmg: 0, igniteChance: 0, darkSight: 0, frostExt: 0, mendBonus: 0, lowWallAtk: 0, healBonus: 0, waveShield: 0, execute: 0, killHeal: 0, chainChance: 0, revive: 0, waveStrike: 0 };
+      this.mods = { atkMult: 0, aspdMult: 0, crit: 0, critDmg: 0, cdMult: 0, copperBonus: 0, wallDr: 0, range: 0, slowOnHit: 0, magicMult: 0, armorIgnore: 0, dotReduce: 0, spiritPierce: 0, chillResist: 0, igniteOnHit: 0, fireproof: 0, reveal: 0, woolCut: 0, stunImmune: 0, dodgeCut: 0, slowAll: 0, shellCut: 0, pinPop: 0, leapCut: 0, bossDmg: 0, flyDmg: 0, slowedDmg: 0, igniteChance: 0, darkSight: 0, frostExt: 0, mendBonus: 0, lowWallAtk: 0, healBonus: 0, waveShield: 0, execute: 0, killHeal: 0, chainChance: 0, revive: 0, waveStrike: 0, perfectAtk: 0, perfectCopper: 0, weakGap: 0, weakDmg: 0, dropMult: 0 };
       // 装备和套装的特殊效果（设计书 58）
       const gm = this.stats.gearMods || {};
       for (const k of Object.keys(gm)) this.mods[k] = (this.mods[k] || 0) + gm[k];
@@ -306,6 +306,9 @@
     rollSupply(exclude) {
       const ok = (id) => {
         if (this.supplyPicked.includes(id)) return false;
+        // 只给真人的卡（设计书 211）：机器人不抽，标定过的数值和回放不变；要 Boss 的卡只在有 Boss 的关卡出现
+        if (D.supplies[id].humanOnly && this.autoSupply) return false;
+        if (D.supplies[id].needBoss && !this.hasBossWave()) return false;
         if (D.supplies[id].needSkills && !this.skills.length) return false;
         if (D.supplies[id].minLevel && this.stage < D.supplies[id].minLevel) return false;
         return true;
@@ -364,6 +367,11 @@
       this.pendingSupply = this.rollSupply(this.pendingSupply);
       this.emit('supply', { choices: this.pendingSupply, refreshed: true });
       return true;
+    }
+
+    hasBossWave() {
+      if (this._hasBoss === undefined) this._hasBoss = this.level.waves.some((w) => w.groups.some(([t]) => D.monsters[t] && D.monsters[t].boss && !D.monsters[t].towerOf));
+      return this._hasBoss;
     }
 
     botSupplyChoice(choices) {

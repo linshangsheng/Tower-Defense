@@ -817,6 +817,7 @@
         if (e.bonus > 0) this.text(C.width / 2, y + 34, `+${e.bonus} 铜`, '#ffb347', 20, 1.4);
         this.fx.push({ kind: 'ring', x: C.heroX + 60, y: battle.heroY, r0: 20, r1: 220, color: e.streak >= 3 ? '#ffd23f' : '#9fe7ff', w: 5, life: 0.6, age: 0, flat: 0.5 });
       });
+      on('perfectStack', (e) => this.text(C.heroX + 40, battle.heroY - 110, `攻击 +${e.stacks * 4}%`, '#ffd23f', 20, 1.2));
       on('perfectBreak', (e) => {
         if (e.streak >= 2) this.text(C.width / 2, C.fieldTop + 70, `完美连击中断（${e.streak}）`, '#cfcfcf', 18, 1.2);
       });

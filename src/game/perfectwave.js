@@ -35,7 +35,13 @@
       const mult = Math.min(W.maxMult, 1 + W.stepMult * (this.perfectStreak - 1));
       const n = typeof this.levelNo === 'number' && this.levelNo > 0 ? this.levelNo : 1;
       const base = C.rewards.baseCopper(n);
-      const bonus = this.level.endless ? 0 : Math.max(1, Math.round(base * W.pct * mult));
+      const bonus = this.level.endless ? 0 : Math.max(1, Math.round(base * W.pct * mult * (1 + (this.mods.perfectCopper || 0))));
+      // 完美主义者（补给卡，设计书 211）：每次完美防守攻击力 +4%，最多 5 层
+      if (this.mods.perfectAtk && (this.perfectStacks || 0) < 5) {
+        this.perfectStacks = (this.perfectStacks || 0) + 1;
+        this.mods.atkMult += this.mods.perfectAtk;
+        this.emit('perfectStack', { stacks: this.perfectStacks });
+      }
       this.perfectCopper = (this.perfectCopper || 0) + bonus;
       this.emit('perfectWave', { streak: this.perfectStreak, bonus, mult });
       return true;

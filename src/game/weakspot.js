@@ -24,7 +24,7 @@
         if (!m.weak && this.time >= m.weakNext) {
           const s = m.def.size;
           m.weak = { until: this.time + W.life, ox: (this.rng() - 0.5) * s * 0.7, oy: -s * (0.35 + this.rng() * 0.45), born: this.time };
-          m.weakNext = this.time + W.gapMin + this.rng() * W.gapRand;
+          m.weakNext = this.time + (W.gapMin + this.rng() * W.gapRand) * (1 - ((this.mods && this.mods.weakGap) || 0));
           this.emit('weakSpot', { m });
         }
       }
@@ -47,7 +47,7 @@
         if (dx * dx + dy * dy > W.radius * W.radius) continue;
         m.weak = null;
         this.weakHits = (this.weakHits || 0) + 1;
-        this.damage(m, m.maxHp * W.dmgPct, { type: 'phys', fromFront: false, armorIgnore: 0.8, source: 'weak' });
+        this.damage(m, m.maxHp * W.dmgPct * (1 + ((this.mods && this.mods.weakDmg) || 0)), { type: 'phys', fromFront: false, armorIgnore: 0.8, source: 'weak' });
         if (!m.dead) m.stunUntil = Math.max(m.stunUntil || 0, this.time + W.stagger);
         this.emit('weakHit', { m, x: p.x, y: p.y });
         return true;

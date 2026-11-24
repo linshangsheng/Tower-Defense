@@ -65,3 +65,25 @@ test('补给羁绊：结果里的羁绊记进档案，成就按发现数量达�
   P.recordStats(s, { kills: 1, supplySets: ['marksman'] }, true);
   assert.deepStrictEqual(s.stats.setsFound, { marksman: true });
 });
+
+test('新玩法补给卡（设计书 211）：只给真人，要 Boss 的卡只在有 Boss 的关卡；效果正确', () => {
+  const s = P.newSave();
+  const bot = new TD.Battle({ level: 30, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 2, autoSupply: true });
+  for (let i = 0; i < 80; i++) for (const id of bot.rollSupply()) assert.ok(!D.supplies[id].humanOnly, '机器人抽到了 ' + id);
+  const human = battle(12);
+  let weak = 0;
+  for (let i = 0; i < 200; i++) if (human.rollSupply().includes('weakExpert')) weak++;
+  assert.strictEqual(weak, 0, '第 12 关没有 Boss，不出弱点专家');
+  // 完美主义者：每次完美防守攻击 +4%，最多 5 层；铜币 ×2
+  const b = battle(12);
+  b.mods.perfectAtk = 0.04;
+  b.mods.perfectCopper = 1;
+  const atk0 = b.mods.atkMult;
+  for (let i = 0; i < 7; i++) {
+    b.waveIndex = i;
+    b.markPerfectWave();
+    b.checkPerfectWave();
+  }
+  assert.ok(Math.abs(b.mods.atkMult - atk0 - 0.2) < 1e-9);
+  assert.strictEqual(b.perfectStacks, 5);
+});
