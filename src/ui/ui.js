@@ -1114,6 +1114,7 @@
         h('span', null, `车道 ${lvl.lanes} 条`),
         h('span', null, lvl.type === 'boss' ? `${lvl.waves.length} 波（含 Boss）` : `${lvl.waves.length} 波`),
         h('span', { class: power >= rp ? 'ok' : 'warn' }, `推荐战力 ${rp} · 你的战力 ${power}`),
+        rec.bestTime ? h('span', { class: 'best-time' }, `⏱ 最快 ${TD.resultView.fmtTime(rec.bestTime)}`) : null,
         rec.crown ? h('span', { class: 'ok' }, '👑 已在挑战难度通关') : (s.settings.difficulty || 'normal') === 'hard' ? h('span', null, '👑 挑战难度通关可得王冠') : null
       ),
       h('div', { class: 'mon-list' }, mons),
@@ -2830,7 +2831,8 @@
     );
 
     // 2. 本场数据
-    const stats = h('div', { class: 'rs-stats' }, RV.statCards(res, battle.totalWaves).map((c) => h('div', { class: 'rs-stat ' + c.id }, h('b', null, c.value), h('span', null, c.label))));
+    const rec = (c) => c.id === 'time' && reward.newBest; // 最快通关新纪录（设计书 212）
+    const stats = h('div', { class: 'rs-stats' }, RV.statCards(res, battle.totalWaves).map((c) => h('div', { class: 'rs-stat ' + c.id + (rec(c) ? ' record' : '') }, h('b', null, c.value), h('span', null, rec(c) ? '新纪录！' : c.label))));
 
     // 3. 奖励
     const totalNum = h('span', { class: 'rs-total-num' });

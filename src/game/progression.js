@@ -1028,6 +1028,19 @@
         base *= R.repeatMult;
         out.notes.push('重复通关：通关铜币减半');
       }
+      // 最快通关纪录（设计书 212）：游戏内时间（和倍速无关），提前召唤、打得快都会缩短
+      const t = Math.round((Number(result.time) || 0) * 10) / 10;
+      if (t > 0) {
+        const prevBest = Number(rec.bestTime) > 0 ? Number(rec.bestTime) : 0;
+        if (!prevBest || t < prevBest) {
+          rec.bestTime = t;
+          if (prevBest) {
+            out.newBest = { time: t, prev: prevBest };
+            const mm = (x) => `${Math.floor(x / 60)}:${String(Math.floor(x % 60)).padStart(2, '0')}`;
+            out.notes.push(`⏱ 新的最快通关：${mm(t)}（原 ${mm(prevBest)}）`);
+          }
+        }
+      }
       // 普通关卡不给银币（设计书 88）：银币只在首次通关小 Boss、大 Boss、精英挑战关时给；平时用铜币去汇兑所换
       const silverLevel = P.givesSilver(lvl);
       if (firstClear && silverLevel) {

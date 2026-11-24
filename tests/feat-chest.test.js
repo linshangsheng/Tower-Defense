@@ -56,3 +56,18 @@ test('胜利宝箱：机器人结算（applyResult）不会准备宝箱，数值
   P.applyResult(s, 1, { win: true, wallRatio: 1, killCopper: 0, earlyCopper: 0, kills: 1 });
   assert.ok(!s.pendingChest);
 });
+
+test('最快通关纪录（设计书 212）：第一次只记下，之后更快才算新纪录', () => {
+  const s = P.newSave();
+  const r1 = P.applyResult(s, 3, { win: true, wallRatio: 1, time: 120.04, kills: 1 });
+  assert.strictEqual(s.levels[3].bestTime, 120);
+  assert.ok(!r1.newBest);
+  const r2 = P.applyResult(s, 3, { win: true, wallRatio: 1, time: 130, kills: 1 });
+  assert.ok(!r2.newBest);
+  assert.strictEqual(s.levels[3].bestTime, 120);
+  const r3 = P.applyResult(s, 3, { win: true, wallRatio: 1, time: 101.26, kills: 1 });
+  assert.deepStrictEqual(r3.newBest, { time: 101.3, prev: 120 });
+  assert.ok(r3.notes.some((x) => x.includes('最快通关')));
+  P.applyResult(s, 3, { win: false, wallRatio: 0, time: 10, kills: 1 });
+  assert.strictEqual(s.levels[3].bestTime, 101.3, '失败不算');
+});
