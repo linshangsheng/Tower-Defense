@@ -105,3 +105,23 @@ test('今日任务：每天免费换 1 个没完成的任务（设计书 205）'
   assert.ok(!Q.canReroll(s, 1, d2));
   assert.ok(Q.canReroll(s, 0, d2));
 });
+
+test('今日任务：要通关到一定关卡的任务（契约）只在解锁后才会抽到（设计书 218）', () => {
+  const TD = require('../tools/load');
+  const P = TD.progression;
+  const Q = TD.quests;
+  const low = P.newSave();
+  for (let k = 1; k <= 8; k++) low.levels[k] = { stars: 1, clears: 1 };
+  const high = P.newSave();
+  for (let k = 1; k <= 40; k++) high.levels[k] = { stars: 1, clears: 1 };
+  let sawLow = false;
+  let sawHigh = false;
+  for (let d = 0; d < 400; d++) {
+    const key = '2027-' + (d % 12) + '-' + d;
+    if (Q.rollFor(key, low).includes('pact')) sawLow = true;
+    if (Q.rollFor(key, high).includes('pact')) sawHigh = true;
+  }
+  assert.ok(!sawLow);
+  assert.ok(sawHigh);
+  assert.strictEqual(Q.POOL.synergy.stat({ supplySets: ['a', 'b'] }), 2);
+});

@@ -20,6 +20,8 @@
     stars3: { name: '三星通关 {0} 次', goal: 2, kind: 'sum', stat: (r, w) => (w && r.stars >= 3 ? 1 : 0), icon: 'star' },
     weak: { name: '点中 Boss 弱点 {0} 次', goal: 3, kind: 'sum', stat: (r) => r.weakHits || 0, icon: 'target' },
     perfect: { name: '打出 {0} 次完美防守', goal: 8, kind: 'sum', stat: (r) => r.perfectWaves || 0, icon: 'shield' },
+    synergy: { name: '凑成 {0} 个补给羁绊', goal: 1, kind: 'sum', stat: (r) => (r.supplySets || []).length, icon: 'sparkles' },
+    pact: { name: '接受 {0} 次契约', goal: 1, kind: 'sum', stat: (r) => (r.pacts || []).length, icon: 'flame', from: 15 },
     flawless: { name: '城墙满血赢下 {0} 场', goal: 1, kind: 'sum', stat: (r, w) => (w && (r.minWallRatio || 0) >= 0.999 ? 1 : 0), icon: 'shield' },
   };
   Q.IDS = Object.keys(Q.POOL);
@@ -33,9 +35,11 @@
     for (let i = 0; i < str.length; i++) h = Math.imul(h ^ str.charCodeAt(i), 16777619) >>> 0;
     return h >>> 0;
   }
-  Q.rollFor = function (key) {
+  // save 可选：给了就只从玩家已经能完成的任务里抽（有的任务要通关到第 from 关，设计书 218）
+  Q.rollFor = function (key, save) {
     let h = hash('quests:' + key);
-    const ids = Q.IDS.slice();
+    const top = save ? P.highestCleared(save) : Infinity;
+    const ids = Q.IDS.filter((id) => !Q.POOL[id].from || top >= Q.POOL[id].from);
     const out = [];
     while (out.length < Q.PER_DAY && ids.length) {
       h = Math.imul(h ^ (h >>> 15), 2246822519) >>> 0;
@@ -53,7 +57,7 @@
     const key = TD.modes.todayKey(date);
     const cur = save.quests;
     if (!cur || cur.key !== key || !Array.isArray(cur.list)) {
-      save.quests = { key, list: Q.rollFor(key).map((id) => ({ id, prog: 0, claimed: false })), bonus: false };
+      save.quests = { key, list: Q.rollFor(key, save).map((id) => ({ id, prog: 0, claimed: false })), bonus: false };
     }
     // 坏数据容错：未知任务丢掉
     save.quests.list = save.quests.list.filter((q) => q && Q.POOL[q.id]);
@@ -69,7 +73,8 @@
   Q.reroll = function (save, i, date, rand) {
     if (!Q.canReroll(save, i, date)) return null;
     const st = save.quests;
-    const pool = Q.IDS.filter((id) => !st.list.some((q) => q.id === id));
+    const top = P.highestCleared(save);
+    const pool = Q.IDS.filter((id) => !st.list.some((q) => q.id === id) && (!Q.POOL[id].from || top >= Q.POOL[id].from));
     const id = pool[Math.floor((rand || Math.random)() * pool.length) % pool.length];
     st.list[i] = { id, prog: 0, claimed: false };
     st.rerolled = true;
