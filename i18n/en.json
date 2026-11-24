@@ -571,6 +571,8 @@
   "反射盾": "Mirror Shield",
   "反馈与更新": "Feedback & updates",
   "发射魔法弹，命中后小范围爆炸。魔法伤害无视物理护甲。": "Fires magic shots that explode in a small area on hit. Magic damage ignores physical armor.",
+  "发现 5 种补给羁绊": "Discover 5 supply synergies",
+  "发现全部补给羁绊": "Discover every supply synergy",
   "取消": "Cancel",
   "受伤的，先坐下": "Hurt? Sit down first.",
   "古堡合唱": "Castle Chorus",
@@ -871,6 +873,7 @@
   "大漩涡！触手全部长回来了，所有怪物都变快了！": "Huge whirlpool! All the tentacles grew back and all monsters are faster!",
   "大锅倾倒！毒池让怪物加速！": "The cauldron tips over! The poison pool speeds up monsters!",
   "天上那盏灯真亮！本王子的蹦床店今晚营业到天亮。": "That lamp in the sky is so bright! My trampoline shop is open until dawn tonight.",
+  "天作之合": "Perfect Match",
   "天命靴": "Destiny Boots",
   "天火降临": "Fire from Heaven",
   "天眼冠": "Sky-Eye Crown",
@@ -2202,6 +2205,7 @@
   "网页原型 {0} · {1} 章 {2} 关": "Web prototype {0} · {1} chapters {2} levels",
   "羁绊「{0}」": "Synergy: {0}",
   "羁绊「{0}」：再拿 {1}": "Synergy {0}: also take {1}",
+  "羁绊收藏家": "Synergy Collector",
   "羊毛": "Wool",
   "羊毛剪": "Wool Shears",
   "羊毛更厚：先扣掉 70% 血量的羊毛才开始掉血。": "Thicker wool: it absorbs 70% of HP in wool before HP starts dropping.",
@@ -2318,6 +2322,7 @@
   "行商靴": "Peddler's Boots",
   "补给专家": "Supply Expert",
   "补给狂欢": "Supply Frenzy",
+  "补给羁绊 {0} / {1}": "Supply Synergies {0} / {1}",
   "被动技能": "Passive Skills",
   "被动技能买下来是 1 级，效果很弱，升级以后才会变强；10 级以后每级的提升变小、费用涨得更快。": "Passive skills start at level 1 with a weak effect — upgrade them to make them stronger. After level 10 each level adds less and costs more.",
   "被动技能槽": "Passive Skill Slots",
@@ -2968,5 +2973,6 @@
   "（铃铛清脆地响了一声。Lyra 的铃铛，有了新的声音。）": "(The bell gave a clear ring. Lyra's bell has a new sound.)",
   "，可同时戴 3 件": ", can wear 3 at once",
   "：": ": ",
-  "：已连续失败 {0} 次，本次攻击和城墙血量提高，通关后清零": ": failed {0} times in a row. Attacks and wall HP are boosted this run. Resets after you clear it."
+  "：已连续失败 {0} 次，本次攻击和城墙血量提高，通关后清零": ": failed {0} times in a row. Attacks and wall HP are boosted this run. Resets after you clear it.",
+  "？？？": "???"
 }

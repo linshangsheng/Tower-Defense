@@ -324,7 +324,13 @@
       ],
       ['挑战', [tile('无尽最高', `${(s.endless || {}).best || 0} 波`), tile('每日挑战', `${Object.keys(s.daily || {}).length} 天`)]],
     ];
-    return h('div', { class: 'records' }, groups.map(([title, tiles]) => [h('h4', null, title), h('div', { class: 'rec-row' }, tiles)]));
+    // 补给羁绊图鉴（设计书 207）：发现过的亮起来，没发现的也写出两张卡，告诉玩家怎么凑
+    const found = st.setsFound || {};
+    const sets = D.supplySets || [];
+    const setChips = sets.map((x) =>
+      h('div', { class: 'set-chip' + (found[x.id] ? ' found' : ''), title: x.desc }, h('b', null, found[x.id] ? x.name : '？？？'), h('span', null, x.cards.map((c) => D.supplies[c].name).join(' + ')))
+    );
+    return h('div', { class: 'records' }, groups.map(([title, tiles]) => [h('h4', null, title), h('div', { class: 'rec-row' }, tiles)]), sets.length ? [h('h4', null, `补给羁绊 ${sets.filter((x) => found[x.id]).length} / ${sets.length}`), h('div', { class: 'set-grid' }, setChips)] : null);
   }
 
   UI.showAchievements = function (tab) {

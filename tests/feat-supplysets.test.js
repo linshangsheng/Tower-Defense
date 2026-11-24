@@ -50,3 +50,18 @@ test('补给羁绊：拿了一半后，三选一里出现另一半的机会明�
   }
   assert.ok(seen / N > 0.3, `partner shows ${seen}/${N}`);
 });
+
+test('补给羁绊：结果里的羁绊记进档案，成就按发现数量达成（设计书 207）', () => {
+  const s = P.newSave();
+  const five = D.supplySets.slice(0, 5).map((x) => x.id);
+  P.recordStats(s, { kills: 1, supplySets: five }, true);
+  for (const id of five) assert.ok(s.stats.setsFound[id]);
+  let got = P.checkAchievements(s).map((a) => a.id);
+  assert.ok(got.includes('sets5') && !got.includes('setsAll'));
+  P.recordStats(s, { kills: 1, supplySets: D.supplySets.map((x) => x.id) }, true);
+  got = P.checkAchievements(s).map((a) => a.id);
+  assert.ok(got.includes('setsAll'));
+  s.stats.setsFound = 'bad';
+  P.recordStats(s, { kills: 1, supplySets: ['marksman'] }, true);
+  assert.deepStrictEqual(s.stats.setsFound, { marksman: true });
+});

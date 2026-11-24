@@ -91,3 +91,11 @@
 .supply-set.part { background: rgba(255, 255, 255, 0.08); color: var(--label-2, rgba(255, 255, 255, 0.72)); }
 .supply-set.complete { display: flex; flex-direction: column; gap: 2px; background: linear-gradient(160deg, rgba(255, 207, 107, 0.95), rgba(229, 138, 31, 0.95)); color: #3a1d00; box-shadow: 0 0 14px rgba(255, 190, 80, 0.55); }
 .supply-set.complete b { font-size: 13px; }
+
+/* 守城档案里的补给羁绊图鉴（设计书 207） */
+.set-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px; }
+.set-chip { display: flex; flex-direction: column; gap: 2px; padding: 8px 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.05); border: 0.5px solid rgba(255, 255, 255, 0.12); opacity: 0.6; }
+.set-chip b { font-size: 14px; }
+.set-chip span { font-size: 12px; opacity: 0.8; }
+.set-chip.found { opacity: 1; background: linear-gradient(160deg, rgba(255, 207, 107, 0.22), rgba(229, 138, 31, 0.12)); border-color: rgba(255, 190, 80, 0.55); }
+.set-chip.found b { color: var(--accent, #ffb340); }

@@ -58,7 +58,7 @@
   const GROUPS = [
     { key: 'campaign', name: '进度类', ids: ['first', 'ch1', 'ch2', 'ch3', 'ch4', 'hero', 'ch6', 'ch7', 'ch8', 'ch9', 'ch10', 'abyss15', 'abyss20', 'tower1', 'tower5', 'tower9', 'endless30', 'daily7', 'quests30', 'diary'] },
     { key: 'combat', name: '战斗类', ids: ['ultimate', 'refresh3', 'perfect', 'close', 'noskill', 'interrupt', 'early', 'supply', 'streak30', 'combo50', 'kill1k', 'kill10k', 'bosses', 'elite30', 'treasure10', 'scavenger', 'bubbles', 'perfect50', 'perfectRun8', 'weak20'] },
-    { key: 'collect', name: '收集类', ids: ['stars50', 'stars150', 'starsAll', 'weapons', 'skills', 'lv3', 'ascend', 'dex30', 'dexAll', 'crown10', 'crownAll', 'mission20', 'missionAll', 'rich'] },
+    { key: 'collect', name: '收集类', ids: ['stars50', 'stars150', 'starsAll', 'weapons', 'skills', 'lv3', 'ascend', 'dex30', 'dexAll', 'crown10', 'crownAll', 'mission20', 'missionAll', 'sets5', 'setsAll', 'rich'] },
     { key: 'merc', name: '雇佣兵类', ids: ['merc30', 'mercKill200', 'mercLv5'] },
   ];
   X.GROUPS = GROUPS;

@@ -1150,6 +1150,9 @@
     st.perfectWaves = (st.perfectWaves || 0) + (result.perfectWaves || 0);
     st.bestPerfectStreak = Math.max(st.bestPerfectStreak || 0, result.bestPerfectStreak || 0);
     st.weakHits = (st.weakHits || 0) + (result.weakHits || 0);
+    // 发现过的补给羁绊（设计书 207）
+    if (!st.setsFound || typeof st.setsFound !== 'object' || Array.isArray(st.setsFound)) st.setsFound = {};
+    for (const id of result.supplySets || []) if (typeof id === 'string') st.setsFound[id] = true;
     st.mercDeployed = (st.mercDeployed || 0) + (result.mercDeployed || 0);
     st.mercKills = (st.mercKills || 0) + (result.mercKills || 0);
     for (const k of Object.keys(result.killsByType || {})) st.killsByType[k] = (st.killsByType[k] || 0) + result.killsByType[k];
