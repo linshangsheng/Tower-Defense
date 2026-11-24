@@ -862,7 +862,10 @@
       const btn = q.claimed
         ? h('span', { class: 'quest-claimed' }, '✔ 已领取')
         : h('button', { class: 'btn small' + (done ? ' primary' : ''), disabled: done ? null : true, onclick: () => {
-            if (Q.claim(s, i)) sfx('coin');
+            if (Q.claim(s, i)) {
+              sfx('coin');
+              UI.announce(P.checkAchievements(s));
+            }
             redraw();
           } }, done ? '领取' : `${q.prog} / ${def.goal}`);
       return h(

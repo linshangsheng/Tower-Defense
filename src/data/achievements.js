@@ -32,6 +32,11 @@
     { id: 'merc30', name: '招兵买马', desc: '累计雇佣 30 个兵', reward: { silver: 3 }, check: (s) => (s.stats.mercDeployed || 0) >= 30 },
     { id: 'mercKill200', name: '佣兵团长', desc: '雇佣兵累计击败 200 只怪物', reward: { silver: 4 }, check: (s) => (s.stats.mercKills || 0) >= 200 },
     { id: 'mercLv5', name: '精锐之师', desc: '把一个兵种升到 5 级', reward: { silver: 4 }, check: (s) => Object.values(s.mercLv || {}).some((v) => v >= 5) },
+    // 设计书 202：新玩法的长期目标
+    { id: 'perfect50', name: '固若金汤', desc: '累计打出 50 次完美防守', reward: { silver: 3 }, check: (s) => (s.stats.perfectWaves || 0) >= 50 },
+    { id: 'perfectRun8', name: '滴水不漏', desc: '一场战斗里连续 8 次完美防守', reward: { silver: 3 }, check: (s) => (s.stats.bestPerfectStreak || 0) >= 8 },
+    { id: 'weak20', name: '一针见血', desc: '累计点中 Boss 弱点 20 次', reward: { silver: 3 }, check: (s) => (s.stats.weakHits || 0) >= 20 },
+    { id: 'quests30', name: '日日精进', desc: '累计完成 30 个今日任务', reward: { silver: 4 }, check: (s) => (s.stats.questsDone || 0) >= 30 },
     { id: 'scavenger', name: '拾荒小能手', desc: '累计拾取 50 个战利品光球', reward: { silver: 3 }, check: (s) => (s.stats.drops || 0) >= 50 },
     { id: 'bubbles', name: '啵啵啵', desc: '累计戳破 100 个泡泡', reward: { silver: 3 }, check: (s) => (s.stats.bubbles || 0) >= 100 },
     { id: 'perfect', name: '毫发无损', desc: '第 3 关以后，城墙满血通关任意一关', reward: { silver: 2 }, check: (s, c) => !!(c && c.win && c.level >= 3 && c.wallRatio >= 0.9999) },

@@ -64,3 +64,20 @@ test('突袭关和妖塔不算完美防守', () => {
   b.markPerfectWave();
   assert.equal(b.checkPerfectWave(), false);
 });
+
+test('新成就：完美防守 / 弱点 / 今日任务累计（设计书 202）', () => {
+  const save = P.newSave();
+  for (let k = 1; k <= 5; k++) save.levels[k] = { stars: 1, clears: 1 };
+  P.recordStats(save, { kills: 1, perfectWaves: 50, bestPerfectStreak: 8, weakHits: 20 }, true);
+  assert.strictEqual(save.stats.perfectWaves, 50);
+  assert.strictEqual(save.stats.bestPerfectStreak, 8);
+  save.stats.questsDone = 29;
+  const st = TD.quests.today(save);
+  st.list[0].prog = TD.quests.POOL[st.list[0].id].goal;
+  assert.ok(TD.quests.claim(save, 0));
+  assert.strictEqual(save.stats.questsDone, 30);
+  const got = P.checkAchievements(save).map((a) => a.id);
+  for (const id of ['perfect50', 'perfectRun8', 'weak20', 'quests30']) assert.ok(got.includes(id), id);
+  const grouped = new Set(TD.codex.GROUPS.flatMap((g) => g.ids));
+  for (const id of ['perfect50', 'perfectRun8', 'weak20', 'quests30']) assert.ok(grouped.has(id), id + ' 在图鉴分组里');
+});

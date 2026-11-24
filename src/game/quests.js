@@ -93,6 +93,7 @@
     const r = Q.reward(save);
     give(save, r);
     q.claimed = true;
+    save.stats.questsDone = (Number(save.stats.questsDone) || 0) + 1; // 成就「日日精进」（设计书 202）
     return r;
   };
 
