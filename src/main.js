@@ -47,6 +47,7 @@
     const seed = mode && mode.kind === 'daily' ? mode.info.seed : (Date.now() & 0xffffff) + (typeof n === 'number' ? n : 7);
     const battle = new TD.Battle({ level: n, levelDef: mode && mode.levelDef, stage: mode && mode.stage, stats, loadout: lo, seed, difficulty: s.settings.difficulty, rally: mode ? 0 : P.rally(s, n) });
     battle.mode = mode || null;
+    battle.autoCall = !!s.settings.autoCall && P.isCleared(s, C.autoCallFrom); // 自动召唤（设计书 204）
     game.battle = battle;
     game.paused = false;
     game.introPaused = false;
@@ -308,6 +309,17 @@
     if (!b) return;
     b.autoCast = !b.autoCast;
     game.save.loadout.autoCast = b.autoCast;
+    game.persist();
+    TD.ui.updateHud();
+  };
+
+  // 自动召唤（设计书 204）
+  game.autoCallUnlocked = () => !!game.save && P.isCleared(game.save, C.autoCallFrom);
+  game.toggleAutoCall = function () {
+    const b = game.battle;
+    if (!b || !game.autoCallUnlocked()) return;
+    b.autoCall = !b.autoCall;
+    game.save.settings.autoCall = b.autoCall;
     game.persist();
     TD.ui.updateHud();
   };
@@ -639,6 +651,7 @@
       else if (k === 'v') game.tryUltimate();
       else if (k === 'f') game.toggleSpeed();
       else if (k === 'n') game.callWave();
+      else if (k === 'a') game.toggleAutoCall();
       else if (k === 't') game.cycleTarget();
     });
     // 页面切到后台时自动暂停

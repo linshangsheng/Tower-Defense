@@ -16,6 +16,8 @@
     waveClearDelay: 4,
     waveMaxDelay: 18,
     earlyCallCopperPerSec: 1,
+    autoCallDelay: 1.2, // 自动召唤（设计书 204）：场上清空后等这么久再叫下一波
+    autoCallFrom: 3, // 通关第 3 关后可以打开自动召唤
     // "威胁优先"的危险区：怪物离城墙这么近时优先打它
     smartDanger: 220,
     // 每秒模拟步数
@@ -51,7 +53,7 @@
     },
 
     // 游戏版本：与设计书版本号、sw.js 的缓存名保持一致（测试会检查）
-    version: 'v2.03',
+    version: 'v2.04',
 
     // 试玩版（设计书 127）：打试玩版压缩包时 tools/itch.js 把 demo 改成 true；正式版永远是 false
     demo: false,

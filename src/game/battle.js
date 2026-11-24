@@ -517,9 +517,12 @@
       if (this.waveState === 'waiting') {
         if (this.level.type !== 'rush' && !this.clearedOnce && this.aliveCount() === 0) {
           this.clearedOnce = true;
+          this.clearedAt = this.time;
           this.countdown = Math.min(this.countdown, C.waveClearDelay);
           if (this.checkPerfectWave) this.checkPerfectWave();
         }
+        // 自动召唤（设计书 204）：场上清空 1.2 秒后自动提前召唤，照样拿提前召唤的铜币
+        if (this.autoCall && this.clearedOnce && !this.pendingSupply && this.countdown > 0 && this.time - this.clearedAt >= C.autoCallDelay && this.aliveCount() === 0) this.callNextWave();
         // 无尽模式：Boss 还活着时下一波不来（普通关卡的 Boss 都在最后一波）
         const bossHold = this.level.endless && this.monsters.some((m) => m.def.boss && !m.dead);
         if (!bossHold) this.countdown -= dt;

@@ -2353,6 +2353,8 @@
     hud.wallText = h('span', { class: 'wall-text' });
     hud.wave = h('div', { class: 'wave-info' });
     hud.callBtn = h('button', { class: 'btn small call-btn', onclick: () => game.callWave() }, '提前召唤 (N)');
+    // 自动召唤开关（设计书 204）：通关第 3 关后出现
+    hud.autoCallBtn = game.autoCallUnlocked && game.autoCallUnlocked() && !battle.level.tower ? h('button', { class: 'btn small auto-call-btn', onclick: () => game.toggleAutoCall(), title: '场上清空后自动提前召唤下一波 (A)' }, '') : null;
     hud.copper = h('span', null, '0');
     hud.targetBtn = h('button', { class: 'btn small', onclick: () => game.cycleTarget(), title: '切换目标优先级 (T)' });
     hud.speedBtn = h('button', { class: 'btn small', onclick: () => game.toggleSpeed(), title: '切换速度 (F)' });
@@ -2381,7 +2383,7 @@
         'div',
         { class: 'hud-top' },
         h('div', { class: 'wall-bar' }, h('span', { class: 'wall-label' }, '城墙'), h('div', { class: 'wall-track' }, hud.wallFill), hud.wallText),
-        h('div', { class: 'wave-box' }, hud.wave, hud.callBtn),
+        h('div', { class: 'wave-box' }, hud.wave, hud.callBtn, hud.autoCallBtn),
         h('div', { class: 'hud-copper' }, coinIcon('copper'), hud.copper),
         h('button', { class: 'btn small pause-btn', onclick: () => game.togglePause() }, '❚❚')
       ),
@@ -2555,6 +2557,10 @@
     setText(hud.targetBtn, '🎯 ' + D.targetModes[b.target]);
     setText(hud.speedBtn, game.speed === 3 ? '⏭ 3倍速' : game.speed === 2 ? '⏩ 2倍速' : '▶ 1倍速');
     setText(hud.autoBtn, b.autoCast ? '自动释放：开' : '自动释放：关');
+    if (hud.autoCallBtn) {
+      setText(hud.autoCallBtn, b.autoCall ? '自动召唤：开' : '自动召唤：关');
+      hud.autoCallBtn.classList.toggle('on', !!b.autoCall);
+    }
     hud.laneHint.classList.toggle('hidden', !game.pendingLane);
     // 新手引导（设计书 12.6）：前 4 关第一次可以放技能时提示
     let nudgeIdx = -1;
