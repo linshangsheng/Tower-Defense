@@ -296,6 +296,21 @@
       g.ellipse(x, y, a, b, rot || 0, 0, Math.PI * 2);
       g.fill();
     };
+    // 柔边椭圆（设计书 233）：中心 col / al，往外渐隐到全透明，没有硬边（背景只画一次，贵一点没关系）
+    const softEll = (x, y, a, b, col, al, core) => {
+      g.save();
+      g.translate(x, y);
+      g.scale(1, b / a);
+      const rg = g.createRadialGradient(0, 0, 0, 0, 0, a);
+      rg.addColorStop(0, rgba(col, al));
+      rg.addColorStop(core === undefined ? 0.55 : core, rgba(col, al * 0.85));
+      rg.addColorStop(1, rgba(col, 0));
+      g.fillStyle = rg;
+      g.beginPath();
+      g.arc(0, 0, a, 0, Math.PI * 2);
+      g.fill();
+      g.restore();
+    };
     const line = (pts, col, al, lw) => {
       g.strokeStyle = rgba(col, al);
       g.lineWidth = lw || 1.5;
@@ -466,16 +481,18 @@
         const x = rx();
         const y = ry();
         const w = 26 + r() * 62;
-        ell(x - w * 0.14, y + w * 0.14, w * 0.9, w * 0.26, '#4a6a9c', 0.26);
-        ell(x + w * 0.06, y - w * 0.02, w * 0.8, w * 0.24, '#ffffff', 0.5);
-        ell(x + w * 0.2, y - w * 0.1, w * 0.4, w * 0.1, '#ffffff', 0.55);
+        // 雪堆：背光一侧一抹蓝影，受光面一团白，顶上一道亮——全部柔边
+        softEll(x - w * 0.14, y + w * 0.14, w * 1.0, w * 0.3, '#4a6a9c', 0.3);
+        softEll(x + w * 0.06, y - w * 0.02, w * 0.9, w * 0.27, '#ffffff', 0.55, 0.6);
+        softEll(x + w * 0.2, y - w * 0.1, w * 0.45, w * 0.11, '#ffffff', 0.6);
       }
       for (let k = 0; k < 7; k++) {
         const x = rx();
         const y = ry();
         const w = 30 + r() * 50;
-        ell(x, y, w, w * 0.3, '#7ab8e0', 0.3);
-        ell(x - w * 0.2, y - w * 0.07, w * 0.5, w * 0.08, '#ffffff', 0.5);
+        // 冻住的小水洼：冰面中间更清透，边缘融进雪里
+        softEll(x, y, w * 1.05, w * 0.32, '#7ab8e0', 0.36, 0.7);
+        softEll(x - w * 0.2, y - w * 0.07, w * 0.5, w * 0.08, '#ffffff', 0.55);
         for (let j = 0; j < 3; j++) crack(x - w * 0.5, y, 4, (r() - 0.5) * 0.8, '#e8f8ff', 0.7, 1.1, true);
       }
       for (let k = 0; k < 5; k++) crack(rx(), ry(), 7, r() * 6.28, '#dff4ff', 0.5, 1.2, true);
@@ -535,8 +552,9 @@
         const x = rx();
         const y = ry();
         const n = 3 + ((r() * 4) | 0);
-        for (let j = 0; j < n; j++) ell(x + (j - n / 2) * 16 + (r() - 0.5) * 8, y + (r() - 0.5) * 10, 13 + r() * 16, 8 + r() * 9, '#ffffff', 0.2);
-        ell(x, y + 10, 40 + r() * 20, 5, '#8aa0e8', 0.12);
+        // 云团（设计书 233）：一团团柔边的白，叠在一起像棉花，不再是一圈圈硬边
+        for (let j = 0; j < n; j++) softEll(x + (j - n / 2) * 16 + (r() - 0.5) * 8, y + (r() - 0.5) * 10, 16 + r() * 18, 10 + r() * 10, '#ffffff', 0.32, 0.35);
+        softEll(x, y + 10, 46 + r() * 20, 7, '#8aa0e8', 0.16);
       }
       for (let k = 0; k < 40; k++) {
         const x = rx();
@@ -1046,10 +1064,24 @@
       const bx = C.wallX + r() * (W - C.wallX);
       const by = top + 10 + r() * (bottom - top);
       const dark = r() < 0.6;
-      bg2.fillStyle = dark ? 'rgba(4,14,12,0.2)' : rgba(P.tuftTip, 0.07);
+      // 真正的渐隐笔触（设计书 233）：原来是实心椭圆靠放大变柔，高清屏上边缘还是一圈一圈的
+      const rx0 = 20 + r() * 70;
+      const ry0 = 8 + r() * 16;
+      const rot = (r() - 0.5) * 0.4;
+      bg2.save();
+      bg2.translate(bx, by);
+      bg2.rotate(rot);
+      bg2.scale(1, ry0 / rx0);
+      const a0 = dark ? 0.26 : 0.09;
+      const bg = bg2.createRadialGradient(0, 0, 0, 0, 0, rx0);
+      bg.addColorStop(0, dark ? 'rgba(4,14,12,' + a0 + ')' : rgba(P.tuftTip, a0));
+      bg.addColorStop(0.5, dark ? 'rgba(4,14,12,' + a0 * 0.8 + ')' : rgba(P.tuftTip, a0 * 0.8));
+      bg.addColorStop(1, dark ? 'rgba(4,14,12,0)' : rgba(P.tuftTip, 0));
+      bg2.fillStyle = bg;
       bg2.beginPath();
-      bg2.ellipse(bx, by, 20 + r() * 70, 8 + r() * 16, (r() - 0.5) * 0.4, 0, Math.PI * 2);
+      bg2.arc(0, 0, rx0, 0, Math.PI * 2);
       bg2.fill();
+      bg2.restore();
     }
     g.drawImage(blot, 0, 0, W, H);
     // 地面上被阳光照亮的一大片区域

@@ -968,6 +968,7 @@
   // 每一种 = 原来的怪物（base）+ 加强的数值 / 改过的机制参数（over）+ 换色（tint）；画法沿用原来的（art），染色在 sprites.js
   const TINT_MOON = '#7a5cff'; // 月影古堡：蓝紫
   const TINT_FORGE = '#ff4a4a'; // 赤铁熔炉：暗红
+  const TINT_STEEL = '#7d8fa8'; // 铁 / 钢做的怪（设计书 233）：冷灰蓝的钢色，原来也刷成暗红，看起来像"红色的怪"而不是金属
   const TINT_VOID = '#b04aff'; // 虚空天域：紫
   // ---------- 远程怪（设计书 95）：停在远处，各用不同的弹道向城墙开火 ----------
   // ranged.shot 决定弹道的样子：arrow 快箭 · rock 抛物线石块 · ice 冰锥（冻伤城墙）· lightning 瞬发闪电 · bomb 会爆炸的炸弹
@@ -996,13 +997,13 @@
   echo('lanternGhost', 'priest', '提灯鬼', TINT_MOON, { hp: 120, dps: 8, copper: 5, healer: Object.assign({}, M.priest.healer, { radius: 150, pct: 0.06 }), trait: { id: 'cleanse', every: 4, radius: 170 } }, '提着灯的治疗者：范围更大、治疗更多，而且灯光能驱散身边怪物身上的冰冻和眩晕，先打它。');
   echo('bloodBat', 'bat', '吸血蝠', TINT_MOON, { hp: 70, dps: 9, copper: 3, laneHop: { every: 1.8 } }, '频繁换车道的蝙蝠，很难集火。');
   // 第九章 · 赤铁熔炉（第四、五章怪物的回声）
-  echo('ironSnowman', 'snowman', '铁雪人', TINT_FORGE, { hp: 110, dps: 16, armor: 60, copper: 4, deathSpawn: Object.assign({}, M.snowman.deathSpawn, { count: 3 }) }, '披着铁甲的雪人，死后裂成三个小雪团。');
-  echo('ironWolf', 'wolf', '铁狼', TINT_FORGE, { hp: 65, speed: 100, dps: 11, armor: 20, copper: 4, pack: 4 }, '四只一组冲过来的铁甲狼，同样会绕过前排的兵，直扑后排。');
+  echo('ironSnowman', 'snowman', '铁雪人', TINT_STEEL, { hp: 110, dps: 16, armor: 60, copper: 4, deathSpawn: Object.assign({}, M.snowman.deathSpawn, { count: 3 }) }, '披着铁甲的雪人，死后裂成三个小雪团。');
+  echo('ironWolf', 'wolf', '铁狼', TINT_STEEL, { hp: 65, speed: 100, dps: 11, armor: 20, copper: 4, pack: 4 }, '四只一组冲过来的铁甲狼，同样会绕过前排的兵，直扑后排。');
   echo('forgeImp', 'imp', '炉火小鬼', TINT_FORGE, { hp: 60, copper: 5, ranged: Object.assign({}, M.imp.ranged, { damage: Math.round(M.imp.ranged.damage * 1.4) }) }, '会飞的火球手，一发火球比原来疼得多。');
-  echo('steelYeti', 'yeti', '钢雪怪', TINT_FORGE, { hp: 280, dps: 24, armor: 140, copper: 7, trample: { every: 5.5, kick: 70, stun: 1 } }, '浑身钢板的雪怪：物理几乎打不动，魔法才有效；走到半场会咆哮，让周围的怪加速。撞上雇佣兵时会把身前的兵撞飞并震晕 1 秒（每 5.5 秒一次）。');
+  echo('steelYeti', 'yeti', '钢雪怪', TINT_STEEL, { hp: 280, dps: 24, armor: 140, copper: 7, trample: { every: 5.5, kick: 70, stun: 1 } }, '浑身钢板的雪怪：物理几乎打不动，魔法才有效；走到半场会咆哮，让周围的怪加速。撞上雇佣兵时会把身前的兵撞飞并震晕 1 秒（每 5.5 秒一次）。');
   echo('moltenGolem', 'lavaGolem', '熔铁傀儡', TINT_FORGE, { hp: 300, dps: 24, mres: 300, copper: 8, trample: { every: 6, kick: 80, stun: 1.2 } }, '熔化的铁做的傀儡：魔法几乎打不动，用物理武器。撞上雇佣兵时会把身前的兵撞飞并震晕 1.2 秒（每 6 秒一次）。');
   echo('slagMagma', 'magma', '炉渣团', TINT_FORGE, { hp: 70, dps: 12, copper: 4, fireZone: Object.assign({}, M.magma.fireZone, { radius: 90, duration: 6 }) }, '死后留下更大、更久的火焰地带。');
-  echo('ironChariot', 'chariot', '铁战车', TINT_FORGE, { hp: 100, speed: 130, dps: 12, armor: 50, copper: 5, slam: 22, trait: { id: 'ram', stun: 0.8, gap: 2.5 }, trample: { every: 4, kick: 90, stun: 0.8 } }, '披着铁板的战车，冲得很快；撞墙的震动会让英雄晃一下（0.8 秒）。撞上雇佣兵时会把兵撞飞并震晕 0.8 秒（每 4 秒一次）。');
+  echo('ironChariot', 'chariot', '铁战车', TINT_STEEL, { hp: 100, speed: 130, dps: 12, armor: 50, copper: 5, slam: 22, trait: { id: 'ram', stun: 0.8, gap: 2.5 }, trample: { every: 4, kick: 90, stun: 0.8 } }, '披着铁板的战车，冲得很快；撞墙的震动会让英雄晃一下（0.8 秒）。撞上雇佣兵时会把兵撞飞并震晕 0.8 秒（每 4 秒一次）。');
   echo('frostWyrm', 'iceDragon', '霜龙', TINT_FORGE, { hp: 85, speed: 62, dps: 12, copper: 4 }, '会飞的小龙，被混沌染成了红色：飞近以后会朝城头喷冰息，让英雄攻速下降。');
   // 第十章 · 虚空天域（第六、七章怪物的回声）
   echo('voidSheep', 'cloudSheep', '虚空羊', TINT_VOID, { hp: 110, dps: 14, copper: 5, wool: Object.assign({}, M.cloudSheep.wool, { ratio: 0.7 }) }, '羊毛更厚：先扣掉 70% 血量的羊毛才开始掉血。');
