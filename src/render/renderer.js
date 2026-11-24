@@ -42,11 +42,14 @@
     // 自适应画质：按当前档位设置画布分辨率和各层光影开关
     applyQuality() {
       const Q = TD.quality;
-      if (!Q || this._ql === Q.level) return;
+      // 高清屏（设计书 228）：最高画质档时，画布分辨率按"舞台缩放 × 设备像素比"提高，最多 2 倍；降档后回到原来的分辨率
+      const hd = Q && Q.level === 0 && Q.hd !== false ? (TD.game && TD.game.hdScale) || 1 : 1;
+      if (!Q || (this._ql === Q.level && this._hd === hd)) return;
       this._ql = Q.level;
+      this._hd = hd;
       const p = Q.params();
-      const w = Math.round(C.width * p.scale);
-      const h = Math.round(C.height * p.scale);
+      const w = Math.round(C.width * p.scale * hd);
+      const h = Math.round(C.height * p.scale * hd);
       if (this.canvas.width !== w || this.canvas.height !== h) {
         this.canvas.width = w;
         this.canvas.height = h;
@@ -1393,6 +1396,8 @@
       this.critAge += dt;
       this.applyQuality();
       ctx.setTransform(this.k, 0, 0, this.k, 0, 0);
+      // 角色光影缓存跟画布同样的分辨率（按 0.25 取整，免得窗口一动就整批重画）
+      if (TD.art) TD.art.RES = Math.max(0.5, Math.min(2, Math.round(this.k * 4) / 4));
       const qp = TD.quality ? TD.quality.params() : { fx: 1, lit: 1 };
       if (this.fireworks) this.updateFireworks(dt);
       ctx.save();
@@ -2230,15 +2235,22 @@
     //   墙头：右边一条铺着石板的巡逻道，上面立着带箭孔、压顶石的垛口，垛口在巡逻道上投下影子；
     //   墙脚：加宽的基座；墙头一圈压顶石；几处挂灯笼的铁架；苔藓只长在背光的缝里。
     // 砖格（行高 22、块宽 32、隔行错开半块）和垛口位置（每 44 一个，x 50~72）不变——破损（wallStageArt）沿用同一套。
+    wallRes() {
+      return Math.max(1, (TD.art && TD.art.RES) || 1);
+    }
+
     wallBase(h) {
-      const key = this.scene.key;
+      // 城墙缓存也按高清倍率画（设计书 228）：画布物理尺寸 = 逻辑尺寸 × R，贴的时候按逻辑尺寸贴
+      const R = this.wallRes();
+      const key = this.scene.key + '@' + R;
       if (this.wallBaseArt && this.wallBaseArt.key === key) return this.wallBaseArt.canvas;
       const P = this.scene.palette;
       const A = TD.art;
       const c = document.createElement('canvas');
-      c.width = 110;
-      c.height = h + 40;
+      c.width = Math.ceil(110 * R);
+      c.height = Math.ceil((h + 40) * R);
       const g = c.getContext('2d');
+      g.scale(R, R);
       g.translate(0, 30);
       const ox = 20;
       let seed = 7;
@@ -2473,7 +2485,8 @@
     // 某一档的城墙：基础墙图 + 这一档累计的破损（按场景 + 档缓存）
     wallStageArt(stage, h) {
       this.wallStages = this.wallStages || new Map();
-      const key = this.scene.key + ':' + stage;
+      const R = this.wallRes();
+      const key = this.scene.key + ':' + stage + '@' + R;
       const hit = this.wallStages.get(key);
       if (hit) return hit;
       const base = this.wallBase(h);
@@ -2482,6 +2495,7 @@
       c.height = base.height;
       const g = c.getContext('2d');
       g.drawImage(base, 0, 0);
+      g.scale(R, R);
       g.translate(0, 30);
       const ox = 20;
       let seed = 4242;
@@ -2812,7 +2826,7 @@
       // 8) 墙脚的碎石堆：碎砖块，越破越多
       const pile = [0, 0, 2, 5, 8, 12, 16][stage];
       for (let i = 0; i < pile; i++) shard(ox - 10 + rnd() * 88, h + 2 - rnd() * 5, 4 + rnd() * 6);
-      const art = { canvas: c, holes };
+      const art = { canvas: c, holes, w: c.width / R, h: c.height / R, res: R };
       if (this.wallStages.size > 16) this.wallStages.clear();
       this.wallStages.set(key, art);
       return art;
@@ -2838,7 +2852,7 @@
         ctx.rotate(tilt);
         ctx.translate(-(x0 + 30), -bottom);
       }
-      ctx.drawImage(art.canvas, x0 - 20, top - 30);
+      ctx.drawImage(art.canvas, x0 - 20, top - 30, art.w, art.h);
       ctx.restore();
       // 大洞里的暗红光会闪，往外冒烟和火星
       const dt = this.lastDt || 0.016;
@@ -3020,7 +3034,7 @@
         ctx.translate(x0 - 20 + 55, top - 30 + sy + bandH / 2 + drop);
         ctx.rotate(dir * Math.min(0.6, tau * 0.45) * (0.4 + d));
         ctx.translate(dir * tau * 22, 0);
-        ctx.drawImage(art.canvas, 0, sy, art.canvas.width, bandH, -55, -bandH / 2, art.canvas.width, bandH);
+        ctx.drawImage(art.canvas, 0, sy * art.res, art.canvas.width, bandH * art.res, -55, -bandH / 2, art.w, bandH);
         ctx.restore();
         // 每一段刚松动的时候喷一团灰
         if (this.vfx && tau > 0 && tau < 0.12 && Math.random() < 0.7) {
@@ -3348,7 +3362,9 @@
             this.litShared = this.litShared || new Map();
             holder = this.litShared.get(hk);
             if (!holder) {
-              if (this.litShared.size > 400) this.litShared.clear();
+              // 高清时每张缓存是原来的 R² 倍内存：组数上限同比例缩小（设计书 228）
+              const R = TD.art.RES || 1;
+              if (this.litShared.size > Math.round(400 / Math.max(1, R * R))) this.litShared.clear();
               this.litShared.set(hk, (holder = {}));
             }
           }
@@ -3378,16 +3394,17 @@
             const sz = def.size * DRAW_SCALE;
             const cx = Math.max(0, Math.round(c.ox - sz * 1.5));
             const cy = Math.max(0, Math.round(c.oy - sz * 2.6));
-            const cw = Math.min(c.canvas.width - cx, Math.round(sz * 3));
-            const ch = Math.min(c.canvas.height - cy, Math.round(sz * 3));
+            const cw = Math.min(c.w - cx, Math.round(sz * 3));
+            const ch = Math.min(c.h - cy, Math.round(sz * 3));
             const k = this.crowd;
-            ctx.drawImage(c.canvas, cx, cy, cw, ch, Math.round(x - (c.ox - cx) * k), Math.round(ly - (c.oy - cy) * k), Math.round(cw * k), Math.round(ch * k));
-          } else ctx.drawImage(c.canvas, Math.round(x - c.ox), Math.round(ly - c.oy));
+            const r = c.res || 1; // 缓存可能是高分辨率的：源矩形按物理像素取
+            ctx.drawImage(c.canvas, cx * r, cy * r, cw * r, ch * r, Math.round(x - (c.ox - cx) * k), Math.round(ly - (c.oy - cy) * k), Math.round(cw * k), Math.round(ch * k));
+          } else TD.art.drawLit(ctx, c, Math.round(x - c.ox), Math.round(ly - c.oy));
           if (flash > 0) {
             ctx.save();
             ctx.globalCompositeOperation = 'lighter';
             ctx.globalAlpha = Math.min(1, flash * 7) * 0.55;
-            ctx.drawImage(c.canvas, Math.round(x - c.ox), Math.round(ly - c.oy));
+            TD.art.drawLit(ctx, c, Math.round(x - c.ox), Math.round(ly - c.oy));
             ctx.restore();
           }
         } else S.monster(ctx, m.type, x, ly, def.size, t, mo);
@@ -3542,7 +3559,7 @@
           // 缓存键：动画按 LIT_FPS 取整帧 + 会改变造型的状态量化；以前每帧用 Math.random() 当键、每帧重画（软件渲染下 drawMercs 是大头）
           const lkey = Math.floor(st.t * TD.art.LIT_FPS) + '|' + u.state + (st.flash ? 'f' : '') + (st.charging ? 'c' : '') + Math.round(st.wind * 4) + (u.dead ? 'd' + Math.round(st.dead * 8) : '');
           const c = TD.art.litSprite(u, lkey, 40, this.scene.palette.rim, 0, (g) => ((S.volume = true), TD.mercArt.draw(g, u.type, 0, 0, st, u.face || 1), (S.volume = false)));
-          ctx.drawImage(c.canvas, Math.round(x - c.ox), Math.round(y - c.oy));
+          TD.art.drawLit(ctx, c, Math.round(x - c.ox), Math.round(y - c.oy));
         } else TD.mercArt.draw(ctx, u.type, x, y, st, u.face || 1);
         // 眩晕星星：血条上方绕圈转的三颗小星（TD.icons）
         if (!u.dead && b.time < (u.stunUntil || 0)) {
@@ -4089,7 +4106,7 @@
         const heroFps = Math.max(12, Math.round(30 * ((TD.quality && TD.quality.params().lit) || 1)));
         const hk = Math.floor(performance.now() / (1000 / heroFps)) + '|' + (castId || '') + '|' + mood + '|' + weapon + (ascended ? 'A' : '') + '|' + ho.outfit + '|' + ho.hero + '|' + this.scene.palette.rim;
         const c = TD.art.litSprite(this.heroArt, hk, 40, this.scene.palette.rim, 0, (g) => ((S.volume = true), S.hero(g, 0, 0, ho), (S.volume = false)));
-        this.ctx.drawImage(c.canvas, Math.round(C.heroX - c.ox), Math.round(heroY - c.oy));
+        TD.art.drawLit(this.ctx, c, Math.round(C.heroX - c.ox), Math.round(heroY - c.oy));
       } else S.hero(this.ctx, C.heroX, heroY, ho);
       if (fx) TD.heroAnim.fx(this.ctx, C.heroX, heroY, castId, castAge, this.t, 'front', { strikes: castStrikes, every: castEvery });
       // 幻影连射：几个淡青色的幻影并肩站在城墙上，跟着主角一起射击（设计书 103）

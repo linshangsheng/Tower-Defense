@@ -16,6 +16,12 @@
   Q.level = 0;
   Q.mode = 'auto'; // auto = 自动；high / medium / low = 手动固定在 0 / 1 / 2 档
   Q.changes = 0; // 档位变化次数（测试用）
+  // 高清（设计书 228）：画布按设备像素比提分辨率。和档位分开管：自动模式下帧率不够时先关高清、不动档位；
+  // 稳定流畅很久再试着打开，刚打开 40 秒内又卡就本次不再开。hdCapable 由 main.js 按屏幕设置（不是高清屏就不参与）
+  Q.hd = true;
+  Q.hdCapable = false;
+  let hdBanned = false;
+  let hdOnAt = -1e9;
 
   const WINDOW = 24; // 每 24 帧取一次中位数
   const DOWN_MS = 38; // 中位帧间隔超过它（不到 26 帧 / 秒）就降一档（30 帧 / 秒的显示器 33 毫秒，不会误判）
@@ -57,6 +63,7 @@
     if (!['auto', 'high', 'medium', 'low'].includes(mode)) mode = 'auto';
     Q.mode = mode;
     banned = -1;
+    Q.hd = mode !== 'medium' && mode !== 'low';
     if (mode === 'high') Q.set(0, 'manual');
     else if (mode === 'medium') Q.set(1, 'manual');
     else if (mode === 'low') Q.set(2, 'manual');
@@ -85,9 +92,25 @@
     const sorted = buf.slice().sort((a, b) => a - b);
     const med = sorted[WINDOW >> 1];
     buf = [];
+    if (med > DOWN_MS && Q.level === 0 && Q.hd && Q.hdCapable) {
+      if (now() - hdOnAt < BAN_MS) hdBanned = true;
+      Q.hd = false;
+      good = 0;
+      settle = SETTLE_FRAMES;
+      if (Q.onChange) Q.onChange(Q.level, 'hd');
+      return;
+    }
     if (med > DOWN_MS && Q.level < Q.MAX) {
       if (now() - lastUp < BAN_MS) banned = Q.level;
       Q.set(Q.level + (med > HEAVY_MS ? 2 : 1), 'slow'); // 特别卡（不到 14 帧 / 秒）一次降两档
+    } else if (med < UP_MS && Q.level === 0 && !Q.hd && Q.hdCapable && !hdBanned && Q.mode === 'auto') {
+      if (++good >= UP_WINDOWS) {
+        good = 0;
+        hdOnAt = now();
+        Q.hd = true;
+        settle = SETTLE_FRAMES;
+        if (Q.onChange) Q.onChange(Q.level, 'hd');
+      }
     } else if (med < UP_MS && Q.level > 0 && banned !== Q.level - 1) {
       if (++good >= UP_WINDOWS) {
         lastUp = now();
@@ -107,5 +130,9 @@
     Q.mode = 'auto';
     Q.changes = 0;
     Q.onChange = null;
+    Q.hd = true;
+    Q.hdCapable = false;
+    hdBanned = false;
+    hdOnAt = -1e9;
   };
 })((globalThis.TD = globalThis.TD || {}));

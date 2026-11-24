@@ -628,6 +628,9 @@
       ctx.quadraticCurveTo(wr[0] - dir * s * 0.02, wr[1] - s * 0.12, wr[0] - dir * s * 0.08, wr[1] - s * 0.12);
       ctx.stroke();
     }
+    // 身体、耳朵和脸整体放大（设计书 228）：原来身体只占翼展的五分之一，战场上缩成一个小点，看不出是什么
+    ctx.save();
+    ctx.scale(1.35, 1.35);
     // 两只小脚爪
     ctx.strokeStyle = deep(base, 0.7);
     ctx.lineWidth = s * 0.05;
@@ -688,7 +691,15 @@
     ctx.lineTo(-s * 0.07, s * 0.06);
     ctx.lineTo(-s * 0.085, s * 0.11);
     ctx.fill();
-    eyes(ctx, -s * 0.08, -s * 0.08, s * 0.16, s * 0.05, pink, -0.1);
+    // 眼睛也放大一点，带一圈深色眼眶，小尺寸下更好认
+    ctx.fillStyle = deep(base, 0.8);
+    for (const ex of [-s * 0.16, 0]) {
+      ctx.beginPath();
+      ctx.ellipse(ex, -s * 0.08, s * 0.065, s * 0.05, -0.1, 0, TAU);
+      ctx.fill();
+    }
+    eyes(ctx, -s * 0.08, -s * 0.08, s * 0.16, s * 0.058, pink, -0.1);
+    ctx.restore();
   };
 
   // 南瓜头：五瓣带细纹的南瓜，雕开的刀口里亮着火光；有棱的蒂、卷须和小叶子，藤蔓当腿

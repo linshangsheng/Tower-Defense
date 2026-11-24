@@ -497,6 +497,10 @@
     const s = rotated ? Math.min(h / C.width, w / C.height) : Math.min(w / C.width, h / C.height);
     stage.style.transform = `translate(-50%, -50%) ${rotated ? 'rotate(90deg) ' : ''}scale(${s})`;
     game.scale = s;
+    // 高清屏（设计书 228）：画布实际显示成多少物理像素 ÷ 1280，最高画质档按它提分辨率（1～2 倍，取 0.25 的整数倍）
+    const dpr = (typeof window !== 'undefined' && window.devicePixelRatio) || 1;
+    game.hdScale = Math.max(1, Math.min(2, Math.round(s * dpr * 4) / 4));
+    if (TD.quality) TD.quality.hdCapable = game.hdScale > 1;
     game.rotated = rotated;
     // 大字模式（设计书 47）：自动 = 缩放小于 0.75（手机）时开启
     const lt = (game.save && game.save.settings.largeText) || 'auto';

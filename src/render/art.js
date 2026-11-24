@@ -1206,24 +1206,31 @@
   // 动画按约 15 帧/秒更新缓存（不同怪物的更新时刻自然错开），每帧只 drawImage 一次——没有显卡加速时也够快
   let tmp = null;
   A.LIT_FPS = 12;
-  A.litSprite = function (holder, key, s, light, glowAlpha, draw) {
+  // 光影缓存的分辨率倍率（设计书 228）：高清屏上画布提了分辨率，角色缓存也要按同样的倍率画，否则贴上去还是糊的。
+  // 渲染器每帧设置；画廊等工具不设置就是 1
+  A.RES = 1;
+  A.litSprite = function (holder, key, s, light, glowAlpha, draw, resIn) {
+    const res = resIn || A.RES || 1;
     const w = Math.ceil(s * 4.4);
     const h = Math.ceil(s * 4.2);
     const OX = Math.round(w / 2);
     const OY = Math.round(h - s * 0.9);
+    const pw = Math.ceil(w * res);
+    const ph = Math.ceil(h * res);
     let c = holder.litCache;
-    if (c && c.key === key && c.canvas.width === w && c.canvas.height === h) return c;
-    if (!c || c.canvas.width !== w || c.canvas.height !== h) c = holder.litCache = { canvas: canvas(w, h), ox: OX, oy: OY };
+    if (c && c.key === key && c.canvas.width === pw && c.canvas.height === ph) return c;
+    if (!c || c.canvas.width !== pw || c.canvas.height !== ph) c = holder.litCache = { canvas: canvas(pw, ph), ox: OX, oy: OY, w, h, res };
     c.key = key;
-    if (!tmp || tmp.width < w || tmp.height < h) tmp = canvas(Math.max(w, tmp ? tmp.width : 0), Math.max(h, tmp ? tmp.height : 0));
+    if (!tmp || tmp.width < pw || tmp.height < ph) tmp = canvas(Math.max(pw, tmp ? tmp.width : 0), Math.max(ph, tmp ? tmp.height : 0));
     const g = c.canvas.getContext('2d');
     g.setTransform(1, 0, 0, 1, 0, 0);
     g.globalCompositeOperation = 'source-over';
     g.globalAlpha = 1;
-    g.clearRect(0, 0, w, h);
+    g.clearRect(0, 0, pw, ph);
+    g.setTransform(res, 0, 0, res, 0, 0);
     g.translate(OX, OY);
     draw(g);
-    g.setTransform(1, 0, 0, 1, 0, 0);
+    g.setTransform(res, 0, 0, res, 0, 0);
     // 明暗：右上受光、左下背光，只染在精灵自己的像素上
     g.globalCompositeOperation = 'source-atop';
     const lg = g.createLinearGradient(OX + s * 1.1, OY - s * 2.4, OX - s * 0.9, OY + s * 0.3);
@@ -1233,30 +1240,38 @@
     lg.addColorStop(1, 'rgba(10,16,44,0.55)');
     g.fillStyle = lg;
     g.fillRect(0, 0, w, h);
-    // 轮廓光：剪影减去"往背光方向挪一点"的剪影，剩下受光一侧的一道亮边
-    const r = Math.max(2, s * 0.09);
+    // 轮廓光：剪影减去"往背光方向挪一点"的剪影，剩下受光一侧的一道亮边（在物理像素上做）
+    const r = Math.max(2, s * 0.09) * res;
     const gb = tmp.getContext('2d');
+    gb.setTransform(1, 0, 0, 1, 0, 0);
     gb.globalCompositeOperation = 'source-over';
-    gb.clearRect(0, 0, w, h);
+    gb.clearRect(0, 0, pw, ph);
     gb.drawImage(c.canvas, 0, 0);
     gb.globalCompositeOperation = 'source-in';
     gb.fillStyle = light;
-    gb.fillRect(0, 0, w, h);
+    gb.fillRect(0, 0, pw, ph);
     gb.globalCompositeOperation = 'destination-out';
     gb.drawImage(c.canvas, -r, r);
+    g.setTransform(1, 0, 0, 1, 0, 0);
     g.globalCompositeOperation = 'lighter';
     g.globalAlpha = 0.5;
-    g.drawImage(tmp, 0, 0, w, h, 0, 0, w, h);
+    g.drawImage(tmp, 0, 0, pw, ph, 0, 0, pw, ph);
     // 背光光晕垫在最后面
     if (glowAlpha > 0) {
+      g.setTransform(res, 0, 0, res, 0, 0);
       g.globalCompositeOperation = 'destination-over';
       g.globalAlpha = glowAlpha;
       const gr = s * 1.85;
       g.drawImage(A.glow(light), OX - gr, OY - s * 0.8 - gr, gr * 2, gr * 2);
     }
+    g.setTransform(1, 0, 0, 1, 0, 0);
     g.globalAlpha = 1;
     g.globalCompositeOperation = 'source-over';
     return c;
+  };
+  // 把光影缓存贴到画布上：按逻辑尺寸贴（缓存可能是高分辨率的）
+  A.drawLit = function (ctx, c, x, y) {
+    ctx.drawImage(c.canvas, x, y, c.w, c.h);
   };
 
   // ---------- 漂浮光点 ----------

@@ -500,22 +500,34 @@
     const base = '#c8a890';
     const cap = '#d84a48';
     const warm = '#ffd9a0';
-    // 根须一样的细腿，脚尖再分出两根小根须
+    // 短粗的根须小腿（设计书 228：原来是两根细线，远看像火柴）：上粗下细的圆锥 + 圆圆的小脚 + 两根细根须
     for (const [lx, p] of [[-s * 0.2, 1], [s * 0.2, -1]]) {
-      const fx = lx + step * p * s * 0.25;
+      const fx = lx + step * p * s * 0.22;
+      const lift = Math.max(0, step * p) * s * 0.06;
+      const legP = () => {
+        ctx.beginPath();
+        ctx.moveTo(lx * 0.55 - s * 0.1, -s * 0.52);
+        ctx.quadraticCurveTo(lx + step * p * s * 0.12 - s * 0.09, -s * 0.26, fx - s * 0.07, -s * 0.06 - lift);
+        ctx.lineTo(fx + s * 0.07, -s * 0.06 - lift);
+        ctx.quadraticCurveTo(lx + step * p * s * 0.12 + s * 0.09, -s * 0.26, lx * 0.55 + s * 0.1, -s * 0.52);
+        ctx.closePath();
+      };
+      legP();
+      ctx.fillStyle = linear(ctx, fx + s * 0.1, -s * 0.5, fx - s * 0.1, 0, [[0, light(base, 0.05)], [1, deep(base, 0.5)]]);
+      ctx.fill();
+      // 小脚
+      ctx.fillStyle = radial(ctx, fx, -s * 0.04 - lift, s * 0.02, s * 0.14, [[0, light(base, 0.15)], [1, deep(base, 0.45)]], fx + s * 0.03, -s * 0.08 - lift);
+      ctx.beginPath();
+      ctx.ellipse(fx, -s * 0.05 - lift, s * 0.13, s * 0.07, 0, 0, TAU);
+      ctx.fill();
       ctx.strokeStyle = deep(base, 0.6);
-      ctx.lineWidth = s * 0.08;
       ctx.lineCap = 'round';
+      ctx.lineWidth = Math.max(0.6, s * 0.025);
       ctx.beginPath();
-      ctx.moveTo(lx * 0.5, -s * 0.5);
-      ctx.quadraticCurveTo(lx + step * p * s * 0.15, -s * 0.25, fx, -s * 0.02);
-      ctx.stroke();
-      ctx.lineWidth = Math.max(0.6, s * 0.03);
-      ctx.beginPath();
-      ctx.moveTo(fx, -s * 0.04);
-      ctx.quadraticCurveTo(fx - s * 0.08, -s * 0.02, fx - s * 0.14, 0);
-      ctx.moveTo(fx, -s * 0.04);
-      ctx.quadraticCurveTo(fx + s * 0.08, -s * 0.01, fx + s * 0.12, s * 0.01);
+      ctx.moveTo(fx - s * 0.08, -s * 0.02 - lift);
+      ctx.quadraticCurveTo(fx - s * 0.14, 0, fx - s * 0.2, s * 0.02 - lift);
+      ctx.moveTo(fx + s * 0.08, -s * 0.02 - lift);
+      ctx.quadraticCurveTo(fx + s * 0.13, 0, fx + s * 0.18, s * 0.02 - lift);
       ctx.stroke();
     }
     // 伞盖随步子轻轻晃（绕菌柄顶端转）
@@ -544,12 +556,14 @@
     glow(ctx, 0, -s * 1.38, s * 0.9, warm, 0.45);
     ctx.restore();
     // 修长的菌柄：纵向纤维纹，上半截被菌褶的光照亮
+    // 菌柄（设计书 228）：上细下粗、底部鼓成一个圆球（鹅膏菌的菌托），不再是直筒
     const stemP = () => {
       ctx.beginPath();
-      ctx.moveTo(-s * 0.22, -s * 0.45);
-      ctx.quadraticCurveTo(-s * 0.3, -s * 1.0, -s * 0.18, -s * 1.45);
-      ctx.lineTo(s * 0.18, -s * 1.45);
-      ctx.quadraticCurveTo(s * 0.3, -s * 1.0, s * 0.22, -s * 0.45);
+      ctx.moveTo(-s * 0.16, -s * 1.45);
+      ctx.bezierCurveTo(-s * 0.2, -s * 1.15, -s * 0.24, -s * 0.85, -s * 0.33, -s * 0.66);
+      ctx.bezierCurveTo(-s * 0.42, -s * 0.5, -s * 0.3, -s * 0.4, 0, -s * 0.4);
+      ctx.bezierCurveTo(s * 0.3, -s * 0.4, s * 0.42, -s * 0.5, s * 0.33, -s * 0.66);
+      ctx.bezierCurveTo(s * 0.24, -s * 0.85, s * 0.2, -s * 1.15, s * 0.16, -s * 1.45);
       ctx.closePath();
     };
     stemP();
@@ -558,7 +572,7 @@
     inside(ctx, stemP, () => {
       // 圆柱一样的明暗：左边背光，靠右一道柔和的亮带
       ctx.fillStyle = linear(ctx, -s * 0.3, 0, s * 0.3, 0, [[0, 'rgba(14,8,20,0.45)'], [0.5, 'rgba(14,8,20,0)'], [0.75, 'rgba(255,244,228,0.2)'], [1, 'rgba(255,244,228,0)']]);
-      ctx.fillRect(-s * 0.3, -s * 1.45, s * 0.6, s * 1.0);
+      ctx.fillRect(-s * 0.45, -s * 1.45, s * 0.9, s * 1.1);
       // 细细的纵向纤维
       ctx.lineWidth = Math.max(0.5, s * 0.015);
       ctx.strokeStyle = 'rgba(70,40,30,0.16)';
@@ -588,8 +602,22 @@
     }
     ctx.closePath();
     ctx.fill();
-    // 菌褶下透出的光和眼睛
-    eyes(ctx, -s * 0.12, -s * 1.25, s * 0.18, s * 0.06, '#fff0c0', -0.15);
+    // 脸（设计书 228）：原来眼睛藏在伞盖阴影里几乎看不见，挪到菌柄中间、放大，加腮红和小嘴
+    const fy = -s * 1.02;
+    ctx.fillStyle = 'rgba(255,110,100,0.32)';
+    for (const cx of [-s * 0.2, s * 0.1]) {
+      ctx.beginPath();
+      ctx.ellipse(cx, fy + s * 0.12, s * 0.07, s * 0.04, 0, 0, TAU);
+      ctx.fill();
+    }
+    eyes(ctx, -s * 0.05, fy, s * 0.2, s * 0.075, '#fff0c0', -0.12, o.attack ? 0.55 : 1);
+    ctx.strokeStyle = 'rgba(60,24,18,0.75)';
+    ctx.lineWidth = Math.max(0.8, s * 0.03);
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    if (o.attack) ctx.ellipse(-s * 0.05, fy + s * 0.15, s * 0.05, s * 0.04, 0, 0, TAU);
+    else ctx.arc(-s * 0.05, fy + s * 0.1, s * 0.06, 0.25, Math.PI - 0.25);
+    ctx.stroke();
     // 伞盖：宽、深红、边缘下垂
     ctx.save();
     capT();

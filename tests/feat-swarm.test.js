@@ -42,3 +42,26 @@ test('前期蜂群：自定义关卡（每日挑战 / 无尽）不受影响', ()
   const b = new TD.Battle({ level: 3, levelDef: D.levels[3], stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 1 });
   assert.strictEqual(b.swarm, 1);
 });
+
+test('高清画布（设计书 228）：帧率不够时先关高清、不动档位；不是高清屏不参与', () => {
+  require('../src/core/quality.js');
+  const Q = TD.quality;
+  Q._reset();
+  const frames = (n, ms) => { for (let i = 0; i < n; i++) Q.record(ms); };
+  Q.hdCapable = true;
+  frames(40, 55);
+  assert.strictEqual(Q.level, 0, '先关高清，档位不变');
+  assert.strictEqual(Q.hd, false);
+  frames(40, 55);
+  assert.strictEqual(Q.level, 1, '高清关了还卡，再降档');
+  Q._reset();
+  Q.hdCapable = false;
+  frames(40, 55);
+  assert.strictEqual(Q.level, 1, '不是高清屏：直接降档');
+  Q._reset();
+  Q.setMode('medium');
+  assert.strictEqual(Q.hd, false);
+  Q.setMode('high');
+  assert.strictEqual(Q.hd, true);
+  Q._reset();
+});

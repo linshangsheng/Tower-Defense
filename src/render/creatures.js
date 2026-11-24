@@ -363,6 +363,9 @@
   // 主角（设计书 56.3）
   // ======================================================================
   const HERO_COL = { cape: '#e04848', body: '#5b7bd5', helmTop: '#eef2f7', helmBottom: '#a9b4c2', brim: '#8c97a6', plume: '#ff5a4f', plumeHi: '#ffb3ad', shield: '#c9a24a', shieldHi: '#ffe08a' };
+  // Lyra（设计书 228）：原来和Kael共用一套配色，只多了腰铃和一缕头发，战场上分不出来。
+  // 改成紫水晶色披风 + 青绿色战衣 + 玫瑰银头盔 + 金色羽饰（和腰间的金铃呼应）
+  const DING_COL = { cape: '#8a4fd0', body: '#2f8f86', helmTop: '#f6ecf4', helmBottom: '#c4a8c0', brim: '#9c8298', plume: '#ffcf5a', plumeHi: '#fff1c2', shield: '#d8a84a', shieldHi: '#ffe7a0' };
   // v0.51 的三位新英雄（设计书 59.3）：各自固定的配色和体型，衣柜外观只用于Kael和Lyra
   const HERO_LOOKS = {
     yan: { scale: 1.05, eye: '#ffd08a', col: { cape: '#6f6a62', body: '#8a5a3a', helmTop: '#d6cfc0', helmBottom: '#7d776c', brim: '#5d574e', plume: '#e0893a', plumeHi: '#ffc58a', shield: '#8d8678', shieldHi: '#ffcf7a' } },
@@ -1799,7 +1802,7 @@
     const outfit = !look && kael && TD.data.outfitById ? TD.data.outfitById(st.outfit) : null;
     const style = outfit && outfit.style !== 'knight' ? outfit.style : null;
     const OL = OUTFIT_LOOK[style || 'knight'];
-    const col = look ? look.col : outfit ? outfit.colors : HERO_COL;
+    const col = look ? look.col : outfit ? outfit.colors : st.hero === 'ding' ? DING_COL : HERO_COL;
     const extra = outfit && outfit.extra;
     const ding = st.hero === 'ding';
     const sc = look ? look.scale : ding ? 0.93 : 1;
@@ -2282,7 +2285,18 @@
     if (ding) {
       // 从头盔下飘出来的长发
       const hw = Math.sin(t * 3) * 3;
-      ctx.fillStyle = '#3a2418';
+      // 两股长发：后面一股更暗，前面一股带高光，飘动有先后
+      const hw2 = Math.sin(t * 3 - 0.7) * 3;
+      ctx.fillStyle = '#4a2218';
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.16, -s * 0.06);
+      ctx.quadraticCurveTo(-s * 0.62 - hw2, s * 0.32, -s * 0.82 - hw2 * 1.6, s * 0.78);
+      ctx.quadraticCurveTo(-s * 0.46, s * 0.5, -s * 0.02, s * 0.24);
+      ctx.fill();
+      const hg = ctx.createLinearGradient(-s * 0.1, 0, -s * 0.7, s * 0.6);
+      hg.addColorStop(0, '#8a4228');
+      hg.addColorStop(1, '#5a2a1c');
+      ctx.fillStyle = hg;
       ctx.beginPath();
       ctx.moveTo(-s * 0.2, -s * 0.02);
       ctx.quadraticCurveTo(-s * 0.55 - hw, s * 0.25, -s * 0.7 - hw * 1.5, s * 0.6);
