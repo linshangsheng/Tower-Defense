@@ -451,6 +451,115 @@
     }
   };
 
+  // 石块的小工具：带明暗的不规则石头
+  function stone(ctx, x, y, r, seed, light, dark) {
+    const n = 7;
+    ctx.beginPath();
+    for (let i = 0; i < n; i++) {
+      const a = (i / n) * Math.PI * 2;
+      const rr = r * (0.82 + ((Math.sin(seed * 12.9 + i * 78.2) * 43758.5) % 1 + 1) % 1 * 0.3);
+      const px = x + Math.cos(a) * rr;
+      const py = y + Math.sin(a) * rr * 0.85;
+      if (i) ctx.lineTo(px, py);
+      else ctx.moveTo(px, py);
+    }
+    ctx.closePath();
+    const g = ctx.createRadialGradient(x + r * 0.35, y - r * 0.4, r * 0.1, x, y, r * 1.1);
+    g.addColorStop(0, light);
+    g.addColorStop(1, dark);
+    ctx.fillStyle = g;
+    ctx.fill();
+  }
+  // 石像鬼：秃鹫的头上长出一对弯弯的石角，眼睛是紫色的光
+  OV.gargoyle = function (ctx, s, t, o) {
+    const flap = Math.sin(t * 5 + (o.seed || 0));
+    ctx.translate(0, -s * 0.5 + flap * 2); // 和 ch2 的 vulture 一样
+    const hx = -s * 0.66;
+    const hy = -s * 0.22;
+    for (const [dx, dir] of [[0.05, 1], [-0.06, -1]]) {
+      ctx.fillStyle = dir > 0 ? '#8d8a96' : '#6a6774';
+      ctx.beginPath();
+      ctx.moveTo(hx + s * dx - s * 0.04, hy - s * 0.08);
+      ctx.quadraticCurveTo(hx + s * (dx + 0.12 * dir), hy - s * 0.32, hx + s * (dx + 0.22 * dir), hy - s * 0.3);
+      ctx.quadraticCurveTo(hx + s * (dx + 0.08 * dir), hy - s * 0.2, hx + s * dx + s * 0.05, hy - s * 0.07);
+      ctx.closePath();
+      ctx.fill();
+    }
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    ellipse(ctx, hx - s * 0.06, hy - s * 0.02, s * 0.05, s * 0.035, 'rgba(200,150,255,0.95)');
+    ctx.restore();
+  };
+  // 投石树桩：头顶托着一块大石头，随步子晃
+  OV.rockThrower = function (ctx, s, t, o) {
+    const step = Math.sin(t * 5 + (o.seed || 0));
+    const r = s * 0.34;
+    const x = step * s * 0.03;
+    const y = -s * 1.45 - r * 0.85;
+    ctx.save();
+    ctx.globalAlpha *= 0.35;
+    ellipse(ctx, x, -s * 1.45, r * 0.9, r * 0.22, '#1a1410');
+    ctx.restore();
+    stone(ctx, x, y, r, 3, '#b8b0a4', '#4e4840');
+    ctx.strokeStyle = 'rgba(40,34,28,0.55)';
+    ctx.lineWidth = Math.max(0.6, s * 0.02);
+    ctx.beginPath();
+    ctx.moveTo(x - r * 0.3, y - r * 0.3);
+    ctx.lineTo(x - r * 0.05, y + r * 0.05);
+    ctx.lineTo(x + r * 0.25, y - r * 0.1);
+    ctx.stroke();
+    ellipse(ctx, x + r * 0.35, y - r * 0.15, r * 0.14, r * 0.1, '#7a9a5a'); // 一点青苔
+  };
+  // 锻炉小鬼：手里拎一把烧红的小铁锤（火球换成了锤子）
+  OV.forgeImp = function (ctx, s, t, o) {
+    const fl = Math.sin(t * 5 + (o.seed || 0)) * s * 0.1;
+    ctx.translate(0, -s * 1.0 + fl); // 和 ch5 的 imp 一样
+    const swing = Math.sin(t * 9 + (o.seed || 0)) * 0.4;
+    ctx.translate(-s * 0.4, s * 0.05);
+    ctx.rotate(-0.6 + swing);
+    ctx.strokeStyle = '#5a3a22';
+    ctx.lineWidth = Math.max(1, s * 0.07);
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(0, -s * 0.5);
+    ctx.stroke();
+    const hg = ctx.createLinearGradient(-s * 0.18, 0, s * 0.18, 0);
+    hg.addColorStop(0, '#3a3c42');
+    hg.addColorStop(1, '#9aa0aa');
+    ctx.fillStyle = hg;
+    roundRect(ctx, -s * 0.18, -s * 0.62, s * 0.36, s * 0.18, s * 0.04);
+    ctx.fill();
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.fillStyle = 'rgba(255,120,40,0.75)';
+    ctx.fillRect(-s * 0.18, -s * 0.47, s * 0.36, s * 0.035);
+    ctx.restore();
+  };
+  // 怨灵：身下拖着一截断掉的铁链和镣铐，跟着飘
+  OV.wraith = function (ctx, s, t, o) {
+    const ph = t * 3 + (o.seed || 0);
+    const fl = Math.sin(ph) * s * 0.12;
+    ctx.translate(0, -s * 1.0 + fl); // 和 ch3 的 ghost 一样
+    const sw = Math.sin(ph * 1.3) * s * 0.06;
+    ctx.strokeStyle = '#6a6e7a';
+    ctx.lineWidth = Math.max(0.8, s * 0.045);
+    for (let i = 0; i < 5; i++) {
+      const cx = -s * 0.15 + sw * (i / 5);
+      const cy = s * 0.35 + i * s * 0.13;
+      ctx.beginPath();
+      if (i % 2) ctx.ellipse(cx, cy, s * 0.03, s * 0.07, 0, 0, Math.PI * 2);
+      else ctx.ellipse(cx, cy, s * 0.06, s * 0.035, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+    // 镣铐
+    ctx.strokeStyle = '#8a8e9a';
+    ctx.lineWidth = Math.max(1, s * 0.06);
+    ctx.beginPath();
+    ctx.arc(-s * 0.15 + sw, s * 1.08, s * 0.1, 0.2, Math.PI * 2 - 0.2);
+    ctx.stroke();
+  };
+
   // 把一个画怪物的函数包成"先画到临时画布，用 color 混合染色，再按原形状裁剪"
   let tintA = null;
   let tintB = null;
