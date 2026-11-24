@@ -341,7 +341,7 @@
         ],
       ],
       ['操作', [tile('打断 Boss', st.interrupts || 0), tile('提前召唤', st.earlyCalls || 0), tile('选择补给', st.supplies || 0), tile('技能协同', st.combos || 0)]],
-      ['技巧', [tile('完美防守', st.perfectWaves || 0), tile('最长完美连击', st.bestPerfectStreak || 0), tile('点中弱点', st.weakHits || 0), tile('完成今日任务', st.questsDone || 0)]],
+      ['技巧', [tile('完美防守', st.perfectWaves || 0), tile('最长完美连击', st.bestPerfectStreak || 0), tile('点中弱点', st.weakHits || 0), tile('打断蓄力', st.rageBreaks || 0), tile('完成今日任务', st.questsDone || 0)]],
       [
         '收集',
         [

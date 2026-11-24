@@ -1140,7 +1140,7 @@
       }
     }
     // 手改 / 损坏的存档：migrate 只校验了默认值里有的字段，后加的计数（mercDeployed 等）可能是字符串 / 对象，累加前先清成有限数
-    for (const k of ['battles', 'wins', 'kills', 'bestStreak', 'combos', 'interrupts', 'earlyCalls', 'supplies', 'bubbles', 'drops', 'elites', 'treasures', 'perfectWaves', 'bestPerfectStreak', 'weakHits', 'questsDone', 'pacts', 'chests', 'mercDeployed', 'mercKills'])
+    for (const k of ['battles', 'wins', 'kills', 'bestStreak', 'combos', 'interrupts', 'earlyCalls', 'supplies', 'bubbles', 'drops', 'elites', 'treasures', 'perfectWaves', 'bestPerfectStreak', 'weakHits', 'rageBreaks', 'questsDone', 'pacts', 'chests', 'mercDeployed', 'mercKills'])
       if (k in save.stats && !(typeof save.stats[k] === 'number' && Number.isFinite(save.stats[k]))) save.stats[k] = 0;
     const st = save.stats;
     st.battles++;
@@ -1163,6 +1163,7 @@
     st.perfectWaves = (st.perfectWaves || 0) + (result.perfectWaves || 0);
     st.bestPerfectStreak = Math.max(st.bestPerfectStreak || 0, result.bestPerfectStreak || 0);
     st.weakHits = (st.weakHits || 0) + (result.weakHits || 0);
+    st.rageBreaks = (st.rageBreaks || 0) + (result.rageBreaks || 0);
     // 发现过的补给羁绊（设计书 207）
     if (!st.setsFound || typeof st.setsFound !== 'object' || Array.isArray(st.setsFound)) st.setsFound = {};
     for (const id of result.supplySets || []) if (typeof id === 'string') st.setsFound[id] = true;

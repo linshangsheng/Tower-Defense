@@ -126,7 +126,14 @@
     battle.on('treasure', () => TD.audio.play('eliteAppear'));
     battle.on('weakSpot', () => TD.audio.play('dropAppear'));
     battle.on('weakHit', () => TD.audio.play('interrupt'));
-    battle.on('bossRage', () => TD.audio.play('warn'));
+    battle.on('bossRage', () => {
+      TD.audio.play('warn');
+      // 第一次见到 Boss 蓄力：慢镜头 1.5 秒，给新玩家反应时间（设计书 220）
+      if (!game.save.stats.rageTold) {
+        game.save.stats.rageTold = true;
+        game.slowUntil = performance.now() + 1500;
+      }
+    });
     battle.on('rageBroken', () => TD.audio.play('bossDie'));
     battle.on('supplySet', () => TD.audio.play('synergy'));
     battle.on('perfectWave', (e) => TD.audio.play('perfect', e.streak - 1)); // 连续完美，音一次比一次高

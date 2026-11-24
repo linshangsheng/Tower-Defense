@@ -87,3 +87,12 @@ test('Boss 蓄力（设计书 219）：66% / 33% 血量蓄力，点中打断，�
   bot.updateWeakSpots();
   assert.ok(!mb.rage);
 });
+
+test('打断蓄力计入统计和成就 Boss 克星（设计书 220）', () => {
+  const TD = require('../tools/load');
+  const P = TD.progression;
+  const s = P.newSave();
+  P.recordStats(s, { kills: 1, rageBreaks: 10 }, true);
+  assert.strictEqual(s.stats.rageBreaks, 10);
+  assert.ok(P.checkAchievements(s).some((a) => a.id === 'rage10'));
+});

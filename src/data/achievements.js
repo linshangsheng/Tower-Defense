@@ -36,6 +36,7 @@
     { id: 'perfect50', name: '固若金汤', desc: '累计打出 50 次完美防守', reward: { silver: 3 }, check: (s) => (s.stats.perfectWaves || 0) >= 50 },
     { id: 'perfectRun8', name: '滴水不漏', desc: '一场战斗里连续 8 次完美防守', reward: { silver: 3 }, check: (s) => (s.stats.bestPerfectStreak || 0) >= 8 },
     { id: 'weak20', name: '一针见血', desc: '累计点中 Boss 弱点 20 次', reward: { silver: 3 }, check: (s) => (s.stats.weakHits || 0) >= 20 },
+    { id: 'rage10', name: 'Boss 克星', desc: '累计打断 10 次 Boss 蓄力', reward: { silver: 4 }, check: (s) => (s.stats.rageBreaks || 0) >= 10 },
     { id: 'quests30', name: '日日精进', desc: '累计完成 30 个今日任务', reward: { silver: 4 }, check: (s) => (s.stats.questsDone || 0) >= 30 },
     { id: 'sets5', name: '羁绊收藏家', desc: '发现 5 种补给羁绊', reward: { silver: 3 }, check: (s) => Object.keys((s.stats && s.stats.setsFound) || {}).length >= 5 },
     { id: 'setsAll', name: '天作之合', desc: '发现全部补给羁绊', reward: { silver: 6 }, check: (s) => !!TD.data.supplySets && TD.data.supplySets.every((x) => ((s.stats && s.stats.setsFound) || {})[x.id]) },

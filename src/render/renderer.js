@@ -4147,6 +4147,13 @@
       ctx.shadowBlur = 10;
       ctx.fillRect(x, y, (w * boss.hp) / boss.maxHp, 14);
       ctx.shadowBlur = 0;
+      // Boss 蓄力的血量档位（设计书 220）：还没触发的档位画成金色小刻度
+      if (this.battle && !this.battle.autoSupply && !boss.def.towerOf && TD.config.bossRage) {
+        ctx.fillStyle = '#ffd23f';
+        TD.config.bossRage.marks.forEach((r, i) => {
+          if ((boss.rageMark || 0) <= i) ctx.fillRect(x + w * r - 1.5, y - 3, 3, 20);
+        });
+      }
       // 阶段刻度
       if (boss.def.ai === 'boarKing') {
         ctx.fillStyle = '#fff';
