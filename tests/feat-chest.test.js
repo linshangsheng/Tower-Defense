@@ -86,3 +86,17 @@ test('闪电通关（设计书 221）：每关有标准时间；不超过标准�
   const again = P.applyResult(s, 4, { win: true, wallRatio: 1, time: par - 2, kills: 1 });
   assert.ok(!again.bolt);
 });
+
+test('章节全部闪电通关奖励 3 银（设计书 224）', () => {
+  const D = TD.data;
+  const s = P.newSave();
+  const ch = D.chapters[0];
+  for (const k of ch.levels) s.levels[k] = { stars: 3, clears: 1, bolt: k !== ch.levels[3] };
+  const last = ch.levels[3];
+  const ag = s.silver;
+  const r = P.applyResult(s, last, { win: true, wallRatio: 1, time: 1, kills: 1 });
+  assert.ok(r.bolt);
+  assert.ok(r.notes.some((x) => x.includes('全部闪电通关')));
+  assert.ok(s.chapterBolt[ch.id]);
+  assert.ok(s.silver >= ag + 3);
+});

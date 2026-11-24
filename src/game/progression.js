@@ -1106,6 +1106,18 @@
     out.copperMult = copperMult;
     save.levels[n] = rec;
 
+    // 章节全部闪电通关（设计书 224）：3 银，每章一次
+    save.chapterBolt = save.chapterBolt && typeof save.chapterBolt === 'object' && !Array.isArray(save.chapterBolt) ? save.chapterBolt : {};
+    if (out.bolt) {
+      for (const ch of D.chapters) {
+        if (save.chapterBolt[ch.id] || !ch.levels.includes(n)) continue;
+        if (ch.levels.every((k) => !(D.parTimes && D.parTimes[k]) || (save.levels[k] || {}).bolt || (k === n && rec.bolt))) {
+          save.chapterBolt[ch.id] = true;
+          out.silver += 3;
+          out.notes.push(`⚡ ${ch.name}全部闪电通关：+3 银`);
+        }
+      }
+    }
     // 章节全三星
     for (const ch of D.chapters) {
       if (save.chapterStarGold[ch.id]) continue;

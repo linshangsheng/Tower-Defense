@@ -1015,7 +1015,11 @@
         { class: 'topbar' },
         h('button', { class: 'btn small', onclick: () => (sfx('click'), UI.showTitle()) }, '‹ 标题'),
         chapterNav,
-        h('div', { class: 'chapter-title', title: `第${D.chapterNo(ch.id)}章 · ${ch.name}` }, ch.name, h('span', { class: 'chapter-stars' }, ` ★ ${totalStars}/${ch.levels.length * 3}`), P.crowns(s, ch.levels) ? h('span', { class: 'chapter-crowns', title: '本章王冠（挑战难度通关）' }, `👑${P.crowns(s, ch.levels)}`) : null),
+        h('div', { class: 'chapter-title', title: `第${D.chapterNo(ch.id)}章 · ${ch.name}` }, ch.name, h('span', { class: 'chapter-stars' }, ` ★ ${totalStars}/${ch.levels.length * 3}`), P.crowns(s, ch.levels) ? h('span', { class: 'chapter-crowns', title: '本章王冠（挑战难度通关）' }, `👑${P.crowns(s, ch.levels)}`) : null, (() => {
+          // 本章闪电通关进度（设计书 224）：拿到第一个之后才显示
+          const nb = ch.levels.filter((k) => (s.levels[k] || {}).bolt).length;
+          return nb ? h('span', { class: 'chapter-bolt', title: '本章闪电通关（全部达成奖励 3 银）' }, `⚡${nb}/${ch.levels.length}`) : null;
+        })()),
         h('div', { class: 'power' }, '战力 ', h('b', null, P.power(s))),
         currencyBar(),
         P.isCleared(s, 5) ? h('button', { class: 'btn small icon-btn', title: '王国小镇', onclick: () => (sfx('click'), UI.showTown()) }, '🏘') : null,

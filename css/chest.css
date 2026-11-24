@@ -140,3 +140,4 @@
 .node-bolt { position: absolute; top: -8px; right: -10px; font-size: 18px; pointer-events: none; }
 .preview-info .par-time { color: #ffd23f; opacity: 0.8; }
 .preview-info .par-time.ok { opacity: 1; }
+.chapter-bolt { margin-left: 6px; font-size: 0.8em; color: #ffd23f; }
