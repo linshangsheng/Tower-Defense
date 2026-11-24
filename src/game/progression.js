@@ -1080,7 +1080,8 @@
     const killCopper = result.killCopper || 0;
     out.killCopper = Math.round(killCopper);
     out.earlyCopper = result.earlyCopper || 0;
-    out.copper = Math.round((base + killCopper + out.earlyCopper + bonusCopper) * copperMult);
+    out.perfectCopper = result.perfectCopper || 0; // 完美防守（设计书 199）
+    out.copper = Math.round((base + killCopper + out.earlyCopper + out.perfectCopper + bonusCopper) * copperMult);
     out.copperMult = copperMult;
     save.levels[n] = rec;
 
@@ -1126,7 +1127,7 @@
       }
     }
     // 手改 / 损坏的存档：migrate 只校验了默认值里有的字段，后加的计数（mercDeployed 等）可能是字符串 / 对象，累加前先清成有限数
-    for (const k of ['battles', 'wins', 'kills', 'bestStreak', 'combos', 'interrupts', 'earlyCalls', 'supplies', 'bubbles', 'drops', 'elites', 'treasures', 'mercDeployed', 'mercKills'])
+    for (const k of ['battles', 'wins', 'kills', 'bestStreak', 'combos', 'interrupts', 'earlyCalls', 'supplies', 'bubbles', 'drops', 'elites', 'treasures', 'perfectWaves', 'mercDeployed', 'mercKills'])
       if (k in save.stats && !(typeof save.stats[k] === 'number' && Number.isFinite(save.stats[k]))) save.stats[k] = 0;
     const st = save.stats;
     st.battles++;
@@ -1146,6 +1147,7 @@
     st.drops = (st.drops || 0) + (result.drops || 0);
     st.elites = (st.elites || 0) + (result.elites || 0);
     st.treasures = (st.treasures || 0) + (result.treasures || 0);
+    st.perfectWaves = (st.perfectWaves || 0) + (result.perfectWaves || 0);
     st.mercDeployed = (st.mercDeployed || 0) + (result.mercDeployed || 0);
     st.mercKills = (st.mercKills || 0) + (result.mercKills || 0);
     for (const k of Object.keys(result.killsByType || {})) st.killsByType[k] = (st.killsByType[k] || 0) + result.killsByType[k];

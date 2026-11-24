@@ -795,6 +795,17 @@
         this.shake = Math.max(this.shake, 6);
         if (this.vfx) this.vfx.spawn(14, () => ({ kind: 'spark', x: e.x, y: e.y, vx: (Math.random() - 0.5) * 320, vy: -60 - Math.random() * 200, g: 260, life: 0.6, r: 2.4, color: '#ffd07a' }));
       });
+      // 完美防守（设计书 199）
+      on('perfectWave', (e) => {
+        const y = C.fieldTop + 70;
+        const label = e.streak > 1 ? `完美防守 ×${e.streak}` : '完美防守';
+        this.text(C.width / 2, y, label, e.streak >= 3 ? '#ffd23f' : '#9fe7ff', e.streak >= 3 ? 30 : 26, 1.6);
+        if (e.bonus > 0) this.text(C.width / 2, y + 34, `+${e.bonus} 铜`, '#ffb347', 20, 1.4);
+        this.fx.push({ kind: 'ring', x: C.heroX + 60, y: battle.heroY, r0: 20, r1: 220, color: e.streak >= 3 ? '#ffd23f' : '#9fe7ff', w: 5, life: 0.6, age: 0, flat: 0.5 });
+      });
+      on('perfectBreak', (e) => {
+        if (e.streak >= 2) this.text(C.width / 2, C.fieldTop + 70, `完美连击中断（${e.streak}）`, '#cfcfcf', 18, 1.2);
+      });
       on('treasureEscape', (e) => this.text(e.x + 20, e.y - 30, '跑掉了……', '#cfcfcf', 20, 1.0));
       on('treasure', () => {
         this.text(C.width - 220, C.fieldTop + 40, '宝箱哥布林！', '#ffd23f', 26, 1.6);

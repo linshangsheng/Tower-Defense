@@ -19,6 +19,7 @@
     treasure: { name: '抓住 {0} 只宝箱哥布林', goal: 1, kind: 'sum', stat: (r) => r.treasures || 0, icon: 'coinbag' },
     stars3: { name: '三星通关 {0} 次', goal: 2, kind: 'sum', stat: (r, w) => (w && r.stars >= 3 ? 1 : 0), icon: 'star' },
     weak: { name: '点中 Boss 弱点 {0} 次', goal: 3, kind: 'sum', stat: (r) => r.weakHits || 0, icon: 'target' },
+    perfect: { name: '打出 {0} 次完美防守', goal: 8, kind: 'sum', stat: (r) => r.perfectWaves || 0, icon: 'shield' },
     flawless: { name: '城墙满血赢下 {0} 场', goal: 1, kind: 'sum', stat: (r, w) => (w && (r.minWallRatio || 0) >= 0.999 ? 1 : 0), icon: 'shield' },
   };
   Q.IDS = Object.keys(Q.POOL);

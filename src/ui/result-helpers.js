@@ -51,6 +51,7 @@
       { label: `击杀掉落（${res.kills} 只）`, value: reward.killCopper, coin: 'copper' },
     ];
     if (reward.earlyCopper) rows.push({ label: '提前召唤', value: reward.earlyCopper, coin: 'copper' });
+    if (reward.perfectCopper) rows.push({ label: '完美防守', value: reward.perfectCopper, coin: 'copper' });
     if (reward.copperMult > 1) rows.push({ label: '幸运加成', value: '×' + reward.copperMult.toFixed(2) });
     return rows;
   };

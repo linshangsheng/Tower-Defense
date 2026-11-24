@@ -124,6 +124,7 @@
     battle.on('treasure', () => TD.audio.play('eliteAppear'));
     battle.on('weakSpot', () => TD.audio.play('dropAppear'));
     battle.on('weakHit', () => TD.audio.play('interrupt'));
+    battle.on('perfectWave', (e) => TD.audio.play(e.streak >= 3 ? 'streak' : 'ding'));
     battle.on('dropGet', () => TD.audio.play('dropGet'));
     battle.on('focus', () => TD.audio.play('focusTap'));
     battle.on('repair', () => TD.audio.play('repair'));

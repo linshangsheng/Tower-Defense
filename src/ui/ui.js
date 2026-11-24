@@ -2404,7 +2404,7 @@
     const canCall = b.waveState === 'waiting' && b.waveIndex < b.totalWaves - 1 && !b.pendingSupply && b.countdown > 0;
     hud.callBtn.classList.toggle('hidden', !canCall);
     if (canCall) setText(hud.callBtn, `提前召唤 +${Math.max(0, Math.floor(b.countdown))}铜 (N)`);
-    setText(hud.copper, Math.floor(b.killCopper + b.earlyCopper)); // 多出来的小怪的铜币按强度折算，可能带小数
+    setText(hud.copper, Math.floor(b.killCopper + b.earlyCopper + (b.perfectCopper || 0))); // 多出来的小怪的铜币按强度折算，可能带小数
     b.skills.forEach((sk, i) => {
       const btn = hud.skillBtns[i];
       const cd = btn.querySelector('.cd');

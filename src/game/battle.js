@@ -462,6 +462,7 @@
       this.waveState = 'spawning';
       this.waveStartTime = this.time;
       this.clearedOnce = false;
+      if (this.markPerfectWave) this.markPerfectWave();
       // 贝贝的泡泡护盾（设计书 52.7）：每波开始时刷新
       if (this.buddy && this.buddy.perk.wallBubble) this.wallShield = this.wall.max * this.buddy.perk.wallBubble;
       // 潮汐套装（设计书 58.4）：和贝贝的护盾不叠加，取大的
@@ -517,6 +518,7 @@
         if (this.level.type !== 'rush' && !this.clearedOnce && this.aliveCount() === 0) {
           this.clearedOnce = true;
           this.countdown = Math.min(this.countdown, C.waveClearDelay);
+          if (this.checkPerfectWave) this.checkPerfectWave();
         }
         // 无尽模式：Boss 还活着时下一波不来（普通关卡的 Boss 都在最后一波）
         const bossHold = this.level.endless && this.monsters.some((m) => m.def.boss && !m.dead);
@@ -532,7 +534,10 @@
         return;
       }
       if (this.waveState === 'final') {
-        if (this.aliveCount() === 0) this.finish(true);
+        if (this.aliveCount() === 0) {
+          if (this.checkPerfectWave) this.checkPerfectWave();
+          this.finish(true);
+        }
       }
     }
 
@@ -2789,6 +2794,9 @@
         killCopper: this.killCopper,
         killSilver: this.killSilver,
         earlyCopper: this.earlyCopper,
+        perfectCopper: this.perfectCopper || 0,
+        perfectWaves: this.perfectWaves || 0,
+        bestPerfectStreak: this.bestPerfectStreak || 0,
         kills: this.kills,
         time: this.time,
         charm: this.charm,
