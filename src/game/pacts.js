@@ -27,6 +27,7 @@
       if (this.autoSupply || this.level.tower) return false;
       // 无尽模式也有契约（设计书 213）：拿诅咒赌更强的构筑，撑更多波
       if (this.level.endless) return !!this.mode && this.mode.kind === 'endless';
+      if (this.rules && this.rules.pactAlways) return true; // 每日规则「契约之日」（设计书 223）
       return typeof this.levelNo === 'number' && this.levelNo >= C.pact.from && !this.mode;
     },
 
@@ -36,7 +37,7 @@
       if (!this.pactOn()) return null;
       if (!this.pactRng) this.pactRng = TD.util.rng(((this.seedVal || 1) * 7919 + 17) >>> 0);
       const r = this.pactRng;
-      if (r() >= C.pact.chance) return null;
+      if (r() >= (this.rules && this.rules.pactAlways ? 1 : C.pact.chance)) return null;
       const pool = Object.keys(D.supplies).filter((id) => {
         const s = D.supplies[id];
         if (!['red', 'gold'].includes(s.rarity) || s.humanOnly || this.supplyPicked.includes(id) || (this.pendingSupply || []).includes(id)) return false;

@@ -79,3 +79,30 @@ test('无尽模式也会出现契约（设计书 213），妖塔和每日挑战�
   b.mode = null;
   assert.ok(!b.pactOn());
 });
+
+test('每日规则「契约之日」：每次补给都有契约卡；「完美之日」完美防守铜币 ×4 并计入每日结算（设计书 223）', () => {
+  const M = TD.modes;
+  const s = P.newSave();
+  for (let k = 1; k <= 40; k++) s.levels[k] = { stars: 3, clears: 1 };
+  const info = { key: 'x', level: 32, rule: 'pactday' };
+  const b = new TD.Battle({ level: 32, levelDef: M.buildDaily(info), stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 3 });
+  b.mode = { kind: 'daily', info };
+  b.startWave(0);
+  for (let i = 0; i < 3; i++) {
+    b.offerSupply();
+    assert.ok(b.pendingPact, '契约之日每次都有契约');
+    b.pendingSupply = null;
+  }
+  const info2 = { key: 'y', level: 32, rule: 'perfectday' };
+  const c = new TD.Battle({ level: 32, levelDef: M.buildDaily(info2), stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 3 });
+  c.waveIndex = 0;
+  c.markPerfectWave();
+  c.checkPerfectWave();
+  const plain = new TD.Battle({ level: 32, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 3 });
+  plain.waveIndex = 0;
+  plain.markPerfectWave();
+  plain.checkPerfectWave();
+  assert.ok(Math.abs(c.perfectCopper - plain.perfectCopper * 4) <= 2);
+  const r = M.applyDailyResult(s, info2, { win: false, killCopper: 0, perfectCopper: 100, kills: 1 });
+  assert.ok(r.copper >= 100);
+});

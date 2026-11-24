@@ -302,6 +302,9 @@
     orbstorm: { name: '光球风暴', desc: '战利品光球掉率 ×6，怪物血量 +20%', rules: { monsterHp: 0.2, dropMult: 6 } },
     mercfair: { name: '佣兵集市', desc: '雇佣兵费用 −40%，怪物血量 +20%', rules: { monsterHp: 0.2, mercCost: -0.4 } },
     lastStand: { name: '背水一战', desc: '城墙血量 −30%，攻击力 +30%', rules: { wallHp: -0.3, mods: { atkMult: 0.3 } } },
+    // 设计书 223
+    pactday: { name: '契约之日', desc: '每次补给都附带一张契约卡，怪物血量 −15%', rules: { monsterHp: -0.15, pactAlways: 1 } },
+    perfectday: { name: '完美之日', desc: '完美防守的铜币 ×4，城墙受到的伤害 +30%', rules: { mods: { perfectCopper: 3, wallDr: -0.3 } } },
   };
 
   M.dailyUnlocked = (save) => P.isCleared(save, 5);
@@ -379,7 +382,7 @@
     const out = { copper: 0, silver: 0, gold: 0, notes: [], unlocks: [] };
     const st = P.heroStats(save);
     const diff = C.difficulties[save.settings.difficulty || 'normal'] || C.difficulties.normal;
-    out.copper = Math.round((result.killCopper || 0) * (1 + st.luck + (result.copperBonus || 0) + diff.copper));
+    out.copper = Math.round(((result.killCopper || 0) + (result.perfectCopper || 0)) * (1 + st.luck + (result.copperBonus || 0) + diff.copper));
     if (result.win && !save.daily[info.key]) {
       save.daily[info.key] = true;
       out.silver = 3;
