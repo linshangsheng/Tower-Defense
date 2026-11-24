@@ -4085,7 +4085,9 @@
         // 英雄也加明暗和轮廓光。缓存键按 30 帧/秒量化动画状态（设计书 226）：60Hz 屏幕上一半的帧直接贴缓存，高刷屏省得更多
         this.heroArt = this.heroArt || {};
         // 统一时钟：键 = 30 帧/秒的帧号 + 离散状态；瞄准、出手、蓄力这些连续量在重画的那一刻采样（各自量化会此起彼伏，几乎每帧都变）
-        const hk = Math.floor(performance.now() / (1000 / 30)) + '|' + (castId || '') + '|' + mood + '|' + weapon + (ascended ? 'A' : '') + '|' + ho.outfit + '|' + ho.hero + '|' + this.scene.palette.rim;
+        // 低帧率设备上 30 帧的时钟等于每帧都重画：时钟跟着画质档位降（高 30 / 中 21 / 低 15 / 最低 12 帧）
+        const heroFps = Math.max(12, Math.round(30 * ((TD.quality && TD.quality.params().lit) || 1)));
+        const hk = Math.floor(performance.now() / (1000 / heroFps)) + '|' + (castId || '') + '|' + mood + '|' + weapon + (ascended ? 'A' : '') + '|' + ho.outfit + '|' + ho.hero + '|' + this.scene.palette.rim;
         const c = TD.art.litSprite(this.heroArt, hk, 40, this.scene.palette.rim, 0, (g) => ((S.volume = true), S.hero(g, 0, 0, ho), (S.volume = false)));
         this.ctx.drawImage(c.canvas, Math.round(C.heroX - c.ox), Math.round(heroY - c.oy));
       } else S.hero(this.ctx, C.heroX, heroY, ho);
