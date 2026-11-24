@@ -45,6 +45,7 @@
       achievements: {},
       settings: { sound: true, speed: 1, difficulty: 'normal', restMinutes: 30 },
       login: { last: '', day: 0 }, // 每日登录奖励（设计书 162）
+      quests: { key: '', list: [], bonus: false }, // 今日任务（设计书 197）
       mercLv: {}, // 雇佣兵等级（设计书 184）：兵种 id → 等级（默认 1）
       mercLoadout: [], // 带上战场的兵种（最多 3 个）
       mercChosen: false, // 玩家自己选过带谁了（没选过就自动取前 3 个已解锁的）
@@ -1098,6 +1099,7 @@
     save.gold += out.gold;
     P.recordStats(save, result, result.win);
 
+    for (const name of result._questsDone || []) out.notes.push(`今日任务完成：${name}`);
     out.achievements = P.checkAchievements(save, Object.assign({ level: n }, result));
     const names = { active: '主动技能槽', passive: '被动技能槽', item: '消耗品槽' };
     for (const k of Object.keys(before)) {
@@ -1115,6 +1117,14 @@
 
   // 一场战斗结束后累计统计（普通关卡、无尽、每日、九层妖塔共用）
   P.recordStats = function (save, result, win) {
+    // 今日任务（设计书 197）：任何模式的战斗都算；刚完成的任务名放进 result._questsDone 给结算页显示
+    if (TD.quests && result) {
+      try {
+        result._questsDone = TD.quests.onBattle(save, result, win);
+      } catch (e) {
+        result._questsDone = [];
+      }
+    }
     // 手改 / 损坏的存档：migrate 只校验了默认值里有的字段，后加的计数（mercDeployed 等）可能是字符串 / 对象，累加前先清成有限数
     for (const k of ['battles', 'wins', 'kills', 'bestStreak', 'combos', 'interrupts', 'earlyCalls', 'supplies', 'bubbles', 'drops', 'elites', 'treasures', 'mercDeployed', 'mercKills'])
       if (k in save.stats && !(typeof save.stats[k] === 'number' && Number.isFinite(save.stats[k]))) save.stats[k] = 0;

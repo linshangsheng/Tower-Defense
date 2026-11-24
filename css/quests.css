@@ -1,0 +1,82 @@
+/* 今日任务（设计书 197） */
+.quest-btn {
+  position: relative;
+}
+.quest-dot {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ff5a4f;
+  box-shadow: 0 0 0 2px rgba(20, 24, 36, 0.9);
+}
+.quests {
+  width: 640px;
+  max-width: 100%;
+}
+.quest-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2, 8px);
+  margin: var(--s3, 12px) 0 var(--s4, 16px);
+}
+.quest-row {
+  display: grid;
+  grid-template-columns: 40px 1fr auto 112px;
+  align-items: center;
+  gap: var(--s3, 12px);
+  min-height: 56px;
+  padding: 8px var(--s4, 16px);
+  border-radius: var(--r-md, 12px);
+  background: var(--fill-1, rgba(255, 255, 255, 0.06));
+  border: 0.5px solid var(--sep, rgba(255, 255, 255, 0.09));
+}
+.quest-row.done {
+  background: var(--accent-fill, rgba(255, 179, 64, 0.16));
+  border-color: rgba(255, 179, 64, 0.45);
+}
+.quest-row.bonus {
+  margin-top: var(--s2, 8px);
+}
+.quest-ico .ico {
+  width: 26px;
+  height: 26px;
+  margin: 0;
+  color: var(--accent-hi, #ffd07a);
+}
+.quest-name {
+  font-size: var(--fs-body, 15px);
+  font-weight: var(--fw-semibold, 600);
+  color: var(--label, #fff);
+}
+.quest-bar {
+  margin-top: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--fill-2, rgba(255, 255, 255, 0.11));
+  overflow: hidden;
+}
+.quest-bar i {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent, #ffb340), var(--accent-hi, #ffd07a));
+}
+.quest-rew {
+  font-size: var(--fs-footnote, 13px);
+  color: var(--label-2, rgba(235, 235, 245, 0.64));
+  white-space: nowrap;
+}
+.quest-act {
+  text-align: right;
+}
+.quest-act .btn {
+  min-width: 96px;
+  font-variant-numeric: tabular-nums;
+}
+.quest-claimed {
+  font-size: var(--fs-footnote, 13px);
+  color: #7fe08a;
+}

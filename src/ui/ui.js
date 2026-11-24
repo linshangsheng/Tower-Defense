@@ -840,6 +840,65 @@
     );
   };
 
+  // 今日任务（设计书 197）：3 个小目标 + 全部完成的额外奖励
+  UI.showQuests = function () {
+    const Q = TD.quests;
+    const s = game.save;
+    const st = Q.today(s);
+    const rew = (r) => {
+      const out = [];
+      for (const k of ['copper', 'silver', 'gold']) if (r[k]) out.push(h('b', null, r[k], ' ', coinIcon(k)));
+      return out;
+    };
+    const redraw = () => {
+      game.persist();
+      UI.closeModal();
+      UI.showQuests();
+    };
+    const rows = st.list.map((q, i) => {
+      const def = Q.POOL[q.id];
+      const done = Q.done(q);
+      const frac = Math.min(1, q.prog / def.goal);
+      const btn = q.claimed
+        ? h('span', { class: 'quest-claimed' }, '✔ 已领取')
+        : h('button', { class: 'btn small' + (done ? ' primary' : ''), disabled: done ? null : true, onclick: () => {
+            if (Q.claim(s, i)) sfx('coin');
+            redraw();
+          } }, done ? '领取' : `${q.prog} / ${def.goal}`);
+      return h(
+        'div',
+        { class: 'quest-row' + (done ? ' done' : '') },
+        h('div', { class: 'quest-ico' }, TD.icons ? TD.icons.svg(def.icon) : null),
+        h('div', { class: 'quest-main' }, h('div', { class: 'quest-name' }, Q.label(q.id)), h('div', { class: 'quest-bar' }, h('i', { style: { width: Math.round(frac * 100) + '%' } }))),
+        h('div', { class: 'quest-rew' }, rew(Q.reward(s))),
+        h('div', { class: 'quest-act' }, btn)
+      );
+    });
+    const allClaimed = st.list.every((q) => q.claimed);
+    const bonusRow = h(
+      'div',
+      { class: 'quest-row bonus' + (st.bonus ? ' done' : '') },
+      h('div', { class: 'quest-ico' }, TD.icons ? TD.icons.svg('gift') : null),
+      h('div', { class: 'quest-main' }, h('div', { class: 'quest-name' }, '三个任务全部完成')),
+      h('div', { class: 'quest-rew' }, rew(Q.bonusReward())),
+      h('div', { class: 'quest-act' }, st.bonus ? h('span', { class: 'quest-claimed' }, '✔ 已领取') : h('button', { class: 'btn small' + (allClaimed ? ' primary' : ''), disabled: allClaimed ? null : true, onclick: () => {
+        if (Q.claimBonus(s)) sfx('coin');
+        redraw();
+      } }, '领取'))
+    );
+    modal(
+      h(
+        'div',
+        { class: 'quests' },
+        h('h2', null, '今日任务'),
+        h('p', { class: 'hint' }, '每天换一批。主线、无尽、每日挑战、九层妖塔的战斗都算进度。'),
+        h('div', { class: 'quest-list' }, rows, bonusRow),
+        h('div', { class: 'modal-buttons' }, h('button', { class: 'btn', onclick: () => (UI.closeModal(), UI.showMap(UI.mapChapter)) }, '关闭'))
+      ),
+      { closeOnBack: true }
+    );
+  };
+
   UI.showMap = function (chapterId) {
     clear();
     game.renderer.mood = 'idle';
@@ -952,6 +1011,7 @@
       h(
         'div',
         { class: 'mode-buttons' },
+        TD.quests && TD.quests.unlocked(s) ? h('button', { class: 'btn small quest-btn', onclick: () => (sfx('click'), UI.showQuests()) }, '📋 今日任务', TD.quests.claimable(s) ? h('span', { class: 'quest-dot' }) : null) : null,
         TD.modes.dailyUnlocked(s) ? h('button', { class: 'btn small', onclick: () => (sfx('click'), UI.showDaily()) }, TD.modes.dailyInfo(s).done ? '📅 每日挑战 ✔' : '📅 每日挑战') : null,
         TD.modes.endlessUnlocked(s) ? h('button', { class: 'btn small', onclick: () => (sfx('click'), UI.showEndless()) }, `♾ 无尽模式${(s.endless || {}).best ? ' · 纪录 ' + s.endless.best : ''}`) : null,
         TD.modes.towerUnlocked(s) ? h('button', { class: 'btn small', onclick: () => (sfx('click'), UI.showTower()) }, `🏯 九层妖塔${(s.tower || {}).best ? ` · ${s.tower.best}/9` : ''}`) : null

@@ -51,6 +51,7 @@
     helm: { d: 'M5 15a7 7 0 0 1 14 0v4H5v-4z M5 15h14 M12 8v7 M8.5 19v-4 M15.5 19v-4' },
     coin: { d: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z M12 6.8v10.4 M9.4 9.6c0-1 1.2-1.7 2.6-1.7s2.6.7 2.6 1.7-1.2 1.5-2.6 1.8-2.6.8-2.6 1.8 1.2 1.7 2.6 1.7 2.6-.7 2.6-1.7' },
     flag: { d: 'M6 21V4 M6 4.5h11.5l-2.2 3.8 2.2 3.8H6' },
+    clipboard: { d: 'M9 4h6v3H9z M7 5.5H5.5a1 1 0 0 0-1 1V20a1 1 0 0 0 1 1h13a1 1 0 0 0 1-1V6.5a1 1 0 0 0-1-1H17 M8.5 12l2 2 4-4 M8.5 17h7' },
     close: { d: 'M6 6l12 12 M18 6L6 18' },
     dot: { f: 'M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z' },
   };
@@ -62,7 +63,7 @@
     '📅': 'calendar', '💡': 'bulb', '🌐': 'globe', '🏘': 'village', '👕': 'shirt', '📔': 'book', '📖': 'openbook', '♾': 'infinity', '🏯': 'pagoda',
     '🎺': 'horn', '💰': 'coinbag', '❚❚': 'pause', '❚': 'pause', '📦': 'box', '♪': 'note', '🎁': 'gift', '⚔': 'swords', '👉': 'arrow', '➜': 'arrow', '❄': 'snowflake',
     '⚠': 'warning', '🔄': 'refresh', '🛠': 'wrench', '🔧': 'wrench', '📊': 'chart', '📜': 'scroll', '✎': 'pencil', '♥': 'heart', '🛡': 'shield',
-    '🚩': 'flag', '🔥': 'flame', '💨': 'wind', '🧱': 'wall',
+    '🚩': 'flag', '📋': 'clipboard', '🔥': 'flame', '💨': 'wind', '🧱': 'wall',
   };
   I.MAP = MAP;
   // 颜色提示：图标默认跟随文字颜色，这几个带一点语义色
