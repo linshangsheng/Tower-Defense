@@ -821,6 +821,23 @@
       on('perfectBreak', (e) => {
         if (e.streak >= 2) this.text(C.width / 2, C.fieldTop + 70, `完美连击中断（${e.streak}）`, '#cfcfcf', 18, 1.2);
       });
+      // Boss 蓄力（设计书 219）
+      on('bossRage', (e) => {
+        const m = e.m;
+        this.text(m.x, m.y + m.yOffset - m.def.size - 30, '蓄力！点弱点打断', '#ff6b5e', 24, 1.6);
+        this.shake = Math.max(this.shake, 4);
+      });
+      on('rageBroken', (e) => {
+        this.fx.push({ kind: 'ring', x: e.x, y: e.y, r0: 16, r1: 170, color: '#ffffff', w: 8, life: 0.5, age: 0, flat: 0.7 });
+        this.fx.push({ kind: 'glow', x: e.x, y: e.y, r: 110, color: '#ffd07a', life: 0.4, age: 0 });
+        this.text(e.x, e.y - 50, '打断！', '#ffffff', 34, 1.2);
+        this.shake = Math.max(this.shake, 10);
+        if (this.vfx) this.vfx.spawn(22, () => ({ kind: 'spark', x: e.x, y: e.y, vx: (Math.random() - 0.5) * 420, vy: -80 - Math.random() * 260, g: 260, life: 0.7, r: 2.6, color: '#ffd07a' }));
+      });
+      on('rageLand', (e) => {
+        const m = e.m;
+        this.text(m.x, m.y + m.yOffset - m.def.size - 30, '狂暴！', '#ff3b30', 28, 1.4);
+      });
       on('treasureEscape', (e) => this.text(e.x + 20, e.y - 30, '跑掉了……', '#cfcfcf', 20, 1.0));
       on('treasure', () => {
         this.text(C.width - 220, C.fieldTop + 40, '宝箱哥布林！', '#ffd23f', 26, 1.6);
@@ -3608,14 +3625,25 @@
         if (!m.weak || m.dead) continue;
         const p = b.weakPos(m);
         const left = Math.max(0, m.weak.until - b.time);
-        const life = TD.config.weakSpot.life;
-        const pulse = 1 + Math.sin(this.t * 10) * 0.12;
+        const rage = !!m.weak.rage; // Boss 蓄力的弱点（设计书 219）：更大、红色、跳得更快
+        const life = rage ? TD.config.bossRage.windup : TD.config.weakSpot.life;
+        const pulse = 1 + Math.sin(this.t * (rage ? 16 : 10)) * (rage ? 0.18 : 0.12);
         const pop = Math.min(1, (b.time - m.weak.born) / 0.18);
-        const r = 20 * pulse * (0.4 + 0.6 * pop);
-        if (left < 0.8 && Math.floor(left * 10) % 2 === 0) continue;
+        const r = (rage ? 28 : 20) * pulse * (0.4 + 0.6 * pop);
+        if (!rage && left < 0.8 && Math.floor(left * 10) % 2 === 0) continue;
         ctx.save();
+        if (rage) {
+          // 蓄力：Boss 脚下一圈越收越紧的红环
+          const k = left / life;
+          ctx.globalAlpha = 0.55;
+          ctx.strokeStyle = '#ff3b30';
+          ctx.lineWidth = 4;
+          ctx.beginPath();
+          ctx.ellipse(m.x, m.y + m.yOffset + m.def.size * 0.25, m.def.size * (0.7 + k * 0.9), m.def.size * (0.25 + k * 0.3), 0, 0, Math.PI * 2);
+          ctx.stroke();
+        }
         ctx.globalAlpha = 0.35;
-        ctx.fillStyle = '#ffb340';
+        ctx.fillStyle = rage ? '#ff3b30' : '#ffb340';
         ctx.beginPath();
         ctx.arc(p.x, p.y, r * 1.6, 0, Math.PI * 2);
         ctx.fill();
@@ -3625,11 +3653,11 @@
         ctx.beginPath();
         ctx.arc(p.x, p.y, r + 7, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * (left / life));
         ctx.stroke();
-        ctx.strokeStyle = '#ffd07a';
+        ctx.strokeStyle = rage ? '#ff8a80' : '#ffd07a';
         ctx.lineWidth = 2.5;
         ctx.stroke();
         ctx.restore();
-        TD.icons.draw(ctx, 'target', p.x, p.y, r * 1.6, '#ff6a4f', 2.2);
+        TD.icons.draw(ctx, 'target', p.x, p.y, r * 1.6, rage ? '#ffffff' : '#ff6a4f', 2.2);
       }
     }
 

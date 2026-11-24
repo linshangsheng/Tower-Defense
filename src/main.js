@@ -126,6 +126,8 @@
     battle.on('treasure', () => TD.audio.play('eliteAppear'));
     battle.on('weakSpot', () => TD.audio.play('dropAppear'));
     battle.on('weakHit', () => TD.audio.play('interrupt'));
+    battle.on('bossRage', () => TD.audio.play('warn'));
+    battle.on('rageBroken', () => TD.audio.play('bossDie'));
     battle.on('supplySet', () => TD.audio.play('synergy'));
     battle.on('perfectWave', (e) => TD.audio.play('perfect', e.streak - 1)); // 连续完美，音一次比一次高
     battle.on('dropGet', () => TD.audio.play('dropGet'));

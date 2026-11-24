@@ -51,3 +51,39 @@ test('弱点次数计入战斗结果，今日任务池里有对应任务；妖�
   m.weakNext = 0; b2.time = 9; b2.updateWeakSpots();
   assert.ok(!m.weak);
 });
+
+test('Boss 蓄力（设计书 219）：66% / 33% 血量蓄力，点中打断，不点就狂暴；机器人对局没有', () => {
+  const TD = require('../tools/load');
+  const P = TD.progression;
+  const D = TD.data;
+  const s = P.newSave();
+  const mk = (auto) => new TD.Battle({ level: 10, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 1, autoSupply: auto });
+  const bossType = Object.keys(D.monsters).find((k) => D.monsters[k].boss && !D.monsters[k].towerOf && !D.monsters[k].flying);
+  const b = mk(false);
+  const m = b.spawnMonster(bossType, 0, 700);
+  m.hp = m.maxHp * 0.6;
+  let ev = [];
+  for (const k of ['bossRage', 'rageBroken', 'rageLand']) b.on(k, () => ev.push(k));
+  b.updateWeakSpots();
+  assert.ok(m.rage && m.weak && m.weak.rage);
+  const p = b.weakPos(m);
+  const hp0 = m.hp;
+  assert.ok(b.hitWeakAt(p.x + 45, p.y), '大号弱点，偏 45 像素也算');
+  assert.ok(m.hp < hp0 - m.maxHp * 0.04);
+  assert.ok(m.stunUntil >= b.time + 1.9);
+  assert.strictEqual(b.rageBreaks, 1);
+  // 第二档：不点，时间到了狂暴
+  m.hp = m.maxHp * 0.3;
+  b.updateWeakSpots();
+  assert.ok(m.rage);
+  b.time += TD.config.bossRage.windup + 0.01;
+  b.updateWeakSpots();
+  assert.ok(!m.rage && m.rushUntil > b.time);
+  assert.deepStrictEqual(ev, ['bossRage', 'rageBroken', 'bossRage', 'rageLand']);
+  // 机器人对局：没有蓄力
+  const bot = mk(true);
+  const mb = bot.spawnMonster(bossType, 0, 700);
+  mb.hp = mb.maxHp * 0.3;
+  bot.updateWeakSpots();
+  assert.ok(!mb.rage);
+});

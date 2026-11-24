@@ -678,7 +678,7 @@
 
     monsterSpeed(m) {
       if (this.time < m.frozenUntil || this.time < m.stunUntil || this.time < m.shellUntil) return 0;
-      let s = m.def.speed * (m.speedMult || 1) * (1 + (this.rules.monsterSpeed || 0) + (this.curseSpeed || 0));
+      let s = m.def.speed * (m.speedMult || 1) * (1 + (this.rules.monsterSpeed || 0) + (this.curseSpeed || 0)) * (m.rushUntil > this.time ? C.bossRage.rushMult : 1);
       if (m.affix === 'swift') s *= C.eliteAffixes.swift.speed;
       if (m.def.ai === 'boarKing' && m.ai.phase === 3) s *= D.boarKing.enrageSpeedMult;
       if (m.burrowed && m.def.burrow) s *= m.def.burrow.speedMult;
@@ -2831,6 +2831,7 @@
         bestStreak: this.bestStreak,
         fervor: this.fervorCount || 0,
         weakHits: this.weakHits || 0,
+        rageBreaks: this.rageBreaks || 0,
         drops: this.dropsTaken || 0,
         elites: this.elitesKilled || 0,
         treasures: this.treasuresKilled || 0,
