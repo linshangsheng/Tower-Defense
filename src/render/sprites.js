@@ -560,6 +560,119 @@
     ctx.stroke();
   };
 
+  // 发光的弯月（月夜章的标志）
+  function crescent(ctx, x, y, r, a) {
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    const g = ctx.createRadialGradient(x, y, 0, x, y, r * 2.4);
+    g.addColorStop(0, 'rgba(200,210,255,' + 0.5 * a + ')');
+    g.addColorStop(1, 'rgba(200,210,255,0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(x - r * 2.4, y - r * 2.4, r * 4.8, r * 4.8);
+    ctx.restore();
+    ctx.save();
+    ctx.globalAlpha *= a;
+    ctx.fillStyle = '#f4f2ff';
+    ctx.beginPath();
+    ctx.arc(x, y, r, Math.PI * 0.35, Math.PI * 1.65);
+    ctx.arc(x + r * 0.45, y - r * 0.05, r * 0.82, Math.PI * 1.55, Math.PI * 0.45, true);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+  // 月光史莱姆：头顶浮着一弯小月亮（代替草原史莱姆的嫩芽），微微上下飘
+  OV.moonSlime = function (ctx, s, t, o) {
+    const fl = Math.sin(t * 2 + (o.seed || 0)) * s * 0.05;
+    crescent(ctx, -s * 0.05, -s * 1.38 + fl, s * 0.16, 0.95);
+  };
+  // 月兔：跳起来时头顶的小月亮跟着跳
+  OV.moonBunny = function (ctx, s, t, o) {
+    const run = o.attack ? 0.4 : 1.4;
+    const ph = t * 12 * run + (o.seed || 0);
+    const leap = Math.max(0, Math.sin(ph)) * s * (o.attack ? 0.1 : 0.45); // 和 ch1 的 bunny 一样
+    crescent(ctx, s * 0.2, -s * 0.95 - leap, s * 0.13, 0.95); // 背上的月牙印记
+  };
+  // 铁狼：脖子上一圈带铆钉的铁项圈，鼻梁上扣一块铁面甲
+  OV.ironWolf = function (ctx, s, t, o) {
+    const by = -s * 0.62; // ch4 wolf 用的 quadruped：身体中线约在腿长的高度
+    ctx.save();
+    ctx.translate(-s * 0.78, by - s * 0.22);
+    ctx.rotate(0.5);
+    const cg = ctx.createLinearGradient(-s * 0.1, 0, s * 0.1, 0);
+    cg.addColorStop(0, '#3a3e46');
+    cg.addColorStop(0.5, '#a8aeb8');
+    cg.addColorStop(1, '#4a4e56');
+    ctx.fillStyle = cg;
+    ctx.fillRect(-s * 0.07, -s * 0.24, s * 0.14, s * 0.48);
+    for (const k of [-0.15, 0, 0.15]) ellipse(ctx, 0, s * k, s * 0.03, s * 0.03, '#e8ecf2');
+    ctx.restore();
+    // 面甲
+    const mg = ctx.createLinearGradient(-s * 1.5, by - s * 0.55, -s * 1.15, by - s * 0.3);
+    mg.addColorStop(0, '#c8ced8');
+    mg.addColorStop(1, '#4a4f58');
+    ctx.fillStyle = mg;
+    ctx.beginPath();
+    ctx.moveTo(-s * 1.12, by - s * 0.6);
+    ctx.lineTo(-s * 1.48, by - s * 0.44);
+    ctx.lineTo(-s * 1.44, by - s * 0.36);
+    ctx.lineTo(-s * 1.1, by - s * 0.46);
+    ctx.closePath();
+    ctx.fill();
+  };
+  // 钢铁雪怪：额头扣一块带铆钉的钢盔板，肩上一块护肩
+  OV.steelYeti = function (ctx, s, t, o) {
+    const hx = -s * 0.68;
+    const hy = -s * 1.88;
+    const g = ctx.createLinearGradient(hx + s * 0.3, hy - s * 0.35, hx - s * 0.3, hy);
+    g.addColorStop(0, '#dfe4ec');
+    g.addColorStop(0.5, '#8a919c');
+    g.addColorStop(1, '#3c414a');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.ellipse(hx, hy - s * 0.06, s * 0.38, s * 0.3, 0, Math.PI * 1.02, Math.PI * 1.98);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(30,32,38,0.8)';
+    ctx.lineWidth = Math.max(0.8, s * 0.03);
+    ctx.stroke();
+    for (const k of [-0.22, 0, 0.22]) ellipse(ctx, hx + s * k, hy - s * 0.12 - (k === 0 ? s * 0.06 : 0), s * 0.035, s * 0.035, '#f0f3f8');
+    // 护肩
+    const pg = ctx.createRadialGradient(-s * 0.1, -s * 1.75, s * 0.05, -s * 0.15, -s * 1.6, s * 0.45);
+    pg.addColorStop(0, '#d8dde6');
+    pg.addColorStop(1, '#454a54');
+    ctx.fillStyle = pg;
+    ctx.beginPath();
+    ctx.ellipse(-s * 0.15, -s * 1.55, s * 0.38, s * 0.24, -0.3, Math.PI, Math.PI * 2);
+    ctx.closePath();
+    ctx.fill();
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.strokeStyle = 'rgba(255,120,60,0.55)';
+    ctx.lineWidth = Math.max(0.8, s * 0.025);
+    ctx.beginPath();
+    ctx.ellipse(-s * 0.15, -s * 1.55, s * 0.34, s * 0.2, -0.3, Math.PI * 1.1, Math.PI * 1.9);
+    ctx.stroke();
+    ctx.restore();
+  };
+  // 血蝙蝠：一对尖尖的白獠牙 + 血红的眼光
+  OV.bloodBat = function (ctx, s, t, o) {
+    ctx.translate(0, -s * 0.6); // 和 ch3 的 bat 一样
+    ctx.scale(1.35, 1.35); // 身体、耳朵和脸的放大
+    for (const fx of [-0.15, -0.04]) {
+      ctx.fillStyle = '#fffaf2';
+      ctx.beginPath();
+      ctx.moveTo(s * fx - s * 0.025, s * 0.05);
+      ctx.lineTo(s * fx + s * 0.025, s * 0.05);
+      ctx.lineTo(s * fx, s * 0.15);
+      ctx.closePath();
+      ctx.fill();
+    }
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    for (const ex of [-0.16, 0]) ellipse(ctx, s * ex, -s * 0.08, s * 0.07, s * 0.05, 'rgba(255,40,40,0.9)');
+    ctx.restore();
+  };
+
   // 把一个画怪物的函数包成"先画到临时画布，用 color 混合染色，再按原形状裁剪"
   let tintA = null;
   let tintB = null;
