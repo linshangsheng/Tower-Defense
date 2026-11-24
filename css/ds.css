@@ -596,3 +596,10 @@ h3,
 .item-btn .cd {
   font-size: var(--fs-body);
 }
+
+/* 粘底操作栏贴住弹窗的最下沿：弹窗有 22px 内边距，bottom: 0 会让操作栏停在内边距上方，
+   滚动的内容从操作栏下面那 22px 里露出来（帮助、守城档案等长弹窗）。结算弹窗另有自己的布局 */
+.modal:not(.rs-modal) .modal-buttons {
+  bottom: -22px;
+  padding-bottom: 14px;
+}

@@ -119,3 +119,5 @@
 .pact-card .pact-boon span { display: block; font-size: 11px; line-height: 1.25; opacity: 0.85; }
 .pact-card .pact-extra { margin-top: auto; font-size: 11px; color: #ffd27a; }
 .supply-card.pact-card:hover { box-shadow: 0 0 30px rgba(155, 77, 255, 0.75); }
+.pact-hint { color: #d9b8ff; }
+.compact .pact-card .pact-boon canvas { display: none; }

@@ -717,6 +717,20 @@
         h('li', null, '每关结束会获得铜币，银币只有首次通关小 Boss、大 Boss 和精英挑战关才有（也可以去汇兑所用铜币换）。去商店升级属性、解锁武器和技能，再来挑战！'),
         h('li', null, '城墙剩余 ≥50% 得 2 星，≥80% 得 3 星。')
       ),
+      // 后来加的玩法（设计书 209）：集中写在一处，玩家不用记版本说明
+      h('h3', null, '进阶技巧'),
+      h(
+        'ul',
+        null,
+        h('li', null, '完美防守：一波怪从出现到全部倒下城墙没掉血，奖励铜币；连续完美奖励越来越高。'),
+        h('li', null, 'Boss 身上亮起金色靶心时点它：造成破绽伤害并让 Boss 踉跄。'),
+        h('li', null, '右上角预告下一波的怪物和数量；左上角是本关任务的进度。'),
+        h('li', null, '自动召唤（A）：通关第 3 关后可开，场上清空后自动提前召唤下一波，照拿铜币。'),
+        h('li', null, '补给羁绊：同一场凑齐两张搭配的补给卡（卡上会标出来），额外触发一个羁绊效果。'),
+        h('li', null, '契约（第 15 关起）：补给时偶尔出现紫色第 4 张卡，接受一个诅咒，换一张红 / 金补给卡和本关铜币 +20%。'),
+        h('li', null, '赢下主线关卡后翻开胜利宝箱，三张里选一张。'),
+        h('li', null, '今日任务每天 3 个，每天可以免费换 1 个。')
+      ),
       h('div', { class: 'modal-buttons' }, h('button', { class: 'btn primary', onclick: UI.closeModal }, '知道了'))
     );
     modal(body, { closeOnBack: true, cls: 'wide' });
@@ -2649,6 +2663,7 @@
         h('h2', null, '📦 补给箱到了！'),
         h('div', { class: 'hint' }, first ? '战斗暂停中。选一张补给卡，效果持续到本关结束（颜色从低到高：蓝、紫、红、金，越高越强）。按 1 / 2 / 3 也可以选。' : `选一张补给卡（本关有效） · 第 ${battle.supplyPicked.length + 1} 次补给`),
         h('div', { class: 'supply-row' }, cards, pactCard(battle)),
+        battle.pendingPact && !game.save.stats.pacts ? h('div', { class: 'hint pact-hint' }, '紫色的是契约卡：接受一个诅咒，换一张更强的卡——不想冒险可以不选它。') : null,
         // 刷新（设计书 135）：花战斗里攒的铜币重抽这 3 张；这一关第一次的价格按关卡定，之后每次翻倍
         (() => {
           const cost = Math.ceil(battle.supplyRefreshCost());

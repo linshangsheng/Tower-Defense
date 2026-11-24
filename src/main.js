@@ -165,6 +165,12 @@
       if (e.chapter) TD.music.play(TD.music.levelTheme(e.chapter, battle.stage, lvType), 'battle');
     });
     TD.ui.showBattle(battle);
+    // 自动召唤刚解锁：只提示一次（设计书 209）
+    if (!mode && game.autoCallUnlocked() && !s.stats.autoCallTold) {
+      s.stats.autoCallTold = true;
+      game.persist();
+      setTimeout(() => game.battle === battle && TD.ui.toast('新功能：自动召唤（顶部开关或按 A）——场上清空后自动叫下一波', 'tip'), 6500);
+    }
   };
 
   game.onBattleEnd = function (battle) {
