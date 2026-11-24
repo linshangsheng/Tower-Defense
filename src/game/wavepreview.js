@@ -10,7 +10,7 @@
     wavePreview(i) {
       const wave = this.level.waves && this.level.waves[i];
       if (!wave || !wave.groups) return null;
-      const cm = (this.level.countMult || 1) * (1 + ((this.rules && this.rules.countBonus) || 0) + (this.curseCount || 0));
+      const cm = (this.level.countMult || 1) * (1 + ((this.rules && this.rules.countBonus) || 0) + (this.curseCount || 0)) * (this.swarm || 1);
       const counts = new Map();
       const add = (type, n) => counts.set(type, (counts.get(type) || 0) + n);
       for (const [type, count] of wave.groups) {

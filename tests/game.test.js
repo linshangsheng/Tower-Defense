@@ -3766,7 +3766,11 @@ const baseCounts = (n) => {
 };
 const expectedExtra = (n) => (n < TD.config.extraFromLevel ? 0 : Math.round(n * TD.config.extraMonstersPerLevel * (D.levels[n].extraMult !== undefined ? D.levels[n].extraMult : 1)));
 
-test('主线第 5 关起，第 N 关总共多出 N × 5 只小怪（和原有的同类怪一模一样），Boss 数量不变；前 4 关不加', () => {
+test('主线第 5 关起，第 N 关总共多出 N × 5 只小怪（和原有的同类怪一模一样），Boss 数量不变；前 4 关不加', (t) => {
+  // 前期蜂群（设计书 210）另有测试，这里只看"多出的小怪"
+  const sw = TD.config.swarm;
+  TD.config.swarm = {};
+  t.after(() => (TD.config.swarm = sw));
   assert.strictEqual(TD.config.extraFromLevel, 5);
   assert.strictEqual(TD.config.extraMonstersPerLevel, 5);
   for (let n = 1; n <= 100; n++) {
@@ -3809,7 +3813,10 @@ test('多出的小怪：只在主线关卡里加（自定义关卡不加），�
   extra.forEach((e, i) => assert.ok(Math.abs(e - (want * sums[i]) / tot) <= 8, `第 ${i + 1} 波分摊`));
 });
 
-test('多出的小怪和原有的同类怪完全一样：血量、伤害、铜币都不打折，会停在城墙前啃', () => {
+test('多出的小怪和原有的同类怪完全一样：血量、伤害、铜币都不打折，会停在城墙前啃', (t) => {
+  const sw = TD.config.swarm;
+  TD.config.swarm = {};
+  t.after(() => (TD.config.swarm = sw));
   const s = P.newSave();
   const b = new TD.Battle({ level: 3, stats: P.heroStats(s), seed: 9, loadout: { active: [], items: [] } });
   const m = b.spawnMonster('bunny', 1, TD.config.wallX + 5);

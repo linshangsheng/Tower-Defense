@@ -37,7 +37,7 @@ test('胜利宝箱：银币和道具卡；坏数据不会发出离谱的奖励',
   X.open(s, 2);
   assert.strictEqual(s.silver, ag + 1);
   X.rand = seq([0.3, 0]);
-  const c = X.prepare(s, 5, 1);
+  const c = X.prepare(s, 8, 1);
   assert.strictEqual(c.cards[0].kind, 'item');
   const id = c.cards[0].id;
   X.open(s, 0);

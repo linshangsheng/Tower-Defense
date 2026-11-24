@@ -37,3 +37,6 @@
     transform: translate(-50%, -8px);
   }
 }
+
+/* 有弹窗（补给、结算、暂停）时不显示精英提示，免得浮在弹窗上面（设计书 210） */
+#ui:has(.modal-back) .elite-tip { display: none; }

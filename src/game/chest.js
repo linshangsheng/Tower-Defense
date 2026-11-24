@@ -14,6 +14,7 @@
     silverChance: 0.08, // 每张卡是银币的概率（三星时用 silverChance3）
     silverChance3: 0.2,
     itemChance: 0.35,
+    itemsFrom: 5, // 第 6 关起才开出道具
     items: ['bomb', 'patch', 'haste', 'freeze', 'firebomb', 'spikeTrap', 'smokeBomb', 'bandage', 'whetstone', 'ropeNet', 'firecracker', 'oilFlask', 'woodShield'],
   };
 
@@ -26,7 +27,8 @@
     const sc = stars >= 3 ? K.silverChance3 : K.silverChance;
     if (r < sc) return { kind: 'silver', amount: 1 };
     const items = K.items.filter((id) => D.items[id]);
-    if (r < sc + K.itemChance && items.length) return { kind: 'item', id: items[Math.floor(X.rand() * items.length)], qty: K.itemQty };
+    // 前 5 关玩家还不认识道具：只开铜币 / 银币
+    if (n > K.itemsFrom && r < sc + K.itemChance && items.length) return { kind: 'item', id: items[Math.floor(X.rand() * items.length)], qty: K.itemQty };
     const base = C.rewards.baseCopper(Math.max(1, n));
     const amount = Math.max(5, Math.round((base * (K.copperMin + X.rand() * (K.copperMax - K.copperMin))) / 5) * 5);
     return { kind: 'copper', amount };

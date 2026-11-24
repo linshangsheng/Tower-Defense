@@ -58,6 +58,8 @@
       this.stats = opts.stats;
       this.rng = TD.util.rng(opts.seed || Date.now());
       this.seedVal = opts.seed || 1; // 契约（pacts.js）用自己的随机数
+      // 前期蜂群（设计书 210）：只在主线前几关
+      this.swarm = typeof opts.level === 'number' && !opts.levelDef && C.swarm && C.swarm[opts.level] ? C.swarm[opts.level] : 1;
       this.lanes = this.level.lanes;
       this.time = 0;
       this.over = false;
@@ -434,7 +436,7 @@
       this.floorMult = wave.floorMult || 1; // 九层妖塔：第 N 层所有怪物的护甲 / 魔抗再 ×N
       this.bossHpD = wave.bossHpD || 0; // 九层妖塔：妖王的血量按这个难度算（和关卡 Boss 一样厚），其余属性仍按 D
       // countMult：自动平衡工具（tools/tune.js）写入的每关数量倍率，Boss 不受影响
-      const cm = (this.level.countMult || 1) * (1 + (this.rules.countBonus || 0) + (this.curseCount || 0));
+      const cm = (this.level.countMult || 1) * (1 + (this.rules.countBonus || 0) + (this.curseCount || 0)) * (this.swarm || 1);
       // 主线关卡越靠后小怪越多（设计书 84）：整关总共多出 关卡号 × C.extraMonstersPerLevel 只小怪，和原有的怪一模一样，Boss 还是一只
       const extra = this.extraPlan[i] || [];
       const groups = wave.groups.map(([type, count]) => ({ type, left: D.monsters[type].boss ? count : Math.max(1, Math.round(count * cm)) }));
@@ -461,7 +463,7 @@
       this.spawnQueue = queue;
       // 数量倍率提高时出怪更密集，避免关卡时间被拉长
       const crowd = (cm > 1 ? cm : 1) * (baseMinions > 0 ? (baseMinions + extraNow) / baseMinions : 1);
-      this.spawnGap = crowd > 1 ? wave.gap / Math.pow(crowd, 0.75) : wave.gap;
+      this.spawnGap = (crowd > 1 ? wave.gap / Math.pow(crowd, 0.75) : wave.gap) / Math.pow(this.swarm || 1, 0.25); // 蜂群：出怪时长不变
       this.spawnTimer = 0;
       this.waveState = 'spawning';
       this.waveStartTime = this.time;
@@ -584,7 +586,9 @@
       // bossHp：精英挑战里回归的小 Boss 是强化版（设计书 29.2）
       const bossMult = def.boss ? (1 + (this.level.bossHp || 0)) * (def.towerOf ? C.towerBossHpMult : C.bossHpMult) : 1;
       const hpD = def.towerOf && this.bossHpD ? this.bossHpD : this.D;
-      const hp = Math.round(def.hp * hpD * (1 + (this.rules.monsterHp || 0) + (this.curseHp || 0)) * this.diffHp * bossMult);
+      // 前期蜂群（设计书 210）：前几关小怪数量 ×swarm、每只血量和铜币 ÷swarm，总量不变、场面更热闹
+      const sw = !def.boss && this.swarm > 1 ? this.swarm : 1;
+      const hp = Math.max(1, Math.round((def.hp * hpD * (1 + (this.rules.monsterHp || 0) + (this.curseHp || 0)) * this.diffHp * bossMult) / sw));
       const m = {
         id: nextId++,
         type,
@@ -1211,7 +1215,7 @@
       m.dead = true;
       m.hp = 0;
       m.diedAt = this.time;
-      const copper = noReward ? 0 : m.def.copper * (m.elite ? C.eliteCopper : 1) * (this.time < this.copperMultUntil ? this.copperMult : 1);
+      const copper = noReward ? 0 : (m.def.copper * (m.elite ? C.eliteCopper : 1) * (this.time < this.copperMultUntil ? this.copperMult : 1)) / (!m.def.boss && this.swarm > 1 ? this.swarm : 1);
       if (!noReward) {
         // 连击：1.2 秒内连续击败
         this.streak = this.time - this.lastKillAt <= 1.2 ? this.streak + 1 : 1;

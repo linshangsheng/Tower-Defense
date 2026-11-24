@@ -16,6 +16,8 @@
     waveClearDelay: 4,
     waveMaxDelay: 18,
     earlyCallCopperPerSec: 1,
+    // 前期蜂群（设计书 210）：第 n 关小怪数量倍率（血量、铜币同比例摊薄）
+    swarm: { 1: 1.5, 2: 1.5, 3: 1.5, 4: 1.5, 5: 1.4, 6: 1.4, 7: 1.3, 8: 1.3, 9: 1.2 },
     autoCallDelay: 1.2, // 自动召唤（设计书 204）：场上清空后等这么久再叫下一波
     autoCallFrom: 3, // 通关第 3 关后可以打开自动召唤
     // "威胁优先"的危险区：怪物离城墙这么近时优先打它
@@ -53,7 +55,7 @@
     },
 
     // 游戏版本：与设计书版本号、sw.js 的缓存名保持一致（测试会检查）
-    version: 'v2.09',
+    version: 'v2.10',
 
     // 试玩版（设计书 127）：打试玩版压缩包时 tools/itch.js 把 demo 改成 true；正式版永远是 false
     demo: false,

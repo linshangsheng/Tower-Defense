@@ -126,7 +126,7 @@
   // 精英登场提示（顶部居中的小胶囊：词缀色圆点 + "精英：迅捷"），同时只留一个
   UI.eliteTip = function (m) {
     const af = TD.config.eliteAffixes[m.affix];
-    if (!af) return;
+    if (!af || (hud.battle && hud.battle.over)) return;
     for (const t of root.querySelectorAll('.elite-tip')) t.remove();
     const el = h('div', { class: 'elite-tip', style: '--af:' + af.color }, h('span', { class: 'elite-dot' }), '精英：' + af.name);
     root.appendChild(el);
@@ -2653,7 +2653,7 @@
         TD.sprites.iconCanvas(sup.icon, 64),
         h('div', { class: 'supply-name', style: { color: rar.color } }, sup.name),
         h('div', { class: 'supply-desc' }, sup.desc),
-        supplySetTag(battle, id)
+        first ? null : supplySetTag(battle, id) // 第一次补给先别讲羁绊，信息太多
       );
     });
     modal(
