@@ -1036,6 +1036,7 @@
         { class: 'mode-buttons' },
         TD.quests && TD.quests.unlocked(s) ? h('button', { class: 'btn small quest-btn', onclick: () => (sfx('click'), UI.showQuests()) }, '📋 今日任务', TD.quests.claimable(s) ? h('span', { class: 'quest-dot' }) : null) : null,
         TD.modes.dailyUnlocked(s) ? h('button', { class: 'btn small', onclick: () => (sfx('click'), UI.showDaily()) }, TD.modes.dailyInfo(s).done ? '📅 每日挑战 ✔' : '📅 每日挑战') : null,
+        TD.modes.trialUnlocked && TD.modes.trialUnlocked(s) ? h('button', { class: 'btn small trial-btn', onclick: () => (sfx('click'), UI.showTrial()) }, TD.modes.trialInfo(s).done ? '🔥 契约试炼 ✔' : '🔥 契约试炼') : null,
         TD.modes.endlessUnlocked(s) ? h('button', { class: 'btn small', onclick: () => (sfx('click'), UI.showEndless()) }, `♾ 无尽模式${(s.endless || {}).best ? ' · 纪录 ' + s.endless.best : ''}`) : null,
         TD.modes.towerUnlocked(s) ? h('button', { class: 'btn small', onclick: () => (sfx('click'), UI.showTower()) }, `🏯 九层妖塔${(s.tower || {}).best ? ` · ${s.tower.best}/9` : ''}`) : null
       )

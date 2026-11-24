@@ -48,6 +48,7 @@
     const battle = new TD.Battle({ level: n, levelDef: mode && mode.levelDef, stage: mode && mode.stage, stats, loadout: lo, seed, difficulty: s.settings.difficulty, rally: mode ? 0 : P.rally(s, n) });
     battle.mode = mode || null;
     battle.autoCall = !!s.settings.autoCall && P.isCleared(s, C.autoCallFrom); // 自动召唤（设计书 204）
+    if (mode && mode.kind === 'trial') TD.modes.applyTrialStart(battle, mode.info); // 契约试炼：开局诅咒 + 金卡
     game.battle = battle;
     game.paused = false;
     game.introPaused = false;
@@ -182,6 +183,8 @@
           ? TD.modes.applyEndlessResult(game.save, battle.result)
           : m.kind === 'tower'
           ? TD.modes.applyTowerResult(game.save, battle.result)
+          : m.kind === 'trial'
+          ? TD.modes.applyTrialResult(game.save, m.info, battle.result)
           : TD.modes.applyDailyResult(game.save, m.info, battle.result);
       // 无尽模式坚持到 10 波以上也开一个胜利宝箱（设计书 213）；30 波起按三星的概率
       if (m.kind === 'endless' && TD.chest && (reward.waves || 0) >= 10) reward.chest = TD.chest.prepare(game.save, Math.max(1, P.highestCleared(game.save)), reward.waves >= 30 ? 3 : 1);

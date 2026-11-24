@@ -32,6 +32,7 @@ const FILES = [
   'src/game/bot.js',
   'src/game/save.js',
   'src/game/modes.js',
+  'src/game/trial.js',
   'src/game/quests.js',
   'src/game/codex.js',
   'src/game/nomercs.js',

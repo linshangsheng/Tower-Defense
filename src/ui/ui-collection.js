@@ -194,6 +194,34 @@
     );
   };
 
+  // ================= 契约试炼（设计书 217） =================
+  UI.showTrial = function () {
+    const s = G().save;
+    const info = TD.modes.trialInfo(s);
+    const lvl = D.levels[info.level];
+    const sup = D.supplies[info.boon];
+    const R = TD.modes.trialReward;
+    modal(
+      h(
+        'div',
+        { class: 'preview trial' },
+        h('div', { class: 'preview-head' }, h('h2', null, '🔥 契约试炼 · 本周'), info.done ? h('span', { class: 'tag' }, '本周已完成') : null),
+        h('p', { class: 'daily-level' }, `第 ${info.level} 关 · ${lvl.name}（${D.levelTypeNames[lvl.type]}）`),
+        h('div', { class: 'trial-row' }, info.curses.map((c) => h('div', { class: 'trial-curse' }, h('b', null, D.pactCurses[c].name), h('span', null, D.pactCurses[c].desc))), h('div', { class: 'trial-curse' }, h('b', null, '试炼'), h('span', null, `所有怪物血量再 +${Math.round(TD.modes.trialHp * 100)}%`))),
+        h('div', { class: 'trial-boon' }, h('b', null, `开局获得「${sup.name}」`), h('span', null, sup.desc)),
+        h('p', { class: 'hint' }, `每周第一次通过奖励 ${R.gold} 金 + ${R.silver} 银，可以反复挑战。每周一换一关。不影响关卡的星级记录。`),
+        h(
+          'div',
+          { class: 'modal-buttons' },
+          h('button', { class: 'btn', onclick: UI.closeModal }, '返回'),
+          h('button', { class: 'btn', onclick: () => UI.showShop(null, 'loadout') }, '配装'),
+          h('button', { class: 'btn primary big', onclick: () => (UI.closeModal(), G().startBattle(info.level, { kind: 'trial', levelDef: TD.modes.buildTrial(info), stage: info.level, info })) }, '开始试炼')
+        )
+      ),
+      { closeOnBack: true, cls: 'wide' }
+    );
+  };
+
   // ================= 战斗报告（设计书 32） =================
   const SOURCE_NAMES = { weak: '破绽一击', merc: '雇佣兵', buddy: '助战伙伴', weapon: '武器', splash: '溅射', chain: '闪电跳跃', arrowRain: '箭雨', ultimate: '万箭天降', thunder: '雷霆一击', pierce: '贯穿光矢', vortex: '引力漩涡', firewall: '烈焰之墙', procLightning: '雷鸣', procFrost: '霜爆', procFireball: '火球', procSpirit: '灵箭', procWave: '剑气', spikeTrap: '尖刺陷阱', firecracker: '鞭炮', chainScroll: '连锁闪电符', poison: '中毒', earthSpike: '地刺符', thunderStorm: '雷暴符', stormCall: '风暴召唤', dragonBreath: '龙息', godWrath: '天罚', burn: '灼烧', thorns: '荆棘', bomb: '小炸弹', zap: '雷鸣箭袋', firefly: '萤火虫' };
   UI.reportEl = function (res, open) {

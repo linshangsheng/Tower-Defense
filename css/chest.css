@@ -126,3 +126,12 @@
 .rs-stat.record { background: linear-gradient(160deg, rgba(120, 220, 255, 0.22), rgba(60, 140, 255, 0.12)); box-shadow: inset 0 0 0 1px rgba(140, 220, 255, 0.6); }
 .rs-stat.record span { color: #9fe7ff; font-weight: 700; }
 .preview-info .best-time { color: #9fe7ff; }
+
+/* 契约试炼（设计书 217） */
+.trial-row { display: flex; gap: 8px; margin: 8px 0; }
+.trial-curse { flex: 1; display: flex; flex-direction: column; gap: 2px; padding: 8px 12px; border-radius: 12px; background: rgba(120, 50, 200, 0.28); border: 0.5px solid rgba(180, 120, 255, 0.55); }
+.trial-curse b { color: #ff8ad8; }
+.trial-curse span { font-size: 13px; color: #f0d8ff; }
+.trial-boon { display: flex; flex-direction: column; gap: 2px; padding: 8px 12px; border-radius: 12px; background: linear-gradient(160deg, rgba(255, 207, 107, 0.25), rgba(229, 138, 31, 0.12)); border: 0.5px solid rgba(255, 190, 80, 0.55); }
+.trial-boon b { color: var(--accent, #ffb340); }
+.trial-boon span { font-size: 13px; }
