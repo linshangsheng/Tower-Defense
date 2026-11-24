@@ -60,6 +60,22 @@
     return save.quests;
   };
 
+  // 每天可以免费换掉 1 个还没完成的任务（设计书 205）：换成今天列表里没有的随机一个，进度清零
+  Q.canReroll = (save, i, date) => {
+    const st = Q.today(save, date);
+    const q = st.list[i];
+    return !!q && !st.rerolled && !q.claimed && !Q.done(q) && Q.IDS.length > st.list.length;
+  };
+  Q.reroll = function (save, i, date, rand) {
+    if (!Q.canReroll(save, i, date)) return null;
+    const st = save.quests;
+    const pool = Q.IDS.filter((id) => !st.list.some((q) => q.id === id));
+    const id = pool[Math.floor((rand || Math.random)() * pool.length) % pool.length];
+    st.list[i] = { id, prog: 0, claimed: false };
+    st.rerolled = true;
+    return id;
+  };
+
   Q.done = (q) => q.prog >= Q.POOL[q.id].goal;
 
   // 一场战斗结束：累计进度；返回这一场"刚刚完成"的任务名列表

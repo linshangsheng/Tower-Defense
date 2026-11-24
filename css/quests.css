@@ -113,9 +113,8 @@
 /* 下一波预告（设计书 201） */
 .next-wave {
   position: absolute;
-  left: 50%;
-  top: 54px;
-  transform: translateX(-50%);
+  right: 10px;
+  top: 58px;
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -139,10 +138,26 @@
 .next-wave .nw-item.boss .nw-count { color: #ff6b5e; font-weight: 800; letter-spacing: 0.04em; }
 .next-wave .nw-item.boss .nw-portrait { filter: drop-shadow(0 0 4px rgba(255, 90, 80, 0.9)); }
 .next-wave .nw-more { opacity: 0.7; }
-.compact .next-wave { top: 48px; }
-@keyframes nw-in { from { opacity: 0; transform: translate(-50%, -4px); } to { opacity: 1; transform: translate(-50%, 0); } }
+.compact .next-wave { top: 50px; }
+@keyframes nw-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
 .rm .next-wave { animation: none; }
 
 /* 自动召唤开关（设计书 204） */
 .auto-call-btn { opacity: 0.72; }
 .auto-call-btn.on { opacity: 1; background: var(--accent, #ffb340); color: #2a1600; border-color: transparent; }
+
+/* 换一个任务（设计书 205） */
+.quest-reroll {
+  margin-left: 8px;
+  padding: 1px 8px;
+  border: 0.5px solid var(--sep, rgba(255, 255, 255, 0.25));
+  border-radius: 999px;
+  background: transparent;
+  color: var(--accent, #ffb340);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  vertical-align: 1px;
+}
+.quest-reroll:hover { background: rgba(255, 179, 64, 0.12); }

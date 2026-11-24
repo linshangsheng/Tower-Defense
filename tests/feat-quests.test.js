@@ -81,3 +81,27 @@ test('坏存档：quests 字段被改坏也能自愈', () => {
   m.quests.list.push({ id: 'nope', prog: 1 });
   assert.strictEqual(Q.today(m, D1).list.length, 3, '未知任务丢掉');
 });
+
+test('今日任务：每天免费换 1 个没完成的任务（设计书 205）', () => {
+  const TD = require('../tools/load');
+  const P = TD.progression;
+  const Q = TD.quests;
+  const s = P.newSave();
+  for (let k = 1; k <= 5; k++) s.levels[k] = { stars: 1, clears: 1 };
+  const d = new Date(2027, 2, 8);
+  const st = Q.today(s, d);
+  const before = st.list.map((q) => q.id);
+  st.list[0].prog = 1;
+  assert.ok(Q.canReroll(s, 0, d));
+  const id = Q.reroll(s, 0, d, () => 0);
+  assert.ok(id && !before.includes(id));
+  assert.strictEqual(s.quests.list[0].prog, 0);
+  assert.ok(!Q.canReroll(s, 1, d), '一天只能换一次');
+  assert.strictEqual(Q.reroll(s, 1, d), null);
+  // 第二天又能换；已完成的不能换
+  const d2 = new Date(2027, 2, 9);
+  const st2 = Q.today(s, d2);
+  st2.list[1].prog = Q.POOL[st2.list[1].id].goal;
+  assert.ok(!Q.canReroll(s, 1, d2));
+  assert.ok(Q.canReroll(s, 0, d2));
+});

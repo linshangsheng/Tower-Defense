@@ -868,11 +868,13 @@
             }
             redraw();
           } }, done ? '领取' : `${q.prog} / ${def.goal}`);
+      // 每天免费换 1 次（设计书 205）
+      const reroll = Q.canReroll(s, i) ? h('button', { class: 'quest-reroll', type: 'button', title: '换一个任务（每天 1 次）', onclick: () => (Q.reroll(s, i) && sfx('click'), redraw()) }, '换一个') : null;
       return h(
         'div',
         { class: 'quest-row' + (done ? ' done' : '') },
         h('div', { class: 'quest-ico' }, TD.icons ? TD.icons.svg(def.icon) : null),
-        h('div', { class: 'quest-main' }, h('div', { class: 'quest-name' }, Q.label(q.id)), h('div', { class: 'quest-bar' }, h('i', { style: { width: Math.round(frac * 100) + '%' } }))),
+        h('div', { class: 'quest-main' }, h('div', { class: 'quest-name' }, Q.label(q.id), reroll), h('div', { class: 'quest-bar' }, h('i', { style: { width: Math.round(frac * 100) + '%' } }))),
         h('div', { class: 'quest-rew' }, rew(Q.reward(s))),
         h('div', { class: 'quest-act' }, btn)
       );
@@ -2451,7 +2453,7 @@
     if (hud.mission) {
       const lv = D.missionLive(hud.missionId, b);
       if (lv) {
-        setText(hud.missionProg, lv.state === 'done' ? '✔' : lv.state === 'failed' ? '✖' : lv.text || '…');
+        setText(hud.missionProg, lv.state === 'done' ? '✔' : lv.state === 'failed' ? '✖' : lv.text || '保持中');
         if (hud.mission._state !== lv.state) {
           if (lv.state === 'done' && hud.mission._state) sfx('ding');
           hud.mission._state = lv.state;
