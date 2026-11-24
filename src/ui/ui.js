@@ -2791,7 +2791,8 @@
       if (!r) return;
       done = true;
       game.persist();
-      sfx(r.card.kind === 'silver' ? 'streak' : 'coin');
+      sfx('cardFlip');
+      setTimeout(() => sfx(r.card.kind === 'silver' ? 'cardSilver' : 'coin'), 260);
       r.cards.forEach((cd, j) => {
         const el = cards[j];
         el.disabled = true;
@@ -2832,6 +2833,7 @@
 
     // 2. 本场数据
     const rec = (c) => c.id === 'time' && reward.newBest; // 最快通关新纪录（设计书 212）
+    if (reward.newBest) setTimeout(() => sfx('record'), 700);
     const stats = h('div', { class: 'rs-stats' }, RV.statCards(res, battle.totalWaves).map((c) => h('div', { class: 'rs-stat ' + c.id + (rec(c) ? ' record' : '') }, h('b', null, c.value), h('span', null, rec(c) ? '新纪录！' : c.label))));
 
     // 3. 奖励

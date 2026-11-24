@@ -477,6 +477,38 @@
       tone(48, 1.8, 'sine', 0.55, 0.5);
       tone(95, 1.2, 'sawtooth', 0.14, 0.4, 0.1);
     },
+    // ---- 新玩法的专属音效（设计书 214） ----
+    // 完美防守：明亮的大三和弦琶音 + 高音铃，连击越多音越高（e.streak 由调用方换算成 step）
+    perfect: (step) => {
+      const k = Math.pow(2, Math.min(4, step || 0) / 12);
+      [523, 659, 784, 1047].forEach((f, i) => tone(f * k, 0.16, 'triangle', 0.12, 1, i * 0.05));
+      tone(2093 * k, 0.4, 'sine', 0.06, 1, 0.2);
+    },
+    // 翻牌：纸片翻过去的沙沙声 + 一个小上滑音
+    cardFlip: () => {
+      noise(0.07, 0.12, 3200);
+      tone(660, 0.09, 'triangle', 0.1, 1.5, 0.02);
+    },
+    // 翻到银币：再加一串清脆的高音
+    cardSilver: () => {
+      [1319, 1568, 2093, 2637].forEach((f, i) => tone(f, 0.18, 'sine', 0.09, 1, 0.08 + i * 0.06));
+    },
+    // 契约：低沉的不协和音 + 下滑，像签下了什么
+    pact: () => {
+      tone(110, 0.9, 'sawtooth', 0.12, 0.7);
+      tone(155.6, 0.9, 'sawtooth', 0.08, 0.7, 0.02);
+      tone(233, 0.6, 'triangle', 0.08, 0.5, 0.25);
+      noise(0.5, 0.12, 300);
+    },
+    // 羁绊达成：两个音"咔嗒"扣上，再一个上行五度
+    synergy: () => {
+      tone(784, 0.08, 'square', 0.08);
+      tone(988, 0.08, 'square', 0.08, 1, 0.07);
+      tone(1175, 0.35, 'triangle', 0.13, 1, 0.14);
+      tone(1760, 0.35, 'sine', 0.07, 1, 0.2);
+    },
+    // 最快通关新纪录
+    record: () => [880, 1109, 1319, 1760].forEach((f, i) => tone(f, 0.2, 'sine', 0.1, 1, i * 0.08)),
   };
 
   // 雇佣兵专属音效（设计书 184）：整体偏低（增益 0.06–0.14），不压过英雄的主声音；同屏多兵靠 MIN_GAP 限流
@@ -635,7 +667,7 @@
 
   const LOUD = /^(item_|meteorHit|wallBreak|wallCollapse|scrollBolt|barrierBreak)/;
 
-  A.play = function (name) {
+  A.play = function (name, arg) {
     if (!A.enabled) return;
     const ctx = ensure();
     if (!ctx || ctx.state !== 'running') return;
@@ -653,7 +685,7 @@
       }
       A.dest = A.loud;
     }
-    fn();
+    fn(arg);
     A.dest = null;
   };
 })((globalThis.TD = globalThis.TD || {}));

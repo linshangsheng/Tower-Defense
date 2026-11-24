@@ -125,8 +125,8 @@
     battle.on('treasure', () => TD.audio.play('eliteAppear'));
     battle.on('weakSpot', () => TD.audio.play('dropAppear'));
     battle.on('weakHit', () => TD.audio.play('interrupt'));
-    battle.on('supplySet', () => TD.audio.play('streak'));
-    battle.on('perfectWave', (e) => TD.audio.play(e.streak >= 3 ? 'streak' : 'ding'));
+    battle.on('supplySet', () => TD.audio.play('synergy'));
+    battle.on('perfectWave', (e) => TD.audio.play('perfect', e.streak - 1)); // 连续完美，音一次比一次高
     battle.on('dropGet', () => TD.audio.play('dropGet'));
     battle.on('focus', () => TD.audio.play('focusTap'));
     battle.on('repair', () => TD.audio.play('repair'));
@@ -291,7 +291,7 @@
     if (b.choosePact()) {
       game.save.stats.pacts = (Number(game.save.stats.pacts) || 0) + 1;
       game.persist();
-      TD.audio.play('bossDie');
+      TD.audio.play('pact');
       TD.ui.closeModal();
       TD.ui.announce(P.checkAchievements(game.save));
     }
