@@ -151,6 +151,8 @@ TD.i18n.register("en", {
   "⚠ Boss 登场！": "⚠ Boss incoming!",
   "⚡ {0}全部闪电通关：+3 银": "⚡ Every level in {0} lightning-cleared: +3 silver",
   "⚡ 标准 {0}": "⚡ Par {0}",
+  "⚡ 离闪电通关只差 {0} 秒": "⚡ Just {0}s short of a Lightning Clear",
+  "⚡ 离闪电通关只差 {0} 秒——试试打开「自动召唤」": "⚡ Just {0}s short of a Lightning Clear. Try turning on Auto-call",
   "⚡ 闪电通关 ✔": "⚡ Lightning Clear ✔",
   "⚡ 闪电通关！（标准 {0}:{1}）：+{2} 铜": "⚡ Lightning Clear! (par {0}:{1}): +{2} copper",
   "✔ 已完成": "✔ Completed",

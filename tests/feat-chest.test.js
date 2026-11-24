@@ -100,3 +100,17 @@ test('章节全部闪电通关奖励 3 银（设计书 224）', () => {
   assert.ok(s.chapterBolt[ch.id]);
   assert.ok(s.silver >= ag + 3);
 });
+
+test('差一点闪电通关时提示还差几秒，没开自动召唤就建议打开（设计书 225）', () => {
+  const D = TD.data;
+  const s = P.newSave();
+  for (let k = 1; k <= 5; k++) s.levels[k] = { stars: 3, clears: 1 };
+  const par = D.parTimes[4];
+  const r = P.applyResult(s, 4, { win: true, wallRatio: 1, time: par + 7.2, kills: 1 });
+  assert.ok(r.notes.some((x) => x.includes('只差 8 秒') && x.includes('自动召唤')));
+  s.settings.autoCall = true;
+  const r2 = P.applyResult(s, 4, { win: true, wallRatio: 1, time: par + 3, kills: 1 });
+  assert.ok(r2.notes.some((x) => x.includes('只差 3 秒') && !x.includes('自动召唤')));
+  const r3 = P.applyResult(s, 4, { win: true, wallRatio: 1, time: par * 2, kills: 1 });
+  assert.ok(!r3.notes.some((x) => x.includes('只差')));
+});

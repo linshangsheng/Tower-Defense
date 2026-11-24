@@ -1037,6 +1037,11 @@
         out.bolt = true;
         bonusCopper += Math.round(R.baseCopper(n) * 0.5);
         out.notes.push(`⚡ 闪电通关！（标准 ${Math.floor(par / 60)}:${String(par % 60).padStart(2, '0')}）：+${Math.round(R.baseCopper(n) * 0.5)} 铜`);
+      } else if (par && t > par && !rec.bolt && t - par <= par * 0.3) {
+        // 差得不多：告诉玩家还差几秒，没开自动召唤的提示一下（设计书 225）
+        const gap = Math.ceil(t - par);
+        const tipAuto = !(save.settings && save.settings.autoCall) && P.isCleared(save, C.autoCallFrom || 3);
+        out.notes.push(tipAuto ? `⚡ 离闪电通关只差 ${gap} 秒——试试打开「自动召唤」` : `⚡ 离闪电通关只差 ${gap} 秒`);
       }
       if (t > 0) {
         const prevBest = Number(rec.bestTime) > 0 ? Number(rec.bestTime) : 0;
