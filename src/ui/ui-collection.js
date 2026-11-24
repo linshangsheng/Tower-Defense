@@ -32,7 +32,8 @@
           h('li', null, '怪物从已解锁的章节里随机出现，一波比一波强。'),
           h('li', null, '每 5 波一个小 Boss，每 10 波一个大 Boss；每 3 波一次战场补给。'),
           h('li', null, '城墙被攻破时结束。每清完一波 15 铜；刷新纪录时，每多 5 波奖励 1 银。'),
-          h('li', null, '到达第 30 波可以解锁成就「永不陷落」（1 金）。')
+          h('li', null, '到达第 30 波可以解锁成就「永不陷落」（1 金）。'),
+          h('li', null, '坚持 10 波以上，结束时可以翻开胜利宝箱；补给时也可能出现契约卡。')
         ),
         h('div', { class: 'modal-buttons' }, h('button', { class: 'btn', onclick: UI.closeModal }, '返回'), h('button', { class: 'btn', onclick: () => UI.showShop(null, 'loadout') }, '配装'), h('button', { class: 'btn primary big', onclick: () => (UI.closeModal(), UI.startEndless()) }, '开始'))
       ),
@@ -252,6 +253,8 @@
     const rows = [h('div', { class: 'reward-row total' }, h('span', null, '获得'), h('b', null, reward.copper, ' ', coinIcon('copper'), reward.silver ? [' ', reward.silver, ' ', coinIcon('silver')] : null))];
     const notes = reward.notes.map((x) => h('div', { class: 'note' }, '✦ ' + x));
     for (const a of reward.achievements || []) notes.push(h('div', { class: 'note achieve' }, `🏆 达成成就「${a.name}」：${a.desc}（+${P.costText(a.reward)}）`));
+    let chestBox = null;
+    const pick = () => chestBox && chestBox.autoPick(); // 没翻就离开：随机翻一张
     modal(
       h(
         'div',
@@ -260,14 +263,15 @@
         endless ? h('div', { class: 'hint' }, `个人纪录：${(G().save.endless || {}).best} 波 · 击败 ${res.kills} 只`) : h('div', { class: 'hint' }, `击败 ${res.kills} 只`),
         res.mercDeployed > 0 ? h('div', { class: 'hint' }, `雇佣兵：雇佣 ${res.mercDeployed} · 阵亡 ${res.mercDeaths} · 击杀 ${res.mercKills}`) : null,
         h('div', { class: 'reward-box' }, rows),
+        (chestBox = endless && reward.chest ? UI.chestEl() : null),
         notes,
         UI.reportEl(res, false),
         h(
           'div',
           { class: 'modal-buttons' },
-          h('button', { class: 'btn', onclick: () => (UI.closeModal(), G().battle = null, G().renderer.battle = null, UI.showMap()) }, '地图'),
-          h('button', { class: 'btn', onclick: () => (UI.closeModal(), G().battle = null, G().renderer.battle = null, UI.showShop(null, 'attrs')) }, '去商店'),
-          h('button', { class: 'btn primary', onclick: () => (UI.closeModal(), endless ? UI.startEndless() : G().startBattle(battle.levelNo, battle.mode)) }, '再来一次')
+          h('button', { class: 'btn', onclick: () => (pick(), UI.closeModal(), G().battle = null, G().renderer.battle = null, UI.showMap()) }, '地图'),
+          h('button', { class: 'btn', onclick: () => (pick(), UI.closeModal(), G().battle = null, G().renderer.battle = null, UI.showShop(null, 'attrs')) }, '去商店'),
+          h('button', { class: 'btn primary', onclick: () => (pick(), UI.closeModal(), endless ? UI.startEndless() : G().startBattle(battle.levelNo, battle.mode)) }, '再来一次')
         )
       ),
       { cls: 'result-modal' }

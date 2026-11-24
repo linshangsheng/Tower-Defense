@@ -24,7 +24,10 @@
 
   Object.assign(TD.Battle.prototype, {
     pactOn() {
-      return typeof this.levelNo === 'number' && this.levelNo >= C.pact.from && !this.level.tower && !this.level.endless && !this.mode && !this.autoSupply;
+      if (this.autoSupply || this.level.tower) return false;
+      // 无尽模式也有契约（设计书 213）：拿诅咒赌更强的构筑，撑更多波
+      if (this.level.endless) return !!this.mode && this.mode.kind === 'endless';
+      return typeof this.levelNo === 'number' && this.levelNo >= C.pact.from && !this.mode;
     },
 
     // 补给到了时调用：有概率准备一张契约卡（只在这次补给有效）
@@ -36,7 +39,7 @@
       if (r() >= C.pact.chance) return null;
       const pool = Object.keys(D.supplies).filter((id) => {
         const s = D.supplies[id];
-        if (!['red', 'gold'].includes(s.rarity) || this.supplyPicked.includes(id) || (this.pendingSupply || []).includes(id)) return false;
+        if (!['red', 'gold'].includes(s.rarity) || s.humanOnly || this.supplyPicked.includes(id) || (this.pendingSupply || []).includes(id)) return false;
         if (s.needSkills && !this.skills.length) return false;
         if (s.minLevel && this.stage < s.minLevel) return false;
         return true;

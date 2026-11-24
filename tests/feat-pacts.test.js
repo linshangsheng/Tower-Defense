@@ -66,3 +66,16 @@ test('契约：城墙契约降低上限；没有待选补给时不能接受', ()
   assert.ok(b.wall.hp <= b.wall.max);
   assert.strictEqual(b.choosePact(), false);
 });
+
+test('无尽模式也会出现契约（设计书 213），妖塔和每日挑战不会', () => {
+  const s = P.newSave();
+  for (let k = 1; k <= 30; k++) s.levels[k] = { stars: 3, clears: 1 };
+  const def = TD.modes.buildEndless(s, 7);
+  const b = new TD.Battle({ level: 'endless', levelDef: def, stats: P.heroStats(s), loadout: P.battleLoadout(s), seed: 7 });
+  b.mode = { kind: 'endless' };
+  assert.ok(b.pactOn());
+  b.mode = { kind: 'daily' };
+  assert.ok(!b.pactOn());
+  b.mode = null;
+  assert.ok(!b.pactOn());
+});

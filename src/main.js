@@ -183,6 +183,8 @@
           : m.kind === 'tower'
           ? TD.modes.applyTowerResult(game.save, battle.result)
           : TD.modes.applyDailyResult(game.save, m.info, battle.result);
+      // 无尽模式坚持到 10 波以上也开一个胜利宝箱（设计书 213）；30 波起按三星的概率
+      if (m.kind === 'endless' && TD.chest && (reward.waves || 0) >= 10) reward.chest = TD.chest.prepare(game.save, Math.max(1, P.highestCleared(game.save)), reward.waves >= 30 ? 3 : 1);
       game.persist();
       if (m.kind === 'tower') {
         // 九层妖塔（设计书 74）：过了一层 → 选择领钻石还是继续；通关第 9 层或失败 → 结算
