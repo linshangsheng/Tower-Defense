@@ -4639,13 +4639,31 @@
     }
 
     drawMist() {
+      // 沼泽 / 月夜的低雾（设计书 229）：原来是实心椭圆，还被自动加了"立体渐变"，看起来是几块边缘生硬的灰色圆盘。
+      // 改成一张边缘完全柔和的雾团贴图（只生成一次），拉伸着慢慢飘，大小和透明度各不相同
+      if (!this.mistTex) {
+        const c = document.createElement('canvas');
+        c.width = 256;
+        c.height = 96;
+        const g = c.getContext('2d');
+        g.translate(128, 48);
+        g.scale(1, 96 / 256);
+        const rg = g.createRadialGradient(0, 0, 0, 0, 0, 128);
+        rg.addColorStop(0, 'rgba(255,255,255,0.9)');
+        rg.addColorStop(0.45, 'rgba(255,255,255,0.45)');
+        rg.addColorStop(1, 'rgba(255,255,255,0)');
+        g.fillStyle = rg;
+        g.fillRect(-128, -128, 256, 256);
+        this.mistTex = c;
+      }
       const ctx = this.ctx;
       ctx.save();
-      ctx.globalAlpha = 0.18;
-      for (let i = 0; i < 6; i++) {
-        const x = ((this.t * (10 + i * 4) + i * 260) % (C.width + 400)) - 200;
-        const y = C.fieldTop + 40 + ((i * 97) % (C.fieldBottom - C.fieldTop - 60));
-        S.ellipse(ctx, x, y, 180, 30, '#ffffff');
+      for (let i = 0; i < 8; i++) {
+        const w = 300 + ((i * 53) % 4) * 70;
+        const x = ((this.t * (8 + i * 3) + i * 230) % (C.width + w * 2)) - w;
+        const y = C.fieldTop + 30 + ((i * 97) % (C.fieldBottom - C.fieldTop - 40));
+        ctx.globalAlpha = 0.14 + ((i * 37) % 5) * 0.025 + Math.sin(this.t * 0.4 + i) * 0.03;
+        ctx.drawImage(this.mistTex, x - w / 2, y - w * 0.1, w, w * 0.2);
       }
       ctx.restore();
     }
