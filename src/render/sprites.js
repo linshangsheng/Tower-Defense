@@ -3628,11 +3628,8 @@
 
   // Kael的头像（守城日记的对话框）
   S.heroPortrait = function (size, mood, outfit, hero) {
-    const c = document.createElement('canvas');
     const px = size || 96;
-    c.width = px;
-    c.height = px;
-    const ctx = c.getContext('2d');
+    const { c, ctx } = hdCanvas(px);
     const k = px / 94; // 留出红缨 / 铃铛的高度
     ctx.translate(px * 0.56, px * 0.97);
     ctx.scale(k, k);
@@ -3642,12 +3639,24 @@
 
   // 把怪物画成头像（用于关卡预览、图鉴、对话）
   // opts.dark：黑龙；opts.head：只取头部特写（焚天巨龙全身太大，圆形小头像里看不清）
-  S.portrait = function (type, size, opts) {
+  // 头像画布按高清倍率画（设计书 233），显示尺寸用内联样式保持原来的像素数
+  function hdCanvas(px) {
     const c = document.createElement('canvas');
-    const px = size || 64;
-    c.width = px;
-    c.height = px;
+    const k = TD.game && TD.game.hdScale > 1 ? TD.game.hdScale : 1;
+    c.width = Math.round(px * k);
+    c.height = Math.round(px * k);
+    if (k > 1) {
+      c.style.width = px + 'px';
+      c.style.height = px + 'px';
+    }
     const ctx = c.getContext('2d');
+    if (k > 1) ctx.scale(c.width / px, c.height / px);
+    return { c, ctx };
+  }
+  S.hdCanvas = hdCanvas;
+  S.portrait = function (type, size, opts) {
+    const px = size || 64;
+    const { c, ctx } = hdCanvas(px);
     const def = TD.data.monsters[type];
     opts = opts || {};
     if (type === 'abyssDragon') {

@@ -603,3 +603,6 @@ h3,
   bottom: -22px;
   padding-bottom: 14px;
 }
+
+/* 当前关卡节点是金橙色的：节点上的皇冠等图标不再用自带的金色（会融进底色看不见），改用深色文字色 */
+.map-node.current .ico { color: var(--accent-text); }

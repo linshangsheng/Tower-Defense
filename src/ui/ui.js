@@ -986,8 +986,11 @@
       );
     });
     // 路径
-    const path = h('canvas', { class: 'map-path', width: C.width, height: C.height });
+    // 高清屏（设计书 233）：连线画布按设备像素比画，显示尺寸保持 1280×720
+    const pk = (game.hdScale || 1) > 1 ? game.hdScale : 1;
+    const path = h('canvas', { class: 'map-path', width: Math.round(C.width * pk), height: Math.round(C.height * pk), style: { width: C.width + 'px', height: C.height + 'px' } });
     const pctx = path.getContext('2d');
+    pctx.scale(pk, pk);
     pctx.strokeStyle = 'rgba(255,248,220,0.9)';
     pctx.lineWidth = 14;
     pctx.setLineDash([2, 22]);
@@ -2492,6 +2495,7 @@
           for (const it of list.slice(0, 5)) {
             const img = TD.sprites.portrait(it.type, 68, { zoom: 1.35 });
             img.className = 'nw-portrait';
+            img.style.width = img.style.height = '34px';
             hud.nextWave.append(h('span', { class: 'nw-item' + (it.boss ? ' boss' : ''), title: D.monsters[it.type].name }, img, h('span', { class: 'nw-count' }, it.boss ? 'BOSS' : '×' + it.count)));
           }
           if (list.length > 5) hud.nextWave.append(h('span', { class: 'nw-more' }, '+' + (list.length - 5)));
