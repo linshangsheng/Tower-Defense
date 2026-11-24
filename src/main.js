@@ -122,6 +122,8 @@
     battle.on('trapTrigger', () => TD.audio.play('hit'));
     battle.on('drop', () => TD.audio.play('dropAppear'));
     battle.on('treasure', () => TD.audio.play('eliteAppear'));
+    battle.on('weakSpot', () => TD.audio.play('dropAppear'));
+    battle.on('weakHit', () => TD.audio.play('interrupt'));
     battle.on('dropGet', () => TD.audio.play('dropGet'));
     battle.on('focus', () => TD.audio.play('focusTap'));
     battle.on('repair', () => TD.audio.play('repair'));
@@ -593,6 +595,7 @@
       }
       if (b && !b.over && !game.paused && !game.pendingLane && !game.introPaused) {
         const p = canvasPoint(e);
+        if (b.hitWeakAt && b.hitWeakAt(p.x, p.y)) return; // Boss 弱点（设计书 198）
         if (b.repairAt(p.x, p.y)) return;
         if (b.focusAt(p.x, p.y)) return;
       }

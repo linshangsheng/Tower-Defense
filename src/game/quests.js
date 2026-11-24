@@ -18,6 +18,7 @@
     skills: { name: '释放 {0} 次主动技能', goal: 15, kind: 'sum', stat: (r) => r.skillsCast || 0, icon: 'spark' },
     treasure: { name: '抓住 {0} 只宝箱哥布林', goal: 1, kind: 'sum', stat: (r) => r.treasures || 0, icon: 'coinbag' },
     stars3: { name: '三星通关 {0} 次', goal: 2, kind: 'sum', stat: (r, w) => (w && r.stars >= 3 ? 1 : 0), icon: 'star' },
+    weak: { name: '点中 Boss 弱点 {0} 次', goal: 3, kind: 'sum', stat: (r) => r.weakHits || 0, icon: 'target' },
     flawless: { name: '城墙满血赢下 {0} 场', goal: 1, kind: 'sum', stat: (r, w) => (w && (r.minWallRatio || 0) >= 0.999 ? 1 : 0), icon: 'shield' },
   };
   Q.IDS = Object.keys(Q.POOL);

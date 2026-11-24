@@ -781,6 +781,20 @@
         if (this.fx.length < 200) this.text(hx, e.y - 46, '冲阵！', '#ffe0b0', 20, 0.7);
         if (this.vfx) for (const h of e.hits) this.vfx.spawn(4, () => ({ kind: 'spark', x: h.u.x + h.dist, y: h.u.y - 12, vx: -60 - Math.random() * 120, vy: -40 - Math.random() * 60, g: 260, life: 0.3, r: 2, color: '#fff2c8' }));
       });
+      on('weakSpot', (e) => {
+        if (!this._weakTold) {
+          this._weakTold = true;
+          const p = battle.weakPos(e.m);
+          this.text(p.x, p.y - 44, '点弱点！', '#ffd07a', 22, 1.4);
+        }
+      });
+      on('weakHit', (e) => {
+        this.fx.push({ kind: 'ring', x: e.x, y: e.y, r0: 10, r1: 110, color: '#ffb340', w: 6, life: 0.45, age: 0, flat: 0.7 });
+        this.fx.push({ kind: 'glow', x: e.x, y: e.y, r: 70, color: '#ffd07a', life: 0.35, age: 0 });
+        this.text(e.x, e.y - 40, '破绽！', '#ffd07a', 26, 1.0);
+        this.shake = Math.max(this.shake, 6);
+        if (this.vfx) this.vfx.spawn(14, () => ({ kind: 'spark', x: e.x, y: e.y, vx: (Math.random() - 0.5) * 320, vy: -60 - Math.random() * 200, g: 260, life: 0.6, r: 2.4, color: '#ffd07a' }));
+      });
       on('treasureEscape', (e) => this.text(e.x + 20, e.y - 30, '跑掉了……', '#cfcfcf', 20, 1.0));
       on('treasure', () => {
         this.text(C.width - 220, C.fieldTop + 40, '宝箱哥布林！', '#ffd23f', 26, 1.6);
@@ -1369,6 +1383,7 @@
       }
       if (b && b.mercs && b.mercs.length) this.drawMercs(b);
       if (b && b.drops && b.drops.length) this.drawDrops(b);
+      if (b) this.drawWeakSpots(b);
       if (b && b.focus && !b.focus.dead && b.time < b.focusUntil) this.drawFocus(b);
       if (b && !b.over && b.wall.hp < b.wall.max * 0.8) this.drawRepairHint(b);
       if (b) this.drawHeroAura(b, dt);
@@ -3558,6 +3573,38 @@
         ctx.stroke();
       }
       ctx.restore();
+    }
+
+    // Boss 弱点（设计书 198）：会呼吸的金红色靶心 + 外圈倒计时
+    drawWeakSpots(b) {
+      const ctx = this.ctx;
+      for (const m of b.monsters) {
+        if (!m.weak || m.dead) continue;
+        const p = b.weakPos(m);
+        const left = Math.max(0, m.weak.until - b.time);
+        const life = TD.config.weakSpot.life;
+        const pulse = 1 + Math.sin(this.t * 10) * 0.12;
+        const pop = Math.min(1, (b.time - m.weak.born) / 0.18);
+        const r = 20 * pulse * (0.4 + 0.6 * pop);
+        if (left < 0.8 && Math.floor(left * 10) % 2 === 0) continue;
+        ctx.save();
+        ctx.globalAlpha = 0.35;
+        ctx.fillStyle = '#ffb340';
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, r * 1.6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = 'rgba(20,12,8,0.6)';
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, r + 7, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * (left / life));
+        ctx.stroke();
+        ctx.strokeStyle = '#ffd07a';
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+        ctx.restore();
+        TD.icons.draw(ctx, 'target', p.x, p.y, r * 1.6, '#ff6a4f', 2.2);
+      }
     }
 
     // 战利品光球：上下漂浮、外圈是剩余时间，快消失时闪烁

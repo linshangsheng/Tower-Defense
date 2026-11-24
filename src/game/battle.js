@@ -2762,6 +2762,7 @@
       this.updateMonsters(dt);
       if (this.over) return;
       if (this.mercsOn) this.updateMercs(dt);
+      if (this.updateWeakSpots) this.updateWeakSpots(); // Boss 弱点（设计书 198）
       this.updateWallDots(dt);
       if (this.over) return;
       if (this.zones.length && this.zones[0].until < this.time) this.zones = this.zones.filter((z) => z.until >= this.time);
@@ -2800,6 +2801,7 @@
         skillsCast: this.skillsCast,
         bestStreak: this.bestStreak,
         fervor: this.fervorCount || 0,
+        weakHits: this.weakHits || 0,
         drops: this.dropsTaken || 0,
         elites: this.elitesKilled || 0,
         treasures: this.treasuresKilled || 0,

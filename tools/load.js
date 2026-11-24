@@ -22,6 +22,7 @@ const FILES = [
   'src/game/battle.js',
   'src/game/bosses.js',
   'src/game/traits.js',
+  'src/game/weakspot.js',
   'src/game/mercs.js',
   'src/game/bot.js',
   'src/game/save.js',
