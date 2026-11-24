@@ -79,3 +79,15 @@
   .chest-card .cc-back .ico { width: 30px; height: 30px; }
   .chest-card .cc-art { width: 34px; height: 34px; }
 }
+
+/* 补给羁绊标签（设计书 206） */
+.supply-set {
+  margin-top: 8px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1.3;
+}
+.supply-set.part { background: rgba(255, 255, 255, 0.08); color: var(--label-2, rgba(255, 255, 255, 0.72)); }
+.supply-set.complete { display: flex; flex-direction: column; gap: 2px; background: linear-gradient(160deg, rgba(255, 207, 107, 0.95), rgba(229, 138, 31, 0.95)); color: #3a1d00; box-shadow: 0 0 14px rgba(255, 190, 80, 0.55); }
+.supply-set.complete b { font-size: 13px; }

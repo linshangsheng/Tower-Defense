@@ -328,7 +328,8 @@
         all.splice(all.indexOf(id), 1);
         choices.push(id);
       }
-      return choices;
+      // 补给羁绊（设计书 206）：拿过羁绊的一半时，有概率把另一半放进来
+      return this.biasSupplyChoices ? this.biasSupplyChoices(choices, ok) : choices;
     }
 
     offerSupply() {
@@ -379,6 +380,7 @@
       this.supplyPicked.push(id);
       this.pendingSupply = null;
       this.emit('supplyPicked', { id });
+      if (this.checkSupplySets) this.checkSupplySets(); // 补给羁绊（设计书 206）
       this.endWaveHeal();
       this.startWave(this.waveIndex + 1);
       return true;
@@ -2805,6 +2807,7 @@
         charm: this.charm,
         copperBonus: this.mods.copperBonus,
         supplies: this.supplyPicked.slice(),
+        supplySets: (this.activeSets || []).slice(),
         killsByType: Object.assign({}, this.killsByType),
         report: TD.util.deepClone(this.report),
         interrupts: this.interrupts,

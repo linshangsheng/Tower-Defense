@@ -795,6 +795,12 @@
         this.shake = Math.max(this.shake, 6);
         if (this.vfx) this.vfx.spawn(14, () => ({ kind: 'spark', x: e.x, y: e.y, vx: (Math.random() - 0.5) * 320, vy: -60 - Math.random() * 200, g: 260, life: 0.6, r: 2.4, color: '#ffd07a' }));
       });
+      // 补给羁绊（设计书 206）
+      on('supplySet', (e) => {
+        this.text(C.width / 2, C.fieldTop + 150, `羁绊「${e.set.name}」`, '#ffd23f', 30, 2.0);
+        this.text(C.width / 2, C.fieldTop + 186, e.set.desc, '#fff1c9', 18, 2.0);
+        this.fx.push({ kind: 'ring', x: C.heroX + 40, y: battle.heroY, r0: 20, r1: 260, color: '#ffd23f', w: 6, life: 0.8, age: 0, flat: 0.5 });
+      });
       // 完美防守（设计书 199）
       on('perfectWave', (e) => {
         const y = C.fieldTop + 70;

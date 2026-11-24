@@ -2598,6 +2598,14 @@
     UI.introClose = close;
   };
 
+  // 补给羁绊标签（设计书 206）
+  function supplySetTag(battle, id) {
+    const hint = battle.supplySetHint && battle.supplySetHint(id);
+    if (!hint) return null;
+    if (hint.kind === 'complete') return h('div', { class: 'supply-set complete', title: hint.set.desc }, h('b', null, `组成羁绊「${hint.set.name}」`), h('span', null, hint.set.desc));
+    return h('div', { class: 'supply-set part', title: hint.set.desc }, `羁绊「${hint.set.name}」：再拿 ${D.supplies[hint.partner].name}`);
+  }
+
   // ================= 战场补给（设计书 2.7） =================
   UI.showSupply = function (battle, choices) {
     const first = !game.save.stats.seenSupply;
@@ -2611,7 +2619,8 @@
         h('span', { class: 'supply-rar', style: { background: rar.color } }, rar.name),
         TD.sprites.iconCanvas(sup.icon, 64),
         h('div', { class: 'supply-name', style: { color: rar.color } }, sup.name),
-        h('div', { class: 'supply-desc' }, sup.desc)
+        h('div', { class: 'supply-desc' }, sup.desc),
+        supplySetTag(battle, id)
       );
     });
     modal(
@@ -2810,6 +2819,7 @@
     for (const x of reward.unlocks) list.push({ kind: 'unlock', icon: 'unlock', text: x });
     for (const x of reward.notes.filter((s) => !s.includes('失败'))) list.push(x.startsWith('援军') ? { kind: 'rally', icon: 'horn', text: x } : { kind: 'note', icon: 'spark', text: x });
     if (res.supplies && res.supplies.length) list.push({ kind: 'supply', icon: 'box', parts: ['本关补给：', ...res.supplies.flatMap((x, i) => (i ? ['、', D.supplies[x].name] : [D.supplies[x].name]))] });
+    if (res.supplySets && res.supplySets.length) list.push({ kind: 'supply', icon: 'sparkles', parts: ['本关羁绊：', ...res.supplySets.flatMap((x, i) => { const st = D.supplySets.find((o) => o.id === x); const nm = st ? st.name : x; return i ? ['、', nm] : [nm]; })] });
     const fold = RV.foldNotes(list);
     let notes = null;
     if (list.length) {
