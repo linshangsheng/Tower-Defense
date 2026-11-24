@@ -1127,7 +1127,7 @@
       }
     }
     // 手改 / 损坏的存档：migrate 只校验了默认值里有的字段，后加的计数（mercDeployed 等）可能是字符串 / 对象，累加前先清成有限数
-    for (const k of ['battles', 'wins', 'kills', 'bestStreak', 'combos', 'interrupts', 'earlyCalls', 'supplies', 'bubbles', 'drops', 'elites', 'treasures', 'perfectWaves', 'bestPerfectStreak', 'weakHits', 'questsDone', 'mercDeployed', 'mercKills'])
+    for (const k of ['battles', 'wins', 'kills', 'bestStreak', 'combos', 'interrupts', 'earlyCalls', 'supplies', 'bubbles', 'drops', 'elites', 'treasures', 'perfectWaves', 'bestPerfectStreak', 'weakHits', 'questsDone', 'pacts', 'chests', 'mercDeployed', 'mercKills'])
       if (k in save.stats && !(typeof save.stats[k] === 'number' && Number.isFinite(save.stats[k]))) save.stats[k] = 0;
     const st = save.stats;
     st.battles++;

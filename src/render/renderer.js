@@ -795,6 +795,14 @@
         this.shake = Math.max(this.shake, 6);
         if (this.vfx) this.vfx.spawn(14, () => ({ kind: 'spark', x: e.x, y: e.y, vx: (Math.random() - 0.5) * 320, vy: -60 - Math.random() * 200, g: 260, life: 0.6, r: 2.4, color: '#ffd07a' }));
       });
+      // 契约（设计书 208）
+      on('pact', (e) => {
+        const cu = TD.data.pactCurses[e.curse];
+        this.text(C.width / 2, C.fieldTop + 110, cu.name, '#d08cff', 30, 2.0);
+        this.text(C.width / 2, C.fieldTop + 146, cu.desc, '#f0d8ff', 18, 2.0);
+        this.shake = Math.max(this.shake, 8);
+        this.fx.push({ kind: 'ring', x: C.width / 2, y: (C.fieldTop + C.fieldBottom) / 2, r0: 30, r1: 520, color: '#9b4dff', w: 8, life: 0.9, age: 0, flat: 0.45 });
+      });
       // 补给羁绊（设计书 206）
       on('supplySet', (e) => {
         this.text(C.width / 2, C.fieldTop + 150, `羁绊「${e.set.name}」`, '#ffd23f', 30, 2.0);

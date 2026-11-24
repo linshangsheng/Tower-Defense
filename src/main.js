@@ -276,6 +276,19 @@
     }
   };
 
+  // 契约（设计书 208）
+  game.pickPact = function () {
+    const b = game.battle;
+    if (!b || !b.pendingSupply || !b.pendingPact) return;
+    if (b.choosePact()) {
+      game.save.stats.pacts = (Number(game.save.stats.pacts) || 0) + 1;
+      game.persist();
+      TD.audio.play('bossDie');
+      TD.ui.closeModal();
+      TD.ui.announce(P.checkAchievements(game.save));
+    }
+  };
+
   // 补给刷新（设计书 135）：花战斗里攒的铜币，重抽 3 张
   game.refreshSupply = function () {
     const b = game.battle;
@@ -635,6 +648,7 @@
       }
       if (b.pendingSupply) {
         if (k >= '1' && k <= '3' && b.pendingSupply[+k - 1]) game.pickSupply(b.pendingSupply[+k - 1]);
+        else if (k === '4' && b.pendingPact) game.pickPact();
         else if (k === 'r') game.refreshSupply();
         return;
       }

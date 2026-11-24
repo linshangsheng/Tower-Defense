@@ -2606,6 +2606,25 @@
     return h('div', { class: 'supply-set part', title: hint.set.desc }, `羁绊「${hint.set.name}」：再拿 ${D.supplies[hint.partner].name}`);
   }
 
+  // 契约卡（设计书 208）：诅咒换一张红 / 金补给卡
+  function pactCard(battle) {
+    const p = battle.pendingPact;
+    if (!p) return null;
+    const cu = D.pactCurses[p.curse];
+    const sup = D.supplies[p.card];
+    const rar = D.supplyRarity[sup.rarity || 'blue'];
+    return h(
+      'button',
+      { class: 'supply-card pact-card', title: '接受诅咒，换一张高品质补给卡', onclick: () => game.pickPact() },
+      h('span', { class: 'key' }, 4),
+      h('span', { class: 'supply-rar pact-tag' }, '契约'),
+      h('div', { class: 'pact-curse' }, h('b', null, cu.name), h('span', null, cu.desc)),
+      h('div', { class: 'pact-arrow' }, '换取'),
+      h('div', { class: 'pact-boon' }, TD.sprites.iconCanvas(sup.icon, 40), h('div', null, h('b', { style: { color: rar.color } }, sup.name), h('span', null, sup.desc))),
+      h('div', { class: 'pact-extra' }, '并且本关铜币 +20%')
+    );
+  }
+
   // ================= 战场补给（设计书 2.7） =================
   UI.showSupply = function (battle, choices) {
     const first = !game.save.stats.seenSupply;
@@ -2629,7 +2648,7 @@
         { class: 'supply' },
         h('h2', null, '📦 补给箱到了！'),
         h('div', { class: 'hint' }, first ? '战斗暂停中。选一张补给卡，效果持续到本关结束（颜色从低到高：蓝、紫、红、金，越高越强）。按 1 / 2 / 3 也可以选。' : `选一张补给卡（本关有效） · 第 ${battle.supplyPicked.length + 1} 次补给`),
-        h('div', { class: 'supply-row' }, cards),
+        h('div', { class: 'supply-row' }, cards, pactCard(battle)),
         // 刷新（设计书 135）：花战斗里攒的铜币重抽这 3 张；这一关第一次的价格按关卡定，之后每次翻倍
         (() => {
           const cost = Math.ceil(battle.supplyRefreshCost());

@@ -39,6 +39,7 @@
     { id: 'quests30', name: '日日精进', desc: '累计完成 30 个今日任务', reward: { silver: 4 }, check: (s) => (s.stats.questsDone || 0) >= 30 },
     { id: 'sets5', name: '羁绊收藏家', desc: '发现 5 种补给羁绊', reward: { silver: 3 }, check: (s) => Object.keys((s.stats && s.stats.setsFound) || {}).length >= 5 },
     { id: 'setsAll', name: '天作之合', desc: '发现全部补给羁绊', reward: { silver: 6 }, check: (s) => !!TD.data.supplySets && TD.data.supplySets.every((x) => ((s.stats && s.stats.setsFound) || {})[x.id]) },
+    { id: 'pact5', name: '与魔鬼交易', desc: '累计接受 5 次契约', reward: { silver: 3 }, check: (s) => (s.stats.pacts || 0) >= 5 },
     { id: 'scavenger', name: '拾荒小能手', desc: '累计拾取 50 个战利品光球', reward: { silver: 3 }, check: (s) => (s.stats.drops || 0) >= 50 },
     { id: 'bubbles', name: '啵啵啵', desc: '累计戳破 100 个泡泡', reward: { silver: 3 }, check: (s) => (s.stats.bubbles || 0) >= 100 },
     { id: 'perfect', name: '毫发无损', desc: '第 3 关以后，城墙满血通关任意一关', reward: { silver: 2 }, check: (s, c) => !!(c && c.win && c.level >= 3 && c.wallRatio >= 0.9999) },

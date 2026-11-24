@@ -27,6 +27,7 @@ const FILES = [
   'src/game/wavepreview.js',
   'src/game/chest.js',
   'src/game/supplysets.js',
+  'src/game/pacts.js',
   'src/game/mercs.js',
   'src/game/bot.js',
   'src/game/save.js',

@@ -99,3 +99,23 @@
 .set-chip span { font-size: 12px; opacity: 0.8; }
 .set-chip.found { opacity: 1; background: linear-gradient(160deg, rgba(255, 207, 107, 0.22), rgba(229, 138, 31, 0.12)); border-color: rgba(255, 190, 80, 0.55); }
 .set-chip.found b { color: var(--accent, #ffb340); }
+
+/* 契约卡（设计书 208） */
+.supply-card.pact-card {
+  border-color: #9b4dff !important;
+  background: linear-gradient(170deg, rgba(60, 20, 90, 0.92), rgba(24, 10, 40, 0.95)) !important;
+  color: #f0e6ff;
+  gap: 4px;
+  box-shadow: 0 0 22px rgba(155, 77, 255, 0.45);
+}
+.pact-card .pact-tag { background: #9b4dff !important; color: #fff; }
+.pact-card .pact-curse { display: flex; flex-direction: column; gap: 2px; margin-top: 10px; }
+.pact-card .pact-curse b { color: #ff8ad8; font-size: 15px; }
+.pact-card .pact-curse span { font-size: 12px; color: #ffc4ec; }
+.pact-card .pact-arrow { font-size: 11px; letter-spacing: 0.2em; opacity: 0.6; }
+.pact-card .pact-boon { display: flex; align-items: center; gap: 6px; text-align: left; }
+.pact-card .pact-boon canvas { width: 34px; height: 34px; flex: none; }
+.pact-card .pact-boon b { display: block; font-size: 14px; }
+.pact-card .pact-boon span { display: block; font-size: 11px; line-height: 1.25; opacity: 0.85; }
+.pact-card .pact-extra { margin-top: auto; font-size: 11px; color: #ffd27a; }
+.supply-card.pact-card:hover { box-shadow: 0 0 30px rgba(155, 77, 255, 0.75); }

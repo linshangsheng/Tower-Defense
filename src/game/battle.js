@@ -57,6 +57,7 @@
       this.diffDmg = 1 + diff.dmg;
       this.stats = opts.stats;
       this.rng = TD.util.rng(opts.seed || Date.now());
+      this.seedVal = opts.seed || 1; // 契约（pacts.js）用自己的随机数
       this.lanes = this.level.lanes;
       this.time = 0;
       this.over = false;
@@ -336,6 +337,7 @@
       const choices = this.rollSupply();
       this.supplyOffered[this.waveIndex] = true;
       this.pendingSupply = choices;
+      if (this.rollPact) this.rollPact(); // 契约（设计书 208）
       this.emit('supply', { choices });
       if (this.autoSupply) this.chooseSupply(this.botSupplyChoice(choices));
     }
@@ -432,7 +434,7 @@
       this.floorMult = wave.floorMult || 1; // 九层妖塔：第 N 层所有怪物的护甲 / 魔抗再 ×N
       this.bossHpD = wave.bossHpD || 0; // 九层妖塔：妖王的血量按这个难度算（和关卡 Boss 一样厚），其余属性仍按 D
       // countMult：自动平衡工具（tools/tune.js）写入的每关数量倍率，Boss 不受影响
-      const cm = (this.level.countMult || 1) * (1 + (this.rules.countBonus || 0));
+      const cm = (this.level.countMult || 1) * (1 + (this.rules.countBonus || 0) + (this.curseCount || 0));
       // 主线关卡越靠后小怪越多（设计书 84）：整关总共多出 关卡号 × C.extraMonstersPerLevel 只小怪，和原有的怪一模一样，Boss 还是一只
       const extra = this.extraPlan[i] || [];
       const groups = wave.groups.map(([type, count]) => ({ type, left: D.monsters[type].boss ? count : Math.max(1, Math.round(count * cm)) }));
@@ -582,7 +584,7 @@
       // bossHp：精英挑战里回归的小 Boss 是强化版（设计书 29.2）
       const bossMult = def.boss ? (1 + (this.level.bossHp || 0)) * (def.towerOf ? C.towerBossHpMult : C.bossHpMult) : 1;
       const hpD = def.towerOf && this.bossHpD ? this.bossHpD : this.D;
-      const hp = Math.round(def.hp * hpD * (1 + (this.rules.monsterHp || 0)) * this.diffHp * bossMult);
+      const hp = Math.round(def.hp * hpD * (1 + (this.rules.monsterHp || 0) + (this.curseHp || 0)) * this.diffHp * bossMult);
       const m = {
         id: nextId++,
         type,
@@ -664,7 +666,7 @@
 
     monsterSpeed(m) {
       if (this.time < m.frozenUntil || this.time < m.stunUntil || this.time < m.shellUntil) return 0;
-      let s = m.def.speed * (m.speedMult || 1) * (1 + (this.rules.monsterSpeed || 0));
+      let s = m.def.speed * (m.speedMult || 1) * (1 + (this.rules.monsterSpeed || 0) + (this.curseSpeed || 0));
       if (m.affix === 'swift') s *= C.eliteAffixes.swift.speed;
       if (m.def.ai === 'boarKing' && m.ai.phase === 3) s *= D.boarKing.enrageSpeedMult;
       if (m.burrowed && m.def.burrow) s *= m.def.burrow.speedMult;
@@ -2808,6 +2810,7 @@
         copperBonus: this.mods.copperBonus,
         supplies: this.supplyPicked.slice(),
         supplySets: (this.activeSets || []).slice(),
+        pacts: (this.pactsTaken || []).slice(),
         killsByType: Object.assign({}, this.killsByType),
         report: TD.util.deepClone(this.report),
         interrupts: this.interrupts,
