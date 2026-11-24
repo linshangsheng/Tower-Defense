@@ -2672,7 +2672,7 @@
       h('span', { class: 'supply-rar pact-tag' }, '契约'),
       h('div', { class: 'pact-curse' }, h('b', null, cu.name), h('span', null, cu.desc)),
       h('div', { class: 'pact-arrow' }, '换取'),
-      h('div', { class: 'pact-boon' }, TD.sprites.iconCanvas(sup.icon, 40), h('div', null, h('b', { style: { color: rar.color } }, sup.name), h('span', null, sup.desc))),
+      h('div', { class: 'pact-boon' }, ((c) => ((c.style.width = c.style.height = ''), c))(TD.sprites.iconCanvas(sup.icon, 40)), h('div', null, h('b', { style: { color: rar.color } }, sup.name), h('span', null, sup.desc))),
       h('div', { class: 'pact-extra' }, '并且本关铜币 +20%')
     );
   }
@@ -2813,6 +2813,7 @@
       if (cd.kind === 'item' && TD.sprites.iconCanvas) {
         const c = TD.sprites.iconCanvas(cd.id, 72);
         c.className = 'cc-art';
+        c.style.width = c.style.height = ''; // 尺寸交给样式（46 / 34 像素）
         return c;
       }
       return h('span', { class: 'cc-coin' }, coinIcon(cd.kind === 'silver' ? 'silver' : 'copper'));

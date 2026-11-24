@@ -3618,10 +3618,13 @@
   };
 
   S.iconCanvas = function (id, px) {
-    const c = document.createElement('canvas');
-    c.width = px;
-    c.height = px;
-    S.icon(c.getContext('2d'), id, px / 2, px / 2, px * 0.4);
+    // 高清屏按倍率画（设计书 234）；hdCanvas 定义在下面，函数调用时已经有了
+    const { c, ctx } = S.hdCanvas ? S.hdCanvas(px) : { c: document.createElement('canvas'), ctx: null };
+    if (!ctx) {
+      c.width = px;
+      c.height = px;
+    }
+    S.icon(ctx || c.getContext('2d'), id, px / 2, px / 2, px * 0.4);
     c.className = 'icon';
     return c;
   };
