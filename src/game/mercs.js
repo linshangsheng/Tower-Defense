@@ -21,7 +21,7 @@
       this.trapNo = 0;
       this.trapHits = 0;
       this.funds = 0;
-      this.mercsOn = !this.level.tower && !!(list && list.length);
+      this.mercsOn = !!C.merc.enabled && !this.level.tower && !!(list && list.length);
       if (!this.mercsOn) return;
       this.funds = C.merc.startFunds;
       for (const it of list.slice(0, 3)) {

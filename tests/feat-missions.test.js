@@ -1,3 +1,4 @@
+process.env.TD_MERCS = '1'; // 覆盖已关闭（但保留）的雇佣兵代码：测试里打开总开关
 // 雇佣兵关卡任务：判定与分配规则
 const test = require('node:test');
 const assert = require('node:assert');

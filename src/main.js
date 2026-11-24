@@ -203,7 +203,7 @@
     // 首次打败 Boss：先播战后对话（设计书 28.3）
     // 解锁新兵种的那一关：团长（佣兵团长 Brann）来打个招呼，接在战后对话之后
     const mercKey = 'merc' + battle.levelNo;
-    const afterPost = battle.result.win && reward.firstClear && TD.data.story[mercKey] ? () => TD.ui.maybeStory(mercKey, after) : after;
+    const afterPost = TD.config.merc.enabled && battle.result.win && reward.firstClear && TD.data.story[mercKey] ? () => TD.ui.maybeStory(mercKey, after) : after;
     if (battle.result.win && reward.firstClear) TD.ui.maybeStory('post' + battle.levelNo, afterPost);
     else after();
   };

@@ -38,7 +38,7 @@
     if (lvl.type === 'boss' || lvl.type === 'miniboss' || lvl.type === 'elite') return 'noItems';
     // 雇佣兵任务：第 30 关起（剑士、盾卫、弓手、法师都已解锁）、普通类型关卡里每 4 关一个；
     // missionFor 拿不到存档，所以不判断玩家有没有带兵——没带兵就完成不了，面板上会照常显示（可选的星外挑战）
-    if (n >= MERC_FROM && n % 4 === 2 && !lvl.tower && MERC_TYPES.includes(lvl.type)) return MERC_ROTATION[((n - 2) / 4) % MERC_ROTATION.length | 0];
+    if (TD.config.merc && TD.config.merc.enabled && n >= MERC_FROM && n % 4 === 2 && !lvl.tower && MERC_TYPES.includes(lvl.type)) return MERC_ROTATION[((n - 2) / 4) % MERC_ROTATION.length | 0];
     return ROTATION[n % 3];
   };
 })((globalThis.TD = globalThis.TD || {}));

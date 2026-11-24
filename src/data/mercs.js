@@ -7,6 +7,9 @@
 
   // 全局参数
   TD.config.merc = {
+    // v1.96：雇佣兵（出兵）玩法已从游戏中移除。代码保留但不再生效；
+    // 只有在 Node 测试里设置环境变量 TD_MERCS=1 时才打开（用来跑旧测试）
+    enabled: typeof process !== 'undefined' && !!process.env && process.env.TD_MERCS === '1',
     power: 1.4, // 兵的强度相对怪物同关强度的比例
     startFunds: 60, // 开场军饷
     fundsRate: 1, // 击败怪物时，军饷按铜币的这个比例增加

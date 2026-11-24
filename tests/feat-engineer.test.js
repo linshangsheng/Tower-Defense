@@ -1,3 +1,4 @@
+process.env.TD_MERCS = '1'; // 覆盖已关闭（但保留）的雇佣兵代码：测试里打开总开关
 // 工程兵（第 7 个兵种）：陷阱布置上限、触发伤害与减速、造型、旧的六兵名单不变
 const test = require('node:test');
 const assert = require('node:assert');

@@ -1,3 +1,4 @@
+process.env.TD_MERCS = '1'; // 覆盖已关闭（但保留）的雇佣兵代码：测试里打开总开关
 // 无尽模式 / 每日挑战里的雇佣兵：每波军饷、怪物加成系数、结算字段
 const test = require('node:test');
 const assert = require('node:assert');

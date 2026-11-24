@@ -1094,7 +1094,8 @@
     return (TD.icons && TD.icons.svg(name || 'dot')) || h('span', null);
   }
   const TAB_UNLOCK = { loadout: 0, attrs: 0, wall: 1, items: 2, skills: 2, equip: 0, weapons: 0, barracks: 5, exchange: 5 };
-  UI.tabUnlocked = (save, id) => P.highestCleared(save) >= (TAB_UNLOCK[id] || 0);
+  UI.tabUnlocked = (save, id) => (id === 'barracks' && !TD.config.merc.enabled ? false : UI._tabUnlocked(save, id));
+  UI._tabUnlocked = (save, id) => P.highestCleared(save) >= (TAB_UNLOCK[id] || 0);
 
   UI.showShop = function (levelNo, tab) {
     clear();

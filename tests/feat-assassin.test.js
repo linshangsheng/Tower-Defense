@@ -1,3 +1,4 @@
+process.env.TD_MERCS = '1'; // 覆盖已关闭（但保留）的雇佣兵代码：测试里打开总开关
 // 刺客斩首（设计书 195）：现身后锁定牧师 / 法师 > 弓手 > 城墙；被近战兵碰到即死
 const test = require('node:test');
 const assert = require('node:assert');

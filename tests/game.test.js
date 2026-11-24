@@ -1,3 +1,4 @@
+process.env.TD_MERCS = '1'; // 部分测试覆盖已关闭（但保留）的雇佣兵代码：测试里打开总开关
 // 核心逻辑测试：node --test tests/
 const test = require('node:test');
 const assert = require('node:assert');

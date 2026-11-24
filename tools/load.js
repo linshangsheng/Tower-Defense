@@ -27,6 +27,7 @@ const FILES = [
   'src/game/save.js',
   'src/game/modes.js',
   'src/game/codex.js',
+  'src/game/nomercs.js',
   'src/ui/toastq.js',
   'src/ui/shopui-core.js',
   'src/ui/result-helpers.js',

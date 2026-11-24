@@ -1,3 +1,4 @@
+process.env.TD_MERCS = '1'; // 覆盖已关闭（但保留）的雇佣兵代码：测试里打开总开关
 // 冲阵：大块头怪物撞上兵时把前排兵击退并眩晕
 const test = require('node:test');
 const assert = require('node:assert');

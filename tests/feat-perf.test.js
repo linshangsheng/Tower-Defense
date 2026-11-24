@@ -1,3 +1,4 @@
+process.env.TD_MERCS = '1'; // 覆盖已关闭（但保留）的雇佣兵代码：测试里打开总开关
 // 性能优化的回放对比：固定种子跑 20 秒，每帧的怪物 hp 总和 / 怪物数 / 兵位置 hp 序列的哈希必须和优化前一致
 const test = require('node:test');
 const assert = require('node:assert');
