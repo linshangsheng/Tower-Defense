@@ -2352,6 +2352,17 @@
     hud.autoBtn = h('button', { class: 'btn small', onclick: () => game.toggleAuto(), title: '技能自动释放' });
     hud.bond = h('div', { class: 'bond-badge hidden' }, (TD.icons && TD.icons.svg('swords')) || null, (hud.bondText = h('span', null, '')));
     hud.laneHint = h('div', { class: 'lane-hint hidden' }, '点击一条车道释放（右键或 Esc 取消）');
+    // 关卡任务进度（设计书 200）：主线关卡、任务还没完成过才显示
+    hud.missionId = null;
+    if (!game.mode && typeof battle.levelNo === 'number' && !battle.level.endless && !battle.level.tower && D.missionFor) {
+      const mid = D.missionFor(battle.levelNo);
+      const rec = P.levelRecord(game.save, battle.levelNo);
+      if (mid && !rec.mission && D.missions[mid].live) hud.missionId = mid;
+    }
+    hud.missionProg = h('span', { class: 'mc-prog' }, '');
+    hud.mission = hud.missionId
+      ? h('div', { class: 'mission-chip', title: D.missions[hud.missionId].desc }, h('span', { class: 'mc-icon' }, '🎯'), h('span', { class: 'mc-name' }, D.missions[hud.missionId].name), hud.missionProg)
+      : null;
 
     screenEl = h(
       'div',
@@ -2367,6 +2378,7 @@
       hud.ultBar,
       hud.mercBar,
       hud.bond,
+      hud.mission,
       hud.laneHint,
       hud.nudge,
       h('div', { class: 'hud-bottom' }, h('div', { class: 'skill-bar' }, skillBtns, hud.ultBtn, battle.skills.length || battle.ult ? null : h('span', { class: 'hint' }, '没有携带主动技能')), h('div', { class: 'item-bar' }, itemBtns), h('div', { class: 'ctrl-bar' }, hud.targetBtn, hud.autoBtn, hud.speedBtn))
@@ -2405,6 +2417,17 @@
     hud.callBtn.classList.toggle('hidden', !canCall);
     if (canCall) setText(hud.callBtn, `提前召唤 +${Math.max(0, Math.floor(b.countdown))}铜 (N)`);
     setText(hud.copper, Math.floor(b.killCopper + b.earlyCopper + (b.perfectCopper || 0))); // 多出来的小怪的铜币按强度折算，可能带小数
+    if (hud.mission) {
+      const lv = D.missionLive(hud.missionId, b);
+      if (lv) {
+        setText(hud.missionProg, lv.state === 'done' ? '✔' : lv.state === 'failed' ? '✖' : lv.text || '…');
+        if (hud.mission._state !== lv.state) {
+          if (lv.state === 'done' && hud.mission._state) sfx('ding');
+          hud.mission._state = lv.state;
+          hud.mission.className = 'mission-chip ' + lv.state;
+        }
+      }
+    }
     b.skills.forEach((sk, i) => {
       const btn = hud.skillBtns[i];
       const cd = btn.querySelector('.cd');

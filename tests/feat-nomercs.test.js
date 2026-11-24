@@ -66,3 +66,21 @@ test('老存档里的雇佣兵字段不影响读档和开战', () => {
   const b = new TD.Battle({ level: 20, stats: P.heroStats(m), loadout: P.battleLoadout(m), seed: 2 });
   assert.strictEqual(b.mercsOn, false);
 });
+
+test('没有雇佣兵时：原雇佣兵任务位换成新玩法任务，大 Boss 关是弱点猎手（设计书 200）', () => {
+  const ids = new Set();
+  for (let n = 1; n <= 200; n++) {
+    const id = D.missionFor(n);
+    if (id) ids.add(id);
+    assert.ok(!id || !D.isMercMission(id), `第 ${n} 关不该有雇佣兵任务`);
+    if (D.levels[n].type === 'rush') assert.notStrictEqual(id, 'perfect3', `突袭关 ${n} 不判定完美防守`);
+    if (id === 'elite4') assert.ok(n >= 20);
+  }
+  for (const id of ['perfect3', 'elite4', 'streak60', 'weak3']) assert.ok(ids.has(id), id);
+  assert.strictEqual(D.missionFor(20), 'weak3');
+  assert.strictEqual(D.missionFor(10), 'interrupt2', '可打断的 Boss 还是打断任务');
+  assert.ok(D.missions.weak3.check({ weakHits: 3 }));
+  assert.ok(!D.missions.perfect3.check({ perfectWaves: 2 }));
+  assert.ok(D.missions.elite4.check({ elites: 4 }));
+  assert.ok(D.missions.streak60.check({ bestStreak: 61 }));
+});

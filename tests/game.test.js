@@ -1506,7 +1506,7 @@ test('关卡任务：分配规则', () => {
   assert.strictEqual(D.missionFor(20), 'noItems');
   assert.strictEqual(D.missionFor(49), 'noItems');
   const ids = new Set(Object.keys(D.levels).map((n) => D.missionFor(+n)).filter(Boolean));
-  for (const id of Object.keys(D.missions)) assert.ok(ids.has(id), `任务 ${id} 至少出现一次`);
+  for (const id of Object.keys(D.missions)) if (!D.missions[id].noMerc) assert.ok(ids.has(id), `任务 ${id} 至少出现一次`);
 });
 
 test('关卡任务：首次完成给 2 银，只给一次；失败不算', () => {

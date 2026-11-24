@@ -80,3 +80,32 @@
   font-size: var(--fs-footnote, 13px);
   color: #7fe08a;
 }
+
+/* 战斗中的关卡任务进度（设计书 200） */
+.mission-chip {
+  position: absolute;
+  left: 10px;
+  top: 58px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--r-sm, 8px);
+  background: var(--mat-regular, rgba(20, 22, 28, 0.62));
+  color: var(--label, #fff);
+  font-size: var(--fs-caption, 13px);
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  pointer-events: none;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: background 0.25s, color 0.25s, transform 0.25s;
+}
+.mission-chip .mc-icon svg { width: 14px; height: 14px; }
+.mission-chip .mc-prog { font-variant-numeric: tabular-nums; color: var(--accent, #ffb340); }
+.mission-chip.done { background: rgba(48, 160, 90, 0.82); transform: scale(1.04); }
+.mission-chip.done .mc-prog { color: #fff; }
+.mission-chip.failed { opacity: 0.55; }
+.mission-chip.failed .mc-prog { color: #ff8a80; }
+.compact .mission-chip { top: 50px; font-size: 12px; }
