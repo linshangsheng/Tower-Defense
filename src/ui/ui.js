@@ -2360,6 +2360,9 @@
       if (mid && !rec.mission && D.missions[mid].live) hud.missionId = mid;
     }
     hud.missionProg = h('span', { class: 'mc-prog' }, '');
+    // 下一波预告（设计书 201）
+    hud.nextWave = h('div', { class: 'next-wave hidden' });
+    hud._nwKey = null;
     hud.mission = hud.missionId
       ? h('div', { class: 'mission-chip', title: D.missions[hud.missionId].desc }, h('span', { class: 'mc-icon' }, '🎯'), h('span', { class: 'mc-name' }, D.missions[hud.missionId].name), hud.missionProg)
       : null;
@@ -2379,6 +2382,7 @@
       hud.mercBar,
       hud.bond,
       hud.mission,
+      hud.nextWave,
       hud.laneHint,
       hud.nudge,
       h('div', { class: 'hud-bottom' }, h('div', { class: 'skill-bar' }, skillBtns, hud.ultBtn, battle.skills.length || battle.ult ? null : h('span', { class: 'hint' }, '没有携带主动技能')), h('div', { class: 'item-bar' }, itemBtns), h('div', { class: 'ctrl-bar' }, hud.targetBtn, hud.autoBtn, hud.speedBtn))
@@ -2417,6 +2421,24 @@
     hud.callBtn.classList.toggle('hidden', !canCall);
     if (canCall) setText(hud.callBtn, `提前召唤 +${Math.max(0, Math.floor(b.countdown))}铜 (N)`);
     setText(hud.copper, Math.floor(b.killCopper + b.earlyCopper + (b.perfectCopper || 0))); // 多出来的小怪的铜币按强度折算，可能带小数
+    if (hud.nextWave && b.wavePreview) {
+      const idx = b.previewWaveIndex();
+      if (hud._nwKey !== idx) {
+        hud._nwKey = idx;
+        const list = idx >= 0 ? b.wavePreview(idx) : null;
+        hud.nextWave.replaceChildren(); // 只在换波时重建
+        hud.nextWave.classList.toggle('hidden', !list || !list.length);
+        if (list && list.length) {
+          hud.nextWave.append(h('span', { class: 'nw-label' }, idx === 0 ? '第一波' : '下一波'));
+          for (const it of list.slice(0, 5)) {
+            const img = TD.sprites.portrait(it.type, 68, { zoom: 1.35 });
+            img.className = 'nw-portrait';
+            hud.nextWave.append(h('span', { class: 'nw-item' + (it.boss ? ' boss' : ''), title: D.monsters[it.type].name }, img, h('span', { class: 'nw-count' }, it.boss ? 'BOSS' : '×' + it.count)));
+          }
+          if (list.length > 5) hud.nextWave.append(h('span', { class: 'nw-more' }, '+' + (list.length - 5)));
+        }
+      }
+    }
     if (hud.mission) {
       const lv = D.missionLive(hud.missionId, b);
       if (lv) {

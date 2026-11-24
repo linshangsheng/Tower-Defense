@@ -3132,8 +3132,9 @@
       }
       return c;
     }
-    const s = def.boss ? px * 0.27 : px * 0.3;
-    const y = def.flying ? px * 0.75 : px * 0.88;
+    const z = opts.zoom || 1; // 小图标（下一波预告）放大一些
+    const s = (def.boss ? px * 0.27 : px * 0.3) * z;
+    const y = def.flying ? px * (0.75 + 0.1 * (z - 1)) : px * (0.88 + 0.1 * (z - 1));
     S.monster(ctx, type, px / 2, y, s, 0.3, {});
     return c;
   };

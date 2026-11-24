@@ -109,3 +109,36 @@
 .mission-chip.failed { opacity: 0.55; }
 .mission-chip.failed .mc-prog { color: #ff8a80; }
 .compact .mission-chip { top: 50px; font-size: 12px; }
+
+/* 下一波预告（设计书 201） */
+.next-wave {
+  position: absolute;
+  left: 50%;
+  top: 54px;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px 4px 14px;
+  border-radius: 999px;
+  background: var(--mat-regular, rgba(20, 22, 28, 0.62));
+  color: var(--label, #fff);
+  font-size: var(--fs-caption, 13px);
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  animation: nw-in 0.3s ease-out;
+}
+.next-wave.hidden { display: none; }
+.next-wave .nw-label { opacity: 0.75; margin-right: 2px; }
+.next-wave .nw-item { display: inline-flex; align-items: center; gap: 1px; }
+.next-wave .nw-portrait { width: 34px; height: 34px; margin: -4px 0; border-radius: 50%; background: radial-gradient(circle, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.08) 62%, transparent 72%); }
+.next-wave .nw-count { font-variant-numeric: tabular-nums; }
+.next-wave .nw-item.boss .nw-count { color: #ff6b5e; font-weight: 800; letter-spacing: 0.04em; }
+.next-wave .nw-item.boss .nw-portrait { filter: drop-shadow(0 0 4px rgba(255, 90, 80, 0.9)); }
+.next-wave .nw-more { opacity: 0.7; }
+.compact .next-wave { top: 48px; }
+@keyframes nw-in { from { opacity: 0; transform: translate(-50%, -4px); } to { opacity: 1; transform: translate(-50%, 0); } }
+.rm .next-wave { animation: none; }

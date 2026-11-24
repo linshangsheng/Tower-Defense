@@ -24,6 +24,7 @@ const FILES = [
   'src/game/traits.js',
   'src/game/weakspot.js',
   'src/game/perfectwave.js',
+  'src/game/wavepreview.js',
   'src/game/mercs.js',
   'src/game/bot.js',
   'src/game/save.js',
