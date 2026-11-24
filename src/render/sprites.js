@@ -132,6 +132,7 @@
     // 光影生灵（设计书 56）：已经重画的怪物用新画法
     // 妖塔版 Boss 等用别的怪物的画法（def.art）
     const mdef = TD.data && TD.data.monsters[type];
+    const own = type; // 原始的怪物 id：借别的怪画法的变体，在上面再画一层自己的标志性部件（设计书 228）
     if (mdef && mdef.art) type = mdef.art;
     let fn = (TD.creatures && TD.creatures.drawers[type]) || S.drawers[type] || S.drawers.slime;
     // 混沌回声（设计书 75）：同样的画法染一层颜色（保留明暗，只换色相）
@@ -140,6 +141,12 @@
     ctx.translate(x, y);
     if (opts.scale) ctx.scale(opts.scale, opts.scale);
     fn(ctx, size, t, opts);
+    const ov = own !== type && S.overlays[own];
+    if (ov) {
+      ctx.save();
+      ov(ctx, size, t, opts);
+      ctx.restore();
+    }
     // 受击闪白：用"叠加"混合再画一遍，只提亮怪物本身（不用 canvas 滤镜，滤镜在没有显卡加速时非常慢）
     if (opts.flash > 0) {
       ctx.globalCompositeOperation = 'lighter';
@@ -149,14 +156,314 @@
     ctx.restore();
   };
 
+  // ---------- 变体怪物的标志性部件（设计书 228） ----------
+  // 第 8、9 章有不少怪借用前面章节的画法再染色（骷髅卫兵 = 染紫的哥布林、冰法师 = 染蓝的雪人……），
+  // 名字说的东西身上却没有。这里给它们各画一样"一眼认得出"的东西，用真实颜色画在染色之后。
+  // 坐标和对应的基础画法一致（原点在脚底，s = 怪物尺寸）
+  S.overlays = {};
+  const OV = S.overlays;
+  const snowSway = (ctx, s, t, o) => ctx.rotate(Math.sin(t * 6 + (o.seed || 0)) * 0.06); // 雪人整体轻轻摇（ch4 的 snowman）
+  // 冰法师：深蓝色尖顶巫师帽（帽尖往后耷拉，缀着冰晶星星）+ 身边一颗转着的冰晶
+  OV.iceMage = function (ctx, s, t, o) {
+    snowSway(ctx, s, t, o);
+    const hx = -s * 0.05;
+    const top = -s * 1.8;
+    const flop = Math.sin(t * 3 + (o.seed || 0)) * s * 0.04;
+    const hat = ctx.createLinearGradient(hx + s * 0.3, top - s * 0.8, hx - s * 0.3, top);
+    hat.addColorStop(0, '#3e64c8');
+    hat.addColorStop(1, '#16245a');
+    ctx.fillStyle = hat;
+    ctx.beginPath();
+    ctx.moveTo(hx - s * 0.36, top + s * 0.02);
+    ctx.quadraticCurveTo(hx - s * 0.12, top - s * 0.45, hx + s * 0.22 + flop, top - s * 0.82);
+    ctx.quadraticCurveTo(hx + s * 0.12, top - s * 0.4, hx + s * 0.34, top + s * 0.02);
+    ctx.closePath();
+    ctx.fill();
+    // 帽檐
+    ctx.fillStyle = '#1c2c6a';
+    ctx.beginPath();
+    ctx.ellipse(hx, top + s * 0.02, s * 0.52, s * 0.1, -0.05, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(160,220,255,0.55)';
+    ctx.lineWidth = Math.max(0.8, s * 0.03);
+    ctx.beginPath();
+    ctx.ellipse(hx, top + s * 0.0, s * 0.5, s * 0.08, -0.05, Math.PI * 1.05, Math.PI * 1.95);
+    ctx.stroke();
+    // 帽子上的冰晶星
+    for (const [sx, sy, r] of [[-0.05, -0.32, 0.06], [0.1, -0.55, 0.045]]) {
+      ellipse(ctx, hx + s * sx, top + s * sy, s * r, s * r, '#bff0ff');
+    }
+    // 绕着身体转的冰晶
+    const a = t * 2.2 + (o.seed || 0);
+    const cx = -s * 0.75 + Math.cos(a) * s * 0.12;
+    const cy = -s * 1.05 + Math.sin(a) * s * 0.18;
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    ellipse(ctx, cx, cy, s * 0.22, s * 0.22, 'rgba(120,210,255,0.25)');
+    ctx.restore();
+    ctx.fillStyle = '#dff6ff';
+    ctx.beginPath();
+    ctx.moveTo(cx, cy - s * 0.16);
+    ctx.lineTo(cx + s * 0.08, cy);
+    ctx.lineTo(cx, cy + s * 0.16);
+    ctx.lineTo(cx - s * 0.08, cy);
+    ctx.closePath();
+    ctx.fill();
+  };
+  // 铁雪人：头顶扣一只带铆钉的铁桶当头盔
+  OV.ironSnowman = function (ctx, s, t, o) {
+    snowSway(ctx, s, t, o);
+    const hx = -s * 0.05;
+    const y0 = -s * 1.72;
+    const y1 = -s * 2.12;
+    const g = ctx.createLinearGradient(hx + s * 0.35, 0, hx - s * 0.35, 0);
+    g.addColorStop(0, '#c9ced6');
+    g.addColorStop(0.45, '#7b828c');
+    g.addColorStop(1, '#3a3f47');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.moveTo(hx - s * 0.38, y0);
+    ctx.lineTo(hx - s * 0.3, y1);
+    ctx.lineTo(hx + s * 0.3, y1);
+    ctx.lineTo(hx + s * 0.38, y0);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(20,22,28,0.8)';
+    ctx.lineWidth = Math.max(0.8, s * 0.03);
+    ctx.stroke();
+    // 两道箍
+    ctx.strokeStyle = '#2a2e35';
+    ctx.lineWidth = Math.max(0.8, s * 0.035);
+    for (const k of [0.25, 0.7]) {
+      const yy = y0 + (y1 - y0) * k;
+      const half = s * (0.38 - 0.08 * k);
+      ctx.beginPath();
+      ctx.moveTo(hx - half, yy);
+      ctx.lineTo(hx + half, yy);
+      ctx.stroke();
+    }
+    // 铆钉
+    for (const k of [-0.22, 0, 0.22]) ellipse(ctx, hx + s * k, y0 + (y1 - y0) * 0.25, s * 0.03, s * 0.03, '#e8ecf2');
+    // 桶口的炉火红光（第九章锻炉）
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    ellipse(ctx, hx, y1, s * 0.3, s * 0.06, 'rgba(255,120,60,0.45)');
+    ctx.restore();
+  };
+  // 骷髅卫兵：头上扣一副骷髅面具（眼窝透紫光）
+  OV.skelGuard = function (ctx, s, t, o) {
+    const hx = -s * 0.32;
+    const hy = -s * 1.8;
+    const g = ctx.createRadialGradient(hx + s * 0.08, hy - s * 0.1, s * 0.02, hx, hy, s * 0.32);
+    g.addColorStop(0, '#fbf6ea');
+    g.addColorStop(0.7, '#d9d0bd');
+    g.addColorStop(1, '#9d927c');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.ellipse(hx, hy - s * 0.03, s * 0.28, s * 0.25, -0.1, 0, Math.PI * 2);
+    ctx.fill();
+    // 下颌
+    ctx.beginPath();
+    ctx.ellipse(hx - s * 0.04, hy + s * 0.2, s * 0.17, s * 0.09, -0.1, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(60,50,40,0.6)';
+    ctx.lineWidth = Math.max(0.6, s * 0.02);
+    ctx.beginPath();
+    for (let i = -2; i <= 2; i++) {
+      ctx.moveTo(hx - s * 0.04 + i * s * 0.055, hy + s * 0.14);
+      ctx.lineTo(hx - s * 0.04 + i * s * 0.055, hy + s * 0.26);
+    }
+    ctx.stroke();
+    // 眼窝 + 紫光
+    for (const dx of [-0.13, 0.06]) {
+      ellipse(ctx, hx + s * dx, hy - s * 0.03, s * 0.075, s * 0.085, '#1a1226');
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      ellipse(ctx, hx + s * dx, hy - s * 0.03, s * 0.05, s * 0.05, 'rgba(190,140,255,0.9)');
+      ctx.restore();
+    }
+    // 鼻洞
+    ctx.fillStyle = '#2a2034';
+    ctx.beginPath();
+    ctx.moveTo(hx - s * 0.03, hy + s * 0.04);
+    ctx.lineTo(hx - s * 0.06, hy + s * 0.1);
+    ctx.lineTo(hx, hy + s * 0.1);
+    ctx.closePath();
+    ctx.fill();
+  };
+  // 哥布林弓手：背后一只装满羽箭的箭袋 + 帽子上一根长羽毛
+  OV.goblinArcher = function (ctx, s, t, o) {
+    const qx = s * 0.12;
+    const qy = -s * 1.3;
+    ctx.save();
+    ctx.translate(qx, qy);
+    ctx.rotate(0.35);
+    const g = ctx.createLinearGradient(-s * 0.1, 0, s * 0.1, 0);
+    g.addColorStop(0, '#5a3418');
+    g.addColorStop(1, '#a8642c');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.moveTo(-s * 0.1, -s * 0.3);
+    ctx.lineTo(s * 0.1, -s * 0.3);
+    ctx.lineTo(s * 0.08, s * 0.32);
+    ctx.lineTo(-s * 0.08, s * 0.32);
+    ctx.closePath();
+    ctx.fill();
+    // 露出来的箭羽
+    for (const [dx, c] of [[-0.05, '#f2efe6'], [0.03, '#e05a4a'], [0.09, '#f2efe6']]) {
+      ctx.fillStyle = c;
+      ctx.beginPath();
+      ctx.moveTo(s * dx, -s * 0.3);
+      ctx.lineTo(s * (dx - 0.04), -s * 0.48);
+      ctx.lineTo(s * (dx + 0.04), -s * 0.48);
+      ctx.closePath();
+      ctx.fill();
+    }
+    ctx.restore();
+    // 帽羽
+    const hx = -s * 0.3;
+    const hy = -s * 1.98;
+    const sw = Math.sin(t * 5 + (o.seed || 0)) * 0.12;
+    ctx.save();
+    ctx.translate(hx + s * 0.05, hy);
+    ctx.rotate(-0.9 + sw);
+    ctx.fillStyle = '#e8463a';
+    ctx.beginPath();
+    ctx.ellipse(0, -s * 0.22, s * 0.06, s * 0.24, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255,220,200,0.7)';
+    ctx.lineWidth = Math.max(0.6, s * 0.015);
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(0, -s * 0.44);
+    ctx.stroke();
+    ctx.restore();
+  };
+  // 炸弹南瓜：蒂上接一根点着的引信，肚子上捆一圈带炸药的皮带
+  OV.bomber = function (ctx, s, t, o) {
+    const hop = Math.abs(Math.sin(t * 8 + (o.seed || 0))) * s * 0.15; // 和 ch3 pumpkinBody 一样的跳
+    ctx.translate(0, -hop);
+    const cy = -s * 1.05;
+    // 皮带
+    ctx.strokeStyle = '#3a2614';
+    ctx.lineWidth = s * 0.1;
+    ctx.beginPath();
+    ctx.ellipse(0, cy + s * 0.25, s * 0.86, s * 0.2, 0, 0.15, Math.PI - 0.15);
+    ctx.stroke();
+    // 两管炸药
+    for (const dx of [-0.4, 0.3]) {
+      const x = s * dx;
+      const y = cy + s * 0.38 - Math.abs(dx) * s * 0.12;
+      ctx.fillStyle = '#c8322a';
+      ctx.fillRect(x - s * 0.07, y - s * 0.16, s * 0.14, s * 0.3);
+      ctx.fillStyle = '#f0d8a0';
+      ctx.fillRect(x - s * 0.07, y - s * 0.02, s * 0.14, s * 0.05);
+    }
+    // 引信：从蒂尖弯出来，尖上一团跳动的火花
+    const tipx = s * 0.25;
+    const tipy = cy - s * 0.9;
+    ctx.strokeStyle = '#4a3a28';
+    ctx.lineWidth = Math.max(0.8, s * 0.035);
+    ctx.beginPath();
+    ctx.moveTo(tipx, tipy);
+    ctx.quadraticCurveTo(tipx + s * 0.2, tipy - s * 0.1, tipx + s * 0.18, tipy - s * 0.3);
+    ctx.stroke();
+    const fx = tipx + s * 0.18;
+    const fy = tipy - s * 0.3;
+    const fl = 0.75 + Math.sin(t * 40 + (o.seed || 0)) * 0.25;
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    ellipse(ctx, fx, fy, s * 0.2 * fl, s * 0.2 * fl, 'rgba(255,150,60,0.35)');
+    ellipse(ctx, fx, fy, s * 0.07 * fl, s * 0.07 * fl, '#fff2a0');
+    ctx.restore();
+  };
+
+  const priestSway = (ctx, s, t, o) => ctx.rotate(Math.sin(t * 3 + (o.seed || 0)) * 0.05); // ch2 的 priest 整体摇
+  // 灯笼幽灵：权杖顶上挂一盏摇晃的灯笼，灯火是幽幽的绿光
+  OV.lanternGhost = function (ctx, s, t, o) {
+    priestSway(ctx, s, t, o);
+    const px = -s * 0.7;
+    const py = -s * 2.0;
+    const swing = Math.sin(t * 2.6 + (o.seed || 0)) * 0.35;
+    ctx.translate(px, py);
+    ctx.rotate(swing);
+    ctx.strokeStyle = '#2a2230';
+    ctx.lineWidth = Math.max(0.8, s * 0.03);
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(0, s * 0.22);
+    ctx.stroke();
+    const ly = s * 0.4;
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    const lg = ctx.createRadialGradient(0, ly, 0, 0, ly, s * 0.5);
+    lg.addColorStop(0, 'rgba(140,255,180,0.45)');
+    lg.addColorStop(1, 'rgba(140,255,180,0)');
+    ctx.fillStyle = lg;
+    ctx.fillRect(-s * 0.5, ly - s * 0.5, s, s);
+    ctx.restore();
+    // 灯身：铁框 + 发光的玻璃
+    ctx.fillStyle = 'rgba(170,255,200,0.85)';
+    roundRect(ctx, -s * 0.1, ly - s * 0.16, s * 0.2, s * 0.3, s * 0.05);
+    ctx.fill();
+    ctx.strokeStyle = '#22202a';
+    ctx.lineWidth = Math.max(0.8, s * 0.035);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(-s * 0.13, ly - s * 0.18);
+    ctx.lineTo(s * 0.13, ly - s * 0.18);
+    ctx.moveTo(-s * 0.12, ly + s * 0.16);
+    ctx.lineTo(s * 0.12, ly + s * 0.16);
+    ctx.stroke();
+    ellipse(ctx, 0, ly, s * 0.04, s * 0.08, '#f4fff0');
+  };
+  // 风暴法师：头顶一小团翻滚的雷云，不时劈下一道细闪电
+  OV.stormCaster = function (ctx, s, t, o) {
+    priestSway(ctx, s, t, o);
+    const cx = 0;
+    const cy = -s * 2.35 + Math.sin(t * 2 + (o.seed || 0)) * s * 0.04;
+    // 深蓝灰的雷云（场景的暖色受光会往上加一层，所以底色要压得够深）
+    const vol = S.volume;
+    S.volume = false;
+    for (const [dx, dy, r, c] of [[-0.22, 0.04, 0.2, '#262c44'], [0.2, 0.05, 0.18, '#262c44'], [0, -0.06, 0.24, '#323a5a'], [-0.08, 0.08, 0.17, '#1c2134'], [0.12, 0.09, 0.15, '#1c2134']]) {
+      ellipse(ctx, cx + s * dx, cy + s * dy, s * r, s * r * 0.8, c);
+    }
+    S.volume = vol;
+    ctx.strokeStyle = 'rgba(150,170,255,0.35)';
+    ctx.lineWidth = Math.max(0.6, s * 0.02);
+    ctx.beginPath();
+    ctx.ellipse(cx, cy - s * 0.02, s * 0.36, s * 0.2, 0, Math.PI * 1.1, Math.PI * 1.9);
+    ctx.stroke();
+    const flash = Math.sin(t * 7 + (o.seed || 0) * 3) > 0.86;
+    if (flash) {
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.strokeStyle = '#e8f0ff';
+      ctx.lineWidth = Math.max(0.8, s * 0.04);
+      ctx.beginPath();
+      ctx.moveTo(cx + s * 0.02, cy + s * 0.15);
+      ctx.lineTo(cx - s * 0.06, cy + s * 0.32);
+      ctx.lineTo(cx + s * 0.04, cy + s * 0.38);
+      ctx.lineTo(cx - s * 0.04, cy + s * 0.56);
+      ctx.stroke();
+      ellipse(ctx, cx, cy, s * 0.4, s * 0.3, 'rgba(180,200,255,0.25)');
+      ctx.restore();
+    }
+  };
+
   // 把一个画怪物的函数包成"先画到临时画布，用 color 混合染色，再按原形状裁剪"
   let tintA = null;
   let tintB = null;
   function tinted(fn, color, size) {
     return function (ctx, sz, t, opts) {
       if (typeof document === 'undefined') return fn(ctx, sz, t, opts);
-      const W = Math.ceil(sz * 5);
-      const H = Math.ceil(sz * 5.5);
+      // 临时画布按当前的实际缩放来画（设计书 228）：原来按逻辑尺寸画再被放大 1.25 倍（高清时 2.5 倍），染色的怪明显发糊
+      const tm = ctx.getTransform ? ctx.getTransform() : null;
+      const k = tm ? Math.max(1, Math.min(4, Math.hypot(tm.a, tm.b))) : 1;
+      const LW = Math.ceil(sz * 5);
+      const LH = Math.ceil(sz * 5.5);
+      const W = Math.ceil(LW * k);
+      const H = Math.ceil(LH * k);
       const ox = W / 2;
       const oy = H * 0.75;
       if (!tintA) {
@@ -178,6 +485,7 @@
         g.globalAlpha = 1;
         g.clearRect(0, 0, tintA.width, tintA.height);
         g.translate(ox, oy);
+        g.scale(k, k);
       }
       fn(b, sz, t, opts);
       fn(a, sz, t, opts);
@@ -188,7 +496,7 @@
       a.globalCompositeOperation = 'destination-in';
       a.drawImage(tintB, 0, 0, W, H, 0, 0, W, H);
       a.globalCompositeOperation = 'source-over';
-      ctx.drawImage(tintA, 0, 0, W, H, -ox, -oy, W, H);
+      ctx.drawImage(tintA, 0, 0, W, H, -ox / k, -oy / k, W / k, H / k);
     };
   }
 

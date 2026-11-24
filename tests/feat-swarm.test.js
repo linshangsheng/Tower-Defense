@@ -65,3 +65,10 @@ test('高清画布（设计书 228）：帧率不够时先关高清、不动档�
   assert.strictEqual(Q.hd, true);
   Q._reset();
 });
+
+test('变体怪物的标志性部件（设计书 228）：每个部件对应一个借用别的怪画法的怪物', () => {
+  const src = require('fs').readFileSync(require('path').join(__dirname, '..', 'src', 'render', 'sprites.js'), 'utf8');
+  const ids = [...src.matchAll(/^  OV\.(\w+) = function/gm)].map((m) => m[1]);
+  assert.ok(ids.length >= 7, ids.join(','));
+  for (const id of ids) assert.ok(TD.data.monsters[id] && TD.data.monsters[id].art, id + ' 应该是借用画法的变体');
+});
