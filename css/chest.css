@@ -135,3 +135,8 @@
 .trial-boon { display: flex; flex-direction: column; gap: 2px; padding: 8px 12px; border-radius: 12px; background: linear-gradient(160deg, rgba(255, 207, 107, 0.25), rgba(229, 138, 31, 0.12)); border: 0.5px solid rgba(255, 190, 80, 0.55); }
 .trial-boon b { color: var(--accent, #ffb340); }
 .trial-boon span { font-size: 13px; }
+
+/* 闪电通关（设计书 221） */
+.node-bolt { position: absolute; top: -8px; right: -10px; font-size: 18px; pointer-events: none; }
+.preview-info .par-time { color: #ffd23f; opacity: 0.8; }
+.preview-info .par-time.ok { opacity: 1; }

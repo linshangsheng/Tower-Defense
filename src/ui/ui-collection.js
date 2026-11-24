@@ -348,6 +348,7 @@
           tile('星星', `${lv.reduce((a, n) => a + ((s.levels[n] || {}).stars || 0), 0)} / ${lv.length * 3}`),
           tile('王冠', `${count((r) => r.crown)} / ${lv.length}`),
           tile('关卡任务', `${count((r) => r.mission)} / ${lv.filter((n) => D.missionFor(+n)).length}`),
+          tile('闪电通关', `${count((r) => r.bolt)} / ${Object.keys(D.parTimes || {}).length}`),
           tile('成就', `${D.achievements.filter((a) => (s.achievements || {})[a.id]).length} / ${D.achievements.length}`),
           tile('日记', `${D.storyOrder.filter((k) => (s.story || {})[k] === 'read').length} / ${D.storyOrder.length}`),
           tile('角色', `${D.outfits.filter((o) => P.outfitOwned(s, o.id)).length} / ${D.outfits.length}`),

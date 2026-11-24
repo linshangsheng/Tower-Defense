@@ -58,6 +58,46 @@ try {
   });
   await page.waitForTimeout(1800);
   await page.screenshot({ path: `${out}/5-result.png` });
+
+  // Boss 战（设计书 221）：上面的第 1 关没有 Boss，Boss 血条、弱点、蓄力、补给羁绊标签、契约卡这些画面都走不到。
+  // 这里直接开第 26 关（普通关，有补给）再塞一只 Boss 进去，让它触发蓄力，并弹一次带契约卡的补给，画几秒看有没有报错
+  await page.evaluate(() => {
+    const s = TD.game.save;
+    for (let n = 1; n < 26; n++) s.levels[n] = { stars: 3, clears: 1 };
+    for (const k of TD.data.storyOrder) s.story[k] = 'read';
+    s.seenMonsters = s.seenMonsters || {};
+    for (const k of Object.keys(TD.data.monsters)) s.seenMonsters[k] = true;
+    s.stats.seenSupply = true;
+    TD.ui.closeModal();
+    TD.ui.beginLevel(26);
+  });
+  await page.waitForTimeout(1500);
+  await page.evaluate(() => {
+    const b = TD.game.battle;
+    const boss = b.spawnMonster('boarKing', 1, 760);
+    boss.hp = boss.maxHp * 0.6; // 马上触发蓄力
+    b.supplyPicked.push('sharp');
+    b.pendingSupply = ['eagle', 'quick', 'arcane'];
+    b.pendingPact = { curse: 'speed', card: 'frenzy' };
+    TD.game.paused = true;
+    TD.ui.showSupply(b, b.pendingSupply);
+  });
+  await page.waitForTimeout(600);
+  await page.screenshot({ path: `${out}/6-supply-pact.png` });
+  await page.evaluate(() => TD.game.pickPact());
+  await page.evaluate(() => (TD.game.paused = false));
+  await page.waitForTimeout(2500);
+  await page.screenshot({ path: `${out}/7-boss.png` });
+  const bossState = await page.evaluate(() => {
+    const b = TD.game.battle;
+    return b ? { rage: b.monsters.some((m) => m.rage || m.rushUntil), picked: b.supplyPicked.slice(), pacts: b.pactsTaken || [] } : null;
+  });
+  if (!bossState) errors.push('Boss 战里战斗对象没了（多半是渲染报错后退回了地图）');
+  else {
+    if (!bossState.rage) errors.push('Boss 没有触发蓄力');
+    if (!bossState.picked.includes('frenzy')) errors.push('契约换来的补给卡没有生效');
+    if (!bossState.pacts.includes('speed')) errors.push('契约没有生效');
+  }
   await browser.close();
   if (errors.length) {
     console.log('发现错误：\n' + errors.join('\n'));

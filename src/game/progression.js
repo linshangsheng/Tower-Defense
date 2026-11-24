@@ -1030,6 +1030,14 @@
       }
       // 最快通关纪录（设计书 212）：游戏内时间（和倍速无关），提前召唤、打得快都会缩短
       const t = Math.round((Number(result.time) || 0) * 10) / 10;
+      // 闪电通关（设计书 221）：用时不超过本关标准时间，第一次拿到时奖励半份基础铜币
+      const par = D.parTimes && D.parTimes[n];
+      if (par && t > 0 && t <= par && !rec.bolt) {
+        rec.bolt = true;
+        out.bolt = true;
+        bonusCopper += Math.round(R.baseCopper(n) * 0.5);
+        out.notes.push(`⚡ 闪电通关！（标准 ${Math.floor(par / 60)}:${String(par % 60).padStart(2, '0')}）：+${Math.round(R.baseCopper(n) * 0.5)} 铜`);
+      }
       if (t > 0) {
         const prevBest = Number(rec.bestTime) > 0 ? Number(rec.bestTime) : 0;
         if (!prevBest || t < prevBest) {

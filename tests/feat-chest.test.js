@@ -71,3 +71,18 @@ test('最快通关纪录（设计书 212）：第一次只记下，之后更快�
   P.applyResult(s, 3, { win: false, wallRatio: 0, time: 10, kills: 1 });
   assert.strictEqual(s.levels[3].bestTime, 101.3, '失败不算');
 });
+
+test('闪电通关（设计书 221）：每关有标准时间；不超过标准时间第一次奖励铜币并记下，只给一次', () => {
+  const D = TD.data;
+  assert.ok(Object.keys(D.parTimes).length >= 190);
+  for (const n of Object.keys(D.parTimes)) assert.ok(D.parTimes[n] > 0 && D.parTimes[n] % 5 === 0);
+  const s = P.newSave();
+  const par = D.parTimes[4];
+  const slow = P.applyResult(s, 4, { win: true, wallRatio: 1, time: par + 10, kills: 1 });
+  assert.ok(!slow.bolt && !s.levels[4].bolt);
+  const fast = P.applyResult(s, 4, { win: true, wallRatio: 1, time: par - 1, kills: 1 });
+  assert.ok(fast.bolt && s.levels[4].bolt);
+  assert.ok(fast.notes.some((x) => x.includes('闪电通关')));
+  const again = P.applyResult(s, 4, { win: true, wallRatio: 1, time: par - 2, kills: 1 });
+  assert.ok(!again.bolt);
+});

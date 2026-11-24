@@ -38,6 +38,8 @@
     { id: 'weak20', name: '一针见血', desc: '累计点中 Boss 弱点 20 次', reward: { silver: 3 }, check: (s) => (s.stats.weakHits || 0) >= 20 },
     { id: 'rage10', name: 'Boss 克星', desc: '累计打断 10 次 Boss 蓄力', reward: { silver: 4 }, check: (s) => (s.stats.rageBreaks || 0) >= 10 },
     { id: 'quests30', name: '日日精进', desc: '累计完成 30 个今日任务', reward: { silver: 4 }, check: (s) => (s.stats.questsDone || 0) >= 30 },
+    { id: 'bolt20', name: '闪电战', desc: '20 个关卡闪电通关', reward: { silver: 4 }, check: (s) => Object.values(s.levels || {}).filter((r) => r && r.bolt).length >= 20 },
+    { id: 'bolt100', name: '疾如雷电', desc: '100 个关卡闪电通关', reward: { gold: 1 }, check: (s) => Object.values(s.levels || {}).filter((r) => r && r.bolt).length >= 100 },
     { id: 'sets5', name: '羁绊收藏家', desc: '发现 5 种补给羁绊', reward: { silver: 3 }, check: (s) => Object.keys((s.stats && s.stats.setsFound) || {}).length >= 5 },
     { id: 'setsAll', name: '天作之合', desc: '发现全部补给羁绊', reward: { silver: 6 }, check: (s) => !!TD.data.supplySets && TD.data.supplySets.every((x) => ((s.stats && s.stats.setsFound) || {})[x.id]) },
     { id: 'trial4', name: '试炼行者', desc: '完成 4 周的契约试炼', reward: { silver: 6 }, check: (s) => Object.keys(s.trial || {}).length >= 4 },

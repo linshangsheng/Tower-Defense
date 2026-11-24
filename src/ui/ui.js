@@ -981,6 +981,7 @@
         rec.clears ? starsEl(rec.stars) : null,
         rec.crown ? h('span', { class: 'node-crown', title: '已在挑战难度通关' }, '👑') : null,
         rec.mission ? h('span', { class: 'node-mission', title: '关卡任务已完成' }, '🎯') : null,
+        rec.bolt ? h('span', { class: 'node-bolt', title: '闪电通关' }, '⚡') : null,
         h('span', { class: 'node-name', title: lvl.name }, `${n}. ${lvl.shortName || lvl.name}`)
       );
     });
@@ -1117,6 +1118,7 @@
         h('span', null, lvl.type === 'boss' ? `${lvl.waves.length} 波（含 Boss）` : `${lvl.waves.length} 波`),
         h('span', { class: power >= rp ? 'ok' : 'warn' }, `推荐战力 ${rp} · 你的战力 ${power}`),
         rec.bestTime ? h('span', { class: 'best-time' }, `⏱ 最快 ${TD.resultView.fmtTime(rec.bestTime)}`) : null,
+        D.parTimes && D.parTimes[n] ? h('span', { class: 'par-time' + (rec.bolt ? ' ok' : '') }, rec.bolt ? `⚡ 闪电通关 ✔` : `⚡ 标准 ${TD.resultView.fmtTime(D.parTimes[n])}`) : null,
         rec.crown ? h('span', { class: 'ok' }, '👑 已在挑战难度通关') : (s.settings.difficulty || 'normal') === 'hard' ? h('span', null, '👑 挑战难度通关可得王冠') : null
       ),
       h('div', { class: 'mon-list' }, mons),

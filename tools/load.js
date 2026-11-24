@@ -15,6 +15,7 @@ const FILES = [
   'src/data/mercstory.js',
   'src/data/outfits.js',
   'src/data/missions.js',
+  'src/data/partimes.js',
   'src/data/town.js',
   'src/data/achievements.js',
   'src/game/progression.js',
