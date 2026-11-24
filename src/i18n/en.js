@@ -962,6 +962,7 @@ TD.i18n.register("en", {
   "完成 20 个关卡任务": "Complete 20 level quests",
   "完成今日任务": "Daily Quests Done",
   "完成全部关卡任务": "Complete all level quests",
+  "完美 ×{0}": "Perfect ×{0}",
   "完美主义": "Perfectionist",
   "完美主义者": "Perfectionist",
   "完美连击中断（{0}）": "Perfect streak broken ({0})",

@@ -55,7 +55,7 @@
     },
 
     // 游戏版本：与设计书版本号、sw.js 的缓存名保持一致（测试会检查）
-    version: 'v2.14',
+    version: 'v2.15',
 
     // 试玩版（设计书 127）：打试玩版压缩包时 tools/itch.js 把 demo 改成 true；正式版永远是 false
     demo: false,

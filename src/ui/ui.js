@@ -2386,12 +2386,16 @@
       if (mid && !rec.mission && D.missions[mid].live) hud.missionId = mid;
     }
     hud.missionProg = h('span', { class: 'mc-prog' }, '');
+    // 本局构筑徽章（设计书 215）：完美连击、已达成的羁绊、接受过的契约
+    hud.build = h('div', { class: 'build-badges' });
+    hud._buildKey = '';
     // 下一波预告（设计书 201）
     hud.nextWave = h('div', { class: 'next-wave hidden' });
     hud._nwKey = null;
     hud.mission = hud.missionId
       ? h('div', { class: 'mission-chip', title: D.missions[hud.missionId].desc }, h('span', { class: 'mc-icon' }, '🎯'), h('span', { class: 'mc-name' }, D.missions[hud.missionId].name), hud.missionProg)
       : null;
+    if (!hud.mission) hud.build.classList.add('no-mission');
 
     screenEl = h(
       'div',
@@ -2408,6 +2412,7 @@
       hud.mercBar,
       hud.bond,
       hud.mission,
+      hud.build,
       hud.nextWave,
       hud.laneHint,
       hud.nudge,
@@ -2447,6 +2452,26 @@
     hud.callBtn.classList.toggle('hidden', !canCall);
     if (canCall) setText(hud.callBtn, `提前召唤 +${Math.max(0, Math.floor(b.countdown))}铜 (N)`);
     setText(hud.copper, Math.floor(b.killCopper + b.earlyCopper + (b.perfectCopper || 0))); // 多出来的小怪的铜币按强度折算，可能带小数
+    if (hud.build) {
+      const streak = b.perfectStreak || 0;
+      const sets = b.activeSets || [];
+      const pacts = b.pactsTaken || [];
+      const key = streak + '|' + sets.join(',') + '|' + pacts.join(',');
+      if (key !== hud._buildKey) {
+        hud._buildKey = key;
+        const kids = [];
+        if (streak >= 2) kids.push(h('span', { class: 'bb perfect' + (streak >= 3 ? ' hot' : '') }, `完美 ×${streak}`));
+        for (const id of sets) {
+          const st = D.supplySets.find((x) => x.id === id);
+          if (st) kids.push(h('span', { class: 'bb set', title: st.desc }, st.name));
+        }
+        for (const id of pacts) {
+          const cu = D.pactCurses[id];
+          if (cu) kids.push(h('span', { class: 'bb pact', title: cu.desc }, cu.name));
+        }
+        hud.build.replaceChildren(...kids);
+      }
+    }
     if (hud.nextWave && b.wavePreview) {
       const idx = b.previewWaveIndex();
       if (hud._nwKey !== idx) {

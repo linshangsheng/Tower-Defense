@@ -161,3 +161,36 @@
   vertical-align: 1px;
 }
 .quest-reroll:hover { background: rgba(255, 179, 64, 0.12); }
+
+/* 本局构筑徽章（设计书 215）：任务标签下面一排小胶囊 */
+.build-badges {
+  position: absolute;
+  left: 10px;
+  top: 92px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  max-width: 300px;
+  pointer-events: auto;
+}
+.build-badges.no-mission { top: 58px; }
+.build-badges:empty { display: none; }
+.build-badges .bb {
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.5;
+  white-space: nowrap;
+  background: var(--mat-regular, rgba(20, 22, 28, 0.62));
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  animation: nw-in 0.3s ease-out;
+}
+.build-badges .bb.perfect { color: #9fe7ff; }
+.build-badges .bb.perfect.hot { color: #ffd23f; box-shadow: 0 0 10px rgba(255, 210, 63, 0.45); }
+.build-badges .bb.set { color: #3a1d00; background: linear-gradient(160deg, rgba(255, 207, 107, 0.95), rgba(229, 138, 31, 0.95)); }
+.build-badges .bb.pact { color: #fff; background: rgba(120, 50, 200, 0.85); }
+.compact .build-badges { top: 82px; }
+.compact .build-badges.no-mission { top: 50px; }
+.rm .build-badges .bb { animation: none; }
