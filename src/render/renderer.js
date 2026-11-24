@@ -1426,6 +1426,8 @@
         if (TD.Vfx && TD.Vfx.setCap) TD.Vfx.setCap(Math.max(40, Math.round((alive.length > 40 ? 240 : 520) * qp.fx)));
         alive.sort((a, c) => (a.def.flying ? 1 : 0) - (c.def.flying ? 1 : 0) || a.y - c.y);
         this.darkEyes = [];
+        this.litSpent = 0;
+        this.litBudget = 3 * (qp.lit || 1); // 毫秒
         for (const m of alive) this.drawMonster(m, b);
         this.drawProjectiles(b);
       }
@@ -3352,7 +3354,25 @@
           }
           const frame = frozen ? -1 : Math.floor(tt * TD.art.LIT_FPS);
           const key = frame + flags;
-          const c = TD.art.litSprite(holder, key, def.size * DRAW_SCALE, this.scene.palette.rim, TD.art.opts.glow ? 0.32 : 0, (g) => ((S.volume = true), S.monster(g, m.type, 0, 0, def.size, tt, mo), (S.volume = false)));
+          // 重画预算（设计书 226）：这一帧光影缓存已经重画了 litBudget 毫秒以上时，共享缓存的小怪先沿用上一帧的画面
+          // （最多落后 4 个动画帧，免得排在后面的那组一直等不到）；Boss、带 AI 的怪用自己的缓存，不受限
+          let c = null;
+          const old = holder.litCache;
+          // 按这种怪平时重画一次要多久来预估：放不下就先不画（毛茸茸的羊、雪人一次就要 2 毫秒）
+          this.litCost = this.litCost || {};
+          const est = this.litCost[m.type] || 0.5;
+          if (holder !== m && old && old.key !== key && this.litSpent + est > this.litBudget && frame >= 0 && Math.abs(frame - (holder.litFrame || 0)) < 4 && String(old.key).endsWith(flags)) c = old;
+          if (!c) {
+            const t0 = performance.now();
+            c = TD.art.litSprite(holder, key, def.size * DRAW_SCALE, this.scene.palette.rim, TD.art.opts.glow ? 0.32 : 0, (g) => ((S.volume = true), S.monster(g, m.type, 0, 0, def.size, tt, mo), (S.volume = false)));
+            const d = performance.now() - t0;
+            if (d > 0.05) {
+              // 命中缓存几乎不花时间，不计
+              this.litSpent += d;
+              this.litCost[m.type] = est * 0.7 + d * 0.3;
+            }
+            holder.litFrame = frame;
+          }
           if (this.crowd && (!def.boss || def.towerOf)) {
             // 妖塔里同屏几百只：只贴精灵画布中间有内容的那一块（约一半面积），再按人数缩小一点（设计书 74.5）
             const sz = def.size * DRAW_SCALE;
@@ -4062,9 +4082,11 @@
       const fx = TD.heroAnim && castId && castAge !== undefined && castAge < TD.heroAnim.castDur(castId, castStrikes, castEvery);
       if (fx) TD.heroAnim.fx(this.ctx, C.heroX, heroY, castId, castAge, this.t, 'back', { strikes: castStrikes, every: castEvery });
       if (this.scene && !this.scene.none && TD.art.opts.lit) {
-        // 英雄也加明暗和轮廓光（每帧重画，只有一个）
+        // 英雄也加明暗和轮廓光。缓存键按 30 帧/秒量化动画状态（设计书 226）：60Hz 屏幕上一半的帧直接贴缓存，高刷屏省得更多
         this.heroArt = this.heroArt || {};
-        const c = TD.art.litSprite(this.heroArt, Math.random(), 40, this.scene.palette.rim, 0, (g) => ((S.volume = true), S.hero(g, 0, 0, ho), (S.volume = false)));
+        // 统一时钟：键 = 30 帧/秒的帧号 + 离散状态；瞄准、出手、蓄力这些连续量在重画的那一刻采样（各自量化会此起彼伏，几乎每帧都变）
+        const hk = Math.floor(performance.now() / (1000 / 30)) + '|' + (castId || '') + '|' + mood + '|' + weapon + (ascended ? 'A' : '') + '|' + ho.outfit + '|' + ho.hero + '|' + this.scene.palette.rim;
+        const c = TD.art.litSprite(this.heroArt, hk, 40, this.scene.palette.rim, 0, (g) => ((S.volume = true), S.hero(g, 0, 0, ho), (S.volume = false)));
         this.ctx.drawImage(c.canvas, Math.round(C.heroX - c.ox), Math.round(heroY - c.oy));
       } else S.hero(this.ctx, C.heroX, heroY, ho);
       if (fx) TD.heroAnim.fx(this.ctx, C.heroX, heroY, castId, castAge, this.t, 'front', { strikes: castStrikes, every: castEvery });
@@ -4757,6 +4779,12 @@
             ctx.globalAlpha = 1 - Math.max(0, k - 0.6) / 0.4;
             ctx.font = `bold ${Math.round(f.size * pop)}px "Trebuchet MS", sans-serif`;
             ctx.textAlign = 'center';
+            // 长句子（英文台词）别被屏幕边缘裁掉：第一次画时量一下宽度，把中心挪进屏幕（设计书 226）
+            if (f.fitted === undefined) {
+              const tw = ctx.measureText(f.str).width;
+              f.fitted = true;
+              if (tw > 60) f.x = Math.max(tw / 2 + 10, Math.min(C.width - tw / 2 - 10, f.x));
+            }
             ctx.lineWidth = 4;
             ctx.strokeStyle = 'rgba(40,25,15,0.85)';
             ctx.strokeText(f.str, f.x, f.y);

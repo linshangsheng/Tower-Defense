@@ -123,7 +123,10 @@
   };
   // 回声低语：一行淡紫色的斜体字从下方缓缓浮起、淡出（delay 秒后才出现，让开场横幅先过去）
   V.whisper = function (str, delay) {
-    this.fx.push({ kind: 'whisper', str: TD.i18n ? TD.i18n.t(str) : str, life: 5.2, age: -(delay || 0) });
+    // 上一句还没飘完（开了自动召唤，两波可能隔得很近）：排在它后面，不叠在同一个位置（设计书 226）
+    let wait = delay || 0;
+    for (const f of this.fx) if (f.kind === 'whisper') wait = Math.max(wait, f.life - f.age + 0.3);
+    this.fx.push({ kind: 'whisper', str: TD.i18n ? TD.i18n.t(str) : str, life: 5.2, age: -wait });
   };
   // Boss 登场：屏幕正中亮出名牌（大 Boss 更大更红），地面震一下
   V.bossCard = function (name, major, color, quote) {
