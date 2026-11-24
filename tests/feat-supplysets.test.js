@@ -87,3 +87,23 @@ test('新玩法补给卡（设计书 211）：只给真人，要 Boss 的卡只�
   assert.ok(Math.abs(b.mods.atkMult - atk0 - 0.2) < 1e-9);
   assert.strictEqual(b.perfectStacks, 5);
 });
+
+test('新玩法卡的羁绊（设计书 216）：满载而归让铜钱袋翻倍，无懈可击完美时回血', () => {
+  const b = battle(12);
+  b.startWave(0);
+  b.pendingSupply = ['scavengerBag', 'quick', 'eagle'];
+  b.chooseSupply('scavengerBag');
+  b.pendingSupply = ['purse', 'quick', 'eagle'];
+  b.chooseSupply('purse');
+  assert.ok(b.activeSets.includes('bountiful'));
+  const cu = b.killCopper;
+  b.collectDrop({ kind: 'purse', amount: 50, x: 0, y: 0 });
+  assert.strictEqual(b.killCopper - cu, 100);
+  const c = battle(12);
+  c.mods.perfectHeal = 0.03;
+  c.wall.hp = c.wall.max * 0.5;
+  c.waveIndex = 0;
+  c.markPerfectWave();
+  c.checkPerfectWave();
+  assert.ok(c.wall.hp > c.wall.max * 0.52);
+});

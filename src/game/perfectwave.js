@@ -43,6 +43,8 @@
         this.emit('perfectStack', { stacks: this.perfectStacks });
       }
       this.perfectCopper = (this.perfectCopper || 0) + bonus;
+      // 无懈可击（羁绊，设计书 216）：完美防守时回复城墙
+      if (this.mods.perfectHeal) this.healWall(this.wall.max * this.mods.perfectHeal, 'supply');
       this.emit('perfectWave', { streak: this.perfectStreak, bonus, mult });
       return true;
     },

@@ -85,7 +85,7 @@
       this.dropsTaken = (this.dropsTaken || 0) + 1;
       let amount = 0;
       if (d.kind === 'purse') {
-        amount = d.amount || Math.max(8, Math.round(d.copper * 6));
+        amount = Math.round((d.amount || Math.max(8, Math.round(d.copper * 6))) * (1 + ((this.mods && this.mods.purseMult) || 0)));
         this.killCopper += amount;
       } else if (d.kind === 'mend') {
         this.wall.hp = Math.min(this.wall.max, this.wall.hp + this.wall.max * 0.04);

@@ -18,6 +18,10 @@
     { id: 'treasury', name: '聚宝盆', cards: ['purse', 'midas'], mods: { copperBonus: 0.25 }, desc: '本关铜币收益再 +25%' },
     { id: 'bulwark', name: '金城汤池', cards: ['bricks', 'fortress'], mods: { wallDr: 0.06, waveShield: 0.06 }, desc: '城墙受到伤害再 −6%，每波护盾再 +6%' },
     { id: 'headsman', name: '断头台', cards: ['executioner', 'breaker'], mods: { execute: 0.25, armorIgnore: 0.1 }, desc: '处决伤害再 +25%，再无视 10% 护甲' },
+    // 新玩法补给卡的羁绊（设计书 216）
+    { id: 'flawless', name: '无懈可击', cards: ['perfectionist', 'fortress'], mods: { perfectHeal: 0.03, waveShield: 0.04 }, desc: '每次完美防守回复 3% 城墙，每波护盾再 +4%' },
+    { id: 'coupDeGrace', name: '致命破绽', cards: ['weakExpert', 'godslayer'], mods: { weakStun: 1.2, weakDmg: 0.5 }, desc: '点中弱点让 Boss 多踉跄 1.2 秒，伤害再 +50%' },
+    { id: 'bountiful', name: '满载而归', cards: ['scavengerBag', 'purse'], mods: { purseMult: 1, dropMult: 0.3 }, desc: '铜钱袋光球的铜币 ×2，光球掉落再 +30%' },
     { id: 'lifespring', name: '生生不息', cards: ['mender', 'hospital'], mods: { killHeal: 0.002, mendBonus: 0.02 }, desc: '击杀回复城墙再 +0.2%，每波结束回复 2%' },
   ].filter((s) => s.cards.every((id) => D.supplies[id]));
 

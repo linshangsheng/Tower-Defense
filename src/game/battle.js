@@ -109,7 +109,7 @@
       this.waveStartTime = 0;
 
       // 战场补给（设计书 2.7）
-      this.mods = { atkMult: 0, aspdMult: 0, crit: 0, critDmg: 0, cdMult: 0, copperBonus: 0, wallDr: 0, range: 0, slowOnHit: 0, magicMult: 0, armorIgnore: 0, dotReduce: 0, spiritPierce: 0, chillResist: 0, igniteOnHit: 0, fireproof: 0, reveal: 0, woolCut: 0, stunImmune: 0, dodgeCut: 0, slowAll: 0, shellCut: 0, pinPop: 0, leapCut: 0, bossDmg: 0, flyDmg: 0, slowedDmg: 0, igniteChance: 0, darkSight: 0, frostExt: 0, mendBonus: 0, lowWallAtk: 0, healBonus: 0, waveShield: 0, execute: 0, killHeal: 0, chainChance: 0, revive: 0, waveStrike: 0, perfectAtk: 0, perfectCopper: 0, weakGap: 0, weakDmg: 0, dropMult: 0 };
+      this.mods = { atkMult: 0, aspdMult: 0, crit: 0, critDmg: 0, cdMult: 0, copperBonus: 0, wallDr: 0, range: 0, slowOnHit: 0, magicMult: 0, armorIgnore: 0, dotReduce: 0, spiritPierce: 0, chillResist: 0, igniteOnHit: 0, fireproof: 0, reveal: 0, woolCut: 0, stunImmune: 0, dodgeCut: 0, slowAll: 0, shellCut: 0, pinPop: 0, leapCut: 0, bossDmg: 0, flyDmg: 0, slowedDmg: 0, igniteChance: 0, darkSight: 0, frostExt: 0, mendBonus: 0, lowWallAtk: 0, healBonus: 0, waveShield: 0, execute: 0, killHeal: 0, chainChance: 0, revive: 0, waveStrike: 0, perfectAtk: 0, perfectCopper: 0, weakGap: 0, weakDmg: 0, dropMult: 0, purseMult: 0, weakStun: 0, perfectHeal: 0 };
       // 装备和套装的特殊效果（设计书 58）
       const gm = this.stats.gearMods || {};
       for (const k of Object.keys(gm)) this.mods[k] = (this.mods[k] || 0) + gm[k];

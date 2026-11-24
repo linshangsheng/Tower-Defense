@@ -48,7 +48,7 @@
         m.weak = null;
         this.weakHits = (this.weakHits || 0) + 1;
         this.damage(m, m.maxHp * W.dmgPct * (1 + ((this.mods && this.mods.weakDmg) || 0)), { type: 'phys', fromFront: false, armorIgnore: 0.8, source: 'weak' });
-        if (!m.dead) m.stunUntil = Math.max(m.stunUntil || 0, this.time + W.stagger);
+        if (!m.dead) m.stunUntil = Math.max(m.stunUntil || 0, this.time + W.stagger + ((this.mods && this.mods.weakStun) || 0));
         this.emit('weakHit', { m, x: p.x, y: p.y });
         return true;
       }
