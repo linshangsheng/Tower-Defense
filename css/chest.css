@@ -1,0 +1,81 @@
+/* 胜利宝箱（设计书 203） */
+.chest {
+  padding: var(--s3) var(--s4);
+  border-radius: var(--r-lg);
+  background: linear-gradient(180deg, rgba(255, 179, 64, 0.16), rgba(255, 179, 64, 0.05));
+  border: 0.5px solid rgba(255, 179, 64, 0.45);
+  text-align: center;
+}
+.chest-head { display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-headline, 17px); color: var(--label); }
+.chest-head .ico { margin: 0; }
+.chest-hint { margin: 2px 0 10px; font-size: var(--fs-caption, 13px); color: var(--label-2, rgba(255, 255, 255, 0.7)); transition: color 0.2s; }
+.chest-hint.got { color: var(--accent, #ffb340); font-weight: 700; font-size: var(--fs-body, 15px); }
+.chest-cards { display: flex; justify-content: center; gap: 12px; }
+.chest-card {
+  position: relative;
+  width: 104px;
+  height: 122px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-md, 12px);
+  background: transparent;
+  cursor: pointer;
+  perspective: 600px;
+  animation: cc-in 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.25) both;
+  animation-delay: calc(var(--i) * 90ms + 250ms);
+}
+.chest-card .cc-back,
+.chest-card .cc-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: inherit;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transition: transform 0.5s cubic-bezier(0.3, 0.7, 0.2, 1);
+}
+.chest-card .cc-back {
+  background: linear-gradient(160deg, #ffcf6b, #e58a1f);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35), inset 0 0 0 2px rgba(255, 255, 255, 0.35);
+  color: #5a2d00;
+}
+.chest-card .cc-back .ico { width: 42px; height: 42px; margin: 0; color: #6b3500; }
+.chest-card:not(:disabled):hover .cc-back { transform: translateY(-4px) rotate(-1.5deg); }
+.chest-card .cc-face {
+  transform: rotateY(180deg);
+  background: var(--fill-2, rgba(255, 255, 255, 0.12));
+  box-shadow: inset 0 0 0 1px var(--sep, rgba(255, 255, 255, 0.2));
+  color: var(--label);
+  padding: 6px;
+}
+.chest-card .cc-art { width: 46px; height: 46px; }
+.chest-card .cc-coin .coin { display: block; width: 34px; height: 34px; margin: 6px auto; }
+.chest-card .cc-label { font-size: var(--fs-caption, 13px); font-weight: 700; line-height: 1.2; }
+.chest-card.flipped .cc-back { transform: rotateY(180deg); }
+.chest-card.flipped .cc-face { transform: rotateY(360deg); }
+.chest-card.chosen .cc-face { background: linear-gradient(160deg, rgba(255, 207, 107, 0.95), rgba(229, 138, 31, 0.95)); color: #3a1d00; box-shadow: 0 0 0 2px #fff, 0 0 22px rgba(255, 190, 80, 0.8); }
+.chest-card.chosen.silver .cc-face { background: linear-gradient(160deg, #f2f6ff, #aab8d6); box-shadow: 0 0 0 2px #fff, 0 0 26px rgba(200, 220, 255, 0.95); }
+.chest-card.other { opacity: 0.55; transform: scale(0.94); transition: opacity 0.4s 0.35s, transform 0.4s 0.35s; }
+.chest-card.other .cc-face { transition-delay: 0.35s; }
+.chest-card.other .cc-back { transition-delay: 0.35s; }
+.chest-card:disabled { cursor: default; }
+@keyframes cc-in { from { opacity: 0; transform: translateY(14px) scale(0.9); } to { opacity: 1; transform: none; } }
+.result.still .chest-card,
+.rm .chest-card { animation: none; }
+.rs-chest-only { padding-top: var(--s2); }
+.compact .chest-card { width: 80px; height: 86px; }
+.compact .chest { padding: 8px 12px; }
+.compact .chest-hint { margin: 0 0 6px; }
+.compact .chest-card .cc-back .ico { width: 30px; height: 30px; }
+.compact .chest-card .cc-art { width: 34px; height: 34px; }
+@media (max-height: 480px) {
+  .chest-card { width: 80px; height: 86px; }
+  .chest { padding: 8px 12px; }
+  .chest-hint { margin: 0 0 6px; }
+  .chest-card .cc-back .ico { width: 30px; height: 30px; }
+  .chest-card .cc-art { width: 34px; height: 34px; }
+}

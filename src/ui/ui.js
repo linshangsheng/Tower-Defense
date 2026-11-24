@@ -904,6 +904,10 @@
 
   UI.showMap = function (chapterId) {
     clear();
+    // 上次没翻的胜利宝箱（比如结算时刷新了页面）：回到地图时补上（设计书 203）
+    setTimeout(() => {
+      if (TD.chest && TD.chest.pending(game.save) && !modalEl && screenEl && screenEl.classList.contains('map-screen')) UI.showChestModal();
+    }, 500);
     game.renderer.mood = 'idle';
     const s = game.save;
     // 默认显示最新解锁关卡所在的章节
@@ -2710,6 +2714,55 @@
     return h('div', { class: 'note ' + x.kind }, icoEl(x.icon), h('span', { class: 'note-text' }, (x.parts || [x.text]).map((p) => h('span', null, p))));
   }
 
+  // 胜利宝箱（设计书 203）：3 张扣着的卡，翻 1 张；onDone 在翻开后调用
+  UI.chestEl = function (onDone) {
+    const s = game.save;
+    const chest = TD.chest && TD.chest.pending(s);
+    if (!chest) return null;
+    const hint = h('div', { class: 'chest-hint' }, '翻开一张，拿走里面的奖励');
+    const cardIcon = (cd) => {
+      if (cd.kind === 'item' && TD.sprites.iconCanvas) {
+        const c = TD.sprites.iconCanvas(cd.id, 72);
+        c.className = 'cc-art';
+        return c;
+      }
+      return h('span', { class: 'cc-coin' }, coinIcon(cd.kind === 'silver' ? 'silver' : 'copper'));
+    };
+    const cards = chest.cards.map((cd, i) =>
+      h('button', { class: 'chest-card', type: 'button', style: { '--i': i }, onclick: () => pick(i) }, h('span', { class: 'cc-back' }, icoEl('gift')), h('span', { class: 'cc-face' }))
+    );
+    const wrap = h('div', { class: 'chest' }, h('div', { class: 'chest-head' }, icoEl('gift'), h('b', null, '胜利宝箱')), hint, h('div', { class: 'chest-cards' }, cards));
+    let done = false;
+    function pick(i) {
+      if (done) return;
+      const r = TD.chest.open(s, i);
+      if (!r) return;
+      done = true;
+      game.persist();
+      sfx(r.card.kind === 'silver' ? 'streak' : 'coin');
+      r.cards.forEach((cd, j) => {
+        const el = cards[j];
+        el.disabled = true;
+        el.querySelector('.cc-face').append(cardIcon(cd), h('span', { class: 'cc-label' }, TD.chest.label(cd)));
+        el.classList.add('flipped', j === i ? 'chosen' : 'other', cd.kind);
+      });
+      hint.textContent = `获得 ${TD.chest.label(r.card)}`;
+      hint.classList.add('got');
+      if (onDone) onDone(r);
+    }
+    wrap.autoPick = () => {
+      if (!done && TD.chest.pending(s)) pick(Math.floor(Math.random() * 3));
+    };
+    return wrap;
+  };
+
+  UI.showChestModal = function () {
+    const box = UI.chestEl(() => btn.classList.add('primary'));
+    if (!box) return;
+    const btn = h('button', { class: 'btn', onclick: () => (box.autoPick(), UI.closeModal(), UI.showMap(UI.mapChapter)) }, '好的');
+    modal(h('div', { class: 'result win rs-chest-only' }, box, h('div', { class: 'modal-buttons' }, btn)), { cls: 'rs-modal' });
+  };
+
   UI.showResult = function (battle, reward) {
     const res = battle.result;
     const n = battle.levelNo;
@@ -2776,12 +2829,19 @@
 
     // 底部操作栏：只有一个主按钮（有下一关就是"下一关"，否则是"再来一次"）
     const hasNext = win && D.levels[n + 1];
-    const btnMap = h('button', { class: 'btn', onclick: () => (UI.closeModal(), UI.showMap(D.chapterOf(n).id)) }, '地图');
-    const btnShop = h('button', { class: 'btn' + (!win && game.save.stats.wins < 3 ? ' pulse' : ''), onclick: () => (UI.closeModal(), UI.showShop(hasNext ? n + 1 : n, win && game.save.stats.wins >= 3 ? 'loadout' : 'attrs')) }, '去商店');
-    const btnRetry = h('button', { class: 'btn' + (hasNext ? '' : ' primary'), onclick: () => (UI.closeModal(), game.startBattle(n)) }, '再来一次');
-    const btnNext = hasNext ? h('button', { class: 'btn primary', onclick: () => (UI.closeModal(), UI.showMap(D.chapterOf(n + 1).id), UI.showPreview(n + 1)) }, '下一关 ›') : null;
+    // 没翻宝箱就离开：随机替你翻一张（奖励不会丢）
+    const chestBox = win ? UI.chestEl() : null;
+    const leave = (fn) => () => {
+      if (chestBox) chestBox.autoPick();
+      UI.closeModal();
+      fn();
+    };
+    const btnMap = h('button', { class: 'btn', onclick: leave(() => UI.showMap(D.chapterOf(n).id)) }, '地图');
+    const btnShop = h('button', { class: 'btn' + (!win && game.save.stats.wins < 3 ? ' pulse' : ''), onclick: leave(() => UI.showShop(hasNext ? n + 1 : n, win && game.save.stats.wins >= 3 ? 'loadout' : 'attrs')) }, '去商店');
+    const btnRetry = h('button', { class: 'btn' + (hasNext ? '' : ' primary'), onclick: leave(() => game.startBattle(n)) }, '再来一次');
+    const btnNext = hasNext ? h('button', { class: 'btn primary', onclick: leave(() => (UI.showMap(D.chapterOf(n + 1).id), UI.showPreview(n + 1))) }, '下一关 ›') : null;
 
-    const body = h('div', { class: 'result ' + (win ? 'win' : 'lose') + (reduceMotionOn() ? ' still' : '') }, hero, stats, tips, rewardBox, UI.quickUpgradeEl(), notes, UI.reportEl(res, !win), h('div', { class: 'modal-buttons' }, btnMap, btnShop, btnRetry, btnNext));
+    const body = h('div', { class: 'result ' + (win ? 'win' : 'lose') + (reduceMotionOn() ? ' still' : '') }, hero, stats, tips, chestBox, rewardBox, UI.quickUpgradeEl(), notes, UI.reportEl(res, !win), h('div', { class: 'modal-buttons' }, btnMap, btnShop, btnRetry, btnNext));
     modal(body, { cls: 'result-modal rs-modal' });
   };
 })((globalThis.TD = globalThis.TD || {}));

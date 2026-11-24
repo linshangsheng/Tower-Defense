@@ -186,6 +186,8 @@
       return;
     }
     const reward = P.applyResult(game.save, battle.levelNo, battle.result);
+    // 胜利宝箱（设计书 203）：只在真人对局里准备，结算页翻牌
+    if (battle.result.win && TD.chest) reward.chest = TD.chest.prepare(game.save, battle.levelNo, battle.result.stars);
     game.persist();
     const after = () => {
       // 第一次打败最终 Boss：先播结局演出
